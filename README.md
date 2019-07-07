@@ -3,15 +3,12 @@
 </p>
 
 <h1 align="center"> Personal Management System</h1>
-<p align="center"><i>Your central point for managing every personall thing that You need  <br> (if current modules allow to do that - that is).</i></p>
+<p align="center"><i>Your central point for managing personall data <br> (if current modules allow to do that).</i></p>
 
 <h3>Description</h3>
 <hr>
 <p align="justify">
     I'ts easier to understand this web application when You think about CMS (Wordpress) or CRM (SugarCRM), logic behind this system is very similar to those two. My system has less possibilities than thoes above, but It just do what I want it to do. Besides writing extensions is not so hard, depending on logic behind. Anyone with proper development knowledge can pretty much write his/her own extensions for personal needs.
-</p>
-<p align="justify">
-    As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need.
 </p>
 
 <h3>Reasoning/Purpose</h3>
@@ -30,6 +27,10 @@
 
 <p align="justify">
     I cannot guarantee any support. I've got a job, personall things etc, I'm just sharing my code/my application as MIT. However feel totally free to ask about something, write issues etc. As mentioned I'am using and I will use this application from now on daily so there might be some changes even good for me.
+</p>
+
+<p align="justify">
+    As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need. So after reaching my goal I could handle some support requests if anyone will be interested.
 </p>
 
 <h3>Available options and modules</h3>
@@ -64,128 +65,12 @@
 </div>
 <h2>Tech</h2>
 <p style="text-align:justify;">
-    Personal Managemtn System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 18.x.
+    Personal Management System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 18.x.
 </p>
 
-<h3>How to install and configure</h3>
-<hr>
-<h4>1. Linux</h4>
-<hr>
-<h5>1a. Requirements</h5>
-<ul>
-<li>Php 7.2x</li>
-<li>MySQL</li>
-<li>You can just use LAMP server</li>
-<li>Composer</li>
-<li>NodeJs</li>
-<li>Sudo</li>
-</ul>
+<h3>How to install/documentation</h3>
 
-<h5>1b.Installation</h5>
-<p>
-<b>0.</b> I assume that You already got apache/php etc.
-<br/><br/>	
-<b>1.</b> Download or clone repository
-<br/><br/>	
-<b>2.</b> Unzip/put entire project into Your base html folder (usually /var/www/html/YourFolder/) - beware that it's better to copy it via terminal as files like .env might not be copied via gui
-<br/><br/>	
-<b>3.</b> Now open terminal
-<br/><br/>	
-<b>4.</b> Scroll to section <i>3a</i> (below)
-<br/><br/>	
-</p>
-
-</ul>
-<hr>
-<h4>2. Windows</h4>
-<hr>
-<h5>2a. Requirements</h5>
-<ul>
-<li>Php 7.2x</li>
-<li>MySQL</li>
-<li>You can just use Xampp or Wamp</li>
-<li>Composer</li>
-<li>NodeJs</li>
-</ul>
-
-<hr>
-
-<h5>2b.Installation</h5>
-<p>
-<b>0.</b> I assume that You already got apache/php etc.
-<br/><br/>	
-<b>1.</b> Download or clone repository
-<br/><br/>	
-<b>2.</b> Unzip/put entire project into Your base html folder which depends on aplication You use. Check corresponding manuals where projects folders are for Xampp or Wampp.
-<br/><br/>	
-<b>3.</b> Now open terminal - <b>I'm using git bash terminal</b>
-<br/><br/>	
-<b>4.</b> Scroll to section <i>3a</i> (below)
-<br/><br/>	
-</p>
-
-<hr>
-
-<h4>3. Common for both systems</h4>
-<p>
-<b>1. </b>Technical knowledge<small> (or someone with it) </small>
-</p>
-
-<hr>
-<h5>3a. Configuring and installing </h5>
-
-<p>
-<b>1.</b> Run composer install (around 100mb to download)
-<br/><br/>
-<b>2.</b> Run npm <b>(todo)</b> ... (around 300mb to download)
-<br/><br/>	
-<b>3.</b> Create mysql databse however You like to (CLI/adminer/phpmyadmin - Your choice)
-<br/><br/>	
-<b>4.</b> Inside root of project folder You will find <b><i>.env</i></b> file - open it and add Your database connection as described in: https://symfony.com/doc/current/doctrine.html (section: Configuring the Database)
-<br/><br/>	
-<b>5.</b> In my case it looks like this:
-<br/><br/>
-	
-```DATABASE_URL=mysql://user:password@127.0.0.1:3306/pms```
-<br/><br/>
-<b>6.</b> In <i><b>.env</b></i> set application enviroment to Production
-<br/><br/>
-```APP_ENV=dev``` to ```APP_ENV=prod```
-<br/><br/>
-<b>7.</b> In <i><b>.env</b></i> disable debugging
-<br/><br/>
-`APP_DEBUG=0`
-<br/><br/>
-<b>8.</b> In terminal go to Your project root folder (example: cd/var/www/html/YourFolder)
-<br/><br/>
-<b>9.</b> Now run this commands one ofter another
-<br/><br/>
-`bin/console cache:clear`
-<br/><br/>
-`bin/console cache:warmup`
-<br/><br/>	
-`bin/console doctrine:migrations:diff`
-<br/><br/>
-`bin/console doctrine:migrations:migrate (accept)`
-<br/><br/>	
-`bin/console fos:user:create --super-admin`
-<br/><br/>	
-<b>10.</b> Now run symfony server as described: https://symfony.com/doc/current/setup/built_in_web_server.html
-Just run this command from root folder of project:
-<br/><br/>
-`bin/console server:run 0.0.0.0:8001` 
-<br/><br/>
-(or other port if this one is used)
-<br/><br/>
-<b>11.</b> You can now access Your project in browser: http://127.0.0.1:8001 (or other port You added)
-<br/><br/>	
-<b>12.</b> Access data (change it in user panel!)
-<br/><br/>
-<i>Login: admin </i>
-<br/><br/>	
-<i>Password: password </i>
-<br/><br/>	
-</p>
+You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 
 <hr>
 
@@ -193,8 +78,7 @@ Just run this command from root folder of project:
 <hr>
 
 <ul>
-<li><b>Very basic documentation</b> - moving setup to it (readme.md doc is hard to style)</li>
-<li><b>Images module</b> - (with preview)
+<li><b>📷 Images module</b> - (with preview)
 	<ul>
     	<li><b>Gallery</b> - for personal photos</li>
         <li><b>Scans</b> - for scanned documents</li>
@@ -203,21 +87,21 @@ Just run this command from root folder of project:
         <li><b>Settings</b> - for folders naming etc</li>
     </ul>
 </li>
-<li><b>Files module</b> - file explorer (no preview)
+<li><b>📁 Files module</b> - file explorer (no preview)
 	<ul>
     	<li><b>Documents</b></li>
         <li><b>Upload</b></li>
         <li><b>Settings</b> - for folders naming etc</li>
     </ul>
 </li>
-<li><b>Job search</b> - (VERY future development plan, not sure if will make it at all)
+<li><b>🔎 Job search</b> - (VERY future development plan, not sure if will make it at all)
 	<ul>
     	<li>I have totally different project on laravel for searching job on portals it can be turned into module but requires bigger amount of time, so that's just an idea. I don't really need it as module - so far far on end.</li>
 	</ul>
 </li>
 </ul>
 
-<h4>Used languages</h4>
+<h4>Used languages/frameworks/solutions</h4>
 <hr>
 <ul>
 <li>Php 7.2.x</li>
@@ -238,7 +122,7 @@ Just run this command from root folder of project:
 <li><a href="https://github.com/krzysiekpiasecki/Symfonator">Symfonator</a> <small>(Ui)</small></li>
 <li><a href="https://github.com/mogilvie/EncryptBundle">EncryptBundle</a> <small>(Core for passwords module)</small></li>
 <li><a href="https://github.com/furcan/IconPicker">Icon Picker</a> <small>(Icon picker for Notes module)</small></li>
-<li><a href="https://github.com/furcan/IconPicker">Bootbox</a> (<small>Additional safety confirmations for CRUD</small>)</li>
+<li><a href="https://github.com/makeusabrew/bootbox">Bootbox</a> (<small>Additional safety confirmations for CRUD</small>)</li>
 <li><a href="https://github.com/EastDesire/jscolor">JsColor</a> (<small>Color pickers for Notes module</small>)</li>
 <li>... bootstrap, TinyMce, DataTables and many others</li>
 <li>... I don't even know some of them which come prebuild in Symfonator</li>
@@ -247,7 +131,7 @@ Just run this command from root folder of project:
 <h5>Special thanks to</h5>
 <ul>
 <li></li>
-<li></li>
-<li></li>
+	<li><a href="https://github.com/mogilvie">Mark Ogilvie</a> - for fixing EncryptBundle bugs for Symfony 4</li>
+	<li><a href="https://github.com/furcan">Furcan</a> - for adding my idea of contenteditable support</li>
 </ul>
 <hr>
