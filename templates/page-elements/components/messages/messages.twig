@@ -1,0 +1,15 @@
+{# only support danger so far - used with flashbag#}
+<section class="global-messages">
+    {% for message in app.flashes('danger') %}
+        <div class="alert d-none">
+            {{ message }}
+        </div>
+    {% endfor %}
+</section>
+
+<script>
+    let messages = document.querySelectorAll('.global-messages .alert');
+    messages.forEach((element) => {
+        bootstrap_notifications.notify(element.innerHTML, 'danger');
+    });
+</script>

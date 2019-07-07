@@ -1,0 +1,8 @@
+{% block datalist_widget %}
+    <input list="{{ id }}DatalistType" {{ block('widget_attributes') }} autocomplete="off" class="form-control" >
+    <datalist id="{{ id }}DatalistType">
+        {% for choice in choices %}
+            <option value="{{ choice }}"></option>
+        {% endfor %}
+    </datalist>
+{% endblock %}

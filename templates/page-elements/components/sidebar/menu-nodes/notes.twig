@@ -1,0 +1,38 @@
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes') }}">
+    <a class="sidebar-link" href="javascript:void(0);">
+                <span class="icon-holder" style="color:violet;">
+                    <i class="fas fa-book"></i>
+                </span>
+        <span class="title">My notes</span>
+        <span class="arrow">
+                    <i class="ti-angle-right"></i>
+                  </span>
+    </a>
+
+    {# Notes - 1st level #}
+    <ul class="dropdown-menu">
+        <li>
+            <a class="sidebar-link" href="{{ path('my-notes-create') }}">
+                <span class="icon-holder" style="color:violet;">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                Create new
+            </a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="{{ path('my-notes-settings') }}">
+                <span class="icon-holder" style="color:violet;">
+                    <i class="fas fa-cog"></i>
+                </span>
+                Settings
+            </a>
+        </li>
+
+        {% set categories = getMyNotesCategories() %}
+        {% include 'page-elements/components/sidebar/menu-nodes/notes-categories.twig' with {
+            'elements': categories,
+            'path_name': 'my-notes-category'
+        } %}
+
+    </ul>
+</li>

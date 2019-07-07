@@ -1,0 +1,84 @@
+{% set summary_payment = 0 %}
+{% set colors = ['deep-purple-text', 'pink-text', 'deep-orange-text','text-info','green-text','indigo-text'] %}
+{% set color_num = 0 %}
+
+{# Accordin inner div #}
+<div>
+
+    <table id="MyPaymentsMonthly" class="table table-hover" cellspacing="0" width="100%" data-table="true">
+        <thead>
+        <tr>
+            {% for column in columns_names %}
+                <td class="{% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}">
+                    {{ column|capitalize }}
+                </td>
+            {% endfor %}
+            <td>Type</td>
+            <td>Actions</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for payment in all_payments %}
+            {% if date_group.date|date("m-Y") in payment.date %}
+                <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="MyPaymentsMonthly">
+                    {% for column in columns_names %}
+                        <td class="{{ column }} {% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}">
+                            {{ attribute(payment,column) }}
+                        </td>
+                    {% endfor %}
+
+                    <td class="parent-td">
+                        <select class="form-control disabled type option-picker">
+                            <option value=""></option>
+                            {% for payment_type in payments_types  %}
+                                <option value="{{ payment_type.id }}"
+                                        {% if payment_type.id  == payment.type.id %}selected{% endif %}>
+                                    {{ payment_type.value | capitalize }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+
+                    <td contenteditable="false">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        <i class="far fa-edit"></i>
+                        <i class="far fa-save d-none"></i>
+                    </td>
+                </tr>
+                {% set summary_payment=summary_payment+attribute(payment,'money') %}
+            {% endif %}
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <section class="monthly-summary d-flex align-content-end justify-content-around"
+             style="font-size:17px;">
+        <div>
+            <ul class="d-flex flex-column" style="list-style-type: none;">
+
+                {% for payment_by_type_and_date in payments_by_type_and_date %}
+
+                    {% if date_group.date|date("m-Y") in payment_by_type_and_date.date %}
+                        <li class="align-self-end">
+                            <b>{{ payment_by_type_and_date.type | capitalize }}</b>:
+                            <span class="{{ colors[color_num] }}">{{ payment_by_type_and_date.money }}</span>
+                        </li>
+
+                        {% if color_num == (colors | length -1) %}
+                            {% set color_num = 0 %}
+                         {% else %}
+                             {% set color_num = color_num + 1 %}
+                        {% endif %}
+                    {% endif %}
+
+                {% endfor %}
+            </ul>
+            <hr style="border-color: lightgray;"/>
+            <b>
+                <span>Monthly payments summary: </span>
+            </b>
+            <span class="text-primary amount">{{ summary_payment }}</span>
+        </div>
+    </section>
+
+</div>

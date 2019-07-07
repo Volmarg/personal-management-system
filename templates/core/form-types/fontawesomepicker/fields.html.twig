@@ -1,0 +1,13 @@
+{% block fontawesomepicker_widget %}
+    <section class="row">
+        <input type="button" id="{{ id }}Button" autocomplete="off"
+               class="form-control btn-primary btn col-sm-3"
+               data-iconpicker-input="input#{{ id }}Input"
+               data-iconpicker-preview="#{{ id }}Preview"
+               value=" Pick icon"/>
+
+        <input id="{{ id }}Input" {{ block('widget_attributes') }} autocomplete="off" class="form-control col-sm-2">
+        <input id="{{ id }}Preview" autocomplete="off" class="form-control"
+               type="hidden">
+    </section>
+{% endblock %}

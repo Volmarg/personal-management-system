@@ -1,0 +1,76 @@
+{% set in_2_months      = ' color:green;' %}
+{% set in_1_months      = ' color:darkorange;' %}
+{% set in_2_weeks       = ' color:red;'  %}
+{% set common_style     = "" %}
+{% set date_color_style = '' %}
+{% set font_style        = " font-weight:bold;" %}
+
+{% set curr_date        =  "now"|date("m/d/Y") %}
+
+<table id="MyCar" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+    <thead>
+    <tr>
+        {% for column in column_names %}
+            <td class="{{ hideIdColumn(column) }}">{{ column|capitalize }}</td>
+        {% endfor %}
+        <td>Schedule type</td>
+        <td>Actions</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for car_data in car_all_data %}
+
+        {% if car_data.date | trim is not empty %}
+            {% set dates_difference = date(curr_date).diff(date(car_data.date)) %}
+
+            {% if dates_difference.days > 30 and dates_difference.days < 60 %}
+                {% set date_color_style = in_2_months %}
+                {% set common_style     = font_style %}
+            {% elseif dates_difference.days > 14 and dates_difference.days < 30 %}
+                {% set date_color_style = in_1_months %}
+                {% set common_style     = font_style %}
+            {% elseif dates_difference.days < 14 %}
+                {% set date_color_style = in_2_weeks %}
+                {% set common_style     = font_style %}
+            {% endif %}
+        {% endif %}
+
+        <tr class="trash-parent car-single-data editable-parent save-parent " data-type="MyCar">
+            {% for column in column_names %}
+                <td class="{{ column }} {{ hideIdColumn(column) }}" style="{{ date_color_style}}{{ common_style }}">
+                    {% if attribute(car_data,column).timestamp is defined %}
+                        {{ attribute(car_data,column)|date('d-m-Y') }}
+                    {% else %}
+                        {{ attribute(car_data,column) }}
+                    {% endif %}
+                </td>
+            {% endfor %}
+
+            <td class="parent-td">
+
+                <select class="form-control disabled type option-picker">
+                    <option value=""></option>
+                    {% for schedule_type in car_all_schedules_types %}
+                        <option value="{{ schedule_type.id }}"
+                                {% if  car_data.scheduleType is not null and schedule_type.id == car_data.scheduleType.id %}selected{% endif %}
+                        >
+                            {{ schedule_type.name | capitalize }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </td>
+
+            <td contenteditable="false">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                <i class="far fa-edit"></i>
+                <i class="far fa-save d-none"></i>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h5>Legend</h5>
+<button class="btn btn-sm disabled color-legend-button" style="background-color:green;">In 30 - 60 days</button>
+<button class="btn btn-sm disabled color-legend-button" style="background-color:orange;">In 14 -30 days</button>
+<button class="btn btn-sm disabled color-legend-button" style="background-color:red;">In 14 days</button>

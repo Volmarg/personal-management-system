@@ -1,0 +1,53 @@
+{% extends getBaseTemplate(ajax_render) %}
+    {% block body %}
+        <!-- ### $App Screen Content ### -->
+        <main class='main-content bgc-grey-100'>
+            <div id='mainContent'>
+                <div class="container-fluid">
+                    {# DataTable Afterhours generally #}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                                <h4 class="c-grey-900 mB-20">All afterhours</h4>
+                                {% include 'modules/my-job/components/afterhours.table.html.twig' with {'afterhours_type':'all', 'afterhours':afterhours_made } %}
+                            </div>
+                        </div>
+                    </div>
+                    {# DataTable Afterhours spent #}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                                <h4 class="c-grey-900 mB-20">Spent afterhours</h4>
+                                {% include 'modules/my-job/components/afterhours.table.html.twig' with {'afterhours_type':'spent', 'afterhours':afterhours_spent } %}
+                            </div>
+                        </div>
+                    </div>
+                    {# Afterhours summary #}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                                <h4 class="c-grey-900 mB-20">Remaining afterhours</h4>
+                                {% for goal, remaining_time_to_spent in remaining_time_to_spend_per_goal %}
+                                    <section>
+                                        <span>I've got: </span> <b class="text-danger">{{ remaining_time_to_spent }}</b>
+                                        <span> for <b>{{ goal }} </b>left to spend</span>
+                                    </section>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {# Form #}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                                <h4 class="c-grey-900 mB-20 align-self-center">Add/Spend afterhours</h4>
+                                <div class="col-md-6 align-self-center add-record-form">
+                                    {{ form(afterhours_form_view,{'attr':{' data-entity':"MyJobAfterhours"}}) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    {% endblock body %}

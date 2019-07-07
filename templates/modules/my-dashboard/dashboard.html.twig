@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+
+ {% block body %}
+     <!-- ### $App Screen Content ### -->
+     <main class='main-content bgc-grey-100'>
+         <div id='mainContent'>
+             <div class="row gap-20 masonry pos-r">
+                 <div class="masonry-sizer col-md-6"></div>
+
+                     {% include 'modules/my-dashboard/widgets/incoming-car-schedules.html.twig' %}
+                     {% include 'modules/my-dashboard/widgets/my-goals.html.twig' %}
+                     {% include 'modules/my-dashboard/widgets/my-goals-payments.html.twig' %}
+
+             </div>
+         </div>
+     </main>
+ {% endblock body %}

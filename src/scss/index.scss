@@ -1,0 +1,28 @@
+/**
+ * This file MUST be included last from all css scripts
+ * Some files were missing in this project (pulled from github) so that's why im using static app.css (one big file)
+ */
+@import 'libs/mdb/scss/mdb.lite.scss';
+@import 'ui/buttons.scss';
+@import 'libs/loading-bar.css';
+@import 'libs/jquery-ui.min.css';
+@import 'libs/fontawesome/scss/fontawesome.scss';
+
+@import 'libs/tinmce/skins/ui/oxide-dark/content.scss';
+@import 'libs/tinmce/skins/ui/oxide-dark/skin.scss';
+@import 'libs/tinmce/skins/content/default/content.scss';
+@import 'libs/tinmce/skins/content/document/content.scss';
+@import 'libs/tinmce/skins/content/writer/content.scss';
+@import 'libs/customization-for-liblaries/tinymce';
+@import 'libs/customization-for-liblaries/bootstrap-notification';
+
+@import 'app.css';
+@import 'libs/customization-for-liblaries/fontawesome';
+
+/* My-scsses */
+
+@import 'ui/notes.scss';
+@import 'ui/my-travels-ideas.scss';
+@import 'ui/my-monthly-payments.scss';
+@import 'ui/achievements.scss';
+@import 'ui/general.scss';

@@ -1,0 +1,22 @@
+{% extends getBaseTemplate(ajax_render) %}
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {# Header achievements #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ note | capitalize }}</h4>
+                            <section id="tiny-mce-wrapper" class="p-20">
+
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

@@ -1,0 +1,55 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content %}
+
+    <div class="peers ai-s fxw-nw h-100vh">
+        <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv"
+             style='background-image:  url("{{ asset('assets/images/bcgk.jpg') }}")'>
+
+
+            <div class="col-12 col-md-4 pos-a centerXY peer pX-40 pY-80 h-70 bgc-white scrollable" style='min-width: 320px; opacity:0.9;'>
+                {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error.messageKey|trans(error.messageData, 'security') }}
+                    </div>
+                    <br/>
+                {% endif %}
+
+                <h3 class="text-center">Personal Management System</h3>
+
+                <h4 class="fw-300 c-grey-900 mB-40">Login</h4>
+
+                <form action="{{ path("fos_user_security_check") }}" method="POST">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
+                    <div class="form-group">
+                        <label class="text-normal text-dark">Username:</label>
+                        <input type="text" class="form-control" placeholder="{{ 'security.login.username'|trans }}"
+                               id="username" name="_username" value="{{ last_username }}" required="required">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-normal text-dark">Password:</label>
+                        <input type="password" class="form-control" placeholder="{{ 'security.login.password'|trans }}"
+                               id="password" name="_password" required="required">
+                    </div>
+                    <div class="form-group">
+                        <div class="peers ai-c jc-sb fxw-nw">
+                            <div class="peer">
+                                <div class="checkbox checkbox-circle checkbox-info peers ai-c">
+                                    <input type="checkbox" id="inputCall1" name="inputCheckboxesCall" class="peer">
+                                    <label for="inputCall1" class=" peers peer-greed js-sb ai-c">
+                                        <span class="peer peer-greed">Remember Me</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="peer">
+                                <button class="btn btn-primary" id="_submit"
+                                        name="_submit">{{ 'security.login.submit'|trans }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock fos_user_content %}

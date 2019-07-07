@@ -1,0 +1,6 @@
+spec_shaper_encrypt:
+  is_disabled: false
+  subscriber_class: 'AppBundle\Subscribers\OtherSubscriber'
+  annotation_classes:
+  - 'SpecShaper\EncryptBundle\Annotations\Encrypted'
+  - 'AppBundle\Annotations\CustomAnnotation'

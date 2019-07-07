@@ -1,0 +1,9 @@
+// Loader / Spinner
+.fast {
+  &.spinner-border {
+    animation: spinner-border .4s linear infinite;
+  }
+  &.spinner-grow {
+    animation: spinner-grow .4s linear infinite
+  }
+}

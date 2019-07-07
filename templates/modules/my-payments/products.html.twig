@@ -1,0 +1,35 @@
+{% extends getBaseTemplate(ajax_render) %}
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {% set products_types = ['non_rejected','rejected'] %}
+                {# Datatables #}
+                {% for product_type in products_types %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                                <h4 class="c-grey-900 mB-20">Products prices</h4>
+                                {% include 'modules/my-payments/components/products.table.html.twig' with {type:product_type} %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {# Form #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">Add product</h4>
+                            <div class="col-md-6 align-self-center add-record-form">
+                                {{ form_start(products_form_view,{'attr':{' data-entity':"MyPaymentsProduct"}}) }}
+                                {{ form_end(products_form_view) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

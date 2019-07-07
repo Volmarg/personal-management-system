@@ -1,0 +1,25 @@
+<!-- Modal -->
+
+<div class="modal fade bd-example-modal-lg" id="goal{{ goal_number }}" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-id="{{ goal_number }}">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ goal.name | capitalize }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <section id="tiny-mce-wrapper" class="p-20">
+                <div class="modal-body ">
+
+                {% include 'modules/my-goals/components/checklist.html.twig' with {'goal_number':goal_number} %}
+
+                </div>
+            </section>
+            <div class="modal-footer modal-note-details-buttons">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

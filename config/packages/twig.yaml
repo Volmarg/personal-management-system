@@ -1,0 +1,7 @@
+twig:
+    paths: ['%kernel.project_dir%/templates']
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    form_themes: ['bootstrap_4_horizontal_layout.html.twig', 'core/form-types/datalist/fields.html.twig', 'core/form-types/fontawesomepicker/fields.html.twig']
+    globals:
+        id_column: 'id'

@@ -1,0 +1,29 @@
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-contacts') }}">
+    <a class="sidebar-link" href="javascript:void(0);">
+                <span class="icon-holder" style="color: rgb(231, 116, 27);">
+                <i class="far fa-users"></i>
+                </span>
+        <span class="title">My contacts</span>
+        <span class="arrow">
+                    <i class="ti-angle-right"></i>
+                  </span>
+    </a>
+
+    <ul class="dropdown-menu">
+        <li>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'phone'} ) }}">Phone numbers</a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'email'} ) }}">Emails</a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'other'} )  }}">Other</a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'archived'} )  }}">Archived</a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="{{ path('my-contacts-settings')  }}">Settings</a>
+        </li>
+    </ul>
+</li>

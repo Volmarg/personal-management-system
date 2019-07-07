@@ -1,0 +1,55 @@
+{% extends getBaseTemplate(ajax_render) %}
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">User profile settings</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    {# Forms #}
+                    <div class="col-md-6">
+
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 450px;">
+                            <h5 class="text-center"> Change settings </h5>
+                            <div class="col-md-12 align-self-center update-record-form">
+                                {{ form(avatar_form,{'attr':{' data-form-target':"UserAvatar"}}) }}
+                            </div>
+                            <div class="col-md-12 align-self-center update-record-form">
+                                {{ form(password_form,{'attr':{' data-form-target':"UserPassword"}}) }}
+                            </div>
+                            <div class="col-md-12 align-self-center update-record-form">
+                                {{ form(nickname_form,{'attr':{' data-form-target':"UserNickname"}}) }}
+                            </div>
+                        </div>
+
+                    </div>
+
+                    {# Preview #}
+
+                    <div class="col-md-6">
+
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 450px;">
+                            <h5 class="text-center"> Your avatar preview </h5>
+                            <div class="d-flex justify-content-around">
+                                <img src="{{ app.user.avatar }}"
+                                     style="max-width:180px; align-self: center;"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

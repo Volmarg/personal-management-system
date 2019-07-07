@@ -1,0 +1,68 @@
+<div>
+
+    <table id="MyGoalsPayments" class="table table-hover" cellspacing="0" width="100%" data-table="true">
+        <thead>
+        <tr>
+            <td class="id d-none"> #</td>
+            <td class="name"> Name</td>
+            <td class="collectionStartDate"> Collection start date</td>
+            <td class="deadline"> Deadline</td>
+            <td class="moneyGoal"> Money goal</td>
+            <td class="moneyCollected"> Money collected</td>
+            <td class="displayOnDashboard"> Display on dashboard</td>
+            <td>Actions</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for payment in all_goals_payments %}
+            {% if payment.displayOnDashboard %}
+                {% set checked = 'checked' %}
+            {% else %}
+                {% set checked = '' %}
+            {% endif %}
+
+            <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="MyGoalsPayments">
+
+                <td class="id d-none">
+                    {{ payment.id }}
+                </td>
+
+                <td class="name">
+                    {{ payment.name }}
+                </td>
+
+                <td class="collectionStartDate">
+                    {{ payment.collectionStartDate }}
+                </td>
+
+                <td class="deadline">
+                    {{ payment.deadline }}
+                </td>
+
+                <td class="moneyGoal">
+                    {{ payment.moneyGoal }}
+                </td>
+
+                <td class="moneyCollected">
+                    {{ payment.moneyCollected }}
+                </td>
+
+                <td class="">
+                    <input type="checkbox" class="disabled displayOnDashboard checkbox-disabled" {{ checked }}/>
+                </td>
+
+                <td contenteditable="false">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                    <i class="far fa-edit"></i>
+                    <i class="far fa-save d-none"></i>
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+</div>

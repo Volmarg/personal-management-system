@@ -1,0 +1,230 @@
+/*!
+* IconPicker ('https://github.com/furcan/IconPicker')
+* Version: 1.0.0 
+* Author: Furkan MT ('https://github.com/furcan')
+* Dependencies: FontAwesome v5.8.2 (https://fontawesome.com/license/free)
+* Copyright 2019 IconPicker, MIT Licence ('https://opensource.org/licenses/MIT')*
+*/
+
+div#IconPickerModal {
+    display: none;
+    position: absolute;
+    z-index: 999999;
+    width: 95%;
+    max-width: 1440px;
+    left: 0;
+    right: 0;
+    top: 100px;
+    margin: auto;
+}
+
+div#IconPickerModal:before {
+    transition: all .4s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    content: "";
+    position: fixed;
+    z-index: -1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+div#IconPickerModal.animate:before {
+    opacity: 1;
+    visibility: visible;
+}
+
+div#IconPickerModal .ip-icons-content {
+    transition: all .4s ease-in-out;
+    transform: scale(.5);
+    opacity: 0;
+    float: left;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 0 24px -8px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+div#IconPickerModal.animate .ip-icons-content {
+    transform: scale(1);
+    opacity: 1;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search {
+    border-bottom: 1px dashed #e8e8e8;
+    padding: 0 0 20px;
+    margin: 0 0 10px;
+    position: relative;
+    float: left;
+    width: 100%;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch {
+    transition: all .2s ease-in-out;
+    float: left;
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    font-size: 18px;
+    color: #1e1e1e;
+    background: #fff;
+    font-weight: 400;
+    border: 1px solid #f4f4f4;
+    box-shadow: 0 0 15px -8px rgba(0, 0, 0, 0.4);
+    border-radius: 50px;
+    padding: 0 58px 0 14px;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch:hover,
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch:focus {
+    border-color: #1e1e1e;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search > i.placeholder-icon,
+div#IconPickerModal .ip-icons-content .ip-icons-search > svg.placeholder-icon {
+    transition: all .2s ease-in-out;
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+    right: 0;
+    top: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+    font-size: 25px;
+    line-height: 50px;
+    text-align: center;
+    color: #eaeaea;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch:hover + i.placeholder-icon,
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch:focus + i.placeholder-icon,
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch:hover + svg.placeholder-icon,
+div#IconPickerModal .ip-icons-content .ip-icons-search > input#IconPickerSearch:focus + svg.placeholder-icon {
+    color: #1e1e1e;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search-results {
+    position: relative;
+    float: left;
+    width: 100%;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-area {
+    padding: 10px;
+    max-height: 400px;
+    overflow: hidden;
+    position: relative;
+    float: left;
+    width: 100%;
+}
+
+div#IconPickerModal.show-all .ip-icons-content .ip-icons-area {
+    max-height: unset;
+    overflow: unset;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-area:before {
+    transition: all .2s ease-in-out;
+    content: "";
+    position: absolute;
+    z-index: 9;
+    width: 100%;
+    height: 58px;
+    left: 0;
+    bottom: 0;
+    box-shadow: 0 0 50px 25px rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+div#IconPickerModal.show-all .ip-icons-content .ip-icons-area:before {
+    opacity: 0;
+    visibility: hidden;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search-results > * > i,
+div#IconPickerModal .ip-icons-content .ip-icons-area > i,
+div#IconPickerModal .ip-icons-content .ip-icons-search-results > * > svg,
+div#IconPickerModal .ip-icons-content .ip-icons-area > svg {
+    cursor: pointer;
+    position: relative;
+    transition: all .2s ease-in-out;
+    font-size: 21px;
+    line-height: 26px;
+    float: left;
+    border-radius: 5px;
+    margin: 3px;
+    padding: 2px;
+    min-width: 30px;
+    text-align: center;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-search-results > * > i:hover,
+div#IconPickerModal .ip-icons-content .ip-icons-area > i:hover,
+div#IconPickerModal .ip-icons-content .ip-icons-search-results > * > svg:hover,
+div#IconPickerModal .ip-icons-content .ip-icons-area > svg:hover {
+    transform: scale(1.8);
+    z-index: 2;
+    -moz-box-shadow: 0 0 14px -6px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 16px -6px rgba(0, 0, 0, 0.5);
+    background: #fff;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-area > a.show-all-icons {
+    transition: all .2s ease-in-out;
+    position: absolute;
+    width: 130px;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    margin: auto;
+    text-align: center;
+    box-shadow: 0 0 24px -8px rgba(0, 0, 0, 0.2);
+    background: #fff;
+    color: #acacac;
+    border: 1px solid #bcbcbc;
+    padding: 12px 0;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 13px;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-area > a.show-all-icons:hover {
+    color: #fff;
+    border-color: #1e1e1e;
+    background: #1e1e1e;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-footer {
+    border-top: 1px dashed #e8e8e8;
+    padding: 15px 0 0;
+    margin: 10px 0 0;
+    float: left;
+    width: 100%;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-footer a.cancel {
+    transition: all .2s ease-in-out;
+    float: right;
+    color: #acacac;
+    padding: 9px 16px;
+    border: 1px solid #bcbcbc;
+    border-radius: 20px;
+    font-size: 14px;
+    line-height: 15px;
+    font-weight: 500;
+}
+
+div#IconPickerModal .ip-icons-content .ip-icons-footer a.cancel:hover {
+    color: #fff;
+    border-color: #1e1e1e;
+    background: #1e1e1e;
+}

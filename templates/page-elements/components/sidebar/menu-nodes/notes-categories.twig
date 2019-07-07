@@ -1,0 +1,57 @@
+{% if elements is not empty %}
+    {% set moduleToCheckActiveCategory = 'MyNotes' %}
+
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes/category') }}">
+        <a class="sidebar-link" href="javascript:void(0);">
+            <span class="title">Categories</span>
+            <span class="arrow"><i class="ti-angle-right"></i></span>
+        </a>
+        <ul class="dropdown-menu">
+
+            {% for category in elements %}
+                {% if category in elements and category.parent_id is null %} {# recheck must be here as twig caches original array #}
+
+                    {% if isCategoryActive(category.category_id, moduleToCheckActiveCategory ) == false %}
+                        {% set disabled = ' disabled' %}
+                    {% else %}
+                        {% set disabled = '' %}
+                    {% endif %}
+
+                <li class="dropdown {{ keepMenuOpen(currUrl, '', '', category.childrens_id) }} test">
+                    {# Link #}
+                    <a class="sidebar-link {{ disabled }}"
+                       href="{{ path(path_name,{'category':category.category, 'category_id':category.category_id}) }}"
+                       style="display: inline;">
+                        {# Icon #}
+                        <span class="icon-holder" style="color:#{{ category.color }};">
+                                        <i class="fas {{ category.icon }}"></i>
+                                    </span>
+                        <span class="title">{{ category.category | capitalize }}</span>
+                    </a>
+                    {% if category.childrens_id is null %}
+                        </li>
+                    {% endif %}
+                    {# Subcategory #}
+                    {% if category.childrens_id is not null %}
+                        <a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
+                            <span class="arrow"><i class="ti-angle-right"></i></span>
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            {% include 'page-elements/components/sidebar/components/recursive-nested-menu-element.twig' with {
+                                'childrens_id':category.childrens_id,
+                                'path_name': path_name,
+                                'type': moduleToCheckActiveCategory
+                            } %}
+                        </ul>
+                        </li>
+
+                        {% set elements = unsetChildren(elements, category.childrens_id) %}
+
+                    {% endif %}
+
+                {% endif %} {# recheck ends here #}
+            {% endfor %}
+        </ul>
+    </li>
+{% endif %}

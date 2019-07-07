@@ -1,0 +1,34 @@
+<table id="MyPaymentsProductTable_{{ type }}" class="table table-hover" cellspacing="0"
+       width="100%"
+       data-table="true">
+    <thead>
+    <tr class="bg-light">
+        {% for column in column_names %}
+            <td class="{{ hideIdColumn(column) }}">{{ column|capitalize }}</td>
+        {% endfor %}
+        <td>Home currency</td>
+        <td>Actions</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for product_data in products_all_data %}
+        {% if isRowHiddenForProductType(type,product_data.rejected) == true %}
+            <tr class="trash-parent product-single-data editable-parent save-parent" data-type="MyPaymentsProduct">
+            {% for column in column_names %}
+                <td class="{{ column }} {% if column=='price' %}{{ getClassForProductType(type,product_data.rejected,column) }}{% endif %} {{ hideIdColumn(column) }}">
+                    {{ attribute(product_data,column) }}
+                </td>
+            {% endfor %}
+            <td class="text-info">
+                {{ calculateHomeProductPrice(product_data.price,currency_multiplier) }}
+            </td>
+            <td contenteditable="false">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                <i class="far fa-edit"></i>
+                <i class="far fa-save d-none"></i>
+            </td>
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

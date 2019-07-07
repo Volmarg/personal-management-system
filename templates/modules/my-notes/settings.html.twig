@@ -1,0 +1,36 @@
+{% extends getBaseTemplate(ajax_render) %}
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">My notes settings</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">Categories</h4>
+                            <h3>Edit categories</h3>
+                            {% include 'modules/my-notes/components/categories-settings.table.html.twig' %}
+
+                            <h3>Add category</h3>
+                            <div class="add-record-form">
+                                {{ form_start(form,{'attr':{' data-entity':"MyNotesCategories"}}) }}
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

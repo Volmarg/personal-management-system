@@ -1,0 +1,58 @@
+// Scrollbar
+$scrollBackground: #FFFFFF;
+$scrollForeground: #aaa;
+
+*::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+  background-color: $scrollBackground !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: $scrollForeground !important;
+}
+
+// Fix for responsive - login page for example
+@media screen and (max-width: 767px) {
+  .d-n\@sm- {
+    display: block !important;
+  }
+}
+
+/* Small circles in tod. lists */
+
+.checkbox.checkbox-circle label::before {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+/* Logo it sidebar (header tpl) */
+.sidebar .logo img {
+  width: 130px;
+  margin: 0 auto;
+  left:0px;
+  transition: linear 250ms;
+}
+
+@media screen and (min-width: 1440px) {
+  .is-collapsed .sidebar .logo img {
+    width: 130px;
+    margin: 0 auto;
+    left: -28px;
+    position: absolute;
+    transition: linear 250ms;
+  }
+
+  .is-collapsed .sidebar:hover .logo img {
+    width: 130px;
+    margin: 0 auto;
+    left:0px;
+    position: relative;
+    transition: linear 250ms;
+  }
+}
+
+@media screen and (max-width: 1439px) and (min-width: 992px){
+  .sidebar .sidebar-inner .sidebar-logo a .logo {
+    margin-left: -28px;
+  }
+}

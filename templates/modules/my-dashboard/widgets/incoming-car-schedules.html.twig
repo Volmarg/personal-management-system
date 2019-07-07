@@ -1,0 +1,52 @@
+<div class="masonry-item col-md-6">
+    <div class="bd bgc-white p-20">
+        <div class="layers">
+            <div class="layer w-100 mB-10">
+                <h6 class="lh-1">Incoming car schedules</h6>
+            </div>
+            <div class="layer w-100">
+
+                <ul class="list-task list-group" data-role="tasklist">
+
+                    {% for incomingCarSchedule in incomingCarSchedules %}
+                    {% set marker %}
+                        <span class="peer">
+
+                        {% if incomingCarSchedule.daysDiff < 14 %}
+                            <span class="badge badge-pill fl-r badge-danger lh-0 p-10">
+                                {{ incomingCarSchedule.daysDiff }} days
+                             </span>
+                            {% elseif incomingCarSchedule.daysDiff > 30 and incomingCarSchedule.daysDiff < 60 %}
+                            <span class="badge badge-pill fl-r badge-success lh-0 p-10">
+                                {{ incomingCarSchedule.daysDiff }} days
+                            </span>
+                            {% elseif incomingCarSchedule.daysDiff > 14 and incomingCarSchedule.daysDiff < 30 %}
+                            <span class="badge badge-pill fl-r badge-danger lh-0 p-10">
+                                {{ incomingCarSchedule.daysDiff }} days
+                            </span>
+                            {% else %}
+                        </span>
+                        {% endif %}
+                    {% endset %}
+
+
+
+                    <li class="list-group-item bdw-0" data-role="task">
+                        <div class="peers ai-c">
+                            <label for="inputCall1" class=" peers peer-greed js-sb ai-c">
+                                    <span class="peer peer-greed">
+                                        {{ incomingCarSchedule.name }}
+                                        ({{ incomingCarSchedule.date }})
+                                    </span>
+                                {{ marker }}
+                            </label>
+                        </div>
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

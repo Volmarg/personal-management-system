@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <!-- http://phpunit.de/manual/4.1/en/appendixes.configuration.html -->
+
+    <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         stopOnFailure="false"
+         bootstrap="./vendor/autoload.php"
+>
+    <php>
+        <env name="KERNEL_CLASS" value="App\Kernel" />
+
+        <!-- ###+ google/apiclient ### -->
+        <env name="GOOGLE_API_KEY" value=""/>
+        <env name="GOOGLE_CLIENT_ID" value=""/>
+        <env name="GOOGLE_CLIENT_SECRET" value=""/>
+        <!-- ###- google/apiclient ### -->
+    </php>
+
+    <testsuites>
+        <testsuite name="Symfonator Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+</phpunit>

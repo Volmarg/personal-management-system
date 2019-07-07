@@ -1,0 +1,4 @@
+
+div[data-notify="container"] {
+  z-index: 1051 !important; //Needs to be higher than modal
+}

@@ -1,0 +1,38 @@
+<!-- Modal -->
+{% set categories = getMyNotesCategories(true) %}
+
+<div class="modal fade bd-example-modal-lg" id="note{{ note.id }}" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-id="{{ note.id }}">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ note.title }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <section id="tiny-mce-wrapper" class="p-20">
+                <div class="modal-body modal-tinymce-body-{{ note.id }}">
+                   {{ note.body | raw }}
+                </div>
+            </section>
+            <div class="modal-footer modal-note-details-buttons">
+
+                <select class="form-control d-none note-modal-categories-list note-category"
+                        style="max-width:100px; float:left;">
+                    {% for category_on_list in categories %}
+                        <option value="{{ category_on_list.category_id }}"
+                                {% if category_id  == category_on_list.category_id %}selected{% endif %}>
+                            {{ category_on_list.category | capitalize }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="button" class="btn btn-warning edit-note">Edit</button>
+                <button type="button" class="btn btn-primary save-note" data-id="{{ note.id }}">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger delete-note" data-id="{{ note.id }}">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>

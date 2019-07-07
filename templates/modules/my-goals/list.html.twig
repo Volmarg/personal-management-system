@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="row gap-10 masonry pos-r">
+                <div class="masonry-sizer col-md-12"></div>
+
+                <!-- ### Top menu bar for adding goals ### !-->
+                <div class="masonry-item col-md-12">
+                    <div class="bgc-white p-10 bd">
+                        <span>
+                            <i class="fas fa-plus"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ### goals container ### !-->
+                <div class="masonry-item col-md-12 goals-container">
+                    <div class="bgc-white p-20 bd d-flex justify-content-around goals-wrapper">
+
+                        {% for goal in all_goals %}
+
+                            <div class="single-parent-task">
+                                {% include 'modules/my-goals/components/one-parent-task-goal.html.twig' with {'goal_number':goal.id} %}
+                            </div>
+                            {% include 'modules/my-goals/components/modal.html.twig' with {"goal_number":goal.id} %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+{% endblock body %}

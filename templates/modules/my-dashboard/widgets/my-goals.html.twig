@@ -1,0 +1,40 @@
+<div class="masonry-item col-md-6">
+    <div class="bd bgc-white p-20">
+        <div class="layers">
+            <div class="layer w-100 mB-10">
+                <h6 class="lh-1">Goals progress</h6>
+            </div>
+            <div class="layer w-100">
+
+                <ul class="list-c ">
+                    {% for goal in goals %}
+                        <li class=" list-group-item">
+                            <b>{{ goal.name }}</b>
+                            <ul class="list-c">
+                                {% for subgoal in goal.mySubgoal %}
+
+                                    {#TODO: make a twig function for list from this#}
+                                    {% if subgoal.completed %}
+                                        {% set status_label   = 'success' %}
+                                        {% set status_text    = 'Done' %}
+                                    {% else %}
+                                        {% set status_label   = 'info' %}
+                                        {% set status_text    = 'Not done' %}
+                                    {% endif %}
+
+                                    <li style="margin-left:15px;margin-top:5px;">
+                                        {{ subgoal.name }}
+                                        <span class="peer" style="display:inline;">
+                                            <span class="badge badge-pill fl-r badge-{{ status_label }} lh-0 p-10">{{ status_text }}</span>
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+{% for child_id in childrens_id if child_id != '' and elements[child_id].childrens_id is defined %}
+    {% if  elements[child_id] is defined %}
+
+        {% if elements[child_id].category is defined and elements[child_id].category is not null %}
+            {% set href = path(path_name,{
+                'category':elements[child_id].category,
+                'category_id':elements[child_id].category_id
+            }) %}
+
+        {% endif %}
+
+    {% else %}
+        {% set href = '#' %}
+    {% endif %}
+
+    {% if isCategoryActive(elements[child_id].category_id, type) == false %}
+        {% set disabled = ' disabled' %}
+    {% else %}
+        {% set disabled = '' %}
+    {% endif %}
+
+    <li>
+        {# Link #}
+        <a class="sidebar-link d-inline {{ disabled }}"
+           href="{{ href }}">
+            {# Icon #}
+            <span class="icon-holder"
+                  style="color:#{% if elements[child_id] is defined %}{{ elements[child_id].color }}{% endif %};">
+                    <i class="fas {% if elements[child_id] is defined %} {{ elements[child_id].icon }} {% endif %}"></i>
+            </span>
+            <span class="title">{{ elements[child_id].category | capitalize }}</span>
+        </a>
+
+        {# Subcategory #}
+        {% if elements[child_id].childrens_id is not null %}
+            <a class="sidebar-link d-inline {{ disabled }}" href="javascript:void(0);">
+                <span class="arrow"><i class="ti-angle-right"></i></span>
+            </a>
+
+            <ul class="dropdown-menu">
+                {% include 'page-elements/components/sidebar/components/recursive-nested-menu-element.twig' with {
+                    'childrens_id':elements[child_id].childrens_id,
+                    'path_name':path_name
+                } %}
+            </ul>
+        {% endif %}
+
+    </li>
+{% endfor %}

@@ -1,0 +1,48 @@
+{% extends getBaseTemplate(ajax_render) %}
+{% block body %}
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 160px;">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ category | capitalize }}</h4>
+
+                            <section class="all-notes">
+                                {% for note in notes %}
+                                    <section class="single-note-details">
+                                        <button type="button" class="btn btn-primary note-button" data-toggle="modal"
+                                                data-target="#note{{ note.id }}">
+                                            {{ note.title }}
+                                        </button>
+
+                                        {% include 'modules/my-notes/components/note-edit-modal.html.twig' %}
+                                    </section>
+                                {% endfor %}
+                            </section>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="/assets_/static-scripts/modules/my-notes-category.js"></script>
+            {% include 'page-elements/components/widgets/plus-icon.twig' with {
+                'widgetName': "add-note",
+                'settings':{
+                    "type": 'template',
+                    "url": '/my-notes/create',
+                    'callFunctions': '
+                        tinymce.remove(".tiny-mce");
+                        tinymce.custom.init();
+                        ui.crud.attachRecordAddViaAjaxOnSubmit(false);
+                        myNotesCategory.selectCurrentCategoryOptionForQuickNoteCreator();
+                    ',
+                    'subtype':'form'
+                }
+            } %}
+
+        </div>
+    </main>
+{% endblock body %}

@@ -1,0 +1,26 @@
+<ul class="sidebar-menu scrollable pos-r">
+    <li class="nav-item mT-30 active">
+        <a class="sidebar-link" href="{{ path('dashboard') }}">
+                <span class="icon-holder">
+                  <i class="c-blue-500 ti-home"></i>
+                </span>
+            <span class="title">Dashboard</span>
+        </a>
+    </li>
+
+    <hr/>
+
+    {% include 'page-elements/components/sidebar/menu-nodes/goals.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/notes.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-contacts.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-passwords.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/achievements.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-car.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-travels.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-payments.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-shopping.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-job.twig' %}
+
+  {#  {% include 'page-elements/components/sidebar/menu-nodes-demo/all-interface-examples.twig' %}#}
+
+</ul>
