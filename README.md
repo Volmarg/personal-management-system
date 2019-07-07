@@ -63,18 +63,16 @@
 
 <img src="https://github.com/Volmarg/personal-management-system/blob/master-laptop/github/preview3.png?raw=true">
 </div>
-<h2>Tech</h2>
-<p style="text-align:justify;">
-    Personal Management System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 18.x.
-</p>
-
-<h3>How to install/documentation</h3>
-
-You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 
 <hr>
 
-<h3>Future development plans</h3>
+<h2>How to install/documentation</h2>
+You can find all the informations <a href="#"><b>⇛Here⇚</b>.
+
+<h2>Future development plans</h2>
+<hr>
+
+<h3>Modules/Extensions</h3>
 <hr>
 
 <ul>
@@ -101,7 +99,25 @@ You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 </li>
 </ul>
 
-<h4>Used languages/frameworks/solutions</h4>
+<h4>Improvements</h4>
+<p>
+	<i>This things are planned for way later - first of all i need additonal working modules.</i>
+</p>	
+<ul>
+	<li>Better page content reload with ajax</li>
+	<li>Better CRUD for tables - preventing removing *td* subelements</li>
+	<li>Dashboard settings - which modules widgets should be displayed</li>
+	<li>Recurring payments for **Payments** module</li>
+	<li>Adding images for **Contacts**</li>
+</ul>
+<hr>
+
+<h2>Tech</h2>
+<p style="text-align:justify;">
+    Personal Management System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 18.x.
+</p>
+
+<h3>Used languages/frameworks/solutions</h3>
 <hr>
 <ul>
 <li>Php 7.2.x</li>
@@ -117,7 +133,7 @@ You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 <li><small>And maybe some others which I just don't remember</small></li>
 </ul>
 
-<h4>Used packages</h4>
+<h3>Used packages</h3>
 <ul>
 <li><a href="https://github.com/krzysiekpiasecki/Symfonator">Symfonator</a> <small>(Ui)</small></li>
 <li><a href="https://github.com/mogilvie/EncryptBundle">EncryptBundle</a> <small>(Core for passwords module)</small></li>
@@ -128,7 +144,7 @@ You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 <li>... I don't even know some of them which come prebuild in Symfonator</li>
 </ul>
 
-<h5>Special thanks to</h5>
+<h2>Special thanks to</h2>
 <ul>
 <li></li>
 	<li><a href="https://github.com/mogilvie">Mark Ogilvie</a> - for fixing EncryptBundle bugs for Symfony 4</li>
