@@ -25,17 +25,6 @@
     Second of all, there is no system like that, and i didn't wanted to end up integrating  docker based cloud with CMS. Furthermore i just need application like that to keep organized and I'm really tired of having some very personal data on OneDrive, other on Google cloud. Some notes here, some notes there. The end goal is having an application running on terminal or raspberry 24/7 plugged into home network, without access to internet.
 </p>
 
-<h3>Support</h3>
-<hr>
-
-<p align="justify">
-    I cannot guarantee support. I've got a job, personal things etc, I'm just sharing my code/my application as MIT. However feel totally free to ask about something, write issues etc. As mentioned I'm using and I will use this application from now on daily so there might be some changes even good for me.
-</p>
-
-<p align="justify">
-    As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need. So after reaching my goal I could handle some support requests if anyone will be interested.
-</p>
-
 <h3>Available options and modules</h3>
 <hr>
 
@@ -111,6 +100,17 @@ You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 	<li>Recurring payments for </b>Payments</b> module</li>
 	<li>Adding images for <b>Contacts</b> </li>
 </ul>
+<hr>
+
+<h2>Support</h2>
+
+<p align="justify">
+    I cannot guarantee support. I've got a job, personal things etc, I'm just sharing my code/my application as MIT. However feel totally free to ask about something, write issues etc. As mentioned I'm using and I will use this application from now on daily so there might be some changes even good for me.
+</p>
+
+<p align="justify">
+    As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need. So after reaching my goal I could handle some support requests if anyone will be interested.
+</p>
 <hr>
 
 <h2>Tech</h2>
