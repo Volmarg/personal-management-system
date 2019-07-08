@@ -1,5 +1,8 @@
 <p align="center">
-<img src="https://github.com/Volmarg/personal-management-system/blob/master-laptop/public/assets/images/logo/smaller.png?raw=true" width="150px;" />
+<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/public/assets/images/logo/smaller.png?raw=true" width="150px;" />
+</p>
+<p align="center">
+<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/bar.jpg?raw=true" />
 </p>
 
 <h1 align="center"> Personal Management System</h1>
@@ -57,11 +60,11 @@
 
 <p align="center">Fully accessible demo can be found <a href="#"><b>⇛Here⇚</b></a>.</p>
 
-<img src="https://github.com/Volmarg/personal-management-system/blob/master-laptop/github/preview2.png?raw=true">
+<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/preview2.png?raw=true">
 
 <hr>
 
-<img src="https://github.com/Volmarg/personal-management-system/blob/master-laptop/github/preview3.png?raw=true">
+<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/preview3.png?raw=true">
 </div>
 
 <hr>
