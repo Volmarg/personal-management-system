@@ -8,25 +8,25 @@
 <h3>Description</h3>
 <hr>
 <p align="justify">
-    I'ts easier to understand this web application when You think about CMS (Wordpress) or CRM (SugarCRM), logic behind this system is very similar to those two. My system has less possibilities than thoes above, but It just do what I want it to do. Besides writing extensions is not so hard, depending on logic behind. Anyone with proper development knowledge can pretty much write his/her own extensions for personal needs.
+	It's easier to understand this web application when You think about CMS (WordPress) or CRM (SugarCRM), logic behind this system is very similar to those two. My system has less possibilities than those above, but It just do what I want it to do. Besides writing extensions is not so hard, depending on logic behind. Anyone with proper development knowledge can pretty much write his/her own extensions for personal needs.
 </p>
 
 <h3>Reasoning/Purpose</h3>
 <hr>
 
 <p align="justify">
-    I decided to create my own system, because first of all playing around with tones of plugins for wordpress and writing customizations to some existing CRMs would take me as much time as writing my own system. Besides by knowing the logic from core it's easier to write for me extensions, add additional modules, whichever i just need.
+    I decided to create my own system, because first of all playing around with tones of plugins for WordPress and writing customization to some existing CRMs would take me as much time as writing my own system. Besides by knowing the logic from core it's easier to write for me extensions, add additional modules, whichever i just need.
 </p>
 
 <p align="justify">
-    Second of all, there is no system like that, and i didn't wanted to end up integrating  docker based cloud with cms. Furthermore i just need application like that to keep organized and I'm really tired of having some very personal data on OneDrive, other on Google cloud. Some notes here,some notes there. The end goal is having an application running on terminal or raspbery 24/7 plugged into home network, without acces to internet.
+    Second of all, there is no system like that, and i didn't wanted to end up integrating  docker based cloud with CMS. Furthermore i just need application like that to keep organized and I'm really tired of having some very personal data on OneDrive, other on Google cloud. Some notes here,some notes there. The end goal is having an application running on terminal or raspberry 24/7 plugged into home network, without access to internet.
 </p>
 
 <h3>Support</h3>
 <hr>
 
 <p align="justify">
-    I cannot guarantee any support. I've got a job, personall things etc, I'm just sharing my code/my application as MIT. However feel totally free to ask about something, write issues etc. As mentioned I'am using and I will use this application from now on daily so there might be some changes even good for me.
+    I cannot guarantee support. I've got a job, personal things etc, I'm just sharing my code/my application as MIT. However feel totally free to ask about something, write issues etc. As mentioned I'm using and I will use this application from now on daily so there might be some changes even good for me.
 </p>
 
 <p align="justify">
@@ -45,12 +45,12 @@
             <li><b>🔑 Passwords</b> - <span align="justify"> <i>We all get to certain point when there are just way to many passwords to handle all around. Yeah we can keep them on email, pendrive, have special patterns in our heads, but lets face it sometimes it's just to many. With the Passwords module You can keep Your passwords encoded in Your database, while on the frontend there is a copy button that will fetch You back the original password.
         </i></span></li><br/>
         <li><b>🏆 Achievements</b> - <span><i>Want to keep a track on anything cool You did - put in this module!</i></span></li><br/>
-        <li><b>🚙 Car</b> - <span align="justify"><i>This module purpose is to keep track of any recurring things You got to do with Your car like  for example Oil changes, payments etc. While recurring type is just for information, date type is additionaly colored and used on dashboard as reminder.</i></span></li><br/>
+        <li><b>🚙 Car</b> - <span align="justify"><i>This module purpose is to keep track of any recurring things You got to do with Your car like  for example Oil changes, payments etc. While recurring type is just for information, date type is additionally colored and used on dashboard as reminder.</i></span></li><br/>
         <li><b>🌴 Travels</b> - <span align="justify"> <i>Having some ideas of places to visit but without any specific plans to it? Add it to this Module with google map link and some image so You can come back to it at any moment. May the image remind You why You were interested in this particular place.</i></span></li><br/>
-        <li><b>💸 Payments</b> - <span align="justify"> <i> Don't know how much money You spend on food, travels, domestic shoppings? Simply from now on  add every shopping details to the list and let it do all the calculations, alongside with summary for given month. </i></span>
-        <p align="justify"><i>On the other hand if You would like to keep an eye of prices for particular producs You can add information about them in Prducts Prices submodule (Which I'm personally using while being in other country - on the moment when I'm writing this).</i></p></li><br/>
+        <li><b>💸 Payments</b> - <span align="justify"> <i> Don't know how much money You spend on food, travels, domestic shopping? Simply from now on  add every shopping details to the list and let it do all the calculations, alongside with summary for given month. </i></span>
+        <p align="justify"><i>On the other hand if You would like to keep an eye of prices for particular products You can add information about them in Products Prices submodule (Which I'm personally using while being in other country - on the moment when I'm writing this).</i></p></li><br/>
         <li><b>🛒 Shopping</b> - <span align="justify"><i>You got plans to buy something in future? Add it to the list, and then just check it out,  maybe You will be able to buy this particular thing just now.</i></span></li><br/>
-    <li><b>💻 Job</b> - <span align="justify"><i>The Afterhours submodule is a nice way to keep an eye of all the afterhours You've made in work. With this You can also separate specified minutes/hours for certain goal. For example You need 24h for trip and 4h to do something. Just add some time to pre existing goal, create new one or leave it blank (will got to generall purpose pool).</i></span> </li><br/>
+    <li><b>💻 Job</b> - <span align="justify"><i>The Afterhours submodule is a nice way to keep an eye of all the afterhours You've made in work. With this You can also separate specified minutes/hours for certain goal. For example You need 24h for trip and 4h to do something. Just add some time to pre existing goal, create new one or leave it blank (will go to general purpose pool).</i></span> </li><br/>
 </ol>
 
 <h2>Preview</h2>
