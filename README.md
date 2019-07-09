@@ -111,6 +111,16 @@ You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 <p align="justify">
     As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need. So after reaching my goal I could handle some support requests if anyone will be interested.
 </p>
+
+<h3>Browsers Support</h3>
+<ul>
+	<li>Chrome</li>
+</ul>
+
+<p>
+	I mean for real. Just <b>Chrome</b>. I know about bug with copying password in Firefox for example. But I just do everything in Chrome so I'm not really planning to check that on other browsers. 
+</p>
+
 <hr>
 
 <h2>Tech</h2>
