@@ -11,13 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 class SettingsController extends AbstractController {
-
-    /**
-     * This is personal management system so I do not even expect more users for it.
-     */
-    const USER_ID = 1;
 
     /**
      * @var Application
@@ -25,20 +21,20 @@ class SettingsController extends AbstractController {
     private $app;
 
     /**
-     * @var User $userEntity
-     */
-    private $userEntity;
-
-    /**
      * @var UserPasswordEncoderInterface $encoder
      */
     private $encoder;
 
-    public function __construct(Application $app, UserPasswordEncoderInterface $encoder) {
+    /**
+     * @var User $current_user
+     */
+    private $current_user;
 
-        $this->userEntity   = $app->repositories->userRepository->find(static::USER_ID);
+    public function __construct(Application $app, UserPasswordEncoderInterface $encoder, Security $security) {
+
         $this->app          = $app;
         $this->encoder      = $encoder;
+        $this->current_user = $security->getUser();
     }
 
     /**
@@ -64,10 +60,10 @@ class SettingsController extends AbstractController {
         $parameters = $request->request->all();
 
         if (array_key_exists(User::PASSWORD_FIELD, $parameters)) {
-            $parameters[User::PASSWORD_FIELD] = $this->encoder->encodePassword($this->userEntity, $parameters[User::PASSWORD_FIELD]);
+            $parameters[User::PASSWORD_FIELD] = $this->encoder->encodePassword($this->current_user, $parameters[User::PASSWORD_FIELD]);
         }
 
-        $response   = $this->app->repositories->update($parameters, $this->userEntity);
+        $response   = $this->app->repositories->update($parameters, $this->current_user);
 
         if($response->getStatusCode() === 200){
             return $this->renderTemplate(true);
@@ -93,7 +89,8 @@ class SettingsController extends AbstractController {
     }
 
     private function getAvatarForm() {
-        return $this->createForm(UserAvatarType::class, null, ['avatar' => $this->userEntity->getAvatar()]);
+        $avatar = $this->current_user->getAvatar();
+        return $this->createForm(UserAvatarType::class, null, ['avatar' => $avatar]);
     }
 
     private function getPasswordForm() {
@@ -101,7 +98,8 @@ class SettingsController extends AbstractController {
     }
 
     private function getNicknameForm() {
-        return $this->createForm(UserNicknameType::class, null, ['nickname' => $this->userEntity->getNickname()]);
+        $nickname = $this->current_user->getNickname();
+        return $this->createForm(UserNicknameType::class, null, ['nickname' => $nickname]);
     }
 
 }
