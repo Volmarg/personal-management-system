@@ -1,11 +1,11 @@
 {
-    "name": "krzysiekpiasecki/symfonator",
+    "name": "volmarg/personal-management-system",
     "authors": [{
-        "name": "Krzysiek Piasecki",
-        "email": "krzysiekpiasecki@gmail.com",
+        "name": "Dariusz Włodarczyk",
+        "email": "dwlodarczyk12@gmail.com",
         "role": "Developer"
     }],
-    "description": "Welcome to Symfonator - Responsive Bootstrap 4 Admin Template based on the Foundation of Symfony and Adminator!",
+    "description": "Personal Management System - Your central point for managing personal data",
     "license": "MIT",
     "keywords": [
         "symfony",
