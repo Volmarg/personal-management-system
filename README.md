@@ -159,7 +159,6 @@ You can find all the informations <a href="#"><b>⇛Here⇚</b>.
 
 <h2>Special thanks to</h2>
 <ul>
-<li></li>
 	<li><a href="https://github.com/mogilvie">Mark Ogilvie</a> - for fixing EncryptBundle bugs for Symfony 4</li>
 	<li><a href="https://github.com/furcan">Furcan</a> - for adding my idea of contenteditable support for Icon Picker</li>
 </ul>
