@@ -3,7 +3,7 @@ var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 var CopyPlugin = require('copy-webpack-plugin');
 
 /**
- * This is the standard configuration of Symfonator UI
+ * This is the standard configuration of Personal Management System UI
  */
 Encore
     .addEntry('app', './src/app.js') // will create public/build/app.js and public/build/app.css
@@ -20,7 +20,7 @@ Encore
     }).addPlugin(
     new SWPrecacheWebpackPlugin(
         {
-            cacheId: 'Symfonator',
+            cacheId: 'Personal_Management_System',
             dontCacheBustUrlsMatching: /\.\w{8}\./,
             filename: 'service-worker.js',
             minify: true,
@@ -73,7 +73,7 @@ app_js_build.name = 'app_js_build';
     }).addPlugin(
     new SWPrecacheWebpackPlugin(
         {
-            cacheId: 'Symfonator',
+            cacheId: 'Personal_Management_System',
             dontCacheBustUrlsMatching: /\.\w{8}\./,
             filename: 'service-worker.js',
             minify: true,
