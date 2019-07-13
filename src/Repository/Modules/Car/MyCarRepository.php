@@ -24,10 +24,11 @@ class MyCarRepository extends ServiceEntityRepository {
         $sql = "
             SELECT name AS name,
               date      AS date,
-              DATEDIFF(STR_TO_DATE(date, '%m-%d-%Y'),NOW()) AS daysDiff
+              DATEDIFF(STR_TO_DATE(date, '%d-%m-%Y'),NOW()) AS daysDiff
             FROM my_car
-            WHERE STR_TO_DATE(date, '%m-%d-%Y') BETWEEN NOW() AND NOW() + INTERVAL $months MONTH
-            AND DATEDIFF(STR_TO_DATE(date, '%m-%d-%Y'),NOW()) > 0
+            WHERE STR_TO_DATE(date, '%d-%m-%Y') BETWEEN NOW() AND NOW() + INTERVAL $months MONTH
+            AND DATEDIFF(STR_TO_DATE(date, '%d-%m-%Y'),NOW()) > 0
+            AND deleted = 0
         ";
 
         $statement = $connection->executeQuery($sql);
