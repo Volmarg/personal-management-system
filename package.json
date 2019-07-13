@@ -1,8 +1,8 @@
 {
-  "name": "Symfonator",
+  "name": "Personal Management System",
   "version": "1.0.0",
   "private": true,
-  "description": "Welcome to Symfonator - Responsive Bootstrap 4 Admin Template based on the Foundation of Symfony and Adminator!",
+  "description": "Personal Management System - Your central point for managing personal data",
   "scripts": {
     "start": "webpack-dev-server",
     "dev": "webpack-dashboard -t 'Project' -- webpack-dev-server",
