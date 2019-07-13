@@ -22,7 +22,12 @@
                         {% endif %}
 
                         {% set payment_days_passed          =  payment_duration - payment_days_left %}
-                        {% set payment_percentage_days_left = (payment_days_passed / payment_duration ) * 100 %}
+
+                        {% if payment_start_in is defined %}
+                            {% set payment_percentage_days_left = 0 %}
+                        {% else %}
+                            {% set payment_percentage_days_left = (payment_days_passed / payment_duration ) * 100 %}
+                        {% endif %}
 
                         {% include 'modules/my-goals/components/one-payment.html.twig' with {'col_size' : 3 } %}
 
