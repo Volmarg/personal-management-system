@@ -47,6 +47,9 @@
         "twig/extensions": "^1.5"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.2",
+        "fzaninotto/faker": "^1.8",
+        "mbezhanov/faker-provider-collection": "^1.2",
         "friendsofphp/php-cs-fixer": "^2.10",
         "symfony/browser-kit": "^4.0",
         "symfony/css-selector": "^4.0",
