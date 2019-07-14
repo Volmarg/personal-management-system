@@ -2,7 +2,7 @@
     {% set avatar = app.user.avatar %}
     {% set avatar_style = 'width:40px; height:40px;' %}
 {% else %}
-    {% set avatar = 'https://randomuser.me/api/portraits/men/10.jpg' %}
+    {% set avatar = {{ asset('images/volmarg_avatar.jpg') }} %}
     {% set avatar_style = '' %}
 {% endif %}
 

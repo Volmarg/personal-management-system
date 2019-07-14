@@ -44,6 +44,9 @@ Encore
 
         {from: './src/assets/static/images/logo',                        to: 'images/logo'},
         {from: './src/assets/static/images/bcgk.jpg',                    to: 'images/bcgk.jpg'},
+        {from: './src/assets/static/images/bcgk2.jpg',                   to: 'images/bcgk2.jpg'},
+        {from: './src/assets/static/images/bcgk3.jpg',                   to: 'images/bcgk3.jpg'},
+        {from: './src/assets/static/images/volmarg_avatar.jpg',          to: 'images/volmarg_avatar.jpg'},
     ])
 )
     .enableBuildNotifications();
