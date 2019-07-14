@@ -47,8 +47,13 @@
 
 <h2>Preview</h2>
 
-<p align="center">Fully accessible demo can be found <a href="#"><b>⇛Here⇚</b></a>.</p>
-
+<p align="center">Fully accessible demo can be found <a href="http://185.204.216.136:8000"><b>⇛Here⇚</b></a>.</p>
+<ul>
+	<li><b>Login:</b> admin</li>
+	<li><b>Password:</b> admin</li>
+</ul>
+<p><i><b>Info!</b> All data on demo instance is removed and <b>generated</b> each day. If the demo is not working then either someone did his best to enter some untested invalid data, or server is simply down.</p>
+	
 <img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/preview2.png?raw=true">
 
 <hr>
