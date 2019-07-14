@@ -52,7 +52,7 @@
 	<li><b>Login:</b> admin</li>
 	<li><b>Password:</b> admin</li>
 </ul>
-<p><i><b>Info!</b> All data on demo instance is removed and <b>generated</b> each day. If the demo is not working then either someone did his best to enter some untested invalid data, or server is simply down.</p>
+<p><i><b>Info!</b> All data on demo instance is removed and <b>generated</b> each day. If the demo is not working then either someone did his best to enter some untested invalid data, or server is simply down.</i></p>
 	
 <img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/preview2.png?raw=true">
 
