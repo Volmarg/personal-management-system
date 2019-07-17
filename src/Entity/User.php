@@ -48,7 +48,7 @@ class User extends BaseUser {
     /**
      * @param string $avatar
      */
-    public function setAvatar(string $avatar): void {
+    public function setAvatar(?string $avatar): void {
         $this->avatar = $avatar;
     }
 
@@ -62,7 +62,7 @@ class User extends BaseUser {
     /**
      * @param mixed $nickname
      */
-    public function setNickname($nickname): void {
+    public function setNickname(?string $nickname): void {
         $this->nickname = $nickname;
     }
 
