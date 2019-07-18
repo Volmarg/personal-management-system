@@ -56,3 +56,58 @@ $scrollForeground: #aaa;
     margin-left: -28px;
   }
 }
+
+/* Scaling */
+
+.sidebar-menu > li > a {
+  font-size: 13.5px;
+}
+
+.dropdown-menu {
+  font-size: 0.9rem;
+}
+
+body{
+  font-size: 13px;
+}
+
+.ui-widget{
+  font-size:1em;
+}
+
+.monthly-summary{
+  font-size: 15px;
+}
+
+table td{
+  font-size:0.8rem;
+}
+
+h4{
+  font-size: 1.3rem;
+}
+
+h3{
+  font-size: 1.45rem;
+}
+
+.form-control {
+  font-size: 0.8rem;
+}
+
+.fsz-sm{
+  font-size: 0.77rem !important;
+}
+
+.navbar .dropdown-menu a{
+  font-size:0.8375rem;
+}
+
+.header, .header .header-container .nav-left > li > a,
+.header .header-container,
+.header .header-container .nav-right,
+.header .header-container .nav-right .dropdown,
+.header .header-container .nav-left > li > a, .header .header-container .nav-right > li > a{
+  min-height: 55px;
+  height: 55px;
+}

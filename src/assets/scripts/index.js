@@ -1,6 +1,3 @@
-import "../../../node_modules/popper.js/dist/popper";
-import "../../../node_modules/popper.js/dist/popper-utils.min";
-
 import "../../../node_modules/bootstrap/dist/js/bootstrap.js";
 
 import './utils/utils_custom.js';

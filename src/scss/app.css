@@ -8468,7 +8468,7 @@ hr {
   position: fixed;
   top: 0;
   transition: all 0.2s ease;
-  width: 280px;
+  width: 240px;
   z-index: 1000;
 }
 
@@ -8508,7 +8508,7 @@ hr {
   }
 
   .sidebar:hover {
-    width: 280px;
+    width: 240px;
   }
 
   .sidebar:hover .sidebar-inner .sidebar-logo {
@@ -8531,8 +8531,8 @@ hr {
 
 @media screen and (max-width: 991px) {
   .sidebar {
-    left: -280px;
-    width: calc(280px - 30px);
+    left: -240px;
+    width: calc(240px - 30px);
   }
 }
 
@@ -8761,7 +8761,7 @@ hr {
   }
 
   .is-collapsed .sidebar:hover {
-    width: 280px;
+    width: 240px;
   }
 
   .is-collapsed .sidebar:hover .sidebar-inner .sidebar-logo {
@@ -8784,7 +8784,7 @@ hr {
 
 @media screen and (min-width: 992px) and (max-width: 1439px) {
   .is-collapsed .sidebar {
-    width: 280px;
+    width: 240px;
   }
 
   .is-collapsed .sidebar .sidebar-inner .sidebar-logo {
@@ -8825,7 +8825,7 @@ hr {
   padding: 0;
   position: fixed;
   transition: all 0.2s ease;
-  width: calc(100% - 280px);
+  width: calc(100% - 240px);
   z-index: 800;
 }
 
@@ -9040,13 +9040,13 @@ hr {
 
 @media screen and (min-width: 992px) and (max-width: 1439px) {
   .is-collapsed .header {
-    width: calc(100% - 280px);
+    width: calc(100% - 240px);
   }
 }
 
 .page-container {
   min-height: 100vh;
-  padding-left: 280px;
+  padding-left: 240px;
   transition: all 0.2s ease;
 }
 
@@ -9078,7 +9078,7 @@ hr {
 }
 
 .full-container {
-  left: 280px;
+  left: 240px;
   min-height: calc(100vh - 65px);
   position: absolute;
   right: 0;
@@ -9111,7 +9111,7 @@ hr {
 
 @media screen and (min-width: 992px) and (max-width: 1439px) {
   .is-collapsed .page-container {
-    padding-left: 280px;
+    padding-left: 240px;
   }
 }
 
@@ -9127,7 +9127,7 @@ hr {
 
 @media screen and (min-width: 992px) and (max-width: 1439px) {
   .is-collapsed .full-container {
-    left: 280px;
+    left: 240px;
     padding-left: 0;
   }
 }
