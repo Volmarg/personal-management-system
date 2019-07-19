@@ -28,8 +28,7 @@ class MyCarSchedulesTypesFixtures extends Fixture implements OrderedFixtureInter
 
         for($x = 0; $x <= count($names) -1; $x++) {
 
-            $index              = array_rand($names);
-            $name               = $names[$index];
+            $name               = $names[$x];
 
             $car_schedule_type  = new MyCarSchedulesTypes();
             $car_schedule_type->setName($name);
