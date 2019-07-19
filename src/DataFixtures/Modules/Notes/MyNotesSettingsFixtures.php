@@ -57,7 +57,7 @@ class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
             $notes_category->setColor($color);
             $notes_category->setId($x);
 
-            $finder             = $this->finder->name(static::FONTAWESOME_ICONS_LIST_JSON_FILE_NAME)->in('public');
+            $finder             = $this->finder->name(static::FONTAWESOME_ICONS_LIST_JSON_FILE_NAME)->in(__DIR__);
             $file_path          = '';
 
             foreach($finder as $file){
