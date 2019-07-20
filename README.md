@@ -64,7 +64,7 @@
 <hr>
 
 <h2>How to install/documentation</h2>
-You can find all the informations <a href="#"><b>⇛Here⇚</b>.
+You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here⇚</b>.
 
 <h2>Future development plans</h2>
 
