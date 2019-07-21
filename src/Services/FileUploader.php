@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Controller\EnvController;
+use App\Controller\FileUploadController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class FileUploader {
+class FileUploader extends AbstractController {
 
     /**
      * @var string $targetDirectory
@@ -16,25 +18,50 @@ class FileUploader {
     private $targetDirectory;
 
     /**
+     * @var string $targetImagesDirectory
+     */
+    private $targetImagesDirectory;
+
+    /**
+     * @var string $targetFilesDirectory
+     */
+    private $targetFilesDirectory;
+
+    /**
      * @var Finder $finder
      */
     private $finder;
 
-    public function __construct(Finder $finder) {
-        $this->targetDirectory = EnvController::getUploadDir();
-        $this->finder          = $finder;
+    public function __construct() {
+        $this->targetDirectory       = EnvController::getUploadDir();
+        $this->targetImagesDirectory = EnvController::getImagesUploadDir();
+        $this->targetFilesDirectory  = EnvController::getFilesUploadDir();
+        $this->finder                = new Finder();
     }
 
-    public function upload(UploadedFile $file) {
+    /**
+     * @param UploadedFile $file
+     * @param string $type
+     */
+    public function upload(UploadedFile $file, string $type) {
 
         $this->handleUploadDir();
 
         $originalFilename   = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename       = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $fileName           = $safeFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $fileName           = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $targetDirectory    = $this->targetDirectory;
+
+        switch($type){
+            case FileUploadController::TYPE_FILE:
+                $targetDirectory = $this->targetFilesDirectory;
+            break;
+            case FileUploadController::TYPE_IMAGE:
+                $targetDirectory = $this->targetImagesDirectory;
+                break;
+        }
 
         try {
-            $file->move($this->targetDirectory, $fileName);
+            $file->move($targetDirectory, $fileName);
         } catch (FileException $e) {
 
         }

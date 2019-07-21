@@ -12,11 +12,21 @@
     {# Notes - 1st level #}
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('upload_files') }}">
+            <a class="sidebar-link" href="{{ path('upload', {'type': 'file'} ) }}">
                 <span class="icon-holder" style="color:violet;">
                     <i class="fas fa-plus-circle"></i>
                 </span>
-                Upload
+                Files
+            </a>
+        </li>
+
+        <li>
+            <a class="sidebar-link" href="{{ path('upload', {'type': 'image'} ) }}">
+
+                <span class="icon-holder" style="color:violet;">
+                    <i class="fas fa-plus-circle"></i>
+                </span>
+                Images
             </a>
         </li>
 
