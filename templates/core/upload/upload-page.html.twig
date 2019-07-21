@@ -1,0 +1,94 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+    {% extends template %}
+{% block body %}
+
+    {# TODO: move styles to scss #}
+    <style>
+        .file-upload-form .custom-file-input {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            cursor: pointer;
+        }
+
+        .file-upload-form .ti-folder {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+        }
+
+        .file-upload-form .custom-file:before {
+            content: "\E639";
+            font-family: themify;
+            speak: none;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+
+            font-size: 15px;
+            top: 16px;
+            position: absolute;
+            left: 19px;
+        }
+
+        .file-upload-form .upload-submit {
+            height: 50px;
+        }
+    </style>
+
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {# Forms #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">Upload file</h4>
+
+
+                            <div class="col-md-6 align-self-center add-record-form file-upload-form d-flex justify-content-center">
+                                {{ form_start(form, {'attr': {'class': 'd-flex '}}) }}
+                                <section id="file-upload-file-select"
+                                         class=" btn btn-sm btn-primary d-flex"
+                                         style="width:50px; height:50px; padding: 0; "
+                                >
+                                    {{ form_widget(form.file) }}
+                                </section>
+                                {{ form_end(form) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+    {# TODO: add script for upload form and move js + turn into jq #}
+    <script>
+        let fileSelectButton    = document.getElementById('file-upload-file-select');
+        let filesInput          = document.getElementById('upload_form_file');
+        let filesNames          = [];
+
+        fileSelectButton.onchange = function () {
+            let selectedFiles       = filesInput.files;
+
+            for (let x = 0; x <= selectedFiles.length - 1 ; x++){
+                filesNames.push(selectedFiles[x].name);
+            }
+
+            console.log(filesNames);
+
+        };
+
+    </script>
+{% endblock body %}
