@@ -47,6 +47,7 @@ class FileUploader extends AbstractController {
 
         $this->handleUploadDir();
 
+        $now                = new \DateTime();
         $originalFilename   = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $fileName           = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
         $targetDirectory    = $this->targetDirectory;
@@ -58,6 +59,10 @@ class FileUploader extends AbstractController {
             case FileUploadController::TYPE_IMAGE:
                 $targetDirectory = $this->targetImagesDirectory;
                 break;
+        }
+
+        if (file_exists($targetDirectory . '/' . $fileName)) {
+            $fileName .= '_' . $now->format('Y_m_d');
         }
 
         try {
