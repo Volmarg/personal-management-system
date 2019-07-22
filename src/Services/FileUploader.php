@@ -33,36 +33,40 @@ class FileUploader extends AbstractController {
     private $finder;
 
     public function __construct() {
-        $this->targetDirectory       = EnvController::getUploadDir();
-        $this->targetImagesDirectory = EnvController::getImagesUploadDir();
-        $this->targetFilesDirectory  = EnvController::getFilesUploadDir();
-        $this->finder                = new Finder();
+        $this->finder     = new Finder();
     }
 
     /**
      * @param UploadedFile $file
      * @param string $type
+     * @param string $subdirectory
+     * @throws \Exception
      */
-    public function upload(UploadedFile $file, string $type) {
+    public function upload(UploadedFile $file, string $type, string $subdirectory = '') {
 
         $this->handleUploadDir();
 
         $now                = new \DateTime();
         $originalFilename   = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $fileName           = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
-        $targetDirectory    = $this->targetDirectory;
 
         switch($type){
             case FileUploadController::TYPE_FILE:
-                $targetDirectory = $this->targetFilesDirectory;
+                $targetDirectory = EnvController::getFilesUploadDir();
             break;
             case FileUploadController::TYPE_IMAGE:
-                $targetDirectory = $this->targetImagesDirectory;
-                break;
+                $targetDirectory = EnvController::getImagesUploadDir();
+            break;
+            default:
+                throw new \Exception('This type is not allowed');
         }
 
         if (file_exists($targetDirectory . '/' . $fileName)) {
             $fileName .= '_' . $now->format('Y_m_d');
+        }
+
+        if (!empty($subdirectory)) {
+            $targetDirectory .= '/' . $subdirectory;
         }
 
         try {
