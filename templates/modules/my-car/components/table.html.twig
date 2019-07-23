@@ -32,6 +32,8 @@
             {% elseif dates_difference.days < 14 %}
                 {% set date_color_style = in_2_weeks %}
                 {% set common_style     = font_style %}
+	    {% else %}
+		{% set date_color_style = '' %}
             {% endif %}
         {% endif %}
 
