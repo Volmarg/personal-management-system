@@ -1,4 +1,7 @@
 {# Files #}
+{% set imagesUploadFolderSubdirectories = getUploadFolderSubdirectories('image') %}
+{% set filesUploadFolderSubdirectories  = getUploadFolderSubdirectories('file') %}
+
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes') }}">
 
     <a class="sidebar-link" href="javascript:void(0);">
@@ -12,6 +15,15 @@
     </a>
 
     <ul class="dropdown-menu">
+
+        {% for subdirectory in filesUploadFolderSubdirectories %}
+            <li>
+                <a class="sidebar-link" href="#">
+                    {{ subdirectory }}
+                </a>
+            </li>
+        {% endfor %}
+
         <li>
             <a class="sidebar-link" href="{{ path('upload', {'type': 'file'} ) }}">
                 Upload
@@ -34,6 +46,15 @@
     </a>
 
     <ul class="dropdown-menu">
+
+        {% for subdirectory in imagesUploadFolderSubdirectories %}
+            <li>
+                <a class="sidebar-link" href="{{ path('modules_my_images', {'subdirectory': subdirectory}) }}">
+                    {{ subdirectory }}
+                </a>
+            </li>
+        {% endfor %}
+
         <li>
             <a class="sidebar-link" href="{{ path('upload', {'type': 'image'} ) }}">
                 Upload

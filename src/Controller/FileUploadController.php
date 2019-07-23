@@ -27,18 +27,12 @@ class FileUploadController extends AbstractController {
     private $fileUploader;
 
     /**
-     * @var Finder $finder
-     */
-    private $finder;
-
-    /**
      * @var Application $app
      */
     private $app;
 
     public function __construct(FileUploader $fileUploader, Application $app) {
         $this->fileUploader = $fileUploader;
-        $this->finder       = new Finder();
         $this->app          = $app;
     }
 
@@ -51,7 +45,6 @@ class FileUploadController extends AbstractController {
      */
     public function upload(Request $request, string $type){
 
-        $subdirectories = [];
         $allowed_types  = [
             static:: TYPE_IMAGE,
             static:: TYPE_FILE
@@ -61,22 +54,7 @@ class FileUploadController extends AbstractController {
             throw new \Exception('This upload type is not allowed');
         }
 
-        switch($type){
-            case FileUploadController::TYPE_FILE:
-                $targetDirectory = EnvController::getFilesUploadDir();
-                break;
-            case FileUploadController::TYPE_IMAGE:
-                $targetDirectory = EnvController::getImagesUploadDir();
-                break;
-            default:
-                throw new \Exception('This type is not allowed');
-        }
-
-        $this->finder->directories()->in($targetDirectory);
-
-        foreach($this->finder as $directory){
-            $subdirectories[]   = $directory->getFilename();
-        }
+        $subdirectories = static::getSubdirectoriesForUploadType($type);
 
         $form = $this->getUploadForm($subdirectories);
         $this->handleFileUpload($request, $type, $form);
@@ -122,5 +100,30 @@ class FileUploadController extends AbstractController {
 
         }
 
+    }
+
+    public static function getSubdirectoriesForUploadType($uploadType)
+    {
+        $subdirectories = [];
+        $finder         = new Finder();
+
+        switch($uploadType){
+            case FileUploadController::TYPE_FILE:
+                $targetDirectory = EnvController::getFilesUploadDir();
+                break;
+            case FileUploadController::TYPE_IMAGE:
+                $targetDirectory = EnvController::getImagesUploadDir();
+                break;
+            default:
+                throw new \Exception('This type is not allowed');
+        }
+
+        $finder->directories()->in($targetDirectory);
+
+        foreach($finder as $directory){
+            $subdirectories[] = $directory->getFilename();
+        }
+
+        return $subdirectories;
     }
 }
