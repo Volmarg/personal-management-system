@@ -42,27 +42,27 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @Route("/upload/{uploadType}", name="upload")
+     * @Route("/upload/{upload_type}", name="upload")
      * @param Request $request
      * @param string $uploadType
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function upload(Request $request, string $uploadType){
+    public function upload(Request $request, string $upload_type){
 
         $allowed_types  = [
             static:: TYPE_IMAGE,
             static:: TYPE_FILE
         ];
 
-        if(!in_array($uploadType, $allowed_types)){
+        if(!in_array($upload_type, $allowed_types)){
             throw new \Exception('This upload type is not allowed');
         }
 
-        $subdirectories = static::getSubdirectoriesForUploadType($uploadType);
+        $subdirectories = static::getSubdirectoriesForUploadType($upload_type);
 
         $form = $this->getUploadForm($subdirectories);
-        $this->handleFileUpload($request, $uploadType, $form);
+        $this->handleFileUpload($request, $upload_type, $form);
 
         $data = [
             'ajax_render'       => false,
