@@ -25,7 +25,7 @@
         {% endfor %}
 
         <li>
-            <a class="sidebar-link" href="{{ path('upload', {'type': 'file'} ) }}">
+            <a class="sidebar-link" href="{{ path('upload', {'uploadType': 'file'} ) }}">
                 Upload
             </a>
         </li>
@@ -56,7 +56,7 @@
         {% endfor %}
 
         <li>
-            <a class="sidebar-link" href="{{ path('upload', {'type': 'image'} ) }}">
+            <a class="sidebar-link" href="{{ path('upload', {'uploadType': 'image'} ) }}">
                 Upload
             </a>
         </li>

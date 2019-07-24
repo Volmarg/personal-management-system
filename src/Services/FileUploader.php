@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Controller\EnvController;
+use App\Controller\Utils\Env;
 use App\Controller\FileUploadController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -16,16 +16,6 @@ class FileUploader extends AbstractController {
      * @var string $targetDirectory
      */
     private $targetDirectory;
-
-    /**
-     * @var string $targetImagesDirectory
-     */
-    private $targetImagesDirectory;
-
-    /**
-     * @var string $targetFilesDirectory
-     */
-    private $targetFilesDirectory;
 
     /**
      * @var Finder $finder
@@ -52,10 +42,10 @@ class FileUploader extends AbstractController {
 
         switch($type){
             case FileUploadController::TYPE_FILE:
-                $targetDirectory = EnvController::getFilesUploadDir();
+                $targetDirectory = Env::getFilesUploadDir();
             break;
             case FileUploadController::TYPE_IMAGE:
-                $targetDirectory = EnvController::getImagesUploadDir();
+                $targetDirectory = Env::getImagesUploadDir();
             break;
             default:
                 throw new \Exception('This type is not allowed');

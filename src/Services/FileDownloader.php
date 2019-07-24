@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Controller\EnvController;
+use App\Controller\Utils\Env;
 use Symfony\Component\Finder\Finder;
 
 class FileDownloader {
@@ -18,7 +18,7 @@ class FileDownloader {
     private $finder;
 
     public function __construct(Finder $finder) {
-        $this->targetDirectory = EnvController::getUploadDir();
+        $this->targetDirectory = Env::getUploadDir();
         $this->finder          = $finder;
     }
 

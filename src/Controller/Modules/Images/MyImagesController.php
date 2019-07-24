@@ -2,7 +2,7 @@
 
 namespace App\Controller\Modules\Images;
 
-use App\Controller\EnvController;
+use App\Controller\Utils\Env;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Annotation\Route;
@@ -42,7 +42,7 @@ class MyImagesController extends AbstractController {
     }
 
     private function getImagesFromCategory(string $subdirectory) {
-        $upload_dir       = EnvController::getImagesUploadDir();
+        $upload_dir       = Env::getImagesUploadDir();
         $all_images_paths = [];
         $searchDir        = ( empty($subdirectory) ? $upload_dir : $upload_dir . '/' . $subdirectory);
 

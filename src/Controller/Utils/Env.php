@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Utils;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
-class EnvController extends AbstractController {
+class Env extends AbstractController {
 
 
     public static function getUploadDir() {
