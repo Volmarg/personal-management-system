@@ -10,7 +10,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use Symfony\Component\HttpFoundation\Response;
-use App\Controller\UtilsController;
 
 class MyShoppingPlansController extends AbstractController {
 

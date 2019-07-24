@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminController extends Controller
 {
+
+    #TODO: put it into one appController and test if everything is ok as this one is utilizing Controller for unknown reason
     /**
      * @Route("admin/{pageName}", name="admin_default")
      * @param string $pageName Page name

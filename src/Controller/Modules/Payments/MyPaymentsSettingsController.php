@@ -5,7 +5,6 @@ namespace App\Controller\Modules\Payments;
 use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
-use App\Controller\UtilsController;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Form\Modules\Payments\MyPaymentsSettingsCurrencyMultiplierType;
 use App\Form\Modules\Payments\MyPaymentsTypesType;

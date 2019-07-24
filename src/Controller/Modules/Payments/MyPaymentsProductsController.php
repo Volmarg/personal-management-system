@@ -6,13 +6,10 @@ use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
 use App\Form\Modules\Payments\MyPaymentsProductsType;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Controller\UtilsController;
 
 class MyPaymentsProductsController extends AbstractController {
 

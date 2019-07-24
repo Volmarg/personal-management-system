@@ -11,7 +11,6 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
-use App\Controller\UtilsController;
 
 class AchievementController extends AbstractController {
 

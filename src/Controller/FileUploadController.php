@@ -110,14 +110,12 @@ class FileUploadController extends AbstractController {
 
     /**
      * @Route("/upload/{upload_type}/rename-subdirectory", name="upload_rename_subdirectory", methods="POST")
-     * @param string $uploadType
+     * @param string $upload_type
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
     public function renameSubdirectory(string $upload_type, Request $request) {
-
-        #TODO: check later how renaming will work with special chars etc
 
         if ( !$request->query->has(static::KEY_SUBDIRECTORY_NEW_NAME) ) {
             return new Response("Subdirectory new name is missing in request.");
@@ -152,7 +150,7 @@ class FileUploadController extends AbstractController {
             $new_folder_location = $target_directory.'/'.$subdirectory_new_name;
             rename($old_folder_location, $new_folder_location);
         }catch(\Exception $e){
-            return new Response('There was an error when renaming the folder!');
+            return new Response('There was an error when renaming the folder! Error message. Most likely due to unallowed characters used in name.');
         }
 
         return new Response('Folder name has been successfully changed');

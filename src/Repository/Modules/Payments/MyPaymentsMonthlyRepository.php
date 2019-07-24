@@ -5,7 +5,6 @@ namespace App\Repository\Modules\Payments;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use App\Controller\UtilsController;
 
 /**
  * @method MyPaymentsMonthly|null find($id, $lockMode = null, $lockVersion = null)
