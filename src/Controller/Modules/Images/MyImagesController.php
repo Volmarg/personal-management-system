@@ -21,11 +21,11 @@ class MyImagesController extends AbstractController {
     }
 
     /**
-     * @Route("my-images/{subdirectory?}", name="modules_my_images")
+     * @Route("my-images/dir/{subdirectory?}", name="modules_my_images")
      * @param string|null $subdirectory
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(? string $subdirectory) {
+    public function displayImages(? string $subdirectory) {
 
         if (empty($subdirectory)) {
             $all_images_paths = $this->getAllImages();

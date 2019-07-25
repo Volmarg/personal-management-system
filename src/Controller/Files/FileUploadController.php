@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller;
+namespace App\Controller\Files;
 
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
@@ -17,11 +17,16 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FileUploadController extends AbstractController {
 
+    # TODO: add moving subdirectories to other folder
+        # But do it by copying and removing if copying was done
+        # If copying was not done correctly then warn user about it - he should remove this on his own
+        # maybe moving progress?
+
     const UPLOAD_PAGE_TWIG_TEMPLATE     = 'core/upload/upload-page.html.twig';
     const FILE_KEY                      = 'file';
     const SUBDIRECTORY_KEY              = 'subdirectory';
-    const TYPE_IMAGE                    = 'image';
-    const TYPE_FILE                     = 'file';
+    const TYPE_IMAGES                   = 'images';
+    const TYPE_FILES                    = 'files';
 
     const KEY_SUBDIRECTORY_NEW_NAME     = 'subdirectory_new_name';
     const KEY_SUBDIRECTORY_CURRENT_NAME = 'subdirectory_current_name';
@@ -51,8 +56,8 @@ class FileUploadController extends AbstractController {
     public function upload(Request $request, string $upload_type){
 
         $allowed_types  = [
-            static:: TYPE_IMAGE,
-            static:: TYPE_FILE
+            static:: TYPE_IMAGES,
+            static:: TYPE_FILES
         ];
 
         if(!in_array($upload_type, $allowed_types)){
@@ -115,7 +120,7 @@ class FileUploadController extends AbstractController {
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectory(string $upload_type, Request $request) {
+    public function renameSubdirectoryByPostRequest(string $upload_type, Request $request) {
 
         if ( !$request->query->has(static::KEY_SUBDIRECTORY_NEW_NAME) ) {
             return new Response("Subdirectory new name is missing in request.");
@@ -128,8 +133,26 @@ class FileUploadController extends AbstractController {
         $subdirectory_current_name  = $request->query->get(static::KEY_SUBDIRECTORY_CURRENT_NAME);
         $subdirectory_new_name      = $request->query->get(static::KEY_SUBDIRECTORY_NEW_NAME);
 
+        $response = $this->renameSubdirectory($upload_type, $subdirectory_current_name, $subdirectory_new_name);
+
+        return $response;
+    }
+
+    /**
+     * @param string $upload_type
+     * @param string $subdirectory_current_name
+     * @param string $subdirectory_new_name
+     * @return Response
+     * @throws \Exception
+     */
+    public function renameSubdirectory(string $upload_type, string $subdirectory_current_name, string $subdirectory_new_name) {
+
         if( $subdirectory_current_name === $subdirectory_new_name ){
             return new Response("You are trying to change folder name to the same that there already is - action aborted.");
+        }
+
+        if ( empty($subdirectory_new_name) ){
+            return new Response('New name is an empty string - action aborted');
         }
 
         $target_directory       = static::getTargetDirectoryForUploadType($upload_type);
@@ -157,12 +180,14 @@ class FileUploadController extends AbstractController {
 
     }
 
+
     /**
-     * @param $uploadType
+     * @param string $uploadType
+     * @param bool $namesAsKeysAndValues
      * @return array
      * @throws \Exception
      */
-    public static function getSubdirectoriesForUploadType(string $uploadType)
+    public static function getSubdirectoriesForUploadType(string $uploadType, $namesAsKeysAndValues = false)
     {
         $subdirectories = [];
         $finder         = new Finder();
@@ -173,6 +198,13 @@ class FileUploadController extends AbstractController {
 
         foreach($finder as $directory){
             $subdirectories[] = $directory->getFilename();
+        }
+
+        if($namesAsKeysAndValues){
+            $subdirectories = array_combine(
+                array_values($subdirectories),
+                array_values($subdirectories)
+            );
         }
 
         return $subdirectories;
@@ -186,10 +218,10 @@ class FileUploadController extends AbstractController {
     public static function getTargetDirectoryForUploadType(string $uploadType){
 
         switch ($uploadType) {
-            case FileUploadController::TYPE_FILE:
+            case FileUploadController::TYPE_FILES:
                 $targetDirectory = Env::getFilesUploadDir();
                 break;
-            case FileUploadController::TYPE_IMAGE:
+            case FileUploadController::TYPE_IMAGES:
                 $targetDirectory = Env::getImagesUploadDir();
                 break;
             default:

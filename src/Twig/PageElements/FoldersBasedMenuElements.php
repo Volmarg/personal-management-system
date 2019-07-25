@@ -8,7 +8,7 @@
 
 namespace App\Twig\PageElements;
 
-use App\Controller\FileUploadController;
+use App\Controller\Files\FileUploadController;
 use Symfony\Component\Finder\Finder;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
