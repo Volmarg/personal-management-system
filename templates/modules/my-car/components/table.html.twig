@@ -38,14 +38,28 @@
         {% endif %}
 
         <tr class="trash-parent car-single-data editable-parent save-parent " data-type="MyCar">
+	
             {% for column in column_names %}
-                <td class="{{ column }} {{ hideIdColumn(column) }}" style="{{ date_color_style}}{{ common_style }}">
-                    {% if attribute(car_data,column).timestamp is defined %}
-                        {{ attribute(car_data,column)|date('d-m-Y') }}
-                    {% else %}
+
+                {% if column == 'date' %}
+
+                    {% set timestamp = date( car_data.date | date('m/d/yyyy') ).timestamp %}
+
+                    <td class="{{ column }} {{ hideIdColumn(column) }}"
+                        style="{{ date_color_style}}{{ common_style }}"
+                        data-order="{{ timestamp }}"
+                        >
+                        {{ car_data.date}}
+                    </td>
+
+                {% else %}
+
+                    <td class="{{ column }} {{ hideIdColumn(column) }}" style="{{ date_color_style}}{{ common_style }}">
                         {{ attribute(car_data,column) }}
-                    {% endif %}
-                </td>
+                    </td>
+
+                {% endif %}
+
             {% endfor %}
 
             <td class="parent-td">
