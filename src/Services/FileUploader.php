@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Controller\Utils\Env;
-use App\Controller\FileUploadController;
+use App\Controller\Files\FileUploadController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Finder\Finder;
@@ -41,10 +41,10 @@ class FileUploader extends AbstractController {
         $fileName           = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
 
         switch($type){
-            case FileUploadController::TYPE_FILE:
+            case FileUploadController::TYPE_FILES:
                 $targetDirectory = Env::getFilesUploadDir();
             break;
-            case FileUploadController::TYPE_IMAGE:
+            case FileUploadController::TYPE_IMAGES:
                 $targetDirectory = Env::getImagesUploadDir();
             break;
             default:

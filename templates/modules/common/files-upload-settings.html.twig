@@ -15,17 +15,28 @@
 
                 <div class="row">
                     <div class="col-md-12">
+
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">Files upload settings</h4>
-                            <div class="my-images-all-images d-flex justify-content-around flex-wrap">
+                            <h4 class="c-grey-900 mB-20 align-self-center">Rename folder</h4>
 
-
-                                {{ form_start(form) }}
-                                {{ form_end(form) }}
-
-
-                            </div>
+                            {{ form_start(rename_form) }}
+                            {{ form_end(rename_form) }}
                         </div>
+
+
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">Remove folder</h4>
+
+                            {{ form_start(remove_form) }}
+                            {{ form_end(remove_form) }}
+                        </div>
+
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">Move folder data</h4>
+                            {{ form_start(move_data_form) }}
+                            {{ form_end(move_data_form) }}
+                        </div>
+
                     </div>
                 </div>
 
