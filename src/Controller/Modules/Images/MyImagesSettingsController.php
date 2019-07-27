@@ -6,6 +6,8 @@ use App\Controller\Files\FileUploadController;
 use App\Form\Files\UploadSubdirectoryMoveDataType;
 use App\Form\Files\UploadSubdirectoryRemoveType;
 use App\Form\Files\UploadSubdirectoryRenameType;
+use App\Services\DirectoriesHandler;
+use App\Services\FilesHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\FormInterface;
@@ -28,9 +30,21 @@ class MyImagesSettingsController extends AbstractController {
      */
     private $file_upload_controller;
 
-    public function __construct(FileUploadController $file_upload_controller) {
+    /**
+     * @var DirectoriesHandler $directories_handler
+     */
+    private $directories_handler;
+
+    /**
+     * @var FilesHandler $files_handler
+     */
+    private $files_handler;
+
+    public function __construct(FileUploadController $file_upload_controller, DirectoriesHandler $directories_handler, FilesHandler $files_handler) {
         $this->finder                 = new Finder();
         $this->file_upload_controller = $file_upload_controller;
+        $this->directories_handler    = $directories_handler;
+        $this->files_handler          = $files_handler;
     }
 
     /**
@@ -101,8 +115,8 @@ class MyImagesSettingsController extends AbstractController {
     public function getMoveUploadSubdirectoryDataForm(array $all_subdirectories_for_all_types){
 
         $form = $this->createForm(UploadSubdirectoryMoveDataType::class, null, [
-            FileUploadController::KEY_CURRENT_SUBDIRECTORY_NAME   => $all_subdirectories_for_all_types,
-            FileUploadController::KEY_TARGET_SUBDIRECTORY_NAME    => $all_subdirectories_for_all_types
+            FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME   => $all_subdirectories_for_all_types,
+            FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME    => $all_subdirectories_for_all_types
         ]);
 
         return $form;
@@ -116,7 +130,7 @@ class MyImagesSettingsController extends AbstractController {
      * @throws \Exception
      */
     public function renameSubdirectory(string $upload_type, string $current_name, string $new_name){
-        $response = $this->file_upload_controller->renameSubdirectory($upload_type, $current_name, $new_name);
+        $response = $this->directories_handler->renameSubdirectory($upload_type, $current_name, $new_name);
         return $response;
     }
 
@@ -142,18 +156,18 @@ class MyImagesSettingsController extends AbstractController {
             $form_data          = $remove_form->getData();
             $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
 
-            $response = $this->file_upload_controller->removeFolder($upload_type, $subdirectory_name);
+            $response = $this->directories_handler->removeFolder($upload_type, $subdirectory_name);
         }
 
         if($move_data_form->isSubmitted() && $move_data_form->isValid()) {
             $form_data                          = $move_data_form->getData();
-            $current_upload_type                = $form_data[FileUploadController::KEY_CURRENT_UPLOAD_TYPE];
-            $target_upload_type                 = $form_data[FileUploadController::KEY_TARGET_UPLOAD_TYPE];
-            $current_subdirectory_name          = $form_data[FileUploadController::KEY_CURRENT_SUBDIRECTORY_NAME];
-            $target_subdirectory_name           = $form_data[FileUploadController::KEY_TARGET_SUBDIRECTORY_NAME];
+            $current_upload_type                = $form_data[FilesHandler::KEY_CURRENT_UPLOAD_TYPE];
+            $target_upload_type                 = $form_data[FilesHandler::KEY_TARGET_UPLOAD_TYPE];
+            $current_subdirectory_name          = $form_data[FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME];
+            $target_subdirectory_name           = $form_data[FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME];
             $remove_current_folder              = $form_data[UploadSubdirectoryMoveDataType::FIELD_REMOVE_CURRENT_FOLDER];
 
-            $response = $this->file_upload_controller->copyAndRemoveData(
+            $response = $this->files_handler->copyAndRemoveData(
                 $current_upload_type, $target_upload_type, $current_subdirectory_name, $target_subdirectory_name, $remove_current_folder
             );
         }

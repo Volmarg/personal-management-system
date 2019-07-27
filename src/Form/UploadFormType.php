@@ -45,8 +45,9 @@ class UploadFormType extends AbstractType {
                     'choices'  => static::$choices,
                     'required' => false,
                     'attr'     => [
-                       'class' => 'form-control align-self-center',
-                       'style' => 'height:50px;'
+                       'class'        => 'form-control align-self-center',
+                       'style'        => 'height:50px;',
+                       'placeholder'  => 'Destination subdirectory name'
                     ]
                 ])
                 ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {

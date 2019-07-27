@@ -73,8 +73,36 @@
     </ul>
 </li>
 
+{# Upload #}
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes') }}">
 
+    <a class="sidebar-link" href="javascript:void(0);">
+        <span class="icon-holder" style="color:orange;">
+            <i class="fas fa-upload"></i>
+        </span>
 
+        <span class="title">Upload</span>
+        <span class="arrow">
+              <i class="ti-angle-right"></i>
+        </span>
+    </a>
+
+    <ul class="dropdown-menu">
+
+        <li>
+            <a class="sidebar-link" href="{{ path('modules_my_images') }}">
+                Add
+            </a>
+        </li>
+        <li>
+            <a class="sidebar-link" href="{{ path('upload', {'upload_type': 'images'} ) }}">
+                Manage
+            </a>
+        </li>
+
+    </ul>
+
+</li>
 
 
 

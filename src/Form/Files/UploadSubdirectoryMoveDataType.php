@@ -3,6 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
+use App\Services\FilesHandler;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,17 +20,17 @@ class UploadSubdirectoryMoveDataType extends AbstractType
     {
 
         $builder
-            ->add(FileUploadController::KEY_CURRENT_UPLOAD_TYPE, ChoiceType::class, [
+            ->add(FilesHandler::KEY_CURRENT_UPLOAD_TYPE, ChoiceType::class, [
                 'choices' => FileUploadController::UPLOAD_TYPES
             ])
-            ->add(FileUploadController::KEY_TARGET_UPLOAD_TYPE, ChoiceType::class, [
+            ->add(FilesHandler::KEY_TARGET_UPLOAD_TYPE, ChoiceType::class, [
                 'choices' => FileUploadController::UPLOAD_TYPES
             ])
-            ->add(FileUploadController::KEY_CURRENT_SUBDIRECTORY_NAME, ChoiceType::class, [
-                'choices' => $options[FileUploadController::KEY_CURRENT_SUBDIRECTORY_NAME]
+            ->add(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME, ChoiceType::class, [
+                'choices' => $options[FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME]
             ])
-            ->add(FileUploadController::KEY_TARGET_SUBDIRECTORY_NAME, ChoiceType::class, [
-                'choices' => $options[FileUploadController::KEY_TARGET_SUBDIRECTORY_NAME]
+            ->add(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME, ChoiceType::class, [
+                'choices' => $options[FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME]
             ])
             ->add(static::FIELD_REMOVE_CURRENT_FOLDER, CheckboxType::class,[
                 'label'     => 'Remove current folder after moving the data?',
@@ -45,7 +46,7 @@ class UploadSubdirectoryMoveDataType extends AbstractType
         $resolver->setDefaults([
             // Configure your form options here
         ]);
-        $resolver->setRequired(FileUploadController::KEY_CURRENT_SUBDIRECTORY_NAME);
-        $resolver->setRequired(FileUploadController::KEY_TARGET_SUBDIRECTORY_NAME);
+        $resolver->setRequired(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME);
+        $resolver->setRequired(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME);
     }
 }
