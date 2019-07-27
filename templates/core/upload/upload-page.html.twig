@@ -51,11 +51,13 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">Upload file</h4>
+                            <h4 class="c-grey-900 mB-20 align-self-center">Upload files</h4>
 
 
                             <div class="col-md-6 align-self-center add-record-form file-upload-form d-flex justify-content-center">
                                 {{ form_start(form, {'attr': {'class': 'd-flex flex-column'}}) }}
+
+                                {{ form_widget(form.upload_type) }}
 
                                 <section class="file-picker-and-folder-picker d-flex">
                                     <section id="file-upload-file-select"

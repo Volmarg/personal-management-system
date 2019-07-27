@@ -1,24 +1,25 @@
 <?php
 
-namespace App\Controller\Modules\Images;
 
-use App\Controller\Files\FileUploadController;
+namespace App\Controller\Files;
+
 use App\Form\Files\UploadSubdirectoryMoveDataType;
 use App\Form\Files\UploadSubdirectoryRemoveType;
 use App\Form\Files\UploadSubdirectoryRenameType;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MyImagesSettingsController extends AbstractController {
+class FilesUploadSettingsController extends AbstractController {
+
 
     const TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS = 'modules/common/files-upload-settings.html.twig';
-    #TODO: I can most likely reuse this logic also for other uploadTypes
-    #TODO: Add module folder Uploads - there throw all separated and common logic
 
     /**
      * @var Finder $finder
@@ -48,29 +49,26 @@ class MyImagesSettingsController extends AbstractController {
     }
 
     /**
-     * @Route("my-{upload_type}/settings", name="modules_my_images_settings", requirements={
-     *     "upload_type": "images|files"
-     *     })
-     * @param string $upload_type
+     * @Route("upload/settings", name="upload_settings")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
-    public function displaySettings(string $upload_type, Request $request) {
+    public function displaySettings(Request $request) {
 
-        $subdirectories                   = FileUploadController::getSubdirectoriesForUploadType($upload_type, true);
+        # TODO: change that later to handle js swapping
         $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes();
 
-        $rename_form    = $this->getRenameSubdirectoryForm($upload_type, $subdirectories);
+        $rename_form    = $this->getRenameSubdirectoryForm($all_subdirectories_for_all_types);
         $rename_form->handleRequest($request);
 
-        $remove_form    = $this->getRemoveSubdirectoryForm($upload_type, $subdirectories);
+        $remove_form    = $this->getRemoveSubdirectoryForm($all_subdirectories_for_all_types);
         $remove_form->handleRequest($request);
 
         $move_data_form = $this->getMoveUploadSubdirectoryDataForm($all_subdirectories_for_all_types);
         $move_data_form->handleRequest($request);
 
-        $this->handleForms($upload_type, $rename_form, $remove_form, $move_data_form);
+        $this->handleForms($rename_form, $remove_form, $move_data_form);
 
         $data = [
             'ajax_render'       => false,
@@ -83,14 +81,12 @@ class MyImagesSettingsController extends AbstractController {
     }
 
     /**
-     * @param string $upload_type
      * @param array $subdirectories
      * @return \Symfony\Component\Form\FormInterface
      */
-    public function getRenameSubdirectoryForm(string $upload_type, array $subdirectories){
+    public function getRenameSubdirectoryForm(array $subdirectories){
 
         $form = $this->createForm(UploadSubdirectoryRenameType::class, null, [
-            UploadSubdirectoryRenameType::OPTION_UPLOAD_TYPE  => $upload_type,
             UploadSubdirectoryRenameType::OPTION_SUBDIRECTORY => $subdirectories,
         ]);
 
@@ -98,14 +94,12 @@ class MyImagesSettingsController extends AbstractController {
     }
 
     /**
-     * @param string $upload_type
      * @param array $subdirectories
      * @return FormInterface
      */
-    public function getRemoveSubdirectoryForm(string $upload_type, array $subdirectories){
+    public function getRemoveSubdirectoryForm(array $subdirectories){
 
         $form = $this->createForm(UploadSubdirectoryRemoveType::class, null, [
-            UploadSubdirectoryRemoveType::OPTION_UPLOAD_TYPE    => $upload_type,
             UploadSubdirectoryRemoveType::OPTION_SUBDIRECTORIES => $subdirectories,
         ]);
 
@@ -126,7 +120,7 @@ class MyImagesSettingsController extends AbstractController {
      * @param string $upload_type
      * @param string $current_name
      * @param string $new_name
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function renameSubdirectory(string $upload_type, string $current_name, string $new_name){
@@ -135,19 +129,19 @@ class MyImagesSettingsController extends AbstractController {
     }
 
     /**
-     * @param string $upload_type
      * @param FormInterface $rename_form
      * @param FormInterface $remove_form
      * @param FormInterface $move_data_form
      * @throws \Exception
      */
-    private function handleForms(string $upload_type, FormInterface $rename_form, FormInterface $remove_form, FormInterface $move_data_form){
+    private function handleForms(FormInterface $rename_form, FormInterface $remove_form, FormInterface $move_data_form){
         # TODO: handle exception or make some messaging?
 
         if($rename_form->isSubmitted() && $rename_form->isValid()) {
             $form_data      = $rename_form->getData();
             $current_name   = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME];
             $new_name       = $form_data[FileUploadController::KEY_SUBDIRECTORY_NEW_NAME];
+            $upload_type    = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
 
             $response = $this->renameSubdirectory($upload_type, $current_name, $new_name);
         }
@@ -155,6 +149,7 @@ class MyImagesSettingsController extends AbstractController {
         if($remove_form->isSubmitted() && $remove_form->isValid()) {
             $form_data          = $remove_form->getData();
             $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
+            $upload_type        = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
 
             $response = $this->directories_handler->removeFolder($upload_type, $subdirectory_name);
         }

@@ -2,10 +2,12 @@
 
 namespace App\Form;
 
+use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -34,6 +36,9 @@ class UploadFormType extends AbstractType {
         static::$choices = (is_array($options) ? $options['subdirectories'] : []);
 
         $builder
+            ->add('upload_type', ChoiceType::class,[
+                'choices' => FileUploadController::UPLOAD_TYPES
+            ])
             ->add('file', FileType::class, [
                 'multiple' => true
             ]);

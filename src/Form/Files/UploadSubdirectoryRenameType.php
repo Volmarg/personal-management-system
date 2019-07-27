@@ -12,12 +12,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UploadSubdirectoryRenameType extends AbstractType {
 
-    const OPTION_UPLOAD_TYPE    = 'upload_type';
     const OPTION_SUBDIRECTORY   = 'subdirectory';
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
+            ->add(FileUploadController::KEY_UPLOAD_TYPE, ChoiceType::class, [
+                'choices' => FileUploadController::UPLOAD_TYPES
+            ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME, ChoiceType::class, [
                 'choices' => $options[static::OPTION_SUBDIRECTORY]
             ])
@@ -35,7 +37,6 @@ class UploadSubdirectoryRenameType extends AbstractType {
             // Configure your form options here
         ]);
 
-        $resolver->setRequired(static::OPTION_UPLOAD_TYPE);
         $resolver->setRequired(static::OPTION_SUBDIRECTORY);
     }
 }

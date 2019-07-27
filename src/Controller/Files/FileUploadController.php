@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FileUploadController extends AbstractController {
@@ -42,6 +43,10 @@ class FileUploadController extends AbstractController {
     const KEY_SUBDIRECTORY_CURRENT_NAME = 'subdirectory_current_name';
 
     const KEY_SUBDIRECTORY_NAME         = 'subdirectory_name';
+
+    const KEY_UPLOAD_TYPE               = 'upload_type';
+
+    const DEFAULT_KEY_IS_MISSING        = 'Required key is missing in request';
 
     const UPLOAD_TYPES = [
         self::TYPE_IMAGES => self::TYPE_IMAGES,
@@ -76,27 +81,19 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @Route("/upload/{upload_type}", name="upload")
+     * @Route("/upload/", name="upload")
      * @param Request $request
-     * @param string $upload_type
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
-    public function upload(Request $request, string $upload_type){
+    public function displayUploadPage(Request $request){
 
-        $allowed_types  = [
-            static:: TYPE_IMAGES,
-            static:: TYPE_FILES
-        ];
-
-        if(!in_array($upload_type, $allowed_types)){
-            throw new \Exception('This upload type is not allowed');
-        }
-
-        $subdirectories = static::getSubdirectoriesForUploadType($upload_type);
+        # TODO: this has to be adjusted later for JS - swapping type = filter subdirs
+        $subdirectories = static::getSubdirectoriesForAllUploadTypes();
 
         $form = $this->getUploadForm($subdirectories);
-        $this->handleFileUpload($request, $upload_type, $form);
+
+        $this->handleFileUpload($request, $form);
 
         $data = [
             'ajax_render'       => false,
@@ -199,11 +196,11 @@ class FileUploadController extends AbstractController {
 
     /**
      * @param Request $request
-     * @param string $uploadType
      * @param FormInterface $form
+     * @return void
      * @throws \Exception
      */
-    private function handleFileUpload(Request $request, string $uploadType, FormInterface $form) {
+    private function handleFileUpload(Request $request, FormInterface $form) {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -214,10 +211,11 @@ class FileUploadController extends AbstractController {
             $original_form_data = $form->getData();
 
             $subdirectory       = $modified_form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
+            $upload_type        = $modified_form_data[static::KEY_UPLOAD_TYPE];
             $uploadedFiles      = $original_form_data[FilesHandler::FILE_KEY];
 
             foreach ($uploadedFiles as $uploadedFile) {
-                $this->fileUploader->upload($uploadedFile, $uploadType, $subdirectory);
+                $this->fileUploader->upload($uploadedFile, $upload_type, $subdirectory);
             }
 
         }

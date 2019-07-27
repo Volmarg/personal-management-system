@@ -11,12 +11,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UploadSubdirectoryRemoveType extends AbstractType
 {
-    const OPTION_UPLOAD_TYPE    = 'upload_type';
     const OPTION_SUBDIRECTORIES = 'subdirectories';
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add(FileUploadController::KEY_UPLOAD_TYPE, ChoiceType::class, [
+                'choices' => FileUploadController::UPLOAD_TYPES
+            ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, ChoiceType::class, [
                 'choices' => $options[static::OPTION_SUBDIRECTORIES]
             ])
@@ -32,7 +34,6 @@ class UploadSubdirectoryRemoveType extends AbstractType
             // Configure your form options here
         ]);
         $resolver->setRequired(static::OPTION_SUBDIRECTORIES);
-        $resolver->setRequired(static::OPTION_UPLOAD_TYPE);
 
     }
 }

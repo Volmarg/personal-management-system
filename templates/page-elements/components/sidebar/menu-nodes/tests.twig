@@ -65,11 +65,6 @@
                 Upload
             </a>
         </li>
-        <li>
-            <a class="sidebar-link" href="{{ path('modules_my_images_settings', {'upload_type': 'images'} ) }}">
-                Settings
-            </a>
-        </li>
     </ul>
 </li>
 
@@ -90,12 +85,12 @@
     <ul class="dropdown-menu">
 
         <li>
-            <a class="sidebar-link" href="{{ path('modules_my_images') }}">
+            <a class="sidebar-link" href="{{ path('upload') }}">
                 Add
             </a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('upload', {'upload_type': 'images'} ) }}">
+            <a class="sidebar-link" href="{{ path('upload_settings') }}">
                 Manage
             </a>
         </li>
