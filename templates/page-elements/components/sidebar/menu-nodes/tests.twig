@@ -18,15 +18,15 @@
 
         {% for subdirectory in filesUploadFolderSubdirectories %}
             <li>
-                <a class="sidebar-link" href="#">
+                <a class="sidebar-link" href="{{ path('modules_my_files', {'subdirectory': subdirectory}) }}">
                     {{ subdirectory }}
                 </a>
             </li>
         {% endfor %}
 
         <li>
-            <a class="sidebar-link" href="{{ path('upload', {'upload_type': 'files'} ) }}">
-                Upload
+            <a class="sidebar-link" href="{{ path('modules_my_files') }}">
+                Main folder
             </a>
         </li>
     </ul>
@@ -58,11 +58,6 @@
         <li>
             <a class="sidebar-link" href="{{ path('modules_my_images') }}">
                 Main folder
-            </a>
-        </li>
-        <li>
-            <a class="sidebar-link" href="{{ path('upload', {'upload_type': 'images'} ) }}">
-                Upload
             </a>
         </li>
     </ul>

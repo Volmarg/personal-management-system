@@ -1,0 +1,41 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {# DataTable#}
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">Files</h4>
+                            <div class="my-images-all-images d-flex justify-content-around flex-wrap">
+
+{#                                {% for image_path in all_images_paths %}
+
+                                    <div class="my-images-single-image-wrapper" style="margin:10px;">
+                                        <img src="/{{ image_path }}" style="width:200px;" />
+                                    </div>
+
+                                {% endfor %}#}
+
+                                {% include 'modules/my-files/components/files-list.html.twig' %}
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

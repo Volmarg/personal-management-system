@@ -41,6 +41,14 @@
         .file-upload-form .upload-submit {
             height: 50px;
         }
+
+        .file-upload-form .button-submit {
+            padding: 0;
+        }
+
+        .file-upload-form .upload-type{
+            margin: 5px;
+        }
     </style>
 
     <!-- ### $App Screen Content ### -->
@@ -54,10 +62,10 @@
                             <h4 class="c-grey-900 mB-20 align-self-center">Upload files</h4>
 
 
-                            <div class="col-md-6 align-self-center add-record-form file-upload-form d-flex justify-content-center">
-                                {{ form_start(form, {'attr': {'class': 'd-flex flex-column'}}) }}
+                            <div class="col-md-6 add-record-form file-upload-form justify-content-center align-self-center">
+                                {{ form_start(form, {'attr': {'class': 'flex-column'}}) }}
 
-                                {{ form_widget(form.upload_type) }}
+                                {{ form_widget(form.upload_type, {'attr': {'class': 'form-control upload-type'}}) }}
 
                                 <section class="file-picker-and-folder-picker d-flex">
                                     <section id="file-upload-file-select"
@@ -69,7 +77,7 @@
                                     {{ form_widget(form.subdirectory) }}
                                 </section>
 
-                                <section class="button-submit">
+                                <section class="button-submit col-md-3">
                                     {{ form_widget(form.submit) }}
                                 </section>
 

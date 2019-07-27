@@ -1,0 +1,16 @@
+{% set images_extensions = [
+    'jpeg', 'jpg', 'png', 'gif', 'bmp'
+] %}
+
+{% set word_extensions = [
+    'odt', 'doc', 'docx'
+] %}
+
+
+{% if extension in images_extensions %}
+    <i class="far fa-file-image"></i>
+{% elseif extension in word_extensions %}
+    <i class="far fa-file-word"></i>
+{%  else %}
+    <i class="fa fa-question-circle" aria-hidden="true"></i>
+{% endif %}

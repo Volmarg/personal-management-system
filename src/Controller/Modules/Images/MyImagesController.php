@@ -5,6 +5,7 @@ namespace App\Controller\Modules\Images;
 use App\Controller\Utils\Env;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MyImagesController extends AbstractController {
@@ -23,7 +24,7 @@ class MyImagesController extends AbstractController {
     /**
      * @Route("my-images/dir/{subdirectory?}", name="modules_my_images")
      * @param string|null $subdirectory
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function displayImages(? string $subdirectory) {
 
