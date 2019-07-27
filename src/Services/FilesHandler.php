@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
+use Monolog\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,9 +34,16 @@ class FilesHandler {
      */
     private $directoriesHandler;
 
-    public function __construct(Application $application, DirectoriesHandler $directoriesHandler) {
+    /**
+     * @var Logger $logger
+     */
+    private $logger;
+
+    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, Logger $logger) {
         $this->application          = $application;
         $this->directoriesHandler   = $directoriesHandler;
+        $this->logger               = $logger;
+
     }
 
     /**
@@ -47,19 +55,19 @@ class FilesHandler {
     public function copyFolderDataToAnotherFolderByPostRequest(Request $request) {
 
         if ( !$request->query->has(static::KEY_CURRENT_UPLOAD_TYPE) ) {
-            return new Response("Current upload type is missing in request.");
+            return new Response("Current upload type is missing in request.", 500);
         }
 
         if ( !$request->query->has(static::KEY_TARGET_UPLOAD_TYPE) ) {
-            return new Response("Target upload type is missing in request.");
+            return new Response("Target upload type is missing in request.", 500);
         }
 
         if ( !$request->query->has(static::KEY_CURRENT_SUBDIRECTORY_NAME) ) {
-            return new Response("Current subdirectory name is missing in request.");
+            return new Response("Current subdirectory name is missing in request.", 500);
         }
 
         if ( !$request->query->has(static::KEY_TARGET_SUBDIRECTORY_NAME) ) {
-            return new Response("Target subdirectory name is missing in request.");
+            return new Response("Target subdirectory name is missing in request.", 500);
         }
 
         $current_upload_type        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
@@ -82,6 +90,13 @@ class FilesHandler {
      */
     public function copyFolderDataToAnotherFolder(string $current_upload_type, string $target_upload_type, string $current_subdirectory_name, string $target_subdirectory_name){
 
+        $this->logger->info('Started copying data between folders via Post Request.', [
+            'current_upload_type'          => $current_upload_type,
+            'target_upload_type'           => $target_upload_type,
+            'current_subdirectory_name'    => $current_subdirectory_name,
+            'target_subdirectory_name'     => $target_subdirectory_name
+        ]);
+
         $current_directory  = FileUploadController::getTargetDirectoryForUploadType($current_upload_type);
         $target_directory   = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
 
@@ -89,11 +104,15 @@ class FilesHandler {
         $is_target_subdirectory_existing  = !FileUploadController::isSubdirectoryForTypeExisting($target_directory, $target_subdirectory_name);
 
         if( $is_current_subdirectory_existing ){
-            return new Response('Current subdirectory does not exist.');
+            $message = 'Current subdirectory does not exist.';
+            $this->logger->info($message);
+            return new Response($message, 500);
         }
 
         if( $is_target_subdirectory_existing ){
-            return new Response('Target subdirectory does not exist.');
+            $message = 'Target subdirectory does not exist.';
+            $this->logger->info($message);
+            return new Response($message, 500);
         }
 
         $current_subdirectory_path = FileUploadController::getSubdirectoryPath($current_directory, $current_subdirectory_name);
@@ -102,10 +121,15 @@ class FilesHandler {
         try{
             Utils::copyFilesRecursively($current_subdirectory_path, $target_subdirectory_path);
         }catch(\Exception $e){
-            return new Response('There was an error while moving files from one folder to another.');
+            $this->logger->info('Exception was thrown while moving data between folders', [
+                'message' => $e->getMessage()
+            ]);
+
+            return new Response('There was an error while moving files from one folder to another.',500);
         }
 
-        return new Response('Data has been successfully moved to new directory');
+        $this->logger->info('Finished copying data.');
+        return new Response('Data has been successfully moved to new directory', 200);
     }
 
     /**
@@ -152,15 +176,24 @@ class FilesHandler {
         bool   $remove_current_folder = true
     ) {
 
+        $this->logger->info('Started copying and removing data between folders');
+
         try{
             $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_subdirectory_name, $target_subdirectory_name);
+
+            $this->logger->info('Started removing folder data.');
+
             if($remove_current_folder){
                 $this->directoriesHandler->removeFolder($current_upload_type, $current_subdirectory_name);
             }
         }catch(\Exception $e){
+            $this->logger->info('Exception was thrown while trying to copy and remove data: ', [
+                'message' => $e->getMessage()
+            ]);
             return new Response ('Then was an error while copying and removing data.');
         }
 
+        $this->logger->info('Copying and removing data has been finished!');
         return new Response('Data has been successfully copied and removed afterward.');
     }
 

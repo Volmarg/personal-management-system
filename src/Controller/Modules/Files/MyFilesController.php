@@ -6,8 +6,10 @@ use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Env;
 use App\Services\FileDownloader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -50,6 +52,11 @@ class MyFilesController extends AbstractController
             $files = $this->getFilesFromSubdirectory($subdirectory);
         }
 
+        # A bit dirty workaround
+        if ($files instanceof RedirectResponse) {
+            return $files;
+        }
+
         $data = [
             'ajax_render'       => false,
             'files'             => $files
@@ -82,7 +89,16 @@ class MyFilesController extends AbstractController
         $all_files        = [];
         $searchDir        = ( empty($subdirectory) ? $upload_dir : FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory));
 
-        $this->finder->files()->in($searchDir);
+        try{
+            $this->finder->files()->in($searchDir);
+
+        }catch(DirectoryNotFoundException $de){
+
+            $this->addFlash('danger', $de->getMessage());
+            $redirect_url = $this->generateUrl('modules_my_files');
+
+            return $this->redirect($redirect_url);
+        }
 
         foreach ($this->finder as $index => $file) {
 

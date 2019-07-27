@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Controller\Utils\Env;
 use App\Controller\Files\FileUploadController;
+use Monolog\Logger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Response;
 
 class FileUploader extends AbstractController {
 
@@ -22,17 +24,27 @@ class FileUploader extends AbstractController {
      */
     private $finder;
 
-    public function __construct() {
+    /**
+     * @var Logger $logger
+     */
+    private $logger;
+
+    public function __construct(Logger $logger) {
         $this->finder     = new Finder();
+        $this->logger     = $logger;
+
     }
 
     /**
      * @param UploadedFile $file
      * @param string $type
      * @param string $subdirectory
+     * @return Response
      * @throws \Exception
      */
     public function upload(UploadedFile $file, string $type, string $subdirectory = '') {
+
+        $this->logger->info("Started uploading files to subdirectory {$subdirectory}");
 
         $this->handleUploadDir();
 
@@ -48,6 +60,7 @@ class FileUploader extends AbstractController {
                 $targetDirectory = Env::getImagesUploadDir();
             break;
             default:
+                $this->logger->info("Performed upload action for not supported upload type: {$type}");
                 throw new \Exception('This type is not allowed');
         }
 
@@ -62,9 +75,14 @@ class FileUploader extends AbstractController {
         try {
             $file->move($targetDirectory, $fileName);
         } catch (FileException $e) {
-
+            $this->logger->info("Exception was thrown while uploading files: ", [
+                'message' => $e->getMessage()
+            ]);
+            return new Response('There was an error while uploading files', 500);
         }
 
+        $this->logger->info('Finished uploading data.');
+        return new Response('File upload has been successfully finished', 200);
     }
 
     public function handleUploadDir() {
@@ -77,8 +95,15 @@ class FileUploader extends AbstractController {
             $uploadFolderPath = $folder->getPath();
         }
 
-        if($folderCount > 0){
-            throw new Exception("Found more than one upload folder named {$this->targetDirectory} !");
+
+        try{
+            if($folderCount > 0){
+                throw new Exception("Found more than one upload folder named {$this->targetDirectory} !");
+            }
+        }catch(\Exception $e){
+            $this->logger->info("Exception was thrown while uploading files: ", [
+                'message' => $e->getMessage()
+            ]);
         }
 
         if (!file_exists($uploadFolderPath)) {

@@ -19,21 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FileUploadController extends AbstractController {
 
-    # TODO: add moving subdirectories to other folder
-        # But do it by copying and removing if copying was done
-        # If copying was not done correctly then warn user about it - he should remove this on his own
-        # maybe moving progress?
-    # TODO: add moving content of one folder to another
-    # TODO: handle case when user tries to enter non existing folder via url
-    # TODO: add handling folder creation in settings
-    # TODO: add logging for most crucial parts, like removing/copying data
-    # TODO: rethink if all the advanced logic of moving files/removing dirs shouldn't bee in some case of FilesAndFoldersService?
-    #   Or both: FilesService and FoldersService
-    #   This is no longer part of upload, so files service would be best
-    # TODO: recheck all consts in forms as well
-    # TODO: most likely there will be new module required Upload because the uploading mechnisms are no loner just part of images/files uploads
-    #   with this I will need to rethink putting MyImages and MyFiles into Upload module - if I split all the logic
-
     const UPLOAD_PAGE_TWIG_TEMPLATE     = 'core/upload/upload-page.html.twig';
 
     const TYPE_IMAGES                   = 'images';

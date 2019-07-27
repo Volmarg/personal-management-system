@@ -3,6 +3,7 @@
 
 namespace App\Controller\Files;
 
+use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Files\UploadSubdirectoryMoveDataType;
 use App\Form\Files\UploadSubdirectoryRemoveType;
 use App\Form\Files\UploadSubdirectoryRenameType;
@@ -59,22 +60,26 @@ class FilesUploadSettingsController extends AbstractController {
         # TODO: change that later to handle js swapping
         $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes();
 
-        $rename_form    = $this->getRenameSubdirectoryForm($all_subdirectories_for_all_types);
+        $rename_form        = $this->getRenameSubdirectoryForm($all_subdirectories_for_all_types);
         $rename_form->handleRequest($request);
 
-        $remove_form    = $this->getRemoveSubdirectoryForm($all_subdirectories_for_all_types);
+        $remove_form        = $this->getRemoveSubdirectoryForm($all_subdirectories_for_all_types);
         $remove_form->handleRequest($request);
 
-        $move_data_form = $this->getMoveUploadSubdirectoryDataForm($all_subdirectories_for_all_types);
+        $move_data_form     = $this->getMoveUploadSubdirectoryDataForm($all_subdirectories_for_all_types);
         $move_data_form->handleRequest($request);
 
-        $this->handleForms($rename_form, $remove_form, $move_data_form);
+        $create_subdir_form = $this->getCreateSubdirectoryForm();
+        $create_subdir_form->handleRequest($request);
+
+        $this->handleForms($rename_form, $remove_form, $move_data_form, $create_subdir_form);
 
         $data = [
-            'ajax_render'       => false,
-            'rename_form'       => $rename_form->createView(),
-            'remove_form'       => $remove_form->createView(),
-            'move_data_form'    => $move_data_form->createView()
+            'ajax_render'           => false,
+            'rename_form'           => $rename_form->createView(),
+            'remove_form'           => $remove_form->createView(),
+            'move_data_form'        => $move_data_form->createView(),
+            'create_subdir_form'    => $create_subdir_form->createView()
         ];
 
         return $this->render(static::TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS, $data);
@@ -116,6 +121,13 @@ class FilesUploadSettingsController extends AbstractController {
         return $form;
     }
 
+    public function getCreateSubdirectoryForm() {
+
+        $form = $this->createForm(UploadSubdirectoryCreateType::class);
+
+        return $form;
+    }
+
     /**
      * @param string $upload_type
      * @param string $current_name
@@ -132,9 +144,10 @@ class FilesUploadSettingsController extends AbstractController {
      * @param FormInterface $rename_form
      * @param FormInterface $remove_form
      * @param FormInterface $move_data_form
+     * @param FormInterface $create_subdir_form
      * @throws \Exception
      */
-    private function handleForms(FormInterface $rename_form, FormInterface $remove_form, FormInterface $move_data_form){
+    private function handleForms(FormInterface $rename_form, FormInterface $remove_form, FormInterface $move_data_form, FormInterface $create_subdir_form){
         # TODO: handle exception or make some messaging?
 
         if($rename_form->isSubmitted() && $rename_form->isValid()) {
@@ -167,7 +180,13 @@ class FilesUploadSettingsController extends AbstractController {
             );
         }
 
+        if($create_subdir_form->isSubmitted() && $create_subdir_form->isValid()) {
+            $form_data          = $create_subdir_form->getData();
+            $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
+            $upload_type        = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
 
+            $response = $this->directories_handler->createFolder($upload_type, $subdirectory_name);
+        }
 
     }
 
