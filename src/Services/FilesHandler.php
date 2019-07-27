@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,11 +35,11 @@ class FilesHandler {
     private $directoriesHandler;
 
     /**
-     * @var Logger $logger
+     * @var LoggerInterface $logger
      */
     private $logger;
 
-    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, Logger $logger) {
+    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, LoggerInterface $logger) {
         $this->application          = $application;
         $this->directoriesHandler   = $directoriesHandler;
         $this->logger               = $logger;

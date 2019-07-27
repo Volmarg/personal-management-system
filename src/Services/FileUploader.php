@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Controller\Utils\Env;
 use App\Controller\Files\FileUploadController;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Finder\Finder;
@@ -25,11 +25,11 @@ class FileUploader extends AbstractController {
     private $finder;
 
     /**
-     * @var Logger $logger
+     * @var LoggerInterface $logger
      */
     private $logger;
 
-    public function __construct(Logger $logger) {
+    public function __construct(LoggerInterface $logger) {
         $this->finder     = new Finder();
         $this->logger     = $logger;
 

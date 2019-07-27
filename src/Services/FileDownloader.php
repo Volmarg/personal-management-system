@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Controller\Utils\Env;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -22,11 +22,11 @@ class FileDownloader extends AbstractController {
     private $finder;
 
     /**
-     * @var Logger $logger
+     * @var LoggerInterface $logger
      */
     private $logger;
 
-    public function __construct(Logger $logger) {
+    public function __construct(LoggerInterface $logger) {
         $this->targetDirectory  = Env::getUploadDir();
         $this->finder           = new Finder();
         $this->logger           = $logger;
