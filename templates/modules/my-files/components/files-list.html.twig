@@ -2,7 +2,10 @@
 {% set KEY_FILE_NAME        = constant(my_files_controller~"::KEY_FILE_NAME") %}
 {% set KEY_FILE_SIZE        = constant(my_files_controller~"::KEY_FILE_SIZE") %}
 {% set KEY_FILE_EXTENSION   = constant(my_files_controller~"::KEY_FILE_EXTENSION") %}
+{% set KEY_FILE_FULL_PATH   = constant(my_files_controller~"::KEY_FILE_FULL_PATH") %}
 {% set bytes_in_mb          = 1048576 %}
+
+{# TODO: Move to Scss #}
 
 <table id="MyFiles" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
     <thead>
@@ -33,7 +36,17 @@
             <td contenteditable="false">
                 <i class="fa fa-trash" aria-hidden="true"></i>
                 <i class="far fa-edit"></i>
-                <i class="fa fa-download" aria-hidden="true"></i>
+
+                {# Temporary solution without JS #}
+                <form method="POST" action="{{ path('download_file') }}">
+                    <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}"/>
+                    <button>
+                        <i class="fa fa-download" aria-hidden="true"></i>
+                    </button>
+                </form>
+                <a href="{{ path('download_file') }}">
+
+                </a>
                 <i class="far fa-save d-none"></i>
             </td>
         </tr>
