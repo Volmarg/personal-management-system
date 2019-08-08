@@ -1,0 +1,37 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                <h4 class="c-grey-900 mB-20 align-self-center">Images</h4>
+                <div class="my-images-all-images">
+
+                    {# TODO: move to css #}
+                    <style>
+                        /**
+                            Fix for centering masonry gallery
+                         */
+                        .grid {
+                            margin: 0 auto;
+                        }
+                    </style>
+
+                    <div class="my-gallery grid" data-masonry='{
+                        "itemSelector": ".grid-item",
+                        "columnWidth": 30,
+                        "fitWidth": true
+                    }'>
+                        <div id="aniimated-thumbnials" class="grid-item">
+                            {% for image_path in images_paths %}
+                                <a href="/{{ image_path }}">
+                                    <img src="/{{ image_path }}" alt="Image description" style="height:200px;"/>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
