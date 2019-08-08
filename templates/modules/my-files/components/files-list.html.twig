@@ -6,6 +6,22 @@
 {% set bytes_in_mb          = 1048576 %}
 
 {# TODO: Move to Scss #}
+<style>
+    button.file-download {
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+        display: inline;
+    }
+
+    .file-download-form {
+        display: inline;
+    }
+</style>
 
 <table id="MyFiles" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
     <thead>
@@ -38,9 +54,9 @@
                 <i class="far fa-edit"></i>
 
                 {# Temporary solution without JS #}
-                <form method="POST" action="{{ path('download_file') }}">
+                <form method="POST" action="{{ path('download_file') }}" class="file-download-form">
                     <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}"/>
-                    <button>
+                    <button class="file-download ">
                         <i class="fa fa-download" aria-hidden="true"></i>
                     </button>
                 </form>

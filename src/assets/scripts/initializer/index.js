@@ -19,6 +19,7 @@ export default (function () {
             loading_bar.init();
             tinymce.custom.init();
             myGoals.ui.init();
+            gallery.lightgallery.init();
         },
         initStatic: function () {
             if ("undefined" !== typeof furcanIconPicker) {

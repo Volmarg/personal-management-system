@@ -11,6 +11,8 @@ import './loading-bar/loading-bar.js';
 import './bootstrap-notify/bootstrap-notify.min.js';
 import './bootstrap-notify/index.js';
 
+import './lightgallery/index.js';
+
 import './jquery-ui/jquery-ui.min.js';
 import './jquery-ui/jquery.ui.touch-punch-improved.js';
 import './tiny-mce/index.js';
