@@ -23,6 +23,7 @@ class FilesHandler {
     const KEY_CURRENT_SUBDIRECTORY_NAME = 'current_subdirectory_name';
     const KEY_TARGET_SUBDIRECTORY_NAME  = 'target_subdirectory_name';
     const KEY_FILE_FULL_PATH            = 'file_full_path';
+    const KEY_FILE_NEW_NAME             = 'file_new_name';
 
     const FILE_KEY                      = 'file';
 
@@ -202,8 +203,14 @@ class FilesHandler {
     /**
      * @param Request $request
      * @return JsonResponse
+     * @throws \Exception
      */
     public function removeFile(Request $request) {
+
+        if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
+            throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
+        }
+
         $filepath = $request->request->get(static::KEY_FILE_FULL_PATH);
 
         try{
@@ -219,6 +226,48 @@ class FilesHandler {
 
         }catch(\Exception $e){
             return new JsonResponse('There was an error while removing the file.', 500);
+        }
+
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function renameFile(Request $request) {
+
+        if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
+            throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
+        }
+
+        if (!$request->request->has(static::KEY_FILE_NEW_NAME)) {
+            throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_NEW_NAME);
+        }
+
+        $filepath       = $_SERVER['DOCUMENT_ROOT'].$request->request->get(static::KEY_FILE_FULL_PATH);
+        $filename       = basename($filepath);
+
+        $filedir        = str_replace($filename, '', $filepath);
+        $newfilename    = $request->request->get(static::KEY_FILE_NEW_NAME);
+        $new_file_path  = $filedir.$newfilename;
+
+
+        try{
+
+            if( $filepath === $new_file_path){
+                return new JsonResponse('File name remains the same.', 200);
+            }
+
+            if( !file_exists($new_file_path) ) {
+                rename($filepath, $new_file_path);
+                return new JsonResponse('File has been successfully renamed.', 200);
+            }else{
+                return new JsonResponse('File with this name already exist.', 500);
+            }
+
+        }catch(\Exception $e){
+            return new JsonResponse('There was an error while renaming the file.', 500);
         }
 
     }
