@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class MyImagesController extends AbstractController {
 
     const TWIG_TEMPLATE_MY_IMAGES = 'modules/my-images/my-images.html.twig';
+    const KEY_FILE_NAME           = 'file_name';
+    const KEY_FILE_FULL_PATH      = 'file_full_path';
 
     /**
      * @var Finder $finder
@@ -29,14 +31,14 @@ class MyImagesController extends AbstractController {
     public function displayImages(? string $subdirectory) {
 
         if (empty($subdirectory)) {
-            $all_images_paths = $this->getAllImages();
+            $all_images = $this->getAllImages();
         } else {
-            $all_images_paths = $this->getImagesFromCategory($subdirectory);
+            $all_images = $this->getImagesFromCategory($subdirectory);
         }
 
         $data = [
-            'ajax_render'       => false,
-            'all_images_paths'  => $all_images_paths
+            'ajax_render' => false,
+            'all_images'  => $all_images
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_IMAGES, $data);
@@ -44,16 +46,19 @@ class MyImagesController extends AbstractController {
 
     private function getImagesFromCategory(string $subdirectory) {
         $upload_dir       = Env::getImagesUploadDir();
-        $all_images_paths = [];
+        $all_images       = [];
         $searchDir        = ( empty($subdirectory) ? $upload_dir : $upload_dir . '/' . $subdirectory);
 
         $this->finder->files()->in($searchDir);
 
         foreach ($this->finder as $image) {
-            $all_images_paths[] = $image->getPathname();
+            $all_images[] = [
+                static::KEY_FILE_FULL_PATH => $image->getPathname(),
+                static::KEY_FILE_NAME      => $image->getFilename()
+            ];
         }
 
-        return $all_images_paths;
+        return $all_images;
     }
 
     private function getAllImages() {

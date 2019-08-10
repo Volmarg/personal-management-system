@@ -6,6 +6,7 @@ use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,6 +22,7 @@ class FilesHandler {
     const KEY_TARGET_UPLOAD_TYPE        = 'target_upload_type';
     const KEY_CURRENT_SUBDIRECTORY_NAME = 'current_subdirectory_name';
     const KEY_TARGET_SUBDIRECTORY_NAME  = 'target_subdirectory_name';
+    const KEY_FILE_FULL_PATH            = 'file_full_path';
 
     const FILE_KEY                      = 'file';
 
@@ -195,6 +197,30 @@ class FilesHandler {
 
         $this->logger->info('Copying and removing data has been finished!');
         return new Response('Data has been successfully copied and removed afterward.');
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function removeFile(Request $request) {
+        $filepath = $request->request->get(static::KEY_FILE_FULL_PATH);
+
+        try{
+
+            $fileLocation = $_SERVER['DOCUMENT_ROOT'] . $filepath;
+
+            if( file_exists($fileLocation) ) {
+                unlink($fileLocation);
+                return new JsonResponse('File has been successfully removed.', 200);
+            }else{
+                return new JsonResponse('File does not exist.', 404);
+            }
+
+        }catch(\Exception $e){
+            return new JsonResponse('There was an error while removing the file.', 500);
+        }
+
     }
 
 }
