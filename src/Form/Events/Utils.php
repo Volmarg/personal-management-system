@@ -16,6 +16,11 @@ class Utils {
      */
     public static function modifyEventData($data_elements_to_modify, $modified_data) {
 
+        // FIX: for exceeded uploaded file size - $_FILES is empty, and symfony does not provide any errors
+        if( is_null($data_elements_to_modify) ){
+            return [];
+        }
+
         foreach ($data_elements_to_modify as $modified_property => $new_value) {
             static::$uc_property = ucfirst($modified_property);
             static::$lc_property = lcfirst($modified_property);
@@ -56,6 +61,11 @@ class Utils {
      * @return mixed
      */
     private static function modifyEventDataForArray($modified_data, $new_value) {
+
+        // FIX: for exceeded uploaded file size - $_FILES is empty, and symfony does not provide any errors
+        if( is_null($modified_data) ){
+            return [];
+        }
 
         if (array_key_exists(static::$uc_property, $modified_data)) {
             $modified_data[static::$uc_property] = $new_value;

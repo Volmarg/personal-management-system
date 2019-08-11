@@ -9,7 +9,7 @@
             {% else %}
 
                 {# By default I assume that each value is unique! #}
-                {% if choice_attr is defined %}
+                {% if choice_attr is defined and choice_attr is not empty %}
                     <option value="{{ choice }}" data-categories="{{ choice_attr[0][choice] | json_encode }}"></option>
                 {% endif %}
 

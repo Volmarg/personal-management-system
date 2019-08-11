@@ -76,13 +76,19 @@ class FileUploadController extends AbstractController {
         $subdirectories         = static::getSubdirectoriesForAllUploadTypes();
         $grouped_subdirectories = static::getSubdirectoriesForAllUploadTypes(true);
 
+        $upload_max_filesize = preg_replace("/[^0-9]/","",ini_get('upload_max_filesize'));
+        $post_max_size       = preg_replace("/[^0-9]/","",ini_get('post_max_size'));
+
+        $max_upload_size_mb  = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize);
+
         $form = $this->getUploadForm($subdirectories, $grouped_subdirectories);
 
         $this->handleFileUpload($request, $form);
 
         $data = [
-            'ajax_render'       => false,
-            'form'              => $form->createView()
+            'ajax_render'           => false,
+            'form'                  => $form->createView(),
+            'max_upload_size_mb'    => $max_upload_size_mb
         ];
 
         return $this->render(static::UPLOAD_PAGE_TWIG_TEMPLATE, $data);

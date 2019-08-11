@@ -82,6 +82,13 @@
                                 </section>
 
                                 {{ form_end(form) }}
+                                <small id="currentFileSizeWrapper">
+                                    Selected files size: <span class="selected-files-size"></span>Mb
+                                </small>
+                                <br/>
+                                <small id="maxUploadSizeWrapper" data-max-upload-size="{{ max_upload_size_mb }}">
+                                    Max upload size: {{ max_upload_size_mb }} Mb
+                                </small>
                             </div>
 
                         </div>
@@ -97,15 +104,38 @@
         let fileSelectButton    = document.getElementById('file-upload-file-select');
         let filesInput          = document.getElementById('upload_form_file');
         let filesNames          = [];
+        let filesTotalSizeBytes = 0;
+        let filesTotalSizeMb    = 0;
+        let bytesInMb           = 1048576;
 
         fileSelectButton.onchange = function () {
             let selectedFiles       = filesInput.files;
 
             for (let x = 0; x <= selectedFiles.length - 1 ; x++){
                 filesNames.push(selectedFiles[x].name);
+                filesTotalSizeBytes += selectedFiles[x].size;
             }
 
+            filesTotalSizeMb = Math.floor(filesTotalSizeBytes/bytesInMb);
+
+            let currentSizeContainer        = document.querySelector('.selected-files-size');
+            let currentFileSizeWrapper      = document.querySelector("#currentFileSizeWrapper");
+            let maxUploadSizeWrapper        = document.querySelector("#maxUploadSizeWrapper");
+            let maxUploadSize               = maxUploadSizeWrapper.getAttribute('data-max-upload-size');
+            let submitButton                = document.querySelector('#upload_form_submit');
+
+            currentSizeContainer.innerHTML  = filesTotalSizeMb;
+
+            if( filesTotalSizeMb < maxUploadSize ){
+                currentFileSizeWrapper.className = "text-success";
+            }else{
+                currentFileSizeWrapper.className = "text-danger";
+                submitButton.className           += ' disabled';
+            }
+
+
             console.log(filesNames);
+            console.log(filesTotalSizeMb);
 
         };
 
