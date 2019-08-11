@@ -153,13 +153,14 @@ class MyFilesController extends AbstractController
     /**
      * @Route("/my-files/rename-file", name="my_files_rename_file", methods="POST")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return Response
      * @throws \Exception
      */
     public function renameFileViaPost(Request $request) {
-        $response = $this->filesHandler->renameFile($request);
+        $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
+        $this->filesHandler->renameFile($request);
 
-        return $response;
+        return $this->displayImages($subdirectory, $request);
     }
 
 

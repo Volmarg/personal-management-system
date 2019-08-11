@@ -344,8 +344,14 @@ export default (function () {
                 url: update_data.url,
                 method: 'POST',
                 data: update_data.data,
-                success: () => {
-                    bootstrap_notifications.notify(update_data.success_message, 'success')
+                success: (template) => {
+                    bootstrap_notifications.notify(update_data.success_message, 'success');
+
+                    if( true === update_data.update_template ){
+                        $('.twig-body-section').html(template);
+                        initializer.reinitialize();
+                    }
+
                 },
             }).fail(() => {
                 bootstrap_notifications.notify(update_data.fail_message, 'danger')
@@ -1497,7 +1503,8 @@ export default (function () {
                         'url'                       : url,
                         'data'                      : ajax_data,
                         'success_message'           : success_message,
-                        'fail_message'              : fail_message
+                        'fail_message'              : fail_message,
+                        'update_template'           : true
                     };
                 },
                 makeRemoveData: function (parent_element) {

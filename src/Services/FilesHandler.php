@@ -253,7 +253,7 @@ class FilesHandler {
         $newfilename            = $request->request->get(static::KEY_FILE_NEW_NAME);
         $new_file_extension     = pathinfo($newfilename, PATHINFO_EXTENSION);
 
-        $new_file_path          = $filedir.$newfilename;
+        $new_file_path          = $filedir.trim($newfilename);
 
         if( $curr_file_extension !== $new_file_extension ){
             $new_file_path .= '.' . $curr_file_extension;
