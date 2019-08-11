@@ -17,7 +17,11 @@ class UploadSubdirectoryRemoveType extends AbstractType
     {
         $builder
             ->add(FileUploadController::KEY_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES
+                'choices' => FileUploadController::UPLOAD_TYPES,
+                'attr'    => [
+                    'class'                        => 'form-control listFilterer',
+                    'data-dependent-list-selector' => '#upload_subdirectory_remove_subdirectory_name'
+                ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, ChoiceType::class, [
                 'choices' => $options[static::OPTION_SUBDIRECTORIES]

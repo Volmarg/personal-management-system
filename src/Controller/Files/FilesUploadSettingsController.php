@@ -57,8 +57,7 @@ class FilesUploadSettingsController extends AbstractController {
      */
     public function displaySettings(Request $request) {
 
-        # TODO: change that later to handle js swapping
-        $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes();
+        $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes(true);
 
         $rename_form        = $this->getRenameSubdirectoryForm($all_subdirectories_for_all_types);
         $rename_form->handleRequest($request);

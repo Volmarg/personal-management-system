@@ -18,10 +18,14 @@ class UploadSubdirectoryRenameType extends AbstractType {
 
         $builder
             ->add(FileUploadController::KEY_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES
+                'choices' => FileUploadController::UPLOAD_TYPES,
+                'attr'    => [
+                    'class'                        => 'form-control listFilterer',
+                    'data-dependent-list-selector' => '#upload_subdirectory_rename_subdirectory_current_name'
+                ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME, ChoiceType::class, [
-                'choices' => $options[static::OPTION_SUBDIRECTORY]
+                'choices'  => $options[static::OPTION_SUBDIRECTORY]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME, TextType::class, [
 

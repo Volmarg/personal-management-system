@@ -1,8 +1,22 @@
 {% block datalist_widget %}
-    <input list="{{ id }}DatalistType" {{ block('widget_attributes') }} autocomplete="off" class="form-control" >
+
+    <input list="{{ id }}DatalistType" {{ block('widget_attributes') }} autocomplete="off" class="form-control">
     <datalist id="{{ id }}DatalistType">
         {% for choice in choices %}
-            <option value="{{ choice }}"></option>
+
+            {% if choice is iterable %}
+                <option value="Grouped options are not supported by this type!"></option>
+            {% else %}
+
+                {# By default I assume that each value is unique! #}
+                {% if choice_attr is defined %}
+                    <option value="{{ choice }}" data-categories="{{ choice_attr[0][choice] | json_encode }}"></option>
+                {% endif %}
+
+            {% endif %}
+
+
+
         {% endfor %}
     </datalist>
 {% endblock %}

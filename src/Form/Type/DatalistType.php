@@ -15,7 +15,8 @@ class DatalistType extends AbstractType {
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options) {
-        $view->vars['choices'] = $options['choices'];
+        $view->vars['choices']      = $options['choices'];
+        $view->vars['choice_attr']  = $options['choice_attr'];
     }
 
 }

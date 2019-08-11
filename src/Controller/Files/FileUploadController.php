@@ -73,10 +73,10 @@ class FileUploadController extends AbstractController {
      */
     public function displayUploadPage(Request $request){
 
-        # TODO: this has to be adjusted later for JS - swapping type = filter subdirs
-        $subdirectories = static::getSubdirectoriesForAllUploadTypes();
+        $subdirectories         = static::getSubdirectoriesForAllUploadTypes();
+        $grouped_subdirectories = static::getSubdirectoriesForAllUploadTypes(true);
 
-        $form = $this->getUploadForm($subdirectories);
+        $form = $this->getUploadForm($subdirectories, $grouped_subdirectories);
 
         $this->handleFileUpload($request, $form);
 
@@ -118,14 +118,22 @@ class FileUploadController extends AbstractController {
     }
 
     /**
+     * @param bool $groupedByTypes
+     * @return array
      * @throws \Exception
      */
-    public static function getSubdirectoriesForAllUploadTypes(){
+    public static function getSubdirectoriesForAllUploadTypes($groupedByTypes = false){
 
         $subdirectories = [];
 
-        foreach(static::UPLOAD_TYPES as $upload_type){
-            $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForUploadType($upload_type, true) );
+        if( !$groupedByTypes ){
+            foreach(static::UPLOAD_TYPES as $upload_type){
+                $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForUploadType($upload_type, true) );
+            }
+        }else{
+            foreach(static::UPLOAD_TYPES as $upload_type){
+                $subdirectories[$upload_type] = static::getSubdirectoriesForUploadType($upload_type, true);
+            }
         }
 
         return $subdirectories;
@@ -173,10 +181,14 @@ class FileUploadController extends AbstractController {
 
     /**
      * @param $subdirectories
+     * @param $grouped_subdirectories
      * @return \Symfony\Component\Form\FormInterface
      */
-    private function getUploadForm($subdirectories){
-        return $this->createForm(UploadFormType::class, null, ['subdirectories' => $subdirectories]);
+    private function getUploadForm($subdirectories, $grouped_subdirectories){
+        return $this->createForm(UploadFormType::class, null, [
+            'subdirectories'         => $subdirectories,
+            'grouped_subdirectories' => $grouped_subdirectories
+        ]);
     }
 
     /**
