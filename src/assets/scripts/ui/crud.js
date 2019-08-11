@@ -1476,6 +1476,51 @@ export default (function () {
                 },
                 entity_name: "My Goals Payments",
             },
+            "MyFiles": {
+                makeUpdateData: function (tr_parent_element) {
+                    let subdirectory        = $(tr_parent_element).find('input[name^="file_full_path"]').attr('data-subdirectory');
+                    let file_full_path      = $(tr_parent_element).find('input[name^="file_full_path"]').val();
+                    let file_new_name       = $(tr_parent_element).find('.file_name').text();
+
+                    let url                 = '/my-files/rename-file';
+
+                    let success_message     = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message        = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let ajax_data = {
+                        'file_full_path'    : '/' + file_full_path, // must be this way as download works without "/" and removing with it
+                        'file_new_name'     : file_new_name,
+                        'subdirectory'      : subdirectory
+                    };
+
+                    return {
+                        'url'                       : url,
+                        'data'                      : ajax_data,
+                        'success_message'           : success_message,
+                        'fail_message'              : fail_message
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let subdirectory        = $(parent_element).find('input[name^="file_full_path"]').attr('data-subdirectory');
+                    let file_full_path      = $(parent_element).find('input[name^="file_full_path"]').val();
+                    let url                 = '/my-files/remove-file';
+
+                    let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                    let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                    return {
+                        'url'               : url,
+                        'data'              : {
+                            'file_full_path'    : '/' + file_full_path, // must be this way as download works without "/" and removing with it
+                            'subdirectory'      : subdirectory
+                        },
+                        'success_message'   : success_message,
+                        'fail_message'      : fail_message,
+                        'is_dataTable'      : false, //temporary
+                    };
+                },
+                entity_name: "My files"
+            }
         },
         form_target_actions: {
             "UserAvatar": {

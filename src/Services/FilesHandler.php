@@ -245,13 +245,23 @@ class FilesHandler {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_NEW_NAME);
         }
 
-        $filepath       = $_SERVER['DOCUMENT_ROOT'].$request->request->get(static::KEY_FILE_FULL_PATH);
-        $filename       = basename($filepath);
+        $filepath               = $_SERVER['DOCUMENT_ROOT'].$request->request->get(static::KEY_FILE_FULL_PATH);
+        $filename               = basename($filepath);
+        $curr_file_extension    = pathinfo($filename, PATHINFO_EXTENSION);
 
-        $filedir        = str_replace($filename, '', $filepath);
-        $newfilename    = $request->request->get(static::KEY_FILE_NEW_NAME);
-        $new_file_path  = $filedir.$newfilename;
+        $filedir                = str_replace($filename, '', $filepath);
+        $newfilename            = $request->request->get(static::KEY_FILE_NEW_NAME);
+        $new_file_extension     = pathinfo($newfilename, PATHINFO_EXTENSION);
 
+        $new_file_path          = $filedir.$newfilename;
+
+        if( $curr_file_extension !== $new_file_extension ){
+            $new_file_path .= '.' . $curr_file_extension;
+        }
+
+        if( empty($newfilename) ){
+            return new JsonResponse('File name cannot be empty!', 500);
+        }
 
         try{
 

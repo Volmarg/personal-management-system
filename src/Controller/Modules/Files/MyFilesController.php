@@ -5,6 +5,7 @@ namespace App\Controller\Modules\Files;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Env;
 use App\Services\FileDownloader;
+use App\Services\FilesHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
@@ -23,6 +24,7 @@ class MyFilesController extends AbstractController
     const KEY_FILE_SIZE          = 'file_size';
     const KEY_FILE_EXTENSION     = 'file_extension';
     const KEY_FILE_FULL_PATH     = 'file_full_path';
+    const KEY_SUBDIRECTORY       = 'subdirectory';
 
     /**
      * @var Finder $finder
@@ -34,17 +36,27 @@ class MyFilesController extends AbstractController
      */
     private $file_downloader;
 
-    public function __construct(FileDownloader $file_downloader) {
+    /**
+     * @var FilesHandler $filesHandler
+     */
+    private $filesHandler;
+
+    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler) {
         $this->finder           = new Finder();
         $this->file_downloader  = $file_downloader;
+        $this->filesHandler     = $filesHandler;
+
     }
 
     /**
      * @Route("my-files/dir/{subdirectory?}", name="modules_my_files")
      * @param string|null $subdirectory
+     * @param Request $request
      * @return Response
      */
-    public function displayImages(? string $subdirectory) {
+    public function displayImages(? string $subdirectory, Request $request) {
+
+        $ajax_render = false;
 
         if (empty($subdirectory)) {
             $files = $this->getAllFiles();
@@ -57,9 +69,14 @@ class MyFilesController extends AbstractController
             return $files;
         }
 
+        if ( $request->isXmlHttpRequest() ) {
+            $ajax_render = true;
+        }
+
         $data = [
-            'ajax_render'       => false,
-            'files'             => $files
+            'ajax_render'       => $ajax_render,
+            'files'             => $files,
+            'subdirectory'      => $subdirectory
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);
@@ -119,5 +136,31 @@ class MyFilesController extends AbstractController
 
         return $all_files;
     }
+
+    /**
+     * @Route("/my-files/remove-file", name="my_files_remove_file", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function removeFileViaPost(Request $request) {
+        $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
+        $this->filesHandler->removeFile($request);
+
+        return $this->displayImages($subdirectory, $request);
+    }
+
+    /**
+     * @Route("/my-files/rename-file", name="my_files_rename_file", methods="POST")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @throws \Exception
+     */
+    public function renameFileViaPost(Request $request) {
+        $response = $this->filesHandler->renameFile($request);
+
+        return $response;
+    }
+
 
 }

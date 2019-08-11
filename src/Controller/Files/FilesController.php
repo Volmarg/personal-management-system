@@ -52,7 +52,7 @@ class FilesController extends AbstractController {
     }
 
     /**
-     * @Route("/upload/action/rename-file", name="upload_remove_file", methods="POST")
+     * @Route("/upload/action/rename-file", name="upload_rename_file", methods="POST")
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception

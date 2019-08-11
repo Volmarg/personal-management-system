@@ -41,21 +41,20 @@
                 {% include 'modules/my-files/components/file-icon.html.twig' with {'extension': file[KEY_FILE_EXTENSION]} %}
                 {{ file[KEY_FILE_NAME] }}
             </td>
-            <td>
+            <td contenteditable="false">
                 {{ file[KEY_FILE_EXTENSION] }}
             </td>
-            <td class="{{ KEY_FILE_SIZE }}">
+            <td class="{{ KEY_FILE_SIZE }}" contenteditable="false">
                 {% set size_in_mb = file[KEY_FILE_SIZE] / bytes_in_mb %}
                 {{ size_in_mb | number_format(2) }}
             </td>
 
             <td contenteditable="false">
                 <i class="fa fa-trash" aria-hidden="true"></i>
-                <i class="far fa-edit"></i>
+                <i class="far fa-edit" data-editable-columns='["{{ KEY_FILE_NAME }}"]'></i>
 
-                {# Temporary solution without JS #}
                 <form method="POST" action="{{ path('download_file') }}" class="file-download-form">
-                    <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}"/>
+                    <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}" data-subdirectory="{{ subdirectory }}"/>
                     <button class="file-download ">
                         <i class="fa fa-download" aria-hidden="true"></i>
                     </button>
