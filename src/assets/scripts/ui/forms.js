@@ -56,7 +56,7 @@ export default (function () {
                     }
                 });
 
-                // Now display only these from selected category
+                // Now display only these from selected category and select first option
                 allOptions.each((index, option) => {
 
                     let categories       = JSON.parse($(option).attr('data-categories'));
@@ -65,17 +65,31 @@ export default (function () {
                     if($.inArray(selectedCategory, categories) !== -1){
                         let dataValue = $(option).attr('data-value');
                         $(option).val(dataValue);
+
+                        if( index === 0 ){
+                            $(option).attr('selected', 'selected');
+                        }
                     }
 
                 });
 
             }else{
                 $(optgroups).addClass('d-none');
-                $(optgroups).find('option').addClass('d-none');
+                $(optgroups).find('option').addClass('d-none').removeAttr('selected');
 
-                let visibleOptgroup = $(dependentList).find('optgroup[label^="' + $(listFilterer).val() + '"]');
+                let visibleOptgroup         = $(dependentList).find('optgroup[label^="' + $(listFilterer).val() + '"]');
+                let visibleOptgroupOptions  = $(visibleOptgroup).find('option');
                 $(visibleOptgroup).removeClass('d-none');
-                $(visibleOptgroup).find('option').removeClass('d-none');
+
+                $(visibleOptgroupOptions).each((index, option) => {
+                    $(option).removeClass('d-none');
+
+                    if( index === 0 ){
+                        $(option).attr('selected', 'selected');
+                    }
+
+                });
+
             }
 
 

@@ -15,16 +15,23 @@ class UploadSubdirectoryMoveDataType extends AbstractType
 {
     const FIELD_REMOVE_CURRENT_FOLDER = 'remove_current_folder';
 
-    #TODO: add later js for handling switch upload type - so only subdirectories for given type should be on list
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
         $builder
             ->add(FilesHandler::KEY_CURRENT_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES
+                'choices' => FileUploadController::UPLOAD_TYPES,
+                'attr'    => [
+                    'class'                        => 'form-control listFilterer',
+                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_current_subdirectory_name'
+                ]
             ])
             ->add(FilesHandler::KEY_TARGET_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES
+                'choices' => FileUploadController::UPLOAD_TYPES,
+                'attr'    => [
+                    'class'                        => 'form-control listFilterer',
+                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_target_subdirectory_name'
+                ]
             ])
             ->add(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME, ChoiceType::class, [
                 'choices' => $options[FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME]
