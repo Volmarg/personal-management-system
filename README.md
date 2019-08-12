@@ -6,7 +6,7 @@
 </p>
 
 <h1 align="center"> Personal Management System</h1>
-<p align="center"><i>Your central point for managing personall data <br> (if current modules allow to do that).</i></p>
+<p align="center"><i>Your central point for managing personal data <br> (if current modules allow to do that).</i></p>
 
 <h3>Description</h3>
 <hr>
