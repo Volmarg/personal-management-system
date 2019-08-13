@@ -7,6 +7,7 @@ use App\Controller\Utils\Application;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -86,6 +87,15 @@ class UploadFormType extends AbstractType {
                     'class' => 'upload-submit btn btn-sm btn-primary',
                     'style' => 'width:100%;'
                 ]
+            ]);
+
+        $builder
+            ->add('resetSelectedFiles', ButtonType::class, [
+                'attr' => [
+                    'class' => 'btn btn-sm btn-primary clear-selection col-1',
+                    'style' => 'width:100%;'
+                ],
+                "label" => " "
             ]);
     }
 

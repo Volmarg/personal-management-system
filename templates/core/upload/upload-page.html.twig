@@ -49,6 +49,12 @@
         .file-upload-form .upload-type{
             margin: 5px;
         }
+
+        .clear-selection::after{
+            content: "✗";
+            font-size: 20px;
+            margin-left: -7px;
+        }
     </style>
 
     <!-- ### $App Screen Content ### -->
@@ -73,7 +79,9 @@
                                              style="width:50px; height:50px; padding: 0; "
                                     >
                                         {{ form_widget(form.file) }}
+
                                     </section>
+                                    {{ form_widget(form.resetSelectedFiles) }}
                                     {{ form_widget(form.subdirectory) }}
                                 </section>
 
@@ -89,6 +97,11 @@
                                 <small id="maxUploadSizeWrapper" data-max-upload-size="{{ max_upload_size_mb }}">
                                     Max upload size: {{ max_upload_size_mb }} Mb
                                 </small>
+                                <small>
+                                    <ul  id="selectedFilesList">
+
+                                    </ul>
+                                </small>
                             </div>
 
                         </div>
@@ -100,9 +113,16 @@
 
 
     {# TODO: add script for upload form and move js + turn into jq #}
+    {#  Handling displaying information about selected files  #}
     <script>
-        let fileSelectButton    = document.getElementById('file-upload-file-select');
-        let filesInput          = document.getElementById('upload_form_file');
+        let fileSelectButton            = document.getElementById('file-upload-file-select');
+        let filesInput                  = document.getElementById('upload_form_file');
+        var currentSizeContainer        = document.querySelector('.selected-files-size');
+        let currentFileSizeWrapper      = document.querySelector("#currentFileSizeWrapper");
+        let maxUploadSizeWrapper        = document.querySelector("#maxUploadSizeWrapper");
+        let maxUploadSize               = maxUploadSizeWrapper.getAttribute('data-max-upload-size');
+        let submitButton                = document.querySelector('#upload_form_submit');
+
         let filesNames          = [];
         let filesTotalSizeBytes = 0;
         let filesTotalSizeMb    = 0;
@@ -110,19 +130,21 @@
 
         fileSelectButton.onchange = function () {
             let selectedFiles       = filesInput.files;
+            var selectedFilesList   = document.querySelector('#selectedFilesList');
 
             for (let x = 0; x <= selectedFiles.length - 1 ; x++){
                 filesNames.push(selectedFiles[x].name);
                 filesTotalSizeBytes += selectedFiles[x].size;
+
+                let filesListWrapper    = document.createElement("LI");
+                let textnode            = document.createTextNode(selectedFiles[x].name);
+
+                filesListWrapper.appendChild(textnode);
+                selectedFilesList.appendChild(filesListWrapper);
+
             }
 
             filesTotalSizeMb = Math.floor(filesTotalSizeBytes/bytesInMb);
-
-            let currentSizeContainer        = document.querySelector('.selected-files-size');
-            let currentFileSizeWrapper      = document.querySelector("#currentFileSizeWrapper");
-            let maxUploadSizeWrapper        = document.querySelector("#maxUploadSizeWrapper");
-            let maxUploadSize               = maxUploadSizeWrapper.getAttribute('data-max-upload-size');
-            let submitButton                = document.querySelector('#upload_form_submit');
 
             currentSizeContainer.innerHTML  = filesTotalSizeMb;
 
@@ -133,11 +155,23 @@
                 submitButton.className           += ' disabled';
             }
 
-
             console.log(filesNames);
             console.log(filesTotalSizeMb);
 
         };
+    </script>
+
+    {#  Handling reseting files selection #}
+    <script>
+        let clearSelectionButton = document.querySelector('.clear-selection');
+
+        clearSelectionButton.onclick = function(){
+            filesInput.value                = "";
+            selectedFilesList.innerHTML     = "";
+            currentSizeContainer.innerHTML  = 0;
+            filesTotalSizeBytes             = 0;
+            submitButton.className          = "upload-submit btn btn-sm btn-primary btn" // Change to removeClass('disabled");
+        }
 
     </script>
 {% endblock body %}
