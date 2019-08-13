@@ -5,24 +5,6 @@
 {% set KEY_FILE_FULL_PATH   = constant(my_files_controller~"::KEY_FILE_FULL_PATH") %}
 {% set bytes_in_mb          = 1048576 %}
 
-{# TODO: Move to Scss #}
-<style>
-    button.file-download {
-        background: none;
-        color: inherit;
-        border: none;
-        padding: 0;
-        font: inherit;
-        cursor: pointer;
-        outline: inherit;
-        display: inline;
-    }
-
-    .file-download-form {
-        display: inline;
-    }
-</style>
-
 <table id="MyFiles" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
     <thead>
     <tr>

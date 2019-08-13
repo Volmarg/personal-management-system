@@ -1,0 +1,17 @@
+/**
+  Fix for centering masonry gallery
+*/
+.lightgallery .grid {
+  margin: 0 auto;
+}
+
+.lightgallery .grid-item a img {
+  padding: 2px;
+}
+
+.lightgallery #lightgallery_pencil_button:hover,
+.lightgallery #lightgallery_trash_button:hover,
+.lightgallery #lightgallery_save_button:hover {
+  transition: 200ms;
+  color: white;
+}

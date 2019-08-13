@@ -1,0 +1,47 @@
+.file-upload-form .custom-file-input {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  cursor: pointer;
+}
+
+.file-upload-form .ti-folder {
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+}
+
+.file-upload-form .custom-file:before {
+  content: "\E639";
+  font-family: themify;
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+
+  font-size: 15px;
+  top: 16px;
+  position: absolute;
+  left: 19px;
+}
+
+.file-upload-form .upload-submit {
+  height: 50px;
+}
+
+.file-upload-form .button-submit {
+  padding: 0;
+}
+
+.file-upload-form .upload-type {
+  margin: 5px;
+}
+
+.file-upload-form .clear-selection::after {
+  content: "✗";
+  font-size: 20px;
+  margin-left: -7px;
+}

@@ -10,27 +10,7 @@
         <div class="col-md-12">
             <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                 <h4 class="c-grey-900 mB-20 align-self-center">Images</h4>
-                <div class="my-images-all-images">
-
-                    {# TODO: move to css #}
-                    <style>
-                        /**
-                            Fix for centering masonry gallery
-                         */
-                        .grid {
-                            margin: 0 auto;
-                        }
-
-                        .grid-item a img {
-                            padding: 2px;
-                        }
-
-                        #lightgallery_pencil_button:hover, #lightgallery_trash_button:hover, #lightgallery_save_button:hover {
-                            transition: 200ms;
-                            color: white;
-                        }
-                    </style>
-
+                <div class="my-images-all-images lightgallery">
                     <div class="my-gallery grid" data-masonry='{
                         "itemSelector": ".grid-item",
                         "columnWidth": 30
