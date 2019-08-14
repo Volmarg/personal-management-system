@@ -5,6 +5,7 @@ import './utils/utils_custom.js';
 import './ui/crud.js';
 import './ui/widgets.js';
 import './ui/forms.js';
+import './ui/upload.js';
 
 import './loading-bar/index.js';
 import './loading-bar/loading-bar.js';

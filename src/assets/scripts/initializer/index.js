@@ -15,6 +15,7 @@ export default (function () {
             ui.crud.init();
             ui.widgets.init();
             ui.forms.init();
+            ui.upload.init();
             datatable.init();
             loading_bar.init();
             tinymce.custom.init();

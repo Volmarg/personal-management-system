@@ -39,7 +39,7 @@
                                 </section>
 
                                 {{ form_end(form) }}
-                                <small id="currentFileSizeWrapper">
+                                <small id="currentFileSizeWrapper" class="text-success">
                                     Selected files size: <span class="selected-files-size">0</span>Mb
                                 </small>
                                 <br/>
@@ -60,67 +60,4 @@
         </div>
     </main>
 
-
-    {# TODO: add script for upload form and move js + turn into jq #}
-    {#  Handling displaying information about selected files  #}
-    <script>
-        let fileSelectButton            = document.getElementById('file-upload-file-select');
-        let filesInput                  = document.getElementById('upload_form_file');
-        var currentSizeContainer        = document.querySelector('.selected-files-size');
-        let currentFileSizeWrapper      = document.querySelector("#currentFileSizeWrapper");
-        let maxUploadSizeWrapper        = document.querySelector("#maxUploadSizeWrapper");
-        let maxUploadSize               = maxUploadSizeWrapper.getAttribute('data-max-upload-size');
-        let submitButton                = document.querySelector('#upload_form_submit');
-
-        let filesNames          = [];
-        let filesTotalSizeBytes = 0;
-        let filesTotalSizeMb    = 0;
-        let bytesInMb           = 1048576;
-
-        fileSelectButton.onchange = function () {
-            let selectedFiles       = filesInput.files;
-            var selectedFilesList   = document.querySelector('#selectedFilesList');
-
-            for (let x = 0; x <= selectedFiles.length - 1 ; x++){
-                filesNames.push(selectedFiles[x].name);
-                filesTotalSizeBytes += selectedFiles[x].size;
-
-                let filesListWrapper    = document.createElement("LI");
-                let textnode            = document.createTextNode(selectedFiles[x].name);
-
-                filesListWrapper.appendChild(textnode);
-                selectedFilesList.appendChild(filesListWrapper);
-
-            }
-
-            filesTotalSizeMb = Math.floor(filesTotalSizeBytes/bytesInMb);
-
-            currentSizeContainer.innerHTML  = filesTotalSizeMb;
-
-            if( filesTotalSizeMb < maxUploadSize ){
-                currentFileSizeWrapper.className = "text-success";
-            }else{
-                currentFileSizeWrapper.className = "text-danger";
-                submitButton.className           += ' disabled';
-            }
-
-            console.log(filesNames);
-            console.log(filesTotalSizeMb);
-
-        };
-    </script>
-
-    {#  Handling reseting files selection #}
-    <script>
-        let clearSelectionButton = document.querySelector('.clear-selection');
-
-        clearSelectionButton.onclick = function(){
-            filesInput.value                = "";
-            selectedFilesList.innerHTML     = "";
-            currentSizeContainer.innerHTML  = 0;
-            filesTotalSizeBytes             = 0;
-            submitButton.className          = "upload-submit btn btn-sm btn-primary btn" // Change to removeClass('disabled");
-        }
-
-    </script>
 {% endblock body %}
