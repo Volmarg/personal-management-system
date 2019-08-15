@@ -218,7 +218,7 @@ class FileUploadController extends AbstractController {
             $uploadedFiles      = $original_form_data[FilesHandler::FILE_KEY];
 
             foreach ($uploadedFiles as $uploadedFile) {
-                $this->fileUploader->upload($uploadedFile, $upload_type, $subdirectory);
+                $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);
             }
 
         }

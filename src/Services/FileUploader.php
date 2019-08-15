@@ -10,9 +10,31 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class FileUploader extends AbstractController {
+
+    const EXCLUDED_MIMES = [
+        'text/css',
+        'application/octet-stream',
+        'text/html',
+        'application/java-archive',
+        'text/javascript',
+        'application/json',
+        'application/ld+json',
+        'text/javascript',
+        'application/x-rar-compressed',
+        'application/zip',
+        'application/x-7z-compressed'
+    ];
+
+    const EXCLUDED_FILES_EXTENSIONS = [
+        'exe', 'php', 'sh', '.js', 'cc',
+        'zip', 'rar', 'css', 'bin', 'htm',
+        'html', 'jar', 'mjs', '7z',
+        'json', 'jsonld',
+    ];
 
     /**
      * @var string $targetDirectory
@@ -37,14 +59,20 @@ class FileUploader extends AbstractController {
 
     /**
      * @param UploadedFile $file
+     * @param Request $request
      * @param string $type
      * @param string $subdirectory
      * @return Response
      * @throws \Exception
      */
-    public function upload(UploadedFile $file, string $type, string $subdirectory = '') {
+    public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '') {
 
         $this->logger->info("Started uploading files to subdirectory {$subdirectory}");
+        $isFileValid = $this->isFileValid($file, $request);
+
+        if( !$isFileValid ){
+            return new Response('File is invalid, and has been skipped', 500);
+        }
 
         $this->handleUploadDir();
 
@@ -110,6 +138,56 @@ class FileUploader extends AbstractController {
             mkdir($this->targetDirectory, 0777);
         }
 
+    }
+
+    /**
+     * This is used only for demo instance, to skip files and eventually ban some IP
+     * @param UploadedFile $file
+     * @param Request $request
+     * @return bool
+     */
+    private function isFileValid(UploadedFile $file, Request $request){
+
+        $filename   = $file->getFilename();
+        $extension  = $file->getExtension();
+        $mime       = $file->getMimeType();
+
+        $isMimeAllowed      = $this->isMimeAllowed($mime);
+        $isExtensionAllowed = $this->isExtensionAllowed($extension);
+        $isFileNameAllowed  = $this->isFileNameAllowed($filename);
+
+        if($isMimeAllowed || $isExtensionAllowed || $isFileNameAllowed){
+            $this->logger->info("Skipped file.", [
+                'filename'      =>  $filename,
+                'extension'     =>  $extension,
+                'mime'          =>  $mime,
+                'requestIp'     =>  $request->getClientIp(),
+                'remoteAddr'    =>  $_SERVER['REMOTE_ADDR'],
+            ]);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isExtensionAllowed($extension) {
+        return ( !in_array($extension, static::EXCLUDED_FILES_EXTENSIONS) );
+    }
+
+    private function isFileNameAllowed($filename) {
+
+        if( preg_match("([^\w\s\d\-_~,;\[\]\(\).])", $filename) ){
+            return false;
+        }elseif( preg_match("([\.]{2,})", $filename) ){
+            return false;
+        }
+
+        return true;
+    }
+
+    private function isMimeAllowed($mime) {
+        return ( !in_array($mime, static::EXCLUDED_MIMES) );
     }
 
 }
