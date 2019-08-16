@@ -2,7 +2,7 @@ monolog:
     handlers:
         main:
             type: fingers_crossed
-            action_level: error
+            action_level: critical
             handler: nested
             excluded_404s:
                 # regex: exclude all 404 errors from the logs
@@ -10,7 +10,7 @@ monolog:
         nested:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
-            level: debug
+            level: critical
         console:
             type: console
             process_psr_3_messages: false

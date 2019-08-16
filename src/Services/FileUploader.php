@@ -151,16 +151,16 @@ class FileUploader extends AbstractController {
      */
     private function isFileValid(UploadedFile $file, Request $request){
 
-        $filename   = $file->getFilename();
-        $extension  = $file->getExtension();
-        $mime       = $file->getMimeType();
+        $filename   = $file->getClientOriginalName();
+        $extension  = $file->getClientOriginalExtension();
+        $mime       = $file->getClientMimeType();
 
         $isMimeAllowed      = $this->isMimeAllowed($mime);
         $isExtensionAllowed = $this->isExtensionAllowed($extension);
         $isFileNameAllowed  = $this->isFileNameAllowed($filename);
 
         if(!$isMimeAllowed || !$isExtensionAllowed || !$isFileNameAllowed){
-            $this->logger->info("Skipped file.", [
+            $this->logger->critical("Skipped file.", [
                 'filename'      =>  $filename,
                 'extension'     =>  $extension,
                 'mime'          =>  $mime,
