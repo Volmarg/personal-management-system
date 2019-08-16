@@ -1,3 +1,5 @@
+var bootbox = require('bootbox');
+
 export default (function () {
 
     if (typeof window.ui === 'undefined') {
@@ -5,6 +7,14 @@ export default (function () {
     }
 
     ui.upload = {
+        messages: {
+            settings: {
+                subdirectoryRemoveSubmit    : "Do You really want to remove this folder?",
+                subdirectoryRenameSubmit    : "Do You really want to rename this folder?",
+                subdirectoryMoveDataSubmit  : "Do You really want to move data between these two folders?",
+                createSubdirectorySubmit    : "Do You want to create folder with this name?"
+            }
+        },
         selectors: {
             classes: {
                 currentSizeContainer    : ".selected-files-size",
@@ -16,7 +26,13 @@ export default (function () {
                 currentFileSizeWrapper  : "#currentFileSizeWrapper",
                 maxUploadSizeWrapper    : "#maxUploadSizeWrapper",
                 submitButton            : "#upload_form_submit",
-                selectedFilesList       : "#selectedFilesList"
+                selectedFilesList       : "#selectedFilesList",
+                settings: {
+                    subdirectoryRemoveSubmit    : "#upload_subdirectory_remove_submit",
+                    subdirectoryRenameSubmit    : "#upload_subdirectory_rename_submit",
+                    subdirectoryMoveDataSubmit  : "#upload_subdirectory_move_data_submit",
+                    createSubdirectorySubmit    : "#upload_subdirectory_create_submit"
+                }
             }
         },
         elements: {
@@ -29,6 +45,12 @@ export default (function () {
             this.maxUploadSizeWrapper      = $(ui.upload.selectors.id.maxUploadSizeWrapper);
             this.submitButton              = $(ui.upload.selectors.id.submitButton);
             this.selectedFilesList         = $(ui.upload.selectors.id.selectedFilesList);
+
+            this.settings.subdirectoryRemoveSubmit        = $(ui.upload.selectors.id.settings.subdirectoryRemoveSubmit);
+            this.settings.subdirectoryRenameSubmit        = $(ui.upload.selectors.id.settings.subdirectoryRenameSubmit);
+            this.settings.subdirectoryMoveDataSubmit      = $(ui.upload.selectors.id.settings.subdirectoryMoveDataSubmit);
+            this.settings.createSubdirectorySubmit        = $(ui.upload.selectors.id.settings.createSubdirectorySubmit);
+
           },
           currentSizeContainer    : '',
           filesInputResetButton   : '',
@@ -37,7 +59,13 @@ export default (function () {
           maxUploadSizeWrapper    : '',
           submitButton            : '',
           clearSelectionButton    : '',
-          selectedFilesList       : ''
+          selectedFilesList       : '',
+            settings: {
+                subdirectoryRemoveSubmit    : "",
+                subdirectoryRenameSubmit    : "",
+                subdirectoryMoveDataSubmit  : "",
+                createSubdirectorySubmit    : ""
+            }            
         },
         attributes:{
             maxUploadSize         : "data-max-upload-size"
@@ -57,6 +85,8 @@ export default (function () {
             this.vars.init();
             this.setSelectedFilesNamesAndSize();
             this.attachFilesInputResetEventToXButton();
+
+            this.settings.addConfirmationBoxesToForms();
         },
         setSelectedFilesNamesAndSize: function () {
             let _this = this;
@@ -110,6 +140,46 @@ export default (function () {
                 _this.vars.filesTotalSizeBytes = 0;
             });
 
+        },
+        settings: {
+            addConfirmationBoxesToForms: function(){
+                let _this = this;
+                let submitButtons = [
+                    ui.upload.elements.settings.createSubdirectorySubmit,
+                    ui.upload.elements.settings.subdirectoryRenameSubmit,
+                    ui.upload.elements.settings.subdirectoryMoveDataSubmit,
+                    ui.upload.elements.settings.subdirectoryRenameSubmit,
+                ];
+
+                $.each(submitButtons, (index, submitButton) => {
+
+                    $(submitButton).on('click', (event) => {
+                        let clickedButton   = $(event.target);
+                        let form            = $(clickedButton).closest('form');
+
+                        let message         = ui.upload.messages.settings.createSubdirectorySubmit;
+
+                        event.preventDefault();
+
+                        _this.callBootBoxWithFormSubmitionOnAccept(message, form);
+                    });
+
+                });
+
+            },
+            callBootBoxWithFormSubmitionOnAccept: function (message, $form) {
+
+                bootbox.confirm({
+                    message: message,
+                    backdrop: true,
+                    callback: function (result) {
+                        if (result) {
+                            $($form).submit();
+                        }
+                    }
+                });
+
+            }
         }
     }
 
