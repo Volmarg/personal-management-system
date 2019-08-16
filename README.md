@@ -104,7 +104,7 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 	<li>Dashboard settings - which modules widgets should be displayed</li>
 	<li>Recurring payments for </b>Payments</b> module</li>
 	<li>Adding images for <b>Contacts</b> </li>
-	<li>Auto deployment - creating full workin instance with one bash command </li>	
+	<li>Auto deployment - creating full working instance with one bash command </li>	
 </ul>
 <hr>
 
