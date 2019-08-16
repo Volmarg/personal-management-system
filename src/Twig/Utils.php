@@ -8,6 +8,7 @@
 
 namespace App\Twig;
 
+use App\Controller\Utils\Env;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -18,6 +19,7 @@ class Utils extends AbstractExtension {
         return [
             new TwigFunction('unset', [$this, '_unset']),
             new TwigFunction('keepMenuOpen', [$this, 'keepMenuOpen']),
+            new TwigFunction('isDemo', [$this, 'isDemo']),
         ];
     }
 
@@ -59,6 +61,11 @@ class Utils extends AbstractExtension {
         }
 
         return;
+    }
+
+    public function isDemo() {
+        $is_demo = Env::isDemo();
+        return $is_demo;
     }
 
 }

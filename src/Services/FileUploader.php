@@ -68,10 +68,13 @@ class FileUploader extends AbstractController {
     public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '') {
 
         $this->logger->info("Started uploading files to subdirectory {$subdirectory}");
-        $isFileValid = $this->isFileValid($file, $request);
 
-        if( !$isFileValid ){
-            return new Response('File is invalid, and has been skipped', 500);
+        if( Env::isDemo() ){
+            $isFileValid = $this->isFileValid($file, $request);
+
+            if( !$isFileValid ){
+                return new Response('File is invalid, and has been skipped', 500);
+            }
         }
 
         $this->handleUploadDir();

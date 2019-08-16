@@ -16,6 +16,14 @@
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                             <h4 class="c-grey-900 mB-20 align-self-center">Upload files</h4>
 
+                            {% if isDemo() %}
+                                <p  class="text-center">
+                                    <i>
+                                        For security reason (Demo instance) - some file types upload has been disabled.<br/>
+                                        You won't be informed about wrong file upload - that file will just be skipped.
+                                    </i>
+                                </p>
+                            {% endif %}
 
                             <div class="col-md-6 add-record-form file-upload-form justify-content-center align-self-center">
                                 {{ form_start(form, {'attr': {'class': 'flex-column'}}) }}

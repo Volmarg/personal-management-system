@@ -20,11 +20,18 @@
 
                         <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 450px;">
                             <h5 class="text-center"> Change settings </h5>
+                            {% if isDemo() %}
+                                <p  class="text-center">
+                                    <i>Password changing has been disabled for demo</i>
+                                </p>
+                            {% endif %}
                             <div class="col-md-12 align-self-center update-record-form">
                                 {{ form(avatar_form,{'attr':{' data-form-target':"UserAvatar"}}) }}
                             </div>
                             <div class="col-md-12 align-self-center update-record-form">
-                                {{ form(password_form,{'attr':{' data-form-target':"UserPassword"}}) }}
+                                {% if not isDemo() %}
+                                    {{ form(password_form,{'attr':{' data-form-target':"UserPassword"}}) }}
+                                {% endif %}
                             </div>
                             <div class="col-md-12 align-self-center update-record-form">
                                 {{ form(nickname_form,{'attr':{' data-form-target':"UserNickname"}}) }}

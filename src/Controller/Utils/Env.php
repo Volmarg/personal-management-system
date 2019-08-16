@@ -20,5 +20,13 @@ class Env extends AbstractController {
         return $_ENV['FILES_UPLOAD_DIR'];
     }
 
+    public static function isDemo() {
+        try {
+            $is_demo = (bool)$_ENV['APP_DEMO'];
+        } catch (\Exception $e) {
+            $is_demo = false;
+        }
+        return $is_demo;
+    }
 
 }
