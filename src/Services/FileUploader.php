@@ -156,7 +156,7 @@ class FileUploader extends AbstractController {
         $isExtensionAllowed = $this->isExtensionAllowed($extension);
         $isFileNameAllowed  = $this->isFileNameAllowed($filename);
 
-        if($isMimeAllowed || $isExtensionAllowed || $isFileNameAllowed){
+        if(!$isMimeAllowed || !$isExtensionAllowed || !$isFileNameAllowed){
             $this->logger->info("Skipped file.", [
                 'filename'      =>  $filename,
                 'extension'     =>  $extension,
