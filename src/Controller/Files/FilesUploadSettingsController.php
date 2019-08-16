@@ -134,7 +134,7 @@ class FilesUploadSettingsController extends AbstractController {
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectory(string $upload_type, string $current_name, string $new_name){
+    public function renameSubdirectory(?string $upload_type, ?string $current_name, ?string $new_name){
         $response = $this->directories_handler->renameSubdirectory($upload_type, $current_name, $new_name);
         return $response;
     }
@@ -144,6 +144,7 @@ class FilesUploadSettingsController extends AbstractController {
      * @param FormInterface $remove_form
      * @param FormInterface $move_data_form
      * @param FormInterface $create_subdir_form
+     * @return Response
      * @throws \Exception
      */
     private function handleForms(FormInterface $rename_form, FormInterface $remove_form, FormInterface $move_data_form, FormInterface $create_subdir_form){

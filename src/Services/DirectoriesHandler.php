@@ -60,12 +60,22 @@ class DirectoriesHandler {
      * @return Response
      * @throws \Exception
      */
-    public function removeFolder(string $upload_type, string $subdirectory_name){
+    public function removeFolder(?string $upload_type, ?string $subdirectory_name){
 
         $this->logger->info('Started removing folder: ', [
             'upload_type'       => $upload_type,
             'subdirectory_name' => $subdirectory_name
         ]);
+
+        if( empty($subdirectory_name) )
+        {
+            return new Response('Cannot remove main folder!');
+        }
+
+        if( empty($upload_type) )
+        {
+            return new Response('You need to select upload type!');
+        }
 
         $target_directory           = FileUploadController::getTargetDirectoryForUploadType($upload_type);
 
@@ -124,7 +134,7 @@ class DirectoriesHandler {
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectory(string $upload_type, string $subdirectory_current_name, string $subdirectory_new_name) {
+    public function renameSubdirectory(?string $upload_type, ?string $subdirectory_current_name, ?string $subdirectory_new_name) {
 
         $this->logger->info('Started renaming subdirectory: ', [
             'upload_type'               => $upload_type,
@@ -138,8 +148,18 @@ class DirectoriesHandler {
         }
 
         if ( empty($subdirectory_new_name) ){
-            $this->logger->info('Subdirectory name is an empty string - renaming aborted.');
+            $this->logger->info('Subdirectory new name is an empty string - renaming aborted.');
             return new Response('New name is an empty string - action aborted', 500);
+        }
+
+        if ( empty($subdirectory_current_name) ){
+            $this->logger->info('Subdirectory current name is an empty string - renaming aborted.');
+            return new Response('Current name is an empty string - action aborted', 500);
+        }
+
+        if ( empty($upload_type) ){
+            $this->logger->info('Upload type has not been provided - renaming aborted.');
+            return new Response('Upload type is an empty string - action aborted', 500);
         }
 
         $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);

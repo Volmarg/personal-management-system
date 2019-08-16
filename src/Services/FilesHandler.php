@@ -57,22 +57,6 @@ class FilesHandler {
      */
     public function copyFolderDataToAnotherFolderByPostRequest(Request $request) {
 
-        if ( !$request->query->has(static::KEY_CURRENT_UPLOAD_TYPE) ) {
-            return new Response("Current upload type is missing in request.", 500);
-        }
-
-        if ( !$request->query->has(static::KEY_TARGET_UPLOAD_TYPE) ) {
-            return new Response("Target upload type is missing in request.", 500);
-        }
-
-        if ( !$request->query->has(static::KEY_CURRENT_SUBDIRECTORY_NAME) ) {
-            return new Response("Current subdirectory name is missing in request.", 500);
-        }
-
-        if ( !$request->query->has(static::KEY_TARGET_SUBDIRECTORY_NAME) ) {
-            return new Response("Target subdirectory name is missing in request.", 500);
-        }
-
         $current_upload_type        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
         $target_upload_type         = $request->query->get(static::KEY_TARGET_UPLOAD_TYPE);
         $current_subdirectory_name  = $request->query->get(static::KEY_CURRENT_SUBDIRECTORY_NAME);
@@ -91,7 +75,7 @@ class FilesHandler {
      * @return Response
      * @throws \Exception
      */
-    public function copyFolderDataToAnotherFolder(string $current_upload_type, string $target_upload_type, string $current_subdirectory_name, string $target_subdirectory_name){
+    public function copyFolderDataToAnotherFolder(?string $current_upload_type, ?string $target_upload_type, ?string $current_subdirectory_name, ?string $target_subdirectory_name){
 
         $this->logger->info('Started copying data between folders via Post Request.', [
             'current_upload_type'          => $current_upload_type,
@@ -99,6 +83,29 @@ class FilesHandler {
             'current_subdirectory_name'    => $current_subdirectory_name,
             'target_subdirectory_name'     => $target_subdirectory_name
         ]);
+
+        if ( empty($current_upload_type) ) {
+            return new Response("Current upload type is missing in request.", 500);
+        }
+
+        if ( empty($target_upload_type) ) {
+            return new Response("Target upload type is missing in request.", 500);
+        }
+
+        if ( empty($current_subdirectory_name) ) {
+            return new Response("Current subdirectory name is missing in request.", 500);
+        }
+
+        if ( empty($target_subdirectory_name) ) {
+            return new Response("Target subdirectory name is missing in request.", 500);
+        }
+
+        if(
+                ( $current_upload_type === $target_upload_type )
+            &&  ( $current_subdirectory_name === $target_subdirectory_name )
+        ){
+            return new Response("Cannot copy data to the same folder of given type.", 500);
+        }
 
         $current_directory  = FileUploadController::getTargetDirectoryForUploadType($current_upload_type);
         $target_directory   = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
@@ -172,14 +179,12 @@ class FilesHandler {
      * @return Response
      */
     public function copyAndRemoveData(
-        string $current_upload_type,
-        string $target_upload_type,
-        string $current_subdirectory_name,
-        string $target_subdirectory_name,
-        bool   $remove_current_folder = true
+        ?string $current_upload_type,
+        ?string $target_upload_type,
+        ?string $current_subdirectory_name,
+        ?string $target_subdirectory_name,
+         bool   $remove_current_folder = true
     ) {
-
-        $this->logger->info('Started copying and removing data between folders');
 
         try{
             $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_subdirectory_name, $target_subdirectory_name);
