@@ -8,6 +8,7 @@ use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
 use App\Form\User\UserPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -65,11 +66,13 @@ class SettingsController extends AbstractController {
 
         $response   = $this->app->repositories->update($parameters, $this->current_user);
 
-        if($response->getStatusCode() === 200){
-            return $this->renderTemplate(true);
-        }
+        $data = [
+          'template'        => $this->renderTemplate(true)->getContent(),
+          'message'        => $response->getContent(),
+          'status_code'    => $response->getStatusCode(),
+        ];
 
-        return $response;
+        return new JsonResponse($data);
 
     }
 

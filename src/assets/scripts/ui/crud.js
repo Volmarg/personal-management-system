@@ -59,7 +59,7 @@ export default (function () {
             this.attachContentCopyEventOnCopyIcon();
             this.attachFontawesomePickEventOnEmojiIcon();
             this.attachRecordAddViaAjaxOnSubmit();
-            this.attachRecordUpdateViaAjaxOnSubmitForSingleForm();
+            this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm();
         },
         attachRemovingEventOnTrashIcon: function () {
             let _this = this;
@@ -225,7 +225,7 @@ export default (function () {
                 event.preventDefault();
             });
         },
-        attachRecordUpdateViaAjaxOnSubmitForSingleForm: function () {
+        attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm: function () {
             let _this = this;
             $('.update-record-form form').submit(function (event) {
                 let form = $(event.target);
@@ -236,11 +236,16 @@ export default (function () {
                     url: updateData.url,
                     type: 'POST',
                     data: updateData.data, //In this case the data from target_action is being sent not form directly
-                }).done((template) => {
+                }).done((data) => {
 
-                    bootstrap_notifications.notify(updateData.success_message, 'success');
-                    $('.twig-body-section').html(template);
-                    initializer.reinitialize();
+                    if( undefined !== data['template'] ){
+                        $('.twig-body-section').html(data['template']);
+                        initializer.reinitialize();
+                    }
+
+                    if( undefined !== data['message'] ){
+                        bootstrap_notifications.notify(data['message'], 'success');
+                    }
 
                 }).fail((data) => {
                     bootstrap_notifications.notify(data.responseText, 'danger');
@@ -1532,8 +1537,6 @@ export default (function () {
         form_target_actions: {
             "UserAvatar": {
                 makeUpdateData: function (form) {
-                    let success_message = ui.crud.messages.formTargetActionUpdateSuccess(this.form_target_action_name);
-                    let fail_message = ui.crud.messages.formTargetActionUpdateFail(this.form_target_action_name);
                     let avatar = $(form).find('[data-id="avatar"]').val();
 
                     let url = '/user/profile/settings/update';
@@ -1544,17 +1547,13 @@ export default (function () {
 
                     return {
                         'url': url,
-                        'data': ajax_data,
-                        'success_message': success_message,
-                        'fail_message': fail_message
+                        'data': ajax_data
                     };
                 },
                 form_target_action_name: "User Avatar",
             },
             'UserNickname':{
                 makeUpdateData: function (form) {
-                    let success_message = ui.crud.messages.formTargetActionUpdateSuccess(this.form_target_action_name);
-                    let fail_message = ui.crud.messages.formTargetActionUpdateFail(this.form_target_action_name);
                     let nickname = $(form).find('[data-id="nickname"]').val();
 
                     let url = '/user/profile/settings/update';
@@ -1565,17 +1564,13 @@ export default (function () {
 
                     return {
                         'url': url,
-                        'data': ajax_data,
-                        'success_message': success_message,
-                        'fail_message': fail_message
+                        'data': ajax_data
                     };
                 },
                 form_target_action_name: "User Nickname",
             },
             'UserPassword':{
                 makeUpdateData: function (form) {
-                    let success_message = ui.crud.messages.formTargetActionUpdateSuccess(this.form_target_action_name);
-                    let fail_message = ui.crud.messages.formTargetActionUpdateFail(this.form_target_action_name);
                     let password = $(form).find('[data-id="password"]').val();
 
                     let url = '/user/profile/settings/update';
@@ -1586,9 +1581,24 @@ export default (function () {
 
                     return {
                         'url': url,
-                        'data': ajax_data,
-                        'success_message': success_message,
-                        'fail_message': fail_message
+                        'data': ajax_data
+                    };
+                },
+                form_target_action_name: "User Password",
+            },
+            'Upload':{
+                makeUpdateData: function (form) {
+                    let password = $(form).find('[data-id="password"]').val();
+
+                    let url = '/user/profile/settings/update';
+
+                    let ajax_data = {
+                        'password': password,
+                    };
+
+                    return {
+                        'url': url,
+                        'data': ajax_data
                     };
                 },
                 form_target_action_name: "User Password",
