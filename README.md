@@ -43,6 +43,8 @@
         <p align="justify"><i>On the other hand if you would like to keep an eye of prices for particular products you can add information about them in Products Prices submodule (which I'm personally using while being in other country - on the moment when I'm writing this).</i></p></li><br/>
         <li><b>🛒 Shopping</b> - <span align="justify"><i>You got plans to buy something in future? Add it to the list, and then just check it out,  maybe You will be able to buy this particular thing just now.</i></span></li><br/>
     <li><b>💻 Job</b> - <span align="justify"><i>The Afterhours submodule is a nice way to keep an eye of all the afterhours you've made in work. With this you can also separate specified minutes/hours for certain goal. For example you need 24h for trip and 4h to do something. Just add some time to pre existing goal, create new one or leave it blank (will go to general purpose pool).</i></span> </li><br/>
+    <li><b>📷 Images</b> - <span align="justify"><i>This module allows You to organize Your photos/scans/downloaded pics in form of masonry galleries. Clicking on image miniature will call lightbox gallery with possibility to rename, remove or download image. You can create as many galleries (folders) as You want.</i></span> </li><br/>	
+    <li><b>📁 Files</b> - <span align="justify"><i>Files uploaded for this module are visible in form of DataTable where You can see simple information about the file - that is: extension, filetype icon (if there is one defined for given type), file size. Files can be renamed, downloaded and removed from the gui.</i></span> </li><br/>		
 </ol>
 
 <h2>Preview</h2>
@@ -71,20 +73,22 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 <h3>Modules/Extensions</h3>
 
 <ul>
-<li><b>📷 Images module</b> - (with preview)
+<li><b>💸 Money owned</b> - extension for <b>Payments</b>
 	<ul>
-    	<li><b>Gallery</b> - for personal photos</li>
-        <li><b>Scans</b> - for scanned documents</li>
-        <li><b>Pictures</b> - for any other images</li>
-        <li><b>Upload</b></li>
-        <li><b>Settings</b> - for folders naming etc</li>
+    	<li>For saving information who owe You money and who You owe money to</li>
     </ul>
 </li>
-<li><b>📁 Files module</b> - file explorer (no preview)
+<li><b>💸 Bills</b>  (<i>Temporary name</i>) - extension for <b>Payments</b>
 	<ul>
-    	<li><b>Documents</b></li>
-        <li><b>Upload</b></li>
-        <li><b>Settings</b> - for folders naming etc</li>
+	<li>For saving information about money spent on certain things (<i>I want to separate monthly payments from things like money spent on holiday etc.</i>)</li>
+    </ul>
+</li>	
+<li><b>📁 Files module</b> - improvements
+	<ul>
+    	<li>Bugfixes</li>
+	<li>Handling server responses</li>	
+	<li>Adding nested menu like in <b>Notes</b> module</li>
+	<li>Moving files to other modules/folders from view of given module</li>
     </ul>
 </li>
 <li><b>🔎 Job search</b> - (VERY future development plan, not sure if will make it at all)
