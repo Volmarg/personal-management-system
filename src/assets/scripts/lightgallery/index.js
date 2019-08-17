@@ -215,38 +215,52 @@ export default (function () {
                 // Handles toggling blocking everything in gallery besides filename area
                 $(pencilButton).click(() => {
 
-                    let allElements     = $('.lg *');
-                    let textHolder      = $(_this.selectors.classes.currentViewedFilename);
-                    let isNameEdited    = false;
+                    let galleryMainWrapper  = $('.lg');
+                    let allGalleryElements  = $('.lg *');
+                    let textHolder          = $(_this.selectors.classes.currentViewedFilename);
+                    let isNameEdited        = false;
+                    let enabledElements     = [
+                        textHolder,
+                        pencilButton,
+                        saveButton,
+                        _this.selectors.classes.upperToolbar
+                    ];
+                    let elementsToToggleBlurr = [
+                        _this.selectors.classes.imagePreviewWrapper,
+                        _this.selectors.classes.thumbnails
+                    ];
 
-                    // Toggle disabled/hidden/blur
-                    $.each(allElements, (index, element) => {
-
-                        if( !$(element).hasClass('disabled') ){
-
-                            $(element).addClass('disabled');
-                            $(_this.selectors.classes.imagePreviewWrapper).css({filter: "blur(3px)"});
-                            $(_this.selectors.classes.thumbnails).css({filter: "blur(3px)"});
-
-                            $(textHolder).removeClass('disabled');
-                            $(pencilButton).removeClass('disabled');
-                            $(saveButton).removeClass('disabled');
-
-                            $(_this.selectors.classes.upperToolbar).removeClass('disabled');
-
-                            $(saveButton).removeClass('d-none');
-                            isNameEdited = true;
-                        }else{
-
-                            $(element).removeClass('disabled');
-                            $(_this.selectors.classes.imagePreviewWrapper).css({filter: "blur(0px)"});
-                            $(_this.selectors.classes.thumbnails).css({filter: "blur(0px)"});
-
-                            $(saveButton).addClass('d-none');
-                            isNameEdited = false;
-                        }
-
+                    // Toggle disabling all gui elements while editing - do not allow user to leave while editing is on
+                    $.each(allGalleryElements, (index, element) => {
+                        $(element).toggleClass('disabled');
                     });
+
+                    // Toggle blurring images while editing - additional change to blocking user from leaving
+                    $(galleryMainWrapper).toggleClass('blurred');
+
+                    $.each(enabledElements, (index, element) => {
+                        $(element).removeClass('disabled');
+                    });
+
+                    if( $(galleryMainWrapper).hasClass('blurred') ){
+
+                        $.each(elementsToToggleBlurr, (index, element) => {
+                            $(element).css({filter: "blur(3px)"});
+                        });
+
+                        $(saveButton).removeClass('d-none');
+                        isNameEdited = true;
+
+                    }else{
+
+                        $.each(elementsToToggleBlurr, (index, element) => {
+                            $(element).css({filter: "blur(0px)"});
+                        });
+
+                        $(saveButton).addClass('d-none');
+                        isNameEdited = false;
+                        
+                    }
 
                     //Toggle content editable
                     if(isNameEdited){
