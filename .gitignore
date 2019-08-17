@@ -36,6 +36,9 @@ yarn-error.log
 var/cache/*
 var/sessions/*
 *.sql
+.idea*
+*.zip
+src/DataFixtures/AppFixtures.php
 #Password hasher secret key
 config/services.yaml
 src/Migrations/*

@@ -5,6 +5,9 @@
   "assets/fonts/fontawesome-webfont.ttf": "/assets/fonts/fontawesome-webfont.b06871f2.ttf",
   "assets/fonts/fontawesome-webfont.woff": "/assets/fonts/fontawesome-webfont.fee66e71.woff",
   "assets/fonts/fontawesome-webfont.woff2": "/assets/fonts/fontawesome-webfont.af7ae505.woff2",
+  "assets/fonts/lg.eot?n1z373": "/assets/fonts/lg.ecff1170.eot",
+  "assets/fonts/lg.ttf?n1z373": "/assets/fonts/lg.4fe6f9ca.ttf",
+  "assets/fonts/lg.woff?n1z373": "/assets/fonts/lg.5fd4c338.woff",
   "assets/fonts/themify.eot": "/assets/fonts/themify.2c454669.eot",
   "assets/fonts/themify.ttf": "/assets/fonts/themify.e23a7dca.ttf",
   "assets/fonts/themify.woff": "/assets/fonts/themify.a1ecc3b8.woff",
@@ -22,11 +25,16 @@
   "assets/images/arrow_left.svg": "/assets/images/arrow_left.11911410.svg",
   "assets/images/arrow_right.svg": "/assets/images/arrow_right.8ef6a08c.svg",
   "assets/images/fontawesome-webfont.svg": "/assets/images/fontawesome-webfont.912ec66d.svg",
+  "assets/images/lg.svg?n1z373": "/assets/images/lg.98d62b1e.svg",
+  "assets/images/loading.gif": "/assets/images/loading.bbdac9cd.gif",
   "assets/images/sf.png": "/assets/images/sf.f10c2d76.png",
   "assets/images/sort_asc.png": "/assets/images/sort_asc.9326ad44.png",
   "assets/images/sort_asc_disabled.png": "/assets/images/sort_asc_disabled.d7dc10c7.png",
   "assets/images/sort_both.png": "/assets/images/sort_both.9a648608.png",
   "assets/images/sort_desc.png": "/assets/images/sort_desc.1fc418e3.png",
   "assets/images/sort_desc_disabled.png": "/assets/images/sort_desc_disabled.bda51e15.png",
-  "assets/images/themify.svg": "/assets/images/themify.9c8e96ec.svg"
+  "assets/images/themify.svg": "/assets/images/themify.9c8e96ec.svg",
+  "assets/images/video-play.png": "/assets/images/video-play.dc34cc9c.png",
+  "assets/images/vimeo-play.png": "/assets/images/vimeo-play.dfe7764b.png",
+  "assets/images/youtube-play.png": "/assets/images/youtube-play.e6f0c233.png"
 }
