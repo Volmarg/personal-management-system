@@ -9,10 +9,10 @@ export default (function () {
     ui.upload = {
         messages: {
             settings: {
-                subdirectoryRemoveSubmit    : "Do You really want to remove this folder?",
-                subdirectoryRenameSubmit    : "Do You really want to rename this folder?",
-                subdirectoryMoveDataSubmit  : "Do You really want to move data between these two folders?",
-                createSubdirectorySubmit    : "Do You want to create folder with this name?"
+                upload_subdirectory_remove_submit       : "Do You really want to remove this folder?",
+                upload_subdirectory_rename_submit       : "Do You really want to rename this folder?",
+                upload_subdirectory_move_data_submit    : "Do You really want to move data between these two folders?",
+                upload_subdirectory_create_submit       : "Do You want to create folder with this name?"
             }
         },
         selectors: {
@@ -146,7 +146,7 @@ export default (function () {
                 let _this = this;
                 let submitButtons = [
                     ui.upload.elements.settings.createSubdirectorySubmit,
-                    ui.upload.elements.settings.subdirectoryRenameSubmit,
+                    ui.upload.elements.settings.subdirectoryRemoveSubmit,
                     ui.upload.elements.settings.subdirectoryMoveDataSubmit,
                     ui.upload.elements.settings.subdirectoryRenameSubmit,
                 ];
@@ -155,9 +155,10 @@ export default (function () {
 
                     $(submitButton).on('click', (event) => {
                         let clickedButton   = $(event.target);
+                        let buttonId        = $(clickedButton).attr('id');
                         let form            = $(clickedButton).closest('form');
 
-                        let message         = ui.upload.messages.settings.createSubdirectorySubmit;
+                        let message         = ui.upload.messages.settings[buttonId];
 
                         event.preventDefault();
 
