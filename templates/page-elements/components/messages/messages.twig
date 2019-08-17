@@ -1,15 +1,29 @@
 {# only support danger so far - used with flashbag#}
 <section class="global-messages">
-    {% for message in app.flashes('danger') %}
-        <div class="alert d-none">
-            {{ message }}
-        </div>
+
+    {% set flashMessagesTypes = ['danger', 'success'] %}
+
+    {% for flashMessageType in flashMessagesTypes %}
+
+        {% for message in app.flashes(flashMessageType) %}
+            <div class="alert d-none" data-type="{{ flashMessageType }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+
     {% endfor %}
+
 </section>
 
 <script>
+
     let messages = document.querySelectorAll('.global-messages .alert');
+
     messages.forEach((element) => {
-        bootstrap_notifications.notify(element.innerHTML, 'danger');
+        let type    = element.getAttribute('data-type');
+        let message = element.innerHTML;
+
+        bootstrap_notifications.notify(message, type);
     });
+
 </script>

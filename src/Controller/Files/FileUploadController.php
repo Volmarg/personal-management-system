@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -71,29 +72,59 @@ class FileUploadController extends AbstractController {
      * @return Response
      * @throws \Exception
      */
-    public function displayUploadPage(Request $request){
+    public function displayUploadPage(Request $request) {
+        $this->sendData($request);
+        return $this->renderTemplate(false);
+    }
 
-        $subdirectories         = static::getSubdirectoriesForAllUploadTypes();
-        $grouped_subdirectories = static::getSubdirectoriesForAllUploadTypes(true);
+    /**
+     * @Route("/upload/send", name="upload_send")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function sendData(Request $request){
+        $response = $this->handleFileUpload($request);
 
+        $data = [
+            'template'       => $this->renderTemplate(true)->getContent(),
+            'message'        => $response->getContent(),
+            'status_code'    => $response->getStatusCode(),
+        ];
+
+        if( $response->getStatusCode() === 200 ){
+            $flashType = 'success';
+        }else{
+            $flashType = 'danger';
+        }
+
+        $this->addFlash($flashType, $response->getContent());
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @param $ajax_render
+     * @return Response
+     * @throws \Exception
+     */
+    private function renderTemplate($ajax_render)
+    {
         $upload_max_filesize = preg_replace("/[^0-9]/","",ini_get('upload_max_filesize'));
         $post_max_size       = preg_replace("/[^0-9]/","",ini_get('post_max_size'));
 
         $max_upload_size_mb  = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize);
 
-        $form = $this->getUploadForm($subdirectories, $grouped_subdirectories);
-
-        $this->handleFileUpload($request, $form);
+        $form = $this->getUploadForm();
 
         $data = [
-            'ajax_render'           => false,
+            'ajax_render'           => $ajax_render,
             'form'                  => $form->createView(),
             'max_upload_size_mb'    => $max_upload_size_mb
         ];
 
         return $this->render(static::UPLOAD_PAGE_TWIG_TEMPLATE, $data);
-    }
 
+    }
     /**
      * @param string $uploadType
      * @param bool $namesAsKeysAndValues
@@ -186,11 +217,13 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param $subdirectories
-     * @param $grouped_subdirectories
      * @return \Symfony\Component\Form\FormInterface
+     * @throws \Exception
      */
-    private function getUploadForm($subdirectories, $grouped_subdirectories){
+    private function getUploadForm(){
+        $subdirectories         = static::getSubdirectoriesForAllUploadTypes();
+        $grouped_subdirectories = static::getSubdirectoriesForAllUploadTypes(true);
+
         return $this->createForm(UploadFormType::class, null, [
             'subdirectories'         => $subdirectories,
             'grouped_subdirectories' => $grouped_subdirectories
@@ -199,12 +232,14 @@ class FileUploadController extends AbstractController {
 
     /**
      * @param Request $request
-     * @param FormInterface $form
-     * @return void
+     * @return Response
      * @throws \Exception
      */
-    private function handleFileUpload(Request $request, FormInterface $form) {
+    private function handleFileUpload(Request $request) {
+        $form = $this->getUploadForm();
         $form->handleRequest($request);
+
+        $response = new Response('No files were uploaded');
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -218,11 +253,12 @@ class FileUploadController extends AbstractController {
             $uploadedFiles      = $original_form_data[FilesHandler::FILE_KEY];
 
             foreach ($uploadedFiles as $uploadedFile) {
-                $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);
+                $response = $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);
             }
 
         }
 
+        return $response;
     }
 
 }

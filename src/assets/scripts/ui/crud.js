@@ -1585,23 +1585,6 @@ export default (function () {
                     };
                 },
                 form_target_action_name: "User Password",
-            },
-            'Upload':{
-                makeUpdateData: function (form) {
-                    let password = $(form).find('[data-id="password"]').val();
-
-                    let url = '/user/profile/settings/update';
-
-                    let ajax_data = {
-                        'password': password,
-                    };
-
-                    return {
-                        'url': url,
-                        'data': ajax_data
-                    };
-                },
-                form_target_action_name: "User Password",
             }
         }
     };
