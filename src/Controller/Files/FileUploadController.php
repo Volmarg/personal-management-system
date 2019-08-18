@@ -84,7 +84,8 @@ class FileUploadController extends AbstractController {
      * @throws \Exception
      */
     public function sendData(Request $request){
-        $response = $this->handleFileUpload($request);
+        $response   = $this->handleFileUpload($request);
+        $isFormData = !empty($request->request->get('upload_form'));
 
         $data = [
             'template'       => $this->renderTemplate(true)->getContent(),
@@ -92,13 +93,11 @@ class FileUploadController extends AbstractController {
             'status_code'    => $response->getStatusCode(),
         ];
 
-        if( $response->getStatusCode() === 200 ){
-            $flashType = 'success';
-        }else{
-            $flashType = 'danger';
+        if( $isFormData ){
+            $flashType = ( $response->getStatusCode() === 200 ? 'success' : 'danger');
+            $this->addFlash($flashType, $response->getContent());
         }
 
-        $this->addFlash($flashType, $response->getContent());
         return new JsonResponse($data);
     }
 
