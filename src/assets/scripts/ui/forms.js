@@ -81,6 +81,10 @@ export default (function () {
                 let visibleOptgroupOptions  = $(visibleOptgroup).find('option');
                 $(visibleOptgroup).removeClass('d-none');
 
+                if( $(visibleOptgroup).length === 0 ){
+                    $(dependentList).val("");
+                }
+
                 $(visibleOptgroupOptions).each((index, option) => {
                     $(option).removeClass('d-none');
 
