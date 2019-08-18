@@ -21,6 +21,8 @@ class MyImagesController extends AbstractController {
 
     public function __construct() {
         $this->finder = new Finder();
+        $this->finder->depth('== 0');
+
     }
 
     /**
@@ -31,7 +33,7 @@ class MyImagesController extends AbstractController {
     public function displayImages(? string $subdirectory) {
 
         if (empty($subdirectory)) {
-            $all_images = $this->getAllImages();
+            $all_images = $this->getMainFolderImages();
         } else {
             $all_images = $this->getImagesFromCategory($subdirectory);
         }
@@ -61,7 +63,7 @@ class MyImagesController extends AbstractController {
         return $all_images;
     }
 
-    private function getAllImages() {
+    private function getMainFolderImages() {
         $all_images_paths = $this->getImagesFromCategory('');
 
         return $all_images_paths;

@@ -43,6 +43,8 @@ class MyFilesController extends AbstractController
 
     public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler) {
         $this->finder           = new Finder();
+        $this->finder->depth('== 0');
+
         $this->file_downloader  = $file_downloader;
         $this->filesHandler     = $filesHandler;
 
@@ -59,7 +61,7 @@ class MyFilesController extends AbstractController
         $ajax_render = false;
 
         if (empty($subdirectory)) {
-            $files = $this->getAllFiles();
+            $files = $this->getMainFolderFiles();
         } else {
             $files = $this->getFilesFromSubdirectory($subdirectory);
         }
@@ -131,7 +133,7 @@ class MyFilesController extends AbstractController
         return $all_files;
     }
 
-    private function getAllFiles() {
+    private function getMainFolderFiles() {
         $all_files = $this->getFilesFromSubdirectory('');
 
         return $all_files;
