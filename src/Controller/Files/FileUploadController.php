@@ -84,19 +84,11 @@ class FileUploadController extends AbstractController {
      * @throws \Exception
      */
     public function sendData(Request $request){
-        $response   = $this->handleFileUpload($request);
-        $isFormData = !empty($request->request->get('upload_form'));
+        $this->handleFileUpload($request);
 
         $data = [
-            'template'       => $this->renderTemplate(true)->getContent(),
-            'message'        => $response->getContent(),
-            'status_code'    => $response->getStatusCode(),
+            'template' => $this->renderTemplate(true)->getContent()
         ];
-
-        if( $isFormData ){
-            $flashType = ( $response->getStatusCode() === 200 ? 'success' : 'danger');
-            $this->addFlash($flashType, $response->getContent());
-        }
 
         return new JsonResponse($data);
     }
@@ -231,7 +223,6 @@ class FileUploadController extends AbstractController {
 
     /**
      * @param Request $request
-     * @return Response
      * @throws \Exception
      */
     private function handleFileUpload(Request $request) {
@@ -255,9 +246,10 @@ class FileUploadController extends AbstractController {
                 $response = $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);
             }
 
+            $flashType = ( $response->getStatusCode() === 200 ? 'success' : 'danger');
+            $this->addFlash($flashType, $response->getContent());
         }
 
-        return $response;
     }
 
 }
