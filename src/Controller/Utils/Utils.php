@@ -3,6 +3,7 @@
 namespace App\Controller\Utils;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class Utils extends AbstractController {
 
@@ -53,6 +54,15 @@ class Utils extends AbstractController {
             copy($source, $destination);
         }
 
+    }
+
+    /**
+     * @param Response $response
+     * @return string
+     */
+    public static function getFlashTypeForRequest(Response $response){
+        $flashType = ( $response->getStatusCode() === 200 ? 'success' : 'danger' );
+        return $flashType;
     }
 
 }

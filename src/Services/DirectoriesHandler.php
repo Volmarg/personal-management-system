@@ -69,12 +69,12 @@ class DirectoriesHandler {
 
         if( empty($subdirectory_name) )
         {
-            return new Response('Cannot remove main folder!');
+            return new Response('Cannot remove main folder!', 500);
         }
 
         if( empty($upload_type) )
         {
-            return new Response('You need to select upload type!');
+            return new Response('You need to select upload type!', 500);
         }
 
         $target_directory           = FileUploadController::getTargetDirectoryForUploadType($upload_type);
@@ -83,7 +83,7 @@ class DirectoriesHandler {
 
         if( $is_subdirectory_existing ){
             $this->logger->info('Removed folder does not exists - removal aborted');
-            return new Response('This subdirectory does not exist for current upload type.');
+            return new Response('This subdirectory does not exist for current upload type.', 500);
         }
 
         $subdirectory_path = FileUploadController::getSubdirectoryPath($target_directory, $subdirectory_name);
@@ -94,7 +94,7 @@ class DirectoriesHandler {
             $this->logger->info('Could not remove folder: ', [
                 'message' => $e->getMessage()
             ]);
-            return new Response('There was and error when trying to remove subdirectory!');
+            return new Response('There was and error when trying to remove subdirectory!', 500);
         }
 
         $this->logger->info('Finished removing folder.');
@@ -112,11 +112,11 @@ class DirectoriesHandler {
     public function renameSubdirectoryByPostRequest(string $upload_type, Request $request) {
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME) ) {
-            return new Response("Subdirectory new name is missing in request.");
+            return new Response("Subdirectory new name is missing in request.", 500);
         }
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME) ) {
-            return new Response("Subdirectory current name is missing in request.");
+            return new Response("Subdirectory current name is missing in request.", 500);
         }
 
         $subdirectory_current_name  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME);

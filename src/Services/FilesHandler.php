@@ -198,7 +198,7 @@ class FilesHandler {
             $this->logger->info('Exception was thrown while trying to copy and remove data: ', [
                 'message' => $e->getMessage()
             ]);
-            return new Response ('Then was an error while copying and removing data.');
+            return new Response ('Then was an error while copying and removing data.', 500);
         }
 
         $this->logger->info('Copying and removing data has been finished!');

@@ -5,6 +5,7 @@ namespace App\Controller\Files;
 
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
+use App\Controller\Utils\Utils;
 use App\Form\UploadFormType;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
@@ -246,8 +247,10 @@ class FileUploadController extends AbstractController {
                 $response = $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);
             }
 
-            $flashType = ( $response->getStatusCode() === 200 ? 'success' : 'danger');
-            $this->addFlash($flashType, $response->getContent());
+            $flashType  = Utils::getFlashTypeForRequest($response);
+            $message    = $response->getContent();
+
+            $this->addFlash($flashType, $message);
         }
 
     }

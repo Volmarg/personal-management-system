@@ -3,6 +3,7 @@
 
 namespace App\Controller\Files;
 
+use App\Controller\Utils\Utils;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Files\UploadSubdirectoryMoveDataType;
 use App\Form\Files\UploadSubdirectoryRemoveType;
@@ -144,11 +145,9 @@ class FilesUploadSettingsController extends AbstractController {
      * @param FormInterface $remove_form
      * @param FormInterface $move_data_form
      * @param FormInterface $create_subdir_form
-     * @return Response
      * @throws \Exception
      */
     private function handleForms(FormInterface $rename_form, FormInterface $remove_form, FormInterface $move_data_form, FormInterface $create_subdir_form){
-        # TODO: handle exception or make some messaging?
 
         if($rename_form->isSubmitted() && $rename_form->isValid()) {
             $form_data      = $rename_form->getData();
@@ -186,6 +185,13 @@ class FilesUploadSettingsController extends AbstractController {
             $upload_type        = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
 
             $response = $this->directories_handler->createFolder($upload_type, $subdirectory_name);
+        }
+
+        if( isset($response) ){
+            $flashType  = Utils::getFlashTypeForRequest($response);
+            $message    = $response->getContent();
+
+            $this->addFlash($flashType, $message);
         }
 
     }
