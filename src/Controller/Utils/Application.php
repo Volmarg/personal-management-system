@@ -35,4 +35,11 @@ class Application extends AbstractController {
         $this->em = $em;
     }
 
+    /**
+     * Initialization of dependencies for used classes from scope of Application cannot be done in constructor as
+     * constructor does not have access/has restricted access to container
+     */
+    public function init() {
+    }
+
 }

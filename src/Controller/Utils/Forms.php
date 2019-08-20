@@ -8,19 +8,18 @@
 
 namespace App\Controller\Utils;
 
-
+use App\Form\Files\MoveSingleFileType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 
 class Forms extends AbstractController {
 
-    /**
-     * @var FormInterface $myNotesForm
-     */
-    public $myNotesForm;
-
     public function __construct() {
-        //$this->myNotesForm = $this->createForm(MyNotesType::class);
+
+    }
+
+    public function moveSingleFile(array $params = []): FormInterface {
+        return $this->createForm(MoveSingleFileType::class, null, $params);
     }
 
 }

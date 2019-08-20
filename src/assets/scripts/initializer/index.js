@@ -21,6 +21,7 @@ export default (function () {
             tinymce.custom.init();
             myGoals.ui.init();
             gallery.lightgallery.init();
+            filesTransfer.ui.init();
         },
         initStatic: function () {
             if ("undefined" !== typeof furcanIconPicker) {
