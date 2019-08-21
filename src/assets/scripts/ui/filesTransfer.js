@@ -16,7 +16,8 @@ export default (function () {
                 fileTransferButton: '#fileTransfer'
             },
             classes: {
-                fileTransferButton: '.file-transfer'
+                fileTransferButton      : '.file-transfer',
+                bootboxModalMainWrapper : '.modal-dialog'
             }
         },
         elements: {
@@ -25,8 +26,16 @@ export default (function () {
             },
             fileTransferButton: ''
         },
+        placeholders: {
+            fileName: "%fileName%",
+        },
         messages: {
-          dataTransferDialogBody: ''
+        },
+        methods: {
+            moveSingleFile: '/files/action/move-single-file'
+        },
+        vars: {
+            fileCurrentPath: ''
         },
         init: function(){
             this.elements.init();
@@ -35,26 +44,17 @@ export default (function () {
         attachCallDialogForDataTransfer: function () {
             let _this = this;
 
-            $(this.elements.fileTransferButton).on('click', () => {
+            $(this.elements.fileTransferButton).on('click', (event) => {
+                let clickedButton           = $(event.target);
+                let tr                      = $(clickedButton).closest('tr');
+                let fileName                = $(tr).find('.file_name').text();
+                _this.vars.fileCurrentPath  = $('[name^="file_full_path"]').val();
 
-                // no ajax calls once the template for modal was fetched - it's always the same by now
-                if( "" !== _this.messages.dataTransferDialogBody ){
-
-                    $(this.elements.fileTransferButton).off('click');
-                    $(this.elements.fileTransferButton).on('click', () => {
-                        let template = _this.messages.dataTransferDialogBody;
-                        _this.callDataTransferDialog(template);
-                    });
-
-                    return;
-                }
-
-                _this.buildDataTransferDialog();
-
+                _this.buildDataTransferDialog(fileName);
             });
 
         },
-        buildDataTransferDialog: function () {
+        buildDataTransferDialog: function (fileName) {
             let _this   = this;
             let url     = '/dialog/body/data-transfer';
 
@@ -65,20 +65,23 @@ export default (function () {
 
                 if( undefined !== data['template'] ){
 
-                    _this.messages.dataTransferDialogBody = data['template'];
-                    _this.callDataTransferDialog(data['template']);
+                    let message = data['template'].replace(_this.placeholders.fileName, fileName);
+                    _this.callDataTransferDialog(message);
 
                 }
 
             }).fail(() => {
-
+                //todo: finish this part of error handling
                 console.warn('failed');
 
             });
 
         },
         callDataTransferDialog: function (template) {
-            bootbox.alert({
+
+            let _this  = this;
+
+            let dialog = bootbox.alert({
                 size: "medium",
                 backdrop: true,
                 closeButton: false,
@@ -86,23 +89,55 @@ export default (function () {
                 buttons: {
                     ok: {
                         label: 'Cancel',
-                        className: 'btn-primary',
-                        callback: () => {
-
-                        }
+                        className: 'btn-primary dialog-ok-button',
+                        callback: () => {}
                     },
                 },
-                callback: function (result) {
-                    if (result) {
-                        _this.callDataTransferDialog();
-                    }
-                }
+                callback: function () {}
+            });
+
+            dialog.init( () => {
+                let modalMainWrapper = $(_this.selectors.classes.bootboxModalMainWrapper);
+                let form             = $(modalMainWrapper).find('form');
+                let formSubmitButton = $(form).find("[type^='submit']");
+
+                _this.attachDataTransferToDialogFormSubmit(formSubmitButton);
             });
         },
-        attachDataTransferToDialogSubmit: function (){
-
+        attachDataTransferToDialogFormSubmit: function (button){
+            let _this = this;
+            $(button).on('click', (event) => {
+                event.preventDefault();
+                _this.makeAjaxCallForDataTransfer();
+            });
         },
         makeAjaxCallForDataTransfer(){
+
+            let fileCurrentPath         = this.vars.fileCurrentPath;
+            let targetUploadType        = $('#move_single_file_target_upload_type').val();
+            let targetSubdirectoryType  = $('#move_single_file_target_subdirectory_name').val();
+            let _this                   = this;
+
+            let data = {
+                'file_current_location'     : fileCurrentPath,
+                'target_upload_type'        : targetUploadType,
+                'target_subdirectory_name'  : targetSubdirectoryType
+            };
+
+            $.ajax({
+                method: "POST",
+                url:_this.methods.moveSingleFile,
+                data: data
+            }).always( (data) => {
+                let responseCode = data['response_code'];
+                let message      = data['response_message'];
+                let notifyType   = ( responseCode === 200 ? 'success' : 'danger' );
+
+                // not checking if code is set because if message is then code must be also
+                if( undefined !== message ){
+                    bootstrap_notifications.notify(message, notifyType)
+                }
+            })
 
         }
 

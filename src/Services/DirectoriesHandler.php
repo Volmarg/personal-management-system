@@ -60,7 +60,7 @@ class DirectoriesHandler {
      * @return Response
      * @throws \Exception
      */
-    public function removeFolder(?string $upload_type, ?string $subdirectory_name){
+    public function removeFolder(?string $upload_type, ?string $subdirectory_name) {
 
         $this->logger->info('Started removing folder: ', [
             'upload_type'       => $upload_type,

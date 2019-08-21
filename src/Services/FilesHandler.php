@@ -24,6 +24,8 @@ class FilesHandler {
     const KEY_TARGET_SUBDIRECTORY_NAME  = 'target_subdirectory_name';
     const KEY_FILE_FULL_PATH            = 'file_full_path';
     const KEY_FILE_NEW_NAME             = 'file_new_name';
+    const KEY_FILE_CURRENT_PATH         = 'file_current_location';
+    const KEY_FILE_NEW_PATH             = 'file_new_location';
 
     const FILE_KEY                      = 'file';
 
@@ -283,6 +285,27 @@ class FilesHandler {
 
         }catch(\Exception $e){
             return new JsonResponse('There was an error while renaming the file.', 500);
+        }
+
+    }
+
+    public function moveSingleFile(string $current_file_location, string $target_file_location) {
+
+        if( !file_exists($current_file_location) ){
+            return new JsonResponse('The file You trying to move does not exist.', 500);
+        }
+
+        if( file_exists($target_file_location) ){
+            return new JsonResponse('File with this name already exists in target directory.', 500);
+        }
+
+        try{
+            Utils::copyFilesRecursively($current_file_location, $target_file_location);
+            unlink($current_file_location);
+            return new JsonResponse('Files has been successfully moved', 200);
+        }catch(\Exception $e){
+            $this->logger->critical("There was an error while trying to move single file {$e->getMessage()}");
+            return new JsonResponse("Could not move the file.", 500);
         }
 
     }
