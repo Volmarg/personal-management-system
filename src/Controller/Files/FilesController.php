@@ -84,6 +84,11 @@ class FilesController extends AbstractController {
         $filename                   = basename($current_file_location);
         $target_file_location       = $subdirectory_path.'/'.$filename;
 
+        //In some cases the path starts with "/" on frontend and this is required there but here we want path without it
+        if( preg_match("#^\/#", $current_file_location) ){
+            $current_file_location = preg_replace('#^\/#','',$current_file_location);
+        }
+
         $response = $this->filesHandler->moveSingleFile($current_file_location, $target_file_location);
 
         $response_data = [

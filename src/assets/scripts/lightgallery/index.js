@@ -20,15 +20,19 @@ export default (function () {
                 trashButton             : '#lightgallery_trash_button',
                 pencilButton            : '#lightgallery_pencil_button',
                 saveButton              : '#lightgallery_save_button',
+                transferButton          : '#lightgallery_transfer_button',
                 downloadButton          : '#lg-download',
+                fileTransferButton      : '#lightgallery_transfer_button'
             },
             classes: {
                 upperToolbar            : '.lg-toolbar',
                 thumbnails              : '.lg-thumb',
                 nextButton              : '.lg-next ',
+                downloadButton          : '.lg-download',
                 currentViewedImage      : '.lg-current',
                 imagePreviewWrapper     : '.lg-inner',
-                currentViewedFilename   : '.lg-sub-html'
+                currentViewedFilename   : '.lg-sub-html',
+                galleryMainWrapper      : '.lg',
             }
         },
         messages: {
@@ -43,7 +47,6 @@ export default (function () {
             KEY_FILE_FULL_PATH          : "file_full_path"
         },
         init: function () {
-
             this.initGallery();
             this.addPlugins();
 
@@ -60,6 +63,7 @@ export default (function () {
         addPlugins: function(){
             this.addPluginRemoveFile();
             this.addPluginRenameFile();
+            this.addPluginTransferFile();
         },
         addPluginRemoveFile(){
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
@@ -273,6 +277,41 @@ export default (function () {
 
             });
 
+        },
+        addPluginTransferFile: function () {
+
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+            let _this           = this;
+            var filePath        = '';
+
+            // Handling editing name
+            lightboxGallery.on('onAfterOpen.lg', function (event) {
+                let transferIcon = '<a class=\"lg-icon\" id="lightgallery_transfer_button"><i class="fas fa-random file-transfer"></i></a>';
+                $(_this.selectors.classes.upperToolbar).append(transferIcon);
+
+                _this.attachCallDialogForDataTransfer()
+                // TODO: add removing moved item from views
+            });
+
+        },
+        attachCallDialogForDataTransfer: function () {
+            let button  = $(this.selectors.ids.fileTransferButton);
+            let _this   = this;
+
+            if( $(button).length > 0 ){
+
+                $(button).on('click', (event) => {
+                    let clickedButton           = $(event.target);
+                    let buttonsToolbar          = $(clickedButton).closest(_this.selectors.classes.upperToolbar);
+                    let galleryMainWrapper      = $(clickedButton).closest(_this.selectors.classes.galleryMainWrapper);
+
+                    let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
+                    let fileName                = $(galleryMainWrapper).find(_this.selectors.classes.currentViewedFilename).text();
+
+                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath);
+                });
+
+            }
         }
     }
 

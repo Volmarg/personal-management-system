@@ -6,7 +6,9 @@ import './ui/crud.js';
 import './ui/widgets.js';
 import './ui/forms.js';
 import './ui/upload.js';
-import './ui/filesTransfer.js';
+import './ui/dialogs.js';
+
+import './modules/my-files/filesTransfer.js';
 
 import './loading-bar/index.js';
 import './loading-bar/loading-bar.js';
