@@ -104,8 +104,9 @@ export default (function () {
 
                                         // Rebuilding thumbnails etc
                                        _this.removeImageWithMiniature(filePath);
+                                       _this.handleClosingGalleryIfThereAreNoMoreImages(lightboxGallery);
 
-                                    },
+                                   },
                                 }).fail((data) => {
                                     bootstrap_notifications.notify(data.responseText, 'danger')
                                 });
@@ -250,8 +251,9 @@ export default (function () {
 
         },
         attachCallDialogForDataTransfer: function () {
-            let button  = $(this.selectors.ids.fileTransferButton);
-            let _this   = this;
+            let button          = $(this.selectors.ids.fileTransferButton);
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+            let _this           = this;
 
             if( $(button).length > 0 ){
 
@@ -265,6 +267,7 @@ export default (function () {
 
                     let callback = function (){
                         _this.removeImageWithMiniature(fileCurrentPath);
+                        _this.handleClosingGalleryIfThereAreNoMoreImages(lightboxGallery);
                     };
 
                     dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Images', callback);
@@ -294,7 +297,7 @@ export default (function () {
             });
 
             lightboxGallery.on('onCloseAfter.lg',function() {
-                _this.handleRebuildingEntireGaleryWhenClosingIt(lightboxGallery);
+                _this.handleRebuildingEntireGalleryWhenClosingIt(lightboxGallery);
             });
 
         },
@@ -322,10 +325,18 @@ export default (function () {
                 }
             });
         },
-        handleRebuildingEntireGaleryWhenClosingIt: function(lightboxGallery){
+        handleRebuildingEntireGalleryWhenClosingIt: function(lightboxGallery){
             // Handling rebuilding entire gallery when closing - needed because plugin somehows stores data in it's object not in storage
             lightboxGallery.data('lightGallery').destroy(true);
             this.initGallery();
+        },
+        handleClosingGalleryIfThereAreNoMoreImages: function(lightboxGallery) {
+            let foundImages = $(lightboxGallery).find('img');
+            let closeButton = $('.lg-close');
+
+            if( $(foundImages).length === 0 ){
+                $(closeButton).click();
+            }
         }
     }
 
