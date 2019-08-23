@@ -9,9 +9,10 @@
   padding: 2px;
 }
 
-.lightgallery #lightgallery_pencil_button:hover,
-.lightgallery #lightgallery_trash_button:hover,
-.lightgallery #lightgallery_save_button:hover {
+.lg #lightgallery_pencil_button:hover,
+.lg #lightgallery_transfer_button:hover,
+.lg #lightgallery_trash_button:hover,
+.lg #lightgallery_save_button:hover {
   transition: 200ms;
   color: white;
 }
