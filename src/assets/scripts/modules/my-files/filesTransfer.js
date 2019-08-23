@@ -1,5 +1,5 @@
 /**
- * This file handles only the dialog used to transfer files between modules
+ * This file handles the filesTransfer logic for module "My Files"
  */
 var bootbox = require('bootbox');
 
@@ -36,7 +36,13 @@ export default (function () {
                     let fileName                = $(tr).find('.file_name').text();
                     let fileCurrentPath         = $('[name^="file_full_path"]').val();
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Files');
+                    let callback = function (){
+                        let parent_wrapper  = $(clickedButton).closest('tr');
+                        let table_id        = $(parent_wrapper).closest('tbody').closest('table').attr('id');
+                        ui.crud.removeDataTableTableRow(table_id, parent_wrapper);
+                    };
+
+                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Files', callback);
                 });
 
             }

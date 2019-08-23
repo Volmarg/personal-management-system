@@ -38,4 +38,15 @@ export default (function () {
         }
     };
 
+    utils.validations = {
+
+        isTrue: function($stringBoolean){
+            return ( $stringBoolean === 'true');
+        },
+        isFalse: function($stringBoolean){
+            return ( $stringBoolean === 'false');
+        }
+
+    };
+
 }());

@@ -38,8 +38,6 @@ class Dialogs extends AbstractController
      */
     public function buildDataTransferDialogBody(Request $request) {
 
-        $error_message = null;
-
         if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
             return new JsonResponse([
                 'errorMessage' => "Request is missing key: ".static::KEY_FILE_CURRENT_PATH
@@ -61,7 +59,13 @@ class Dialogs extends AbstractController
         }
 
         $file_current_path = $request->request->get(static::KEY_FILE_CURRENT_PATH);
-        $file              = new File($file_current_path);
+
+        //In some cases the path starts with "/" on frontend and this is required there but here we want path without it
+        if( preg_match("#^\/#", $file_current_path) ){
+            $file_current_path = preg_replace('#^\/#','', $file_current_path);
+        }
+
+        $file = new File($file_current_path);
 
         if( !$file->isFile() ){
             return new JsonResponse([

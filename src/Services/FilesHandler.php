@@ -302,7 +302,7 @@ class FilesHandler {
         try{
             Utils::copyFilesRecursively($current_file_location, $target_file_location);
             unlink($current_file_location);
-            return new JsonResponse('Files has been successfully moved', 200);
+            return new JsonResponse('File has been successfully moved', 200);
         }catch(\Exception $e){
             $this->logger->critical("There was an error while trying to move single file {$e->getMessage()}");
             return new JsonResponse("Could not move the file.", 500);

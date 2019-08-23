@@ -1,5 +1,5 @@
 /**
- * This file handles only the dialog used to transfer files between modules
+ * This file handles calling dialogs
  */
 var bootbox = require('bootbox');
 
@@ -35,7 +35,7 @@ export default (function () {
             fileCurrentPath: ''
         },
         dataTransfer: {
-            buildDataTransferDialog: function (fileName, fileCurrentPath, moduleName) {
+            buildDataTransferDialog: function (fileName, fileCurrentPath, moduleName, callback = null) {
                 dialogs.ui.vars.fileCurrentPath = fileCurrentPath;
                 let _this = this;
                 let getDialogTemplate = dialogs.ui.methods.getDialogTemplate;
@@ -54,7 +54,7 @@ export default (function () {
                     if( undefined !== data['template'] ){
 
                         let message = data['template'].replace(dialogs.ui.placeholders.fileName, fileName);
-                        _this.callDataTransferDialog(message);
+                        _this.callDataTransferDialog(message, callback);
 
                     } else if(undefined !== data['errorMessage']) {
                         bootstrap_notifications.notify(data['errorMessage'], 'danger');
@@ -66,7 +66,7 @@ export default (function () {
                 })
 
             },
-            callDataTransferDialog: function (template) {
+            callDataTransferDialog: function (template, callback = null) {
 
                 let _this  = this;
 
@@ -82,7 +82,8 @@ export default (function () {
                             callback: () => {}
                         },
                     },
-                    callback: function () {}
+                    callback: function () {
+                    }
                 });
 
                 dialog.init( () => {
@@ -90,18 +91,18 @@ export default (function () {
                     let form             = $(modalMainWrapper).find('form');
                     let formSubmitButton = $(form).find("[type^='submit']");
 
-                    _this.attachDataTransferToDialogFormSubmit(formSubmitButton);
+                    _this.attachDataTransferToDialogFormSubmit(formSubmitButton, callback);
                     ui.forms.init();
                 });
             },
-            attachDataTransferToDialogFormSubmit: function (button){
+            attachDataTransferToDialogFormSubmit: function (button, callback = null){
                 let _this = this;
                 $(button).on('click', (event) => {
                     event.preventDefault();
-                    _this.makeAjaxCallForDataTransfer();
+                    _this.makeAjaxCallForDataTransfer(callback);
                 });
             },
-            makeAjaxCallForDataTransfer(){
+            makeAjaxCallForDataTransfer(callback = null){
 
                 let fileCurrentPath         = dialogs.ui.vars.fileCurrentPath;
                 let targetUploadType        = $(dialogs.ui.selectors.ids.targetUploadTypeInput).val();
@@ -120,12 +121,25 @@ export default (function () {
                 }).always( (data) => {
                     let responseCode = data['response_code'];
                     let message      = data['response_message'];
-                    let notifyType   = ( responseCode === 200 ? 'success' : 'danger' );
+                    let notifyType   = '';
+
+                    if( responseCode === 200 ){
+
+                        if( 'function' === typeof(callback) ){
+                            callback();
+                            bootbox.hideAll()
+                        }
+
+                        notifyType = 'success'
+                    }else{
+                        notifyType = 'danger';
+                    }
 
                     // not checking if code is set because if message is then code must be also
                     if( undefined !== message ){
-                        bootstrap_notifications.notify(message, notifyType)
+                        bootstrap_notifications.notify(message, notifyType);
                     }
+                    
                 })
 
             },

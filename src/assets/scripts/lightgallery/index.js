@@ -49,7 +49,7 @@ export default (function () {
         init: function () {
             this.initGallery();
             this.addPlugins();
-
+            this.handleGalleryEvents();
         },
         initGallery: function(){
             if( $(this.selectors.ids.lightboxGallery).length > 0 ){
@@ -70,43 +70,8 @@ export default (function () {
             let _this           = this;
             var filePath        = '';
 
-            // Handling rebuilding entire gallery when closing - needed because plugin somehows stores data in it's object not in storage
-            lightboxGallery.on('onCloseAfter.lg',function(event, index, fromTouch, fromThumb){
-                try{
-                    lightboxGallery.data('lightGallery').destroy(true);
-                    _this.initGallery();
-                }catch(ex){
-
-                };
-            });
-
-            // Handling skipping removed images - because of above - this is dirty solution but works
-
-            lightboxGallery.on('onAfterSlide.lg', function(event){
-                let downloadButton  = $(_this.selectors.ids.downloadButton);
-                var filePath        = $(downloadButton).attr('href');
-                let isImagePresent  = ( lightboxGallery.find("[src^='" + filePath + "']").length > 0 );
-
-                if( !isImagePresent ){
-                    $('.lg-next').click();
-                }
-
-                // Handling proper slideback when image was removed - dirty like above
-                let prevButton       = $('button.lg-prev');
-
-                $(prevButton).on('click', () => {
-                    let downloadButton  = $(_this.selectors.ids.downloadButton);
-                    var filePathOnClick = $(downloadButton).attr('href');
-
-                    if (filePathOnClick === filePath){
-                        lightboxGallery.data('lightGallery').goToPrevSlide();
-                    }
-                });
-
-            });
-
             // Handling removing images
-            lightboxGallery.on('onAfterOpen.lg', function (event) {
+            lightboxGallery.on('onAfterOpen.lg', function () {
                 let trashIcon = '<a class=\"lg-icon\" id="lightgallery_trash_button"><i class="fa fa-trash" aria-hidden="true"></i></a>';
                 $(_this.selectors.classes.upperToolbar).append(trashIcon);
 
@@ -138,17 +103,7 @@ export default (function () {
                                         bootstrap_notifications.notify(data, 'success');
 
                                         // Rebuilding thumbnails etc
-                                       let thumbnails               = $(_this.selectors.classes.thumbnails);
-                                       let removedImageMiniature    = $(thumbnails).find("[src^='" + filePath + "']");
-                                       let nextButton               = $(_this.selectors.classes.nextButton);
-                                       let currentViewedImage       = $(_this.selectors.classes.currentViewedImage);
-                                       let htmlGallery              = $(_this.selectors.ids.lightboxGallery);
-
-                                       $(removedImageMiniature).parent('div').remove();
-                                       $(currentViewedImage).remove();
-                                       $(nextButton).click();
-                                       _this.initGallery();
-                                       $(htmlGallery).find('[href^="' + filePath + '"]').remove();
+                                       _this.removeImageWithMiniature(filePath);
 
                                     },
                                 }).fail((data) => {
@@ -308,10 +263,69 @@ export default (function () {
                     let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
                     let fileName                = $(galleryMainWrapper).find(_this.selectors.classes.currentViewedFilename).text();
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Images');
+                    let callback = function (){
+                        _this.removeImageWithMiniature(fileCurrentPath);
+                    };
+
+                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Images', callback);
                 });
 
             }
+        },
+        removeImageWithMiniature: function(filePath){
+            let thumbnails               = $(this.selectors.classes.thumbnails);
+            let removedImageMiniature    = $(thumbnails).find("[src^='" + filePath + "']");
+            let nextButton               = $(this.selectors.classes.nextButton);
+            let currentViewedImage       = $(this.selectors.classes.currentViewedImage);
+            let htmlGallery              = $(this.selectors.ids.lightboxGallery);
+
+            $(removedImageMiniature).parent('div').remove();
+            $(currentViewedImage).remove();
+            $(nextButton).click();
+            this.initGallery();
+            $(htmlGallery).find('[href^="' + filePath + '"]').remove();
+        },
+        handleGalleryEvents: function (){
+            let _this           = this;
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+
+            lightboxGallery.on('onAfterSlide.lg', function () {
+                _this.handleMovingBetweenImagesAfterImageRemoval(lightboxGallery);
+            });
+
+            lightboxGallery.on('onCloseAfter.lg',function() {
+                _this.handleRebuildingEntireGaleryWhenClosingIt(lightboxGallery);
+            });
+
+        },
+        handleMovingBetweenImagesAfterImageRemoval: function(lightboxGallery){
+
+            // Handling skipping removed images - because of above - this is dirty solution but works
+            let downloadButton  = $(this.selectors.ids.downloadButton);
+            var filePath        = $(downloadButton).attr('href');
+            let isImagePresent  = ( lightboxGallery.find("[src^='" + filePath + "']").length > 0 );
+            let _this           = this;
+
+            if( !isImagePresent ){
+                $('.lg-next').click();
+            }
+
+            // Handling proper slideback when image was removed - dirty like above
+            let prevButton       = $('button.lg-prev');
+
+            $(prevButton).on('click', () => {
+                let downloadButton  = $(_this.selectors.ids.downloadButton);
+                var filePathOnClick = $(downloadButton).attr('href');
+
+                if (filePathOnClick === filePath){
+                    lightboxGallery.data('lightGallery').goToPrevSlide();
+                }
+            });
+        },
+        handleRebuildingEntireGaleryWhenClosingIt: function(lightboxGallery){
+            // Handling rebuilding entire gallery when closing - needed because plugin somehows stores data in it's object not in storage
+            lightboxGallery.data('lightGallery').destroy(true);
+            this.initGallery();
         }
     }
 

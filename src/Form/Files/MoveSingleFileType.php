@@ -25,7 +25,10 @@ class MoveSingleFileType extends AbstractType
                 ]
             ])
             ->add(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME, ChoiceType::class, [
-                'choices' => $options[FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME]
+                'choices' => $options[FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME],
+                'choice_value' => function ($choice) {
+                    return $choice;
+                }
             ])
             ->add('submit', SubmitType::class, [
             ]);
