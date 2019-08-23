@@ -308,7 +308,7 @@ export default (function () {
                     let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
                     let fileName                = $(galleryMainWrapper).find(_this.selectors.classes.currentViewedFilename).text();
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath);
+                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Images');
                 });
 
             }

@@ -13,6 +13,7 @@ class MyImagesController extends AbstractController {
     const TWIG_TEMPLATE_MY_IMAGES = 'modules/my-images/my-images.html.twig';
     const KEY_FILE_NAME           = 'file_name';
     const KEY_FILE_FULL_PATH      = 'file_full_path';
+    const MODULE_NAME             = 'My Images';
 
     /**
      * @var Finder $finder

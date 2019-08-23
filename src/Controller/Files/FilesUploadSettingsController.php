@@ -58,7 +58,10 @@ class FilesUploadSettingsController extends AbstractController {
      */
     public function displaySettings(Request $request) {
 
-        $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes(true);
+        $all_subdirectories_for_all_types                   = FileUploadController::getSubdirectoriesForAllUploadTypes(true);
+
+        //TODO: moving entire data must use main, and with this i need to block removed all if I select main + block it on backend
+        //$all_subdirectories_for_all_types_with_main_folders = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
 
         $rename_form        = $this->getRenameSubdirectoryForm($all_subdirectories_for_all_types);
         $rename_form->handleRequest($request);

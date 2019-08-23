@@ -22,7 +22,8 @@ export default (function () {
             }
         },
         placeholders: {
-            fileName: "%fileName%",
+            fileName            : "%fileName%",
+            targetUploadType    : "%currentUploadType%",
         },
         messages: {
         },
@@ -34,26 +35,35 @@ export default (function () {
             fileCurrentPath: ''
         },
         dataTransfer: {
-            buildDataTransferDialog: function (fileName, fileCurrentPath) {
+            buildDataTransferDialog: function (fileName, fileCurrentPath, moduleName) {
                 dialogs.ui.vars.fileCurrentPath = fileCurrentPath;
-                let _this                       = this;
+                let _this = this;
+                let getDialogTemplate = dialogs.ui.methods.getDialogTemplate;
+
+                let data = {
+                    'fileCurrentPath': fileCurrentPath,
+                    'moduleName'     : moduleName
+                };
 
                 $.ajax({
-                    method: "GET",
-                    url: dialogs.ui.methods.getDialogTemplate,
-                }).done((data) => {
+                    method: "POST",
+                    url: getDialogTemplate,
+                    data: data
+                }).always((data) => {
 
                     if( undefined !== data['template'] ){
 
                         let message = data['template'].replace(dialogs.ui.placeholders.fileName, fileName);
                         _this.callDataTransferDialog(message);
 
+                    } else if(undefined !== data['errorMessage']) {
+                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
+                    }else{
+                        let message = 'Something went wrong while trying to load dialog template.';
+                        bootstrap_notifications.notify(message, 'danger');
                     }
 
-                }).fail(() => {
-                    let message = 'Something went wrong while trying to load dialog template.';
-                    bootstrap_notifications.notify(message, 'danger');
-                });
+                })
 
             },
             callDataTransferDialog: function (template) {
@@ -81,6 +91,7 @@ export default (function () {
                     let formSubmitButton = $(form).find("[type^='submit']");
 
                     _this.attachDataTransferToDialogFormSubmit(formSubmitButton);
+                    ui.forms.init();
                 });
             },
             attachDataTransferToDialogFormSubmit: function (button){

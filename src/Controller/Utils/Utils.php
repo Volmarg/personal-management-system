@@ -32,6 +32,7 @@ class Utils extends AbstractController {
      * @param string $destination
      * @param bool $renameInsteadOfRemoving
      * BUG: the third parameter and it usages incorrect? There is no renaming done...
+     * TODO: fixbug and could refactor it to use new File()
      */
     public static function copyFilesRecursively(string $source, string $destination, bool $renameInsteadOfRemoving = true) {
 

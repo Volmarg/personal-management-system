@@ -3,6 +3,8 @@
 
 namespace App\Controller\Files;
 
+use App\Controller\Modules\Files\MyFilesController;
+use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Controller\Utils\Utils;
@@ -37,6 +39,11 @@ class FileUploadController extends AbstractController {
     const UPLOAD_TYPES = [
         self::TYPE_IMAGES => self::TYPE_IMAGES,
         self::TYPE_FILES  => self::TYPE_FILES
+    ];
+
+    const UPLOAD_BASED_MODULES = [
+        MyImagesController::MODULE_NAME => self::TYPE_IMAGES,
+        MyFilesController::MODULE_NAME  => self::TYPE_FILES
     ];
 
     /**
@@ -116,13 +123,15 @@ class FileUploadController extends AbstractController {
         return $this->render(static::UPLOAD_PAGE_TWIG_TEMPLATE, $data);
 
     }
+
     /**
      * @param string $uploadType
-     * @param bool $namesAsKeysAndValues
+     * @param bool $names_as_keys_and_values
+     * @param bool $include_main_folder
      * @return array
      * @throws \Exception
      */
-    public static function getSubdirectoriesForUploadType(string $uploadType, $namesAsKeysAndValues = false)
+    public static function getSubdirectoriesForUploadType(string $uploadType, $names_as_keys_and_values = false, $include_main_folder = false)
     {
         $subdirectories = [];
         $finder         = new Finder();
@@ -135,32 +144,37 @@ class FileUploadController extends AbstractController {
             $subdirectories[] = $directory->getFilename();
         }
 
-        if($namesAsKeysAndValues){
+        if($names_as_keys_and_values){
             $subdirectories = array_combine(
                 array_values($subdirectories),
                 array_values($subdirectories)
             );
         }
 
+        if( $include_main_folder ){
+            $subdirectories['Main folder'] = "";
+        }
+
         return $subdirectories;
     }
 
     /**
-     * @param bool $groupedByTypes
+     * @param bool $grouped_by_types
+     * @param bool $include_main_folder
      * @return array
      * @throws \Exception
      */
-    public static function getSubdirectoriesForAllUploadTypes($groupedByTypes = false){
+    public static function getSubdirectoriesForAllUploadTypes($grouped_by_types = false, $include_main_folder = false){
 
         $subdirectories = [];
 
-        if( !$groupedByTypes ){
+        if( !$grouped_by_types ){
             foreach(static::UPLOAD_TYPES as $upload_type){
-                $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForUploadType($upload_type, true) );
+                $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForUploadType($upload_type, true, $include_main_folder) );
             }
         }else{
             foreach(static::UPLOAD_TYPES as $upload_type){
-                $subdirectories[$upload_type] = static::getSubdirectoriesForUploadType($upload_type, true);
+                $subdirectories[$upload_type] = static::getSubdirectoriesForUploadType($upload_type, true, $include_main_folder);
             }
         }
 

@@ -18,10 +18,10 @@ class MoveSingleFileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add(FilesHandler::KEY_TARGET_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES,
+                'choices' => FileUploadController::UPLOAD_BASED_MODULES,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_target_subdirectory_name'
+                    'data-dependent-list-selector' => '#move_single_file_target_subdirectory_name'
                 ]
             ])
             ->add(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME, ChoiceType::class, [

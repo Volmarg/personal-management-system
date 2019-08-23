@@ -36,7 +36,7 @@ export default (function () {
                     let fileName                = $(tr).find('.file_name').text();
                     let fileCurrentPath         = $('[name^="file_full_path"]').val();
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath);
+                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Files');
                 });
 
             }
