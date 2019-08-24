@@ -32,7 +32,7 @@ class MyJobAfterhoursController extends AbstractController {
     public function __construct(Application $app) {
         static::$AFTERHOURS_ENTITY_CLASS = MyJobAfterhours::class;
 
-        $entity_enums       = [static::$AFTERHOURS_ENTITY_CLASS::ENUM_MADE, static::$AFTERHOURS_ENTITY_CLASS::ENUM_SPENT];
+        $entity_enums       = [static::$AFTERHOURS_ENTITY_CLASS::TYPE_MADE, static::$AFTERHOURS_ENTITY_CLASS::TYPE_SPENT];
 
         $this->entity_enums = array_combine(
             array_map('ucfirst', array_values($entity_enums)),
@@ -69,8 +69,8 @@ class MyJobAfterhoursController extends AbstractController {
         Repositories::removeHelperColumnsFromView($column_names);
 
         $afterhours_all     = $this->app->repositories->myJobAfterhoursRepository->findBy(['deleted' => 0]);
-        $afterhours_spent   = $this->filterAfterhours($afterhours_all, static::$AFTERHOURS_ENTITY_CLASS::ENUM_SPENT);
-        $afterhours_made    = $this->filterAfterhours($afterhours_all, static::$AFTERHOURS_ENTITY_CLASS::ENUM_MADE);
+        $afterhours_spent   = $this->filterAfterhours($afterhours_all, static::$AFTERHOURS_ENTITY_CLASS::TYPE_SPENT);
+        $afterhours_made    = $this->filterAfterhours($afterhours_all, static::$AFTERHOURS_ENTITY_CLASS::TYPE_MADE);
 
         $remaining_time_to_spend_per_goal = $this->getTimeToSpend();
 

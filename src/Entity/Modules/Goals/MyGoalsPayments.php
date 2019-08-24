@@ -22,7 +22,7 @@ class MyGoalsPayments
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="date", length=255, nullable=true)
      */
     private $deadline;
 
@@ -42,7 +42,7 @@ class MyGoalsPayments
     private $deleted = 0;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="date", length=255)
      */
     private $collectionStartDate;
 
@@ -64,18 +64,6 @@ class MyGoalsPayments
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getDeadline(): ?string
-    {
-        return $this->deadline;
-    }
-
-    public function setDeadline(?string $deadline): self
-    {
-        $this->deadline = $deadline;
 
         return $this;
     }
@@ -116,17 +104,47 @@ class MyGoalsPayments
         return $this;
     }
 
-    public function getCollectionStartDate(): ?string
-    {
-        return $this->collectionStartDate;
+    public function getDeadline() {
+        return $this->deadline;
     }
 
-    public function setCollectionStartDate(string $collectionStartDate): self
-    {
-        $this->collectionStartDate = $collectionStartDate;
+    /**
+     * @param $deadline
+     * @return $this
+     * @throws \Exception
+     */
+    public function setDeadline($deadline) {
+
+        if( is_string($deadline) ){
+            $deadline = new \DateTime($deadline);
+        }
+
+        $this->deadline = $deadline;
 
         return $this;
     }
+
+    public function getCollectionStartDate() {
+        return $this->collectionStartDate;
+    }
+
+    /**
+     * @param $collectionStartDate
+     * @return $this
+     * @throws \Exception
+     */
+    public function setCollectionStartDate($collectionStartDate) {
+
+        if( is_string($collectionStartDate) ){
+            $collectionStartDate = new \DateTime($collectionStartDate);
+        }
+
+        $this->collectionStartDate = $collectionStartDate;
+
+        return $this;
+
+    }
+
 
     public function getDisplayOnDashboard(): ?bool
     {

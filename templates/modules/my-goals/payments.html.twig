@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    {% set curr_date        =  "now"|date("m/d/Y") %}
+    {% set curr_date =  date() %}
 
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
@@ -13,24 +13,10 @@
                      style="flex-wrap:wrap">
 
                     {% for payment in all_payments %}
-
-                        {% set payment_duration             = date(date(payment.collectionStartDate)).diff(date(payment.deadline)).days %}
-                        {% set payment_days_left            = date(curr_date).diff(date(payment.deadline)).days %}
-
-                        {% if date(curr_date) <  date(payment.collectionStartDate) %}
-                            {% set payment_start_in = date(date(payment.collectionStartDate)).diff(date(curr_date)) %}
-                        {% endif %}
-
-                        {% set payment_days_passed          =  payment_duration - payment_days_left %}
-
-                        {% if payment_start_in is defined %}
-                            {% set payment_percentage_days_left = 0 %}
-                        {% else %}
-                            {% set payment_percentage_days_left = (payment_days_passed / payment_duration ) * 100 %}
-                        {% endif %}
-
-                        {% include 'modules/my-goals/components/one-payment.html.twig' with {'col_size' : 3 } %}
-
+                        {% include 'modules/my-goals/calculations/one-payment.html.twig' with {
+                            'template': 'modules/my-goals/components/one-payment.html.twig',
+                            'col_size': 3
+                        }%}
                     {% endfor %}
 
                 </div>

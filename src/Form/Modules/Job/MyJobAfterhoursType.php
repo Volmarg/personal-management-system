@@ -7,6 +7,7 @@ use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,14 +23,15 @@ class MyJobAfterhoursType extends AbstractType {
         static::$choices = (is_array($options) ? $options['goals'] : []);
 
         $builder
-            ->add('Date', null, [
+            ->add('Date', DateType::class, [
                 'attr' => [
-                    'data-provide' => "datepicker",
-                    'data-date-format' => "yyyy-mm-dd",
+                    'data-provide'              => "datepicker",
+                    'data-date-format'          => "yyyy-mm-dd",
                     'data-date-today-highlight' => true,
-                    'autocomplete' => 'off'
+                    'autocomplete'              => 'off'
                 ],
-                'data' => date('Y-m-d')
+                'widget' => 'single_text',
+                'format' => 'y-M-d',
             ])
             ->add('Description', null, [
                 'attr' => [

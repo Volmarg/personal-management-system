@@ -9,8 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyJobAfterhours {
 
-    public const ENUM_SPENT = 'spent';
-    public const ENUM_MADE = 'made';
+    public const TYPE_SPENT = 'spent';
+    public const TYPE_MADE  = 'made';
 
     /**
      * @ORM\Id()
@@ -20,7 +20,7 @@ class MyJobAfterhours {
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="date", length=255)
      */
     private $Date;
 
@@ -53,11 +53,24 @@ class MyJobAfterhours {
         return $this->id;
     }
 
-    public function getDate(): ?string {
+    /**
+     * @return mixed
+     */
+    public function getDate() {
         return $this->Date;
     }
 
-    public function setDate(string $Date): self {
+    /**
+     * @param mixed $Date
+     * @return MyJobAfterhours
+     * @throws \Exception
+     */
+    public function setDate($Date): self {
+
+        if( is_string($Date) ){
+            $Date = new \DateTime($Date);
+        }
+
         $this->Date = $Date;
 
         return $this;

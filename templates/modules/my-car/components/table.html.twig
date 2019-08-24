@@ -20,7 +20,7 @@
     <tbody>
     {% for car_data in car_all_data %}
 
-        {% if car_data.date | trim is not empty %}
+        {% if car_data.date is not empty %}
             {% set dates_difference = date(curr_date).diff(date(car_data.date)) %}
 
             {% if dates_difference.days > 30 and dates_difference.days < 60 %}
@@ -49,7 +49,7 @@
                         style="{{ date_color_style}}{{ common_style }}"
                         data-order="{{ timestamp }}"
                         >
-                        {{ car_data.date}}
+                        {{ car_data.date|date("Y-m-d")}}
                     </td>
 
                 {% else %}

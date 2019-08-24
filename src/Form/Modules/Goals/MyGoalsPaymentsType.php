@@ -5,6 +5,7 @@ namespace App\Form\Modules\Goals;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -15,23 +16,27 @@ class MyGoalsPaymentsType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('name')
-            ->add('collectionStartDate', null, [
+            ->add('collectionStartDate', DateType::class, [
                 'attr' => [
-                    'data-provide' => "datepicker",
-                    'data-date-format' => "yyyy-mm-dd",
+                    'data-provide'              => "datepicker",
+                    'data-date-format'          => "yyyy-mm-dd",
                     'data-date-today-highlight' => true,
-                    'autocomplete' => 'off'
+                    'autocomplete'              => 'off'
                 ],
-                'label' => 'Collection start date'
+                'widget'    => 'single_text',
+                'format'    => 'y-M-d',
+                'label'     => 'Collection start date'
             ])
-            ->add('deadline', null, [
+            ->add('deadline', DateType::class, [
                 'attr' => [
-                    'data-provide' => "datepicker",
-                    'data-date-format' => "yyyy-mm-dd",
+                    'data-provide'              => "datepicker",
+                    'data-date-format'          => "yyyy-mm-dd",
                     'data-date-today-highlight' => true,
-                    'autocomplete' => 'off'
+                    'autocomplete'              => 'off'
                 ],
-                'label' => 'Deadline'
+                'widget'    => 'single_text',
+                'format'    => 'y-M-d',
+                'label'     => 'Deadline'
             ])
             ->add('moneyGoal', IntegerType::class,[
                 'attr' => [

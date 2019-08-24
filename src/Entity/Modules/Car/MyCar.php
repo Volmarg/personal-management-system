@@ -21,7 +21,7 @@ class MyCar {
     private $Name;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="date", length=255, nullable=true)
      */
     private $Date;
 
@@ -55,11 +55,21 @@ class MyCar {
         return $this;
     }
 
-    public function getDate(): ?string {
+    public function getDate() {
         return $this->Date;
     }
 
-    public function setDate(string $Date): self {
+    /**
+     * @param $Date
+     * @return MyCar
+     * @throws \Exception
+     */
+    public function setDate($Date): self {
+
+        if( is_string($Date) ){
+            $Date = new \DateTime($Date);
+        }
+
         $this->Date = $Date;
 
         return $this;

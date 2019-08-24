@@ -33,11 +33,11 @@
                 </td>
 
                 <td class="collectionStartDate">
-                    {{ payment.collectionStartDate }}
+                    {{ payment.collectionStartDate|date('Y-m-d') }}
                 </td>
 
                 <td class="deadline">
-                    {{ payment.deadline }}
+                    {{ payment.deadline|date('Y-m-d') }}
                 </td>
 
                 <td class="moneyGoal">

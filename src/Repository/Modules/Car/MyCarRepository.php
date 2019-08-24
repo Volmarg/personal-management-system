@@ -20,18 +20,21 @@ class MyCarRepository extends ServiceEntityRepository {
     public function getIncomingCarSchedulesInMonths(int $months){
 
         $connection = $this->getEntityManager()->getConnection();
-
         $sql = "
             SELECT name AS name,
               date      AS date,
-              DATEDIFF(STR_TO_DATE(date, '%d-%m-%Y'),NOW()) AS daysDiff
+              DATEDIFF(date ,NOW()) AS daysDiff
             FROM my_car
-            WHERE STR_TO_DATE(date, '%d-%m-%Y') BETWEEN NOW() AND NOW() + INTERVAL $months MONTH
-            AND DATEDIFF(STR_TO_DATE(date, '%d-%m-%Y'),NOW()) > 0
+            WHERE date BETWEEN NOW() AND NOW() + INTERVAL :months MONTH
+            AND DATEDIFF (date,NOW()) > 0
             AND deleted = 0
         ";
 
-        $statement = $connection->executeQuery($sql);
+        $binded_values = [
+          'months'  => $months
+        ];
+
+        $statement = $connection->executeQuery($sql, $binded_values);
         $results   = $statement->fetchAll();
 
         return $results;

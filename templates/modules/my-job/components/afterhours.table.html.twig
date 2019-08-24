@@ -12,8 +12,14 @@
     {% for afterhour in afterhours %}
         <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyJobAfterhours">
             {% for column in column_names %}
-                <td class="{{ column }} {%  if column == 'type' or column == id_column  %}d-none{% endif %}">
-                    {% if attribute(afterhour,column).timestamp is defined %}
+
+                {% set timestamp = afterhour.date.timestamp %}
+
+                <td
+                        class="{{ column }} {%  if column == 'type' or column == id_column  %}d-none{% endif %}"
+                        data-order="{% if timestamp is defined %}{{ timestamp }}{% endif %}"
+                >
+                    {% if column == 'date' %}
                         {{ attribute(afterhour,column)|date('d-m-Y') }}
                     {% else %}
                         {{ attribute(afterhour,column) }}

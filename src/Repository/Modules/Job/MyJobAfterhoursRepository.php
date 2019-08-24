@@ -43,20 +43,25 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
             FROM my_job_afterhours AS mja
             LEFT JOIN my_job_afterhours AS mja2
               ON mja.id = mja2.id
-              AND mja2.type = 'made'
+              AND mja2.type = :type_made
               AND mja2.deleted = 0
             LEFT JOIN my_job_afterhours AS mja3
               ON mja.id = mja3.id
-              AND  mja3.type = 'spent'
+              AND  mja3.type = :type_spent
               AND mja3.deleted = 0
             WHERE mja.deleted = 0
             GROUP BY mja.goal
             HAVING (timeMade - timeSpent > 0)
         ";
 
+        $binded_values = [
+            'type_made'  => MyJobAfterhours::TYPE_MADE,
+            'type_spent' => MyJobAfterhours::TYPE_SPENT,
+        ];
+
         $connection = $this->getEntityManager()->getConnection();
         $statement = $connection->prepare($sql);
-        $statement->execute();
+        $statement->execute($binded_values);
         $results = $statement->fetchAll();
 
         return (!empty($results) ? $results : []);

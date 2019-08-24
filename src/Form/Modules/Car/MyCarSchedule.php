@@ -7,6 +7,7 @@ use App\Entity\Modules\Car\MyCar;
 use App\Entity\Modules\Car\MyCarSchedulesTypes;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -25,13 +26,15 @@ class MyCarSchedule extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('Name')
-            ->add('Date', null, [
+            ->add('Date', DateType::class, [
                 'attr' => [
-                    'data-provide' => "datepicker",
-                    'data-date-format' => "dd-mm-yyyy",
+                    'data-provide'              => "datepicker",
+                    'data-date-format'          => "yyyy-mm-dd",
                     'data-date-today-highlight' => true,
-                    'autocomplete' => 'off'
-                ]
+                    'autocomplete'              => 'off'
+                ],
+                'widget' => 'single_text',
+                'format' => 'y-M-d',
             ])
             ->add('Information')
             ->add('scheduleType', EntityType::class, [
