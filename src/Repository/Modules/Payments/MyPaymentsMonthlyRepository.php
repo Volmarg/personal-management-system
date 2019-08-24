@@ -34,7 +34,7 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
         $connection = $this->getEntityManager()->getConnection();
 
         $sql = "
-          SELECT sum(mpm.money) AS money, 
+          SELECT ROUND(sum(mpm.money),2) AS money, 
             mpm.date,
             mps.value AS type,
             mps.id AS type_id,

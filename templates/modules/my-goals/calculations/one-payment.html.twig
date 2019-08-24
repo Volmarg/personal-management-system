@@ -1,0 +1,21 @@
+{% set payment_duration  = payment.collectionStartDate.diff(payment.deadline).days %}
+
+{% if  curr_date > payment.deadline %}
+    {% set payment_days_left = 0 %}
+{% else %}
+    {% set payment_days_left = curr_date.diff(payment.deadline).days %}
+{% endif %}
+
+{% if curr_date <  payment.collectionStartDate %}
+    {% set payment_start_in = payment.collectionStartDate.diff(curr_date) %}
+{% endif %}
+
+{% set payment_days_passed =  payment_duration - payment_days_left %}
+
+{% if payment_start_in is defined %}
+    {% set payment_percentage_days_left = 0 %}
+{% else %}
+    {% set payment_percentage_days_left = (payment_days_passed / payment_duration ) * 100 %}
+{% endif %}
+
+{% include template %}
