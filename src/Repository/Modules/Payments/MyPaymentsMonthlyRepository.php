@@ -21,10 +21,10 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
         $em = $this->getEntityManager();
 
         $qb = $em->createQuery("
-        SELECT mpm.date, YEAR(STR_TO_DATE(mpm.date,'%d-%m-%Y')) AS HIDDEN group_date_year, MONTH(STR_TO_DATE(mpm.date,'%d-%m-%Y')) AS HIDDEN group_date_month
-        FROM App\Entity\Modules\Payments\MyPaymentsMonthly mpm
-        WHERE mpm.deleted = 0
-        GROUP BY group_date_year, group_date_month
+            SELECT mpm.date, YEAR(mpm.date) AS HIDDEN group_date_year, MONTH(mpm.date) AS HIDDEN group_date_month
+            FROM App\Entity\Modules\Payments\MyPaymentsMonthly mpm
+            WHERE mpm.deleted = 0
+            GROUP BY group_date_year, group_date_month
         ");
 
         return $qb->execute();
@@ -34,12 +34,12 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
         $connection = $this->getEntityManager()->getConnection();
 
         $sql = "
-          SELECT floor(sum(mpm.money)) AS money, 
+          SELECT sum(mpm.money) AS money, 
             mpm.date,
             mps.value AS type,
             mps.id AS type_id,
-            YEAR(STR_TO_DATE(mpm.date, '%d-%m-%Y')) AS group_date_year, 
-            MONTH(STR_TO_DATE(mpm.date, '%d-%m-%Y')) AS group_date_month 
+            YEAR(mpm.date) AS group_date_year, 
+            MONTH(mpm.date) AS group_date_month 
           FROM my_payments_monthly mpm
           JOIN my_payments_settings mps
             ON mpm.type_id = mps.id

@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,14 +31,15 @@ class MyPaymentsMonthlyType extends AbstractType {
         $payments_types = static::$app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
 
         $builder
-            ->add('date', null, [
+            ->add('date', DateType::class, [
                 'attr' => [
-                    'data-provide' => "datepicker",
-                    'data-date-format' => "dd-mm-yyyy",
+                    'data-provide'              => "datepicker",
+                    'data-date-format'          => "yyyy-mm-dd",
                     'data-date-today-highlight' => true,
-                    'autocomplete' => 'off'
+                    'autocomplete'              => 'off'
                 ],
-                'data' => date('d-m-Y')
+                'widget'    => 'single_text',
+                'format'    => 'y-M-d',
             ])
             ->add('money', NumberType::class)
             ->add('description')

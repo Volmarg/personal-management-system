@@ -18,7 +18,7 @@ class MyPaymentsMonthly
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="date", length=255, nullable=true)
      */
     private $date;
 
@@ -48,16 +48,28 @@ class MyPaymentsMonthly
         return $this->id;
     }
 
-    public function getDate(): ?string
-    {
+    /**
+     * @return mixed
+     */
+    public function getDate() {
         return $this->date;
     }
 
-    public function setDate(?string $date): self
-    {
+    /**
+     * @param mixed $date
+     * @return MyPaymentsMonthly
+     * @throws \Exception
+     */
+    public function setDate($date): self {
+
+        if (is_string($date)) {
+            $date = new \DateTime($date);
+        }
+
         $this->date = $date;
 
         return $this;
+
     }
 
     public function getMoney(): ?float

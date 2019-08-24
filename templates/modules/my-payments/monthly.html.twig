@@ -12,7 +12,7 @@
                             <div id="accordion">
                                 {% for date_group in dates_groups %}
                                     <div class="accordin-section">
-                                        <h3>{{ date_group.date|date("m-Y") }}<span class="payment-summary"></span></h3>
+                                        <h3>{{ date_group.date|date("Y-m") }}<span class="payment-summary"></span></h3>
                                         {% include 'modules/my-payments/components/payments.table.html.twig' %}
                                     </div>
                                 {% endfor %}

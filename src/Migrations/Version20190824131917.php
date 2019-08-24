@@ -29,7 +29,8 @@ final class Version20190824131917 extends AbstractMigration
         $this->addSql('ALTER TABLE my_goals_payments CHANGE deadline date DATE NOT NULL');
         $this->addSql('ALTER TABLE my_goals_payments CHANGE collection_start_date date DATE NOT NULL');
 
-
+        $this->addSql("UPDATE my_payments_monthly SET `date` = STR_TO_DATE(`date`, '%d-%m-%Y')");
+        $this->addSql('ALTER TABLE my_payments_monthly CHANGE date date DATE NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -43,6 +44,9 @@ final class Version20190824131917 extends AbstractMigration
 
         $this->addSql('ALTER TABLE my_goals_payments CHANGE deadline date VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci');
         $this->addSql('ALTER TABLE my_goals_payments CHANGE collection_start_date date VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci');
+
+        $this->addSql('ALTER TABLE my_payments_monthly CHANGE date date VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci');
+        $this->addSql("UPDATE my_payments_monthly SET `date` = DATE_FORMAT(`date`,'%d-%m-%Y')");
 
     }
 }
