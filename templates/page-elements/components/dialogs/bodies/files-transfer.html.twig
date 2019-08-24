@@ -1,6 +1,39 @@
+{% set files_handler_service            = 'App\\Services\\FilesHandler' %}
+{% set KEY_TARGET_UPLOAD_TYPE           = constant(files_handler_service~"::KEY_TARGET_UPLOAD_TYPE") %}
+{% set KEY_TARGET_SUBDIRECTORY_NAME     = constant(files_handler_service~"::KEY_TARGET_SUBDIRECTORY_NAME") %}
+
 <p>
     <i>Do You really want to move file "<b>%fileName%</b>" to selected module and subdirectory?</i>
 </p>
-<p>
-    {{ form(form) }}
-</p>
+<div>
+    {{ form_start(form) }}
+
+    <div class="row">
+        <div class="col-sm-4">
+            {{ form_label(form[KEY_TARGET_UPLOAD_TYPE], "Target module", { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(form[KEY_TARGET_UPLOAD_TYPE]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-sm-4">
+            {{ form_label(form[KEY_TARGET_SUBDIRECTORY_NAME], "Target folder", { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(form[KEY_TARGET_SUBDIRECTORY_NAME]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-sm-12">
+            {{ form_widget(form['submit'], {'attr': {'class': 'btn-primary btn float-right' }} ) }}
+        </div>
+    </div>
+
+</div>
