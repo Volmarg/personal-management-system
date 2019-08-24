@@ -46,6 +46,9 @@ export default (function () {
         keys: {
             KEY_FILE_FULL_PATH          : "file_full_path"
         },
+        vars: {
+          currentFilename               : ''
+        },
         init: function () {
             this.initGallery();
             this.addPlugins();
@@ -137,7 +140,6 @@ export default (function () {
                 let saveButton       = $(_this.selectors.ids.saveButton);
                 let downloadButton   = $(_this.selectors.ids.downloadButton);
 
-
                 $(saveButton).click( () => {
 
                     // Confirmation box
@@ -145,6 +147,7 @@ export default (function () {
                         message: _this.messages.imageNameEditConfirmation,
                         backdrop: true,
                         callback: function (result) {
+
                             if (result) {
 
                                 let filePath = $(downloadButton).attr('href');
@@ -160,7 +163,21 @@ export default (function () {
                                     url:     _this.apiUrls.fileRename,
                                     data:    data,
                                     success: (data) => {
+
+                                        // Info: filePath must also be updated
+                                        if( _this.vars.currentFileName !== newFileName ){
+                                            let newFilePath = filePath.replace(_this.vars.currentFileName, newFileName);
+                                            let links       = $("[href^='" + filePath + "']");
+                                            let images      = $("[src^='" + filePath + "']");
+
+                                            $(images).attr('src', newFilePath);
+                                            $(links).attr('href', newFilePath);
+
+                                            _this.vars.currentFileName  = $(_this.selectors.classes.currentViewedFilename).text();
+                                        }
+
                                         bootstrap_notifications.notify(data, 'success');
+
                                     },
                                 }).fail((data) => {
                                     bootstrap_notifications.notify(data.responseText, 'danger')
@@ -174,6 +191,8 @@ export default (function () {
 
                 // Handles toggling blocking everything in gallery besides filename area
                 $(pencilButton).click(() => {
+
+                    _this.vars.currentFileName  = $(_this.selectors.classes.currentViewedFilename).text();
 
                     let galleryMainWrapper  = $('.lg');
                     let allGalleryElements  = $('.lg *');
