@@ -18,7 +18,7 @@ class MoveSingleFileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add(FilesHandler::KEY_TARGET_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_BASED_MODULES,
+                'choices' => $options[FilesHandler::KEY_MODULES_NAMES],
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#move_single_file_target_subdirectory_name'
@@ -40,5 +40,6 @@ class MoveSingleFileType extends AbstractType
             // Configure your form options here
         ]);
         $resolver->setRequired(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME);
+        $resolver->setRequired(FilesHandler::KEY_MODULES_NAMES);
     }
 }

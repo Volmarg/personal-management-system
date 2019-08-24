@@ -79,19 +79,32 @@ class Dialogs extends AbstractController
             ]);
         }
 
-        #Info: this most likely won't be enough when there will be nested menu
         $subfolder   = basename(dirname($file_current_path));
         $upload_type = FileUploadController::UPLOAD_BASED_MODULES[$module_name];
 
         $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
+        $all_upload_based_modules         = FileUploadController::UPLOAD_BASED_MODULES;
 
         #Info: filter folder from which dialog was called
-        foreach($all_subdirectories_for_all_types as $type => $subdirectories){
+        foreach( $all_subdirectories_for_all_types as $type => $subdirectories ) {
 
             if( $type === $upload_type ){
 
-                $key = array_search($subfolder, $subdirectories);
-                unset($subdirectories[$key]);
+                $subfolder_key  = array_search($subfolder, $subdirectories);
+                $is_main_folder = !$subfolder_key;
+
+                if( $is_main_folder ){
+                    $subfolder_key = FileUploadController::KEY_MAIN_FOLDER;
+                }
+
+                unset($subdirectories[$subfolder_key]);
+
+                #Info: if we filter folder then we need to make sure that we don't display current module if there are no other folders than current
+                if( empty($subdirectories) ){
+                    $module_key = array_search($upload_type, $all_upload_based_modules);
+                    unset($all_upload_based_modules[$module_key]);
+                    break;
+                }
 
                 $all_subdirectories_for_all_types[$type] = $subdirectories;
                 break;
@@ -99,9 +112,11 @@ class Dialogs extends AbstractController
 
         }
 
-        $form_data = [FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME => $all_subdirectories_for_all_types];
-
-        $form = $this->app->forms->moveSingleFile($form_data);
+        $form_data  = [
+            FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME => $all_subdirectories_for_all_types,
+            FilesHandler::KEY_MODULES_NAMES            => $all_upload_based_modules
+        ];
+        $form       = $this->app->forms->moveSingleFile($form_data);
 
         $template_data = [
             'form' => $form->createView()

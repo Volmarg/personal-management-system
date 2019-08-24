@@ -36,6 +36,8 @@ class FileUploadController extends AbstractController {
 
     const DEFAULT_KEY_IS_MISSING        = 'Required key is missing in request';
 
+    const KEY_MAIN_FOLDER               = 'Main folder';
+
     const UPLOAD_TYPES = [
         self::TYPE_IMAGES => self::TYPE_IMAGES,
         self::TYPE_FILES  => self::TYPE_FILES
@@ -152,7 +154,7 @@ class FileUploadController extends AbstractController {
         }
 
         if( $include_main_folder ){
-            $subdirectories['Main folder'] = "";
+            $subdirectories[static::KEY_MAIN_FOLDER] = "";
         }
 
         return $subdirectories;

@@ -26,6 +26,7 @@ class FilesHandler {
     const KEY_FILE_NEW_NAME             = 'file_new_name';
     const KEY_FILE_CURRENT_PATH         = 'file_current_location';
     const KEY_FILE_NEW_PATH             = 'file_new_location';
+    const KEY_MODULES_NAMES             = 'modules_names';
 
     const FILE_KEY                      = 'file';
 
