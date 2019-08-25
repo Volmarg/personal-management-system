@@ -1,4 +1,4 @@
-{% set filesUploadFolderSubdirectories  = getUploadFolderSubdirectories('files') %}
+{% set filesUploadFolderSubdirectories  = getUploadFolderSubdirectories_new('files') %}
 
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-files') }}">
 
@@ -14,6 +14,7 @@
 
     <ul class="dropdown-menu">
 
+{#
         {% for subdirectory in filesUploadFolderSubdirectories %}
             <li>
                 <a class="sidebar-link" href="{{ path('modules_my_files', {'subdirectory': subdirectory}) }}">
@@ -21,6 +22,7 @@
                 </a>
             </li>
         {% endfor %}
+#}
 
         <li>
             <a class="sidebar-link" href="{{ path('modules_my_files') }}">

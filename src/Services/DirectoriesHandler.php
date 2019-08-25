@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
+use DirectoryIterator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -228,6 +229,23 @@ class DirectoriesHandler {
 
         $this->logger->info('Finished creating subdirectory.');
         return new Response ('Subdirectory for selected upload_type has been successfully created', 200);
+    }
+
+    public static function buildFoldersTreeForDirectory( DirectoryIterator $dir )
+    {
+        $data = [];
+        foreach ( $dir as $node )
+        {
+            if ( $node->isDir() && !$node->isDot() )
+            {
+                $filename           = $node->getFilename();
+                $pathname           = $node->getPathname();
+
+                $data[$filename] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+            }
+
+        }
+        return $data;
     }
 
 }

@@ -127,6 +127,8 @@ class FileUploadController extends AbstractController {
     }
 
     /**
+     * TODO: replace it globally with new function?
+     * @see buildFoldersTreeForDirectory
      * @param string $uploadType
      * @param bool $names_as_keys_and_values
      * @param bool $include_main_folder
