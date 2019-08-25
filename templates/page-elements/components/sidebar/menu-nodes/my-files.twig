@@ -23,6 +23,18 @@
             </li>
         {% endfor %}
 #}
+{#
+        {% for subdirectoryName, nestedSubdirectories in filesUploadFolderSubdirectories %}
+            <li>
+                <a class="sidebar-link" href="{{ path('modules_my_files', {'subdirectory': subdirectoryName}) }}">
+                    {{ subdirectoryName }}
+                </a>
+            </li>
+        {% endfor %}
+#}
+        {% set menu = buildMenuForUploadType('files') %}
+        {{ menu | raw }}
+
 
         <li>
             <a class="sidebar-link" href="{{ path('modules_my_files') }}">

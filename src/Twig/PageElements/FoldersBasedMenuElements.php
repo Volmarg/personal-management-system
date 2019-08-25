@@ -12,6 +12,7 @@ use App\Controller\Files\FileUploadController;
 use App\Services\DirectoriesHandler;
 use DirectoryIterator;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -22,8 +23,14 @@ class FoldersBasedMenuElements extends AbstractExtension {
      */
     private $finder;
 
-    public function __construct() {
-        $this->finder       = new Finder();
+    /**
+     * @var UrlGeneratorInterface $url_generator
+     */
+    private $url_generator;
+
+    public function __construct(UrlGeneratorInterface $url_generator) {
+        $this->finder           = new Finder();
+        $this->url_generator    = $url_generator;
     }
 
 
@@ -31,6 +38,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
         return [
             new TwigFunction('getUploadFolderSubdirectories', [$this, 'getUploadFolderSubdirectories']),
             new TwigFunction('getUploadFolderSubdirectories_new', [$this, 'getUploadFolderSubdirectories_new']),
+            new TwigFunction('buildMenuForUploadType', [$this, 'buildMenuForUploadType']),
         ];
     }
 
@@ -60,6 +68,69 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
     }
 
+    /**
+     * Not doing this in twig because of nested arrays functions limitation
+     * TODO: rename func?
+     * @param string $uploadType
+     * @return string
+     * @throws \Exception
+     */
+    public function buildMenuForUploadType(string $uploadType){
+
+        $folders_tree   = $this->getUploadFolderSubdirectories_new($uploadType);
+        $list           = '';
+
+        array_walk($folders_tree, function ($subarray, $key) use (&$list) {
+           $list = static::buildList($subarray, $list);
+        });
+
+
+        return $list;
+    }
+
+    /**
+     * @param array $folders_tree
+     * @param string $list
+     * @return string
+     */
+    private static function buildList(array $folders_tree, string $list = ''){
+        $list .= '<ul>';
+
+        foreach ($folders_tree as $folder_name => $leafs){
+            $list .= '<li>';
+                $list .= $folder_name;
+            $list .= '</li>';
+        }
+
+        array_walk($folders_tree, function ($subarray, $key) use (&$list) {
+            $list = static::buildList($subarray, $list);
+        });
+
+        $list .= '</ul>';
+
+        return $list;
+    }
+
+    /**
+     * @param string $uploadType
+     * @param string $subdirectory
+     * @return string
+     * @throws \Exception
+     */
+    private function buildPathForUploadType(string $uploadType, string $subdirectory) {
+
+        switch($uploadType){
+            case FileUploadController::TYPE_FILES:
+                $path = $this->url_generator->generate($uploadType, ['subdirectory' => $subdirectory]);
+                break;
+
+            default:
+                throw new \Exception("This upload type is not supported: {$uploadType}");
+        }
+
+        return $path;
+
+    }
 
 
 
