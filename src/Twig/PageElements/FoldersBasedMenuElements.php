@@ -52,25 +52,25 @@ class FoldersBasedMenuElements extends AbstractExtension {
     }
 
     /**
-     * @param $uploadType
+     * @param $upload_type
      * @return array
      * @throws \Exception
      */
-    public function getUploadFolderSubdirectories($uploadType) {
+    public function getUploadFolderSubdirectories($upload_type) {
 
-        $subdirectories = FileUploadController::getSubdirectoriesForUploadType($uploadType);
+        $subdirectories = FileUploadController::getSubdirectoriesForUploadType($upload_type);
         return $subdirectories;
 
     }
 
     /**
-     * @param $uploadType
+     * @param $upload_type
      * @return array
      * @throws \Exception
      */
-    public function getUploadFolderSubdirectories_new($uploadType) {
+    public function getUploadFolderSubdirectories_new($upload_type) {
 
-        $target_directory = FileUploadController::getTargetDirectoryForUploadType($uploadType);
+        $target_directory = FileUploadController::getTargetDirectoryForUploadType($upload_type);
         $folders_tree     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory) );
 
         return $folders_tree;
@@ -80,17 +80,17 @@ class FoldersBasedMenuElements extends AbstractExtension {
     /**
      * Not doing this in twig because of nested arrays functions limitation
      * TODO: rename func?
-     * @param string $uploadType
+     * @param string $upload_type
      * @return string
      * @throws \Exception
      */
-    public function buildMenuForUploadType(string $uploadType){
+    public function buildMenuForUploadType(string $upload_type){
 
-        $folders_tree   = $this->getUploadFolderSubdirectories_new($uploadType);
+        $folders_tree   = $this->getUploadFolderSubdirectories_new($upload_type);
         $list           = '';
 
-        array_walk($folders_tree, function ($subarray, $folder_name) use (&$list, $uploadType) {
-           $list = $this->buildList($subarray, $uploadType, $folder_name, $list);
+        array_walk($folders_tree, function ($subarray, $folder_path) use (&$list, $upload_type) {
+           $list = $this->buildList($subarray, $upload_type, $folder_path, $list);
         });
 
         return $list;
@@ -98,18 +98,24 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
     /**
      * @param array $folders_tree
-     * @param string $uploadType
+     * @param string $upload_type
      * @param string $list
-     * @param string $folder_name
+     * @param string $folder_path
      * @return string
      * @throws \Exception
      */
-    private function buildList(array $folders_tree, string $uploadType, string $folder_name, string $list = ''){
+    private function buildList(array $folders_tree, string $upload_type, string $folder_path, string $list = '') {
+
+        $upload_folder              = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $folder_path_in_upload_type = str_replace($upload_folder, '', $folder_path);
+        $folder_name                = basename($folder_path);
+
+        $encoded_folder_path_in_upload_type = urlencode($folder_path_in_upload_type);
+
+        $href   = $this->buildPathForUploadType($encoded_folder_path_in_upload_type, $upload_type);
+        $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
         $list  .= '<li class="nav-item dropdown">';
-
-        $href   = $this->buildPathForUploadType($folder_name, $uploadType);
-        $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
         $list  .= $link;
 
         if( empty(!$folders_tree) ){
@@ -118,8 +124,8 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
         $list .= '<ul class="dropdown-menu" >';
 
-        array_walk($folders_tree, function ($subarray, $folder_name) use (&$list, $uploadType) {
-            $list = static::buildList($subarray, $uploadType, $folder_name, $list);
+        array_walk($folders_tree, function ($subarray, $folder_path) use (&$list, $upload_type) {
+            $list = static::buildList($subarray, $upload_type, $folder_path, $list);
         });
 
         $list .= '</ul>';
@@ -129,20 +135,20 @@ class FoldersBasedMenuElements extends AbstractExtension {
     }
 
     /**
-     * @param string $uploadType
+     * @param string $upload_type
      * @param string $subdirectory
      * @return string
      * @throws \Exception
      */
-    private function buildPathForUploadType(string $subdirectory, string $uploadType) {
+    private function buildPathForUploadType(string $subdirectory, string $upload_type) {
 
-        switch($uploadType){
+        switch($upload_type){
             case FileUploadController::TYPE_FILES:
                 $path = $this->url_generator->generate('modules_my_files', ['subdirectory' => $subdirectory]);
                 break;
 
             default:
-                throw new \Exception("This upload type is not supported: {$uploadType}");
+                throw new \Exception("This upload type is not supported: {$upload_type}");
         }
 
         return $path;

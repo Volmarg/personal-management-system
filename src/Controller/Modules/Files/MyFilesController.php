@@ -57,14 +57,15 @@ class MyFilesController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function displayImages(? string $subdirectory, Request $request) {
+    public function displayFiles(? string $subdirectory, Request $request) {
 
         $ajax_render = false;
 
         if (empty($subdirectory)) {
             $files = $this->getMainFolderFiles();
         } else {
-            $files = $this->getFilesFromSubdirectory($subdirectory);
+            $subdirectory = urldecode($subdirectory);
+            $files        = $this->getFilesFromSubdirectory($subdirectory);
         }
 
         # A bit dirty workaround
@@ -150,7 +151,7 @@ class MyFilesController extends AbstractController
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $this->filesHandler->removeFile($request);
 
-        return $this->displayImages($subdirectory, $request);
+        return $this->displayFiles($subdirectory, $request);
     }
 
     /**
@@ -163,7 +164,7 @@ class MyFilesController extends AbstractController
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $this->filesHandler->renameFile($request);
 
-        return $this->displayImages($subdirectory, $request);
+        return $this->displayFiles($subdirectory, $request);
     }
 
 

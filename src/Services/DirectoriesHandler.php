@@ -238,10 +238,8 @@ class DirectoriesHandler {
         {
             if ( $node->isDir() && !$node->isDot() )
             {
-                $filename           = $node->getFilename();
-                $pathname           = $node->getPathname();
-
-                $data[$filename] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                $pathname        = $node->getPathname();
+                $data[$pathname] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
             }
 
         }
