@@ -80,8 +80,8 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $folders_tree   = $this->getUploadFolderSubdirectories_new($uploadType);
         $list           = '';
 
-        array_walk($folders_tree, function ($subarray, $key) use (&$list) {
-           $list = static::buildList($subarray, $list);
+        array_walk($folders_tree, function ($subarray, $key) use (&$list, $uploadType) {
+           $list = $this->buildList($subarray, $uploadType, $list);
         });
 
 
@@ -90,23 +90,37 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
     /**
      * @param array $folders_tree
+     * @param string $uploadType
      * @param string $list
      * @return string
      */
-    private static function buildList(array $folders_tree, string $list = ''){
-        $list .= '<ul>';
+    private function buildList(array $folders_tree, string $uploadType, string $list = ''){
 
-        foreach ($folders_tree as $folder_name => $leafs){
+        $arrow = '<a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
+                            <span class="arrow"><i class="ti-angle-right"></i></span>
+                        </a>';
+
+        $list .= '<li class="dropdown">';
+        $list .= $arrow;
+        $list .= '<ul class="dropdown-menu" style="display: block;">';
+
+        array_walk($folders_tree, function ($subarray, $folder_name) use (&$list, $uploadType) {
+
             $list .= '<li>';
-                $list .= $folder_name;
-            $list .= '</li>';
-        }
+            // BUG: paths are generated incorrectly at this point
+                $href = $this->buildPathForUploadType($folder_name, $uploadType);
 
-        array_walk($folders_tree, function ($subarray, $key) use (&$list) {
-            $list = static::buildList($subarray, $list);
+                $link = "<a class='sidebar-link' href='{$href}'>{$folder_name}</a>";
+
+                $list .= $link;
+
+            $list .= '</li>';
+
+            $list = static::buildList($subarray, $uploadType, $list);
         });
 
         $list .= '</ul>';
+        $list .= '</li>';
 
         return $list;
     }
@@ -117,11 +131,11 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * @return string
      * @throws \Exception
      */
-    private function buildPathForUploadType(string $uploadType, string $subdirectory) {
+    private function buildPathForUploadType(string $subdirectory, string $uploadType) {
 
         switch($uploadType){
             case FileUploadController::TYPE_FILES:
-                $path = $this->url_generator->generate($uploadType, ['subdirectory' => $subdirectory]);
+                $path = $this->url_generator->generate('modules_my_files', ['subdirectory' => $subdirectory]);
                 break;
 
             default:
@@ -131,8 +145,5 @@ class FoldersBasedMenuElements extends AbstractExtension {
         return $path;
 
     }
-
-
-
 
 }
