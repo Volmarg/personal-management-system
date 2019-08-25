@@ -16,7 +16,16 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+/**
+ * This class is specifically used for working with folders structure for upload modules!
+ * Class FoldersBasedMenuElements
+ * @package App\Twig\PageElements
+ */
 class FoldersBasedMenuElements extends AbstractExtension {
+
+    const DROPDOWN_ARROW_HTML = '<a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
+                                    <span class="arrow"><i class="ti-angle-right"></i></span>
+                                 </a>';
 
     /**
      * @var Finder $finder
@@ -80,11 +89,9 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $folders_tree   = $this->getUploadFolderSubdirectories_new($uploadType);
         $list           = '';
 
-        array_walk($folders_tree, function ($subarray, $key) use (&$list, $uploadType) {
-
-           $list = $this->buildList($subarray, $uploadType, $list, $key);
+        array_walk($folders_tree, function ($subarray, $folder_name) use (&$list, $uploadType) {
+           $list = $this->buildList($subarray, $uploadType, $folder_name, $list);
         });
-
 
         return $list;
     }
@@ -93,40 +100,26 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * @param array $folders_tree
      * @param string $uploadType
      * @param string $list
-     * @param string $key
+     * @param string $folder_name
      * @return string
+     * @throws \Exception
      */
-    private function buildList(array $folders_tree, string $uploadType, string $list = '', $key = ''){
+    private function buildList(array $folders_tree, string $uploadType, string $folder_name, string $list = ''){
 
-        if( !empty($key) ){
-            $href = $this->buildPathForUploadType($key, $uploadType);
-            $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$key}</a>";
-        }
+        $list  .= '<li class="nav-item dropdown">';
 
-        $list .= '<li class="nav-item dropdown">';
+        $href   = $this->buildPathForUploadType($folder_name, $uploadType);
+        $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
+        $list  .= $link;
 
-        if( isset($link) ){
-            $arrow = '<a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
-                            <span class="arrow"><i class="ti-angle-right"></i></span>
-                        </a>';
-            $list .= $link.$arrow;
+        if( empty(!$folders_tree) ){
+            $list .= static::DROPDOWN_ARROW_HTML;
         }
 
         $list .= '<ul class="dropdown-menu" >';
 
         array_walk($folders_tree, function ($subarray, $folder_name) use (&$list, $uploadType) {
-
-            $list .= '<li>';
-            // BUG: paths are generated incorrectly at this point
-                $href = $this->buildPathForUploadType($folder_name, $uploadType);
-
-                $link = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
-
-                $list .= $link;
-
-            $list .= '</li>';
-
-            $list = static::buildList($subarray, $uploadType, $list);
+            $list = static::buildList($subarray, $uploadType, $folder_name, $list);
         });
 
         $list .= '</ul>';
