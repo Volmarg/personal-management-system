@@ -81,7 +81,8 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $list           = '';
 
         array_walk($folders_tree, function ($subarray, $key) use (&$list, $uploadType) {
-           $list = $this->buildList($subarray, $uploadType, $list);
+
+           $list = $this->buildList($subarray, $uploadType, $list, $key);
         });
 
 
@@ -92,17 +93,26 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * @param array $folders_tree
      * @param string $uploadType
      * @param string $list
+     * @param string $key
      * @return string
      */
-    private function buildList(array $folders_tree, string $uploadType, string $list = ''){
+    private function buildList(array $folders_tree, string $uploadType, string $list = '', $key = ''){
 
-        $arrow = '<a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
+        if( !empty($key) ){
+            $href = $this->buildPathForUploadType($key, $uploadType);
+            $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$key}</a>";
+        }
+
+        $list .= '<li class="nav-item dropdown">';
+
+        if( isset($link) ){
+            $arrow = '<a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
                             <span class="arrow"><i class="ti-angle-right"></i></span>
                         </a>';
+            $list .= $link.$arrow;
+        }
 
-        $list .= '<li class="dropdown">';
-        $list .= $arrow;
-        $list .= '<ul class="dropdown-menu" style="display: block;">';
+        $list .= '<ul class="dropdown-menu" >';
 
         array_walk($folders_tree, function ($subarray, $folder_name) use (&$list, $uploadType) {
 
@@ -110,7 +120,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
             // BUG: paths are generated incorrectly at this point
                 $href = $this->buildPathForUploadType($folder_name, $uploadType);
 
-                $link = "<a class='sidebar-link' href='{$href}'>{$folder_name}</a>";
+                $link = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
                 $list .= $link;
 
