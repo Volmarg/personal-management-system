@@ -115,8 +115,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $href   = $this->buildPathForUploadType($encoded_folder_path_in_upload_type, $upload_type);
         $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
-        $list  .= '<li class="nav-item dropdown">';
-        $list  .= $link;
+        $list  .= '<li class="nav-item dropdown">'.$link;
 
         if( empty(!$folders_tree) ){
             $list .= static::DROPDOWN_ARROW_HTML;
@@ -146,7 +145,9 @@ class FoldersBasedMenuElements extends AbstractExtension {
             case FileUploadController::TYPE_FILES:
                 $path = $this->url_generator->generate('modules_my_files', ['subdirectory' => $subdirectory]);
                 break;
-
+            case FileUploadController::TYPE_IMAGES:
+                $path = $this->url_generator->generate('modules_my_images', ['subdirectory' => $subdirectory]);
+                break;
             default:
                 throw new \Exception("This upload type is not supported: {$upload_type}");
         }
