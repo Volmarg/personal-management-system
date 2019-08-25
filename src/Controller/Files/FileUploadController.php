@@ -12,6 +12,7 @@ use App\Form\UploadFormType;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
 use App\Services\FileUploader;
+use DirectoryIterator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\Finder\Finder;
@@ -270,6 +271,50 @@ class FileUploadController extends AbstractController {
             $this->addFlash($flashType, $message);
         }
 
+    }
+
+
+    # ----- NEW subfolders tree functions
+
+    /**
+     * @param bool $grouped_by_types
+     * @param bool $include_main_folder
+     * @return array
+     * @throws \Exception
+     */
+    public static function getFoldersTreesForAllUploadTypes($grouped_by_types = false, $include_main_folder = false){
+
+        $subdirectories = [];
+
+        if( !$grouped_by_types ){
+            foreach(static::UPLOAD_TYPES as $upload_type){
+                $subdirectories = array_merge($subdirectories, static::getFoldersTreesForUploadType($upload_type, $include_main_folder) );
+            }
+        }else{
+            foreach(static::UPLOAD_TYPES as $upload_type){
+                $subdirectories[$upload_type] = static::getFoldersTreesForUploadType($upload_type, $include_main_folder);
+            }
+        }
+
+        return $subdirectories;
+    }
+
+    /**
+     * @param string $uploadType
+     * @param bool $include_main_folder
+     * @return array|false
+     * @throws \Exception
+     */
+    public static function getFoldersTreesForUploadType(string $uploadType, $include_main_folder = false)
+    {
+        $target_directory = static::getTargetDirectoryForUploadType($uploadType);
+        $folders_trees    = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory), true );
+
+        if( $include_main_folder ){
+            $subdirectories[static::KEY_MAIN_FOLDER] = "";
+        }
+
+        return $folders_trees;
     }
 
 }

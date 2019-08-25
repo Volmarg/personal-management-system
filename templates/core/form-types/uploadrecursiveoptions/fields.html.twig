@@ -1,0 +1,9 @@
+{# This field type is only for handling folder based upload modules options list in form #}
+{% block uploadrecursiveoptions_widget %}
+
+    <select {{ block('widget_attributes') }} autocomplete="off" class="form-control">
+        {{ buildOptionsForUploadFormType('images') | raw }}
+        {{ buildOptionsForUploadFormType('files') | raw }}
+    </select>
+
+{% endblock %}
