@@ -1,5 +1,3 @@
-{% set imagesUploadFolderSubdirectories = getUploadFolderSubdirectories('images') %}
-
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-images') }}">
 
     <a class="sidebar-link" href="javascript:void(0);">
@@ -13,15 +11,7 @@
     </a>
 
     <ul class="dropdown-menu">
-
-        {% for subdirectory in imagesUploadFolderSubdirectories %}
-            <li>
-                <a class="sidebar-link" href="{{ path('modules_my_images', {'subdirectory': subdirectory}) }}">
-                    {{ subdirectory }}
-                </a>
-            </li>
-        {% endfor %}
-
+        {{ buildMenuForUploadType('images') | raw }}
         <li>
             <a class="sidebar-link" href="{{ path('modules_my_images') }}">
                 Main folder

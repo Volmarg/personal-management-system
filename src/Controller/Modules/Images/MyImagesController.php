@@ -36,7 +36,8 @@ class MyImagesController extends AbstractController {
         if (empty($subdirectory)) {
             $all_images = $this->getMainFolderImages();
         } else {
-            $all_images = $this->getImagesFromCategory($subdirectory);
+            $subdirectory   = urldecode($subdirectory);
+            $all_images     = $this->getImagesFromCategory($subdirectory);
         }
 
         $data = [

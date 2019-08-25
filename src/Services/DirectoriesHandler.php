@@ -231,7 +231,12 @@ class DirectoriesHandler {
         return new Response ('Subdirectory for selected upload_type has been successfully created', 200);
     }
 
-    public static function buildFoldersTreeForDirectory( DirectoryIterator $dir )
+    /**
+     * @param DirectoryIterator $dir
+     * @param bool $use_foldername
+     * @return array
+     */
+    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, $use_foldername = false )
     {
         $data = [];
         foreach ( $dir as $node )
@@ -239,7 +244,10 @@ class DirectoriesHandler {
             if ( $node->isDir() && !$node->isDot() )
             {
                 $pathname        = $node->getPathname();
-                $data[$pathname] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                $foldername      = $node->getFilename();
+                $key             = ( $use_foldername ? $foldername : $pathname);
+
+                $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
             }
 
         }
