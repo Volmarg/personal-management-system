@@ -64,9 +64,13 @@ class UploadRecursiveOptionsType extends AbstractExtension {
      * @throws \Exception
      */
     private function buildList(array $folders_tree, string $upload_type, string $folder_path, string $options = '') {
-        $folder_name    = basename($folder_path);
-        $folder_depth   = substr_count($folder_path , "/");
-        $separator      = '';
+
+        $target_directory                = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $folder_path_in_target_directory = str_replace($target_directory.'/', '', $folder_path);
+
+        $folder_name      = basename($folder_path);
+        $folder_depth     = substr_count($folder_path , "/");
+        $separator        = '';
 
         if( $folder_depth > static::INDENTS_FIXED_VALUE){
 
@@ -76,7 +80,7 @@ class UploadRecursiveOptionsType extends AbstractExtension {
 
         }
 
-        $options  .= "<option value='{$folder_name}'>".$separator.$folder_name;
+        $options  .= "<option value='{$folder_path_in_target_directory}'>".$separator.$folder_name;
 
         array_walk($folders_tree, function ($subarray, $folder_path) use (&$options, $upload_type) {
             $options = static::buildList($subarray, $upload_type, $folder_path, $options);

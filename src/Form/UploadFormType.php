@@ -20,23 +20,11 @@ class UploadFormType extends AbstractType {
      */
     private static $app;
 
-    /**
-     * @var array $choices
-     */
-    static $choices;
-
-    /**
-     * @var array $grouped_choices
-     */
-    static $grouped_choices;
-
     public function __construct(Application $app) {
         static::$app = $app;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        static::$choices         = (is_array($options) ? $options['subdirectories'] : []);
-        static::$grouped_choices = (is_array($options) ? $options['grouped_subdirectories'] : []);
 
         $builder
             ->add('upload_type', ChoiceType::class,[
@@ -51,12 +39,11 @@ class UploadFormType extends AbstractType {
 
         $builder
             ->add('subdirectory', UploadrecursiveoptionsType::class, [
-              'choices'  => static::$grouped_choices,
+                'choices'  => [], //this is not used anyway but parent ChoiceType requires it
                 'required' => false,
                 'attr'     => [
-                   'class'        => 'form-control align-self-center',
-                   'style'        => 'height:50px;',
-                   'placeholder'  => 'Destination subdirectory name'
+                    'class'        => 'form-control align-self-center',
+                    'style'        => 'height:50px;',
                 ]
             ]);
 
@@ -76,14 +63,19 @@ class UploadFormType extends AbstractType {
                 ],
                 "label" => " "
             ]);
+
+        /**
+         * INFO: this is VERY IMPORTANT to use it here due to the difference between data passed as choice
+         * and data rendered in field view
+         */
+        $builder->get('subdirectory')->resetViewTransformers();
+
     }
 
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
             'data_class' => null
         ]);
-        $resolver->setRequired('subdirectories');
-        $resolver->setRequired('grouped_subdirectories');
     }
 
 }

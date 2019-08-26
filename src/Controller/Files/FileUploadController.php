@@ -231,13 +231,7 @@ class FileUploadController extends AbstractController {
      * @throws \Exception
      */
     private function getUploadForm(){
-        $subdirectories         = static::getSubdirectoriesForAllUploadTypes();
-        $grouped_subdirectories = static::getSubdirectoriesForAllUploadTypes(true);
-
-        return $this->createForm(UploadFormType::class, null, [
-            'subdirectories'         => $subdirectories,
-            'grouped_subdirectories' => $grouped_subdirectories
-        ]);
+        return $this->createForm(UploadFormType::class, null, []);
     }
 
     /**
@@ -252,14 +246,11 @@ class FileUploadController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            # This strange solution is needed for file upload case - datalistType is not perfect
+            $form_data = $form->getData();
 
-            $modified_form_data = $request->request->get('upload_form');
-            $original_form_data = $form->getData();
-
-            $subdirectory       = $modified_form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
-            $upload_type        = $modified_form_data[static::KEY_UPLOAD_TYPE];
-            $uploadedFiles      = $original_form_data[FilesHandler::FILE_KEY];
+            $subdirectory       = $form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
+            $upload_type        = $form_data[static::KEY_UPLOAD_TYPE];
+            $uploadedFiles      = $form_data[FilesHandler::FILE_KEY];
 
             foreach ($uploadedFiles as $uploadedFile) {
                 $response = $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);

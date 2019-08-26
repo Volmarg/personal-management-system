@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * This type has been specifically created for upload based modules, it works with directories tree array
@@ -23,7 +24,6 @@ class UploadrecursiveoptionsType extends AbstractType {
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options) {
-        $view->vars['choices'] = $options['choices'];
     }
 
 }
