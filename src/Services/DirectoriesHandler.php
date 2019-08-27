@@ -44,12 +44,12 @@ class DirectoriesHandler {
      */
     public function removeFolderByPostRequest(string $upload_type, Request $request){
 
-        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_NAME) ) {
-            return new Response("Subdirectory name is missing in request.");
+        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR) ) {
+            return new Response("Subdirectory location is missing in request.");
         }
 
-        $subdirectory_name  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NAME);
-        $response           = $this->removeFolder($upload_type, $subdirectory_name);
+        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
+        $response                                   = $this->removeFolder($upload_type, $current_directory_path_in_upload_type_dir);
 
         return $response;
     }
@@ -57,15 +57,18 @@ class DirectoriesHandler {
 
     /**
      * @param string $upload_type
-     * @param string $subdirectory_name
+     * @param string $current_directory_path_in_upload_type_dir
      * @return Response
      * @throws \Exception
      */
-    public function removeFolder(?string $upload_type, ?string $subdirectory_name) {
+    public function removeFolder(?string $upload_type, ?string $current_directory_path_in_upload_type_dir) {
+
+        $subdirectory_name = basename($current_directory_path_in_upload_type_dir);
 
         $this->logger->info('Started removing folder: ', [
             'upload_type'       => $upload_type,
-            'subdirectory_name' => $subdirectory_name
+            'subdirectory_name' => $subdirectory_name,
+            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_upload_type_dir
         ]);
 
         if( empty($subdirectory_name) )
@@ -79,15 +82,13 @@ class DirectoriesHandler {
         }
 
         $target_directory           = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-
-        $is_subdirectory_existing   = !FileUploadController::isSubdirectoryForTypeExisting($target_directory, $subdirectory_name);
+        $is_subdirectory_existing   = !FileUploadController::isSubdirectoryForTypeExisting($target_directory, $current_directory_path_in_upload_type_dir);
+        $subdirectory_path             = $target_directory.'/'.$current_directory_path_in_upload_type_dir;
 
         if( $is_subdirectory_existing ){
             $this->logger->info('Removed folder does not exists - removal aborted');
             return new Response('This subdirectory does not exist for current upload type.', 500);
         }
-
-        $subdirectory_path = FileUploadController::getSubdirectoryPath($target_directory, $subdirectory_name);
 
         try{
             Utils::removeFolderRecursively($subdirectory_path);

@@ -151,11 +151,12 @@ class FilesUploadSettingsController extends AbstractController {
         }
 
         if($remove_form->isSubmitted() && $remove_form->isValid()) {
-            $form_data          = $remove_form->getData();
-            $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
-            $upload_type        = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
+            $form_data = $remove_form->getData();
 
-            $response = $this->directories_handler->removeFolder($upload_type, $subdirectory_name);
+            $current_directory_path_in_upload_type_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR];
+            $upload_type                               = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
+
+            $response = $this->directories_handler->removeFolder($upload_type, $current_directory_path_in_upload_type_dir);
         }
 
         if($move_data_form->isSubmitted() && $move_data_form->isValid()) {

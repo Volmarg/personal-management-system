@@ -159,12 +159,12 @@ class FilesHandler {
         if ( !$request->query->has(static::KEY_CURRENT_SUBDIRECTORY_NAME) ) {
             return new Response("Subdirectory current name is missing in request.");
         }
-        $current_upload_type        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
-        $current_subdirectory_name  = $request->query->get(static::KEY_CURRENT_SUBDIRECTORY_NAME);
+        $current_upload_type                        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
+        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
 
         try{
             $this->copyFolderDataToAnotherFolderByPostRequest($request);
-            $this->directoriesHandler->removeFolder($current_upload_type, $current_subdirectory_name);
+            $this->directoriesHandler->removeFolder($current_upload_type, $current_directory_path_in_upload_type_dir);
         }catch(\Exception $e){
             return new Response ('Then was an error while copying and removing data.');
         }
@@ -194,6 +194,8 @@ class FilesHandler {
 
             $this->logger->info('Started removing folder data.');
 
+            // TODO: adjust removeFolder:
+            //  $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
             if($remove_current_folder){
                 $this->directoriesHandler->removeFolder($current_upload_type, $current_subdirectory_name);
             }
