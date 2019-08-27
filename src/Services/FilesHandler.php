@@ -60,12 +60,17 @@ class FilesHandler {
      */
     public function copyFolderDataToAnotherFolderByPostRequest(Request $request) {
 
-        $current_upload_type        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
-        $target_upload_type         = $request->query->get(static::KEY_TARGET_UPLOAD_TYPE);
-        $current_subdirectory_name  = $request->query->get(static::KEY_CURRENT_SUBDIRECTORY_NAME);
-        $target_subdirectory_name   = $request->query->get(static::KEY_TARGET_SUBDIRECTORY_NAME);
+        $current_upload_type = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
+        $target_upload_type  = $request->query->get(static::KEY_TARGET_UPLOAD_TYPE);
+        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
+        $target_directory_path_in_upload_type_dir   = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR);
 
-        $response = $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_subdirectory_name, $target_subdirectory_name);
+        $response = $this->copyFolderDataToAnotherFolder(
+            $current_upload_type,
+            $target_upload_type,
+            $current_directory_path_in_upload_type_dir,
+            $target_directory_path_in_upload_type_dir
+        );
 
         return $response;
     }
@@ -73,18 +78,27 @@ class FilesHandler {
     /**
      * @param string $current_upload_type
      * @param string $target_upload_type
-     * @param string $current_subdirectory_name
-     * @param string $target_subdirectory_name
+     * @param string $current_directory_path_in_upload_type_dir
+     * @param string $target_directory_path_in_upload_type_dir
      * @return Response
      * @throws \Exception
      */
-    public function copyFolderDataToAnotherFolder(?string $current_upload_type, ?string $target_upload_type, ?string $current_subdirectory_name, ?string $target_subdirectory_name){
+    public function copyFolderDataToAnotherFolder(
+        ?string $current_upload_type,
+        ?string $target_upload_type,
+        ?string $current_directory_path_in_upload_type_dir,
+        ?string $target_directory_path_in_upload_type_dir
+    ){
+        $current_subdirectory_name = basename($current_directory_path_in_upload_type_dir);
+        $target_subdirectory_name  = basename($target_directory_path_in_upload_type_dir);
 
         $this->logger->info('Started copying data between folders via Post Request.', [
             'current_upload_type'          => $current_upload_type,
             'target_upload_type'           => $target_upload_type,
             'current_subdirectory_name'    => $current_subdirectory_name,
-            'target_subdirectory_name'     => $target_subdirectory_name
+            'target_subdirectory_name'     => $target_subdirectory_name,
+            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_upload_type_dir,
+            'target_directory_path_in_upload_type_dir'  => $target_directory_path_in_upload_type_dir,
         ]);
 
         if ( empty($current_upload_type) ) {
@@ -95,12 +109,12 @@ class FilesHandler {
             return new Response("Target upload type is missing in request.", 500);
         }
 
-        if ( empty($current_subdirectory_name) ) {
-            return new Response("Current subdirectory name is missing in request.", 500);
+        if ( empty($current_directory_path_in_upload_type_dir) ) {
+            return new Response("Current subdirectory path in upload dir is missing in request.", 500);
         }
 
-        if ( empty($target_subdirectory_name) ) {
-            return new Response("Target subdirectory name is missing in request.", 500);
+        if ( empty($target_directory_path_in_upload_type_dir) ) {
+            return new Response("Target subdirectory path in upload dir is missing in request.", 500);
         }
 
         if(
@@ -110,26 +124,32 @@ class FilesHandler {
             return new Response("Cannot copy data to the same folder of given type.", 500);
         }
 
-        $current_directory  = FileUploadController::getTargetDirectoryForUploadType($current_upload_type);
-        $target_directory   = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
 
-        $is_current_subdirectory_existing = !FileUploadController::isSubdirectoryForTypeExisting($current_directory, $current_subdirectory_name);
-        $is_target_subdirectory_existing  = !FileUploadController::isSubdirectoryForTypeExisting($target_directory, $target_subdirectory_name);
+/*
+        $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $subdirectory_exists    = FileUploadController::isSubdirectoryForTypeExisting($target_directory, $current_directory_path_in_upload_type_dir);
 
-        if( $is_current_subdirectory_existing ){
+        $current_directory_path = $target_directory.'/'.$current_directory_path_in_upload_type_dir;
+        $parent_subdirectories  = dirname($current_directory_path);
+        $new_directory_path     = $parent_subdirectories . '/' . $subdirectory_new_name;
+*/
+        $current_target_directory = FileUploadController::getTargetDirectoryForUploadType($current_upload_type);
+        $new_target_directory     = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
+
+        $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_upload_type_dir;
+        $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_upload_type_dir;
+
+        if( !file_exists($current_subdirectory_path) ){
             $message = 'Current subdirectory does not exist.';
             $this->logger->info($message);
             return new Response($message, 500);
         }
 
-        if( $is_target_subdirectory_existing ){
+        if( !file_exists($target_subdirectory_path) ){
             $message = 'Target subdirectory does not exist.';
             $this->logger->info($message);
             return new Response($message, 500);
         }
-
-        $current_subdirectory_path = FileUploadController::getSubdirectoryPath($current_directory, $current_subdirectory_name);
-        $target_subdirectory_path  = FileUploadController::getSubdirectoryPath($target_directory, $target_subdirectory_name);
 
         try{
             Utils::copyFilesRecursively($current_subdirectory_path, $target_subdirectory_path);
@@ -152,13 +172,14 @@ class FilesHandler {
      */
     public function copyAndRemoveDataViaPost(Request $request) {
 
-        if ( !$request->query->has(static::KEY_CURRENT_SUBDIRECTORY_NAME) ) {
-            return new Response("Current subdirectory name is missing in request.");
+        if ( !$request->query->has(static::KEY_CURRENT_UPLOAD_TYPE) ) {
+            return new Response("Current upload type is missing in request.");
         }
 
-        if ( !$request->query->has(static::KEY_CURRENT_SUBDIRECTORY_NAME) ) {
-            return new Response("Subdirectory current name is missing in request.");
+        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR) ) {
+            return new Response("Subdirectory current path in upload dir is missing in request.");
         }
+
         $current_upload_type                        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
         $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
 
@@ -176,28 +197,34 @@ class FilesHandler {
     /**
      * @param string $current_upload_type
      * @param string $target_upload_type
-     * @param string $current_subdirectory_name
-     * @param string $target_subdirectory_name
+     * @param string $current_directory_path_in_upload_type_dir
+     * @param string $target_directory_path_in_upload_type_dir
      * @param bool $remove_current_folder
      * @return Response
      */
     public function copyAndRemoveData(
         ?string $current_upload_type,
         ?string $target_upload_type,
-        ?string $current_subdirectory_name,
-        ?string $target_subdirectory_name,
+        ?string $current_directory_path_in_upload_type_dir,
+        ?string $target_directory_path_in_upload_type_dir,
          bool   $remove_current_folder = true
     ) {
 
+
         try{
-            $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_subdirectory_name, $target_subdirectory_name);
+            $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_directory_path_in_upload_type_dir, $target_directory_path_in_upload_type_dir);
 
             $this->logger->info('Started removing folder data.');
 
-            // TODO: adjust removeFolder:
-            //  $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
             if($remove_current_folder){
-                $this->directoriesHandler->removeFolder($current_upload_type, $current_subdirectory_name);
+                $this->directoriesHandler->removeFolder($current_upload_type, $current_directory_path_in_upload_type_dir);
+
+                $log_message        = 'Copying and removing data has been finished!';
+                $response_message   = 'Data has been successfully copied and removed afterward.';
+
+            }else{
+                $log_message        = 'Copying data has been finished!';
+                $response_message   = 'Data has been successfully copied.';
             }
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while trying to copy and remove data: ', [
@@ -206,8 +233,8 @@ class FilesHandler {
             return new Response ('Then was an error while copying and removing data.', 500);
         }
 
-        $this->logger->info('Copying and removing data has been finished!');
-        return new Response('Data has been successfully copied and removed afterward.');
+        $this->logger->info($log_message);
+        return new Response($response_message);
     }
 
     /**
