@@ -207,6 +207,22 @@ class FileUploadController extends AbstractController {
         return $targetDirectory;
     }
 
+    public static function getUploadTypeForTargetDirectory(string $target_directory) {
+
+        switch ($target_directory) {
+            case Env::getImagesUploadDir():
+                $target_module = MyImagesController::TARGET_TYPE;
+                break;
+            case Env::getFilesUploadDir():
+                $target_module = MyFilesController::TARGET_TYPE;
+                break;
+            default:
+                throw new \Exception('This target_directory is not allowed');
+        }
+
+        return $target_module;
+    }
+
     /**
      * @param string $targetDirectory
      * @param string $subdirectory_name

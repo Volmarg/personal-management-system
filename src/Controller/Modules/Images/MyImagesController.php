@@ -14,6 +14,7 @@ class MyImagesController extends AbstractController {
     const KEY_FILE_NAME           = 'file_name';
     const KEY_FILE_FULL_PATH      = 'file_full_path';
     const MODULE_NAME             = 'My Images';
+    const TARGET_TYPE             = 'images';
 
     /**
      * @var Finder $finder

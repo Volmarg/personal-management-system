@@ -3,6 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
+use App\Form\Type\UploadrecursiveoptionsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -23,13 +24,19 @@ class UploadSubdirectoryRemoveType extends AbstractType
                     'data-dependent-list-selector' => '#upload_subdirectory_remove_subdirectory_name'
                 ]
             ])
-            ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, ChoiceType::class, [
-                'choices' => $options[static::OPTION_SUBDIRECTORIES]
+            ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, UploadrecursiveoptionsType::class, [
+                'choices'   => [], //this is not used anyway but parent ChoiceType requires it
+                'required'  => true,
             ])
             ->add('submit', SubmitType::class, [
 
             ]);
-        ;
+
+        /**
+         * INFO: this is VERY IMPORTANT to use it here due to the difference between data passed as choice
+         * and data rendered in field view
+         */
+        $builder->get(FileUploadController::KEY_SUBDIRECTORY_NAME)->resetViewTransformers();
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -37,7 +44,6 @@ class UploadSubdirectoryRemoveType extends AbstractType
         $resolver->setDefaults([
             // Configure your form options here
         ]);
-        $resolver->setRequired(static::OPTION_SUBDIRECTORIES);
 
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
+use App\Form\Type\UploadrecursiveoptionsType;
 use App\Services\FilesHandler;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -33,11 +34,13 @@ class UploadSubdirectoryMoveDataType extends AbstractType
                     'data-dependent-list-selector' => '#upload_subdirectory_move_data_target_subdirectory_name'
                 ]
             ])
-            ->add(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME, ChoiceType::class, [
-                'choices' => $options[FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME]
+            ->add(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME, UploadrecursiveoptionsType::class, [
+                'choices'   => [], //this is not used anyway but parent ChoiceType requires it
+                'required'  => true,
             ])
-            ->add(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME, ChoiceType::class, [
-                'choices' => $options[FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME]
+            ->add(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME, UploadrecursiveoptionsType::class, [
+                'choices'   => [], //this is not used anyway but parent ChoiceType requires it
+                'required'  => true,
             ])
             ->add(static::FIELD_REMOVE_CURRENT_FOLDER, CheckboxType::class,[
                 'label'     => 'Remove current folder after moving the data?',
@@ -46,6 +49,13 @@ class UploadSubdirectoryMoveDataType extends AbstractType
             ->add('submit', SubmitType::class, [
 
             ]);
+
+        /**
+         * INFO: this is VERY IMPORTANT to use it here due to the difference between data passed as choice
+         * and data rendered in field view
+         */
+        $builder->get(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME)->resetViewTransformers();
+        $builder->get(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME)->resetViewTransformers();
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -53,7 +63,5 @@ class UploadSubdirectoryMoveDataType extends AbstractType
         $resolver->setDefaults([
             // Configure your form options here
         ]);
-        $resolver->setRequired(FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME);
-        $resolver->setRequired(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME);
     }
 }

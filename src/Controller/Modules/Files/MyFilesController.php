@@ -26,6 +26,7 @@ class MyFilesController extends AbstractController
     const KEY_FILE_FULL_PATH     = 'file_full_path';
     const KEY_SUBDIRECTORY       = 'subdirectory';
     const MODULE_NAME            = 'My Files';
+    const TARGET_TYPE            = 'files';
 
     /**
      * @var Finder $finder

@@ -58,18 +58,16 @@ class FilesUploadSettingsController extends AbstractController {
      */
     public function displaySettings(Request $request) {
 
-        $all_subdirectories_for_all_types                   = FileUploadController::getSubdirectoriesForAllUploadTypes(true);
-
         //TODO: moving entire data must use main, and with this i need to block removed all if I select main + block it on backend
         //$all_subdirectories_for_all_types_with_main_folders = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
 
-        $rename_form        = $this->getRenameSubdirectoryForm($all_subdirectories_for_all_types);
+        $rename_form        = $this->getRenameSubdirectoryForm();
         $rename_form->handleRequest($request);
 
-        $remove_form        = $this->getRemoveSubdirectoryForm($all_subdirectories_for_all_types);
+        $remove_form        = $this->getRemoveSubdirectoryForm();
         $remove_form->handleRequest($request);
 
-        $move_data_form     = $this->getMoveUploadSubdirectoryDataForm($all_subdirectories_for_all_types);
+        $move_data_form     = $this->getMoveUploadSubdirectoryDataForm();
         $move_data_form->handleRequest($request);
 
         $create_subdir_form = $this->getCreateSubdirectoryForm();
@@ -89,37 +87,28 @@ class FilesUploadSettingsController extends AbstractController {
     }
 
     /**
-     * @param array $subdirectories
      * @return \Symfony\Component\Form\FormInterface
      */
-    public function getRenameSubdirectoryForm(array $subdirectories){
-
-        $form = $this->createForm(UploadSubdirectoryRenameType::class, null, [
-            UploadSubdirectoryRenameType::OPTION_SUBDIRECTORY => $subdirectories,
-        ]);
+    public function getRenameSubdirectoryForm(){
+        $form = $this->createForm(UploadSubdirectoryRenameType::class);
 
         return $form;
     }
 
     /**
-     * @param array $subdirectories
      * @return FormInterface
      */
-    public function getRemoveSubdirectoryForm(array $subdirectories){
-
-        $form = $this->createForm(UploadSubdirectoryRemoveType::class, null, [
-            UploadSubdirectoryRemoveType::OPTION_SUBDIRECTORIES => $subdirectories,
-        ]);
+    public function getRemoveSubdirectoryForm(){
+        $form = $this->createForm(UploadSubdirectoryRemoveType::class);
 
         return $form;
     }
 
-    public function getMoveUploadSubdirectoryDataForm(array $all_subdirectories_for_all_types){
-
-        $form = $this->createForm(UploadSubdirectoryMoveDataType::class, null, [
-            FilesHandler::KEY_CURRENT_SUBDIRECTORY_NAME   => $all_subdirectories_for_all_types,
-            FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME    => $all_subdirectories_for_all_types
-        ]);
+    /**
+     * @return FormInterface
+     */
+    public function getMoveUploadSubdirectoryDataForm() {
+        $form = $this->createForm(UploadSubdirectoryMoveDataType::class);
 
         return $form;
     }

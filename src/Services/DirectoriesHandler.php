@@ -236,7 +236,7 @@ class DirectoriesHandler {
      * @param bool $use_foldername
      * @return array
      */
-    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, $use_foldername = false )
+    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $use_foldername = false): array
     {
         $data = [];
         foreach ( $dir as $node )
@@ -252,6 +252,17 @@ class DirectoriesHandler {
 
         }
         return $data;
+    }
+
+    public static function buildFoldersTreeForDirectories(array $directories, bool $use_foldername = false): array {
+        $directories_trees = [];
+
+        foreach ($directories as $directory) {
+            $directory_tree                 = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $directory ), $use_foldername );
+            $directories_trees[$directory]  = $directory_tree;
+        }
+
+        return $directories_trees;
     }
 
 }
