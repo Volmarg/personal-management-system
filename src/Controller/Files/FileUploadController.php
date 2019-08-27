@@ -28,8 +28,9 @@ class FileUploadController extends AbstractController {
     const TYPE_IMAGES                   = 'images';
     const TYPE_FILES                    = 'files';
 
-    const KEY_SUBDIRECTORY_NEW_NAME     = 'subdirectory_new_name';
-    const KEY_SUBDIRECTORY_CURRENT_NAME = 'subdirectory_current_name';
+    const KEY_SUBDIRECTORY_NEW_NAME                     = 'subdirectory_new_name';
+    const KEY_SUBDIRECTORY_CURRENT_NAME                 = 'subdirectory_current_name';
+    const KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR   = 'subdirectory_current_path_in_upload_dir';
 
     const KEY_SUBDIRECTORY_NAME         = 'subdirectory_name';
 

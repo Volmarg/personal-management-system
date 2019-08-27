@@ -120,27 +120,30 @@ class DirectoriesHandler {
             return new Response("Subdirectory current name is missing in request.", 500);
         }
 
-        $subdirectory_current_name  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME);
-        $subdirectory_new_name      = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
+        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
+        $subdirectory_new_name                      = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
 
-        $response = $this->renameSubdirectory($upload_type, $subdirectory_current_name, $subdirectory_new_name);
+        $response = $this->renameSubdirectory($upload_type, $current_directory_path_in_upload_type_dir, $subdirectory_new_name);
 
         return $response;
     }
 
     /**
      * @param string $upload_type
-     * @param string $subdirectory_current_name
+     * @param string $current_directory_path_in_upload_type_dir
      * @param string $subdirectory_new_name
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectory(?string $upload_type, ?string $subdirectory_current_name, ?string $subdirectory_new_name) {
+    public function renameSubdirectory(?string $upload_type, ?string $current_directory_path_in_upload_type_dir, ?string $subdirectory_new_name) {
+
+        $subdirectory_current_name = basename($current_directory_path_in_upload_type_dir);
 
         $this->logger->info('Started renaming subdirectory: ', [
             'upload_type'               => $upload_type,
             'subdirectory_current_name' => $subdirectory_current_name,
-            'subdirectory_new_name'     => $subdirectory_new_name
+            'subdirectory_new_name'     => $subdirectory_new_name,
+            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_upload_type_dir
         ]);
 
         if( $subdirectory_current_name === $subdirectory_new_name ){
@@ -164,7 +167,16 @@ class DirectoriesHandler {
         }
 
         $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-        $subdirectory_exists    = FileUploadController::isSubdirectoryForTypeExisting($target_directory, $subdirectory_current_name);
+        $subdirectory_exists    = FileUploadController::isSubdirectoryForTypeExisting($target_directory, $current_directory_path_in_upload_type_dir);
+
+        $current_directory_path = $target_directory.'/'.$current_directory_path_in_upload_type_dir;
+        $parent_subdirectories  = dirname($current_directory_path);
+        $new_directory_path     = $parent_subdirectories . '/' . $subdirectory_new_name;
+
+        if( !file_exists($current_directory_path) ){
+            $this->logger->info("Target directory for which user tried to change name does not exist");
+            return new Response("Target directory for which You try to change name does not exist", 500);
+        }
 
         if( !$subdirectory_exists ){
             $message = "Subdirectory with this name does not exist!";
@@ -172,7 +184,7 @@ class DirectoriesHandler {
             return new Response($message, 500);
         }
 
-        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForTypeExisting($target_directory, $subdirectory_new_name);
+        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForTypeExisting($parent_subdirectories, $subdirectory_new_name);
 
         if( $subdirectory_with_new_name_exists ){
             $this->logger->info('Subdirectory with this name already exists - renaming aborted.');
@@ -180,9 +192,7 @@ class DirectoriesHandler {
         }
 
         try{
-            $old_folder_location = FileUploadController::getSubdirectoryPath($target_directory, $subdirectory_current_name);
-            $new_folder_location = FileUploadController::getSubdirectoryPath($target_directory, $subdirectory_new_name);
-            rename($old_folder_location, $new_folder_location);
+            rename($current_directory_path, $new_directory_path);
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while renaming folder: ', [
                 'message' => $e->getMessage()
