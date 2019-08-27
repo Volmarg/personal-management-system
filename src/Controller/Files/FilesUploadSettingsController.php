@@ -177,8 +177,9 @@ class FilesUploadSettingsController extends AbstractController {
             $form_data          = $create_subdir_form->getData();
             $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
             $upload_type        = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
+            $target_directory_path_in_upload_type_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR];
 
-            $response = $this->directories_handler->createFolder($upload_type, $subdirectory_name);
+            $response = $this->directories_handler->createFolder($upload_type, $subdirectory_name, $target_directory_path_in_upload_type_dir);
         }
 
         if( isset($response) ){

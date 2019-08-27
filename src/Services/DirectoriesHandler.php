@@ -210,10 +210,11 @@ class DirectoriesHandler {
     /**
      * @param string $upload_type
      * @param string $subdirectory_name
+     * @param string $target_directory_path_in_upload_type_dir
      * @return Response
      * @throws \Exception
      */
-    public function createFolder(string $upload_type, string $subdirectory_name){
+    public function createFolder(string $upload_type, string $subdirectory_name, string $target_directory_path_in_upload_type_dir){
 
         $this->logger->info('Started creating subdirectory: ', [
             'upload_type'       => $upload_type,
@@ -221,7 +222,7 @@ class DirectoriesHandler {
         ]);
 
         $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-        $full_subdir_path       = FileUploadController::getSubdirectoryPath($target_directory, $subdirectory_name);
+        $full_subdir_path       = $target_directory.'/'.$target_directory_path_in_upload_type_dir.'/'.$subdirectory_name;
 
         if( file_exists($full_subdir_path) ){
             $this->logger->info('Subdirectory with this name already exists.');
