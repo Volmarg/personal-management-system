@@ -70,16 +70,16 @@ class FilesController extends AbstractController {
             throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_TARGET_UPLOAD_TYPE);
         }
 
-        if (!$request->request->has(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME)) {
-            throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME);
+        if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR)) {
+            throw new \Exception('Missing request parameter named: ' . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR);
         }
 
-        $target_subdirectory_name   = $request->request->get(FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME);
-        $current_file_location      = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
-        $target_upload_type         = $request->request->get(FilesHandler::KEY_TARGET_UPLOAD_TYPE);
+        $subdirectory_target_path_in_upload_dir     = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR);
+        $current_file_location                      = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
+        $target_upload_type                         = $request->request->get(FilesHandler::KEY_TARGET_UPLOAD_TYPE);
 
         $target_directory           = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
-        $subdirectory_path          = FileUploadController::getSubdirectoryPath($target_directory, $target_subdirectory_name);
+        $subdirectory_path          = $target_directory.'/'.$subdirectory_target_path_in_upload_dir;
 
         $filename                   = basename($current_file_location);
         $target_file_location       = $subdirectory_path.'/'.$filename;

@@ -73,6 +73,7 @@ class Dialogs extends AbstractController
             ]);
         }
 
+        // Todo: duplicate - why?
         if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
             return new JsonResponse([
                 'errorMessage' => "Request is missing key: ".static::KEY_FILE_CURRENT_PATH
@@ -113,7 +114,7 @@ class Dialogs extends AbstractController
         }
 
         $form_data  = [
-            FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME => $all_subdirectories_for_all_types,
+            # FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME => $all_subdirectories_for_all_types,
             FilesHandler::KEY_MODULES_NAMES            => $all_upload_based_modules
         ];
         $form       = $this->app->forms->moveSingleFile($form_data);

@@ -34,7 +34,7 @@ export default (function () {
                     let clickedButton           = $(event.target);
                     let tr                      = $(clickedButton).closest('tr');
                     let fileName                = $(tr).find('.file_name').text();
-                    let fileCurrentPath         = $('[name^="file_full_path"]').val();
+                    let fileCurrentPath         = $(tr).find('[name^="file_full_path"]').val();
 
                     let callback = function (){
                         let parent_wrapper  = $(clickedButton).closest('tr');
