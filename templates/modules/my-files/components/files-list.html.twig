@@ -36,7 +36,7 @@
                 <i class="far fa-edit" data-editable-columns='["{{ KEY_FILE_NAME }}"]'></i>
 
                 <form method="POST" action="{{ path('download_file') }}" class="file-download-form">
-                    <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}" data-subdirectory="{{ subdirectory }}"/>
+                    <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}" data-subdirectory="{{ subdirectory_path }}"/>
                     <button class="file-download ">
                         <i class="fa fa-download" aria-hidden="true"></i>
                     </button>

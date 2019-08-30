@@ -24,29 +24,23 @@ class UploadSubdirectoryMoveDataType extends AbstractType
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#current_path_move_data'
+                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_subdirectory_current_path_in_module_upload_dir'
                 ]
             ])
             ->add(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#target_path_move_data'
+                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_subdirectory_target_path_in_module_upload_dir'
                 ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
-                'required'  => true,
-                'attr'      => [
-                    'id' => 'current_path_move_data'
-                ]
+                'required'  => true
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
-                'required'  => true,
-                'attr'      => [
-                    'id' => 'target_path_move_data'
-                ]
+                'required'  => true
             ])
             ->add('submit', SubmitType::class, [
 

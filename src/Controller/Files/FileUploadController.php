@@ -131,64 +131,6 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param string $module_upload_dir
-     * @param bool $names_as_keys_and_values
-     * @param bool $include_main_folder
-     * @return array
-     * @throws \Exception
-     * @see buildFoldersTreeForDirectory
-     */
-    public static function getSubdirectoriesForModuleUploadDir(string $module_upload_dir, $names_as_keys_and_values = false, $include_main_folder = false)
-    {
-        $subdirectories = [];
-        $finder         = new Finder();
-
-        $target_directory_for_module_upload_dir = static::getTargetDirectoryForUploadModuleDir($module_upload_dir);
-
-        $finder->directories()->in($target_directory_for_module_upload_dir);
-
-        foreach($finder as $directory){
-            $subdirectories[] = $directory->getFilename();
-        }
-
-        if($names_as_keys_and_values){
-            $subdirectories = array_combine(
-                array_values($subdirectories),
-                array_values($subdirectories)
-            );
-        }
-
-        if( $include_main_folder ){
-            $subdirectories[static::KEY_MAIN_FOLDER] = "";
-        }
-
-        return $subdirectories;
-    }
-
-    /**
-     * @param bool $grouped_by_upload_module_dirs
-     * @param bool $include_main_folder
-     * @return array
-     * @throws \Exception
-     */
-    public static function getSubdirectoriesForAllUploadModulesDirs($grouped_by_upload_module_dirs = false, $include_main_folder = false){
-
-        $subdirectories = [];
-
-        if( !$grouped_by_upload_module_dirs ){
-            foreach(static::MODULES_UPLOAD_DIRS as $upload_module_dir){
-                $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForModuleUploadDir($upload_module_dir, true, $include_main_folder) );
-            }
-        }else{
-            foreach(static::MODULES_UPLOAD_DIRS as $upload_module_dir){
-                $subdirectories[$upload_module_dir] = static::getSubdirectoriesForModuleUploadDir($upload_module_dir, true, $include_main_folder);
-            }
-        }
-
-        return $subdirectories;
-    }
-
-    /**
      * @param string $upload_module_dir
      * @return mixed
      * @throws \Exception

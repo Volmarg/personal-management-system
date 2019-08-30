@@ -16,19 +16,16 @@ class UploadSubdirectoryRenameType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
-            ->add(FileUploadController::KEY_UPLOAD_TYPE, ChoiceType::class, [
+            ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#current_path_rename'
+                    'data-dependent-list-selector' => '#upload_subdirectory_rename_subdirectory_current_path_in_module_upload_dir'
                 ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'  => [], //this is not used anyway but parent ChoiceType requires it
-                'required' => true,
-                'attr'      => [
-                    'id' => 'current_path_rename'
-                ]
+                'required' => true
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME, TextType::class, [
 

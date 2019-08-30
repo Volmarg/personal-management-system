@@ -73,39 +73,7 @@ class Dialogs extends AbstractController
             ]);
         }
 
-        $subfolder          = basename(dirname($file_current_path));
-        $upload_module_dir  = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES[$module_name];
-
-                                            #TODO: add tree function here then remove this function and underlying functions
-        $all_subdirectories_for_all_upload_modules_dirs = FileUploadController::getSubdirectoriesForAllUploadModulesDirs(true, true);
-        $all_upload_based_modules                       = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
-
-        #Info: filter folder from which dialog was called
-        foreach( $all_subdirectories_for_all_upload_modules_dirs as $upload_dir => $subdirectories ) {
-
-            if( $upload_dir === $upload_module_dir ){
-
-                $subfolder_key  = array_search($subfolder, $subdirectories);
-                $is_main_folder = !$subfolder_key;
-
-                if( $is_main_folder ){
-                    $subfolder_key = FileUploadController::KEY_MAIN_FOLDER;
-                }
-
-                unset($subdirectories[$subfolder_key]);
-
-                #Info: if we filter folder then we need to make sure that we don't display current module if there are no other folders than current
-                if( empty($subdirectories) ){
-                    $module_key = array_search($upload_module_dir, $all_upload_based_modules);
-                    unset($all_upload_based_modules[$module_key]);
-                    break;
-                }
-
-                $all_subdirectories_for_all_upload_modules_dirs[$upload_dir] = $subdirectories;
-                break;
-            }
-
-        }
+        $all_upload_based_modules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
 
         $form_data  = [
             FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
