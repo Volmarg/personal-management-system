@@ -77,19 +77,19 @@ class FilesController extends AbstractController {
             throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_TARGET_UPLOAD_TYPE);
         }
 
-        if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR)) {
-            throw new \Exception('Missing request parameter named: ' . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR);
+        if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR)) {
+            throw new \Exception('Missing request parameter named: ' . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
         }
 
-        $subdirectory_target_path_in_upload_dir     = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR);
-        $current_file_location                      = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
-        $target_upload_type                         = $request->request->get(FilesHandler::KEY_TARGET_UPLOAD_TYPE);
+        $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+        $current_file_location                          = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
+        $target_upload_type                             = $request->request->get(FilesHandler::KEY_TARGET_UPLOAD_TYPE);
 
-        $target_directory           = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
-        $subdirectory_path          = $target_directory.'/'.$subdirectory_target_path_in_upload_dir;
+        $target_directory       = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
+        $subdirectory_path      = $target_directory.'/'.$subdirectory_target_path_in_module_upload_dir;
 
-        $filename                   = basename($current_file_location);
-        $target_file_location       = $subdirectory_path.'/'.$filename;
+        $filename               = basename($current_file_location);
+        $target_file_location   = $subdirectory_path.'/'.$filename;
 
         //In some cases the path starts with "/" on frontend and this is required there but here we want path without it
         if( preg_match("#^\/#", $current_file_location) ){
@@ -119,7 +119,7 @@ class FilesController extends AbstractController {
 
         $block_removal = false;
 
-        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR) ) {
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
             $response = new Response("Subdirectory location is missing in request.", 500);
         }else{
 
@@ -127,11 +127,10 @@ class FilesController extends AbstractController {
                 $block_removal = true;
             }
 
-            $current_directory_path_in_upload_type_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
-            $response                                   = $this->directoriesHandler->removeFolder($upload_type, $current_directory_path_in_upload_type_dir, $block_removal);
+            $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+            $response                                    = $this->directoriesHandler->removeFolder($upload_type, $current_directory_path_in_module_upload_dir, $block_removal);
 
         }
-
 
         $response_data = [
             'message' => $response->getContent(),

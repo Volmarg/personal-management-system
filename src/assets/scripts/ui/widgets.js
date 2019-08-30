@@ -142,8 +142,8 @@ export default (function () {
                     let uploadType                  = $(clickedButton).attr(_this.data.uploadType);
                     let apiUrl                      = _this.apiUrl.removeFolderViaPost.replace(_this.placeholders.uploadType, uploadType);
                     let data = {
-                        'subdirectory_current_path_in_upload_dir': subdirectoryPathInUploadDir,
-                        'block_removal'                          : true
+                        'subdirectory_current_path_in_module_upload_dir': subdirectoryPathInUploadDir,
+                        'block_removal'                                 : true
                     };
 
                     $.ajax({

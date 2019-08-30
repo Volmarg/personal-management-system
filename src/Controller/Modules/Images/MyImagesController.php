@@ -36,11 +36,11 @@ class MyImagesController extends AbstractController {
      */
     public function displayImages(? string $subdirectory) {
 
-        $upload_dir     = Env::getImagesUploadDir(); #Todo: rename?module_upload_dir ?
-        $subdirectory   = urldecode($subdirectory);  #Todo: rename (path) ?
-        $subdir_path_in_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory);
+        $module_upload_dir  = Env::getImagesUploadDir();
+        $subdirectory       = urldecode($subdirectory);  #Todo: rename (path) ? + rename param + rename it in ajax/twig
+        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $subdirectory);
 
-        if( !file_exists($subdir_path_in_upload_dir) ){
+        if( !file_exists($subdir_path_in_module_upload_dir) ){
             $subdirectory_name = basename($subdirectory);
             $this->addFlash('danger', "Folder '{$subdirectory_name} does not exist.");
             return $this->redirectToRoute('upload');
@@ -54,7 +54,7 @@ class MyImagesController extends AbstractController {
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($subdirectory) ? $upload_dir : $subdir_path_in_upload_dir);
+        $searchDir              = (empty($subdirectory) ? $module_upload_dir : $subdir_path_in_module_upload_dir);
         $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
 
         $data = [

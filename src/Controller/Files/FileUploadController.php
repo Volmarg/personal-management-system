@@ -25,13 +25,14 @@ class FileUploadController extends AbstractController {
 
     const UPLOAD_PAGE_TWIG_TEMPLATE     = 'core/upload/upload-page.html.twig';
 
-    const TYPE_IMAGES                   = 'images';
+    const TYPE_IMAGES                   = 'images'; #TODO: rename MODULE_UPLOAD_DIR_NAME_FOR_IMAGES ?
     const TYPE_FILES                    = 'files';
 
-    const KEY_SUBDIRECTORY_NEW_NAME                     = 'subdirectory_new_name';
-    const KEY_SUBDIRECTORY_CURRENT_NAME                 = 'subdirectory_current_name';
-    const KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR   = 'subdirectory_current_path_in_upload_dir';
-    const KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR    = 'subdirectory_target_path_in_upload_dir';
+    const KEY_SUBDIRECTORY_NEW_NAME       = 'subdirectory_new_name';
+    const KEY_SUBDIRECTORY_CURRENT_NAME   = 'subdirectory_current_name';
+
+    const KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR   = 'subdirectory_current_path_in_module_upload_dir';
+    const KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR    = 'subdirectory_target_path_in_module_upload_dir';
 
     const KEY_SUBDIRECTORY_NAME         = 'subdirectory_name';
 
@@ -130,7 +131,6 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * TODO: replace it globally with new function?
      * @see buildFoldersTreeForDirectory
      * @param string $uploadType
      * @param bool $names_as_keys_and_values
@@ -281,9 +281,6 @@ class FileUploadController extends AbstractController {
         }
 
     }
-
-
-    # ----- NEW subfolders tree functions
 
     /**
      * @param bool $grouped_by_types

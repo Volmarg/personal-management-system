@@ -61,13 +61,13 @@ class FilesUploadSettingsController extends AbstractController {
         //TODO: moving entire data must use main, and with this i need to block removed all if I select main + block it on backend
         //$all_subdirectories_for_all_types_with_main_folders = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
 
-        $rename_form        = $this->getRenameSubdirectoryForm();
+        $rename_form    = $this->getRenameSubdirectoryForm();
         $rename_form->handleRequest($request);
 
-        $remove_form        = $this->getRemoveSubdirectoryForm();
+        $remove_form    = $this->getRemoveSubdirectoryForm();
         $remove_form->handleRequest($request);
 
-        $move_data_form     = $this->getMoveUploadSubdirectoryDataForm();
+        $move_data_form = $this->getMoveUploadSubdirectoryDataForm();
         $move_data_form->handleRequest($request);
 
         $create_subdir_form = $this->getCreateSubdirectoryForm();
@@ -122,13 +122,13 @@ class FilesUploadSettingsController extends AbstractController {
 
     /**
      * @param string $upload_type
-     * @param string $current_directory_path_in_upload_type_dir
+     * @param string $current_directory_path_in_module_upload_dir
      * @param string $new_name
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectory(?string $upload_type, ?string $current_directory_path_in_upload_type_dir, ?string $new_name){
-        $response = $this->directories_handler->renameSubdirectory($upload_type, $current_directory_path_in_upload_type_dir, $new_name);
+    public function renameSubdirectory(?string $upload_type, ?string $current_directory_path_in_module_upload_dir, ?string $new_name){
+        $response = $this->directories_handler->renameSubdirectory($upload_type, $current_directory_path_in_module_upload_dir, $new_name);
         return $response;
     }
 
@@ -145,18 +145,18 @@ class FilesUploadSettingsController extends AbstractController {
             $form_data      = $rename_form->getData();
             $new_name       = $form_data[FileUploadController::KEY_SUBDIRECTORY_NEW_NAME];
             $upload_type    = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
-            $current_directory_path_in_upload_type_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR];
+            $current_directory_path_in_module_upload_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR];
 
-            $response = $this->renameSubdirectory($upload_type, $current_directory_path_in_upload_type_dir, $new_name);
+            $response = $this->renameSubdirectory($upload_type, $current_directory_path_in_module_upload_dir, $new_name);
         }
 
         if($remove_form->isSubmitted() && $remove_form->isValid()) {
             $form_data = $remove_form->getData();
 
-            $current_directory_path_in_upload_type_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR];
-            $upload_type                               = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
+            $current_directory_path_in_module_upload_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR];
+            $upload_type                                 = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
 
-            $response = $this->directories_handler->removeFolder($upload_type, $current_directory_path_in_upload_type_dir);
+            $response = $this->directories_handler->removeFolder($upload_type, $current_directory_path_in_module_upload_dir);
         }
 
         if($move_data_form->isSubmitted() && $move_data_form->isValid()) {
@@ -164,11 +164,11 @@ class FilesUploadSettingsController extends AbstractController {
             $current_upload_type                = $form_data[FilesHandler::KEY_CURRENT_UPLOAD_TYPE];
             $target_upload_type                 = $form_data[FilesHandler::KEY_TARGET_UPLOAD_TYPE];
 
-            $current_directory_path_in_upload_type_dir  = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR];
-            $target_directory_path_in_upload_type_dir   = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR];
+            $current_directory_path_in_module_upload_dir  = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR];
+            $target_directory_path_in_module_upload_dir   = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
 
             $response = $this->files_handler->copyAndRemoveData(
-                $current_upload_type, $target_upload_type, $current_directory_path_in_upload_type_dir, $target_directory_path_in_upload_type_dir
+                $current_upload_type, $target_upload_type, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
             );
         }
 
@@ -176,9 +176,9 @@ class FilesUploadSettingsController extends AbstractController {
             $form_data          = $create_subdir_form->getData();
             $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
             $upload_type        = $form_data[FileUploadController::KEY_UPLOAD_TYPE];
-            $target_directory_path_in_upload_type_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR];
+            $target_directory_path_in_module_upload_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
 
-            $response = $this->directories_handler->createFolder($upload_type, $subdirectory_name, $target_directory_path_in_upload_type_dir);
+            $response = $this->directories_handler->createFolder($upload_type, $subdirectory_name, $target_directory_path_in_module_upload_dir);
         }
 
         if( isset($response) ){

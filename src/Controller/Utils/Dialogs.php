@@ -73,16 +73,10 @@ class Dialogs extends AbstractController
             ]);
         }
 
-        // Todo: duplicate - why?
-        if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
-            return new JsonResponse([
-                'errorMessage' => "Request is missing key: ".static::KEY_FILE_CURRENT_PATH
-            ]);
-        }
-
         $subfolder   = basename(dirname($file_current_path));
         $upload_type = FileUploadController::UPLOAD_BASED_MODULES[$module_name];
 
+                                            #TODO: add tree function here then remove this function and underlying functions
         $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
         $all_upload_based_modules         = FileUploadController::UPLOAD_BASED_MODULES;
 
@@ -114,7 +108,6 @@ class Dialogs extends AbstractController
         }
 
         $form_data  = [
-            # FilesHandler::KEY_TARGET_SUBDIRECTORY_NAME => $all_subdirectories_for_all_types,
             FilesHandler::KEY_MODULES_NAMES            => $all_upload_based_modules
         ];
         $form       = $this->app->forms->moveSingleFile($form_data);

@@ -5,8 +5,8 @@
 {% set KEY_TARGET_SUBDIRECTORY_NAME     = constant(files_handler_service~"::KEY_TARGET_SUBDIRECTORY_NAME") %}
 
 {% set file_upload_controller           = 'App\\Controller\\Files\\FileUploadController' %}
-{% set KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR    = constant(file_upload_controller~"::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR") %}
-{% set KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR     = constant(file_upload_controller~"::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR") %}
+{% set KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR    = constant(file_upload_controller~"::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR") %}
+{% set KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR     = constant(file_upload_controller~"::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR") %}
 
 {% set FIELD_REMOVE_CURRENT_FOLDER      = constant("App\\Form\\Files\\UploadSubdirectoryMoveDataType::FIELD_REMOVE_CURRENT_FOLDER") %}
 
@@ -56,14 +56,14 @@
                                         <h5>From</h5>
                                         {{ form_widget(move_data_form[KEY_CURRENT_UPLOAD_TYPE]) }}
                                         <br/>
-                                        {{ form_widget(move_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR]) }}
+                                        {{ form_widget(move_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR]) }}
                                     </div>
 
                                     <div class="copy-to col-4">
                                         <h5>To</h5>
                                         {{ form_widget(move_data_form[KEY_TARGET_UPLOAD_TYPE]) }}
                                         <br/>
-                                        {{ form_widget(move_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR]) }}
+                                        {{ form_widget(move_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
                                     </div>
 
                                 </section>

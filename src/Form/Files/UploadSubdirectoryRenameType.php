@@ -20,12 +20,15 @@ class UploadSubdirectoryRenameType extends AbstractType {
                 'choices' => FileUploadController::UPLOAD_TYPES,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#upload_subdirectory_rename_subdirectory_current_path_in_upload_dir'
+                    'data-dependent-list-selector' => '#current_path_rename'
                 ]
             ])
-            ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
+            ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'  => [], //this is not used anyway but parent ChoiceType requires it
                 'required' => true,
+                'attr'      => [
+                    'id' => 'current_path_rename'
+                ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME, TextType::class, [
 
@@ -38,7 +41,7 @@ class UploadSubdirectoryRenameType extends AbstractType {
          * INFO: this is VERY IMPORTANT to use it here due to the difference between data passed as choice
          * and data rendered in field view
          */
-        $builder->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR)->resetViewTransformers();
+        $builder->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR)->resetViewTransformers();
     }
 
     public function configureOptions(OptionsResolver $resolver) {

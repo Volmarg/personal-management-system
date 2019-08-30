@@ -63,9 +63,9 @@ class MyFilesController extends AbstractController
         $ajax_render    = false;
         $upload_dir     = Env::getFilesUploadDir(); #Todo: rename?module_upload_dir ?
         $subdirectory   = urldecode($subdirectory);
-        $subdir_path_in_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory);
+        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory);
 
-        if( !file_exists($subdir_path_in_upload_dir) ){
+        if( !file_exists($subdir_path_in_module_upload_dir) ){
             $this->addFlash('danger', "Folder '{$subdirectory} does not exist.");
             return $this->redirectToRoute('upload');
         }
@@ -78,7 +78,7 @@ class MyFilesController extends AbstractController
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($subdirectory) ? $upload_dir : $subdir_path_in_upload_dir);
+        $searchDir              = (empty($subdirectory) ? $upload_dir : $subdir_path_in_module_upload_dir);
         $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
 
         # A bit dirty workaround

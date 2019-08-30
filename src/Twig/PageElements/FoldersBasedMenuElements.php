@@ -45,30 +45,18 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
     public function getFunctions() {
         return [
-            new TwigFunction('getUploadFolderSubdirectories', [$this, 'getUploadFolderSubdirectories']),
-            new TwigFunction('getUploadFolderSubdirectories_new', [$this, 'getUploadFolderSubdirectories_new']),
+            new TwigFunction('getUploadFolderSubdirectoriesTree', [$this, 'getUploadFolderSubdirectoriesTree']),
             new TwigFunction('buildMenuForUploadType', [$this, 'buildMenuForUploadType']),
         ];
     }
 
-    /**
-     * @param $upload_type
-     * @return array
-     * @throws \Exception
-     */
-    public function getUploadFolderSubdirectories($upload_type) {
-
-        $subdirectories = FileUploadController::getSubdirectoriesForUploadType($upload_type);
-        return $subdirectories;
-
-    }
 
     /**
      * @param $upload_type
      * @return array
      * @throws \Exception
      */
-    public function getUploadFolderSubdirectories_new($upload_type) {
+    public function getUploadFolderSubdirectoriesTree($upload_type) {
 
         $target_directory = FileUploadController::getTargetDirectoryForUploadType($upload_type);
         $folders_tree     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory) );
@@ -79,52 +67,51 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
     /**
      * Not doing this in twig because of nested arrays functions limitation
-     * TODO: rename func?
      * @param string $upload_type
      * @return string
      * @throws \Exception
      */
     public function buildMenuForUploadType(string $upload_type){
 
-        $folders_tree   = $this->getUploadFolderSubdirectories_new($upload_type);
+        $folders_tree   = $this->getUploadFolderSubdirectoriesTree($upload_type);
         $list           = '';
 
-        array_walk($folders_tree, function ($subarray, $folder_path) use (&$list, $upload_type) {
-           $list = $this->buildList($subarray, $upload_type, $folder_path, $list);
+        array_walk($folders_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_type) {
+           $list = $this->buildList($subfolder_tree, $upload_type, $folder_path, $list);
         });
 
         return $list;
     }
 
     /**
-     * @param array $folders_tree
+     * @param array $folder_tree
      * @param string $upload_type
      * @param string $list
      * @param string $folder_path
      * @return string
      * @throws \Exception
      */
-    private function buildList(array $folders_tree, string $upload_type, string $folder_path, string $list = '') {
+    private function buildList(array $folder_tree, string $upload_type, string $folder_path, string $list = '') {
 
-        $upload_folder              = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-        $folder_path_in_upload_type = str_replace($upload_folder, '', $folder_path);
-        $folder_name                = basename($folder_path);
+        $upload_folder                      = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $folder_path_in_module_upload_dir   = str_replace($upload_folder, '', $folder_path);
+        $folder_name                        = basename($folder_path);
 
-        $encoded_folder_path_in_upload_type = urlencode($folder_path_in_upload_type);
+        $encoded_folder_path_in_module_upload_dir = urlencode($folder_path_in_module_upload_dir);
 
-        $href   = $this->buildPathForUploadType($encoded_folder_path_in_upload_type, $upload_type);
+        $href   = $this->buildPathForUploadType($encoded_folder_path_in_module_upload_dir, $upload_type);
         $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
         $list  .= '<li class="nav-item dropdown">'.$link;
 
-        if( empty(!$folders_tree) ){
+        if( empty(!$folder_tree) ){
             $list .= static::DROPDOWN_ARROW_HTML;
         }
 
         $list .= '<ul class="dropdown-menu" >';
 
-        array_walk($folders_tree, function ($subarray, $folder_path) use (&$list, $upload_type) {
-            $list = static::buildList($subarray, $upload_type, $folder_path, $list);
+        array_walk($folder_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_type) {
+            $list = static::buildList($subfolder_tree, $upload_type, $folder_path, $list);
         });
 
         $list .= '</ul>';

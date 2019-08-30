@@ -63,14 +63,14 @@ class FilesHandler {
 
         $current_upload_type = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
         $target_upload_type  = $request->query->get(static::KEY_TARGET_UPLOAD_TYPE);
-        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
-        $target_directory_path_in_upload_type_dir   = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR);
+        $current_directory_path_in_module_upload_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+        $target_directory_path_in_module_upload_dir   = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
 
         $response = $this->copyFolderDataToAnotherFolder(
             $current_upload_type,
             $target_upload_type,
-            $current_directory_path_in_upload_type_dir,
-            $target_directory_path_in_upload_type_dir
+            $current_directory_path_in_module_upload_dir,
+            $target_directory_path_in_module_upload_dir
         );
 
         return $response;
@@ -79,27 +79,27 @@ class FilesHandler {
     /**
      * @param string $current_upload_type
      * @param string $target_upload_type
-     * @param string $current_directory_path_in_upload_type_dir
-     * @param string $target_directory_path_in_upload_type_dir
+     * @param string $current_directory_path_in_module_upload_dir
+     * @param string $target_directory_path_in_module_upload_dir
      * @return Response
      * @throws \Exception
      */
     public function copyFolderDataToAnotherFolder(
         ?string $current_upload_type,
         ?string $target_upload_type,
-        ?string $current_directory_path_in_upload_type_dir,
-        ?string $target_directory_path_in_upload_type_dir
+        ?string $current_directory_path_in_module_upload_dir,
+        ?string $target_directory_path_in_module_upload_dir
     ){
-        $current_subdirectory_name = basename($current_directory_path_in_upload_type_dir);
-        $target_subdirectory_name  = basename($target_directory_path_in_upload_type_dir);
+        $current_subdirectory_name = basename($current_directory_path_in_module_upload_dir);
+        $target_subdirectory_name  = basename($target_directory_path_in_module_upload_dir);
 
         $this->logger->info('Started copying data between folders via Post Request.', [
             'current_upload_type'          => $current_upload_type,
             'target_upload_type'           => $target_upload_type,
             'current_subdirectory_name'    => $current_subdirectory_name,
             'target_subdirectory_name'     => $target_subdirectory_name,
-            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_upload_type_dir,
-            'target_directory_path_in_upload_type_dir'  => $target_directory_path_in_upload_type_dir,
+            'current_directory_path_in_module_upload_dir' => $current_directory_path_in_module_upload_dir,
+            'target_directory_path_in_module_upload_dir'  => $target_directory_path_in_module_upload_dir,
         ]);
 
         if ( empty($current_upload_type) ) {
@@ -110,12 +110,12 @@ class FilesHandler {
             return new Response("Target upload type is missing in request.", 500);
         }
 
-        if ( empty($current_directory_path_in_upload_type_dir) ) {
-            return new Response("Current subdirectory path in upload dir is missing in request.", 500);
+        if ( empty($current_directory_path_in_module_upload_dir) ) {
+            return new Response("Current subdirectory path in module upload dir is missing in request.", 500);
         }
 
-        if ( empty($target_directory_path_in_upload_type_dir) ) {
-            return new Response("Target subdirectory path in upload dir is missing in request.", 500);
+        if ( empty($target_directory_path_in_module_upload_dir) ) {
+            return new Response("Target subdirectory path in module upload dir is missing in request.", 500);
         }
 
         if(
@@ -125,20 +125,11 @@ class FilesHandler {
             return new Response("Cannot copy data to the same folder of given type.", 500);
         }
 
-
-/*
-        $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-        $subdirectory_exists    = FileUploadController::isSubdirectoryForTypeExisting($target_directory, $current_directory_path_in_upload_type_dir);
-
-        $current_directory_path = $target_directory.'/'.$current_directory_path_in_upload_type_dir;
-        $parent_subdirectories  = dirname($current_directory_path);
-        $new_directory_path     = $parent_subdirectories . '/' . $subdirectory_new_name;
-*/
         $current_target_directory = FileUploadController::getTargetDirectoryForUploadType($current_upload_type);
         $new_target_directory     = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
 
-        $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_upload_type_dir;
-        $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_upload_type_dir;
+        $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_module_upload_dir;
+        $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_module_upload_dir;
 
         if( !file_exists($current_subdirectory_path) ){
             $message = 'Current subdirectory does not exist.';
@@ -177,12 +168,12 @@ class FilesHandler {
             return new Response("Current upload type is missing in request.");
         }
 
-        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR) ) {
-            return new Response("Subdirectory current path in upload dir is missing in request.");
+        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
+            return new Response("Subdirectory current path in module upload dir is missing in request.");
         }
 
         $current_upload_type                        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
-        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
+        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
 
         try{
             $this->copyFolderDataToAnotherFolderByPostRequest($request);
@@ -198,19 +189,19 @@ class FilesHandler {
     /**
      * @param string $current_upload_type
      * @param string $target_upload_type
-     * @param string $current_directory_path_in_upload_type_dir
-     * @param string $target_directory_path_in_upload_type_dir
+     * @param string $current_directory_path_in_module_upload_dir
+     * @param string $target_directory_path_in_module_upload_dir
      * @return Response
      */
     public function copyAndRemoveData(
         ?string $current_upload_type,
         ?string $target_upload_type,
-        ?string $current_directory_path_in_upload_type_dir,
-        ?string $target_directory_path_in_upload_type_dir
+        ?string $current_directory_path_in_module_upload_dir,
+        ?string $target_directory_path_in_module_upload_dir
     ) {
 
         try{
-            $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_directory_path_in_upload_type_dir, $target_directory_path_in_upload_type_dir);
+            $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir);
 
             $this->logger->info('Started removing folder data.');
 

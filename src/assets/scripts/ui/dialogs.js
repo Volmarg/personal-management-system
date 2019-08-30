@@ -14,7 +14,7 @@ export default (function () {
         selectors: {
             ids: {
                 targetUploadTypeInput       : '#move_single_file_target_upload_type',
-                targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory'
+                targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path'
             },
             classes: {
                 fileTransferButton      : '.file-transfer',
@@ -109,9 +109,9 @@ export default (function () {
                 let targetSubdirectoryPath  = $(dialogs.ui.selectors.ids.targetSubdirectoryTypeInput).val();
 
                 let data = {
-                    'file_current_location'                     : fileCurrentPath,
-                    'target_upload_type'                        : targetUploadType,
-                    'subdirectory_target_path_in_upload_dir'    : targetSubdirectoryPath
+                    'file_current_location'                         : fileCurrentPath,
+                    'target_upload_type'                            : targetUploadType,
+                    'subdirectory_target_path_in_module_upload_dir' : targetSubdirectoryPath
                 };
 
                 $.ajax({
