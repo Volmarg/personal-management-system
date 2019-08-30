@@ -36,18 +36,18 @@ class DirectoriesHandler {
     }
 
     /**
-     * @param string $upload_type
+     * @param string $upload_module_dir
      * @param string $current_directory_path_in_module_upload_dir
      * @param bool $blocks_removal ( will prevent removing folder if there are some files in some subfolders )
      * @return Response
      * @throws \Exception
      */
-    public function removeFolder(?string $upload_type, ?string $current_directory_path_in_module_upload_dir, bool $blocks_removal = false) {
+    public function removeFolder(?string $upload_module_dir, ?string $current_directory_path_in_module_upload_dir, bool $blocks_removal = false) {
 
         $subdirectory_name = basename($current_directory_path_in_module_upload_dir);
 
         $this->logger->info('Started removing folder: ', [
-            'upload_type'       => $upload_type,
+            'upload_module_dir' => $upload_module_dir,
             'subdirectory_name' => $subdirectory_name,
             'current_directory_path_in_upload_type_dir' => $current_directory_path_in_module_upload_dir
         ]);
@@ -57,14 +57,14 @@ class DirectoriesHandler {
             return new Response('Cannot remove main folder!', 500);
         }
 
-        if( empty($upload_type) )
+        if( empty($upload_module_dir) )
         {
             return new Response('You need to select upload type!', 500);
         }
 
-        $target_directory           = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-        $is_subdirectory_existing   = !FileUploadController::isSubdirectoryForTypeExisting($target_directory, $current_directory_path_in_module_upload_dir);
-        $subdirectory_path             = $target_directory.'/'.$current_directory_path_in_module_upload_dir;
+        $target_upload_dir_for_module = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
+        $is_subdirectory_existing     = !FileUploadController::isSubdirectoryForModuleDirExisting($target_upload_dir_for_module, $current_directory_path_in_module_upload_dir);
+        $subdirectory_path            = $target_upload_dir_for_module.'/'.$current_directory_path_in_module_upload_dir;
 
         if( $is_subdirectory_existing ){
             $this->logger->info('Removed folder does not exists - removal aborted');
@@ -158,8 +158,8 @@ class DirectoriesHandler {
             return new Response('Upload type is an empty string - action aborted', 500);
         }
 
-        $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);
-        $subdirectory_exists    = FileUploadController::isSubdirectoryForTypeExisting($target_directory, $current_directory_path_in_module_upload_dir);
+        $target_directory       = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
+        $subdirectory_exists    = FileUploadController::isSubdirectoryForModuleDirExisting($target_directory, $current_directory_path_in_module_upload_dir);
 
         $current_directory_path = $target_directory.'/'.$current_directory_path_in_module_upload_dir;
         $parent_subdirectories  = dirname($current_directory_path);
@@ -176,7 +176,7 @@ class DirectoriesHandler {
             return new Response($message, 500);
         }
 
-        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForTypeExisting($parent_subdirectories, $subdirectory_new_name);
+        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForModuleDirExisting($parent_subdirectories, $subdirectory_new_name);
 
         if( $subdirectory_with_new_name_exists ){
             $this->logger->info('Subdirectory with this name already exists - renaming aborted.');
@@ -212,7 +212,7 @@ class DirectoriesHandler {
             'subdirectory_name' => $subdirectory_name
         ]);
 
-        $target_directory       = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $target_directory       = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
         $full_subdir_path       = $target_directory.'/'.$target_directory_path_in_upload_type_dir.'/'.$subdirectory_name;
 
         if( file_exists($full_subdir_path) ){

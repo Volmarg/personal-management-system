@@ -14,13 +14,13 @@ export default (function () {
         },
         data: {
             folderPathInUploadDir           : 'data-folder-path-in-upload-dir',
-            uploadType                      : 'data-upload-type'
+            uploadModuleDir                 : 'data-upload-module-dir'
         },
         apiUrl: {
-            removeFolderViaPost             : '/upload/{upload_type}/remove-subdirectory'
+            removeFolderViaPost             : '/files/{upload_module_dir}/remove-subdirectory'
         },
         placeholders: {
-            uploadType                      : '{upload_type}'
+            uploadModuleDir                 : '{upload_module_dir}'
         },
         init: function () {
             this.applyAccordion();
@@ -139,8 +139,8 @@ export default (function () {
                 $(folderRemovalButton).on('click', (event) => {
                     let clickedButton               = $(event.target);
                     let subdirectoryPathInUploadDir = $(clickedButton).attr(_this.data.folderPathInUploadDir);
-                    let uploadType                  = $(clickedButton).attr(_this.data.uploadType);
-                    let apiUrl                      = _this.apiUrl.removeFolderViaPost.replace(_this.placeholders.uploadType, uploadType);
+                    let uploadModuleDir             = $(clickedButton).attr(_this.data.uploadModuleDir);
+                    let apiUrl                      = _this.apiUrl.removeFolderViaPost.replace(_this.placeholders.uploadModuleDir, uploadModuleDir);
                     let data = {
                         'subdirectory_current_path_in_module_upload_dir': subdirectoryPathInUploadDir,
                         'block_removal'                                 : true

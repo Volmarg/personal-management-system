@@ -1,3 +1,6 @@
+{% set file_upload_controller   = 'App\\Controller\\Files\\FileUploadController' %}
+{% set KEY_UPLOAD_MODULE_DIR    = constant(file_upload_controller~"::KEY_UPLOAD_MODULE_DIR") %}
+
 {% if ajax_render == false %}
     {% set template= "base.html.twig" %}
 {% else %}
@@ -29,7 +32,7 @@
                             <div class="col-md-6 file-upload-form justify-content-center align-self-center">
                                 {{ form_start(form, {'attr': {'class': 'flex-column', 'data-form-target':"Upload"}}) }}
 
-                                {{ form_widget(form.upload_type, {'attr': {'class': 'form-control upload-type listFilterer'}}) }}
+                                {{ form_widget(form[KEY_UPLOAD_MODULE_DIR], {'attr': {'class': 'form-control upload-type listFilterer'}}) }}
 
                                 <section class="file-picker-and-folder-picker d-flex">
                                     <section id="file-upload-file-select"

@@ -19,7 +19,7 @@ class UploadSubdirectoryCreateType extends AbstractType
         $builder
             ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, TextType::class)
             ->add(FileUploadController::KEY_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES,
+                'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                         => 'form-control listFilterer',
                     'data-dependent-list-selector'  => '#target_path_create_subdirectory'

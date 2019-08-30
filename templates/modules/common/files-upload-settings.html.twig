@@ -1,6 +1,6 @@
 {% set files_handler_service            = 'App\\Services\\FilesHandler' %}
-{% set KEY_CURRENT_UPLOAD_TYPE          = constant(files_handler_service~"::KEY_CURRENT_UPLOAD_TYPE") %}
-{% set KEY_TARGET_UPLOAD_TYPE           = constant(files_handler_service~"::KEY_TARGET_UPLOAD_TYPE") %}
+{% set KEY_CURRENT_UPLOAD_MODULE_DIR    = constant(files_handler_service~"::KEY_CURRENT_UPLOAD_MODULE_DIR") %}
+{% set KEY_TARGET_MODULE_UPLOAD_DIR     = constant(files_handler_service~"::KEY_TARGET_MODULE_UPLOAD_DIR") %}
 {% set KEY_CURRENT_SUBDIRECTORY_NAME    = constant(files_handler_service~"::KEY_CURRENT_SUBDIRECTORY_NAME") %}
 {% set KEY_TARGET_SUBDIRECTORY_NAME     = constant(files_handler_service~"::KEY_TARGET_SUBDIRECTORY_NAME") %}
 
@@ -54,14 +54,14 @@
 
                                     <div class="copy-from col-4">
                                         <h5>From</h5>
-                                        {{ form_widget(move_data_form[KEY_CURRENT_UPLOAD_TYPE]) }}
+                                        {{ form_widget(move_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR]) }}
                                         <br/>
                                         {{ form_widget(move_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR]) }}
                                     </div>
 
                                     <div class="copy-to col-4">
                                         <h5>To</h5>
-                                        {{ form_widget(move_data_form[KEY_TARGET_UPLOAD_TYPE]) }}
+                                        {{ form_widget(move_data_form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
                                         <br/>
                                         {{ form_widget(move_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
                                     </div>

@@ -26,7 +26,7 @@ class MyFilesController extends AbstractController
     const KEY_FILE_FULL_PATH     = 'file_full_path';
     const KEY_SUBDIRECTORY       = 'subdirectory';
     const MODULE_NAME            = 'My Files';
-    const TARGET_TYPE            = 'files';
+    const TARGET_UPLOAD_DIR      = 'files';
 
     /**
      * @var Finder $finder
@@ -53,33 +53,33 @@ class MyFilesController extends AbstractController
     }
 
     /**
-     * @Route("my-files/dir/{subdirectory?}", name="modules_my_files")
-     * @param string|null $subdirectory
+     * @Route("my-files/dir/{encoded_subdirectory_path?}", name="modules_my_files")
+     * @param string|null $encoded_subdirectory_path
      * @param Request $request
      * @return Response
      */
-    public function displayFiles(? string $subdirectory, Request $request) {
+    public function displayFiles(? string $encoded_subdirectory_path, Request $request) {
 
-        $ajax_render    = false;
-        $upload_dir     = Env::getFilesUploadDir(); #Todo: rename?module_upload_dir ?
-        $subdirectory   = urldecode($subdirectory);
-        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory);
+        $ajax_render                      = false;
+        $upload_dir                       = Env::getFilesUploadDir();
+        $decoded_subdirectory_path        = urldecode($encoded_subdirectory_path);
+        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $decoded_subdirectory_path);
 
         if( !file_exists($subdir_path_in_module_upload_dir) ){
-            $this->addFlash('danger', "Folder '{$subdirectory} does not exist.");
+            $this->addFlash('danger', "Folder '{$decoded_subdirectory_path} does not exist.");
             return $this->redirectToRoute('upload');
         }
 
-        if (empty($subdirectory)) {
-            $files = $this->getMainFolderFiles();
+        if (empty($decoded_subdirectory_path)) {
+            $files                     = $this->getMainFolderFiles();
         } else {
-            $subdirectory = urldecode($subdirectory);
-            $files = $this->getFilesFromSubdirectory($subdirectory);
+            $decoded_subdirectory_path = urldecode($decoded_subdirectory_path);
+            $files                     = $this->getFilesFromSubdirectory($decoded_subdirectory_path);
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($subdirectory) ? $upload_dir : $subdir_path_in_module_upload_dir);
-        $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
+        $search_dir              = (empty($decoded_subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
+        $files_count_in_tree    = FilesHandler::countFilesInTree($search_dir);
 
         # A bit dirty workaround
         if ($files instanceof RedirectResponse) {
@@ -93,9 +93,9 @@ class MyFilesController extends AbstractController
         $data = [
             'ajax_render'           => $ajax_render,
             'files'                 => $files,
-            'subdirectory'          => $subdirectory,
+            'subdirectory_path'     => $decoded_subdirectory_path,
             'files_count_in_tree'   => $files_count_in_tree,
-            'upload_type'           => static::TARGET_TYPE
+            'upload_module_dir'     => static::TARGET_UPLOAD_DIR
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);
@@ -123,10 +123,10 @@ class MyFilesController extends AbstractController
     private function getFilesFromSubdirectory(string $subdirectory) {
         $upload_dir       = Env::getFilesUploadDir();
         $all_files        = [];
-        $searchDir        = ( empty($subdirectory) ? $upload_dir : FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory));
+        $search_dir       = ( empty($subdirectory) ? $upload_dir : FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory));
 
         try{
-            $this->finder->files()->in($searchDir);
+            $this->finder->files()->in($search_dir);
 
         }catch(DirectoryNotFoundException $de){
 

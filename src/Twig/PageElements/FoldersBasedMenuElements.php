@@ -58,7 +58,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
      */
     public function getUploadFolderSubdirectoriesTree($upload_type) {
 
-        $target_directory = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
         $folders_tree     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory) );
 
         return $folders_tree;
@@ -93,7 +93,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
      */
     private function buildList(array $folder_tree, string $upload_type, string $folder_path, string $list = '') {
 
-        $upload_folder                      = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $upload_folder                      = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
         $folder_path_in_module_upload_dir   = str_replace($upload_folder, '', $folder_path);
         $folder_name                        = basename($folder_path);
 
@@ -121,22 +121,22 @@ class FoldersBasedMenuElements extends AbstractExtension {
     }
 
     /**
-     * @param string $upload_type
+     * @param string $upload_module_directory
      * @param string $subdirectory
      * @return string
      * @throws \Exception
      */
-    private function buildPathForUploadType(string $subdirectory, string $upload_type) {
+    private function buildPathForUploadType(string $subdirectory, string $upload_module_directory) {
 
-        switch($upload_type){
-            case FileUploadController::TYPE_FILES:
+        switch($upload_module_directory){
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
                 $path = $this->url_generator->generate('modules_my_files', ['subdirectory' => $subdirectory]);
                 break;
-            case FileUploadController::TYPE_IMAGES:
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
                 $path = $this->url_generator->generate('modules_my_images', ['subdirectory' => $subdirectory]);
                 break;
             default:
-                throw new \Exception("This upload type is not supported: {$upload_type}");
+                throw new \Exception("This upload directory is not supported: {$upload_module_directory}");
         }
 
         return $path;

@@ -52,7 +52,7 @@ class Dialogs extends AbstractController
 
         $module_name  = $request->request->get(static::KEY_MODULE_NAME);
 
-        if( !array_key_exists($module_name, FileUploadController::UPLOAD_BASED_MODULES) ){
+        if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
             return new JsonResponse([
                 'errorMessage' => "Module name is incorrect."
             ]);
@@ -73,17 +73,17 @@ class Dialogs extends AbstractController
             ]);
         }
 
-        $subfolder   = basename(dirname($file_current_path));
-        $upload_type = FileUploadController::UPLOAD_BASED_MODULES[$module_name];
+        $subfolder          = basename(dirname($file_current_path));
+        $upload_module_dir  = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES[$module_name];
 
                                             #TODO: add tree function here then remove this function and underlying functions
-        $all_subdirectories_for_all_types = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
-        $all_upload_based_modules         = FileUploadController::UPLOAD_BASED_MODULES;
+        $all_subdirectories_for_all_upload_modules_dirs = FileUploadController::getSubdirectoriesForAllUploadModulesDirs(true, true);
+        $all_upload_based_modules                       = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
 
         #Info: filter folder from which dialog was called
-        foreach( $all_subdirectories_for_all_types as $type => $subdirectories ) {
+        foreach( $all_subdirectories_for_all_upload_modules_dirs as $upload_dir => $subdirectories ) {
 
-            if( $type === $upload_type ){
+            if( $upload_dir === $upload_module_dir ){
 
                 $subfolder_key  = array_search($subfolder, $subdirectories);
                 $is_main_folder = !$subfolder_key;
@@ -96,21 +96,21 @@ class Dialogs extends AbstractController
 
                 #Info: if we filter folder then we need to make sure that we don't display current module if there are no other folders than current
                 if( empty($subdirectories) ){
-                    $module_key = array_search($upload_type, $all_upload_based_modules);
+                    $module_key = array_search($upload_module_dir, $all_upload_based_modules);
                     unset($all_upload_based_modules[$module_key]);
                     break;
                 }
 
-                $all_subdirectories_for_all_types[$type] = $subdirectories;
+                $all_subdirectories_for_all_upload_modules_dirs[$upload_dir] = $subdirectories;
                 break;
             }
 
         }
 
         $form_data  = [
-            FilesHandler::KEY_MODULES_NAMES            => $all_upload_based_modules
+            FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
         ];
-        $form       = $this->app->forms->moveSingleFile($form_data);
+        $form = $this->app->forms->moveSingleFile($form_data);
 
         $template_data = [
             'form' => $form->createView()

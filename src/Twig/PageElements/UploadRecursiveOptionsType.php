@@ -40,7 +40,7 @@ class UploadRecursiveOptionsType extends AbstractExtension {
      * @throws \Exception
      */
     public function buildOptionsForUploadFormType(string $upload_type){
-        $target_directory = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
         $folders_tree     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory) );
         $options          = "";
 
@@ -65,7 +65,7 @@ class UploadRecursiveOptionsType extends AbstractExtension {
      */
     private function buildList(array $folders_tree, string $upload_type, string $folder_path, string $options = '') {
 
-        $target_directory                = FileUploadController::getTargetDirectoryForUploadType($upload_type);
+        $target_directory                = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
         $folder_path_in_target_directory = str_replace($target_directory.'/', '', $folder_path);
 
         $folder_name      = basename($folder_path);

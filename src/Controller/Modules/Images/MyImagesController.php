@@ -16,7 +16,7 @@ class MyImagesController extends AbstractController {
     const KEY_FILE_NAME           = 'file_name';
     const KEY_FILE_FULL_PATH      = 'file_full_path';
     const MODULE_NAME             = 'My Images';
-    const TARGET_TYPE             = 'images';
+    const TARGET_UPLOAD_DIR       = 'images';
 
     /**
      * @var Finder $finder
@@ -30,39 +30,39 @@ class MyImagesController extends AbstractController {
     }
 
     /**
-     * @Route("my-images/dir/{subdirectory?}", name="modules_my_images")
-     * @param string|null $subdirectory
+     * @Route("my-images/dir/{encoded_subdirectory_path?}", name="modules_my_images")
+     * @param string|null $encoded_subdirectory_path
      * @return Response
      */
-    public function displayImages(? string $subdirectory) {
+    public function displayImages(? string $encoded_subdirectory_path) {
 
-        $module_upload_dir  = Env::getImagesUploadDir();
-        $subdirectory       = urldecode($subdirectory);  #Todo: rename (path) ? + rename param + rename it in ajax/twig
-        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $subdirectory);
+        $module_upload_dir                      = Env::getImagesUploadDir();
+        $decoded_subdirectory_path              = urldecode($encoded_subdirectory_path);
+        $subdirectory_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $decoded_subdirectory_path);
 
-        if( !file_exists($subdir_path_in_module_upload_dir) ){
-            $subdirectory_name = basename($subdirectory);
+        if( !file_exists($subdirectory_path_in_module_upload_dir) ){
+            $subdirectory_name = basename($decoded_subdirectory_path);
             $this->addFlash('danger', "Folder '{$subdirectory_name} does not exist.");
             return $this->redirectToRoute('upload');
         }
 
-        if (empty($subdirectory)) {
-            $all_images = $this->getMainFolderImages();
+        if (empty($decoded_subdirectory_path)) {
+            $all_images                 = $this->getMainFolderImages();
         } else {
-            $subdirectory   = urldecode($subdirectory);
-            $all_images     = $this->getImagesFromCategory($subdirectory);
+            $decoded_subdirectory_path   = urldecode($decoded_subdirectory_path);
+            $all_images                  = $this->getImagesFromCategory($decoded_subdirectory_path);
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($subdirectory) ? $module_upload_dir : $subdir_path_in_module_upload_dir);
+        $searchDir              = (empty($decoded_subdirectory_path) ? $module_upload_dir : $subdirectory_path_in_module_upload_dir);
         $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
 
         $data = [
             'ajax_render'           => false,
             'all_images'            => $all_images,
-            'subdirectory'          => $subdirectory,
+            'subdirectory_path'     => $decoded_subdirectory_path,
             'files_count_in_tree'   => $files_count_in_tree,
-            'upload_type'           => static::TARGET_TYPE
+            'upload_module_dir'     => static::TARGET_UPLOAD_DIR
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_IMAGES, $data);
@@ -71,9 +71,9 @@ class MyImagesController extends AbstractController {
     private function getImagesFromCategory(string $subdirectory) {
         $upload_dir       = Env::getImagesUploadDir();
         $all_images       = [];
-        $searchDir        = ( empty($subdirectory) ? $upload_dir : $upload_dir . '/' . $subdirectory);
+        $search_dir       = ( empty($subdirectory) ? $upload_dir : $upload_dir . '/' . $subdirectory);
 
-        $this->finder->files()->in($searchDir);
+        $this->finder->files()->in($search_dir);
 
         foreach ($this->finder as $image) {
             $all_images[] = [

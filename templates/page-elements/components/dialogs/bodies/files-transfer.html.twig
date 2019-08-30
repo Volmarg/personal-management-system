@@ -1,5 +1,5 @@
 {% set files_handler_service            = 'App\\Services\\FilesHandler' %}
-{% set KEY_TARGET_UPLOAD_TYPE           = constant(files_handler_service~"::KEY_TARGET_UPLOAD_TYPE") %}
+{% set KEY_TARGET_MODULE_UPLOAD_DIR     = constant(files_handler_service~"::KEY_TARGET_MODULE_UPLOAD_DIR") %}
 {% set KEY_TARGET_SUBDIRECTORY_NAME     = constant(files_handler_service~"::KEY_TARGET_SUBDIRECTORY_NAME") %}
 
 {% set file_upload_controller           = 'App\\Controller\\Files\\FileUploadController' %}
@@ -13,10 +13,10 @@
 
     <div class="row">
         <div class="col-sm-4">
-            {{ form_label(form[KEY_TARGET_UPLOAD_TYPE], "Target module", { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+            {{ form_label(form[KEY_TARGET_MODULE_UPLOAD_DIR], "Target module", { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
         </div>
         <div class="col-sm-6">
-            {{ form_widget(form[KEY_TARGET_UPLOAD_TYPE]) }}
+            {{ form_widget(form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
         </div>
     </div>
 

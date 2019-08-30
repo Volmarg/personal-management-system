@@ -25,8 +25,8 @@ class FileUploadController extends AbstractController {
 
     const UPLOAD_PAGE_TWIG_TEMPLATE     = 'core/upload/upload-page.html.twig';
 
-    const TYPE_IMAGES                   = 'images'; #TODO: rename MODULE_UPLOAD_DIR_NAME_FOR_IMAGES ?
-    const TYPE_FILES                    = 'files';
+    const MODULE_UPLOAD_DIR_FOR_IMAGES  = 'images';
+    const MODULE_UPLOAD_DIR_FOR_FILES   = 'files';
 
     const KEY_SUBDIRECTORY_NEW_NAME       = 'subdirectory_new_name';
     const KEY_SUBDIRECTORY_CURRENT_NAME   = 'subdirectory_current_name';
@@ -36,20 +36,20 @@ class FileUploadController extends AbstractController {
 
     const KEY_SUBDIRECTORY_NAME         = 'subdirectory_name';
 
-    const KEY_UPLOAD_TYPE               = 'upload_type';
+    const KEY_UPLOAD_MODULE_DIR         = 'upload_module_dir';
 
     const DEFAULT_KEY_IS_MISSING        = 'Required key is missing in request';
 
     const KEY_MAIN_FOLDER               = 'Main folder';
 
-    const UPLOAD_TYPES = [
-        self::TYPE_IMAGES => self::TYPE_IMAGES,
-        self::TYPE_FILES  => self::TYPE_FILES
+    const MODULES_UPLOAD_DIRS = [
+        self::MODULE_UPLOAD_DIR_FOR_IMAGES => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
+        self::MODULE_UPLOAD_DIR_FOR_FILES  => self::MODULE_UPLOAD_DIR_FOR_FILES
     ];
 
-    const UPLOAD_BASED_MODULES = [
-        MyImagesController::MODULE_NAME => self::TYPE_IMAGES,
-        MyFilesController::MODULE_NAME  => self::TYPE_FILES
+    const MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES = [
+        MyImagesController::MODULE_NAME => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
+        MyFilesController::MODULE_NAME  => self::MODULE_UPLOAD_DIR_FOR_FILES
     ];
 
     /**
@@ -131,21 +131,21 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @see buildFoldersTreeForDirectory
-     * @param string $uploadType
+     * @param string $module_upload_dir
      * @param bool $names_as_keys_and_values
      * @param bool $include_main_folder
      * @return array
      * @throws \Exception
+     * @see buildFoldersTreeForDirectory
      */
-    public static function getSubdirectoriesForUploadType(string $uploadType, $names_as_keys_and_values = false, $include_main_folder = false)
+    public static function getSubdirectoriesForModuleUploadDir(string $module_upload_dir, $names_as_keys_and_values = false, $include_main_folder = false)
     {
         $subdirectories = [];
         $finder         = new Finder();
 
-        $targetDirectory = static::getTargetDirectoryForUploadType($uploadType);
+        $target_directory_for_module_upload_dir = static::getTargetDirectoryForUploadModuleDir($module_upload_dir);
 
-        $finder->directories()->in($targetDirectory);
+        $finder->directories()->in($target_directory_for_module_upload_dir);
 
         foreach($finder as $directory){
             $subdirectories[] = $directory->getFilename();
@@ -166,22 +166,22 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param bool $grouped_by_types
+     * @param bool $grouped_by_upload_module_dirs
      * @param bool $include_main_folder
      * @return array
      * @throws \Exception
      */
-    public static function getSubdirectoriesForAllUploadTypes($grouped_by_types = false, $include_main_folder = false){
+    public static function getSubdirectoriesForAllUploadModulesDirs($grouped_by_upload_module_dirs = false, $include_main_folder = false){
 
         $subdirectories = [];
 
-        if( !$grouped_by_types ){
-            foreach(static::UPLOAD_TYPES as $upload_type){
-                $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForUploadType($upload_type, true, $include_main_folder) );
+        if( !$grouped_by_upload_module_dirs ){
+            foreach(static::MODULES_UPLOAD_DIRS as $upload_module_dir){
+                $subdirectories = array_merge($subdirectories, static::getSubdirectoriesForModuleUploadDir($upload_module_dir, true, $include_main_folder) );
             }
         }else{
-            foreach(static::UPLOAD_TYPES as $upload_type){
-                $subdirectories[$upload_type] = static::getSubdirectoriesForUploadType($upload_type, true, $include_main_folder);
+            foreach(static::MODULES_UPLOAD_DIRS as $upload_module_dir){
+                $subdirectories[$upload_module_dir] = static::getSubdirectoriesForModuleUploadDir($upload_module_dir, true, $include_main_folder);
             }
         }
 
@@ -189,17 +189,17 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param string $uploadType
+     * @param string $upload_module_dir
      * @return mixed
      * @throws \Exception
      */
-    public static function getTargetDirectoryForUploadType(string $uploadType){
+    public static function getTargetDirectoryForUploadModuleDir(string $upload_module_dir){
 
-        switch ($uploadType) {
-            case FileUploadController::TYPE_FILES:
+        switch ($upload_module_dir) {
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
                 $targetDirectory = Env::getFilesUploadDir();
                 break;
-            case FileUploadController::TYPE_IMAGES:
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
                 $targetDirectory = Env::getImagesUploadDir();
                 break;
             default:
@@ -209,39 +209,39 @@ class FileUploadController extends AbstractController {
         return $targetDirectory;
     }
 
-    public static function getUploadTypeForTargetDirectory(string $target_directory) {
+    public static function getUploadModuleDirForTargetDirectory(string $target_directory) {
 
         switch ($target_directory) {
             case Env::getImagesUploadDir():
-                $target_module = MyImagesController::TARGET_TYPE;
+                $target_module_upload_dir = MyImagesController::TARGET_UPLOAD_DIR;
                 break;
             case Env::getFilesUploadDir():
-                $target_module = MyFilesController::TARGET_TYPE;
+                $target_module_upload_dir = MyFilesController::TARGET_UPLOAD_DIR;
                 break;
             default:
                 throw new \Exception('This target_directory is not allowed');
         }
 
-        return $target_module;
+        return $target_module_upload_dir;
     }
 
     /**
-     * @param string $targetDirectory
+     * @param string $target_directory
      * @param string $subdirectory_name
      * @return bool
      */
-    public static function isSubdirectoryForTypeExisting(string $targetDirectory, string $subdirectory_name): bool {
-        $subdirectory_path = static::getSubdirectoryPath($targetDirectory, $subdirectory_name);
+    public static function isSubdirectoryForModuleDirExisting(string $target_directory, string $subdirectory_name): bool {
+        $subdirectory_path = static::getSubdirectoryPath($target_directory, $subdirectory_name);
         return file_exists($subdirectory_path);
     }
 
     /**
-     * @param string $targetDirectory
+     * @param string $target_directory
      * @param string $subdirectory_name
      * @return string
      */
-    public static function getSubdirectoryPath(string $targetDirectory, string $subdirectory_name){
-        return $targetDirectory . '/' . $subdirectory_name;
+    public static function getSubdirectoryPath(string $target_directory, string $subdirectory_name){
+        return $target_directory . '/' . $subdirectory_name;
     }
 
     /**
@@ -267,38 +267,38 @@ class FileUploadController extends AbstractController {
             $form_data = $form->getData();
 
             $subdirectory       = $form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
-            $upload_type        = $form_data[static::KEY_UPLOAD_TYPE];
-            $uploadedFiles      = $form_data[FilesHandler::FILE_KEY];
+            $upload_module_dir  = $form_data[static::KEY_UPLOAD_MODULE_DIR];
+            $uploaded_files     = $form_data[FilesHandler::FILE_KEY];
 
-            foreach ($uploadedFiles as $uploadedFile) {
-                $response = $this->fileUploader->upload($uploadedFile, $request, $upload_type, $subdirectory);
+            foreach ($uploaded_files as $uploadedFile) {
+                $response = $this->fileUploader->upload($uploadedFile, $request, $upload_module_dir, $subdirectory);
             }
 
-            $flashType  = Utils::getFlashTypeForRequest($response);
+            $flash_type  = Utils::getFlashTypeForRequest($response);
             $message    = $response->getContent();
 
-            $this->addFlash($flashType, $message);
+            $this->addFlash($flash_type, $message);
         }
 
     }
 
     /**
-     * @param bool $grouped_by_types
+     * @param bool $grouped_by_module_upload_dirs
      * @param bool $include_main_folder
      * @return array
      * @throws \Exception
      */
-    public static function getFoldersTreesForAllUploadTypes($grouped_by_types = false, $include_main_folder = false){
+    public static function getFoldersTreesForAllUploadModulesDirs($grouped_by_module_upload_dirs = false, $include_main_folder = false){
 
         $subdirectories = [];
 
-        if( !$grouped_by_types ){
-            foreach(static::UPLOAD_TYPES as $upload_type){
-                $subdirectories = array_merge($subdirectories, static::getFoldersTreesForUploadType($upload_type, $include_main_folder) );
+        if( !$grouped_by_module_upload_dirs ){
+            foreach(static::MODULES_UPLOAD_DIRS as $module_upload_dir){
+                $subdirectories = array_merge($subdirectories, static::getFoldersTreesForUploadModuleDir($module_upload_dir, $include_main_folder) );
             }
         }else{
-            foreach(static::UPLOAD_TYPES as $upload_type){
-                $subdirectories[$upload_type] = static::getFoldersTreesForUploadType($upload_type, $include_main_folder);
+            foreach(static::MODULES_UPLOAD_DIRS as $module_upload_dir){
+                $subdirectories[$module_upload_dir] = static::getFoldersTreesForUploadModuleDir($module_upload_dir, $include_main_folder);
             }
         }
 
@@ -306,15 +306,15 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param string $uploadType
+     * @param string $upload_module_dir
      * @param bool $include_main_folder
      * @return array|false
      * @throws \Exception
      */
-    public static function getFoldersTreesForUploadType(string $uploadType, $include_main_folder = false)
+    public static function getFoldersTreesForUploadModuleDir(string $upload_module_dir, $include_main_folder = false)
     {
-        $target_directory = static::getTargetDirectoryForUploadType($uploadType);
-        $folders_trees    = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory), true );
+        $target_directory_for_module_upload_dir = static::getTargetDirectoryForUploadModuleDir($upload_module_dir);
+        $folders_trees                          = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory_for_module_upload_dir ), true );
 
         if( $include_main_folder ){
             $subdirectories[static::KEY_MAIN_FOLDER] = "";

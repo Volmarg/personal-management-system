@@ -37,9 +37,9 @@ class FileUploader extends AbstractController {
     ];
 
     /**
-     * @var string $targetDirectory
+     * @var string $target_directory
      */
-    private $targetDirectory;
+    private $target_directory;
 
     /**
      * @var Finder $finder
@@ -70,9 +70,9 @@ class FileUploader extends AbstractController {
         $this->logger->info("Started uploading files to subdirectory {$subdirectory}");
 
         if( Env::isDemo() ){
-            $isFileValid = $this->isFileValid($file, $request);
+            $is_file_valid = $this->isFileValid($file, $request);
 
-            if( !$isFileValid ){
+            if( !$is_file_valid ){
                 return new Response('File is invalid, and has been skipped', 500);
             }
         }
@@ -80,31 +80,31 @@ class FileUploader extends AbstractController {
         $this->handleUploadDir();
 
         $now                = new \DateTime();
-        $originalFilename   = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $fileName           = $originalFilename . '-' . uniqid() . '.' . $file->guessExtension();
+        $original_filename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $file_name          = $original_filename . '-' . uniqid() . '.' . $file->guessExtension();
 
         switch($type){
-            case FileUploadController::TYPE_FILES:
-                $targetDirectory = Env::getFilesUploadDir();
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
+                $target_directory = Env::getFilesUploadDir();
             break;
-            case FileUploadController::TYPE_IMAGES:
-                $targetDirectory = Env::getImagesUploadDir();
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
+                $target_directory = Env::getImagesUploadDir();
             break;
             default:
                 $this->logger->info("Performed upload action for not supported upload type: {$type}");
                 throw new \Exception('This type is not allowed');
         }
 
-        if (file_exists($targetDirectory . '/' . $fileName)) {
-            $fileName .= '_' . $now->format('Y_m_d');
+        if (file_exists($target_directory . '/' . $file_name)) {
+            $file_name .= '_' . $now->format('Y_m_d');
         }
 
         if (!empty($subdirectory)) {
-            $targetDirectory .= '/' . $subdirectory;
+            $target_directory .= '/' . $subdirectory;
         }
 
         try {
-            $file->move($targetDirectory, $fileName);
+            $file->move($target_directory, $file_name);
         } catch (FileException $e) {
             $this->logger->info("Exception was thrown while uploading files: ", [
                 'message' => $e->getMessage()
@@ -118,18 +118,18 @@ class FileUploader extends AbstractController {
 
     public function handleUploadDir() {
 
-        $folderCount        = 0;
-        $uploadFolderPath   = '';
-        $this->finder->directories()->name($this->targetDirectory)->in('.');
+        $folder_count        = 0;
+        $upload_folder_path  = '';
+        $this->finder->directories()->name($this->target_directory)->in('.');
 
         foreach($this->finder as $folder){
-            $uploadFolderPath = $folder->getPath();
+            $upload_folder_path = $folder->getPath();
         }
 
 
         try{
-            if($folderCount > 0){
-                throw new Exception("Found more than one upload folder named {$this->targetDirectory} !");
+            if($folder_count > 0){
+                throw new Exception("Found more than one upload folder named {$this->target_directory} !");
             }
         }catch(\Exception $e){
             $this->logger->info("Exception was thrown while uploading files: ", [
@@ -137,8 +137,8 @@ class FileUploader extends AbstractController {
             ]);
         }
 
-        if (!file_exists($uploadFolderPath)) {
-            mkdir($this->targetDirectory, 0777);
+        if (!file_exists($upload_folder_path)) {
+            mkdir($this->target_directory, 0777);
         }
 
     }
@@ -155,11 +155,11 @@ class FileUploader extends AbstractController {
         $extension  = $file->getClientOriginalExtension();
         $mime       = $file->getClientMimeType();
 
-        $isMimeAllowed      = $this->isMimeAllowed($mime);
-        $isExtensionAllowed = $this->isExtensionAllowed($extension);
-        $isFileNameAllowed  = $this->isFileNameAllowed($filename);
+        $is_mime_allowed      = $this->isMimeAllowed($mime);
+        $is_extension_allowed = $this->isExtensionAllowed($extension);
+        $is_file_name_allowed = $this->isFileNameAllowed($filename);
 
-        if(!$isMimeAllowed || !$isExtensionAllowed || !$isFileNameAllowed){
+        if(!$is_mime_allowed || !$is_extension_allowed || !$is_file_name_allowed){
             $this->logger->critical("Skipped file.", [
                 'filename'      =>  $filename,
                 'extension'     =>  $extension,

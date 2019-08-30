@@ -40,8 +40,8 @@ export default (function () {
             imageNameEditConfirmation   : "Do You want to rename this image?",
         },
         apiUrls: {
-            fileRemoval                 : "/upload/action/remove-file",
-            fileRename                  : "/upload/action/rename-file",
+            fileRemoval                 : "/files/action/remove-file",
+            fileRename                  : "/files/action/rename-file",
         },
         keys: {
             KEY_FILE_FULL_PATH          : "file_full_path"

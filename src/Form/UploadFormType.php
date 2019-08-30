@@ -27,8 +27,8 @@ class UploadFormType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
-            ->add('upload_type', ChoiceType::class,[
-                'choices'       => FileUploadController::UPLOAD_TYPES,
+            ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class,[
+                'choices'       => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'          => [
                     'data-dependent-list-selector' => '#upload_form_subdirectory'
                 ]

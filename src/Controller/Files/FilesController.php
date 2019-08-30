@@ -6,7 +6,6 @@ namespace App\Controller\Files;
 use App\Controller\Utils\Application;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
-use App\Services\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +38,7 @@ class FilesController extends AbstractController {
 
 
     /**
-     * @Route("/upload/action/remove-file", name="upload_remove_file", methods="POST")
+     * @Route("/files/action/remove-file", name="files_remove_file", methods="POST")
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
@@ -50,7 +49,7 @@ class FilesController extends AbstractController {
     }
 
     /**
-     * @Route("/upload/action/rename-file", name="upload_rename_file", methods="POST")
+     * @Route("/files/action/rename-file", name="files_rename_file", methods="POST")
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
@@ -73,8 +72,8 @@ class FilesController extends AbstractController {
             throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_FILE_CURRENT_PATH);
         }
 
-        if (!$request->request->has(FilesHandler::KEY_TARGET_UPLOAD_TYPE)) {
-            throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_TARGET_UPLOAD_TYPE);
+        if (!$request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR)) {
+            throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
         }
 
         if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR)) {
@@ -83,13 +82,13 @@ class FilesController extends AbstractController {
 
         $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
         $current_file_location                          = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
-        $target_upload_type                             = $request->request->get(FilesHandler::KEY_TARGET_UPLOAD_TYPE);
+        $target_module_upload_dir                       = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
 
-        $target_directory       = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
-        $subdirectory_path      = $target_directory.'/'.$subdirectory_target_path_in_module_upload_dir;
+        $target_directory_in_upload_dir   = FileUploadController::getTargetDirectoryForUploadModuleDir($target_module_upload_dir);
+        $subdirectory_path_in_upload_dir  = $target_directory_in_upload_dir.'/'.$subdirectory_target_path_in_module_upload_dir;
 
         $filename               = basename($current_file_location);
-        $target_file_location   = $subdirectory_path.'/'.$filename;
+        $target_file_location   = $subdirectory_path_in_upload_dir.'/'.$filename;
 
         //In some cases the path starts with "/" on frontend and this is required there but here we want path without it
         if( preg_match("#^\/#", $current_file_location) ){
@@ -109,13 +108,13 @@ class FilesController extends AbstractController {
 
 
     /**
-     * @Route("/upload/{upload_type}/remove-subdirectory", name="upload_remove_subdirectory", methods="POST")
-     * @param string $upload_type
+     * @Route("/files/{upload_module_dir}/remove-subdirectory", name="upload_remove_subdirectory", methods="POST")
+     * @param string $upload_module_dir
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function removeFolderByPostRequest(string $upload_type, Request $request) {
+    public function removeFolderByPostRequest(string $upload_module_dir, Request $request) {
 
         $block_removal = false;
 
@@ -128,7 +127,7 @@ class FilesController extends AbstractController {
             }
 
             $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-            $response                                    = $this->directoriesHandler->removeFolder($upload_type, $current_directory_path_in_module_upload_dir, $block_removal);
+            $response                                    = $this->directoriesHandler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
 
         }
 

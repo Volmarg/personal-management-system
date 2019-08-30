@@ -14,9 +14,9 @@
             <div class="bgc-white p-10 bd">
                 <span>
                     {% include 'page-elements/components/widgets/remove-folder.twig' with {
-                        'folder_path': subdirectory,
-                        'upload_type': upload_type,
-                        'files_count_in_tree': files_count_in_tree
+                        'folder_path'           : subdirectory_path,
+                        'upload_module_dir'     : upload_module_dir,
+                        'files_count_in_tree'   : files_count_in_tree
                     } %}
                 </span>
             </div>

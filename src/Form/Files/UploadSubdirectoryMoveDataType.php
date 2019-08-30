@@ -20,15 +20,15 @@ class UploadSubdirectoryMoveDataType extends AbstractType
     {
 
         $builder
-            ->add(FilesHandler::KEY_CURRENT_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES,
+            ->add(FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR, ChoiceType::class, [
+                'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#current_path_move_data'
                 ]
             ])
-            ->add(FilesHandler::KEY_TARGET_UPLOAD_TYPE, ChoiceType::class, [
-                'choices' => FileUploadController::UPLOAD_TYPES,
+            ->add(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, ChoiceType::class, [
+                'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#target_path_move_data'

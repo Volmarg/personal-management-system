@@ -19,8 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class FilesHandler {
 
-    const KEY_CURRENT_UPLOAD_TYPE       = 'current_upload_type';
-    const KEY_TARGET_UPLOAD_TYPE        = 'target_upload_type';
+    const KEY_CURRENT_UPLOAD_MODULE_DIR = 'current_upload_module_dir';
+    const KEY_TARGET_MODULE_UPLOAD_DIR  = 'target_upload_module_dir';
     const KEY_CURRENT_SUBDIRECTORY_NAME = 'current_subdirectory_name';
     const KEY_TARGET_SUBDIRECTORY_NAME  = 'target_subdirectory_name';
     const KEY_FILE_FULL_PATH            = 'file_full_path';
@@ -37,18 +37,18 @@ class FilesHandler {
     private $application;
 
     /**
-     * @var DirectoriesHandler $directoriesHandler
+     * @var DirectoriesHandler $directories_handle
      */
-    private $directoriesHandler;
+    private $directories_handle;
 
     /**
      * @var LoggerInterface $logger
      */
     private $logger;
 
-    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, LoggerInterface $logger) {
+    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger) {
         $this->application          = $application;
-        $this->directoriesHandler   = $directoriesHandler;
+        $this->directories_handle   = $directories_handler;
         $this->logger               = $logger;
 
     }
@@ -61,14 +61,14 @@ class FilesHandler {
      */
     public function copyFolderDataToAnotherFolderByPostRequest(Request $request) {
 
-        $current_upload_type = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
-        $target_upload_type  = $request->query->get(static::KEY_TARGET_UPLOAD_TYPE);
+        $current_upload_module_dir  = $request->query->get(static::KEY_CURRENT_UPLOAD_MODULE_DIR);
+        $target_upload_module_dir   = $request->query->get(static::KEY_TARGET_MODULE_UPLOAD_DIR);
         $current_directory_path_in_module_upload_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
         $target_directory_path_in_module_upload_dir   = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
 
         $response = $this->copyFolderDataToAnotherFolder(
-            $current_upload_type,
-            $target_upload_type,
+            $current_upload_module_dir,
+            $target_upload_module_dir,
             $current_directory_path_in_module_upload_dir,
             $target_directory_path_in_module_upload_dir
         );
@@ -125,8 +125,8 @@ class FilesHandler {
             return new Response("Cannot copy data to the same folder of given type.", 500);
         }
 
-        $current_target_directory = FileUploadController::getTargetDirectoryForUploadType($current_upload_type);
-        $new_target_directory     = FileUploadController::getTargetDirectoryForUploadType($target_upload_type);
+        $current_target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($current_upload_type);
+        $new_target_directory     = FileUploadController::getTargetDirectoryForUploadModuleDir($target_upload_type);
 
         $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_module_upload_dir;
         $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_module_upload_dir;
@@ -164,7 +164,7 @@ class FilesHandler {
      */
     public function copyAndRemoveDataViaPost(Request $request) {
 
-        if ( !$request->query->has(static::KEY_CURRENT_UPLOAD_TYPE) ) {
+        if ( !$request->query->has(static::KEY_CURRENT_UPLOAD_MODULE_DIR) ) {
             return new Response("Current upload type is missing in request.");
         }
 
@@ -172,12 +172,12 @@ class FilesHandler {
             return new Response("Subdirectory current path in module upload dir is missing in request.");
         }
 
-        $current_upload_type                        = $request->query->get(static::KEY_CURRENT_UPLOAD_TYPE);
+        $current_upload_module_dir                  = $request->query->get(static::KEY_CURRENT_UPLOAD_MODULE_DIR);
         $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
 
         try{
             $this->copyFolderDataToAnotherFolderByPostRequest($request);
-            $this->directoriesHandler->removeFolder($current_upload_type, $current_directory_path_in_upload_type_dir);
+            $this->directories_handle->removeFolder($current_upload_module_dir, $current_directory_path_in_upload_type_dir);
         }catch(\Exception $e){
             return new Response ('Then was an error while copying and removing data.');
         }
@@ -234,10 +234,10 @@ class FilesHandler {
 
         try{
 
-            $fileLocation = $_SERVER['DOCUMENT_ROOT'] . $filepath;
+            $file_location = $_SERVER['DOCUMENT_ROOT'] . $filepath;
 
-            if( file_exists($fileLocation) ) {
-                unlink($fileLocation);
+            if( file_exists($file_location) ) {
+                unlink($file_location);
                 return new JsonResponse('File has been successfully removed.', 200);
             }else{
                 return new JsonResponse('File does not exist.', 404);
@@ -269,16 +269,16 @@ class FilesHandler {
         $curr_file_extension    = pathinfo($filename, PATHINFO_EXTENSION);
 
         $filedir                = str_replace($filename, '', $filepath);
-        $newfilename            = $request->request->get(static::KEY_FILE_NEW_NAME);
-        $new_file_extension     = pathinfo($newfilename, PATHINFO_EXTENSION);
+        $new_filename           = $request->request->get(static::KEY_FILE_NEW_NAME);
+        $new_file_extension     = pathinfo($new_filename, PATHINFO_EXTENSION);
 
-        $new_file_path          = $filedir.trim($newfilename);
+        $new_file_path          = $filedir.trim($new_filename);
 
         if( $curr_file_extension !== $new_file_extension ){
             $new_file_path .= '.' . $curr_file_extension;
         }
 
-        if( empty($newfilename) ){
+        if( empty($new_filename) ){
             return new JsonResponse('File name cannot be empty!', 500);
         }
 

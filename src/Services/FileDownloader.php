@@ -7,14 +7,13 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\Routing\Annotation\Route;
 
 class FileDownloader extends AbstractController {
 
     /**
-     * @var string $targetDirectory
+     * @var string $target_directory
      */
-    private $targetDirectory;
+    private $target_directory;
 
     /**
      * @var Finder $finder
@@ -27,7 +26,7 @@ class FileDownloader extends AbstractController {
     private $logger;
 
     public function __construct(LoggerInterface $logger) {
-        $this->targetDirectory  = Env::getUploadDir();
+        $this->target_directory = Env::getUploadDir();
         $this->finder           = new Finder();
         $this->logger           = $logger;
 
