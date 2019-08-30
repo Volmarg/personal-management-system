@@ -60,14 +60,26 @@ class MyFilesController extends AbstractController
      */
     public function displayFiles(? string $subdirectory, Request $request) {
 
-        $ajax_render = false;
+        $ajax_render    = false;
+        $upload_dir     = Env::getFilesUploadDir(); #Todo: rename?module_upload_dir ?
+        $subdirectory   = urldecode($subdirectory);
+        $subdir_path_in_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory);
+
+        if( !file_exists($subdir_path_in_upload_dir) ){
+            $this->addFlash('danger', "Folder '{$subdirectory} does not exist.");
+            return $this->redirectToRoute('upload');
+        }
 
         if (empty($subdirectory)) {
             $files = $this->getMainFolderFiles();
         } else {
             $subdirectory = urldecode($subdirectory);
-            $files        = $this->getFilesFromSubdirectory($subdirectory);
+            $files = $this->getFilesFromSubdirectory($subdirectory);
         }
+
+        # count files in dir tree - disables button for folder removing on front
+        $searchDir              = (empty($subdirectory) ? $upload_dir : $subdir_path_in_upload_dir);
+        $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
 
         # A bit dirty workaround
         if ($files instanceof RedirectResponse) {
@@ -79,9 +91,11 @@ class MyFilesController extends AbstractController
         }
 
         $data = [
-            'ajax_render'       => $ajax_render,
-            'files'             => $files,
-            'subdirectory'      => $subdirectory
+            'ajax_render'           => $ajax_render,
+            'files'                 => $files,
+            'subdirectory'          => $subdirectory,
+            'files_count_in_tree'   => $files_count_in_tree,
+            'upload_type'           => static::TARGET_TYPE
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);

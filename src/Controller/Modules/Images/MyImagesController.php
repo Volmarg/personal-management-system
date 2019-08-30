@@ -2,7 +2,9 @@
 
 namespace App\Controller\Modules\Images;
 
+use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Env;
+use App\Services\FilesHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +36,16 @@ class MyImagesController extends AbstractController {
      */
     public function displayImages(? string $subdirectory) {
 
+        $upload_dir     = Env::getImagesUploadDir(); #Todo: rename?module_upload_dir ?
+        $subdirectory   = urldecode($subdirectory);  #Todo: rename (path) ?
+        $subdir_path_in_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory);
+
+        if( !file_exists($subdir_path_in_upload_dir) ){
+            $subdirectory_name = basename($subdirectory);
+            $this->addFlash('danger', "Folder '{$subdirectory_name} does not exist.");
+            return $this->redirectToRoute('upload');
+        }
+
         if (empty($subdirectory)) {
             $all_images = $this->getMainFolderImages();
         } else {
@@ -41,9 +53,16 @@ class MyImagesController extends AbstractController {
             $all_images     = $this->getImagesFromCategory($subdirectory);
         }
 
+        # count files in dir tree - disables button for folder removing on front
+        $searchDir              = (empty($subdirectory) ? $upload_dir : $subdir_path_in_upload_dir);
+        $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
+
         $data = [
-            'ajax_render' => false,
-            'all_images'  => $all_images
+            'ajax_render'           => false,
+            'all_images'            => $all_images,
+            'subdirectory'          => $subdirectory,
+            'files_count_in_tree'   => $files_count_in_tree,
+            'upload_type'           => static::TARGET_TYPE
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_IMAGES, $data);

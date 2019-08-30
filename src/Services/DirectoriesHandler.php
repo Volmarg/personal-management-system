@@ -17,7 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DirectoriesHandler {
 
-    const SUBDIRECTORY_KEY = 'subdirectory';
+    const SUBDIRECTORY_KEY  = 'subdirectory';
+    const KEY_BLOCK_REMOVAL = 'block_removal';
 
     /**
      * @var Application $application
@@ -34,34 +35,14 @@ class DirectoriesHandler {
         $this->logger      = $logger;
     }
 
-
-    /**
-     * @Route("/upload/{upload_type}/remove-subdirectory", name="upload_remove_subdirectory", methods="POST")
-     * @param string $upload_type
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
-    public function removeFolderByPostRequest(string $upload_type, Request $request){
-
-        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR) ) {
-            return new Response("Subdirectory location is missing in request.");
-        }
-
-        $current_directory_path_in_upload_type_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
-        $response                                   = $this->removeFolder($upload_type, $current_directory_path_in_upload_type_dir);
-
-        return $response;
-    }
-
-
     /**
      * @param string $upload_type
      * @param string $current_directory_path_in_upload_type_dir
+     * @param bool $blocks_removal ( will prevent removing folder if there are some files in some subfolders )
      * @return Response
      * @throws \Exception
      */
-    public function removeFolder(?string $upload_type, ?string $current_directory_path_in_upload_type_dir) {
+    public function removeFolder(?string $upload_type, ?string $current_directory_path_in_upload_type_dir, bool $blocks_removal = false) {
 
         $subdirectory_name = basename($current_directory_path_in_upload_type_dir);
 
@@ -89,6 +70,16 @@ class DirectoriesHandler {
             $this->logger->info('Removed folder does not exists - removal aborted');
             return new Response('This subdirectory does not exist for current upload type.', 500);
         }
+
+        if( $blocks_removal ){
+            $files_count_in_tree = FilesHandler::countFilesInTree($subdirectory_path);
+
+            if ( $files_count_in_tree > 0 ){
+                $this->logger->info('Folder removal has been blocked - there are still files in tree.');
+                return new Response('There are still files in folders tree!', 500);
+            }
+        }
+
 
         try{
             Utils::removeFolderRecursively($subdirectory_path);

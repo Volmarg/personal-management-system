@@ -4,6 +4,7 @@
 namespace App\Controller\Files;
 
 use App\Controller\Utils\Application;
+use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
 use App\Services\FileUploader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,9 +26,15 @@ class FilesController extends AbstractController {
      */
     private $filesHandler;
 
-    public function __construct(FilesHandler $filesHandler, Application $app) {
-        $this->app          = $app;
-        $this->filesHandler = $filesHandler;
+    /**
+     * @var DirectoriesHandler $directoriesHandler
+     */
+    private $directoriesHandler;
+
+    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app) {
+        $this->app                  = $app;
+        $this->filesHandler         = $filesHandler;
+        $this->directoriesHandler   = $directoriesHandler;
     }
 
 
@@ -98,6 +105,42 @@ class FilesController extends AbstractController {
 
         return new JsonResponse($response_data);
     }
+
+
+
+    /**
+     * @Route("/upload/{upload_type}/remove-subdirectory", name="upload_remove_subdirectory", methods="POST")
+     * @param string $upload_type
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function removeFolderByPostRequest(string $upload_type, Request $request) {
+
+        $block_removal = false;
+
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR) ) {
+            $response = new Response("Subdirectory location is missing in request.", 500);
+        }else{
+
+            if ( $request->request->has(DirectoriesHandler::KEY_BLOCK_REMOVAL) ) {
+                $block_removal = true;
+            }
+
+            $current_directory_path_in_upload_type_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR);
+            $response                                   = $this->directoriesHandler->removeFolder($upload_type, $current_directory_path_in_upload_type_dir, $block_removal);
+
+        }
+
+
+        $response_data = [
+            'message' => $response->getContent(),
+            'code'    => $response->getStatusCode()
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
 
 
 }

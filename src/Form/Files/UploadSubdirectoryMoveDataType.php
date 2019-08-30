@@ -42,10 +42,6 @@ class UploadSubdirectoryMoveDataType extends AbstractType
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
                 'required'  => true,
             ])
-            ->add(static::FIELD_REMOVE_CURRENT_FOLDER, CheckboxType::class,[
-                'label'     => 'Remove current folder after moving the data?',
-                'required'  => false
-            ])
             ->add('submit', SubmitType::class, [
 
             ]);

@@ -166,10 +166,9 @@ class FilesUploadSettingsController extends AbstractController {
 
             $current_directory_path_in_upload_type_dir  = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_UPLOAD_DIR];
             $target_directory_path_in_upload_type_dir   = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_UPLOAD_DIR];
-            $remove_current_folder                      = $form_data[UploadSubdirectoryMoveDataType::FIELD_REMOVE_CURRENT_FOLDER];
 
             $response = $this->files_handler->copyAndRemoveData(
-                $current_upload_type, $target_upload_type, $current_directory_path_in_upload_type_dir, $target_directory_path_in_upload_type_dir, $remove_current_folder
+                $current_upload_type, $target_upload_type, $current_directory_path_in_upload_type_dir, $target_directory_path_in_upload_type_dir
             );
         }
 

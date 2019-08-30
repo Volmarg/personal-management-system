@@ -6,6 +6,7 @@ use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -199,33 +200,23 @@ class FilesHandler {
      * @param string $target_upload_type
      * @param string $current_directory_path_in_upload_type_dir
      * @param string $target_directory_path_in_upload_type_dir
-     * @param bool $remove_current_folder
      * @return Response
      */
     public function copyAndRemoveData(
         ?string $current_upload_type,
         ?string $target_upload_type,
         ?string $current_directory_path_in_upload_type_dir,
-        ?string $target_directory_path_in_upload_type_dir,
-         bool   $remove_current_folder = true
+        ?string $target_directory_path_in_upload_type_dir
     ) {
-
 
         try{
             $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_directory_path_in_upload_type_dir, $target_directory_path_in_upload_type_dir);
 
             $this->logger->info('Started removing folder data.');
 
-            if($remove_current_folder){
-                $this->directoriesHandler->removeFolder($current_upload_type, $current_directory_path_in_upload_type_dir);
+            $log_message        = 'Copying data has been finished!';
+            $response_message   = 'Data has been successfully copied.';
 
-                $log_message        = 'Copying and removing data has been finished!';
-                $response_message   = 'Data has been successfully copied and removed afterward.';
-
-            }else{
-                $log_message        = 'Copying data has been finished!';
-                $response_message   = 'Data has been successfully copied.';
-            }
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while trying to copy and remove data: ', [
                 'message' => $e->getMessage()
@@ -338,6 +329,19 @@ class FilesHandler {
             return new JsonResponse("Could not move the file.", 500);
         }
 
+    }
+
+    /**
+     * @param string $dir_path
+     * @return int
+     */
+    public static function countFilesInTree(string $dir_path) {
+
+        $finder = new Finder();
+        $finder->files()->in($dir_path);
+        $files_count_in_tree = count($finder);
+
+        return $files_count_in_tree;
     }
 
 }

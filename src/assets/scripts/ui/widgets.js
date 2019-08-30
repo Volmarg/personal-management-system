@@ -6,15 +6,27 @@ export default (function () {
     }
     ui.widgets = {
         elements: {
-            'accordion-element-id': '#accordion',
-            'accordin-section-class': '.accordin-section',
-            'call-widget-modal': '.call-widget-modal',
-            'widgetModalClassName': 'widget-modal'
+            'accordion-element-id'          : '#accordion',
+            'accordin-section-class'        : '.accordin-section',
+            'call-widget-modal'             : '.call-widget-modal',
+            'widgetModalClassName'          : 'widget-modal',
+            'widgetRemoveFolderClassName'   : '.widget-remove-folder',
+        },
+        data: {
+            folderPathInUploadDir           : 'data-folder-path-in-upload-dir',
+            uploadType                      : 'data-upload-type'
+        },
+        apiUrl: {
+            removeFolderViaPost             : '/upload/{upload_type}/remove-subdirectory'
+        },
+        placeholders: {
+            uploadType                      : '{upload_type}'
         },
         init: function () {
             this.applyAccordion();
             this.callModalOnWidgetPlusIcon();
             this.addMonthlyPaymentSummaryToAccordinHeader();
+            this.removeFolderOnFolderRemovalIconClick();
 
             $(document).ready(function(){
                 ui.widgets.fixAccordions();
@@ -117,6 +129,56 @@ export default (function () {
                 let payment_summary = $(element).find('section.monthly-summary .amount').html();
                 $(header).find('.payment-summary').html(' ( ' + payment_summary + ' )');
             });
+        },
+        removeFolderOnFolderRemovalIconClick: function () {
+            let folderRemovalButton = $(this.elements.widgetRemoveFolderClassName);
+            let _this               = this;
+
+            if( $(folderRemovalButton).length > 0 ){
+
+                $(folderRemovalButton).on('click', (event) => {
+                    let clickedButton               = $(event.target);
+                    let subdirectoryPathInUploadDir = $(clickedButton).attr(_this.data.folderPathInUploadDir);
+                    let uploadType                  = $(clickedButton).attr(_this.data.uploadType);
+                    let apiUrl                      = _this.apiUrl.removeFolderViaPost.replace(_this.placeholders.uploadType, uploadType);
+                    let data = {
+                        'subdirectory_current_path_in_upload_dir': subdirectoryPathInUploadDir,
+                        'block_removal'                          : true
+                    };
+
+                    $.ajax({
+                        method  : "POST",
+                        url     : apiUrl,
+                        data    : data
+                    }).always((data) => {
+
+                        // if there is code there also must be message so i dont check it
+                        let code                = data['code'];
+                        let message             = data['message'];
+                        let notification_type   = '';
+
+                        if( undefined === code ){
+                            return;
+                        }
+
+                        if( code === 200 ){
+                            notification_type = 'success';
+
+                            window.setTimeout( () => {
+                                window.location.reload();
+                            }, 1000)
+
+                        }else{
+                            notification_type = 'danger';
+                        }
+
+                         bootstrap_notifications.notify(message, notification_type);
+                    });
+
+                });
+
+            }
+
         }
     };
 }());
