@@ -79,6 +79,29 @@ export default (function () {
 
                 let visibleOptgroup         = $(dependentList).find('optgroup[label^="' + $(listFilterer).val() + '"]');
                 let visibleOptgroupOptions  = $(visibleOptgroup).find('option');
+                let select                  = $(visibleOptgroup).closest('select');
+                let form                    = $(select).closest('form');
+                let input                   = $(form).find('input');
+                let submit                  = $(form).find('button');
+                let noOptionsOption         = $('<option>').html('No folders!').attr('class','helper-option');
+
+                if( $(visibleOptgroupOptions).length === 0 ){
+                    $(select).addClass('disabled');
+                    $(submit).addClass('disabled');
+                    $(input).addClass('disabled');
+
+                    $(select).append(noOptionsOption);
+                    noOptionsOption.attr('selected','selected');
+                    return;
+                }else{
+                    $(select).removeClass('disabled');
+                    $(submit).removeClass('disabled');
+                    $(input).removeClass('disabled');
+
+                    let selectedHelperOption = $(select).find('.helper-option');
+                    $(selectedHelperOption).remove();
+                }
+
                 $(visibleOptgroup).removeClass('d-none');
 
                 if( $(visibleOptgroup).length === 0 ){
