@@ -9,7 +9,6 @@ export default (function () {
     ui.upload = {
         messages: {
             settings: {
-                upload_subdirectory_remove_submit       : "Do You really want to remove this folder?",
                 upload_subdirectory_rename_submit       : "Do You really want to rename this folder?",
                 upload_subdirectory_move_data_submit    : "Do You really want to move data between these two folders?",
                 upload_subdirectory_create_submit       : "Do You want to create folder with this name?"
@@ -28,7 +27,6 @@ export default (function () {
                 submitButton            : "#upload_form_submit",
                 selectedFilesList       : "#selectedFilesList",
                 settings: {
-                    subdirectoryRemoveSubmit    : "#upload_subdirectory_remove_submit",
                     subdirectoryRenameSubmit    : "#upload_subdirectory_rename_submit",
                     subdirectoryMoveDataSubmit  : "#upload_subdirectory_move_data_submit",
                     createSubdirectorySubmit    : "#upload_subdirectory_create_submit"
@@ -46,7 +44,6 @@ export default (function () {
             this.submitButton              = $(ui.upload.selectors.id.submitButton);
             this.selectedFilesList         = $(ui.upload.selectors.id.selectedFilesList);
 
-            this.settings.subdirectoryRemoveSubmit        = $(ui.upload.selectors.id.settings.subdirectoryRemoveSubmit);
             this.settings.subdirectoryRenameSubmit        = $(ui.upload.selectors.id.settings.subdirectoryRenameSubmit);
             this.settings.subdirectoryMoveDataSubmit      = $(ui.upload.selectors.id.settings.subdirectoryMoveDataSubmit);
             this.settings.createSubdirectorySubmit        = $(ui.upload.selectors.id.settings.createSubdirectorySubmit);
@@ -61,7 +58,6 @@ export default (function () {
           clearSelectionButton    : '',
           selectedFilesList       : '',
             settings: {
-                subdirectoryRemoveSubmit    : "",
                 subdirectoryRenameSubmit    : "",
                 subdirectoryMoveDataSubmit  : "",
                 createSubdirectorySubmit    : ""
@@ -146,7 +142,6 @@ export default (function () {
                 let _this = this;
                 let submitButtons = [
                     ui.upload.elements.settings.createSubdirectorySubmit,
-                    ui.upload.elements.settings.subdirectoryRemoveSubmit,
                     ui.upload.elements.settings.subdirectoryMoveDataSubmit,
                     ui.upload.elements.settings.subdirectoryRenameSubmit,
                 ];

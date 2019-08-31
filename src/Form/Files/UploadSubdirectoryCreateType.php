@@ -17,17 +17,25 @@ class UploadSubdirectoryCreateType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, TextType::class)
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
                 'attr'    => [
                     'class'                         => 'form-control listFilterer',
                     'data-dependent-list-selector'  => '#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir'
+                ],
+                'label' => 'Upload module'
+            ])
+            ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, TextType::class, [
+                'label' => 'Folder name',
+                'attr'  => [
+                    'placeholder' => 'Enter name of the new folder'
                 ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
-                'required'  => true
+                'required'  => true,
+                'label'     => 'Parent folder'
+
             ])
             ->add('submit', SubmitType::class);
 

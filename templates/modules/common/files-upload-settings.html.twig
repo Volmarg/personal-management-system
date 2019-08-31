@@ -7,6 +7,9 @@
 {% set file_upload_controller           = 'App\\Controller\\Files\\FileUploadController' %}
 {% set KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR    = constant(file_upload_controller~"::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR") %}
 {% set KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR     = constant(file_upload_controller~"::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR") %}
+{% set KEY_UPLOAD_MODULE_DIR                                 = constant(file_upload_controller~"::KEY_UPLOAD_MODULE_DIR") %}
+{% set KEY_SUBDIRECTORY_NEW_NAME                             = constant(file_upload_controller~"::KEY_SUBDIRECTORY_NEW_NAME") %}
+{% set KEY_SUBDIRECTORY_NAME                                 = constant(file_upload_controller~"::KEY_SUBDIRECTORY_NAME") %}
 
 {% set FIELD_REMOVE_CURRENT_FOLDER      = constant("App\\Form\\Files\\UploadSubdirectoryMoveDataType::FIELD_REMOVE_CURRENT_FOLDER") %}
 
@@ -28,63 +31,17 @@
                 <div class="row">
                     <div class="col-md-12">
 
-                        {# rename and remove forms #}
                         <div class="row">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6">
-                                <h4 class="c-grey-900 mB-20 align-self-center">Rename folder</h4>
-                                {{ form_start(rename_form) }}
-                                {{ form_end(rename_form) }}
-                            </div>
+                            {# rename form #}
+                            {% include 'modules/common/components/rename-form.twig' %}
 
-
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6">
-                                <h4 class="c-grey-900 mB-20 align-self-center">Remove folder</h4>
-                                {{ form_start(remove_form) }}
-                                {{ form_end(remove_form) }}
-                            </div>
+                            {# create folder form #}
+                            {% include 'modules/common/components/create-folder-form.twig' %}
                         </div>
 
-                        {# moving files between folders form #}
                         <div class="row">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
-                                <h4 class="c-grey-900 mB-20 align-self-center">Move folder data</h4>
-                                {{ form_start(move_data_form) }}
-
-                                <section class="d-flex justify-content-around flex-row">
-
-                                    <div class="copy-from col-4">
-                                        <h5>From</h5>
-                                        {{ form_widget(move_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR]) }}
-                                        <br/>
-                                        {{ form_widget(move_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR]) }}
-                                    </div>
-
-                                    <div class="copy-to col-4">
-                                        <h5>To</h5>
-                                        {{ form_widget(move_data_form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
-                                        <br/>
-                                        {{ form_widget(move_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
-                                    </div>
-
-                                </section>
-
-                                <br/>
-
-                                <section class="d-flex justify-content-center flex-column align-items-center">
-                                    {{ form_widget(move_data_form['submit']) }}
-                                </section>
-
-                                {{ form_end(move_data_form) }}
-                            </div>
-                        </div>
-
-                        {# creating subdirectory form #}
-                        <div class="row">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6">
-                                <h4 class="c-grey-900 mB-20 align-self-center">Create subdirectory for upload type</h4>
-                                {{ form_start(create_subdir_form) }}
-                                {{ form_end(create_subdir_form) }}
-                            </div>
+                            {# moving files between folders form #}
+                            {% include 'modules/common/components/move-data-form.twig' %}
                         </div>
 
                     </div>
