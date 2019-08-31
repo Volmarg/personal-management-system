@@ -237,7 +237,7 @@ class DirectoriesHandler {
         }
 
         $this->logger->info('Finished creating subdirectory.');
-        return new Response ('Subdirectory for selected upload_type has been successfully created', 200);
+        return new Response ('Subdirectory for selected module has been successfully created', 200);
     }
 
     /**
