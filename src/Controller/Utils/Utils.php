@@ -30,15 +30,8 @@ class Utils extends AbstractController {
     /**
      * @param string $source
      * @param string $destination
-     * @param bool $renameInsteadOfRemoving
-     * BUG: the third parameter and it usages incorrect? There is no renaming done...
-     * TODO: fixbug and could refactor it to use new File()
      */
-    public static function copyFilesRecursively(string $source, string $destination, bool $renameInsteadOfRemoving = true) {
-
-        if( !$renameInsteadOfRemoving && file_exists($destination)){
-            static::removeFolderRecursively($destination);
-        }
+    public static function copyFilesRecursively(string $source, string $destination) {
 
         if (is_dir($source)) {
 
