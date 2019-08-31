@@ -213,7 +213,13 @@ class DirectoriesHandler {
         ]);
 
         $target_directory       = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
-        $full_subdir_path       = $target_directory.'/'.$target_directory_path_in_upload_type_dir.'/'.$subdirectory_name;
+
+        # check if main folder
+        if( $target_directory_path_in_upload_type_dir === $target_directory ){
+            $full_subdir_path = $target_directory.'/'.$subdirectory_name;
+        }else{
+            $full_subdir_path = $target_directory.'/'.$target_directory_path_in_upload_type_dir.'/'.$subdirectory_name;
+        }
 
         if( file_exists($full_subdir_path) ){
             $this->logger->info('Subdirectory with this name already exists.');
@@ -227,7 +233,7 @@ class DirectoriesHandler {
                 'message' => $e->getMessage()
             ]);
 
-            return new Response('There was an error while trying to create new folder for given upload type', 500);
+            return new Response('There was an error while trying to create new folder for given module', 500);
         }
 
         $this->logger->info('Finished creating subdirectory.');
