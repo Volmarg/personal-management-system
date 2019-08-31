@@ -1,0 +1,10 @@
+{# This widget is uset in upload based modules - removes the entire folder with all subdirectories etc #}
+{% set grayed = 'color:rgba(0,0,0,0.35); ' %}
+{# TODO: add bootbox alert on front #}
+<div class="widget-remove-folder" data-folder-path-in-upload-dir="{{ folder_path }}" data-upload-module-dir="{{ upload_module_dir }}" style="width: 20px; z-index:10;">
+    {% if files_count_in_tree == 0 %}
+        <i class="far fa-minus-square"></i>
+    {% else %}
+        <i class="far fa-minus-square disabled" style="{{ grayed }}"></i>
+    {% endif %}
+</div>
