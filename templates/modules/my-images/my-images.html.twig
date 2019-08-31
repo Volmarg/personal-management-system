@@ -10,17 +10,19 @@
 
     <main class='main-content bgc-grey-100'>
 
-        <div class="masonry-item col-md-12 mB-10" style="font-size: 19px;">
-            <div class="bgc-white p-10 bd">
-                <span>
-                    {% include 'page-elements/components/widgets/remove-folder.twig' with {
-                        'folder_path'           : subdirectory_path,
-                        'upload_module_dir'     : upload_module_dir,
-                        'files_count_in_tree'   : files_count_in_tree
-                    } %}
-                </span>
+        {% if not is_main_dir %}
+            <div class="masonry-item col-md-12 mB-10" style="font-size: 19px;">
+                <div class="bgc-white p-10 bd">
+                    <span>
+                        {% include 'page-elements/components/widgets/remove-folder.twig' with {
+                            'folder_path'           : subdirectory_path,
+                            'upload_module_dir'     : upload_module_dir,
+                            'files_count_in_tree'   : files_count_in_tree
+                        } %}
+                    </span>
+                </div>
             </div>
-        </div>
+        {% endif %}
 
         <div id='mainContent'>
 

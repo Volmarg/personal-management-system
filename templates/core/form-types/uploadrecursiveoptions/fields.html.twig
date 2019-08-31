@@ -2,8 +2,8 @@
 {% block uploadrecursiveoptions_widget %}
 
     <select {{ block('widget_attributes') }} autocomplete="off" class="form-control" >
-        {{ buildOptionsForUploadFormType('images') | raw }}
-        {{ buildOptionsForUploadFormType('files') | raw }}
+        {{ buildOptionsForUploadFormType('images', add_main_folder) | raw }}
+        {{ buildOptionsForUploadFormType('files', add_main_folder) | raw }}
     </select>
 
 {% endblock %}

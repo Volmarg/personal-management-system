@@ -28,10 +28,10 @@ class UploadFormType extends AbstractType {
 
         $builder
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class,[
-                'choices'       => FileUploadController::MODULES_UPLOAD_DIRS,
+                'choices'       => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'          => [
                     'data-dependent-list-selector' => '#upload_form_subdirectory'
-                ]
+                ],
             ])
             ->add('file', FileType::class, [
                 'multiple' => true
@@ -39,11 +39,11 @@ class UploadFormType extends AbstractType {
 
         $builder
             ->add('subdirectory', UploadrecursiveoptionsType::class, [
-                'choices'  => [], //this is not used anyway but parent ChoiceType requires it
-                'required' => false,
-                'attr'     => [
-                    'class'        => 'form-control align-self-center',
-                    'style'        => 'height:50px;',
+                'choices'     => [], //this is not used anyway but parent ChoiceType requires it,
+                'required'    => false,
+                'attr' => [
+                    'class' => 'form-control align-self-center',
+                    'style' => 'height:50px;',
                 ]
             ]);
 

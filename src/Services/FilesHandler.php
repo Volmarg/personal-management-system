@@ -193,7 +193,7 @@ class FilesHandler {
      * @param string $target_directory_path_in_module_upload_dir
      * @return Response
      */
-    public function copyAndRemoveData(
+    public function copyData(
         ?string $current_upload_type,
         ?string $target_upload_type,
         ?string $current_directory_path_in_module_upload_dir,

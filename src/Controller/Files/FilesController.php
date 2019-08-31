@@ -85,7 +85,13 @@ class FilesController extends AbstractController {
         $target_module_upload_dir                       = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
 
         $target_directory_in_upload_dir   = FileUploadController::getTargetDirectoryForUploadModuleDir($target_module_upload_dir);
-        $subdirectory_path_in_upload_dir  = $target_directory_in_upload_dir.'/'.$subdirectory_target_path_in_module_upload_dir;
+
+        #checks if selected folder is the main upload dir (Main Folder)
+        if ( $subdirectory_target_path_in_module_upload_dir === $target_directory_in_upload_dir ){
+            $subdirectory_path_in_upload_dir = $target_directory_in_upload_dir;
+        }else{
+            $subdirectory_path_in_upload_dir  = $target_directory_in_upload_dir.'/'.$subdirectory_target_path_in_module_upload_dir;
+        }
 
         $filename               = basename($current_file_location);
         $target_file_location   = $subdirectory_path_in_upload_dir.'/'.$filename;
@@ -122,12 +128,19 @@ class FilesController extends AbstractController {
             $response = new Response("Subdirectory location is missing in request.", 500);
         }else{
 
-            if ( $request->request->has(DirectoriesHandler::KEY_BLOCK_REMOVAL) ) {
-                $block_removal = true;
+            if( in_array($upload_module_dir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
+                $response = new Response("Cannot remove main folder!", 500);
             }
+            else {
 
-            $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-            $response                                    = $this->directoriesHandler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
+                if ( $request->request->has(DirectoriesHandler::KEY_BLOCK_REMOVAL) ) {
+                    $block_removal = true;
+                }
+
+                $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+                $response                                    = $this->directoriesHandler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
+
+            }
 
         }
 

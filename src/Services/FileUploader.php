@@ -99,7 +99,8 @@ class FileUploader extends AbstractController {
             $file_name .= '_' . $now->format('Y_m_d');
         }
 
-        if (!empty($subdirectory)) {
+        # check if the target folder is main folder
+        if ( !empty($subdirectory) && $subdirectory !== $target_directory ) {
             $target_directory .= '/' . $subdirectory;
         }
 

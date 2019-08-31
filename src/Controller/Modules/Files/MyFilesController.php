@@ -90,12 +90,15 @@ class MyFilesController extends AbstractController
             $ajax_render = true;
         }
 
+        $is_main_dir = ( empty($decoded_subdirectory_path) );
+
         $data = [
             'ajax_render'           => $ajax_render,
             'files'                 => $files,
             'subdirectory_path'     => $decoded_subdirectory_path,
             'files_count_in_tree'   => $files_count_in_tree,
-            'upload_module_dir'     => static::TARGET_UPLOAD_DIR
+            'upload_module_dir'     => static::TARGET_UPLOAD_DIR,
+            'is_main_dir'           => $is_main_dir
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);
