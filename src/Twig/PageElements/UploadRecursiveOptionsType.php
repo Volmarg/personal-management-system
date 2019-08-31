@@ -81,7 +81,7 @@ class UploadRecursiveOptionsType extends AbstractExtension {
         if( $folder_depth > static::INDENTS_FIXED_VALUE){
 
             for($x = static::INDENTS_FIXED_VALUE; $x < $folder_depth; $x++){
-                $separator .= '&nbsp;';
+                $separator .= '&nbsp;&nbsp;';
             }
 
         }
