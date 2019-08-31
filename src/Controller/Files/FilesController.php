@@ -128,7 +128,9 @@ class FilesController extends AbstractController {
             $response = new Response("Subdirectory location is missing in request.", 500);
         }else{
 
-            if( in_array($upload_module_dir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
+            $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+
+            if( in_array($current_directory_path_in_module_upload_dir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
                 $response = new Response("Cannot remove main folder!", 500);
             }
             else {
@@ -137,8 +139,7 @@ class FilesController extends AbstractController {
                     $block_removal = true;
                 }
 
-                $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-                $response                                    = $this->directoriesHandler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
+                $response = $this->directoriesHandler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
 
             }
 
