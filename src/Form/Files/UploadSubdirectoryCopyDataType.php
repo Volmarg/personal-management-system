@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UploadSubdirectoryMoveDataType extends AbstractType
+class UploadSubdirectoryCopyDataType extends AbstractType
 {
     const FIELD_REMOVE_CURRENT_FOLDER = 'remove_current_folder';
 
@@ -24,7 +24,7 @@ class UploadSubdirectoryMoveDataType extends AbstractType
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_subdirectory_current_path_in_module_upload_dir'
+                    'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_current_path_in_module_upload_dir'
                 ],
                 'label' => 'Upload module',
             ])
@@ -32,7 +32,7 @@ class UploadSubdirectoryMoveDataType extends AbstractType
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
-                    'data-dependent-list-selector' => '#upload_subdirectory_move_data_subdirectory_target_path_in_module_upload_dir'
+                    'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_target_path_in_module_upload_dir'
                 ],
                 'label' => 'Upload module',
             ])

@@ -128,19 +128,27 @@ class FilesHandler {
         $current_target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($current_upload_type);
         $new_target_directory     = FileUploadController::getTargetDirectoryForUploadModuleDir($target_upload_type);
 
-        $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_module_upload_dir;
-        $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_module_upload_dir;
+        # checking if it's not main dir
+        if( $current_target_directory !== $current_directory_path_in_module_upload_dir ){
 
-        if( !file_exists($current_subdirectory_path) ){
-            $message = 'Current subdirectory does not exist.';
-            $this->logger->info($message);
-            return new Response($message, 500);
-        }
+            $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_module_upload_dir;
+            $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_module_upload_dir;
 
-        if( !file_exists($target_subdirectory_path) ){
-            $message = 'Target subdirectory does not exist.';
-            $this->logger->info($message);
-            return new Response($message, 500);
+            if( !file_exists($current_subdirectory_path) ){
+                $message = 'Current subdirectory does not exist.';
+                $this->logger->info($message);
+                return new Response($message, 500);
+            }
+
+            if( !file_exists($target_subdirectory_path) ){
+                $message = 'Target subdirectory does not exist.';
+                $this->logger->info($message);
+                return new Response($message, 500);
+            }
+
+        }else{
+            $current_subdirectory_path = $current_directory_path_in_module_upload_dir;
+            $target_subdirectory_path  = $target_directory_path_in_module_upload_dir;
         }
 
         try{
@@ -201,12 +209,17 @@ class FilesHandler {
     ) {
 
         try{
-            $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir);
+            $response = $this->copyFolderDataToAnotherFolder($current_upload_type, $target_upload_type, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir);
+
+            if( $response->getStatusCode() !== 200 ){
+                $response_message   = $response->getContent();
+            }else{
+                $response_message   = 'Data has been successfully copied.';
+            }
 
             $this->logger->info('Started removing folder data.');
 
-            $log_message        = 'Copying data has been finished!';
-            $response_message   = 'Data has been successfully copied.';
+            $log_message = 'Copying data has been finished!';
 
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while trying to copy and remove data: ', [
@@ -216,7 +229,7 @@ class FilesHandler {
         }
 
         $this->logger->info($log_message);
-        return new Response($response_message);
+        return new Response($response_message, $response->getStatusCode());
     }
 
     /**

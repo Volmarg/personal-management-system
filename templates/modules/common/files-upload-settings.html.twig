@@ -11,7 +11,7 @@
 {% set KEY_SUBDIRECTORY_NEW_NAME                             = constant(file_upload_controller~"::KEY_SUBDIRECTORY_NEW_NAME") %}
 {% set KEY_SUBDIRECTORY_NAME                                 = constant(file_upload_controller~"::KEY_SUBDIRECTORY_NAME") %}
 
-{% set FIELD_REMOVE_CURRENT_FOLDER      = constant("App\\Form\\Files\\UploadSubdirectoryMoveDataType::FIELD_REMOVE_CURRENT_FOLDER") %}
+{% set FIELD_REMOVE_CURRENT_FOLDER      = constant("App\\Form\\Files\\UploadSubdirectoryCopyDataType::FIELD_REMOVE_CURRENT_FOLDER") %}
 
 {% if ajax_render == false %}
     {% set template= "base.html.twig" %}
@@ -40,8 +40,8 @@
                         </div>
 
                         <div class="row">
-                            {# moving files between folders form #}
-                            {% include 'modules/common/components/move-data-form.twig' %}
+                            {# copy files between folders form #}
+                            {% include 'modules/common/components/copy-data-form.twig' %}
                         </div>
 
                     </div>

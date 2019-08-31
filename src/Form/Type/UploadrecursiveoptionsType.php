@@ -25,7 +25,7 @@ class UploadrecursiveoptionsType extends AbstractType {
      * The names are strange - generated somehow by Symfony
      */
     const FORMS_NAMES_WITH_VISIBLE_MAIN_FOLDERS = [
-        'upload_subdirectory_move_data',
+        'upload_subdirectory_copy_data',
         'upload_subdirectory_create',
         'upload_form',
         'move_single_file',

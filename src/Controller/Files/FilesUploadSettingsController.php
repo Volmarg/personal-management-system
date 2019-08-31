@@ -5,7 +5,7 @@ namespace App\Controller\Files;
 
 use App\Controller\Utils\Utils;
 use App\Form\Files\UploadSubdirectoryCreateType;
-use App\Form\Files\UploadSubdirectoryMoveDataType;
+use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Form\Files\UploadSubdirectoryRemoveType;
 use App\Form\Files\UploadSubdirectoryRenameType;
 use App\Services\DirectoriesHandler;
@@ -64,18 +64,18 @@ class FilesUploadSettingsController extends AbstractController {
         $rename_form    = $this->getRenameSubdirectoryForm();
         $rename_form->handleRequest($request);
 
-        $move_data_form = $this->getMoveUploadSubdirectoryDataForm();
-        $move_data_form->handleRequest($request);
+        $copy_data_form = $this->getCopyUploadSubdirectoryDataForm();
+        $copy_data_form->handleRequest($request);
 
         $create_subdir_form = $this->getCreateSubdirectoryForm();
         $create_subdir_form->handleRequest($request);
 
-        $this->handleForms($rename_form, $move_data_form, $create_subdir_form);
+        $this->handleForms($rename_form, $copy_data_form, $create_subdir_form);
 
         $data = [
             'ajax_render'           => false,
             'rename_form'           => $rename_form->createView(),
-            'move_data_form'        => $move_data_form->createView(),
+            'copy_data_form'        => $copy_data_form->createView(),
             'create_subdir_form'    => $create_subdir_form->createView()
         ];
 
@@ -94,8 +94,8 @@ class FilesUploadSettingsController extends AbstractController {
     /**
      * @return FormInterface
      */
-    public function getMoveUploadSubdirectoryDataForm() {
-        $form = $this->createForm(UploadSubdirectoryMoveDataType::class);
+    public function getCopyUploadSubdirectoryDataForm() {
+        $form = $this->createForm(UploadSubdirectoryCopyDataType::class);
 
         return $form;
     }
@@ -121,12 +121,11 @@ class FilesUploadSettingsController extends AbstractController {
 
     /**
      * @param FormInterface $rename_form
-     * @param FormInterface $remove_form
-     * @param FormInterface $move_data_form
+     * @param FormInterface $copy_data_form
      * @param FormInterface $create_subdir_form
      * @throws \Exception
      */
-    private function handleForms(FormInterface $rename_form, FormInterface $move_data_form, FormInterface $create_subdir_form){
+    private function handleForms(FormInterface $rename_form, FormInterface $copy_data_form, FormInterface $create_subdir_form){
 
         if($rename_form->isSubmitted() && $rename_form->isValid()) {
             $form_data      = $rename_form->getData();
@@ -137,8 +136,8 @@ class FilesUploadSettingsController extends AbstractController {
             $response = $this->renameSubdirectory($upload_module_dir, $current_directory_path_in_module_upload_dir, $new_name);
         }
 
-        if($move_data_form->isSubmitted() && $move_data_form->isValid()) {
-            $form_data                          = $move_data_form->getData();
+        if($copy_data_form->isSubmitted() && $copy_data_form->isValid()) {
+            $form_data                          = $copy_data_form->getData();
             $current_upload_module_dir          = $form_data[FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR];
             $target_upload_module_dir           = $form_data[FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR];
 
