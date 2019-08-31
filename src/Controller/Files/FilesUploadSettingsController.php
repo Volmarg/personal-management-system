@@ -94,15 +94,6 @@ class FilesUploadSettingsController extends AbstractController {
     /**
      * @return FormInterface
      */
-    public function getRemoveSubdirectoryForm(){
-        $form = $this->createForm(UploadSubdirectoryRemoveType::class);
-
-        return $form;
-    }
-
-    /**
-     * @return FormInterface
-     */
     public function getMoveUploadSubdirectoryDataForm() {
         $form = $this->createForm(UploadSubdirectoryMoveDataType::class);
 

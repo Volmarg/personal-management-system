@@ -17,7 +17,7 @@ class UploadSubdirectoryRenameType extends AbstractType {
 
         $builder
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class, [
-                'choices' => FileUploadController::MODULES_UPLOAD_DIRS,
+                'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#upload_subdirectory_rename_subdirectory_current_path_in_module_upload_dir'

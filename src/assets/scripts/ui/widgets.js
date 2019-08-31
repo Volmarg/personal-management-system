@@ -137,42 +137,59 @@ export default (function () {
             if( $(folderRemovalButton).length > 0 ){
 
                 $(folderRemovalButton).on('click', (event) => {
-                    let clickedButton               = $(event.target);
-                    let subdirectoryPathInUploadDir = $(clickedButton).attr(_this.data.folderPathInUploadDir);
-                    let uploadModuleDir             = $(clickedButton).attr(_this.data.uploadModuleDir);
-                    let apiUrl                      = _this.apiUrl.removeFolderViaPost.replace(_this.placeholders.uploadModuleDir, uploadModuleDir);
-                    let data = {
-                        'subdirectory_current_path_in_module_upload_dir': subdirectoryPathInUploadDir,
-                        'block_removal'                                 : true
-                    };
 
-                    $.ajax({
-                        method  : "POST",
-                        url     : apiUrl,
-                        data    : data
-                    }).always((data) => {
+                    let clickedButton = $(event.target);
 
-                        // if there is code there also must be message so i dont check it
-                        let code                = data['code'];
-                        let message             = data['message'];
-                        let notification_type   = '';
+                    if( $(clickedButton).hasClass('disabled') ){
+                        return;
+                    }
 
-                        if( undefined === code ){
-                            return;
+                    // bootbox
+                    bootbox.confirm({
+                        message: 'Do You really want to remove this folder?',
+                        backdrop: true,
+                        callback: function (result) {
+                            if (result) {
+                                // confirmation logic
+                                let subdirectoryPathInUploadDir = $(clickedButton).attr(_this.data.folderPathInUploadDir);
+                                let uploadModuleDir             = $(clickedButton).attr(_this.data.uploadModuleDir);
+                                let apiUrl                      = _this.apiUrl.removeFolderViaPost.replace(_this.placeholders.uploadModuleDir, uploadModuleDir);
+                                let data = {
+                                    'subdirectory_current_path_in_module_upload_dir': subdirectoryPathInUploadDir,
+                                    'block_removal'                                 : true
+                                };
+
+                                $.ajax({
+                                    method  : "POST",
+                                    url     : apiUrl,
+                                    data    : data
+                                }).always((data) => {
+
+                                    // if there is code there also must be message so i dont check it
+                                    let code                = data['code'];
+                                    let message             = data['message'];
+                                    let notification_type   = '';
+
+                                    if( undefined === code ){
+                                        return;
+                                    }
+
+                                    if( code === 200 ){
+                                        notification_type = 'success';
+
+                                        window.setTimeout( () => {
+                                            window.location.reload();
+                                        }, 1000)
+
+                                    }else{
+                                        notification_type = 'danger';
+                                    }
+
+                                    bootstrap_notifications.notify(message, notification_type);
+                                });
+
+                            }
                         }
-
-                        if( code === 200 ){
-                            notification_type = 'success';
-
-                            window.setTimeout( () => {
-                                window.location.reload();
-                            }, 1000)
-
-                        }else{
-                            notification_type = 'danger';
-                        }
-
-                         bootstrap_notifications.notify(message, notification_type);
                     });
 
                 });
