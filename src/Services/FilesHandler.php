@@ -122,7 +122,7 @@ class FilesHandler {
                 ( $current_upload_type === $target_upload_type )
             &&  ( $current_subdirectory_name === $target_subdirectory_name )
         ){
-            return new Response("Cannot copy data to the same folder of given type.", 500);
+            return new Response("Cannot copy data to the same folder for given module.", 500);
         }
 
         $current_target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($current_upload_type);
@@ -152,7 +152,7 @@ class FilesHandler {
         }
 
         try{
-            Utils::copyFilesRecursively($current_subdirectory_path, $target_subdirectory_path);
+            Utils::copyFiles($current_subdirectory_path, $target_subdirectory_path);
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while moving data between folders', [
                 'message' => $e->getMessage()
@@ -325,7 +325,7 @@ class FilesHandler {
         }
 
         try{
-            Utils::copyFilesRecursively($current_file_location, $target_file_location);
+            Utils::copyFiles($current_file_location, $target_file_location);
             unlink($current_file_location);
             return new JsonResponse('File has been successfully moved', 200);
         }catch(\Exception $e){

@@ -11,11 +11,11 @@
     </a>
 
     <ul class="dropdown-menu">
-        {{ buildMenuForUploadType('images') | raw }}
         <li>
             <a class="sidebar-link" href="{{ path('modules_my_images') }}">
                 Main folder
             </a>
         </li>
+        {{ buildMenuForUploadType('images') | raw }}
     </ul>
 </li>

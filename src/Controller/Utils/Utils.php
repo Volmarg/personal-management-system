@@ -3,6 +3,8 @@
 namespace App\Controller\Utils;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\HttpFoundation\Response;
 
 class Utils extends AbstractController {
@@ -30,22 +32,38 @@ class Utils extends AbstractController {
     /**
      * @param string $source
      * @param string $destination
+     * @throws \Exception
      */
-    public static function copyFilesRecursively(string $source, string $destination) {
+    public static function copyFiles(string $source, string $destination) {
+
+        $finder = new Finder();
+        $finder->depth('==0');
 
         if (is_dir($source)) {
 
-            $files = scandir($source);
+            $finder->files()->in($source);
 
-            foreach ($files as $file) {
+            /**
+             * @var $file SplFileInfo
+             */
+            foreach( $finder->files() as $file ){
+                $filepath                   = $file->getPathname();
+                $file_extension             = $file->getExtension();
+                $filename_without_extension = $file->getFilenameWithoutExtension();
 
-                if ($file != "." && $file != ".."){
-                    static::copyFilesRecursively("$source/$file", "$destination/$file");
-                };
+                $file_path_in_destination_folder = "{$destination}/{$filename_without_extension}.{$file_extension}";
 
+                if( file_exists($file_path_in_destination_folder) ){
+                    $curr_date_time     = new \DateTime();
+                    $filename_date_time = $curr_date_time->format('Y_m_d_h_i_s');
+
+                    $file_path_in_destination_folder = "{$destination}/{$filename_without_extension}.{$filename_date_time}.{$file_extension}";
+                }
+
+                copy($filepath, $file_path_in_destination_folder);
             }
 
-        } else if (file_exists($source)) {
+        }else{
             copy($source, $destination);
         }
 
