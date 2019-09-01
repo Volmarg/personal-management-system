@@ -87,7 +87,6 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 	<ul>
     	<li>Bugfixes</li>
 	<li>Handling server responses</li>	
-	<li>Adding nested menu like in <b>Notes</b> module</li>
 	<li>Moving files to other modules/folders from view of given module</li>
     </ul>
 </li>
