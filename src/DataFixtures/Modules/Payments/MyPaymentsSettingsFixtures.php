@@ -16,6 +16,18 @@ class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterf
      */
     private $faker;
 
+    const CATEGORIES_NAMES = [
+        'Food',
+        'Domestic',
+        'Travels',
+        'Personal',
+        'Monthly payments'
+    ];
+
+    const MULTIPLIER = 4.56;
+
+    const SETTING_NAME = 'type';
+
     public function __construct() {
         $this->faker = Factory::create('en');
 
@@ -23,26 +35,21 @@ class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterf
 
     public function load(ObjectManager $manager)
     {
-        $multiplier = 4.13;
 
         $currency_multiplier = new MyPaymentsSettings();
         $currency_multiplier->setName('currency_multiplier');
-        $currency_multiplier->setValue($multiplier);
+        $currency_multiplier->setValue(static::MULTIPLIER);
 
         $manager->persist($currency_multiplier);
 
-        for($x = 0; $x <= 7; $x++){
-
-            $type_name  = $this->faker->word;
+        foreach ( static::CATEGORIES_NAMES as $category_name ) {
 
             $payment_type = new MyPaymentsSettings();
-            $payment_type->setName('type');
-            $payment_type->setValue($type_name);
+            $payment_type->setName(static::SETTING_NAME);
+            $payment_type->setValue($category_name);
 
             $manager->persist($payment_type);
-
         }
-
 
         $manager->flush();
     }
