@@ -16,7 +16,7 @@ use Twig\TwigFunction;
  */
 class UploadRecursiveOptionsType extends AbstractExtension {
 
-    const INDENTS_FIXED_VALUE = 2;
+    const INDENTS_FIXED_VALUE = 1;
 
     /**
      * @var UrlGeneratorInterface $url_generator
@@ -74,11 +74,14 @@ class UploadRecursiveOptionsType extends AbstractExtension {
         $target_directory                = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
         $folder_path_in_target_directory = str_replace($target_directory.'/', '', $folder_path);
 
-        $folder_name      = ( $folder_path === $target_directory ? 'Main folder': basename($folder_path) );
+        $folder_name      = ( $folder_path === $target_directory ? FileUploadController::KEY_MAIN_FOLDER : basename($folder_path) );
         $folder_depth     = substr_count($folder_path , "/");
         $separator        = '';
 
-        if( $folder_depth > static::INDENTS_FIXED_VALUE){
+        if(
+                ( $folder_depth > static::INDENTS_FIXED_VALUE )
+            &&  ( $folder_name !== FileUploadController::KEY_MAIN_FOLDER )
+        ){
 
             for($x = static::INDENTS_FIXED_VALUE; $x < $folder_depth; $x++){
                 $separator .= '&nbsp;&nbsp;';
