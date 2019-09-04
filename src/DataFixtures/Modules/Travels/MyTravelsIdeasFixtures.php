@@ -15,11 +15,6 @@ class MyTravelsIdeasFixtures extends Fixture
      */
     private $faker;
 
-    /**
-     * @var Finder $finder
-     */
-    private $finder;
-
     const MAPS = [
         'http://www.mapcrunch.com/p/41.337537_19.866791_46.94_0.99_-1',
         'http://www.mapcrunch.com/p/56.312984_25.238508_-301.48_-5_0',
@@ -29,26 +24,32 @@ class MyTravelsIdeasFixtures extends Fixture
         'http://www.mapcrunch.com/p/-14.892871_-70.588343_-163.81_-5_0'
     ];
 
+    const IMAGES_IN_PUBLIC_DIR = [
+        "best+places+to+visit+near+Amritsar.jpeg","",
+        "canada-2-760x440.jpg","",
+        "Cinque-Tierre.jpg","",
+        "cochem-town-germany.jpg","",
+        "free-beautiful-place-wallpaper-hd-116.jpg","",
+        "hong-kong-asia-1525428283-1000X561.jpg","",
+        "jasper-national-park-medicine-lake.jpg","",
+        "moraine_lake_banff.jpg","",
+        "shutterstock_431693263.jpg","",
+        "Twelve-Apostles-GettyImages-459760175.jpg",
+    ];
+
+    const IMAGES_PATH_IN_PUBLIC_DIR = '/assets/images/modules/travels/';
+
     public function __construct() {
         $this->faker    = Factory::create('en');
-        $this->finder   = new Finder();
     }
 
     public function load(ObjectManager $manager)
     {
         $categories = [];
-        $images     = [];
-
-        $this->finder->files()->in(__DIR__.'/../../../../public/assets/images/modules/travels');
-
-        foreach( $this->finder as $image ){
-            $images[] = $image->getFilename();
-        }
 
         for($x = 0; $x <= 6; $x++){
             $categories[] = $this->faker->country;
         }
-
 
         for($x = 0; $x <= 150; $x++){
 
@@ -58,8 +59,8 @@ class MyTravelsIdeasFixtures extends Fixture
             $country    = $this->faker->country;
             $city       = $this->faker->city;
 
-            $index      = array_rand($images);
-            $image      = $images[$index];
+            $index      = array_rand(static::IMAGES_IN_PUBLIC_DIR);
+            $image      = static::IMAGES_IN_PUBLIC_DIR[$index];
 
             $index      = array_rand(static::MAPS);
             $map        = static::MAPS[$index];
@@ -67,7 +68,7 @@ class MyTravelsIdeasFixtures extends Fixture
             $travel_idea = new MyTravelsIdeas();
             $travel_idea->setCategory($category);
             $travel_idea->setMap($map);
-            $travel_idea->setImage('/assets/images/modules/travels/'.$image);
+            $travel_idea->setImage(static::IMAGES_PATH_IN_PUBLIC_DIR.$image);
             $travel_idea->setLocation($city);
             $travel_idea->setCountry($country);
 

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Contacts;
 
+use App\DataFixtures\Providers\Modules\ContactGroups;
 use App\Entity\Modules\Contacts\MyContactsGroups;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -15,19 +16,23 @@ class MyContactsGroupsFixtures extends Fixture implements OrderedFixtureInterfac
      */
     private $faker;
 
+    /**
+     * @var ContactGroups provider_contact_groups
+     */
+    private $provider_contact_groups;
+
     public function __construct() {
-        $this->faker = Factory::create('en');
+        $this->faker                   = Factory::create('en');
+        $this->provider_contact_groups = new ContactGroups();
 
     }
 
     public function load(ObjectManager $manager)
     {
-        for($x = 0; $x <= 10; $x++) {
 
-            $name               = $this->faker->word;
-
-            $my_contact_group  = new MyContactsGroups();
-            $my_contact_group->setName($name);
+        foreach($this->provider_contact_groups::ALL as $contact_group_name) {
+            $my_contact_group = new MyContactsGroups();
+            $my_contact_group->setName($contact_group_name);
 
             $manager->persist($my_contact_group);
         }

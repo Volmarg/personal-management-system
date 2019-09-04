@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Passwords;
 
+use App\DataFixtures\Providers\Modules\PasswordsGroups;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -15,22 +16,27 @@ class MyPasswordsSettingsFixtures extends Fixture implements OrderedFixtureInter
      */
     private $faker;
 
+    /**
+     * @var PasswordsGroups $passwords_groups_provider
+     */
+    private $passwords_groups_provider;
+
     public function __construct() {
-        $this->faker = Factory::create('en');
+        $this->faker                     = Factory::create('en');
+        $this->passwords_groups_provider = new PasswordsGroups();
 
     }
 
     public function load(ObjectManager $manager)
     {
-        for ($x = 0; $x <= 10; $x++){
 
-            $name = $this->faker->word;
-
+        foreach($this->passwords_groups_provider::ALL as $password_group_name) {
             $passwordGroup = new MyPasswordsGroups();
-            $passwordGroup->setName($name);
+            $passwordGroup->setName($password_group_name);
 
             $manager->persist($passwordGroup);
         }
+
         $manager->flush();
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Job;
 
+use App\DataFixtures\Providers\Modules\JobAfterhours;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -15,26 +16,33 @@ class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    public function __construct() {
-        $this->faker = Factory::create('en');
+    /**
+     * @var JobAfterhours
+     */
+    private $provider_job_afterhours;
 
+
+    public function __construct() {
+        $this->faker                    = Factory::create('en');
+        $this->provider_job_afterhours  = new JobAfterhours();
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws \Exception
+     */
     public function load(ObjectManager $manager)
     {
-        $goals = [NULL];
-        $types = ['made', 'spent'];
 
         for($x = 0; $x <= 25; $x++) {
 
-            $goals[]            = $this->faker->word;
-            $index              = array_rand($goals);
+            $index              = array_rand($this->provider_job_afterhours::ALL_GOALS);
+            $goal               = $this->provider_job_afterhours::ALL_GOALS[$index];
 
-            $goal               = $goals[$index];
             $date               = $this->faker->date();
 
-            $index              = array_rand($types);
-            $type               = $types[$index];
+            $index              = array_rand(MyJobAfterhours::ALL_TYPES);
+            $type               = MyJobAfterhours::ALL_TYPES[$index];
 
             $minutes            = $this->faker->numberBetween(1, 80);
             $description        = $this->faker->text(20);

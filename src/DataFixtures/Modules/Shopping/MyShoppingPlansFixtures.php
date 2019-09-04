@@ -2,7 +2,10 @@
 
 namespace App\DataFixtures\Modules\Shopping;
 
+use App\DataFixtures\Providers\Business\Shops;
+use App\DataFixtures\Providers\Products\ExpensiveProducts;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
+use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -15,24 +18,25 @@ class MyShoppingPlansFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    public function __construct() {
-        $this->faker = Factory::create('en');
+    /**
+     * @var ExpensiveProducts $provider_expensive_products
+     */
+    private $provider_expensive_products;
 
+    public function __construct() {
+        $this->faker                         = Factory::create('en');
+        $this->provider_expensive_products   = new ExpensiveProducts();
     }
 
     public function load(ObjectManager $manager)
     {
 
-        for($x = 0; $x <= 15; $x++){
-
-            $name           = $this->faker->word;
-            $example        = $this->faker->word;
-            $information    = $this->faker->text(100);
+        foreach($this->provider_expensive_products::ALL as $product_name => $product_example) {
 
             $shopping_plan = new MyShoppingPlans();
-            $shopping_plan->setName($name);
-            $shopping_plan->setExample($example);
-            $shopping_plan->setInformation($information);
+            $shopping_plan->setName($product_name);
+            $shopping_plan->setExample($product_example);
+            $shopping_plan->setInformation("");
 
             $manager->persist($shopping_plan);
 

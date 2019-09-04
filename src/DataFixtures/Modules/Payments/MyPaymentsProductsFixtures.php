@@ -2,7 +2,11 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
+use App\DataFixtures\Providers\Business\Shops;
+use App\DataFixtures\Providers\Products\Domestic;
+use App\DataFixtures\Providers\Products\Food;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
+use Bezhanov\Faker\ProviderCollectionHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -15,44 +19,65 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
      */
     private $faker;
 
+    /**
+     * @var Food
+     */
+    private $provider_food;
+
+    /**
+     * @var Domestic
+     */
+    private $provider_domestic;
+
+    /**
+     * @var Shops
+     */
+    private $provider_shops;
+
     public function __construct() {
         $this->faker = Factory::create('en');
-        \Bezhanov\Faker\ProviderCollectionHelper::addAllProvidersTo($this->faker);
+        $this->provider_food             = new Food();
+        $this->provider_domestic         = new Domestic();
+        $this->provider_shops            = new Shops();
+
+        ProviderCollectionHelper::addAllProvidersTo($this->faker);
     }
 
     public function load(ObjectManager $manager)
     {
 
-        for($x = 0; $x <= 50; $x++) {
+        $all_food_products       = $this->provider_food->all;
+        $all_food_shops          = $this->provider_shops::SUPERMARKETS;
+
+        $all_domestic_products   = $this->provider_domestic->all;
+        $all_domestic_shops      = $this->provider_shops::DOMESTIC_SHOPS;
+
+        $this->addProductsWithShops($all_food_products, $all_food_shops, $manager);
+        $this->addProductsWithShops($all_domestic_products, $all_domestic_shops, $manager);
+
+        $manager->flush();
+    }
+
+    private function addProductsWithShops(array $all_products, array $all_shops, ObjectManager $manager){
+        foreach($all_products as $product_name){
+
+            $index    = array_rand($all_shops);
+            $shop     = $all_shops[$index];
+
+            $price    = $this->faker->randomFloat(2, 2, 10);
+            $rejected = $this->faker->boolean;
 
             $product = new MyPaymentsProduct();
-
-            $example_products_arr = [];
-            $counter              = $this->faker->numberBetween(0, 5);
-
-            for($z = 0; $z <= $counter; $z++){
-                $products[] = $this->faker->word;
-            }
-
-            $example_products     = implode(', ', $example_products_arr);
-            $name                 = $this->faker->productName;
-            $information          = $this->faker->sentence;
-            $market               = $this->faker->word;
-            $price                = $this->faker->randomFloat(2, 2, 80);
-            $rejected             = $this->faker->boolean;
-
-            $product->setName($name);
-            $product->setInformation($information);
-            $product->setMarket($market);
+            $product->setName($product_name);
+            $product->setInformation('');
+            $product->setMarket($shop);
             $product->setPrice($price);
             $product->setRejected($rejected);
-            $product->setProducts($example_products);
 
             $manager->persist($product);
 
         }
 
-        $manager->flush();
     }
 
     /**

@@ -1,7 +1,10 @@
 <?php
+namespace App\DataFixtures\Providers\Modules;
 
 
-class JobAfterhours {
+use App\DataFixtures\Providers\Providers;
+
+class JobAfterhours extends Providers {
 
     /* Goals */
     const GOAL_FESTIVAL         = 'festival';
@@ -9,6 +12,14 @@ class JobAfterhours {
     const GOAL_VISING_FRIENDS   = 'visiting friends';
     const GOAL_HOLIDAYS         = 'holidays';
     const GOAL_NONE             = '';
+
+    const ALL_GOALS = [
+        self::GOAL_FESTIVAL,
+        self::GOAL_VISING_DOCTOR,
+        self::GOAL_VISING_FRIENDS,
+        self::GOAL_HOLIDAYS,
+        self::GOAL_NONE,
+    ];
 
     /* Description */
     const DESCRIPTION_FROM_TO   = "Started at: {started_at}, finished at: {finished_at}";

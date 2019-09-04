@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Goals;
 
+use App\DataFixtures\Providers\Modules\Goals;
 use App\Entity\Modules\Goals\MyGoals;
 use App\Entity\Modules\Goals\MyGoalsSubgoals;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,29 +17,35 @@ class MyGoalsSubgoalsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
+    /**
+     * @var Goals
+     */
+    private $provider_goals;
+
     public function __construct() {
-        $this->faker = Factory::create('en');
+        $this->faker          = Factory::create('en');
+        $this->provider_goals = new Goals();
 
     }
 
     public function load(ObjectManager $manager)
     {
 
-        $my_goals               = $manager->getRepository(MyGoals::class)->findAll();
 
-        for($x = 0; $x <= 26; $x++) {
+        foreach($this->provider_goals::ALL_GOALS as $name => $subgoals) {
 
-            $index              = array_rand($my_goals);
-            $my_goal            = $my_goals[$index];
-            $completed          = $this->faker->boolean;
-            $name               = $this->faker->word;
+            $goals = $manager->getRepository(MyGoals::class)->findBy(['name' => $name]);
+            $goal  = reset($goals);
 
-            $my_goal_subgoal    = new MyGoalsSubgoals();
-            $my_goal_subgoal->setMyGoal($my_goal);
-            $my_goal_subgoal->setName($name);
-            $my_goal_subgoal->setCompleted($completed);
+            foreach($subgoals as $subgoal_name => $completing_status){
+                $my_goal_subgoal = new MyGoalsSubgoals();
+                $my_goal_subgoal->setMyGoal($goal);
+                $my_goal_subgoal->setName($subgoal_name);
+                $my_goal_subgoal->setCompleted($completing_status);
 
-            $manager->persist($my_goal_subgoal);
+                $manager->persist($my_goal_subgoal);
+            }
+
         }
 
         $manager->flush();

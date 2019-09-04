@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Passwords;
 
+use App\DataFixtures\Providers\Modules\Passwords;
 use App\Entity\Modules\Passwords\MyPasswords;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -17,23 +18,30 @@ class MyPasswordsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
+    /**
+     * @var Passwords $passwords_provider
+     */
+    private $passwords_provider;
+
+
     public function __construct() {
-        $this->faker = Factory::create('en');
+        $this->faker                = Factory::create('en');
+        $this->passwords_provider   = new Passwords();
     }
 
     public function load(ObjectManager $manager)
     {
-        $passwords_groups = $manager->getRepository(MyPasswordsGroups::class)->findAll();
 
-        for($x = 0 ;$x <= 20; $x++){
+        foreach($this->passwords_provider::ALL as $password){
 
-            $index           = array_rand($passwords_groups);
-            $password_group  = $passwords_groups[$index];
+            $url              = $password[Passwords::KEY_URL];
+            $description      = $password[Passwords::KEY_DESCRIPTION];
+            $group_name       = $password[Passwords::KEY_GROUP];
+
+            $passwords_groups = $manager->getRepository(MyPasswordsGroups::class)->findBy(['name' => $group_name]);
+            $password_group   = reset($passwords_groups);
 
             $password_string = $this->faker->password;
-
-            $description     = $this->faker->sentence;
-            $url             = $this->faker->url;
             $login           = $this->faker->word;
 
             $password = new MyPasswords();

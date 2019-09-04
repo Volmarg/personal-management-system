@@ -2,6 +2,10 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
+use App\DataFixtures\Providers\Business\Shops;
+use App\DataFixtures\Providers\Modules\PaymentsMonthly;
+use App\DataFixtures\Providers\Products\Domestic;
+use App\DataFixtures\Providers\Products\Food;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
@@ -12,43 +16,169 @@ use Faker\Factory;
 
 class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterface
 {
+
+    const AMOUNT_OF_MONTH_TO_FILL       = 5;
+    const AMOUNT_OF_PRODUCTS            = 4;
+    const AMOUNT_OF_SHOPPING_PER_MONTH  = 8;
+
     /**
      * Factory $faker
      */
     private $faker;
 
+    /**
+     * @var PaymentsMonthly
+     */
+    private $provider_payments_monthly;
+
+    /**
+     * @var Food
+     */
+    private $provider_food;
+
+    /**
+     * @var Domestic
+     */
+    private $provider_domestic;
+
+    /**
+     * @var Shops
+     */
+    private $provider_shops;
+
+    /**
+     * @var MyPaymentsSettingsRepository
+     */
+    private $payments_settings_repository;
+
+    /**
+     * @var ObjectManager $manager
+     */
+    private $manager;
+
     public function __construct() {
         $this->faker = Factory::create('en');
-
+        $this->provider_payments_monthly = new PaymentsMonthly();
+        $this->provider_food             = new Food();
+        $this->provider_domestic         = new Domestic();
+        $this->provider_shops            = new Shops();
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws \Exception
+     */
     public function load(ObjectManager $manager)
     {
-        /**
-         * @var MyPaymentsSettingsRepository $payments_settings_repository
-         */
-        $payments_settings_repository = $manager->getRepository(MyPaymentsSettings::class);
-        $payments_types               = $payments_settings_repository->getAllPaymentsTypes();
+        $this->payments_settings_repository = $manager->getRepository(MyPaymentsSettings::class);
+        $this->manager                      = $manager;
 
-        for($x = 0; $x <= 50; $x++){
+        $currDate = new \DateTime();
 
-            $index                    = array_rand($payments_types);
-            $payment_type             = $payments_types[$index];
-            $description              = $this->faker->sentence;
-            $dateTime                 = $this->faker->dateTimeBetween('-5months', '+2months');
-            $date                     = $dateTime->format('d-m-Y');
-            $money                    = $this->faker->randomFloat(2, 2, 150);
+        for($x = 0; $x <= static::AMOUNT_OF_MONTH_TO_FILL ; $x++){
+            $curr_month  = $currDate->format('m');
+            $curr_year   = $currDate->format('y');
 
-            $monthlyPayment = new MyPaymentsMonthly();
-            $monthlyPayment->setType($payment_type);
-            $monthlyPayment->setDescription($description);
-            $monthlyPayment->setDate($date);
-            $monthlyPayment->setMoney($money);
+            # first recurring monthly payments
+            $this->addRecurringPayments( $curr_year, $curr_month);
 
-            $manager->persist($monthlyPayment);
+            # now add some random FOOD products for each month
+            $category_name  = MyPaymentsSettingsFixtures::CATEGORY_FOOD;
+            $shops_names    = $this->provider_shops::SUPERMARKETS;
+            $products_names = $this->provider_food->all;
+            $this->addProductsListWithShop($curr_year, $curr_month, $category_name, $shops_names, $products_names);
+
+            # now add some random DOMESTIC products for each month
+            $category_name  = MyPaymentsSettingsFixtures::CATEGORY_DOMESTIC;
+            $shops_names    = $this->provider_shops::DOMESTIC_SHOPS;
+            $products_names = $this->provider_domestic->all;
+            $this->addProductsListWithShop($curr_year, $curr_month, $category_name, $shops_names, $products_names);
+
+            $currDate->modify('+1months');
+
         }
 
         $manager->flush();
+    }
+
+    /**
+     * @param int $curr_year
+     * @param int $curr_month
+     * @throws \Exception
+     */
+    private function addRecurringPayments(int $curr_year, int $curr_month) {
+        foreach ($this->provider_payments_monthly::ALL_MONTHLY as $name => $price) {
+
+            $date = "1-{$curr_month}-{$curr_year}";
+
+            $firstDayOfMonthDateTime = new \DateTime($date);
+
+            $monthly_payments_types  = $this->payments_settings_repository->findBy(['name' => MyPaymentsSettingsFixtures::CATEGORY_MONTHLY_PAYMENTS]);
+            $monthly_payments_type   = reset($monthly_payments_types);
+
+            $monthlyPayment = new MyPaymentsMonthly();
+            $monthlyPayment->setType($monthly_payments_type);
+            $monthlyPayment->setDate($firstDayOfMonthDateTime);
+            $monthlyPayment->setDescription($name);
+            $monthlyPayment->setMoney($price);
+
+            $this->manager->persist($monthlyPayment);
+        }
+    }
+
+    /**
+     * @param int $curr_year
+     * @param int $curr_month
+     * @param string $category_name
+     * @param array $shops_names
+     * @param array $products_names
+     * @throws \Exception
+     */
+    private function addProductsListWithShop(
+        int             $curr_year,
+        int             $curr_month,
+        string          $category_name,
+        array           $shops_names,
+        array           $products_names
+
+    ){
+        for($y = 0; $y <= static::AMOUNT_OF_SHOPPING_PER_MONTH; $y++) {
+
+            $day        = rand(1, 25);
+            $date       = "{$day}-{$curr_month}-{$curr_year}";
+            $dateTime   = new \DateTime($date);
+
+            $monthly_payments_types  = $this->payments_settings_repository->findBy(['name' => $category_name]);
+            $monthly_payments_type   = reset($monthly_payments_types);
+
+
+            $products_list  = '';
+            $shop_name      = $this->provider_shops->getRandom($shops_names);
+            $products       = $this->provider_shops->getNonRepeatingRandoms($products_names, static::AMOUNT_OF_PRODUCTS);
+            $products_count = count($products) -1;
+
+            foreach($products as $index => $product){
+
+                $products_list .= $product;
+
+                if( $index < $products_count) {
+                    $products_list .= ',';
+                }
+            }
+
+            $description = "{$shop_name}: $products_list";
+            $money       = rand(100, 1599) / 10;
+
+
+            $monthlyPayment = new MyPaymentsMonthly();
+            $monthlyPayment->setType($monthly_payments_type);
+            $monthlyPayment->setDate($dateTime);
+            $monthlyPayment->setDescription($description);
+            $monthlyPayment->setMoney($money);
+
+            $this->manager->persist($monthlyPayment);
+        }
+
     }
 
     /**

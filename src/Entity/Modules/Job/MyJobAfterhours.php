@@ -10,7 +10,13 @@ use Doctrine\ORM\Mapping as ORM;
 class MyJobAfterhours {
 
     public const TYPE_SPENT = 'spent';
+
     public const TYPE_MADE  = 'made';
+
+    const ALL_TYPES = [
+      self::TYPE_SPENT,
+      self::TYPE_MADE,
+    ];
 
     /**
      * @ORM\Id()

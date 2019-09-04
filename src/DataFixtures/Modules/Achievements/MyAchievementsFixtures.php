@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Achievements;
 
+use App\DataFixtures\Providers\Modules\Achievements;
 use App\Entity\Modules\Achievements\Achievement;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -15,28 +16,24 @@ class MyAchievementsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    public function __construct() {
-        $this->faker = Factory::create('en');
+    /**
+     * @var Achievements
+     */
+    private $provider_achievements;
 
+    public function __construct() {
+        $this->faker                 = Factory::create('en');
+        $this->provider_achievements = new Achievements();
     }
 
     public function load(ObjectManager $manager)
     {
-        $achievements_types = ['simple','medium','hard','hardcore'];
 
-        for($x = 0; $x <= 10; $x++) {
+        foreach ($this->provider_achievements::ALL as $type => $name) {
 
-            $index              = array_rand($achievements_types);
-            $achievement_type   = $achievements_types[$index];
-
-            $name               = $this->faker->word;
-            $description        = $this->faker->text(150);
-
-            $achievements       = new Achievement();
+            $achievements  = new Achievement();
             $achievements->setName($name);
-            $achievements->setType($achievement_type);
-            $achievements->setDescription($description);
-
+            $achievements->setType($type);
 
             $manager->persist($achievements);
         }

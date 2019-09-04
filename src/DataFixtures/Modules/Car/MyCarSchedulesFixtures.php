@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Car;
 
+use App\DataFixtures\Providers\Modules\CarSchedules;
 use App\Entity\Modules\Car\MyCar;
 use App\Entity\Modules\Car\MyCarSchedulesTypes;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,24 +17,31 @@ class MyCarSchedulesFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    public function __construct() {
-        $this->faker = Factory::create('en');
+    /**
+     * @var CarSchedules
+     */
+    private $car_schedules_provider;
 
+    public function __construct() {
+        $this->faker                  = Factory::create('en');
+        $this->car_schedules_provider = new CarSchedules();
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws \Exception
+     */
     public function load(ObjectManager $manager)
     {
 
-        $schedules_types        = $manager->getRepository(MyCarSchedulesTypes::class)->findAll();
+        foreach($this->car_schedules_provider::ALL as $car_schedule_data)
+        {
+            $index         = array_rand(MyCarSchedulesTypesFixtures::TYPES);
+            $schedule_type = MyCarSchedulesTypesFixtures::TYPES[$index];
 
-        for($x = 0; $x <= 10; $x++) {
-
-            $index              = array_rand($schedules_types);
-            $schedule_type      = $schedules_types[$index];
-
-            $name               = $this->faker->word;
-            $date               = $this->faker->dateTimeBetween('+5 day','+9 month')->format('d-m-Y');
-            $information        = $this->faker->text(130);
+            $date        = $this->faker->dateTimeBetween('+5 day','+9 month')->format('d-m-Y');
+            $name        = $car_schedule_data[CarSchedules::KEY_NAME];
+            $information = $car_schedule_data[CarSchedules::KEY_INFORMATION];
 
             $car_schedule  = new MyCar();
             $car_schedule->setName($name);
@@ -41,9 +49,11 @@ class MyCarSchedulesFixtures extends Fixture implements OrderedFixtureInterface
             $car_schedule->setInformation($information);
             $car_schedule->setDate($date);
 
-
             $manager->persist($car_schedule);
         }
+
+
+
 
         $manager->flush();
     }

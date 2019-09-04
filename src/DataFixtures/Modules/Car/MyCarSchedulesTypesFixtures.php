@@ -10,6 +10,15 @@ use Faker\Factory;
 
 class MyCarSchedulesTypesFixtures extends Fixture implements OrderedFixtureInterface
 {
+
+    const TYPE_RECURRING = 'recurring';
+    const TYPE_ONE_TIME  = 'one-time';
+
+    const TYPES = [
+      self::TYPE_RECURRING,
+      self::TYPE_ONE_TIME,
+    ];
+
     /**
      * Factory $faker
      */
@@ -24,15 +33,12 @@ class MyCarSchedulesTypesFixtures extends Fixture implements OrderedFixtureInter
     public function load(ObjectManager $manager)
     {
 
-        $names = ['recurring', 'one-time'];
+        for($x = 0; $x <= count(static::TYPES) -1; $x++) {
 
-        for($x = 0; $x <= count($names) -1; $x++) {
+            $name = static::TYPES[$x];
 
-            $name               = $names[$x];
-
-            $car_schedule_type  = new MyCarSchedulesTypes();
+            $car_schedule_type = new MyCarSchedulesTypes();
             $car_schedule_type->setName($name);
-
 
             $manager->persist($car_schedule_type);
         }

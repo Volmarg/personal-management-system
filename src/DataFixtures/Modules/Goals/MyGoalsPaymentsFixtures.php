@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Goals;
 
+use App\DataFixtures\Providers\Modules\Goals;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -15,15 +16,25 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
+    /**
+     * @var Goals
+     */
+    private $provider_goals;
+
     public function __construct() {
-        $this->faker = Factory::create('en');
+        $this->faker          = Factory::create('en');
+        $this->provider_goals = new Goals();
 
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @throws \Exception
+     */
     public function load(ObjectManager $manager)
     {
 
-        for($x = 0; $x <= 10; $x++) {
+        foreach ($this->provider_goals::ALL_PAYMENT_GOALS as $index => $name){
 
             $random_day_offset  = $this->faker->numberBetween(3, 100);
 
@@ -34,10 +45,9 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
             $start_date         = $random_datetime->format('Y-m-d');
             $end_date           = $offset_datetime->format('Y-m-d');
 
-            $name               = $this->faker->word;
             $display            = $this->faker->boolean;
-            $money_collected    = $this->faker->numberBetween(10, 5000);
-            $money_goal         = $this->faker->numberBetween(10, 5000);
+            $money_collected    = $this->faker->numberBetween(500, 2500);
+            $money_goal         = $this->faker->numberBetween(500, 2500);
 
             $my_goal_payment  = new MyGoalsPayments();
             $my_goal_payment->setName($name);
@@ -48,6 +58,7 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
             $my_goal_payment->setMoneyGoal($money_goal);
 
             $manager->persist($my_goal_payment);
+
         }
 
         $manager->flush();

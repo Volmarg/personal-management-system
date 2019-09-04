@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Contacts;
 
+use App\DataFixtures\Providers\Modules\ContactGroups;
 use App\Entity\Modules\Contacts\MyContacts;
 use App\Entity\Modules\Contacts\MyContactsGroups;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -24,18 +25,16 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        $my_contacts_groups = $manager->getRepository(MyContactsGroups::class)->findAll();
-        $my_contacts_types  = ['archived', 'phone', 'other', 'email'];
 
         for($x = 0; $x <= 20; $x++) {
 
-            $index              = array_rand($my_contacts_groups);
-            $my_contact_group   = $my_contacts_groups[$index];
+            $index              = array_rand(ContactGroups::ALL);
+            $my_contact_group   = ContactGroups::ALL[$index];
 
-            $index              = array_rand($my_contacts_types);
-            $my_contact_type    = $my_contacts_types[$index];
+            $index              = array_rand(MyContactsGroups::ALL_TYPES);
+            $my_contact_type    = MyContactsGroups::ALL_TYPES[$index];
 
-            $description        = $this->faker->text(80);
+            $description        = $this->faker->name . ' ' . $this->faker->lastName;
 
             switch($my_contact_type){
                 case 'phone':
@@ -50,6 +49,8 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
                 case 'archived':
                     $contact = $this->faker->phoneNumber;
                     break;
+                default:
+                    $contact = '';
             }
 
             $my_contact  = new MyContacts();

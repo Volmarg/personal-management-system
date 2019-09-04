@@ -3,6 +3,8 @@
 namespace App\DataFixtures\Modules\Notes;
 
 
+use App\DataFixtures\Providers\Modules\Notes;
+use App\DataFixtures\Providers\Modules\NotesCategories;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -17,28 +19,36 @@ class MyNotesFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
+    /**
+     * @var Notes $notes_provider
+     */
+    private $notes_provider;
+
     public function __construct() {
-        $this->faker = Factory::create('en');
+        $this->faker          = Factory::create('en');
+        $this->notes_provider = new Notes();
 
     }
 
     public function load(ObjectManager $manager)
     {
-        for($x = 0; $x <= 25; $x++) {
 
-            $notes_categories = $manager->getRepository(MyNotesCategories::class)->findAll();
-            $index            = array_rand($notes_categories);
-            $note_category    = $notes_categories[$index];
+        foreach ($this->notes_provider::ALL_CATEGORIES as $category) {
 
-            $title            = $this->faker->word;
-            $body             = $this->faker->text(700);
+            $category_name  = $category[Notes::KEY_CATEGORY_NAME];
+            $body           = $category[Notes::KEY_BODY];
+            $name           = $category[Notes::KEY_NAME];
 
-            $my_note          = new MyNotes();
+            $notes_categories = $manager->getRepository(MyNotesCategories::class)->findBy(['name' => $category_name]);
+            $note_category    = reset($notes_categories);
+
+            $my_note = new MyNotes();
             $my_note->setCategory($note_category);
             $my_note->setBody($body);
-            $my_note->setTitle($title);
+            $my_note->setTitle($name);
 
             $manager->persist($my_note);
+
         }
 
         $manager->flush();
