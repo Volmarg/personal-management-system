@@ -16,28 +16,20 @@ class MyGoalsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Goals
-     */
-    private $provider_goals;
-
     public function __construct() {
-        $this->faker          = Factory::create('en');
-        $this->provider_goals = new Goals();
+        $this->faker = Factory::create('en');
     }
 
     public function load(ObjectManager $manager)
     {
 
-        foreach($this->provider_goals::ALL_GOALS as $name => $subgoals) {
+        foreach(Goals::ALL_GOALS as $name => $subgoals) {
 
             $display_on_dashboard = $this->faker->boolean;
-            $name                 = $this->faker->word;
-            $description          = $this->faker->text(150);
 
             $my_goal = new MyGoals();
             $my_goal->setName($name);
-            $my_goal->setDescription($description);
+            $my_goal->setDescription('');
             $my_goal->setDisplayOnDashboard($display_on_dashboard);
 
             $manager->persist($my_goal);

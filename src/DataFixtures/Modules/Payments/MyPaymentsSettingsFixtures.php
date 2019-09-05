@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
+use App\DataFixtures\Providers\Modules\PaymentsSettings;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -15,20 +16,6 @@ class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterf
      * Factory $faker
      */
     private $faker;
-
-    const CATEGORY_FOOD                 = 'Food';
-    const CATEGORY_DOMESTIC             = 'Domestic';
-    const CATEGORY_TRAVELS              = 'Travels';
-    const CATEGORY_PERSONAL             = 'Personal';
-    const CATEGORY_MONTHLY_PAYMENTS     = 'Monthly payments';
-
-    const CATEGORIES_NAMES = [
-        self::CATEGORY_MONTHLY_PAYMENTS,
-        self::CATEGORY_PERSONAL,
-        self::CATEGORY_DOMESTIC,
-        self::CATEGORY_TRAVELS,
-        self::CATEGORY_FOOD,
-    ];
 
     const MULTIPLIER = 4.56;
 
@@ -48,7 +35,7 @@ class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterf
 
         $manager->persist($currency_multiplier);
 
-        foreach ( static::CATEGORIES_NAMES as $category_name ) {
+        foreach ( PaymentsSettings::CATEGORIES_NAMES as $category_name ) {
 
             $payment_type = new MyPaymentsSettings();
             $payment_type->setName(static::SETTING_NAME);

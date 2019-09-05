@@ -18,20 +18,14 @@ class MyShoppingPlansFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var ExpensiveProducts $provider_expensive_products
-     */
-    private $provider_expensive_products;
-
     public function __construct() {
-        $this->faker                         = Factory::create('en');
-        $this->provider_expensive_products   = new ExpensiveProducts();
+        $this->faker = Factory::create('en');
     }
 
     public function load(ObjectManager $manager)
     {
 
-        foreach($this->provider_expensive_products::ALL as $product_name => $product_example) {
+        foreach(ExpensiveProducts::ALL as $product_name => $product_example) {
 
             $shopping_plan = new MyShoppingPlans();
             $shopping_plan->setName($product_name);

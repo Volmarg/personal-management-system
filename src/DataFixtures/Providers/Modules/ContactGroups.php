@@ -1,9 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-use App\DataFixtures\Providers\Providers;
-
-class ContactGroups extends Providers {
+class ContactGroups {
 
     const CONTACT_GROUP_FRIENDS  = 'Friends';
     const CONTACT_GROUP_FAMILY   = 'Family';

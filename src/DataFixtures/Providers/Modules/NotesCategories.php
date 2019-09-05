@@ -1,9 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-use App\DataFixtures\Providers\Providers;
-
-class NotesCategories extends Providers {
+class NotesCategories{
 
     const KEY_NAME           = 'name';
     const KEY_ICON           = 'icon';

@@ -19,21 +19,14 @@ class MyNotesFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Notes $notes_provider
-     */
-    private $notes_provider;
-
     public function __construct() {
-        $this->faker          = Factory::create('en');
-        $this->notes_provider = new Notes();
-
+        $this->faker = Factory::create('en');
     }
 
     public function load(ObjectManager $manager)
     {
 
-        foreach ($this->notes_provider::ALL_CATEGORIES as $category) {
+        foreach (Notes::ALL_CATEGORIES as $category) {
 
             $category_name  = $category[Notes::KEY_CATEGORY_NAME];
             $body           = $category[Notes::KEY_BODY];

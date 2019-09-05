@@ -8,7 +8,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
-use Symfony\Component\Finder\Finder;
 
 class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
 {
@@ -19,15 +18,8 @@ class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var NotesCategories $notes_categories_provider
-     */
-    private $notes_categories_provider;
-
     public function __construct() {
         $this->faker                     = Factory::create('en');
-        $this->notes_categories_provider = new NotesCategories();
-
     }
 
     /**
@@ -37,7 +29,7 @@ class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        foreach ($this->notes_categories_provider::ALL_CATEGORIES as $category) {
+        foreach (NotesCategories::ALL_CATEGORIES as $category) {
 
             $name        = $category[NotesCategories::KEY_NAME];
             $icon        = $category[NotesCategories::KEY_ICON];

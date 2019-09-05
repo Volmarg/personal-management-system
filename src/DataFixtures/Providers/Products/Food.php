@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Products;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class Food extends Providers {
+class Food{
 
     # Vegetables
     const FOOD_CARROT           = 'carrot';

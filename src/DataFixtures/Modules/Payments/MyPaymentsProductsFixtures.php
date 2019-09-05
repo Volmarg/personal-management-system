@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
+use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Business\Shops;
 use App\DataFixtures\Providers\Products\Domestic;
 use App\DataFixtures\Providers\Products\Food;
@@ -19,38 +20,19 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
      */
     private $faker;
 
-    /**
-     * @var Food
-     */
-    private $provider_food;
-
-    /**
-     * @var Domestic
-     */
-    private $provider_domestic;
-
-    /**
-     * @var Shops
-     */
-    private $provider_shops;
-
     public function __construct() {
         $this->faker = Factory::create('en');
-        $this->provider_food             = new Food();
-        $this->provider_domestic         = new Domestic();
-        $this->provider_shops            = new Shops();
-
         ProviderCollectionHelper::addAllProvidersTo($this->faker);
     }
 
     public function load(ObjectManager $manager)
     {
 
-        $all_food_products       = $this->provider_food->all;
-        $all_food_shops          = $this->provider_shops::SUPERMARKETS;
+        $all_food_products       = (new Food())->all;
+        $all_food_shops          = Shops::SUPERMARKETS;
 
-        $all_domestic_products   = $this->provider_domestic->all;
-        $all_domestic_shops      = $this->provider_shops::DOMESTIC_SHOPS;
+        $all_domestic_products   = (new Domestic())->all;
+        $all_domestic_shops      = Shops::DOMESTIC_SHOPS;
 
         $this->addProductsWithShops($all_food_products, $all_food_shops, $manager);
         $this->addProductsWithShops($all_domestic_products, $all_domestic_shops, $manager);
@@ -61,8 +43,7 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
     private function addProductsWithShops(array $all_products, array $all_shops, ObjectManager $manager){
         foreach($all_products as $product_name){
 
-            $index    = array_rand($all_shops);
-            $shop     = $all_shops[$index];
+            $shop     = Utils::arrayGetRandom($all_shops);
 
             $price    = $this->faker->randomFloat(2, 2, 10);
             $rejected = $this->faker->boolean;

@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Business;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class Shops extends Providers {
+class Shops {
 
     # Supermarkets
     const SHOP_NAME_LIDL     = 'Lidl';

@@ -1,12 +1,18 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-use App\DataFixtures\Providers\Providers;
-
-class CarSchedules extends Providers {
+class CarSchedules {
 
     const KEY_INFORMATION   = 'information';
     const KEY_NAME          = 'name';
+
+    const TYPE_RECURRING = 'recurring';
+    const TYPE_ONE_TIME  = 'one-time';
+
+    const TYPES = [
+        self::TYPE_RECURRING,
+        self::TYPE_ONE_TIME,
+    ];
 
     CONST OIL_CHANGE = [
       self::KEY_NAME        => 'Oil change',

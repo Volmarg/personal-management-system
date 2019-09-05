@@ -16,15 +16,8 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Goals
-     */
-    private $provider_goals;
-
     public function __construct() {
-        $this->faker          = Factory::create('en');
-        $this->provider_goals = new Goals();
-
+        $this->faker = Factory::create('en');
     }
 
     /**
@@ -34,7 +27,7 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        foreach ($this->provider_goals::ALL_PAYMENT_GOALS as $index => $name){
+        foreach (Goals::ALL_PAYMENT_GOALS as $index => $name){
 
             $random_day_offset  = $this->faker->numberBetween(3, 100);
 

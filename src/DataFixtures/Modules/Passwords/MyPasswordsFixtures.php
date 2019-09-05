@@ -18,21 +18,14 @@ class MyPasswordsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Passwords $passwords_provider
-     */
-    private $passwords_provider;
-
-
     public function __construct() {
-        $this->faker                = Factory::create('en');
-        $this->passwords_provider   = new Passwords();
+        $this->faker = Factory::create('en');
     }
 
     public function load(ObjectManager $manager)
     {
 
-        foreach($this->passwords_provider::ALL as $password){
+        foreach(Passwords::ALL as $password){
 
             $url              = $password[Passwords::KEY_URL];
             $description      = $password[Passwords::KEY_DESCRIPTION];

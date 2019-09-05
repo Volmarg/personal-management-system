@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class Passwords extends Providers {
+class Passwords {
 
     const KEY_URL               = 'url';
     const KEY_DESCRIPTION       = 'description';

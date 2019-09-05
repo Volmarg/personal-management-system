@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures\Modules\Contacts;
 
+use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\ContactGroups;
 use App\Entity\Modules\Contacts\MyContacts;
 use App\Entity\Modules\Contacts\MyContactsGroups;
@@ -19,7 +20,6 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
     public function __construct() {
         $this->faker = Factory::create('en');
-
     }
 
 
@@ -28,12 +28,8 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
         for($x = 0; $x <= 20; $x++) {
 
-            $index              = array_rand(ContactGroups::ALL);
-            $my_contact_group   = ContactGroups::ALL[$index];
-
-            $index              = array_rand(MyContactsGroups::ALL_TYPES);
-            $my_contact_type    = MyContactsGroups::ALL_TYPES[$index];
-
+            $my_contact_group   = Utils::arrayGetRandom(ContactGroups::ALL);
+            $my_contact_type    = Utils::arrayGetRandom(MyContactsGroups::ALL_TYPES);
             $description        = $this->faker->name . ' ' . $this->faker->lastName;
 
             switch($my_contact_type){

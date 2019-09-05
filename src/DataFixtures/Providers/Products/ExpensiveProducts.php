@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Products;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class ExpensiveProducts extends Providers {
+class ExpensiveProducts {
 
     const PRICE_MIN = 100;
     const PRICE_MAX = 500;

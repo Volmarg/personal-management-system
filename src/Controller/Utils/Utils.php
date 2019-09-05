@@ -78,4 +78,41 @@ class Utils extends AbstractController {
         return $flashType;
     }
 
+    /**
+     * Get one random element from array
+     * @param array $array
+     * @return mixed
+     */
+    public static function arrayGetRandom(array $array) {
+        $index      = array_rand($array);
+        $element    = $array[$index];
+
+        return $element;
+    }
+
+    /**
+     * @param array $data
+     * @param int $count
+     * @return array
+     */
+    public static function arrayGetNotRepeatingValuesCount(array $data, int $count) {
+
+        $randoms = [];
+
+        for($x = 0; $x <= $count; $x++) {
+
+            $array_index = array_rand($data);
+            $randoms[]   = $data[$array_index];
+
+            unset($data[$array_index]);
+
+            if( empty ($data) ) {
+                break;
+            }
+
+        }
+
+        return $randoms;
+    }
+
 }

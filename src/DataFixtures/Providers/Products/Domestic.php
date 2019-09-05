@@ -1,9 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Products;
 
-use App\DataFixtures\Providers\Providers;
-
-class Domestic extends Providers {
+class Domestic {
 
     # Chemical
     const DOMESTIC_RORAX           = 'rorax';

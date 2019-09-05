@@ -2,7 +2,7 @@
 namespace App\DataFixtures\Providers\Modules;
 
 
-class Goals extends Providers {
+class Goals{
 
     /*
      * Normal Goals

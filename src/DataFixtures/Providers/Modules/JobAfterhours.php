@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class JobAfterhours extends Providers {
+class JobAfterhours{
 
     /* Goals */
     const GOAL_FESTIVAL         = 'festival';

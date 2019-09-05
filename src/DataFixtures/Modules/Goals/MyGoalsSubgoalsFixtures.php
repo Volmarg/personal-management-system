@@ -8,31 +8,13 @@ use App\Entity\Modules\Goals\MyGoalsSubgoals;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Faker\Factory;
 
 class MyGoalsSubgoalsFixtures extends Fixture implements OrderedFixtureInterface
 {
-    /**
-     * Factory $faker
-     */
-    private $faker;
-
-    /**
-     * @var Goals
-     */
-    private $provider_goals;
-
-    public function __construct() {
-        $this->faker          = Factory::create('en');
-        $this->provider_goals = new Goals();
-
-    }
-
     public function load(ObjectManager $manager)
     {
 
-
-        foreach($this->provider_goals::ALL_GOALS as $name => $subgoals) {
+        foreach(Goals::ALL_GOALS as $name => $subgoals) {
 
             $goals = $manager->getRepository(MyGoals::class)->findBy(['name' => $name]);
             $goal  = reset($goals);

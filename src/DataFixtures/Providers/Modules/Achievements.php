@@ -1,9 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-use App\DataFixtures\Providers\Providers;
-
-class Achievements extends Providers {
+class Achievements {
 
     #soft
     const SOFT_FAVOURITE_BAND_CONCERT   = 'Participating in favourite band concert';

@@ -16,21 +16,14 @@ class MyPasswordsSettingsFixtures extends Fixture implements OrderedFixtureInter
      */
     private $faker;
 
-    /**
-     * @var PasswordsGroups $passwords_groups_provider
-     */
-    private $passwords_groups_provider;
-
     public function __construct() {
-        $this->faker                     = Factory::create('en');
-        $this->passwords_groups_provider = new PasswordsGroups();
-
+        $this->faker = Factory::create('en');
     }
 
     public function load(ObjectManager $manager)
     {
 
-        foreach($this->passwords_groups_provider::ALL as $password_group_name) {
+        foreach(PasswordsGroups::ALL as $password_group_name) {
             $passwordGroup = new MyPasswordsGroups();
             $passwordGroup->setName($password_group_name);
 

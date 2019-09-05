@@ -2,8 +2,10 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
+use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Business\Shops;
 use App\DataFixtures\Providers\Modules\PaymentsMonthly;
+use App\DataFixtures\Providers\Modules\PaymentsSettings;
 use App\DataFixtures\Providers\Products\Domestic;
 use App\DataFixtures\Providers\Products\Food;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
@@ -27,24 +29,9 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     private $faker;
 
     /**
-     * @var PaymentsMonthly
-     */
-    private $provider_payments_monthly;
-
-    /**
      * @var Food
      */
     private $provider_food;
-
-    /**
-     * @var Domestic
-     */
-    private $provider_domestic;
-
-    /**
-     * @var Shops
-     */
-    private $provider_shops;
 
     /**
      * @var MyPaymentsSettingsRepository
@@ -57,11 +44,8 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     private $manager;
 
     public function __construct() {
-        $this->faker = Factory::create('en');
-        $this->provider_payments_monthly = new PaymentsMonthly();
-        $this->provider_food             = new Food();
-        $this->provider_domestic         = new Domestic();
-        $this->provider_shops            = new Shops();
+        $this->faker         = Factory::create('en');
+        $this->provider_food = new Food();
     }
 
     /**
@@ -83,15 +67,15 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
             $this->addRecurringPayments( $curr_year, $curr_month);
 
             # now add some random FOOD products for each month
-            $category_name  = MyPaymentsSettingsFixtures::CATEGORY_FOOD;
-            $shops_names    = $this->provider_shops::SUPERMARKETS;
+            $category_name  = PaymentsSettings::CATEGORY_FOOD;
+            $shops_names    = Shops::SUPERMARKETS;
             $products_names = $this->provider_food->all;
             $this->addProductsListWithShop($curr_year, $curr_month, $category_name, $shops_names, $products_names);
 
             # now add some random DOMESTIC products for each month
-            $category_name  = MyPaymentsSettingsFixtures::CATEGORY_DOMESTIC;
-            $shops_names    = $this->provider_shops::DOMESTIC_SHOPS;
-            $products_names = $this->provider_domestic->all;
+            $category_name  = PaymentsSettings::CATEGORY_DOMESTIC;
+            $shops_names    = Shops::DOMESTIC_SHOPS;
+            $products_names = (new Domestic())->all;
             $this->addProductsListWithShop($curr_year, $curr_month, $category_name, $shops_names, $products_names);
 
             $currDate->modify('+1months');
@@ -107,13 +91,13 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
      * @throws \Exception
      */
     private function addRecurringPayments(int $curr_year, int $curr_month) {
-        foreach ($this->provider_payments_monthly::ALL_MONTHLY as $name => $price) {
+        foreach (PaymentsMonthly::ALL_MONTHLY as $name => $price) {
 
             $date = "1-{$curr_month}-{$curr_year}";
 
             $firstDayOfMonthDateTime = new \DateTime($date);
 
-            $monthly_payments_types  = $this->payments_settings_repository->findBy(['name' => MyPaymentsSettingsFixtures::CATEGORY_MONTHLY_PAYMENTS]);
+            $monthly_payments_types  = $this->payments_settings_repository->findBy(['name' => PaymentsSettings::CATEGORY_MONTHLY_PAYMENTS]);
             $monthly_payments_type   = reset($monthly_payments_types);
 
             $monthlyPayment = new MyPaymentsMonthly();
@@ -153,8 +137,8 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
 
 
             $products_list  = '';
-            $shop_name      = $this->provider_shops->getRandom($shops_names);
-            $products       = $this->provider_shops->getNonRepeatingRandoms($products_names, static::AMOUNT_OF_PRODUCTS);
+            $shop_name      = Utils::arrayGetRandom($shops_names);
+            $products       = Utils::arrayGetNotRepeatingValuesCount($products_names, static::AMOUNT_OF_PRODUCTS);
             $products_count = count($products) -1;
 
             foreach($products as $index => $product){

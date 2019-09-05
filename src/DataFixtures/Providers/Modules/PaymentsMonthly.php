@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class PaymentsMonthly extends Providers{
+class PaymentsMonthly {
 
     const MONTHLY_ELECTRICITY       = 'Electricity';
     const MONTHLY_APARTMENT_RENTING = 'Apartment renting';

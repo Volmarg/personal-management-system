@@ -1,10 +1,7 @@
 <?php
 namespace App\DataFixtures\Providers\Modules;
 
-
-use App\DataFixtures\Providers\Providers;
-
-class PasswordsGroups extends Providers {
+class PasswordsGroups {
 
     /* Goals */
     const GROUP_FINANCES        = 'finances';
