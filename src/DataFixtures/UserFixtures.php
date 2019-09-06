@@ -24,8 +24,12 @@ class UserFixtures extends Fixture
     {
 
         $all_admins = $manager->getRepository(User::class)->findAll();
-        $next_nr    = count($all_admins) + 1;
-        $username   = static::USERNAME.$next_nr;
+        $username   = static::USERNAME;
+
+        if( 0 !== $all_admins ){
+            $next_nr    = count($all_admins) + 1;
+            $username   = static::USERNAME.$next_nr;
+        }
 
         $app_user = new User();
         $app_user->setUsername($username);
