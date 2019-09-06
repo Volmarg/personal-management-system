@@ -28,7 +28,7 @@ class MyShoppingPlansFixtures extends Fixture implements OrderedFixtureInterface
         foreach(ExpensiveProducts::ALL as $product_name => $product_example) {
 
             $shopping_plan = new MyShoppingPlans();
-            $shopping_plan->setName($product_name);
+            $shopping_plan->setName(ucfirst($product_name));
             $shopping_plan->setExample($product_example);
             $shopping_plan->setInformation("");
 

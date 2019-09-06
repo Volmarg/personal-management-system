@@ -3,7 +3,6 @@
 namespace App\DataFixtures\Modules\Contacts;
 
 use App\Controller\Utils\Utils;
-use App\DataFixtures\Providers\Modules\ContactGroups;
 use App\Entity\Modules\Contacts\MyContacts;
 use App\Entity\Modules\Contacts\MyContactsGroups;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -28,7 +27,8 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
         for($x = 0; $x <= 20; $x++) {
 
-            $my_contact_group   = Utils::arrayGetRandom(ContactGroups::ALL);
+            $all_contact_group  = $manager->getRepository(MyContactsGroups::class)->findAll();
+            $my_contact_group   = Utils::arrayGetRandom($all_contact_group);
             $my_contact_type    = Utils::arrayGetRandom(MyContactsGroups::ALL_TYPES);
             $description        = $this->faker->name . ' ' . $this->faker->lastName;
 

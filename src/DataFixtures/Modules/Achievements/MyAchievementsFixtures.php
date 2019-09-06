@@ -14,13 +14,13 @@ class MyAchievementsFixtures extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        foreach (Achievements::ALL as $type => $name) {
-
-            $achievements  = new Achievement();
-            $achievements->setName($name);
-            $achievements->setType($type);
-
-            $manager->persist($achievements);
+        foreach (Achievements::ALL as $type => $achievements) {
+            foreach($achievements as $index => $name) {
+                $achievement  = new Achievement();
+                $achievement->setName($name);
+                $achievement->setType($type);
+                $manager->persist($achievement);
+            }
         }
 
         $manager->flush();

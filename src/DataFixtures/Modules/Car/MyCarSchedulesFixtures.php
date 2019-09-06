@@ -5,6 +5,7 @@ namespace App\DataFixtures\Modules\Car;
 use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\CarSchedules;
 use App\Entity\Modules\Car\MyCar;
+use App\Entity\Modules\Car\MyCarSchedulesTypes;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -31,10 +32,11 @@ class MyCarSchedulesFixtures extends Fixture implements OrderedFixtureInterface
         foreach(CarSchedules::ALL as $car_schedule_data)
         {
 
-            $date            = $this->faker->dateTimeBetween('+5 day','+9 month')->format('d-m-Y');
-            $schedule_type   = Utils::arrayGetRandom(CarSchedules::TYPES);
-            $name            = $car_schedule_data[CarSchedules::KEY_NAME];
-            $information     = $car_schedule_data[CarSchedules::KEY_INFORMATION];
+            $date               = $this->faker->dateTimeBetween('+5 day','+9 month')->format('d-m-Y');
+            $all_schedule_types = $manager->getRepository(MyCarSchedulesTypes::class)->findAll();
+            $schedule_type      = Utils::arrayGetRandom($all_schedule_types);
+            $name               = $car_schedule_data[CarSchedules::KEY_NAME];
+            $information        = $car_schedule_data[CarSchedules::KEY_INFORMATION];
 
             $car_schedule  = new MyCar();
             $car_schedule->setName($name);

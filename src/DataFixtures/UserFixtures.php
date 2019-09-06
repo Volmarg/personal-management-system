@@ -23,11 +23,15 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
+        $all_admins = $manager->getRepository(User::class)->findAll();
+        $next_nr    = count($all_admins) + 1;
+        $username   = static::USERNAME.$next_nr;
+
         $app_user = new User();
-        $app_user->setUsername(static::USERNAME);
-        $app_user->setUsernameCanonical(static::USERNAME);
-        $app_user->setEmail(static::USERNAME);
-        $app_user->setEmailCanonical(static::USERNAME);
+        $app_user->setUsername($username);
+        $app_user->setUsernameCanonical($username);
+        $app_user->setEmail($username);
+        $app_user->setEmailCanonical($username);
         $app_user->setEnabled(static::ENABLED);
         $app_user->setSalt(static::SALT);
         $app_user->setPassword(static::PASSWORD);

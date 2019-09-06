@@ -49,7 +49,7 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
             $rejected = $this->faker->boolean;
 
             $product = new MyPaymentsProduct();
-            $product->setName($product_name);
+            $product->setName(ucfirst($product_name));
             $product->setInformation('');
             $product->setMarket($shop);
             $product->setPrice($price);

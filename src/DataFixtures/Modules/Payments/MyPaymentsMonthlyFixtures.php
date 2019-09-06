@@ -93,11 +93,11 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     private function addRecurringPayments(int $curr_year, int $curr_month) {
         foreach (PaymentsMonthly::ALL_MONTHLY as $name => $price) {
 
-            $date = "1-{$curr_month}-{$curr_year}";
+            $date = "{$curr_year}-{$curr_month}-1";
 
             $firstDayOfMonthDateTime = new \DateTime($date);
 
-            $monthly_payments_types  = $this->payments_settings_repository->findBy(['name' => PaymentsSettings::CATEGORY_MONTHLY_PAYMENTS]);
+            $monthly_payments_types  = $this->payments_settings_repository->findBy(['value' => PaymentsSettings::CATEGORY_MONTHLY_PAYMENTS]);
             $monthly_payments_type   = reset($monthly_payments_types);
 
             $monthlyPayment = new MyPaymentsMonthly();
@@ -129,10 +129,10 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
         for($y = 0; $y <= static::AMOUNT_OF_SHOPPING_PER_MONTH; $y++) {
 
             $day        = rand(1, 25);
-            $date       = "{$day}-{$curr_month}-{$curr_year}";
+            $date       = "{$curr_year}-{$curr_month}-{$day}";
             $dateTime   = new \DateTime($date);
 
-            $monthly_payments_types  = $this->payments_settings_repository->findBy(['name' => $category_name]);
+            $monthly_payments_types  = $this->payments_settings_repository->findBy(['value' => $category_name]);
             $monthly_payments_type   = reset($monthly_payments_types);
 
 
@@ -146,7 +146,7 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
                 $products_list .= $product;
 
                 if( $index < $products_count) {
-                    $products_list .= ',';
+                    $products_list .= ', ';
                 }
             }
 

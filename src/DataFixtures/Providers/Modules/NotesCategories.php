@@ -82,6 +82,7 @@ class NotesCategories{
       self::CATEGORY_BANKING,
       self::CATEGORY_APPLICATIONS,
       self::CATEGORY_KEYS,
+      self::CATEGORY_FINANCES,
       self::CATEGORY_GOALS,
       self::CATEGORY_BUILDING_HOME,
       self::CATEGORY_TRAVEL,

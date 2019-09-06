@@ -52,13 +52,13 @@ class Achievements {
     ];
 
     #all
-    const KEY_GROUP_SOFT     = 'soft';
+    const KEY_GROUP_SIMPLE   = 'simple';
     const KEY_GROUP_MEDIUM   = 'medium';
     const KEY_GROUP_HARD     = 'hard';
     const KEY_GROUP_HARDCORE = 'hardcore';
 
     const ALL = [
-        self::KEY_GROUP_SOFT        => self::SOFT,
+        self::KEY_GROUP_SIMPLE      => self::SOFT,
         self::KEY_GROUP_MEDIUM      => self::MEDIUM,
         self::KEY_GROUP_HARD        => self::HARD,
         self::KEY_GROUP_HARDCORE    => self::HARDCORE,

@@ -56,9 +56,13 @@ class MyNotesCategories {
 
     /**
      * @param mixed $parent_id
+     * @throws \Exception
      */
     public function setParentId($parent_id): void {
-        if ($this->id == $parent_id) {
+        if (
+                $this->id == $parent_id
+            &&  !is_null($parent_id)
+        ) {
             throw new \Exception('You cannot be children and parent at the same time!');
         }
         $this->parent_id = $parent_id;

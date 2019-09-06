@@ -67,4 +67,21 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         return (!empty($results) ? $results : []);
     }
 
+    public function getAllGoalsNames(){
+
+        $sql = "
+            SELECT DISTINCT goal
+            FROM my_job_afterhours
+            WHERE 1
+                AND goal IS NOT NULL;
+        ";
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($sql);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return (!empty($results) ? array_column($results,'goal') : []);
+    }
+
 }

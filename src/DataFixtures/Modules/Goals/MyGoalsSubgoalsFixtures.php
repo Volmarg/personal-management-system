@@ -14,18 +14,23 @@ class MyGoalsSubgoalsFixtures extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        foreach(Goals::ALL_GOALS as $name => $subgoals) {
+        foreach(Goals::ALL_GOALS as $index => $goal_with_subgoals) {
 
-            $goals = $manager->getRepository(MyGoals::class)->findBy(['name' => $name]);
-            $goal  = reset($goals);
+            foreach($goal_with_subgoals as $goal_name => $subgoals){
 
-            foreach($subgoals as $subgoal_name => $completing_status){
-                $my_goal_subgoal = new MyGoalsSubgoals();
-                $my_goal_subgoal->setMyGoal($goal);
-                $my_goal_subgoal->setName($subgoal_name);
-                $my_goal_subgoal->setCompleted($completing_status);
+                $goals = $manager->getRepository(MyGoals::class)->findBy(['name' => $goal_name]);
+                $goal  = reset($goals);
 
-                $manager->persist($my_goal_subgoal);
+                foreach($subgoals as $subgoal_name => $completing_status){
+
+                    $my_goal_subgoal = new MyGoalsSubgoals();
+                    $my_goal_subgoal->setMyGoal($goal);
+                    $my_goal_subgoal->setName($subgoal_name);
+                    $my_goal_subgoal->setCompleted($completing_status);
+
+                    $manager->persist($my_goal_subgoal);
+                }
+
             }
 
         }
