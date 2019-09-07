@@ -14,7 +14,7 @@
             <td>{{ summary_for_year.year }}</td>
             <td>{{ summary_for_year.daysForYear }}</td>
             <td>{{ (summary_for_year.daysSpent       is null ? 0 : summary_for_year.daysSpent) }}</td>
-            <td>{{ (summary_for_year.daysLeftForYear is null ? 0 : summary_for_year.daysForYear) }}</td>
+            <td>{{ (summary_for_year.daysLeftForYear is null ? 0 : summary_for_year.daysLeftForYear) }}</td>
 
         </tr>
     {% endfor %}
