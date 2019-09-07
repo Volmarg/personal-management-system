@@ -1,0 +1,34 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {# Forms #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h5 class="c-grey-900 mB-20 align-self-center"> Add Holidays Pool </h5>
+
+                            {% include('modules/my-job/components/holidays.settings.pool.table.html.twig') %}
+
+                            <div class="col-md-6 align-self-center add-record-form">
+                                {{ form_start(job_holidays_pool_form, {'attr':{'data-entity':"MyJobHolidaysPool"}}) }}
+                                {{ form_end(job_holidays_pool_form) }}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

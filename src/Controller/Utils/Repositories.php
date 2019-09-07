@@ -9,6 +9,9 @@
 namespace App\Controller\Utils;
 
 
+use App\Entity\Modules\Job\MyJobHolidays;
+use App\Entity\Modules\Job\MyJobHolidaysPool;
+use App\Entity\Modules\Job\MyJobSettings;
 use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Repository\Modules\Car\MyCarRepository;
 use App\Repository\Modules\Car\MyCarSchedulesTypesRepository;
@@ -18,6 +21,9 @@ use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Goals\MyGoalsRepository;
 use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
+use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
+use App\Repository\Modules\Job\MyJobHolidaysRepository;
+use App\Repository\Modules\Job\MyJobSettingsRepository;
 use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
@@ -55,6 +61,9 @@ class Repositories extends AbstractController {
     const MY_SUBGOALS_REPOSITORY_NAME               = 'MyGoalsSubgoalsRepository';
     const MY_GOALS_PAYMENTS_REPOSITORY_NAME         = 'MyGoalsPaymentsRepository';
     const MY_CAR_SCHEDULES_TYPES_REPOSITORY_NAME    = 'MyCarSchedulesTypesRepository';
+    const MY_JOB_HOLIDAYS_REPOSITORY_NAME           = 'MyJobHolidaysRepository';
+    const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME      = 'MyJobHolidaysPoolRepository';
+    const MY_JOB_SETTINGS_REPOSITORY_NAME           = 'MyJobSettingsRepository';
 
     const PASSWORD_FIELD                            = 'password';
     /**
@@ -152,6 +161,20 @@ class Repositories extends AbstractController {
      */
     public $myCarSchedulesTypesRepository;
 
+    /**
+     * @var MyJobHolidaysRepository
+     */
+    public $myJobHolidaysRepository;
+
+    /**
+     * @var MyJobHolidaysPoolRepository
+     */
+    public $myJobHolidaysPoolRepository;
+
+    /**
+     * @var MyJobSettingsRepository
+     */
+    public $myJobSettingsRepository;
 
     public function __construct(
         MyNotesRepository               $myNotesRepository,
@@ -172,7 +195,10 @@ class Repositories extends AbstractController {
         MyGoalsRepository               $myGoalsRepository,
         MyGoalsSubgoalsRepository       $myGoalsSubgoalsRepository,
         MyGoalsPaymentsRepository       $myGoalsPaymentsRepository,
-        MyCarSchedulesTypesRepository   $myCarSchedulesTypesRepository
+        MyCarSchedulesTypesRepository   $myCarSchedulesTypesRepository,
+        MyJobHolidaysRepository         $myJobHolidaysRepository,
+        MyJobHolidaysPoolRepository     $myJobHolidaysPoolRepository,
+        MyJobSettingsRepository         $myJobSettingsRepository
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -193,6 +219,9 @@ class Repositories extends AbstractController {
         $this->myGoalsSubgoalsRepository        = $myGoalsSubgoalsRepository;
         $this->myGoalsPaymentsRepository        = $myGoalsPaymentsRepository;
         $this->myCarSchedulesTypesRepository    = $myCarSchedulesTypesRepository;
+        $this->myJobHolidaysRepository          = $myJobHolidaysRepository;
+        $this->myJobHolidaysPoolRepository      = $myJobHolidaysPoolRepository;
+        $this->myJobSettingsRepository          = $myJobSettingsRepository;
     }
 
     /**
