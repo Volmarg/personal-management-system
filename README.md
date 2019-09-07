@@ -143,7 +143,7 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 <li>Php 7.2.x</li>
 <li>JS</li>
 <li>JQ</li>
-<li>Symfony 4.2.x</li>
+<li>Symfony 4.3.2</li>
 <li>MySQL</li>
 <li>Css</li>
 <li>Scss</li>
