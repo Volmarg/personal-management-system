@@ -26,7 +26,11 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
                 mjhp.year                                       AS year,
                 mjhp.days_left                                  AS daysForYear,
                 SUM(mjh_days_spent.days_spent)                  AS daysSpent,
-                mjhp.days_left - SUM(mjh_days_spent.days_spent) AS daysLeftForYear
+                CASE
+                  WHEN SUM(mjh_days_spent.days_spent) IS NULL THEN mjhp.days_left 
+                ELSE
+                  mjhp.days_left - SUM(mjh_days_spent.days_spent)
+                END                                             AS daysLeftForYear
             
             FROM my_job_holidays_pool mjhp
             

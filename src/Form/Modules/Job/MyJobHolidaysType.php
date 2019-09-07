@@ -7,7 +7,10 @@ use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -31,16 +34,18 @@ class MyJobHolidaysType extends AbstractType
                 'choice_label'  => function ($options) {
                     return $options;
                 },
-                'required'      => 'required'
-                ])
-            ->add('daysSpent',null , [
+                'attr' => [
+                    'required' => 'required'
+                ]
+            ])
+            ->add('daysSpent',IntegerType::class , [
                 'attr' => [
                     'min'           => 1,
                     'placeholder'   => 'Amount of days that You want to spend'
                 ],
                 'label' => 'Days',
             ])
-            ->add('information', null, [
+            ->add('information', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Goal/Reason of spending holidays'
                 ],
