@@ -718,6 +718,114 @@ export default (function () {
                 },
                 entity_name: "My Job Afterhours",
             },
+            "MyJobHolidays": {
+                makeUpdateData: function (tr_parent_element) {
+                    let id          = $(tr_parent_element).find('.id').html();
+                    let year        = $(tr_parent_element).find('.year').html();
+                    let daysSpent   = $(tr_parent_element).find('.daysSpent').html();
+                    let information = $(tr_parent_element).find('.information').html();
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = '/my-job/holidays/update/';
+                    let ajax_data = {
+                        'year'          : year,
+                        'daysSpent'     : daysSpent,
+                        'information'   : information,
+                        'id'            : id,
+                    };
+                    return {
+                        'url': url,
+                        'data': ajax_data,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let id              = $(parent_element).find('.id').html();
+                    let url             = '/my-job/holidays/remove/';
+                    let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                    let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'data': {
+                            'id': id
+                        },
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                        'is_dataTable': false, //temporary
+                    };
+
+                },
+                makeCreateData: function () {
+                    let url             = '/my-job/holidays';
+                    let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                    let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                entity_name: "My Job Holidays",
+            },
+            "MyJobHolidaysPool": {
+                makeUpdateData: function (tr_parent_element) {
+                    let id          = $(tr_parent_element).find('.id').html();
+                    let year        = $(tr_parent_element).find('.year').html();
+                    let daysLeft    = $(tr_parent_element).find('.daysLeft').html();
+                    let companyName = $(tr_parent_element).find('.companyName').html();
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = '/my-job/holidays-pool/update/';
+                    let ajax_data = {
+                        'year'          : year,
+                        'daysLeft'      : daysLeft,
+                        'companyName'   : companyName,
+                        'id'            : id,
+                    };
+                    return {
+                        'url': url,
+                        'data': ajax_data,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let id              = $(parent_element).find('.id').html();
+                    let url             = '/my-job/holidays-pool/remove/';
+                    let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                    let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'data': {
+                            'id': id
+                        },
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                        'is_dataTable': false, //temporary
+                    };
+
+                },
+                makeCreateData: function () {
+                    let url             = '/my-job/settings';
+                    let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                    let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                entity_name: "My Job Holidays Pool",
+            },
             "MyShoppingPlans": {
                 makeUpdateData: function (tr_parent_element) {
                     let id = $(tr_parent_element).find('.id').html();
