@@ -13,15 +13,15 @@ class Travels {
     ];
 
     const IMAGES_IN_PUBLIC_DIR = [
-        "best+places+to+visit+near+Amritsar.jpeg","",
-        "canada-2-760x440.jpg","",
-        "Cinque-Tierre.jpg","",
-        "cochem-town-germany.jpg","",
-        "free-beautiful-place-wallpaper-hd-116.jpg","",
-        "hong-kong-asia-1525428283-1000X561.jpg","",
-        "jasper-national-park-medicine-lake.jpg","",
-        "moraine_lake_banff.jpg","",
-        "shutterstock_431693263.jpg","",
+        "best+places+to+visit+near+Amritsar.jpeg",
+        "canada-2-760x440.jpg",
+        "Cinque-Tierre.jpg",
+        "cochem-town-germany.jpg",
+        "free-beautiful-place-wallpaper-hd-116.jpg",
+        "hong-kong-asia-1525428283-1000X561.jpg",
+        "jasper-national-park-medicine-lake.jpg",
+        "moraine_lake_banff.jpg",
+        "shutterstock_431693263.jpg",
         "Twelve-Apostles-GettyImages-459760175.jpg",
     ];
 
