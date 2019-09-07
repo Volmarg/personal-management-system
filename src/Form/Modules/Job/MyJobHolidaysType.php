@@ -35,7 +35,7 @@ class MyJobHolidaysType extends AbstractType
                     return $options;
                 },
                 'attr' => [
-                    'required' => 'required'
+                    'required'      => 'required',
                 ]
             ])
             ->add('daysSpent',IntegerType::class , [

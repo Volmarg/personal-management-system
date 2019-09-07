@@ -16,14 +16,22 @@ class MyJobHolidaysPoolType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('year', IntegerType::class)
+            ->add('year', IntegerType::class, [
+                'attr' => [
+                    'placeholder' => "Add year"
+                ]
+            ])
             ->add('DaysLeft', IntegerType::class, [
                 'attr' => [
                     'min'           => 1,
                     'placeholder'   => 'Amount of days that You have for this year'
                 ]
             ])
-            ->add('CompanyName', TextType::class)
+            ->add('CompanyName', TextType::class, [
+                'attr' => [
+                    'placeholder' => 'Provide company name'
+                ]
+            ])
             ->add('submit', SubmitType::class)
         ;
     }
