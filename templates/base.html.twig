@@ -161,6 +161,8 @@
 
 {% block javascripts %}
     <script src="{{ asset('assets/app.js') }}"></script>
+    {# This script contains small bugfixes for liblaries that change something in dom #}
+    <script src="{{ asset('assets_/static-scripts/bugfixes.js') }}"></script>
 {% endblock %}
 
 {% include 'page-elements/components/messages/messages.twig' %}
