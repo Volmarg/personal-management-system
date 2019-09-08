@@ -23,7 +23,16 @@ final class Version20190824131917 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE my_job_afterhours CHANGE date date DATE NOT NULL');
-        $this->addSql("UPDATE my_car SET `date` = STR_TO_DATE(`date`, '%d-%m-%Y')");
+        $this->addSql("
+            UPDATE my_car SET `date` = 
+                CASE
+                    WHEN `date` IS NULL THEN NOW()
+                    WHEN `date` = '' THEN NOW()
+                ELSE
+                    STR_TO_DATE(`date`, '%d-%m-%Y')
+                END
+        ");
+
         $this->addSql('ALTER TABLE my_car CHANGE date date DATE NOT NULL');
 
         $this->addSql('ALTER TABLE my_goals_payments CHANGE deadline deadline DATE NOT NULL');
