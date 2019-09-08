@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Controller\Utils\Application;
+use App\Entity\FilesTags;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -19,14 +20,16 @@ use Symfony\Component\HttpFoundation\Response;
 class FileTagger {
 
     /**
-     * get entity based on filename or fullpath
-     * make prepare function where i set all vars as properties.
-     * throw exception if no preparation was done
-     * add isPrepared checker - if any var is not set - throw it
-     * extraction of filename/extension etc. should be handled by FilesHandler.
+     * TODO:
+     *  get entity based on filename or fullpath
+     *  make prepare function where i set all vars as properties.
+     *  throw exception if no preparation was done
+     *  add isPrepared checker - if any var is not set - throw it
+     *  extraction of filename/extension etc. should be handled by FilesHandler.
      */
 
     const TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE = "File tagger has not been prepared - did You call 'prepare()' method?";
+    const NO_TAGS_TO_ADD_RESPONSE               = "There were no new tags to add";
 
     /**
      * @var string
@@ -64,16 +67,12 @@ class FileTagger {
 
     /**
      * Set the vars to handle tagging for current file
-     * @param array $tags
+     * All the tags from input must be passed in as the difference between what's in DB will handle the corresponding action
+     * @param array $tags - empty is ok, this means we remove all tags
      * @param string $full_file_path
      * @throws \Exception
      */
     public function prepare(array $tags, string $full_file_path) {
-
-        if( empty($tags) ){
-            throw new \Exception("Tags array is empty!");
-        }
-
         $this->tags           = $tags;
         $this->filename       = FilesHandler::getFileNameFromFilePath($full_file_path);
         $this->module_name    = FilesHandler::getModuleNameForFilePath($full_file_path);
@@ -85,13 +84,14 @@ class FileTagger {
      * @throws \Exception
      */
     private function getEntity(){
+
         $all_files_with_tags = $this->app->repositories->filesTagsRepository->findBy([
             'fullFilePath' => $this->full_file_path
         ]);
 
         $counted_files_with_tags = count($all_files_with_tags);
 
-        if( $counted_files_with_tags > 1){
+        if( $counted_files_with_tags > 1 ){
             throw new \Exception("More than one FileTags records were found for given path '{$this->full_file_path}'! ");
         }
 
@@ -101,6 +101,7 @@ class FileTagger {
     }
 
     /**
+     * This function handles adding/removing tags
      * @throws \Exception
      */
     private function updateTags(){
@@ -109,20 +110,50 @@ class FileTagger {
             throw new \Exception(static::TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE);
         }
 
-        $file_with_tags      = $this->getEntity();
-        $current_tags_json   = $file_with_tags->getTags();
-        $current_tags_array  = $this->jsonTagsToArray($current_tags_json);
+        try {
 
-        $new_tags = array_diff($this->tags, $current_tags_array);
+            $file_with_tags = $this->getEntity();
 
-        if( empty($new_tags) )
-        {
-            return new Response("There were no new tags to add");
-        }
+            # no tags exist for that file, add them, or do nothing
+            if( empty($file_with_tags) && !empty($this->tags) ){
+                $tags_json = $this->arrayTagsToJson($this->tags);
 
-        try{
+                $file_tags = new FilesTags();
+                $file_tags->setFullFilePath($this->full_file_path);
+                $file_tags->setModuleName($this->module_name);
+                $file_tags->setDirectoryPath($this->directory_path);
+                $file_tags->setTags($tags_json);
 
-            $tags_array = array_merge($current_tags_array, $new_tags);
+                $this->app->em->persist($file_with_tags);
+                $this->app->em->flush();
+
+                return new Response("Tags have been created successfully.");
+            }
+
+            # no tags exist and not adding any
+            if ( empty($file_with_tags) && empty($this->tags) ){
+                return new Response(static::NO_TAGS_TO_ADD_RESPONSE);
+            }
+
+            # tags exist but we just removed them all
+            if( !empty($file_with_tags) && empty($this->tags) ){
+                $this->app->em->remove($file_with_tags);
+                $this->app->em->flush();
+
+                return new Response("All tags have been removed.");
+            }
+
+            $current_tags_json  = $file_with_tags->getTags();
+            $current_tags_array = $this->jsonTagsToArray($current_tags_json);
+
+            $new_tags           = array_diff($this->tags, $current_tags_array);
+            $common_tags        = array_intersect($this->tags, $current_tags_array);
+
+            if ( empty($new_tags) ) {
+                return new Response(static::NO_TAGS_TO_ADD_RESPONSE);
+            }
+
+            $tags_array = array_merge($new_tags, $common_tags);
             $tags_json  = $this->arrayTagsToJson($tags_array);
 
             $file_with_tags->setTags($tags_json);
@@ -130,40 +161,21 @@ class FileTagger {
             $this->app->em->persist($file_with_tags);
             $this->app->em->flush();
 
-        }catch(\Exception $e){
+            return new Response("Tags have been updated successfully");
+
+        } catch (\Exception $e) {
             return new Response("There was an error while updating the tags.");
         }
 
-        return new Response("Tags have been updated successfully");
     }
 
-    private function addTags(string $json, array $tags): string {
-        if( !$this->isPrepared() ){
-            throw new \Exception(static::TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE);
-        }
-
-    }
-
-    private function removeTags(array $tags): string {
-
-        $array_of_tags = $this->jsonTagsToArray($json);
-        $json          = '';
-
-        return $json;
-    }
-
-    private function removeAllTags(string $tags){
-
-    }
-
-    private function jsonTagsToArray(string $json):array {
-
-        $tags = [];
+    private function jsonTagsToArray(string $json): array {
+        $tags = \GuzzleHttp\json_decode($json, true);
         return $tags;
     }
 
     private function arrayTagsToJson(array $tags): string{
-        $json = '';
+        $json = \GuzzleHttp\json_encode($tags);
         return $json;
     }
 
@@ -173,7 +185,7 @@ class FileTagger {
     private function isPrepared(){
 
         if(
-            !isset($this->module_name)
+                !isset($this->module_name)
             ||  !isset($this->filename)
             ||  !isset($this->directory_path)
             ||  !isset($this->full_file_path)
