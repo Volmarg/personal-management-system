@@ -12,6 +12,7 @@ namespace App\Controller\Utils;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use App\Entity\Modules\Job\MyJobSettings;
+use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Repository\Modules\Car\MyCarRepository;
 use App\Repository\Modules\Car\MyCarSchedulesTypesRepository;
@@ -66,6 +67,7 @@ class Repositories extends AbstractController {
     const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME      = 'MyJobHolidaysPoolRepository';
     const MY_JOB_SETTINGS_REPOSITORY_NAME           = 'MyJobSettingsRepository';
     const MY_PAYMENTS_OWED_REPOSITORY_NAME          = 'MyPaymentsOwedRepository';
+    const FILE_TAGS_REPOSITORY                      = 'FilesTagsRepository';
 
     const PASSWORD_FIELD                            = 'password';
     /**
@@ -183,6 +185,11 @@ class Repositories extends AbstractController {
      */
     public $myPaymentsOwedRepository;
 
+    /**
+     * @var FilesTagsRepository
+     */
+    public $filesTagsRepository;
+
     public function __construct(
         MyNotesRepository               $myNotesRepository,
         MyCarRepository                 $myCarRepository,
@@ -206,7 +213,8 @@ class Repositories extends AbstractController {
         MyJobHolidaysRepository         $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository     $myJobHolidaysPoolRepository,
         MyJobSettingsRepository         $myJobSettingsRepository,
-        MyPaymentsOwedRepository        $myPaymentsOwedRepository
+        MyPaymentsOwedRepository        $myPaymentsOwedRepository,
+        FilesTagsRepository             $filesTagsRepository
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -231,6 +239,7 @@ class Repositories extends AbstractController {
         $this->myJobHolidaysPoolRepository      = $myJobHolidaysPoolRepository;
         $this->myJobSettingsRepository          = $myJobSettingsRepository;
         $this->myPaymentsOwedRepository         = $myPaymentsOwedRepository;
+        $this->filesTagsRepository              = $filesTagsRepository;
     }
 
     /**

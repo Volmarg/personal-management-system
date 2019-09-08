@@ -31,6 +31,8 @@ class FilesHandler {
 
     const FILE_KEY                      = 'file';
 
+    const FILE_PATH_IS_EMPTY_EXCEPTION_MESSAGE = 'File path is empty';
+
     /**
      * @var Application $application
      */
@@ -348,4 +350,28 @@ class FilesHandler {
         return $files_count_in_tree;
     }
 
+
+    public static function getFileNameFromFilePath(string $full_file_path){
+        if( empty($full_file_path) ){
+            throw new \Exception(static::FILE_PATH_IS_EMPTY_EXCEPTION_MESSAGE);
+        }
+
+        return '';
+    }
+
+    public static function getDirectoryPathInModuleUploadDirForFilePath(string $full_file_path){
+        if( empty($full_file_path) ){
+            throw new \Exception(static::FILE_PATH_IS_EMPTY_EXCEPTION_MESSAGE);
+        }
+
+        return '';
+    }
+
+    public static function getModuleNameForFilePath(string $full_file_path){
+        if( empty($full_file_path) ){
+            throw new \Exception(static::FILE_PATH_IS_EMPTY_EXCEPTION_MESSAGE);
+        }
+
+        return '';
+    }
 }
