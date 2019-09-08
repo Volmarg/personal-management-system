@@ -29,6 +29,7 @@ use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
+use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
@@ -64,6 +65,7 @@ class Repositories extends AbstractController {
     const MY_JOB_HOLIDAYS_REPOSITORY_NAME           = 'MyJobHolidaysRepository';
     const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME      = 'MyJobHolidaysPoolRepository';
     const MY_JOB_SETTINGS_REPOSITORY_NAME           = 'MyJobSettingsRepository';
+    const MY_PAYMENTS_OWED_REPOSITORY_NAME          = 'MyPaymentsOwedRepository';
 
     const PASSWORD_FIELD                            = 'password';
     /**
@@ -176,6 +178,11 @@ class Repositories extends AbstractController {
      */
     public $myJobSettingsRepository;
 
+    /**
+     * @var MyPaymentsOwedRepository
+     */
+    public $myPaymentsOwedRepository;
+
     public function __construct(
         MyNotesRepository               $myNotesRepository,
         MyCarRepository                 $myCarRepository,
@@ -198,7 +205,8 @@ class Repositories extends AbstractController {
         MyCarSchedulesTypesRepository   $myCarSchedulesTypesRepository,
         MyJobHolidaysRepository         $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository     $myJobHolidaysPoolRepository,
-        MyJobSettingsRepository         $myJobSettingsRepository
+        MyJobSettingsRepository         $myJobSettingsRepository,
+        MyPaymentsOwedRepository        $myPaymentsOwedRepository
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -222,6 +230,7 @@ class Repositories extends AbstractController {
         $this->myJobHolidaysRepository          = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository      = $myJobHolidaysPoolRepository;
         $this->myJobSettingsRepository          = $myJobSettingsRepository;
+        $this->myPaymentsOwedRepository         = $myPaymentsOwedRepository;
     }
 
     /**
