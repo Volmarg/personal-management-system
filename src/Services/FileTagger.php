@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Controller\Utils\Application;
 use App\Entity\FilesTags;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -30,7 +29,7 @@ class FileTagger {
 
     const TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE = "File tagger has not been prepared - did You call 'prepare()' method?";
     const NO_TAGS_TO_ADD_RESPONSE               = "There were no new tags to add";
-
+    const KEY_TAGS                              = 'tags';
     /**
      * @var string
      */
@@ -104,7 +103,7 @@ class FileTagger {
      * This function handles adding/removing tags
      * @throws \Exception
      */
-    private function updateTags(){
+    public function updateTags(){
 
         if( !$this->isPrepared() ){
             throw new \Exception(static::TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE);
@@ -121,10 +120,11 @@ class FileTagger {
                 $file_tags = new FilesTags();
                 $file_tags->setFullFilePath($this->full_file_path);
                 $file_tags->setModuleName($this->module_name);
+                $file_tags->setFilename('test');
                 $file_tags->setDirectoryPath($this->directory_path);
                 $file_tags->setTags($tags_json);
 
-                $this->app->em->persist($file_with_tags);
+                $this->app->em->persist($file_tags);
                 $this->app->em->flush();
 
                 return new Response("Tags have been created successfully.");
@@ -149,7 +149,9 @@ class FileTagger {
             $new_tags           = array_diff($this->tags, $current_tags_array);
             $common_tags        = array_intersect($this->tags, $current_tags_array);
 
-            if ( empty($new_tags) ) {
+            $are_tags_removed   = ( count($current_tags_array) !== count($common_tags) );
+
+            if ( empty($new_tags) && !$are_tags_removed ) {
                 return new Response(static::NO_TAGS_TO_ADD_RESPONSE);
             }
 
@@ -164,6 +166,7 @@ class FileTagger {
             return new Response("Tags have been updated successfully");
 
         } catch (\Exception $e) {
+            var_dump($e->getMessage());
             return new Response("There was an error while updating the tags.");
         }
 
