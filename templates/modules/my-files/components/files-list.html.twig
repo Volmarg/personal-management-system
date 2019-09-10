@@ -35,8 +35,9 @@
                 {{ size_in_mb | number_format(2) }}
             </td>
 
-            <td class="{{ KEY_TAGS }}" contenteditable="false">
-
+            <td>
+                {# cannot be set disabled here as it messes up inputs #}
+                <input class="{{ KEY_TAGS }}" type="text" value="test,test2"/>
             </td>
 
             <td contenteditable="false">

@@ -2,10 +2,12 @@
 
 namespace App\Controller\Modules\Files;
 
+use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Env;
 use App\Services\FileDownloader;
 use App\Services\FilesHandler;
+use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
@@ -43,12 +45,18 @@ class MyFilesController extends AbstractController
      */
     private $filesHandler;
 
-    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler) {
+    /**
+     * @var FilesTagsController $files_tags_controller
+     */
+    private $files_tags_controller;
+
+    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller) {
         $this->finder           = new Finder();
         $this->finder->depth('== 0');
 
-        $this->file_downloader  = $file_downloader;
-        $this->filesHandler     = $filesHandler;
+        $this->file_downloader       = $file_downloader;
+        $this->filesHandler          = $filesHandler;
+        $this->files_tags_controller = $files_tags_controller;
 
     }
 
@@ -173,6 +181,31 @@ class MyFilesController extends AbstractController
     }
 
     /**
+     * Handles file renaming and tags updating
+     * @Route("/api/my-files/update", name="my_files_update", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function update(Request $request){
+
+        if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
+            throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
+        }
+
+        $filepath = $_SERVER['DOCUMENT_ROOT'] . $request->request->get(static::KEY_FILE_FULL_PATH);
+
+        $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
+        $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
+
+        $this->filesHandler->renameFile($request);
+        $this->files_tags_controller->updateTags($tags_string, $filepath);
+
+        return $this->displayFiles($subdirectory, $request);
+    }
+
+    /**
+     * TODO: replace this with update() - this one is triggered when clicking the save() action on my-files
      * @Route("/my-files/rename-file", name="my_files_rename_file", methods="POST")
      * @param Request $request
      * @return Response

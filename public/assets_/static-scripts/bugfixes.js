@@ -7,7 +7,13 @@ preventSettingMasonryGalleryAsAbsolute();
  */
 function preventSettingMasonryGalleryAsAbsolute(){
     document.addEventListener("DOMContentLoaded", function() {
-        document.querySelector('.lightgallery .my-gallery').style = "";
-        document.querySelector('#aniimated-thumbnials').style     = "";
+        let myGallery  = document.querySelector('.lightgallery .my-gallery');
+        let thumbnails = document.querySelector('#aniimated-thumbnials');
+
+        if( null !== myGallery && null !== thumbnails ){
+            myGallery.style = "";
+            thumbnails.style = "";
+        }
+
     });
 }

@@ -1,4 +1,8 @@
-var bootbox = require('bootbox');
+var bootbox   = require('bootbox');
+import * as selectize from "selectize";
+import 'selectize/dist/css/selectize.css';
+import 'selectize/dist/css/selectize.default.css';
+
 
 export default (function () {
     if (typeof window.ui === 'undefined') {
@@ -24,6 +28,7 @@ export default (function () {
         },
         init: function () {
             this.applyAccordion();
+            this.applyTagsSelectize();
             this.callModalOnWidgetPlusIcon();
             this.addMonthlyPaymentSummaryToAccordinHeader();
             this.removeFolderOnFolderRemovalIconClick();
@@ -195,6 +200,20 @@ export default (function () {
                 });
 
             }
+
+        },
+        applyTagsSelectize: function(){
+
+            let allTagsInputsFields = $('input.tags');
+
+            $(allTagsInputsFields).selectize({
+                persist: false,
+                createOnBlur: true,
+                create: true
+            });
+
+            let allSelectizeRenderdInputWrappers = $('.selectize-control');
+            $(allSelectizeRenderdInputWrappers).addClass('disabled');
 
         }
     };

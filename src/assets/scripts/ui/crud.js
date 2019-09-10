@@ -1,4 +1,5 @@
 var bootbox = require('bootbox');
+import * as selectize from "selectize";
 
 export default (function () {
     window.ui = {};
@@ -298,7 +299,8 @@ export default (function () {
             let color_pickers   = $(tr_parent_element).find('.color-picker');
             let option_pickers  = $(tr_parent_element).find('.option-picker');
             let checkbox        = $(tr_parent_element).find('.checkbox-disabled');
-            let elements_to_toggle = [color_pickers, option_pickers, checkbox];
+            let selectize       = $(tr_parent_element).find('.selectize-control');
+            let elements_to_toggle = [color_pickers, option_pickers, checkbox, selectize];
             let _this = this;
 
             $(elements_to_toggle).each((index, element_type) => {
@@ -1658,7 +1660,10 @@ export default (function () {
                     let file_full_path      = $(tr_parent_element).find('input[name^="file_full_path"]').val();
                     let file_new_name       = $(tr_parent_element).find('.file_name').text();
 
-                    let url                 = '/my-files/rename-file';
+                    let selectizeSelect     = $(tr_parent_element).find('.tags');
+                    let tags                = $(selectizeSelect)[0].selectize.getValue();
+
+                    let url                 = '/api/my-files/update';
 
                     let success_message     = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                     let fail_message        = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1666,7 +1671,8 @@ export default (function () {
                     let ajax_data = {
                         'file_full_path'    : '/' + file_full_path, // must be this way as download works without "/" and removing with it
                         'file_new_name'     : file_new_name,
-                        'subdirectory'      : subdirectory
+                        'subdirectory'      : subdirectory,
+                        'tags'              : tags,
                     };
 
                     return {

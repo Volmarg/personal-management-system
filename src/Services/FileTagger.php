@@ -29,6 +29,7 @@ class FileTagger {
 
     const TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE = "File tagger has not been prepared - did You call 'prepare()' method?";
     const NO_TAGS_TO_ADD_RESPONSE               = "There were no new tags to add";
+    const ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE   = "All tags have been removed.";
     const KEY_TAGS                              = 'tags';
     /**
      * @var string
@@ -140,7 +141,7 @@ class FileTagger {
                 $this->app->em->remove($file_with_tags);
                 $this->app->em->flush();
 
-                return new Response("All tags have been removed.");
+                return new Response(static::ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE);
             }
 
             $current_tags_json  = $file_with_tags->getTags();
@@ -168,6 +169,25 @@ class FileTagger {
         } catch (\Exception $e) {
             var_dump($e->getMessage());
             return new Response("There was an error while updating the tags.");
+        }
+
+    }
+
+    /**
+     * @return Response
+     * @throws \Exception
+     */
+    public function removeTags(){
+
+        $file_with_tags = $this->getEntity();
+
+        # no tags exist for that file, add them, or do nothing
+        if( empty($file_with_tags) ){
+            return new Response("There were no tags to remove");
+        }else{
+            $this->app->em->remove($file_with_tags);
+            $this->app->em->flush();
+            return new Response(static::ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE);
         }
 
     }
