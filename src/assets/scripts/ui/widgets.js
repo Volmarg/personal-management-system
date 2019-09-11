@@ -28,7 +28,8 @@ export default (function () {
         },
         init: function () {
             this.applyAccordion();
-            this.applyTagsSelectize();
+            this.selectize.applyTagsSelectize();
+            this.selectize.disableTagsInputsForSelectorsOnPage();
             this.callModalOnWidgetPlusIcon();
             this.addMonthlyPaymentSummaryToAccordinHeader();
             this.removeFolderOnFolderRemovalIconClick();
@@ -202,19 +203,62 @@ export default (function () {
             }
 
         },
-        applyTagsSelectize: function(){
+        selectize: {
+            applyTagsSelectize: function(){
 
-            let allTagsInputsFields = $('input.tags');
+                let allTagsInputsFields = $('input.tags');
+                let _this               = ui.widgets.selectize;
 
-            $(allTagsInputsFields).selectize({
-                persist: false,
-                createOnBlur: true,
-                create: true
-            });
+                // init tags with data from server
+                $.each(allTagsInputsFields, (index, input) => {
 
-            let allSelectizeRenderdInputWrappers = $('.selectize-control');
-            $(allSelectizeRenderdInputWrappers).addClass('disabled');
+                    let jsonValues   = $(input).attr('data-value');
+                    let objectValues = [];
+                    if( "" !== jsonValues ){
+                        objectValues = JSON.parse(jsonValues);
+                    }
+                    let selectize = $(input).selectize({
+                        persist     : false,
+                        createOnBlur: true,
+                        create      : true,
+                    });
 
+                    _this.addTagsToSelectize(selectize, objectValues);
+
+                });
+
+            },
+            addTagsToSelectize(selectize, arrayOfTags){
+
+                var selectize_element = selectize[0].selectize;
+
+                $.each(arrayOfTags, (index, value) => {
+                    selectize_element.addOption({
+                        text    : value,
+                        value   : value
+                    });
+                    selectize_element.refreshOptions() ;
+                    selectize_element.addItem(value);
+                });
+
+            },
+            disableTagsInputsForSelectorsOnPage: function (){
+
+                let disableForSelectorsOnPage = ['#MyFiles'];
+
+                // search for selectors on page and if found disable tags
+                $.each(disableForSelectorsOnPage, (index, selector) => {
+                    if ( $(selector).length > 0 )
+                    {
+                        let allSelectizeRenderdInputWrappers = $('.selectize-control');
+                        $(allSelectizeRenderdInputWrappers).addClass('disabled');
+
+                        return false;
+                    }
+                });
+
+            }
         }
+
     };
 }());

@@ -4,6 +4,7 @@ namespace App\Controller\Modules\Files;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Services\FileDownloader;
 use App\Services\FilesHandler;
@@ -50,13 +51,19 @@ class MyFilesController extends AbstractController
      */
     private $files_tags_controller;
 
-    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller) {
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller, Application $app) {
         $this->finder           = new Finder();
         $this->finder->depth('== 0');
 
         $this->file_downloader       = $file_downloader;
         $this->filesHandler          = $filesHandler;
         $this->files_tags_controller = $files_tags_controller;
+        $this->app                   = $app;
 
     }
 
@@ -86,7 +93,7 @@ class MyFilesController extends AbstractController
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $search_dir              = (empty($decoded_subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
+        $search_dir             = (empty($decoded_subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
         $files_count_in_tree    = FilesHandler::countFilesInTree($search_dir);
 
         # A bit dirty workaround
@@ -149,11 +156,21 @@ class MyFilesController extends AbstractController
 
         foreach ($this->finder as $index => $file) {
 
+            $file_full_path = $file->getPath() . '/' . $file->getFilename();
+            $files_tags     = $this->app->repositories->filesTagsRepository->findBy(['fullFilePath' => $file_full_path]);
+            $tags_json      = "";
+
+            if( count($files_tags) === 1 ){
+                $file_tags = reset($files_tags);
+                $tags_json = $file_tags->getTags();
+            }
+
             $all_files[$index] = [
                 static::KEY_FILE_NAME      => $file->getFilenameWithoutExtension(),
                 static::KEY_FILE_SIZE      => $file->getSize(),
                 static::KEY_FILE_EXTENSION => $file->getExtension(),
-                static::KEY_FILE_FULL_PATH => $file->getPath() . '/' . $file->getFilename()
+                static::KEY_FILE_FULL_PATH => $file_full_path,
+                FileTagger::KEY_TAGS       => $tags_json
             ];
 
         }
@@ -193,8 +210,7 @@ class MyFilesController extends AbstractController
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
         }
 
-        $filepath = $_SERVER['DOCUMENT_ROOT'] . $request->request->get(static::KEY_FILE_FULL_PATH);
-
+        $filepath     = $request->request->get(static::KEY_FILE_FULL_PATH);
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
 

@@ -37,7 +37,7 @@
 
             <td>
                 {# cannot be set disabled here as it messes up inputs #}
-                <input class="{{ KEY_TAGS }}" type="text" value="test,test2"/>
+                <input class="{{ KEY_TAGS }}" type="text" data-value="{{ file.tags }}" data-value=""/>
             </td>
 
             <td contenteditable="false">
@@ -61,3 +61,5 @@
 
     </tbody>
 </table>
+
+<input class="TEST"/>
