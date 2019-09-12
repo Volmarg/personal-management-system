@@ -1,7 +1,7 @@
 var bootbox   = require('bootbox');
 import * as selectize from "selectize";
 import 'selectize/dist/css/selectize.css';
-import 'selectize/dist/css/selectize.default.css';
+import 'selectize/dist/css/selectize.bootstrap3.css';
 
 
 export default (function () {

@@ -48,10 +48,16 @@ class FilesHandler {
      */
     private $logger;
 
-    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger) {
+    /**
+     * @var FileTagger $file_tagger
+     */
+    private $file_tagger;
+
+    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger) {
         $this->application          = $application;
         $this->directories_handle   = $directories_handler;
         $this->logger               = $logger;
+        $this->file_tagger          = $file_tagger;
 
     }
 
@@ -269,7 +275,9 @@ class FilesHandler {
      * @return JsonResponse
      * @throws \Exception
      */
-    public function renameFile(Request $request) {
+    public function renameFile(Request $request) { #TODO: rename byRequest
+
+        #TODO: refactor this part for handling update with relative path + all the trimming etc...
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
@@ -279,32 +287,38 @@ class FilesHandler {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_NEW_NAME);
         }
 
-        $filepath               = $_SERVER['DOCUMENT_ROOT'].$request->request->get(static::KEY_FILE_FULL_PATH);
-        $filename               = basename($filepath);
+        $relative_filepath      = $request->request->get(static::KEY_FILE_FULL_PATH);
+        $absolute_filepath      = $_SERVER['DOCUMENT_ROOT'].$relative_filepath;
+        $filename               = basename($absolute_filepath);
         $curr_file_extension    = pathinfo($filename, PATHINFO_EXTENSION);
 
-        $filedir                = str_replace($filename, '', $filepath);
-        $new_filename           = $request->request->get(static::KEY_FILE_NEW_NAME);
+        $filedir                = str_replace($filename, '', $absolute_filepath);
+        $new_filename           = trim($request->request->get(static::KEY_FILE_NEW_NAME));
         $new_file_extension     = pathinfo($new_filename, PATHINFO_EXTENSION);
 
-        $new_file_path          = $filedir.trim($new_filename);
+        $new_relative_file_path = dirname($relative_filepath).'/'.$new_filename;
+        $new_absolute_file_path = $filedir.$new_filename;
 
         if( $curr_file_extension !== $new_file_extension ){
-            $new_file_path .= '.' . $curr_file_extension;
+            $new_relative_file_path .= '.' . $curr_file_extension;
+            $new_absolute_file_path .= '.' . $curr_file_extension;
         }
 
         if( empty($new_filename) ){
             return new JsonResponse('File name cannot be empty!', 500);
         }
 
+        if( $absolute_filepath === $new_absolute_file_path){
+            return new JsonResponse('File name remains the same.', 200);
+        }
+
         try{
 
-            if( $filepath === $new_file_path){
-                return new JsonResponse('File name remains the same.', 200);
-            }
+            if( !file_exists($new_absolute_file_path) ) {
 
-            if( !file_exists($new_file_path) ) {
-                rename($filepath, $new_file_path);
+                rename($absolute_filepath, $new_absolute_file_path);
+                $this->file_tagger->updateFilePathForTaggerEntity($relative_filepath, $new_relative_file_path);
+
                 return new JsonResponse('File has been successfully renamed.', 200);
             }else{
                 return new JsonResponse('File with this name already exist.', 500);
@@ -315,6 +329,8 @@ class FilesHandler {
         }
 
     }
+
+    # Todo add renameFile method with params and then use that version on fileUpdate for example
 
     public function moveSingleFile(string $current_file_location, string $target_file_location) {
 

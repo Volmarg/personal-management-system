@@ -57,7 +57,7 @@ class MyFilesController extends AbstractController
     private $app;
 
     public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller, Application $app) {
-        $this->finder           = new Finder();
+        $this->finder = new Finder();
         $this->finder->depth('== 0');
 
         $this->file_downloader       = $file_downloader;
@@ -219,20 +219,5 @@ class MyFilesController extends AbstractController
 
         return $this->displayFiles($subdirectory, $request);
     }
-
-    /**
-     * TODO: replace this with update() - this one is triggered when clicking the save() action on my-files
-     * @Route("/my-files/rename-file", name="my_files_rename_file", methods="POST")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
-    public function renameFileViaPost(Request $request) {
-        $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
-        $this->filesHandler->renameFile($request);
-
-        return $this->displayFiles($subdirectory, $request);
-    }
-
 
 }

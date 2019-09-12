@@ -77,25 +77,37 @@ class FileTagger {
         $this->filename       = FilesHandler::getFileNameFromFilePath($full_file_path);
         $this->module_name    = FilesHandler::getModuleNameForFilePath($full_file_path);
         $this->directory_path = FilesHandler::getDirectoryPathInModuleUploadDirForFilePath($full_file_path);
-        $this->full_file_path = $full_file_path;
+        $this->full_file_path = static::rebuildFilePathForTagging($full_file_path);
     }
 
     /**
+     * This method will get the fileTags entity for full file path,
+     * By default the full file path passed as param will be used but if param is passed then it will be used in search
+     * @param string|null $file_full_path
+     * @return FilesTags
      * @throws \Exception
      */
-    private function getEntity(){
+    private function getEntity(? string $file_full_path = null): ?FilesTags {
+
+        $file_full_path = ( is_null($file_full_path) ? $this->full_file_path : $file_full_path );
+
 
         $all_files_with_tags = $this->app->repositories->filesTagsRepository->findBy([
-            'fullFilePath' => $this->full_file_path
+            'fullFilePath' => $file_full_path
         ]);
 
         $counted_files_with_tags = count($all_files_with_tags);
 
         if( $counted_files_with_tags > 1 ){
-            throw new \Exception("More than one FileTags records were found for given path '{$this->full_file_path}'! ");
+            throw new \Exception("More than one FileTags records were found for given path '{$file_full_path}'! ");
         }
 
-        $file_with_tags = reset($all_files_with_tags);
+        if( empty($all_files_with_tags) ){
+            return null;
+        } else {
+            $file_with_tags = reset($all_files_with_tags);
+
+        }
 
         return $file_with_tags;
     }
@@ -218,6 +230,48 @@ class FileTagger {
         }
 
         return true;
+    }
+
+    /**
+     * @param string $old_file_path
+     * @param string $new_file_path
+     * @throws \Exception
+     */
+    public function updateFilePathForTaggerEntity(string $old_file_path, string $new_file_path) {
+
+        #TODO: remove the rebuild method
+        $file_tags = $this->getEntity(static::rebuildFilePathForTagging($old_file_path));
+
+        if( !$file_tags ){
+            return;
+        }
+
+        #TODO: remove the rebuild method
+        $file_tags->setFullFilePath(static::rebuildFilePathForTagging($new_file_path));
+
+        $this->app->em->persist($file_tags);
+        $this->app->em->flush();
+
+    }
+
+    /**
+        #TODO: SOLVE THIS NOW
+     * Problem will file paths is that download mechanism is based on path with leading "/", menu building tree
+     * however is not using leading JS, also js is not using it, but then in some cases the path needs to be saved in db
+     * for file tags, and since js is using full file path without leading "/" i also want the same one in db.
+     * if possible, the files path should be standardized at some point to work without this function
+     * @param $full_file_path
+     * @return string
+     */
+    public static function rebuildFilePathForTagging(string $full_file_path){
+        $slash_position   = strpos($full_file_path, '/');
+        $is_leading_slash = ( $slash_position === 0 );
+
+        if( $is_leading_slash ){
+            $full_file_path = substr($full_file_path, 1);
+        }
+
+        return $full_file_path;
     }
 
 }
