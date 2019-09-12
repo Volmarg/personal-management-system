@@ -1669,7 +1669,7 @@ export default (function () {
                     let fail_message        = ui.crud.messages.entityUpdateFail(this.entity_name);
 
                     let ajax_data = {
-                        'file_full_path'    : '/' + file_full_path, // must be this way as download works without "/" and removing with it
+                        'file_full_path'    : file_full_path,
                         'file_new_name'     : file_new_name,
                         'subdirectory'      : subdirectory,
                         'tags'              : tags,

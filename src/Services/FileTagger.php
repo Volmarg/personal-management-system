@@ -77,7 +77,7 @@ class FileTagger {
         $this->filename       = FilesHandler::getFileNameFromFilePath($full_file_path);
         $this->module_name    = FilesHandler::getModuleNameForFilePath($full_file_path);
         $this->directory_path = FilesHandler::getDirectoryPathInModuleUploadDirForFilePath($full_file_path);
-        $this->full_file_path = static::rebuildFilePathForTagging($full_file_path);
+        $this->full_file_path = $full_file_path;
     }
 
     /**
@@ -239,39 +239,17 @@ class FileTagger {
      */
     public function updateFilePathForTaggerEntity(string $old_file_path, string $new_file_path) {
 
-        #TODO: remove the rebuild method
-        $file_tags = $this->getEntity(static::rebuildFilePathForTagging($old_file_path));
+        $file_tags = $this->getEntity($old_file_path);
 
         if( !$file_tags ){
             return;
         }
 
-        #TODO: remove the rebuild method
-        $file_tags->setFullFilePath(static::rebuildFilePathForTagging($new_file_path));
+        $file_tags->setFullFilePath($new_file_path);
 
         $this->app->em->persist($file_tags);
         $this->app->em->flush();
 
-    }
-
-    /**
-        #TODO: SOLVE THIS NOW
-     * Problem will file paths is that download mechanism is based on path with leading "/", menu building tree
-     * however is not using leading JS, also js is not using it, but then in some cases the path needs to be saved in db
-     * for file tags, and since js is using full file path without leading "/" i also want the same one in db.
-     * if possible, the files path should be standardized at some point to work without this function
-     * @param $full_file_path
-     * @return string
-     */
-    public static function rebuildFilePathForTagging(string $full_file_path){
-        $slash_position   = strpos($full_file_path, '/');
-        $is_leading_slash = ( $slash_position === 0 );
-
-        if( $is_leading_slash ){
-            $full_file_path = substr($full_file_path, 1);
-        }
-
-        return $full_file_path;
     }
 
 }

@@ -55,7 +55,7 @@ class FilesController extends AbstractController {
      * @throws \Exception
      */
     public function renameFileViaPost(Request $request) {
-        $response = $this->filesHandler->renameFile($request);
+        $response = $this->filesHandler->renameFileViaRequest($request);
         return $response;
     }
 

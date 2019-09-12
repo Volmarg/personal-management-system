@@ -275,9 +275,7 @@ class FilesHandler {
      * @return JsonResponse
      * @throws \Exception
      */
-    public function renameFile(Request $request) { #TODO: rename byRequest
-
-        #TODO: refactor this part for handling update with relative path + all the trimming etc...
+    public function renameFileViaRequest(Request $request): JsonResponse {
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
@@ -287,38 +285,40 @@ class FilesHandler {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_NEW_NAME);
         }
 
-        $relative_filepath      = $request->request->get(static::KEY_FILE_FULL_PATH);
-        $absolute_filepath      = $_SERVER['DOCUMENT_ROOT'].$relative_filepath;
-        $filename               = basename($absolute_filepath);
-        $curr_file_extension    = pathinfo($filename, PATHINFO_EXTENSION);
+        $curr_relative_filepath     = $request->request->get(static::KEY_FILE_FULL_PATH);
+        $curr_relative_dirpath      = pathinfo($curr_relative_filepath, PATHINFO_DIRNAME);
+        $curr_file_extension        = pathinfo($curr_relative_filepath, PATHINFO_EXTENSION);
 
-        $filedir                = str_replace($filename, '', $absolute_filepath);
-        $new_filename           = trim($request->request->get(static::KEY_FILE_NEW_NAME));
-        $new_file_extension     = pathinfo($new_filename, PATHINFO_EXTENSION);
+        $new_filename                = pathinfo(trim($request->request->get(static::KEY_FILE_NEW_NAME)),PATHINFO_FILENAME);
+        $new_filename_with_extension = static::buildFilenameWithExtension($new_filename, $curr_file_extension);
+        $new_relative_file_path      = static::buildFileFullPathFromDirLocationAndFileName($curr_relative_dirpath, $new_filename_with_extension);
 
-        $new_relative_file_path = dirname($relative_filepath).'/'.$new_filename;
-        $new_absolute_file_path = $filedir.$new_filename;
+        $response = $this->renameFile($curr_relative_filepath, $new_relative_file_path);
 
-        if( $curr_file_extension !== $new_file_extension ){
-            $new_relative_file_path .= '.' . $curr_file_extension;
-            $new_absolute_file_path .= '.' . $curr_file_extension;
+        return $response;
+    }
+
+    /**
+     * @param string $curr_relative_filepath
+     * @param string $new_relative_file_path
+     * @return JsonResponse
+     */
+    public function renameFile(string $curr_relative_filepath, string $new_relative_file_path): JsonResponse {
+
+        if( $new_relative_file_path === $curr_relative_filepath){
+            return new JsonResponse('File name remains the same.', 200);
         }
+
+        $new_filename = pathinfo($new_relative_file_path, PATHINFO_FILENAME);
 
         if( empty($new_filename) ){
             return new JsonResponse('File name cannot be empty!', 500);
         }
 
-        if( $absolute_filepath === $new_absolute_file_path){
-            return new JsonResponse('File name remains the same.', 200);
-        }
-
         try{
 
-            if( !file_exists($new_absolute_file_path) ) {
-
-                rename($absolute_filepath, $new_absolute_file_path);
-                $this->file_tagger->updateFilePathForTaggerEntity($relative_filepath, $new_relative_file_path);
-
+            if( !file_exists($new_relative_file_path) ) {
+                rename($curr_relative_filepath, $new_relative_file_path);
                 return new JsonResponse('File has been successfully renamed.', 200);
             }else{
                 return new JsonResponse('File with this name already exist.', 500);
@@ -329,8 +329,6 @@ class FilesHandler {
         }
 
     }
-
-    # Todo add renameFile method with params and then use that version on fileUpdate for example
 
     public function moveSingleFile(string $current_file_location, string $target_file_location) {
 
@@ -351,6 +349,47 @@ class FilesHandler {
             return new JsonResponse("Could not move the file.", 500);
         }
 
+    }
+
+    /**
+     * Builds file full path from directory path and filename
+     * @param string $dir_path
+     * @param string $filename
+     * @return string
+     */
+    public static function buildFileFullPathFromDirLocationAndFileName(string $dir_path, string $filename): string {
+
+        $trimmed_dir_path = static::trimFirstAndLastSlash($dir_path);
+        $fileFullPath     = $trimmed_dir_path.DIRECTORY_SEPARATOR.$filename;
+
+        return $fileFullPath;
+    }
+
+    public static function buildFilenameWithExtension(string $filename, string $extension): string {
+        $filename_with_extension = $filename . '.' . $extension;
+        return $filename_with_extension;
+    }
+
+    /**
+     * Removes first and last slash from $dir_path
+     * @param string $dir_path
+     * @return bool|string
+     */
+    public static function trimFirstAndLastSlash(string $dir_path) {
+        $trimmed_dir_path = $dir_path;
+
+        $is_leading_slash  = ( substr($dir_path, 0, 1) === "/" );
+        $is_last_slash     = ( substr($dir_path, -1) === "/" );
+
+        if( $is_leading_slash ){
+            $trimmed_dir_path = substr($trimmed_dir_path, 1);
+        }
+
+        if( $is_last_slash ){
+            $trimmed_dir_path = substr($trimmed_dir_path, 0, -1);
+        }
+
+        return $trimmed_dir_path;
     }
 
     /**

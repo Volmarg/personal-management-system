@@ -78,22 +78,22 @@ class MyFilesController extends AbstractController
         $ajax_render                      = false;
         $upload_dir                       = Env::getFilesUploadDir();
         $decoded_subdirectory_path        = urldecode($encoded_subdirectory_path);
-        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $decoded_subdirectory_path);
+        $subdirectory_path                = FilesHandler::trimFirstAndLastSlash($decoded_subdirectory_path);
+        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory_path);
 
         if( !file_exists($subdir_path_in_module_upload_dir) ){
-            $this->addFlash('danger', "Folder '{$decoded_subdirectory_path} does not exist.");
+            $this->addFlash('danger', "Folder '{$subdirectory_path} does not exist.");
             return $this->redirectToRoute('upload');
         }
 
-        if (empty($decoded_subdirectory_path)) {
-            $files                     = $this->getMainFolderFiles();
+        if (empty($subdirectory_path)) {
+            $files = $this->getMainFolderFiles();
         } else {
-            $decoded_subdirectory_path = urldecode($decoded_subdirectory_path);
-            $files                     = $this->getFilesFromSubdirectory($decoded_subdirectory_path);
+            $files = $this->getFilesFromSubdirectory($subdirectory_path);
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $search_dir             = (empty($decoded_subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
+        $search_dir             = (empty($subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
         $files_count_in_tree    = FilesHandler::countFilesInTree($search_dir);
 
         # A bit dirty workaround
@@ -105,12 +105,12 @@ class MyFilesController extends AbstractController
             $ajax_render = true;
         }
 
-        $is_main_dir = ( empty($decoded_subdirectory_path) );
+        $is_main_dir = ( empty($subdirectory_path) );
 
         $data = [
             'ajax_render'           => $ajax_render,
             'files'                 => $files,
-            'subdirectory_path'     => $decoded_subdirectory_path,
+            'subdirectory_path'     => $subdirectory_path,
             'files_count_in_tree'   => $files_count_in_tree,
             'upload_module_dir'     => static::TARGET_UPLOAD_DIR,
             'is_main_dir'           => $is_main_dir
@@ -156,6 +156,7 @@ class MyFilesController extends AbstractController
 
         foreach ($this->finder as $index => $file) {
 
+            // get Path returns // - BUG
             $file_full_path = $file->getPath() . '/' . $file->getFilename();
             $files_tags     = $this->app->repositories->filesTagsRepository->findBy(['fullFilePath' => $file_full_path]);
             $tags_json      = "";
@@ -214,9 +215,10 @@ class MyFilesController extends AbstractController
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
 
-        $this->filesHandler->renameFile($request);
+        $this->filesHandler->renameFileViaRequest($request);
         $this->files_tags_controller->updateTags($tags_string, $filepath);
-
+        #todo handle files renaming alongside with moving tags
+        # $this->file_tagger->updateFilePathForTaggerEntity($curr_relative_filepath, $new_relative_file_path);
         return $this->displayFiles($subdirectory, $request);
     }
 
