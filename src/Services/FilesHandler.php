@@ -48,17 +48,10 @@ class FilesHandler {
      */
     private $logger;
 
-    /**
-     * @var FileTagger $file_tagger
-     */
-    private $file_tagger;
-
-    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger) {
+    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger) {
         $this->application          = $application;
         $this->directories_handle   = $directories_handler;
         $this->logger               = $logger;
-        $this->file_tagger          = $file_tagger;
-
     }
 
     /**
@@ -270,10 +263,11 @@ class FilesHandler {
 
     /**
      * @param Request $request
+     * @param callable $callback
      * @return JsonResponse
      * @throws \Exception
      */
-    public function renameFileViaRequest(Request $request): JsonResponse {
+    public function renameFileViaRequest(Request $request, callable $callback): JsonResponse {
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
@@ -292,6 +286,10 @@ class FilesHandler {
         $new_relative_file_path      = static::buildFileFullPathFromDirLocationAndFileName($curr_relative_dirpath, $new_filename_with_extension);
 
         $response = $this->renameFile($curr_relative_filepath, $new_relative_file_path);
+
+        if( is_callable($callback) ){
+            $callback($curr_relative_filepath, $new_relative_file_path);
+        }
 
         return $response;
     }

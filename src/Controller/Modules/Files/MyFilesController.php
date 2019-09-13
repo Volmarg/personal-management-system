@@ -56,7 +56,12 @@ class MyFilesController extends AbstractController
      */
     private $app;
 
-    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller, Application $app) {
+    /**
+     * @var FileTagger $file_tagger
+     */
+    private $file_tagger;
+
+    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller, Application $app, FileTagger $file_tagger) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
 
@@ -64,6 +69,7 @@ class MyFilesController extends AbstractController
         $this->filesHandler          = $filesHandler;
         $this->files_tags_controller = $files_tags_controller;
         $this->app                   = $app;
+        $this->file_tagger           = $file_tagger;
 
     }
 
@@ -211,14 +217,15 @@ class MyFilesController extends AbstractController
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
         }
 
-        $filepath     = $request->request->get(static::KEY_FILE_FULL_PATH);
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
 
-        $this->filesHandler->renameFileViaRequest($request);
-        $this->files_tags_controller->updateTags($tags_string, $filepath);
-        #todo handle files renaming alongside with moving tags
-        # $this->file_tagger->updateFilePathForTaggerEntity($curr_relative_filepath, $new_relative_file_path);
+        $updateFilePathAndTagsForTaggerEntity = function ($curr_relative_filepath, $new_relative_file_path) use($tags_string) {
+            $this->file_tagger->updateFilePathForTaggerEntity($curr_relative_filepath, $new_relative_file_path);
+            $this->files_tags_controller->updateTags($tags_string, $new_relative_file_path);
+        };
+
+        $this->filesHandler->renameFileViaRequest($request, $updateFilePathAndTagsForTaggerEntity);
         return $this->displayFiles($subdirectory, $request);
     }
 
