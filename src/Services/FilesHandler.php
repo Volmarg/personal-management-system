@@ -48,10 +48,16 @@ class FilesHandler {
      */
     private $logger;
 
-    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger) {
+    /**
+     * @var FileTagger $file_tagger
+     */
+    private $file_tagger;
+
+    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger) {
         $this->application          = $application;
         $this->directories_handle   = $directories_handler;
         $this->logger               = $logger;
+        $this->file_tagger          = $file_tagger;
     }
 
     /**
@@ -250,6 +256,10 @@ class FilesHandler {
 
             if( file_exists($filepath) ) {
                 unlink($filepath);
+
+                $this->file_tagger->prepare([], $filepath);
+                $this->file_tagger->updateTags();
+
                 return new JsonResponse('File has been successfully removed.', 200);
             }else{
                 return new JsonResponse('File does not exist.', 404);
