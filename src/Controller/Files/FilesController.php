@@ -90,16 +90,11 @@ class FilesController extends AbstractController {
         if ( $subdirectory_target_path_in_module_upload_dir === $target_directory_in_upload_dir ){
             $subdirectory_path_in_upload_dir = $target_directory_in_upload_dir;
         }else{
-            $subdirectory_path_in_upload_dir  = $target_directory_in_upload_dir.'/'.$subdirectory_target_path_in_module_upload_dir;
+            $subdirectory_path_in_upload_dir  = $target_directory_in_upload_dir.DIRECTORY_SEPARATOR.$subdirectory_target_path_in_module_upload_dir;
         }
 
         $filename               = basename($current_file_location);
-        $target_file_location   = $subdirectory_path_in_upload_dir.'/'.$filename;
-
-        //In some cases the path starts with "/" on frontend and this is required there but here we want path without it
-        if( preg_match("#^\/#", $current_file_location) ){
-            $current_file_location = preg_replace('#^\/#','',$current_file_location);
-        }
+        $target_file_location   = FilesHandler::buildFileFullPathFromDirLocationAndFileName($subdirectory_path_in_upload_dir, $filename);
 
         $response = $this->filesHandler->moveSingleFile($current_file_location, $target_file_location);
 
@@ -152,7 +147,5 @@ class FilesController extends AbstractController {
 
         return new JsonResponse($response_data);
     }
-
-
 
 }

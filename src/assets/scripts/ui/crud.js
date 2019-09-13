@@ -1694,7 +1694,7 @@ export default (function () {
                     return {
                         'url'               : url,
                         'data'              : {
-                            'file_full_path'    : '/' + file_full_path, // must be this way as download works without "/" and removing with it
+                            'file_full_path'    : file_full_path,
                             'subdirectory'      : subdirectory
                         },
                         'success_message'   : success_message,

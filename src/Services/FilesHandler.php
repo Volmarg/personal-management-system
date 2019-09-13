@@ -139,8 +139,8 @@ class FilesHandler {
         # checking if it's not main dir
         if( $current_target_directory !== $current_directory_path_in_module_upload_dir ){
 
-            $current_subdirectory_path = $current_target_directory . '/' . $current_directory_path_in_module_upload_dir;
-            $target_subdirectory_path  = $new_target_directory. '/' . $target_directory_path_in_module_upload_dir;
+            $current_subdirectory_path = $current_target_directory . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
+            $target_subdirectory_path  = $new_target_directory. DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
 
             if( !file_exists($current_subdirectory_path) ){
                 $message = 'Current subdirectory does not exist.';
@@ -255,10 +255,8 @@ class FilesHandler {
 
         try{
 
-            $file_location = $_SERVER['DOCUMENT_ROOT'] . $filepath;
-
-            if( file_exists($file_location) ) {
-                unlink($file_location);
+            if( file_exists($filepath) ) {
+                unlink($filepath);
                 return new JsonResponse('File has been successfully removed.', 200);
             }else{
                 return new JsonResponse('File does not exist.', 404);
@@ -360,13 +358,13 @@ class FilesHandler {
     public static function buildFileFullPathFromDirLocationAndFileName(string $dir_path, string $filename): string {
 
         $trimmed_dir_path = static::trimFirstAndLastSlash($dir_path);
-        $fileFullPath     = $trimmed_dir_path.DIRECTORY_SEPARATOR.$filename;
+        $fileFullPath     = $trimmed_dir_path . DIRECTORY_SEPARATOR . $filename;
 
         return $fileFullPath;
     }
 
     public static function buildFilenameWithExtension(string $filename, string $extension): string {
-        $filename_with_extension = $filename . '.' . $extension;
+        $filename_with_extension = $filename . DOT . $extension;
         return $filename_with_extension;
     }
 
@@ -378,8 +376,8 @@ class FilesHandler {
     public static function trimFirstAndLastSlash(string $dir_path) {
         $trimmed_dir_path = $dir_path;
 
-        $is_leading_slash  = ( substr($dir_path, 0, 1) === "/" );
-        $is_last_slash     = ( substr($dir_path, -1) === "/" );
+        $is_leading_slash  = ( substr($dir_path, 0, 1) === DIRECTORY_SEPARATOR );
+        $is_last_slash     = ( substr($dir_path, -1) === DIRECTORY_SEPARATOR );
 
         if( $is_leading_slash ){
             $trimmed_dir_path = substr($trimmed_dir_path, 1);
