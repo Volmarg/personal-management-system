@@ -277,7 +277,7 @@ class FilesHandler {
      * @return JsonResponse
      * @throws \Exception
      */
-    public function renameFileViaRequest(Request $request, callable $callback): JsonResponse {
+    public function renameFileViaRequest(Request $request, callable $callback = null): JsonResponse {
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
             throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);

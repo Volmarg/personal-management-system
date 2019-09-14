@@ -2,11 +2,16 @@
 
 namespace App\Controller\Modules\Images;
 
+use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Dialogs;
 use App\Controller\Utils\Env;
 use App\Services\FilesHandler;
+use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,10 +28,15 @@ class MyImagesController extends AbstractController {
      */
     private $finder;
 
-    public function __construct() {
+    /**
+     * @var FilesTagsController $files_tags_controller
+     */
+    private $files_tags_controller;
+
+    public function __construct(FilesTagsController $files_tags_controller) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
-
+        $this->files_tags_controller = $files_tags_controller;
     }
 
     /**
@@ -94,6 +104,43 @@ class MyImagesController extends AbstractController {
         return $all_images_paths;
     }
 
-    //
+
+    /**
+     * Handles tags updating for the plugin modal
+     * @Route("/api/my-images/update-tags", name="api_my_images_update_tags", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function update(Request $request){
+
+        if (!$request->request->has(Dialogs::KEY_FILE_CURRENT_PATH)) {
+            throw new \Exception('Missing request parameter named: ' . Dialogs::KEY_FILE_CURRENT_PATH);
+        }
+
+
+        if (!$request->request->has(FileTagger::KEY_TAGS)) {
+            throw new \Exception('Missing request parameter named: ' . FileTagger::KEY_TAGS);
+        }
+
+        $file_current_path = $request->request->get(Dialogs::KEY_FILE_CURRENT_PATH);
+        $tags_string       = $request->request->get(FileTagger::KEY_TAGS);
+
+
+        try{
+            $this->files_tags_controller->updateTags($tags_string, $file_current_path);
+            $message = "Tags have been successfully updated";
+        } catch (\Exception $e){
+            $message = "There was a problem while trying to update file tags";
+        }
+
+        $response_data = [
+            'response_code'     => 200,
+            'response_message'  => $message
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
 
 }

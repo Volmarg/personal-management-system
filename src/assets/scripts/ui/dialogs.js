@@ -19,6 +19,9 @@ export default (function () {
             classes: {
                 fileTransferButton      : '.file-transfer',
                 bootboxModalMainWrapper : '.modal-dialog'
+            },
+            other: {
+                updateTagsInputWithTags: 'form[name^="update_tags"] input.tags'
             }
         },
         placeholders: {
@@ -29,7 +32,7 @@ export default (function () {
         },
         methods: {
             moveSingleFile                  : '/files/action/move-single-file',
-            updateTagsForMyImages           : '/images/action/update-tags',
+            updateTagsForMyImages           : '/api/my-images/update-tags',
             getDataTransferDialogTemplate   : '/dialog/body/data-transfer',
             getTagsUpdateDialogTemplate     : '/dialog/body/tags-update'
         },
@@ -215,12 +218,13 @@ export default (function () {
             },
             makeAjaxCallForTagsUpdate: function(callback = null){
 
-                let fileCurrentPath = dialogs.ui.vars.fileCurrentPath;
-                let tags            = "input from dialog here";
+                let fileCurrentPath = dialogs.ui.vars.fileCurrentPath.replace("/", "");
+                let tagsInput       = $(dialogs.ui.selectors.other.updateTagsInputWithTags);
+                let tags            = $(tagsInput).val();
 
                 let data = {
                     'tags'              : tags,
-                    'file_current_path' : fileCurrentPath,
+                    'fileCurrentPath'   : fileCurrentPath,
                 };
 
                 $.ajax({

@@ -6,6 +6,7 @@ namespace App\Controller\Files;
 use App\Controller\Utils\Application;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
+use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,8 +31,14 @@ class FilesController extends AbstractController {
      */
     private $directoriesHandler;
 
-    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app) {
+    /**
+     * @var FileTagger $file_tagger
+     */
+    private $file_tagger;
+
+    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app, FileTagger $file_tagger) {
         $this->app                  = $app;
+        $this->file_tagger          = $file_tagger;
         $this->filesHandler         = $filesHandler;
         $this->directoriesHandler   = $directoriesHandler;
     }
@@ -55,7 +62,12 @@ class FilesController extends AbstractController {
      * @throws \Exception
      */
     public function renameFileViaPost(Request $request) {
-        $response = $this->filesHandler->renameFileViaRequest($request);
+
+        $updateFilePathForTaggerEntity = function ($curr_relative_filepath, $new_relative_file_path) {
+            $this->file_tagger->updateFilePathForTaggerEntity($curr_relative_filepath, $new_relative_file_path);
+        };
+
+        $response = $this->filesHandler->renameFileViaRequest($request, $updateFilePathForTaggerEntity);
         return $response;
     }
 

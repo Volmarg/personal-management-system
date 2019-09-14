@@ -157,8 +157,8 @@ export default (function () {
 
                                 let data = {
                                     file_new_name   :  newFileName,
-                                    file_full_path  :  filePath
-                                };
+                                    file_full_path  :  filePath.replace("/", "")
+                                }
 
                                 $.ajax({
                                     method: "POST",
