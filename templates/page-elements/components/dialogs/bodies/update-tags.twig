@@ -10,7 +10,7 @@
             {{ form_label(form[KEY_TAGS], null, { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
         </div>
         <div class="col-sm-6">
-            {{ form_widget(form[KEY_TAGS]) }}
+            {{ form_widget(form[KEY_TAGS],  {'attr': {"class": 'tags form-control'}}) }}
         </div>
     </div>
 

@@ -17,7 +17,7 @@ class UpdateTagsType extends AbstractType
             ->add(FileTagger::KEY_TAGS, TextType::class, [
                 'required'  => true,
                 'attr'      => [
-                    'value'     => $options[FileTagger::KEY_TAGS]
+                    'data-value'     => $options[FileTagger::KEY_TAGS]
                 ]
             ])
             ->add('submit', SubmitType::class, [

@@ -202,6 +202,7 @@ export default (function () {
                     let formSubmitButton = $(form).find("[type^='submit']");
 
                     _this.attachTagsUpdateOnFormSubmit(formSubmitButton, callback);
+                    ui.widgets.selectize.applyTagsSelectize();
                     ui.forms.init();
                 });
             },

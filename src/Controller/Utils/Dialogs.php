@@ -133,7 +133,7 @@ class Dialogs extends AbstractController
 
         $this->file_tagger->prepare([],$file_current_path);
         $file_tags = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_current_path);
-        $tags_json = $file_tags->getTags();
+        $tags_json = ( !is_null($file_tags) ? $file_tags->getTags() : '');
 
         $form_data  = [
             FileTagger::KEY_TAGS=> $tags_json
