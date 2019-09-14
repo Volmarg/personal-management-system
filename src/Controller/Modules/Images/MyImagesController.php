@@ -37,7 +37,7 @@ class MyImagesController extends AbstractController {
     public function displayImages(? string $encoded_subdirectory_path) {
 
         $module_upload_dir                      = Env::getImagesUploadDir();
-        $decoded_subdirectory_path              = urldecode($encoded_subdirectory_path);
+        $decoded_subdirectory_path              = FilesHandler::trimFirstAndLastSlash(urldecode($encoded_subdirectory_path));
         $subdirectory_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $decoded_subdirectory_path);
 
         if( !file_exists($subdirectory_path_in_module_upload_dir) ){
@@ -93,5 +93,7 @@ class MyImagesController extends AbstractController {
 
         return $all_images_paths;
     }
+
+    //
 
 }

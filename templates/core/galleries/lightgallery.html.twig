@@ -19,6 +19,10 @@
                         <div id="aniimated-thumbnials" class="grid-item">
                             {% for image in images %}
                                 <a href="/{{ image[KEY_FILE_FULL_PATH] }}">
+                                    {#
+                                        this is the only case when the leading "/" in twig tpl must be added
+                                        because to display images from upload dir it needs to have "/"
+                                    #}
                                     <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px;"/>
                                 </a>
                             {% endfor %}

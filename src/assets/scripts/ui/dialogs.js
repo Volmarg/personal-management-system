@@ -28,17 +28,20 @@ export default (function () {
         messages: {
         },
         methods: {
-            moveSingleFile      : '/files/action/move-single-file',
-            getDialogTemplate   : '/dialog/body/data-transfer'
+            moveSingleFile                  : '/files/action/move-single-file',
+            updateTagsForMyImages           : '/images/action/update-tags',
+            getDataTransferDialogTemplate   : '/dialog/body/data-transfer',
+            getTagsUpdateDialogTemplate     : '/dialog/body/tags-update'
         },
         vars: {
-            fileCurrentPath: ''
+            fileCurrentPath : '',
+            tags            : ''
         },
         dataTransfer: {
             buildDataTransferDialog: function (fileName, fileCurrentPath, moduleName, callback = null) {
                 dialogs.ui.vars.fileCurrentPath = fileCurrentPath;
                 let _this = this;
-                let getDialogTemplate = dialogs.ui.methods.getDialogTemplate;
+                let getDataTransferDialogTemplate = dialogs.ui.methods.getDataTransferDialogTemplate;
 
                 let data = {
                     'fileCurrentPath': fileCurrentPath,
@@ -47,7 +50,7 @@ export default (function () {
 
                 $.ajax({
                     method: "POST",
-                    url: getDialogTemplate,
+                    url: getDataTransferDialogTemplate,
                     data: data
                 }).always((data) => {
 
@@ -143,6 +146,112 @@ export default (function () {
                 })
 
             },
+        },
+        tagManagement: {
+            buildTagManagementDialog: function (fileCurrentPath, moduleName, callback = null) {
+                dialogs.ui.vars.fileCurrentPath = fileCurrentPath;
+                let _this = this;
+                let getDialogTemplate = dialogs.ui.methods.getTagsUpdateDialogTemplate;
+
+                let data = {
+                    'fileCurrentPath': fileCurrentPath,
+                    'moduleName'     : moduleName
+                };
+
+                $.ajax({
+                    method: "POST",
+                    url: getDialogTemplate,
+                    data: data
+                }).always((data) => {
+
+                    if( undefined !== data['template'] ){
+                        _this.callTagManagementDialog(data['template'], callback);
+                    } else if( undefined !== data['errorMessage'] ) {
+                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
+                    }else{
+                        let message = 'Something went wrong while trying to load dialog template.';
+                        bootstrap_notifications.notify(message, 'danger');
+                    }
+
+                })
+
+            },
+            callTagManagementDialog: function (template, callback = null) {
+
+                let _this  = this;
+
+                let dialog = bootbox.alert({
+                    size: "medium",
+                    backdrop: true,
+                    closeButton: false,
+                    message: template,
+                    buttons: {
+                        ok: {
+                            label: 'Cancel',
+                            className: 'btn-primary dialog-ok-button',
+                            callback: () => {}
+                        },
+                    },
+                    callback: function () {
+                    }
+                });
+
+                dialog.init( () => {
+                    let modalMainWrapper = $(dialogs.ui.selectors.classes.bootboxModalMainWrapper);
+                    let form             = $(modalMainWrapper).find('form');
+                    let formSubmitButton = $(form).find("[type^='submit']");
+
+                    _this.attachTagsUpdateOnFormSubmit(formSubmitButton, callback);
+                    ui.forms.init();
+                });
+            },
+            attachTagsUpdateOnFormSubmit: function(button, callback = null){
+                let _this = this;
+                $(button).on('click', (event) => {
+                    event.preventDefault();
+                    _this.makeAjaxCallForTagsUpdate(callback);
+                });
+            },
+            makeAjaxCallForTagsUpdate: function(callback = null){
+
+                let fileCurrentPath = dialogs.ui.vars.fileCurrentPath;
+                let tags            = "input from dialog here";
+
+                let data = {
+                    'tags'              : tags,
+                    'file_current_path' : fileCurrentPath,
+                };
+
+                $.ajax({
+                    method: "POST",
+                    url: dialogs.ui.methods.updateTagsForMyImages,
+                    data: data
+                }).always( (data) => {
+                    let responseCode = data['response_code'];
+                    let message      = data['response_message'];
+                    let notifyType   = '';
+
+                    if( responseCode === 200 ){
+
+                        if( 'function' === typeof(callback) ){
+                            callback();
+                            bootbox.hideAll()
+                        }
+
+                        notifyType = 'success'
+                    }else{
+                        notifyType = 'danger';
+                    }
+
+                    // not checking if code is set because if message is then code must be also
+                    if( undefined !== message ){
+                        bootstrap_notifications.notify(message, notifyType);
+                    }
+
+                })
+
+
+            }
         }
 
     };

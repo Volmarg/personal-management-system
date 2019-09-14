@@ -18,6 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class Dialogs extends AbstractController
 {
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS    = 'page-elements/components/dialogs/bodies/update-tags.twig';
     const KEY_FILE_CURRENT_PATH                    = 'fileCurrentPath';
     const KEY_MODULE_NAME                          = 'moduleName';
 
@@ -58,12 +59,8 @@ class Dialogs extends AbstractController
             ]);
         }
 
-        $file_current_path = $request->request->get(static::KEY_FILE_CURRENT_PATH);
-
-        //In some cases the path starts with "/" on frontend and this is required there but here we want path without it
-        if( preg_match("#^\/#", $file_current_path) ){
-            $file_current_path = preg_replace('#^\/#','', $file_current_path);
-        }
+        // in ligthgallery.html.twig
+        $file_current_path = FilesHandler::trimFirstAndLastSlash($request->request->get(static::KEY_FILE_CURRENT_PATH));
 
         $file = new File($file_current_path);
 
@@ -92,5 +89,60 @@ class Dialogs extends AbstractController
 
         return new JsonResponse($response_data);
     }
+
+
+    /**
+     * @Route("/dialog/body/tags-update", name="dialog_body_tags_update", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function buildTagsUpdateDialogBody(Request $request) {
+
+        if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
+            return new JsonResponse([
+                'errorMessage' => "Request is missing key: ".static::KEY_FILE_CURRENT_PATH
+            ]);
+        }
+
+        $module_name  = $request->request->get(static::KEY_MODULE_NAME);
+
+        if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+            return new JsonResponse([
+                'errorMessage' => "Module name is incorrect."
+            ]);
+        }
+
+        // in ligthgallery.html.twig
+        $file_current_path = FilesHandler::trimFirstAndLastSlash($request->request->get(static::KEY_FILE_CURRENT_PATH));
+
+        $file = new File($file_current_path);
+
+        if( !$file->isFile() ){
+            return new JsonResponse([
+                'errorMessage' => "File provided in filepath is incorrect - such file does not exist"
+            ]);
+        }
+
+        $all_upload_based_modules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
+
+        $form_data  = [
+            FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
+        ];
+        # TODO: $form = $this->app->forms->moveSingleFile($form_data);
+
+        $template_data = [
+            'form' => 'form here'
+        ];
+
+        $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
 
 }

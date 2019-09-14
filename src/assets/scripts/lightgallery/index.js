@@ -22,7 +22,8 @@ export default (function () {
                 saveButton              : '#lightgallery_save_button',
                 transferButton          : '#lightgallery_transfer_button',
                 downloadButton          : '#lg-download',
-                fileTransferButton      : '#lightgallery_transfer_button'
+                fileTransferButton      : '#lightgallery_transfer_button',
+                tagsManageButton        : '#lightgallery_manage_tags_button',
             },
             classes: {
                 upperToolbar            : '.lg-toolbar',
@@ -67,6 +68,7 @@ export default (function () {
             this.addPluginRemoveFile();
             this.addPluginRenameFile();
             this.addPluginTransferFile();
+            this.addPluginManageFileTags();
         },
         addPluginRemoveFile(){
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
@@ -269,6 +271,20 @@ export default (function () {
             });
 
         },
+        addPluginManageFileTags: function () {
+
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+            let _this           = this;
+
+            // Handling managing tags
+            lightboxGallery.on('onAfterOpen.lg', function (event) {
+                let tagsManageIcon = '<a class=\"lg-icon\" id="lightgallery_manage_tags_button"><i class="fas fa-tags manage-file-tags"></i></a>';
+                $(_this.selectors.classes.upperToolbar).append(tagsManageIcon);
+
+                _this.attachCallDialogForTagsManagement()
+            });
+
+        },
         attachCallDialogForDataTransfer: function () {
             let button          = $(this.selectors.ids.fileTransferButton);
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
@@ -290,6 +306,22 @@ export default (function () {
                     };
 
                     dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Images', callback);
+                });
+
+            }
+        },
+        attachCallDialogForTagsManagement: function () {
+            let button          = $(this.selectors.ids.tagsManageButton);
+            let _this           = this;
+
+            if( $(button).length > 0 ){
+
+                $(button).on('click', (event) => {
+                    let clickedButton           = $(event.target);
+                    let buttonsToolbar          = $(clickedButton).closest(_this.selectors.classes.upperToolbar);
+                    let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
+
+                    dialogs.ui.tagManagement.buildTagManagementDialog(fileCurrentPath, 'My Images');
                 });
 
             }
