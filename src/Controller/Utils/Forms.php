@@ -9,6 +9,7 @@
 namespace App\Controller\Utils;
 
 use App\Form\Files\MoveSingleFileType;
+use App\Form\Files\UpdateTagsType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
@@ -35,6 +36,10 @@ class Forms extends AbstractController {
 
     public function moneyOwed(array $params = []): FormInterface {
         return $this->createForm(MyPaymentsOwedType::class, null, $params);
+    }
+
+    public function updateTags(array $params = []): FormInterface {
+        return $this->createForm(UpdateTagsType::class, null, $params);
     }
 
 }

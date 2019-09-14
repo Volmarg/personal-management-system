@@ -6,6 +6,7 @@ use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
+use App\Entity\FilesTags;
 use App\Services\FileDownloader;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
@@ -164,13 +165,8 @@ class MyFilesController extends AbstractController
 
             // get Path returns // - BUG
             $file_full_path = $file->getPath() . '/' . $file->getFilename();
-            $files_tags     = $this->app->repositories->filesTagsRepository->findBy(['fullFilePath' => $file_full_path]);
-            $tags_json      = "";
-
-            if( count($files_tags) === 1 ){
-                $file_tags = reset($files_tags);
-                $tags_json = $file_tags->getTags();
-            }
+            $file_tags      = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_full_path);
+            $tags_json      = ( $file_tags instanceof FilesTags ? $file_tags->getTags() : "" );
 
             $all_files[$index] = [
                 static::KEY_FILE_NAME      => $file->getFilenameWithoutExtension(),

@@ -19,32 +19,17 @@ class FilesTagsRepository extends ServiceEntityRepository
         parent::__construct($registry, FilesTags::class);
     }
 
-    // /**
-    //  * @return FilesTags[] Returns an array of FilesTags objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('f.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    public function getFileTagsEntityByFileFullPath(string $file_full_path): ?FilesTags {
+        $files_tags     = $this->_em->getRepository(FilesTags::class)->findBy(['fullFilePath' => $file_full_path]);
 
-    /*
-    public function findOneBySomeField($value): ?FilesTags
-    {
-        return $this->createQueryBuilder('f')
-            ->andWhere('f.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if( empty($files_tags) ){
+            return null;
+        }else{
+            $file_tags = reset($files_tags);
+            return $file_tags;
+        }
+
     }
-    */
+
+
 }

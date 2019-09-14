@@ -4,6 +4,7 @@ namespace App\Controller\Utils;
 
 use App\Controller\Files\FileUploadController;
 use App\Services\FilesHandler;
+use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,8 +28,14 @@ class Dialogs extends AbstractController
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var FileTagger $file_tagger
+     */
+    private $file_tagger;
+
+    public function __construct(Application $app, FileTagger $file_tagger) {
+        $this->app         = $app;
+        $this->file_tagger = $file_tagger;
     }
 
     /**
@@ -124,15 +131,17 @@ class Dialogs extends AbstractController
             ]);
         }
 
-        $all_upload_based_modules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
+        $this->file_tagger->prepare([],$file_current_path);
+        $file_tags = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_current_path);
+        $tags_json = $file_tags->getTags();
 
         $form_data  = [
-            FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
+            FileTagger::KEY_TAGS=> $tags_json
         ];
-        # TODO: $form = $this->app->forms->moveSingleFile($form_data);
+        $form = $this->app->forms->updateTags($form_data);
 
         $template_data = [
-            'form' => 'form here'
+            'form' => $form->createView()
         ];
 
         $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS, $template_data);
