@@ -19,30 +19,26 @@
     "type": "project",
     "require": {
         "php": "^7.2.0",
+        "ext-ctype": "*",
         "ext-iconv": "*",
-        "beberlei/DoctrineExtensions": "^1.2",
+        "beberlei/doctrineextensions": "^1.2",
         "friendsofsymfony/user-bundle": "dev-master",
         "google/apiclient": "^2.0",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
         "specshaper/encrypt-bundle": "^1.1",
-        "symfony/asset": "^4.0",
-        "symfony/console": "^4.0",
-        "symfony/debug-pack": "^1.0",
-        "symfony/dotenv": "^4.0",
-        "symfony/flex": "^1.0",
-        "symfony/framework-bundle": "^4.0",
-        "symfony/http-foundation": "^4.0",
-        "symfony/lts": "^4@dev",
-        "symfony/orm-pack": "^1.0",
-        "symfony/routing": "^4.0",
-        "symfony/serializer": "^4.0",
+        "symfony/asset": "*",
+        "symfony/console": "*",
+        "symfony/dotenv": "*",
+        "symfony/flex": "^1.3.1",
+        "symfony/framework-bundle": "*",
+        "symfony/intl": "*",
+        "symfony/orm-pack": "*",
+        "symfony/serializer-pack": "*",
         "symfony/swiftmailer-bundle": "^3.1",
-        "symfony/templating": "^4.0",
-        "symfony/twig-bundle": "^4.0",
-        "symfony/webpack-encore-bundle": "^1.4",
-        "symfony/webpack-encore-pack": "^1.0",
-        "symfony/yaml": "^4.0",
+        "symfony/twig-bundle": "*",
+        "symfony/webpack-encore-bundle": "^1.6",
+        "symfony/yaml": "*",
         "tinymce/tinymce": "^5.0",
         "twig/extensions": "^1.5"
     },
@@ -51,12 +47,11 @@
         "friendsofphp/php-cs-fixer": "^2.10",
         "fzaninotto/faker": "^1.8",
         "mbezhanov/faker-provider-collection": "^1.2",
-        "symfony/browser-kit": "^4.0",
-        "symfony/css-selector": "^4.0",
+        "symfony/debug-pack": "^1.0",
         "symfony/maker-bundle": "^1.0",
-        "symfony/phpunit-bridge": "^4.0",
+        "symfony/test-pack": "^1.0",
         "symfony/profiler-pack": "^1.0",
-        "symfony/web-server-bundle": "^4.0"
+        "symfony/web-server-bundle": "*"
     },
     "config": {
         "preferred-install": {
@@ -98,8 +93,9 @@
     },
     "extra": {
         "symfony": {
-            "id": "01C3E63HMJ6KB4VE7A0XNTH8PS",
-            "allow-contrib": false
+            "allow-contrib": false,
+            "require": "^4.3"
         }
-    }
+    },
+    "minimum-stability": "stable"
 }

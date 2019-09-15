@@ -176,6 +176,15 @@
     "php-cs-fixer/diff": {
         "version": "v1.2.0"
     },
+    "phpdocumentor/reflection-common": {
+        "version": "2.0.0"
+    },
+    "phpdocumentor/reflection-docblock": {
+        "version": "4.3.2"
+    },
+    "phpdocumentor/type-resolver": {
+        "version": "1.0.1"
+    },
     "phpseclib/phpseclib": {
         "version": "2.0.15"
     },
@@ -332,9 +341,6 @@
     "symfony/intl": {
         "version": "v4.0.3"
     },
-    "symfony/lts": {
-        "version": "4-dev"
-    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -406,6 +412,9 @@
     "symfony/property-access": {
         "version": "v4.0.3"
     },
+    "symfony/property-info": {
+        "version": "v4.3.4"
+    },
     "symfony/routing": {
         "version": "4.0",
         "recipe": {
@@ -439,6 +448,9 @@
     "symfony/serializer": {
         "version": "v4.2.7"
     },
+    "symfony/serializer-pack": {
+        "version": "v1.0.2"
+    },
     "symfony/service-contracts": {
         "version": "v1.1.5"
     },
@@ -456,6 +468,9 @@
     },
     "symfony/templating": {
         "version": "v4.0.3"
+    },
+    "symfony/test-pack": {
+        "version": "v1.0.6"
     },
     "symfony/translation": {
         "version": "3.3",
@@ -525,15 +540,6 @@
             "webpack.config.js"
         ]
     },
-    "symfony/webpack-encore-pack": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "a2f276eff6e95ca94be135d2d3e5c1247c6f8807"
-        }
-    },
     "symfony/yaml": {
         "version": "v4.0.3"
     },
@@ -554,6 +560,9 @@
     },
     "twig/twig": {
         "version": "v2.4.4"
+    },
+    "webmozart/assert": {
+        "version": "1.5.0"
     },
     "zendframework/zend-code": {
         "version": "3.3.0"

@@ -1,19 +1,15 @@
 ###> symfony/framework-bundle ###
-.env
+/.env.local
+/.env.local.php
+/.env.*.local
 /public/bundles/
 /var/
 /vendor/
-/node_modules/
 ###< symfony/framework-bundle ###
 
 ###> symfony/web-server-bundle ###
-.web-server-pid
+/.web-server-pid
 ###< symfony/web-server-bundle ###
-
-###> symfony/webpack-encore-pack ###
-/node_modules/
-/public/build/
-###< symfony/webpack-encore-pack ###
 
 ###> friendsofphp/php-cs-fixer ###
 .php_cs
@@ -22,6 +18,7 @@
 
 ###> symfony/phpunit-bridge ###
 .phpunit
+.phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
 
@@ -31,14 +28,3 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
-
-#Other
-var/cache/*
-var/sessions/*
-*.sql
-.idea*
-*.zip
-src/DataFixtures/AppFixtures.php
-#Password hasher secret key
-config/services.yaml
-src/Migrations/*
