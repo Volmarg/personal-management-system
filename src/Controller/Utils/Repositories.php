@@ -12,6 +12,7 @@ namespace App\Controller\Utils;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use App\Entity\Modules\Job\MyJobSettings;
+use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Repository\Modules\Car\MyCarRepository;
@@ -190,6 +191,11 @@ class Repositories extends AbstractController {
      */
     public $filesTagsRepository;
 
+    /**
+     * @var FilesSearchRepository $filesSearchRepository
+     */
+    public $filesSearchRepository;
+
     public function __construct(
         MyNotesRepository               $myNotesRepository,
         MyCarRepository                 $myCarRepository,
@@ -214,7 +220,8 @@ class Repositories extends AbstractController {
         MyJobHolidaysPoolRepository     $myJobHolidaysPoolRepository,
         MyJobSettingsRepository         $myJobSettingsRepository,
         MyPaymentsOwedRepository        $myPaymentsOwedRepository,
-        FilesTagsRepository             $filesTagsRepository
+        FilesTagsRepository             $filesTagsRepository,
+        FilesSearchRepository           $filesSearchRepository
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -240,6 +247,7 @@ class Repositories extends AbstractController {
         $this->myJobSettingsRepository          = $myJobSettingsRepository;
         $this->myPaymentsOwedRepository         = $myPaymentsOwedRepository;
         $this->filesTagsRepository              = $filesTagsRepository;
+        $this->filesSearchRepository            = $filesSearchRepository;
     }
 
     /**

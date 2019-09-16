@@ -22,6 +22,7 @@ export default (function () {
             myGoals.ui.init();
             gallery.lightgallery.init();
             modules.myFiles.init();
+            ui.filesSearch.init();
         },
         initStatic: function () {
             if ("undefined" !== typeof furcanIconPicker) {

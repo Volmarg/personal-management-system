@@ -7,6 +7,7 @@ import './ui/widgets.js';
 import './ui/forms.js';
 import './ui/upload.js';
 import './ui/dialogs.js';
+import './ui/filesSearch.js';
 
 import './modules/my-files/filesTransfer.js';
 
