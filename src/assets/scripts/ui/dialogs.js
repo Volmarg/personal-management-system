@@ -13,7 +13,7 @@ export default (function () {
 
         selectors: {
             ids: {
-                targetUploadModuleDirInput  : '#move_single_file_target_upload_module_dir',
+                targetUploadModuleDirInput  : '#move_single_file_target_upload_module_r',
                 targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path'
             },
             classes: {

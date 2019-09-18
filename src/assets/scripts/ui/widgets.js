@@ -244,13 +244,13 @@ export default (function () {
             },
             disableTagsInputsForSelectorsOnPage: function (){
 
-                let disableForSelectorsOnPage = ['#MyFiles'];
+                let disableForSelectorsOnPage = ['#MyFiles .selectize-control'];
 
                 // search for selectors on page and if found disable tags
                 $.each(disableForSelectorsOnPage, (index, selector) => {
                     if ( $(selector).length > 0 )
                     {
-                        let allSelectizeRenderdInputWrappers = $('.selectize-control');
+                        let allSelectizeRenderdInputWrappers = $(selector);
                         $(allSelectizeRenderdInputWrappers).addClass('disabled');
 
                         return false;

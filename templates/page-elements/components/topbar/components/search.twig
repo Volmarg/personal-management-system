@@ -7,4 +7,58 @@
 <li class="search-input">
     {# TODO: prevent overwriting the styles by selectizejs #}
     <input class="form-control tags" type="text" data-value="" placeholder="Search for files by tags..." id="filesSearchByTags">
+    <div id="searchResultListWrapper">
+
+    </div>
 </li>
+
+<style>
+
+    .search-input {
+        width: 200px;
+    }
+
+    .search-input .selectize-input {
+        box-shadow: none;
+        border: none;
+    }
+
+    /**
+    TODO: make slid up/down with js
+     */
+
+    #searchResultListWrapper ul {
+        max-height: 0 !important;
+        overflow: hidden;
+        transition: linear 1s;
+
+        padding: 0 !important; /*remove in js*/
+    }
+
+    #searchResultListWrapper li {
+        padding: 5px !important;
+    }
+
+
+
+    .selectize-control:focus + #searchResultListWrapper ul, .selectize-control:hover + #searchResultListWrapper ul, #searchResultListWrapper ul:hover{
+        height: auto !important;
+        max-height: 500px !important;
+        transition: linear 1s;
+
+    }
+
+    #searchResultListWrapper ul li:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+        font-size: 14px;
+    }
+
+    #searchResultListWrapper .fa-download:hover {
+        cursor: pointer;
+    }
+
+
+    #searchResultListWrapper ul {
+
+    }
+</style>

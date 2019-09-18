@@ -40,17 +40,57 @@ class FilesSearchRepository
 
         $sql = "
             SELECT
+                ft.tags                      AS tags,
+                ft.full_file_path            AS fullFilePath,
+                files_tags_module.module     AS module,
+                files_tags_filename.filename AS filename,
+            
+            CASE
+                WHEN full_file_path LIKE '%images%' THEN 
+                    REPLACE(
+                        REPLACE(
+                             ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                            'upload/images/',
+                            ''
+                    )
+            WHEN full_file_path LIKE '%files%' THEN 
+                REPLACE(
+                    REPLACE(
+                        ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                        'upload/files/',
+                        ''
+                )
+            END AS directories
+            
+            FROM files_tags ft
+            
+            JOIN 
+            (
+                SELECT
+                    id AS id,
                 CASE
-                    WHEN full_file_path LIKE '%images%' THEN 'My Image'
+                    WHEN full_file_path LIKE '%images%' THEN 'My Images'
                     WHEN full_file_path LIKE '%files%' THEN 'My Files'
-                END AS module,
+                END AS module
+                
+                FROM files_tags
+            
+            ) AS files_tags_module
+            ON files_tags_module.id = ft.id 
+            
+            JOIN 
+            (
+            SELECT
+                id AS id,
             SUBSTRING(
                 full_file_path, - LOCATE('/', REVERSE(full_file_path)) +1
-            ) AS filename,
-            full_file_path AS fullFilePath,
-            tags AS tags
+            ) AS filename
             
             FROM files_tags
+            
+            ) AS files_tags_filename
+            ON files_tags_filename.id = ft.id
+
             
             WHERE 1
                 AND ($tags_sql)
@@ -64,3 +104,65 @@ class FilesSearchRepository
     }
 
 }
+
+/*
+            SELECT
+              ft.tags AS tags,
+ft.full_file_path AS fullFilePath,
+files_tags_module.module AS module,
+files_tags_filename.filename AS filename,
+
+                CASE
+                    WHEN full_file_path LIKE '%images%' THEN
+                       REPLACE(
+                          REPLACE(ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                          'upload/images/',
+                          ''
+                       )
+                    WHEN full_file_path LIKE '%files%' THEN
+                       REPLACE(
+                          REPLACE(ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                          'upload/files/',
+                          ''
+                       )
+                END AS directories
+
+            FROM files_tags ft
+
+JOIN
+(
+             SELECT
+              id AS id,
+                CASE
+                    WHEN full_file_path LIKE '%images%' THEN 'My Images'
+                    WHEN full_file_path LIKE '%files%' THEN 'My Files'
+                END AS module
+
+            FROM files_tags
+
+
+) AS files_tags_module
+ON files_tags_module.id = ft.id
+
+JOIN
+(
+             SELECT
+              id AS id,
+
+            SUBSTRING(
+                full_file_path, - LOCATE('/', REVERSE(full_file_path)) +1
+            ) AS filename
+
+            FROM files_tags
+
+
+) AS files_tags_filename
+ON files_tags_filename.id = ft.id
+
+
+
+
+            WHERE 1
+                AND ft.tags LIKE '%vol%'
+                AND ft.deleted = 0;
+ */
