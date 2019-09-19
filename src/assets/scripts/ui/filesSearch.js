@@ -39,15 +39,26 @@ export default (function () {
 
             filesSearchByTagsInput.on('change', () => {
 
-                let tags = $(filesSearchByTagsInput).val();
+                let tags                    = $(filesSearchByTagsInput).val();
+                let fileSearchResultWrapper = $(_this.selectors.ids.fileSearchResultWrapper);
+
+
+                if( "" === tags ){
+
+                    if( undefined !== window.timeout ){
+                        clearTimeout(window.timeout);
+                    }
+
+                    $(fileSearchResultWrapper).empty();
+                    return;
+                }
 
                 let data = {
                     'tags' : tags
                 };
 
                 // this is used to prevent instant search whenever new character is inserted in search input
-                if( undefined !== window.timeout )
-                {
+                if( undefined !== window.timeout ){
                     clearTimeout(window.timeout);
                 }
 
@@ -61,14 +72,15 @@ export default (function () {
                         let resultsCount = data['searchResults'].length;
 
                         if( 0 === resultsCount ){
+                            bootstrap_notifications.notify("No results for given tags.", 'danger');
                             return;
                         }
 
                         let searchResultsList       = _this.buildSearchResultsList(data['searchResults']);
-                        let fileSearchResultWrapper = $(_this.selectors.ids.fileSearchResultWrapper);
 
                         $(fileSearchResultWrapper).empty();
                         $(fileSearchResultWrapper).append(searchResultsList);
+                        bootstrap_notifications.notify("Found " + resultsCount + " matching file/s", 'success');
 
 
                     })
