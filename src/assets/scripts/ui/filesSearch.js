@@ -95,9 +95,10 @@ export default (function () {
             let ul = $('<ul>');
 
             $.each(data, (index, result) => {
-                let module   = result['module'];
-                let filename = result['filename'];
-                let filePath = result['fullFilePath'];
+                let module          = result['module'];
+                let filename        = result['filename'];
+                let filePath        = result['fullFilePath'];
+                let directoryPath   = result['directoryPath'];
 
                 let form = $('<form>');
                 $(form).attr('method', "POST");
@@ -132,9 +133,14 @@ export default (function () {
                 $(name).html(filename);
                 $(name).addClass("d-inline search-result-file-name");
 
+                let link = $('<a>');
+                $(link).attr('href', directoryPath);
+
+                $(link).append(moduleIcon);
+                $(link).append(name);
+
                 let li = $('<li>');
-                $(li).append(moduleIcon);
-                $(li).append(name);
+                $(li).append(link);
                 $(li).append(form);
 
                 $(ul).append(li);

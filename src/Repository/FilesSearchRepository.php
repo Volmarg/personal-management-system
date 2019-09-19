@@ -44,27 +44,36 @@ class FilesSearchRepository
                 ft.full_file_path            AS fullFilePath,
                 files_tags_module.module     AS module,
                 files_tags_filename.filename AS filename,
-            
-            CASE
-                WHEN full_file_path LIKE '%images%' THEN 
-                    REPLACE(
+            CONCAT(  '/', -- to have absolute path  
+                    CASE -- here add part of url pointing to the module name
+                        WHEN full_file_path LIKE '%images%' THEN 'my-images'
+                        WHEN full_file_path LIKE '%files%' THEN 'my-files'
+                    END,
+                    '/dir/', 
+                REPLACE( -- here strip all the unnecsary slashes and upload dirs
+                    CASE
+                        WHEN full_file_path LIKE '%images%' THEN 
+                            REPLACE(
+                                REPLACE(
+                                     ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                                    'upload/images/',
+                                    ''
+                            )
+                    WHEN full_file_path LIKE '%files%' THEN 
                         REPLACE(
-                             ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                            'upload/images/',
-                            ''
-                    )
-            WHEN full_file_path LIKE '%files%' THEN 
-                REPLACE(
-                    REPLACE(
-                        ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                        'upload/files/',
-                        ''
+                            REPLACE(
+                                ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                                'upload/files/',
+                                ''
+                        )
+                    END , 
+                    '/', '%252F') -- this is needed for routes, as this is encoded slash
                 )
-            END AS directories
+                AS directoryPath
             
             FROM files_tags ft
             
-            JOIN 
+            JOIN -- get module name
             (
                 SELECT
                     id AS id,
@@ -78,7 +87,7 @@ class FilesSearchRepository
             ) AS files_tags_module
             ON files_tags_module.id = ft.id 
             
-            JOIN 
+            JOIN -- get filename
             (
             SELECT
                 id AS id,
@@ -93,7 +102,7 @@ class FilesSearchRepository
 
             
             WHERE 1
-                AND ($tags_sql)
+                AND ($tags_sql) -- limit to entered tags
                 AND deleted = 0;
         ";
 
@@ -104,65 +113,3 @@ class FilesSearchRepository
     }
 
 }
-
-/*
-            SELECT
-              ft.tags AS tags,
-ft.full_file_path AS fullFilePath,
-files_tags_module.module AS module,
-files_tags_filename.filename AS filename,
-
-                CASE
-                    WHEN full_file_path LIKE '%images%' THEN
-                       REPLACE(
-                          REPLACE(ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                          'upload/images/',
-                          ''
-                       )
-                    WHEN full_file_path LIKE '%files%' THEN
-                       REPLACE(
-                          REPLACE(ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                          'upload/files/',
-                          ''
-                       )
-                END AS directories
-
-            FROM files_tags ft
-
-JOIN
-(
-             SELECT
-              id AS id,
-                CASE
-                    WHEN full_file_path LIKE '%images%' THEN 'My Images'
-                    WHEN full_file_path LIKE '%files%' THEN 'My Files'
-                END AS module
-
-            FROM files_tags
-
-
-) AS files_tags_module
-ON files_tags_module.id = ft.id
-
-JOIN
-(
-             SELECT
-              id AS id,
-
-            SUBSTRING(
-                full_file_path, - LOCATE('/', REVERSE(full_file_path)) +1
-            ) AS filename
-
-            FROM files_tags
-
-
-) AS files_tags_filename
-ON files_tags_filename.id = ft.id
-
-
-
-
-            WHERE 1
-                AND ft.tags LIKE '%vol%'
-                AND ft.deleted = 0;
- */
