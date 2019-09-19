@@ -46,12 +46,16 @@ export default (function () {
                 };
 
                 // this is used to prevent instant search whenever new character is inserted in search input
-                // TODO: prevent stacking the timeouted calls - break previous if new is being sent
-                setTimeout( () => {
+                if( undefined !== window.timeout )
+                {
+                    clearTimeout(window.timeout);
+                }
+
+                window.timeout = setTimeout( () => {
                     $.ajax({
                         method  : "POST",
                         url     : _this.methods.getSearchResultsDataForTag,
-                        data    : data
+                        data    : data,
                     }).always((data)=>{
 
                         let resultsCount = data['searchResults'].length;
@@ -65,20 +69,6 @@ export default (function () {
 
                         $(fileSearchResultWrapper).empty();
                         $(fileSearchResultWrapper).append(searchResultsList);
-/*
-
-                        let selector = '.search-input .selectize-control + #searchResultListWrapper ul';
-                        $('.search-input .selectize-control').on('mouseover', () => {
-                                $(selector).slideDown();
-                            }
-
-                        );
-
-                        $('.search-input .selectize-control').on('mouseout', () => {
-                                $(selector).slideUp();
-                            }
-                        );
-*/
 
 
                     })
