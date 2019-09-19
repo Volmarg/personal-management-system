@@ -129,7 +129,7 @@ class MyFilesController extends AbstractController
     /**
      * @Route("download/file", name="download_file")
      * @param Request $request
-     * @return BinaryFileResponse
+     * @return Response
      * @throws \Exception
      */
     public function download(Request $request)
@@ -141,6 +141,18 @@ class MyFilesController extends AbstractController
 
         $file_full_path = $request->request->get(static::KEY_FILE_FULL_PATH);
         $file           = $this->file_downloader->download($file_full_path);
+
+        $referer = $request->server->get('HTTP_REFERER');
+
+        if( is_null($file) ){
+            $response = $this->redirect($referer);
+
+            if( empty($referer) ){
+                $response = $this->redirectToRoute('/');
+            }
+
+            return $response;
+        }
 
         return $file;
     }

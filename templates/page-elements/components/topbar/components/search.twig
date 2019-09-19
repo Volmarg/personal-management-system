@@ -12,6 +12,7 @@
     </div>
 </li>
 
+{# TODO: move this to css and compile #}
 <style>
 
     .search-input {
@@ -23,24 +24,24 @@
         border: none;
     }
 
-    /**
-    TODO: make slid up/down with js
-     */
+    /* List with found files */
 
     #searchResultListWrapper ul {
         max-height: 0 !important;
         overflow: hidden;
-        transition: linear 1s;
+        transition: linear 700ms;
 
-        padding: 0 !important; /*remove in js*/
+        background-color: white;
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
     }
 
     #searchResultListWrapper li {
         padding: 5px !important;
     }
 
-
-
+    /* list animation slide up/down */
     .selectize-control:focus + #searchResultListWrapper ul, .selectize-control:hover + #searchResultListWrapper ul, #searchResultListWrapper ul:hover{
         height: auto !important;
         max-height: 500px !important;
@@ -53,12 +54,31 @@
         font-size: 14px;
     }
 
+    /* Download button */
+
+    #searchResultListWrapper ul form {
+        float: right;
+    }
+
+    #searchResultListWrapper ul form button.file-download {
+        background: none;
+        border    : none;
+        padding: 0 0 0 10px;
+    }
+
+
     #searchResultListWrapper .fa-download:hover {
         cursor: pointer;
     }
 
-
-    #searchResultListWrapper ul {
-
+    /* Module icon */
+    #searchResultListWrapper ul li .search-result-module-icon {
+        padding-right: 5px;
     }
+
+    /* File name */
+    #searchResultListWrapper ul li .search-result-file-name {
+        padding-right: 5px;
+    }
+
 </style>

@@ -48,18 +48,21 @@ class FileDownloader extends AbstractController {
             if( !file_exists($file_full_path) ){
                 throw new \Exception("The file that You are trying to download, does not exist. {$file_full_path}");
             }
+
+            $file = $this->file($file_full_path);
+            $this->logger->info('Finished downloading data.');
+
+            return $file;
+
         }catch(\Exception $e){
             $this->addFlash('danger', 'Requested file does not exist!');
             $this->logger->info('Exception was thrown while downloading file: ', [
                 'message' => $e->getMessage()
             ]);
 
+            return null;
         }
 
-        $file = $this->file($file_full_path);
-        $this->logger->info('Finished downloading data.');
-
-        return $file;
     }
 
 }

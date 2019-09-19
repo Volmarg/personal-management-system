@@ -94,13 +94,6 @@ export default (function () {
 
             let ul = $('<ul>');
 
-            $(ul).css({
-                'background-color': 'white',
-                'list-style-type': 'none',
-                'margin': '0',
-                'padding': '5px'
-            });
-
             $.each(data, (index, result) => {
                 let module   = result['module'];
                 let filename = result['filename'];
@@ -110,9 +103,6 @@ export default (function () {
                 $(form).attr('method', "POST");
                 $(form).attr('action', "/download/file");
                 $(form).addClass('file-download-form d-inline');
-                $(form).css({
-                    "float": "right"
-                });
 
                 let input = $('<input>');
                 $(input).attr('type','hidden');
@@ -121,26 +111,16 @@ export default (function () {
 
                 let button = $('<button>');
                 $(button).addClass('file-download d-inline');
-                $(button).css({
-                    'background': 'none',
-                    'padding'   : '0',
-                    'border'    : 'none'
-                });
 
                 let downloadIcon = $('<i>');
                 $(downloadIcon).addClass('fa fa-download');
-                $(button).css({
-                    'padding-left': '10px'
-                });
 
                 $(button).append(downloadIcon);
                 $(form).append(input);
                 $(form).append(button);
 
                 let moduleIcon = $('<span>');
-                $(moduleIcon).css({
-                    "padding-right": "5px"
-                });
+                $(moduleIcon).addClass('search-result-module-icon');
 
                 if( 'My Images' === module ){
                     $(moduleIcon).addClass('fas fa-folder-open d-inline');
@@ -150,8 +130,7 @@ export default (function () {
 
                 let name = $('<span>');
                 $(name).html(filename);
-                $(name).css({"padding-right": "5px"});
-                $(name).addClass("d-inline");
+                $(name).addClass("d-inline search-result-file-name");
 
                 let li = $('<li>');
                 $(li).append(moduleIcon);
