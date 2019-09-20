@@ -11,21 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
  * saving / removing/ adding/ updating tags
  * also it will handle the tag entity update upon moving the file to other directory via GUI
  * moving files outside of gui will not be supported here
- * # TODO: add custom command to run it in case when I move files outside of gui, it should:
- *      list the files that were moved with corresponding tags, and how tags will be reapplied after accepting suggested changes
  * Class FileTagger
  * @package App\Services
  */
 class FileTagger {
-
-    /**
-     * TODO:
-     *  get entity based on filename or fullpath
-     *  make prepare function where i set all vars as properties.
-     *  throw exception if no preparation was done
-     *  add isPrepared checker - if any var is not set - throw it
-     *  extraction of filename/extension etc. should be handled by FilesHandler.
-     */
 
     const TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE = "File tagger has not been prepared - did You call 'prepare()' method?";
     const NO_TAGS_TO_ADD_RESPONSE               = "There were no new tags to add";

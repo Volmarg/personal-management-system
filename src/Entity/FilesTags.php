@@ -9,8 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class FilesTags
 {
-    #TODO: decide later which column can be removed - currently there will be data redundancy
-    # most likely having just one column "full_file_path" will be ok + tags + id + deleted (or do I even want deleted?)
 
     /**
      * @ORM\Id()
@@ -23,21 +21,6 @@ class FilesTags
      * @ORM\Column(type="boolean")
      */
     private $deleted = 0;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $moduleName;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $directoryPath;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $filename;
 
     /**
      * @ORM\Column(type="string", length=255)
