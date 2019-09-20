@@ -305,7 +305,9 @@ export default (function () {
                         _this.handleClosingGalleryIfThereAreNoMoreImages(lightboxGallery);
                     };
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Images', callback);
+                    let escapedFileCurrentPath = ( fileCurrentPath.indexOf('/') === 0 ? fileCurrentPath.replace("/", "") : fileCurrentPath ) ;
+
+                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, escapedFileCurrentPath, 'My Images', callback);
                 });
 
             }
