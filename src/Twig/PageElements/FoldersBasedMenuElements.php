@@ -94,7 +94,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
     private function buildList(array $folder_tree, string $upload_module_dir, string $folder_path, string $list = '') {
 
         $upload_folder                      = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
-        $folder_path_in_module_upload_dir   = str_replace($upload_folder, '', $folder_path);
+        $folder_path_in_module_upload_dir   = str_replace($upload_folder . DIRECTORY_SEPARATOR, '', $folder_path);
         $folder_name                        = basename($folder_path);
 
         $encoded_folder_path_in_module_upload_dir = urlencode($folder_path_in_module_upload_dir);
