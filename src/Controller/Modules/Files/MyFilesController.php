@@ -208,6 +208,7 @@ class MyFilesController extends AbstractController
     public function removeFileViaPost(Request $request) {
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $this->filesHandler->removeFile($request);
+        $this->files_tags_controller->updateTags('', '');
 
         return $this->displayFiles($subdirectory, $request);
     }
