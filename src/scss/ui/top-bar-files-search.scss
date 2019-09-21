@@ -1,0 +1,72 @@
+.search-input {
+  width: 200px;
+}
+
+.search-input .selectize-input {
+  box-shadow: none;
+  border: none;
+}
+
+/* List with found files */
+
+#searchResultListWrapper ul {
+  max-height: 0 !important;
+  overflow: hidden;
+  transition: linear 700ms;
+
+  background-color: white;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#searchResultListWrapper li {
+  padding: 5px !important;
+}
+
+/* Links to directories */
+
+#searchResultListWrapper li a {
+  text-decoration: none;
+  color: gray;
+}
+
+/* list animation slide up/down */
+.selectize-control:focus + #searchResultListWrapper ul, .selectize-control:hover + #searchResultListWrapper ul, #searchResultListWrapper ul:hover {
+  height: auto !important;
+  max-height: 500px !important;
+  transition: linear 1s;
+
+}
+
+#searchResultListWrapper ul li:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  font-size: 14px;
+}
+
+/* Download button */
+
+#searchResultListWrapper ul form {
+  float: right;
+}
+
+#searchResultListWrapper ul form button.file-download {
+  background: none;
+  border: none;
+  padding: 0 0 0 10px;
+}
+
+
+#searchResultListWrapper .fa-download:hover {
+  cursor: pointer;
+}
+
+/* Module icon */
+#searchResultListWrapper ul li .search-result-module-icon {
+  padding-right: 5px;
+}
+
+/* File name */
+#searchResultListWrapper ul li .search-result-file-name {
+  padding-right: 5px;
+}

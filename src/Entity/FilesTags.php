@@ -49,42 +49,6 @@ class FilesTags
         return $this;
     }
 
-    public function getModuleName(): ?string
-    {
-        return $this->moduleName;
-    }
-
-    public function setModuleName(string $moduleName): self
-    {
-        $this->moduleName = $moduleName;
-
-        return $this;
-    }
-
-    public function getDirectoryPath(): ?string
-    {
-        return $this->directoryPath;
-    }
-
-    public function setDirectoryPath(string $directoryPath): self
-    {
-        $this->directoryPath = $directoryPath;
-
-        return $this;
-    }
-
-    public function getFilename(): ?string
-    {
-        return $this->filename;
-    }
-
-    public function setFilename(string $filename): self
-    {
-        $this->filename = $filename;
-
-        return $this;
-    }
-
     public function getFullFilePath(): ?string
     {
         return $this->fullFilePath;

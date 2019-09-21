@@ -20,20 +20,6 @@ class FileTagger {
     const NO_TAGS_TO_ADD_RESPONSE               = "There were no new tags to add";
     const ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE   = "All tags have been removed.";
     const KEY_TAGS                              = 'tags';
-    /**
-     * @var string
-     */
-    private $module_name;
-
-    /**
-     * @var string
-     */
-    private $filename;
-
-    /**
-     * @var string
-     */
-    private $directory_path;
 
     /**
      * @var string
@@ -63,9 +49,6 @@ class FileTagger {
      */
     public function prepare(array $tags, string $full_file_path) {
         $this->tags           = $tags;
-        $this->filename       = FilesHandler::getFileNameFromFilePath($full_file_path);
-        $this->module_name    = FilesHandler::getModuleNameForFilePath($full_file_path);
-        $this->directory_path = FilesHandler::getDirectoryPathInModuleUploadDirForFilePath($full_file_path);
         $this->full_file_path = $full_file_path;
     }
 
@@ -121,9 +104,6 @@ class FileTagger {
 
                 $file_tags = new FilesTags();
                 $file_tags->setFullFilePath($this->full_file_path);
-                $file_tags->setModuleName($this->module_name);
-                $file_tags->setFilename('test');
-                $file_tags->setDirectoryPath($this->directory_path);
                 $file_tags->setTags($tags_json);
 
                 $this->app->em->persist($file_tags);
@@ -182,7 +162,6 @@ class FileTagger {
 
         $file_with_tags = $this->getEntity();
 
-        # no tags exist for that file, add them, or do nothing
         if( empty($file_with_tags) ){
             return new Response("There were no tags to remove");
         }else{
@@ -209,10 +188,7 @@ class FileTagger {
     private function isPrepared(){
 
         if(
-                !isset($this->module_name)
-            ||  !isset($this->filename)
-            ||  !isset($this->directory_path)
-            ||  !isset($this->full_file_path)
+                !isset($this->full_file_path)
             ||  !isset($this->tags)
         ){
             return false;

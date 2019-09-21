@@ -63,11 +63,11 @@ class FilesController extends AbstractController {
      */
     public function renameFileViaPost(Request $request) {
 
-        $updateFilePathForTaggerEntity = function ($curr_relative_filepath, $new_relative_file_path) {
+        $update_file_path_for_tags = function ($curr_relative_filepath, $new_relative_file_path) {
             $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
         };
 
-        $response = $this->filesHandler->renameFileViaRequest($request, $updateFilePathForTaggerEntity);
+        $response = $this->filesHandler->renameFileViaRequest($request, $update_file_path_for_tags);
         return $response;
     }
 
