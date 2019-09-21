@@ -249,4 +249,25 @@ class FileTagger {
         $this->app->repositories->filesTagsRepository->updateFilePathByFolderPathChange($old_folder_path, $new_folder_path);
     }
 
+    /**
+     * This will copy the current set of tag and create new set with new path
+     * @param string $current_file_path
+     * @param string $copy_file_path
+     * @throws \Exception
+     */
+    public function copyTagsFromPathToNewPath(string $current_file_path, string $copy_file_path): void {
+
+        $tags_arr  = [];
+        $file_tags = $this->getEntity($current_file_path);
+
+        if( !empty($file_tags) ){
+            $tags_json = $file_tags->getTags();
+            $tags_arr  = \GuzzleHttp\json_decode($tags_json);
+        }
+
+        $this->prepare($tags_arr, $copy_file_path);
+        $this->updateTags();
+
+    }
+
 }

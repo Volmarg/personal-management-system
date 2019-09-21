@@ -2,6 +2,7 @@
 
 namespace App\Controller\Utils;
 
+use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -32,10 +33,10 @@ class Utils extends AbstractController {
     /**
      * @param string $source
      * @param string $destination
+     * @param FileTagger $file_tagger
      * @throws \Exception
      */
-    public static function copyFiles(string $source, string $destination) {
-
+    public static function copyFiles(string $source, string $destination, FileTagger $file_tagger) {
         $finder = new Finder();
         $finder->depth('==0');
 
@@ -61,6 +62,7 @@ class Utils extends AbstractController {
                 }
 
                 copy($filepath, $file_path_in_destination_folder);
+                $file_tagger->copyTagsFromPathToNewPath($filepath, $file_path_in_destination_folder);
             }
 
         }else{

@@ -135,31 +135,38 @@ class FilesHandler {
         $current_target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($current_upload_type);
         $new_target_directory     = FileUploadController::getTargetDirectoryForUploadModuleDir($target_upload_type);
 
-        # checking if it's not main dir
-        if( $current_target_directory !== $current_directory_path_in_module_upload_dir ){
+        # checking if it's not main dir on any side
+        if( $current_target_directory === $current_directory_path_in_module_upload_dir ){ // current dir is main
+
+            $current_subdirectory_path = $current_directory_path_in_module_upload_dir;
+            $target_subdirectory_path  = $new_target_directory . DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
+
+        }elseif( $new_target_directory === $target_directory_path_in_module_upload_dir ){ // target dir is main
+
+            $current_subdirectory_path = $current_target_directory . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
+            $target_subdirectory_path  = $target_directory_path_in_module_upload_dir;
+
+        } else { // there is NO main dir on any side
 
             $current_subdirectory_path = $current_target_directory . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
             $target_subdirectory_path  = $new_target_directory. DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
 
-            if( !file_exists($current_subdirectory_path) ){
-                $message = 'Current subdirectory does not exist.';
-                $this->logger->info($message);
-                return new Response($message, 500);
-            }
+        }
 
-            if( !file_exists($target_subdirectory_path) ){
-                $message = 'Target subdirectory does not exist.';
-                $this->logger->info($message);
-                return new Response($message, 500);
-            }
+        if( !file_exists($current_subdirectory_path) ){
+            $message = 'Current subdirectory does not exist.';
+            $this->logger->info($message);
+            return new Response($message, 500);
+        }
 
-        }else{
-            $current_subdirectory_path = $current_directory_path_in_module_upload_dir;
-            $target_subdirectory_path  = $target_directory_path_in_module_upload_dir;
+        if( !file_exists($target_subdirectory_path) ){
+            $message = 'Target subdirectory does not exist.';
+            $this->logger->info($message);
+            return new Response($message, 500);
         }
 
         try{
-            Utils::copyFiles($current_subdirectory_path, $target_subdirectory_path);
+            Utils::copyFiles($current_subdirectory_path, $target_subdirectory_path, $this->file_tagger);
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while moving data between folders', [
                 'message' => $e->getMessage()
@@ -347,7 +354,7 @@ class FilesHandler {
         }
 
         try{
-            Utils::copyFiles($current_file_location, $target_file_location);
+            Utils::copyFiles($current_file_location, $target_file_location, $this->file_tagger);
             unlink($current_file_location);
 
             $this->file_tagger->updateFilePath($current_file_location, $target_file_location);
