@@ -93,10 +93,11 @@ export default (function () {
                         callback: function (result) {
                             if (result) {
 
-                                var filePath = $(downloadButton).attr('href');
+                                let filePath        = $(downloadButton).attr('href');
+                                let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
 
                                 let data = {
-                                    "file_full_path":  filePath
+                                    "file_full_path":  escapedFilePath
                                 };
 
                                 //  File removal ajax
