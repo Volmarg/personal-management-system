@@ -56,21 +56,24 @@ class FilesSearchRepository
                             REPLACE(
                                 REPLACE(
                                      ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                                    'upload/images/',
+                                     IF( -- if main dir then strip is different
+                                        LOCATE('upload/images/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/images', 'upload/images/'
+                                      ),
                                     ''
                             )
                     WHEN full_file_path LIKE '%files%' THEN 
                         REPLACE(
                             REPLACE(
                                 ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                                'upload/files/',
+                                IF( -- if main dir then strip is different
+                                    LOCATE('upload/files/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/files', 'upload/files/'
+                                 ),
                                 ''
                         )
                     END , 
                     '/', '%252F') -- this is needed for routes, as this is encoded slash
                 )
                 AS directoryPath
-            
             FROM files_tags ft
             
             JOIN -- get module name
