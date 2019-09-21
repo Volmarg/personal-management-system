@@ -226,7 +226,7 @@ class FileTagger {
      * @param string $new_file_path
      * @throws \Exception
      */
-    public function updateFilePathForTaggerEntity(string $old_file_path, string $new_file_path) {
+    public function updateFilePath(string $old_file_path, string $new_file_path) {
 
         $file_tags = $this->getEntity($old_file_path);
 
@@ -238,7 +238,15 @@ class FileTagger {
 
         $this->app->em->persist($file_tags);
         $this->app->em->flush();
+    }
 
+    /**
+     * @param string $old_folder_path
+     * @param string $new_folder_path
+     * @throws \Exception
+     */
+    public function updateFilePathByFolderPathChange(string $old_folder_path, string $new_folder_path) {
+        $this->app->repositories->filesTagsRepository->updateFilePathByFolderPathChange($old_folder_path, $new_folder_path);
     }
 
 }

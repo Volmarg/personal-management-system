@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\FilesTags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -29,6 +30,30 @@ class FilesTagsRepository extends ServiceEntityRepository
             return $file_tags;
         }
 
+    }
+
+    /**
+     * @param string $old_folder_path
+     * @param string $new_folder_path
+     * @throws DBALException
+     */
+    public function updateFilePathByFolderPathChange(string $old_folder_path, string $new_folder_path): void {
+
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            UPDATE files_tags
+                SET full_file_path = REPLACE(full_file_path,:old_folder_path, :new_folder_path)
+            WHERE 1
+                AND deleted = 0 
+        ";
+
+        $binded_values = [
+            'old_folder_path' => $old_folder_path,
+            'new_folder_path' => $new_folder_path
+        ];
+
+        $connection->executeQuery($sql, $binded_values);
     }
 
 

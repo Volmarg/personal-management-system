@@ -30,9 +30,15 @@ class DirectoriesHandler {
      */
     private $logger;
 
-    public function __construct(Application $application, LoggerInterface $logger) {
+    /**
+     * @var FileTagger $file_tagger
+     */
+    private $file_tagger;
+
+    public function __construct(Application $application, LoggerInterface $logger,  FileTagger $file_tagger) {
         $this->application = $application;
         $this->logger      = $logger;
+        $this->file_tagger = $file_tagger;
     }
 
     /**
@@ -185,6 +191,7 @@ class DirectoriesHandler {
 
         try{
             rename($current_directory_path, $new_directory_path);
+            $this->file_tagger->updateFilePathByFolderPathChange($current_directory_path, $new_directory_path);
         }catch(\Exception $e){
             $this->logger->info('Exception was thrown while renaming folder: ', [
                 'message' => $e->getMessage()

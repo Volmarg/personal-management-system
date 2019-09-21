@@ -229,7 +229,7 @@ class MyFilesController extends AbstractController
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
 
         $updateFilePathAndTagsForTaggerEntity = function ($curr_relative_filepath, $new_relative_file_path) use($tags_string) {
-            $this->file_tagger->updateFilePathForTaggerEntity($curr_relative_filepath, $new_relative_file_path);
+            $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
             $this->files_tags_controller->updateTags($tags_string, $new_relative_file_path);
         };
 
