@@ -99,6 +99,12 @@ export default (function () {
                 let filename        = result['filename'];
                 let filePath        = result['fullFilePath'];
                 let directoryPath   = result['directoryPath'];
+                let shortFilename   = filename;
+                let shortLen        = 16;
+
+                if( filename.length > shortLen ) {
+                   shortFilename   = filename.substr(0, shortLen) + '...';
+                }
 
                 let form = $('<form>');
                 $(form).attr('method', "POST");
@@ -123,14 +129,14 @@ export default (function () {
                 let moduleIcon = $('<span>');
                 $(moduleIcon).addClass('search-result-module-icon');
 
-                if( 'My Images' === module ){
+                if( 'My Files' === module ){
                     $(moduleIcon).addClass('fas fa-folder-open d-inline');
-                }else if( 'My Files' === module ){
+                }else if( 'My Images' === module ){
                     $(moduleIcon).addClass('fas fa-image d-inline');
                 }
 
                 let name = $('<span>');
-                $(name).html(filename);
+                $(name).html(shortFilename);
                 $(name).addClass("d-inline search-result-file-name");
 
                 let link = $('<a>');
