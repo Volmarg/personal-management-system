@@ -14,7 +14,7 @@
         <td>Name</td>
         <td>Extension</td>
         <td>Size (mb)</td>
-        <td>Tags</td>
+        <td style="width: 500px;">Tags</td>
         <td>Actions</td>
     </tr>
     </thead>
@@ -35,7 +35,7 @@
                 {{ size_in_mb | number_format(2) }}
             </td>
 
-            <td>
+            <td style="width: auto; max-width: 500px;">
                 {# cannot be set disabled here as it messes up inputs #}
                 <input class="{{ KEY_TAGS }}" type="text" data-value="{{ file.tags }}"/>
             </td>
