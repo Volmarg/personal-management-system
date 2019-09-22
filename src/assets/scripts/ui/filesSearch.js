@@ -80,6 +80,8 @@ export default (function () {
 
                         $(fileSearchResultWrapper).empty();
                         $(fileSearchResultWrapper).append(searchResultsList);
+                        ui.widgets.popover.init();
+
                         bootstrap_notifications.notify("Found " + resultsCount + " matching file/s", 'success');
 
 
@@ -95,6 +97,9 @@ export default (function () {
             let ul = $('<ul>');
 
             $.each(data, (index, result) => {
+                let tagsJson        = result['tags'];
+                let arrayOfTags     = JSON.parse(tagsJson);
+                let tagsList        = '';
                 let module          = result['module'];
                 let filename        = result['filename'];
                 let filePath        = result['fullFilePath'];
@@ -102,10 +107,23 @@ export default (function () {
                 let shortFilename   = filename;
                 let shortLen        = 16;
 
+                // build list of tags
+                $.each(arrayOfTags, (idx, tag) => {
+
+                    tagsList += tag;
+
+                    if( idx < ( arrayOfTags.length - 1 ) ){
+                        tagsList += ', ';
+                    }
+
+                });
+
+                // build shortname
                 if( filename.length > shortLen ) {
                    shortFilename   = filename.substr(0, shortLen) + '...';
                 }
 
+                // build download form
                 let form = $('<form>');
                 $(form).attr('method', "POST");
                 $(form).attr('action', "/download/file");
@@ -145,6 +163,24 @@ export default (function () {
                 $(link).append(moduleIcon);
                 $(link).append(name);
 
+                //add popover to link
+                $(link).attr('data-trigger', "hover");
+
+                $(link).attr('data-html', "true");
+                $(link).attr('data-toggle-popover', 'true');
+
+                $(link).attr(
+                    'data-content',
+                    `<p style='display: flex;'>
+                        <span style='font-weight: bold; '>
+                            Tags:&nbsp;
+                        </span> 
+                        <span style='word-break: break-all;'>` + tagsList + `</span>
+                    </p>`
+                );
+                $(link).attr('title', filename);
+
+                // combine list elements
                 let li = $('<li>');
                 $(li).append(link);
                 $(li).append(form);

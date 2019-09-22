@@ -33,6 +33,7 @@ export default (function () {
             this.callModalOnWidgetPlusIcon();
             this.addMonthlyPaymentSummaryToAccordinHeader();
             this.removeFolderOnFolderRemovalIconClick();
+            this.popover.init();
 
             $(document).ready(function(){
                 ui.widgets.fixAccordions();
@@ -257,6 +258,11 @@ export default (function () {
                     }
                 });
 
+            }
+        },
+        popover: {
+            init: function(){
+                $('[data-toggle-popover="true"]').popover();
             }
         }
 
