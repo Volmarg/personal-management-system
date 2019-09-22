@@ -45,11 +45,16 @@
 
                     {% set timestamp = date( car_data.date | date('m/d/yyyy') ).timestamp %}
 
-                    <td class="{{ column }} {{ hideIdColumn(column) }}"
+                    <td class="{{ hideIdColumn(column) }}"
                         style="{{ date_color_style}}{{ common_style }}"
                         data-order="{{ timestamp }}"
                         >
-                        {{ car_data.date|date("Y-m-d")}}
+                        <span class="{{ column }} ">
+                            {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                "value"     : car_data.date|date("Y-m-d"),
+                                "disabled"  : true
+                            } %}
+                        </span>
                     </td>
 
                 {% else %}

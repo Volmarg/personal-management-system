@@ -379,7 +379,7 @@ export default (function () {
                     let id              = $(tr_parent_element).find('.id').html();
                     let name            = $(tr_parent_element).find('.name').html();
                     let scheduleType    = $(tr_parent_element).find('.type :selected');
-                    let date            = $(tr_parent_element).find('.date').html();
+                    let date            = $(tr_parent_element).find('.date input').val();
                     let information     = $(tr_parent_element).find('.information').html();
 
                     let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);

@@ -1,0 +1,25 @@
+
+{% if value is not defined %}
+    {% set value = '' %}
+{% endif %}
+
+{% if date_format is not defined %}
+    {% set date_format = 'yyyy-mm-dd' %}
+{% endif %}
+
+{% if disabled is not defined %}
+    {% set disabled = '' %}
+{% else %}
+    {% set disabled = 'disabled' %}
+{% endif %}
+
+
+<input
+        data-provide="datepicker"
+        data-date-format="{{ date_format }}"
+        data-date-today-highlight="true"
+        autocomplete='off'
+        value="{{ value }}"
+        class="form-control {{ disabled }}"
+        style="max-width: 100px;"
+/>
