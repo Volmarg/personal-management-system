@@ -20,7 +20,12 @@
                         data-order="{% if timestamp is defined %}{{ timestamp }}{% endif %}"
                 >
                     {% if column == 'date' %}
-                        {{ attribute(afterhour,column)|date('d-m-Y') }}
+                        <span class="{{ column }} ">
+                            {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                "value"     : attribute(afterhour,column)|date('Y-m-d') ,
+                                "disabled"  : true
+                            } %}
+                        </span>
                     {% else %}
                         {{ attribute(afterhour,column) }}
                     {% endif %}

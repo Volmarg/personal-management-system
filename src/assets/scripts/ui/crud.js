@@ -722,7 +722,7 @@ export default (function () {
             "MyJobAfterhours": {
                 makeUpdateData: function (tr_parent_element) {
                     let id = $(tr_parent_element).find('.id').html();
-                    let date = $(tr_parent_element).find('.date').html();
+                    let date = $(tr_parent_element).find('.date input').val();
                     let minutes = $(tr_parent_element).find('.minutes').html();
                     let description = $(tr_parent_element).find('.description').html();
                     let type = $(tr_parent_element).find('.type').html();
