@@ -1597,8 +1597,8 @@ export default (function () {
                 makeUpdateData: function (tr_parent_element) {
                     let id                          = $(tr_parent_element).find('.id').html();
                     let name                        = $(tr_parent_element).find('.name').html();
-                    let deadline                    = $(tr_parent_element).find('.deadline').html();
-                    let collectionStartDate         = $(tr_parent_element).find('.collectionStartDate').html();
+                    let deadline                    = $(tr_parent_element).find('.deadline input').val();
+                    let collectionStartDate         = $(tr_parent_element).find('.collectionStartDate input').val();
                     let moneyGoal                   = $(tr_parent_element).find('.moneyGoal').html();
                     let moneyCollected              = $(tr_parent_element).find('.moneyCollected').html();
                     let displayOnDashboardCheckbox  = $(tr_parent_element).find('.displayOnDashboard');

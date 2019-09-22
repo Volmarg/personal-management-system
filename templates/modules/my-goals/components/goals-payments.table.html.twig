@@ -33,11 +33,21 @@
                 </td>
 
                 <td class="collectionStartDate">
-                    {{ payment.collectionStartDate|date('Y-m-d') }}
+                    <span class="collectionStartDate">
+                        {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                            "value"     : payment.collectionStartDate|date('Y-m-d'),
+                            "disabled"  : true
+                        } %}
+                    </span>
                 </td>
 
-                <td class="deadline">
-                    {{ payment.deadline|date('Y-m-d') }}
+                <td class="">
+                    <span class="deadline">
+                        {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                            "value"     : payment.deadline|date('Y-m-d'),
+                            "disabled"  : true
+                        } %}
+                    </span>
                 </td>
 
                 <td class="moneyGoal">
