@@ -25,7 +25,12 @@
                         <td class="{{ column }} {% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}">
 
                             {% if column == 'date' %}
-                                {{ payment.date | date('Y-m-d') }}
+                                <span class="{{ column }} ">
+                                    {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                        "value"     : payment.date | date('Y-m-d'),
+                                        "disabled"  : true
+                                    } %}
+                                </span>
                             {% else %}
                                 {{ attribute(payment,column) }}
                             {% endif %}

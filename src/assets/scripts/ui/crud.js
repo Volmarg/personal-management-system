@@ -604,7 +604,7 @@ export default (function () {
             "MyPaymentsMonthly": {
                 makeUpdateData: function (tr_parent_element) {
                     let id = $(tr_parent_element).find('.id').html();
-                    let date = $(tr_parent_element).find('.date').html();
+                    let date = $(tr_parent_element).find('.date input').val();
                     let money = $(tr_parent_element).find('.money').html();
                     let description = $(tr_parent_element).find('.description').html();
                     let paymentType = $(tr_parent_element).find('.type :selected');
@@ -665,7 +665,7 @@ export default (function () {
             "MyPaymentsOwed": {
                 makeUpdateData: function (tr_parent_element) {
                     let id          = $(tr_parent_element).find('.id').html();
-                    let date        = $(tr_parent_element).find('.date').html();
+                    let date        = $(tr_parent_element).find('.date input').val();
                     let target      = $(tr_parent_element).find('.target').html();
                     let amount      = $(tr_parent_element).find('.amount').html();
                     let information = $(tr_parent_element).find('.information').html();

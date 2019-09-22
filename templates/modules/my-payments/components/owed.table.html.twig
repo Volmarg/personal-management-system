@@ -19,10 +19,13 @@
             <td class="target">       {{ record.target }}     </td>
             <td class="amount">       {{ record.amount }}     </td>
             <td class="information">  {{ record.information}} </td>
-            <td class="date">
-                {% if record.date is not null %}
-                    {{ record.date | date('Y-m-d') }}
-                {% endif %}
+            <td class="">
+                    <span class="date">
+                        {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                            "value"     : ( record.date is not null ? record.date | date('Y-m-d') : "") ,
+                            "disabled"  : true
+                        } %}
+                    </span>
             </td>
 
             <td contenteditable="false">
