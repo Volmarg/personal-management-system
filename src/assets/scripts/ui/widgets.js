@@ -15,6 +15,7 @@ export default (function () {
             'call-widget-modal'             : '.call-widget-modal',
             'widgetModalClassName'          : 'widget-modal',
             'widgetRemoveFolderClassName'   : '.widget-remove-folder',
+            'loader'                        : '#loader'
         },
         data: {
             folderPathInUploadDir           : 'data-folder-path-in-upload-dir',
@@ -263,6 +264,22 @@ export default (function () {
         popover: {
             init: function(){
                 $('[data-toggle-popover="true"]').popover();
+            }
+        },
+        loader: {
+            toggleLoader: function(soft = true){
+                let loader = $(ui.widgets.elements.loader);
+
+                if( loader.hasClass('fadeOut') ){
+                    if( soft ){
+                        $(loader).attr('style', 'background: rgba(255,255,255,0.5) !important');
+                    }
+                    loader.removeClass('fadeOut');
+                }else{
+                    $(loader).removeAttr('style');
+                    loader.addClass('fadeOut');
+                }
+
             }
         }
 

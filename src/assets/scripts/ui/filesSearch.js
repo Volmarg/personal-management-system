@@ -62,12 +62,15 @@ export default (function () {
                     clearTimeout(window.timeout);
                 }
 
+                ui.widgets.loader.toggleLoader();
+
                 window.timeout = setTimeout( () => {
                     $.ajax({
                         method  : "POST",
                         url     : _this.methods.getSearchResultsDataForTag,
                         data    : data,
                     }).always((data)=>{
+                        ui.widgets.loader.toggleLoader();
 
                         let resultsCount = data['searchResults'].length;
 
