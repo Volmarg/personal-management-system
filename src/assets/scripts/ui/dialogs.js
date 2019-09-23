@@ -51,11 +51,13 @@ export default (function () {
                     'moduleName'     : moduleName
                 };
 
+                ui.widgets.loader.toggleLoader();
                 $.ajax({
                     method: "POST",
                     url: getDataTransferDialogTemplate,
                     data: data
                 }).always((data) => {
+                    ui.widgets.loader.toggleLoader();
 
                     if( undefined !== data['template'] ){
 
@@ -119,12 +121,14 @@ export default (function () {
                     'target_upload_module_dir'                      : targetUploadModuleDirInput,
                     'subdirectory_target_path_in_module_upload_dir' : targetSubdirectoryPath
                 };
-
+                ui.widgets.loader.toggleLoader();
                 $.ajax({
                     method: "POST",
                     url:dialogs.ui.methods.moveSingleFile,
                     data: data
                 }).always( (data) => {
+                    ui.widgets.loader.toggleLoader();
+
                     let responseCode = data['response_code'];
                     let message      = data['response_message'];
                     let notifyType   = '';
@@ -160,12 +164,13 @@ export default (function () {
                     'fileCurrentPath': fileCurrentPath,
                     'moduleName'     : moduleName
                 };
-
+                ui.widgets.loader.toggleLoader();
                 $.ajax({
                     method: "POST",
                     url: getDialogTemplate,
                     data: data
                 }).always((data) => {
+                    ui.widgets.loader.toggleLoader();
 
                     if( undefined !== data['template'] ){
                         _this.callTagManagementDialog(data['template'], callback);
@@ -226,12 +231,13 @@ export default (function () {
                     'tags'              : tags,
                     'fileCurrentPath'   : fileCurrentPath,
                 };
-
+                ui.widgets.loader.toggleLoader();
                 $.ajax({
                     method: "POST",
                     url: dialogs.ui.methods.updateTagsForMyImages,
                     data: data
                 }).always( (data) => {
+                    ui.widgets.loader.toggleLoader();
                     let responseCode = data['response_code'];
                     let message      = data['response_message'];
                     let notifyType   = '';

@@ -93,7 +93,7 @@ export default (function () {
 
                             switch (settings.type) {
                                 case 'template':
-
+                                    ui.widgets.loader.toggleLoader();
                                     $.ajax({
                                         method: 'POST',
                                         url: settings.url
@@ -107,6 +107,8 @@ export default (function () {
                                         }
                                     }).fail(() => {
                                         bootstrap_notifications.notify('There was an error while fetching data for bootbox modal', 'danger')
+                                    }).always(() => {
+                                        ui.widgets.loader.toggleLoader();
                                     });
 
                                     break;
@@ -166,13 +168,13 @@ export default (function () {
                                     'subdirectory_current_path_in_module_upload_dir': subdirectoryPathInUploadDir,
                                     'block_removal'                                 : true
                                 };
-
+                                ui.widgets.loader.toggleLoader();
                                 $.ajax({
                                     method  : "POST",
                                     url     : apiUrl,
                                     data    : data
                                 }).always((data) => {
-
+                                    ui.widgets.loader.toggleLoader();
                                     // if there is code there also must be message so i dont check it
                                     let code                = data['code'];
                                     let message             = data['message'];

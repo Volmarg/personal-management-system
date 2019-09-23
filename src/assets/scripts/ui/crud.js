@@ -80,6 +80,7 @@ export default (function () {
                     backdrop: true,
                     callback: function (result) {
                         if (result) {
+                            ui.widgets.loader.toggleLoader();
                             $.ajax({
                                 url: remove_data.url,
                                 method: 'POST',
@@ -98,6 +99,8 @@ export default (function () {
                                 },
                             }).fail(() => {
                                 bootstrap_notifications.notify(remove_data.fail_message, 'danger')
+                            }).always(() => {
+                                ui.widgets.loader.toggleLoader();
                             });
                         }
                     }
@@ -131,7 +134,7 @@ export default (function () {
                             let selectorOfTargetElement = $(clickedElement).attr('data-copy-from-selector');
                             let targetElement = $(selectorOfTargetElement);
                          */
-
+                        ui.widgets.loader.toggleLoader();
                         $.ajax({
                             url: copy_data.url,
                             method: 'GET',
@@ -144,6 +147,8 @@ export default (function () {
                             },
                         }).fail(() => {
                             bootstrap_notifications.notify(update_data.fail_message, 'danger')
+                        }).always(() => {
+                            ui.widgets.loader.toggleLoader();
                         });
 
                     })
@@ -196,7 +201,7 @@ export default (function () {
                 let method = form.attr('method');
 
                 let create_data = _this.entity_actions[entity_name].makeCreateData();
-
+                ui.widgets.loader.toggleLoader();
                 $.ajax({
                     url: create_data.url,
                     type: method,
@@ -221,6 +226,8 @@ export default (function () {
 
                 }).fail((data) => {
                     bootstrap_notifications.notify(data.responseText, 'danger');
+                }).always(() => {
+                    ui.widgets.loader.toggleLoader();
                 });
 
                 event.preventDefault();
@@ -232,7 +239,7 @@ export default (function () {
                 let form = $(event.target);
                 let formTarget = form.attr('data-form-target');
                 let updateData = _this.form_target_actions[formTarget].makeUpdateData(form);
-
+                ui.widgets.loader.toggleLoader();
                 $.ajax({
                     url: updateData.url,
                     type: 'POST',
@@ -250,6 +257,8 @@ export default (function () {
 
                 }).fail((data) => {
                     bootstrap_notifications.notify(data.responseText, 'danger');
+                }).always(() => {
+                    ui.widgets.loader.toggleLoader();
                 });
 
                 event.preventDefault();
@@ -347,6 +356,7 @@ export default (function () {
 
         },
         makeAjaxRecordUpdateCall: function (update_data) {
+            ui.widgets.loader.toggleLoader();
             $.ajax({
                 url: update_data.url,
                 method: 'POST',
@@ -362,6 +372,8 @@ export default (function () {
                 },
             }).fail(() => {
                 bootstrap_notifications.notify(update_data.fail_message, 'danger')
+            }).always(() => {
+                ui.widgets.loader.toggleLoader();
             });
         },
         removeDataTableTableRow: function (table_id, tr_parent_element) {

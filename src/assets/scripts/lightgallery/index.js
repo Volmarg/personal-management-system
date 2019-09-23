@@ -101,6 +101,7 @@ export default (function () {
                                 };
 
                                 //  File removal ajax
+                                ui.widgets.loader.toggleLoader();
                                 $.ajax({
                                    method: "POST",
                                    url:     _this.apiUrls.fileRemoval,
@@ -115,6 +116,8 @@ export default (function () {
                                    },
                                 }).fail((data) => {
                                     bootstrap_notifications.notify(data.responseText, 'danger')
+                                }).always(() => {
+                                    ui.widgets.loader.toggleLoader();
                                 });
 
                             }
@@ -160,7 +163,7 @@ export default (function () {
                                     file_new_name   :  newFileName,
                                     file_full_path  :  filePath.replace("/", "")
                                 }
-
+                                ui.widgets.loader.toggleLoader();
                                 $.ajax({
                                     method: "POST",
                                     url:     _this.apiUrls.fileRename,
@@ -184,6 +187,8 @@ export default (function () {
                                     },
                                 }).fail((data) => {
                                     bootstrap_notifications.notify(data.responseText, 'danger')
+                                }).always(() => {
+                                    ui.widgets.loader.toggleLoader();
                                 });
 
                             }
