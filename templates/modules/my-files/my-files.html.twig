@@ -53,6 +53,9 @@
                         ui.upload.init();
                         ui.forms.init();
                         uploadWidget.selectCurrentModuleAndUploadDirOptionForQuickUpload();
+
+                        let mainContentInModal   = document.querySelector(".bootbox-body main.main-content");
+                        mainContentInModal.style = "min-height:auto; padding: 10px;";
                     ',
                     'subtype':'form'
                 }
