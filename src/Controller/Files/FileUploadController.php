@@ -87,23 +87,31 @@ class FileUploadController extends AbstractController {
      */
     public function displayUploadPage(Request $request) {
         $this->sendData($request);
-        return $this->renderTemplate(false);
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderTemplate(false);
+        }
+
+        return $this->renderTemplate(true);
     }
 
     /**
      * @Route("/upload/send", name="upload_send")
      * @param Request $request
-     * @return JsonResponse
+     * @return Response
      * @throws \Exception
      */
     public function sendData(Request $request){
         $this->handleFileUpload($request);
 
-        $data = [
-            'template' => $this->renderTemplate(true)->getContent()
-        ];
+        $referer_url     = $request->server->get('HTTP_REFERER');
+        $upload_page_url = $this->generateUrl('upload');
 
-        return new JsonResponse($data);
+        if( $referer_url === $upload_page_url || empty($referer_url) ) {
+            return $this->renderTemplate(false);
+        }
+
+        return $this->redirect($referer_url);
     }
 
     /**

@@ -42,6 +42,21 @@
                 </div>
 
             </div>
+
+            <script src="/assets_/static-scripts/modules/my-files.js"></script>
+            {% include 'page-elements/components/widgets/plus-icon.twig' with {
+                'widgetName': "upload-files-widget",
+                'settings':{
+                    "type": 'template',
+                    "url": '/upload/',
+                    'callFunctions': '
+                        ui.upload.init();
+                        ui.forms.init();
+                    ',
+                    'subtype':'form'
+                }
+            } %}
+
         </div>
     </main>
 
