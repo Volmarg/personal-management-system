@@ -1,0 +1,66 @@
+/**
+ * this should NOT contain any main logic of system
+ *  only some smaller function passed for example in json configs etc.
+ */
+
+var myFiles = {
+
+    /**
+     * Selecting option corresponding to the category on which im at atm.
+     * raw js while jquerry works within webpack scripts only
+     */
+    selectCurrentModuleAndUploadDirOptionForQuickUpload: function () {
+
+        let moduleSelect            = document.querySelector("select#upload_form_upload_module_dir");
+        let directorySelect         = document.querySelector("select#upload_form_subdirectory");
+
+        let moduleSelectOptions     = document.querySelectorAll("select#upload_form_upload_module_dir option");
+        let directorySelectOptions  = document.querySelectorAll("select#upload_form_subdirectory option");
+
+        let getAttrs                = JSON.parse(TWIG_GET_ATTRS);
+        let directoryPath           = unescape(getAttrs.encoded_subdirectory_path)
+        let route                   = TWIG_ROUTE;
+
+        let moduleToSelect = '';
+
+        // swap module
+        if ( route === 'modules_my_files' ) {
+            moduleToSelect = 'files';
+        } else if( route === 'modules_my_images' ){
+            moduleToSelect = 'images';
+        }
+
+        moduleSelect.setAttribute("value", moduleToSelect);
+        moduleSelectOptions.forEach(function (option, index) {
+            if (option.getAttribute("value") == moduleToSelect) {
+                option.setAttribute("selected", "true");
+            }
+        });
+
+        //swap dir
+        let allOptgroups      = directorySelect.querySelectorAll("optgroup");
+        allOptgroups.forEach(function (optgroup, index) {
+            optgroup.setAttribute('class', 'd-none');
+        });
+
+        let optgroupForModule = directorySelect.querySelectorAll("optgroup[label^='" + moduleToSelect + "']")[0];
+        let options           = optgroupForModule.childNodes;
+
+        optgroupForModule.setAttribute('class', '');
+
+        if( null === directoryPath ){ // main dir
+            // do nothing - main is always selected first
+            return;
+        }
+
+        directorySelect.setAttribute("value", directoryPath);
+        options.forEach(function (option, index) {
+            option.setAttribute('class','');
+            if (option.getAttribute("value") == directoryPath) {
+                option.setAttribute("selected", "true");
+            }
+        });
+
+    }
+
+}
