@@ -28,6 +28,21 @@
 
             {% include 'core/galleries/lightgallery.html.twig' with {'images': all_images} %}
 
+            <script src="/assets_/static-scripts/upload-widget.js"></script>
+            {% include 'page-elements/components/widgets/plus-icon.twig' with {
+                'widgetName': "upload-files-widget",
+                'settings':{
+                    "type": 'template',
+                    "url": '/upload/',
+                    'callFunctions': '
+                        ui.upload.init();
+                        ui.forms.init();
+                        uploadWidget.selectCurrentModuleAndUploadDirOptionForQuickUpload();
+                    ',
+                    'subtype':'form'
+                }
+            } %}
+            
         </div>
     </main>
 {% endblock body %}

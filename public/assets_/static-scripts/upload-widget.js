@@ -3,7 +3,7 @@
  *  only some smaller function passed for example in json configs etc.
  */
 
-var myFiles = {
+var uploadWidget = {
 
     /**
      * Selecting option corresponding to the category on which im at atm.

@@ -43,7 +43,7 @@
 
             </div>
 
-            <script src="/assets_/static-scripts/modules/my-files.js"></script>
+            <script src="/assets_/static-scripts/upload-widget.js"></script>
             {% include 'page-elements/components/widgets/plus-icon.twig' with {
                 'widgetName': "upload-files-widget",
                 'settings':{
@@ -52,7 +52,7 @@
                     'callFunctions': '
                         ui.upload.init();
                         ui.forms.init();
-                        myFiles.selectCurrentModuleAndUploadDirOptionForQuickUpload();
+                        uploadWidget.selectCurrentModuleAndUploadDirOptionForQuickUpload();
                     ',
                     'subtype':'form'
                 }
