@@ -24,6 +24,7 @@ export default (function () {
                 downloadButton          : '#lg-download',
                 fileTransferButton      : '#lightgallery_transfer_button',
                 tagsManageButton        : '#lightgallery_manage_tags_button',
+                imageAfterStyles        : "#imageAfterStyles"
             },
             classes: {
                 upperToolbar            : '.lg-toolbar',
@@ -34,6 +35,7 @@ export default (function () {
                 imagePreviewWrapper     : '.lg-inner',
                 currentViewedFilename   : '.lg-sub-html',
                 galleryMainWrapper      : '.lg',
+                textHolderCaption       : '.text-holder'
             }
         },
         messages: {
@@ -177,8 +179,10 @@ export default (function () {
                                             let images      = $("[src^='" + filePath + "']");
 
                                             $(images).attr('src', newFilePath);
+                                            $(images).attr('alt', newFileName);
                                             $(links).attr('href', newFilePath);
 
+                                            _this.handleGalleryCaptionOnFileRename(_this.vars.currentFileName, newFileName);
                                             _this.vars.currentFileName  = $(_this.selectors.classes.currentViewedFilename).text();
                                         }
 
@@ -346,6 +350,11 @@ export default (function () {
             $(nextButton).click();
             this.initGallery();
             $(htmlGallery).find('[href^="' + filePath + '"]').remove();
+        },
+        handleGalleryCaptionOnFileRename: function(currFilename, newFilename){
+            let textHolder = $(this.selectors.classes.textHolderCaption + "[data-filename^='" + currFilename + "']");
+            textHolder.text(newFilename);
+            textHolder.attr('data-alt', newFilename);
         },
         handleGalleryEvents: function (){
             let _this           = this;
