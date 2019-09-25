@@ -35,7 +35,7 @@ export default (function () {
                 imagePreviewWrapper     : '.lg-inner',
                 currentViewedFilename   : '.lg-sub-html',
                 galleryMainWrapper      : '.lg',
-                textHolderCaption       : '.text-holder'
+                textHolderCaption       : '.caption-text-holder'
             }
         },
         messages: {
