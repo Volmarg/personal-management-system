@@ -23,8 +23,7 @@ export default (function () {
                 transferButton          : '#lightgallery_transfer_button',
                 downloadButton          : '#lg-download',
                 fileTransferButton      : '#lightgallery_transfer_button',
-                tagsManageButton        : '#lightgallery_manage_tags_button',
-                imageAfterStyles        : "#imageAfterStyles"
+                tagsManageButton        : '#lightgallery_manage_tags_button'
             },
             classes: {
                 upperToolbar            : '.lg-toolbar',
