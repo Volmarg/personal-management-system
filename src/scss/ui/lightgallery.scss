@@ -17,3 +17,26 @@
   transition: 200ms;
   color: white;
 }
+
+/* Text under image */
+#aniimated-thumbnials .caption-wrapper {
+  display: inline-block;
+  height: 200px;
+  width: 100%;
+  position: absolute;
+  left: 0px;
+}
+
+#aniimated-thumbnials img {
+  margin-bottom: 38px;
+}
+
+#aniimated-thumbnials .caption-text-holder {
+  position: absolute;
+  bottom: -110px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  width: 100%;
+  text-align: center;
+}

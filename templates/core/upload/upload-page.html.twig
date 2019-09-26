@@ -30,7 +30,7 @@
                             {% endif %}
 
                             <div class="col-md-6 file-upload-form justify-content-center align-self-center">
-                                {{ form_start(form, {'attr': {'class': 'flex-column', 'data-form-target':"Upload"}}) }}
+                                {{ form_start(form, {'attr': {'class': 'flex-column', 'data-form-target':"Upload", "action" : path('upload_send') }}) }}
 
                                 {{ form_widget(form[KEY_UPLOAD_MODULE_DIR], {'attr': {'class': 'form-control upload-type listFilterer'}}) }}
 
@@ -46,7 +46,7 @@
                                     {{ form_widget(form.subdirectory) }}
                                 </section>
 
-                                <section class="button-submit col-md-3">
+                                <section class="button-submit col-md-4">
                                     {{ form_widget(form.submit) }}
                                 </section>
 
