@@ -21,6 +21,7 @@ export default (function () {
             tinymce.custom.init();
             myGoals.ui.init();
             gallery.lightgallery.init();
+            ui.shuffler.init();
             modules.myFiles.init();
             ui.filesSearch.init();
         },

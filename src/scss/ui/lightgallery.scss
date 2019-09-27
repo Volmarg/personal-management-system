@@ -25,6 +25,7 @@
   width: 100%;
   position: absolute;
   left: 0px;
+  top: 0px;
 }
 
 #aniimated-thumbnials img {
@@ -33,7 +34,7 @@
 
 #aniimated-thumbnials .caption-text-holder {
   position: absolute;
-  bottom: -110px;
+  bottom: 0px;
   left: 0;
   right: 0;
   height: 40px;

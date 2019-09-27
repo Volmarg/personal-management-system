@@ -1,6 +1,9 @@
 {% set my_files_controller = 'App\\Controller\\Modules\\Images\\MyImagesController' %}
-{% set KEY_FILE_NAME        = constant(my_files_controller~"::KEY_FILE_NAME") %}
+{% set FileTagger          = 'App\\Services\\FileTagger' %}
+
 {% set KEY_FILE_FULL_PATH   = constant(my_files_controller~"::KEY_FILE_FULL_PATH") %}
+{% set KEY_FILE_NAME        = constant(my_files_controller~"::KEY_FILE_NAME") %}
+{% set KEY_TAGS             = constant(FileTagger~"::KEY_TAGS") %}
 {% set bytes_in_mb          = 1048576 %}
 
 
@@ -11,18 +14,26 @@
             <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                 <h4 class="c-grey-900 mB-20 align-self-center">Images</h4>
                 <div class="my-images-all-images lightgallery">
-                    <div class="my-gallery grid" data-masonry='{
+                    {# OLD #}
+{#                    <div class="my-gallery grid" data-masonry='{
                         "itemSelector": ".grid-item",
                         "columnWidth": 30
                     }'
                     >
-                        <div id="aniimated-thumbnials" class="grid-item">
+                        <div id="aniimated-thumbnials" class="grid-item my-shuffle-container">
                             {% for image in images %}
-                                <a href="/{{ image[KEY_FILE_FULL_PATH] }}" style="position:relative; width:200px;">
-                                    {#
+                                <a
+                                        href="/{{ image[KEY_FILE_FULL_PATH] }}"
+                                        style="position:relative; width:200px;"
+                                        data-groups='["city"]'
+                                        data-date-created="2016-06-09"
+                                        data-title="Crossroads"
+                                        class="picture-item d-block"
+                                >
+                                    #}{#
                                         this is the only case when the leading "/" in twig tpl must be added
                                         because to display images from upload dir it needs to have "/"
-                                    #}
+                                    #}{#
                                     <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px;"/>
 
                                 <div class="caption-wrapper"></div>
@@ -31,9 +42,64 @@
                                     </span>
                                 </a>
                             {% endfor %}
+                            <div class="col-1@sm my-sizer-element"></div>
                         </div>
 
+                    </div>#}
+{#NEW#}
+
+                    {# SEARCH #}
+                    <div class="container">
+                        <div class="row flex-row-reverse">
+                            <div class="">
+                                <div class="form-group">
+                                    <label for="filters-search-input" class="filter-label">Search</label>
+                                    <input
+                                            class="textfield filter__search js-shuffle-search form-control"
+                                            type="search"
+                                            id="filters-search-input"
+                                            placeholder="Search by title" >
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
+                    {# GALLERY #}
+
+                   {#
+                        this is the only case when the leading "/" in twig tpl must be added
+                        because to display images from upload dir it needs to have "/"
+                    #}
+                    <div class="row my-shuffle-container" id="aniimated-thumbnials"> {# This is a mix of shuffleJS and lightgallery #}
+                        {% for image in images %}
+                            <div class="col-4@sm grid-item"                     {# shuffle + lightgallery classes #}
+                                 data-groups='{{ image[KEY_TAGS] }}'            {# shuffle attr #}
+                                 data-date-created="2016-08-12"                 {# shuffle attr #}
+                                 data-title="{{ image[KEY_FILE_NAME] }}"        {# shuffle attr #}
+                                 data-src="/{{ image[KEY_FILE_FULL_PATH] }}"    {# lightgallery attr #}
+                                 style="                                        {# shuffle styles #}
+                                    position:relative;
+                                    margin: 5px;
+                                 "
+                            >
+                                <div class="aspect aspect--16x9">
+                                    <div class="aspect__inner">
+                                        <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px; "/>
+
+                                        <div class="caption-wrapper"></div>
+                                        <span class="caption-text-holder image_{{ loop.index0 }}" data-filename="{{ image[KEY_FILE_NAME] }}">
+                                            {{ image[KEY_FILE_NAME] }}
+                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {#END#}
+
+
                 </div>
             </div>
         </div>

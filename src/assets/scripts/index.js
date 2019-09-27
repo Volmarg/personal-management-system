@@ -17,6 +17,8 @@ import './bootstrap-notify/bootstrap-notify.min.js';
 import './bootstrap-notify/index.js';
 
 import './lightgallery/index.js';
+import './shuffle/Shuffler.js';
+import './shuffle/index.js';
 
 import './jquery-ui/jquery-ui.min.js';
 import './jquery-ui/jquery.ui.touch-punch-improved.js';

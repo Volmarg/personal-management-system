@@ -4,8 +4,10 @@ namespace App\Controller\Modules\Images;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Application;
 use App\Controller\Utils\Dialogs;
 use App\Controller\Utils\Env;
+use App\Entity\FilesTags;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,10 +35,17 @@ class MyImagesController extends AbstractController {
      */
     private $files_tags_controller;
 
-    public function __construct(FilesTagsController $files_tags_controller) {
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    public function __construct(FilesTagsController $files_tags_controller, Application $app) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
         $this->files_tags_controller = $files_tags_controller;
+
+        $this->app = $app;
     }
 
     /**
@@ -89,9 +98,15 @@ class MyImagesController extends AbstractController {
         $this->finder->files()->in($search_dir);
 
         foreach ($this->finder as $image) {
+
+            $file_full_path = $image->getPath() . '/' . $image->getFilename();
+            $file_tags      = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_full_path);
+            $tags_json      = ( $file_tags instanceof FilesTags ? $file_tags->getTags() : "" );
+
             $all_images[] = [
                 static::KEY_FILE_FULL_PATH => $image->getPathname(),
-                static::KEY_FILE_NAME      => $image->getFilename()
+                static::KEY_FILE_NAME      => $image->getFilename(),
+                FileTagger::KEY_TAGS       => $tags_json
             ];
         }
 

@@ -1,4 +1,5 @@
 var bootbox = require('bootbox');
+import Shuffle from 'shufflejs';
 
 import 'lightgallery';
 import 'lightgallery/modules/lg-thumbnail'
