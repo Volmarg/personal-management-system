@@ -117,6 +117,20 @@ export default class Shuffler {
         let searchedText = evt.target.value.toLowerCase();
 
         this.shuffle.filter((element, shuffle) => {
+
+            // If there is a group(tag) applied, ignore elements that don't belong to it.
+            if (shuffle.group !== Shuffle.ALL_ITEMS) {
+                // Get the item's groups.
+                let groups    = $(element).attr('data-groups');
+                let groupsObj = JSON.parse(groups);
+                let isElementInCurrentGroup = groupsObj.indexOf(shuffle.group) !== -1;
+
+                // Only search elements in the current group
+                if (!isElementInCurrentGroup) {
+                    return false; //go to next element
+                }
+            }
+
             let dataTitleOfImage = element.getAttribute("data-title").toLowerCase().trim();
             return dataTitleOfImage.indexOf(searchedText) !== -1;
         });
