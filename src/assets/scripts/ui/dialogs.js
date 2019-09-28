@@ -245,7 +245,7 @@ export default (function () {
                     if( responseCode === 200 ){
 
                         if( 'function' === typeof(callback) ){
-                            callback();
+                            callback(tags);
                             bootbox.hideAll()
                         }
 

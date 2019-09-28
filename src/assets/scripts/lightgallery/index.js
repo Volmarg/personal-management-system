@@ -333,7 +333,25 @@ export default (function () {
                     let buttonsToolbar          = $(clickedButton).closest(_this.selectors.classes.upperToolbar);
                     let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
 
-                    dialogs.ui.tagManagement.buildTagManagementDialog(fileCurrentPath, 'My Images');
+                    let addTagsToImageOnViewAndRebuildShuffleGroups = (tags) => {
+                        let gallery   = $(_this.selectors.ids.lightboxGallery);
+                        let currImage = $(gallery).find('[data-src^="' + fileCurrentPath + '"]');
+                        let tagsArr   = tags.split(',');
+                        let tagsJson  = JSON.stringify(tagsArr);
+
+                        if( 0 !== currImage.length ){
+                            $(currImage).attr('data-groups', tagsJson);
+                        }
+
+                        let tagsArray = window.shuffler.buildTagsArrayFromTagsForImages();
+
+                        ui.shuffler.removeTagsFromFilter(tagsArray);
+                        ui.shuffler.appendTagsToFilter(tagsArray);
+                        window.shuffler.addTagsButtonsEvents();
+
+                    };
+
+                    dialogs.ui.tagManagement.buildTagManagementDialog(fileCurrentPath, 'My Images', addTagsToImageOnViewAndRebuildShuffleGroups);
                 });
 
             }
