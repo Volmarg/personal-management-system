@@ -349,7 +349,22 @@ export default (function () {
             $(currentViewedImage).remove();
             $(nextButton).click();
             this.initGallery();
-            $(htmlGallery).find('[href^="' + filePath + '"]').remove();
+
+            // now the image that is removed in slider is fine but it must be removed also from shuffler instance to update tags etc
+            let currentImageInGalleryView = $(htmlGallery).find('[data-src^="' + filePath + '"]');
+            let currentImageUniqueId      = $(currentImageInGalleryView).attr('data-unique-id');
+
+            // ShuffleJS tags need to be rebuilt
+            if( undefined !== window.shuffler ){
+                ui.shuffler.removeImageByDataUniqueId(currentImageUniqueId);        // first remove image from instance
+
+                let tagsArray = window.shuffler.buildTagsArrayFromTagsForImages();  // prepare updated set of tags
+
+                ui.shuffler.removeTagsFromFilter(tagsArray);                        // clean current tags and add new set
+                ui.shuffler.appendTagsToFilter(tagsArray);
+                window.shuffler.addTagsButtonsEvents();
+                ui.shuffler.switchToGroupAllIfGroupIsRemoved();
+            }
         },
         handleGalleryCaptionOnFileRename: function(currFilename, newFilename){
             let textHolder = $(this.selectors.classes.textHolderCaption + "[data-filename^='" + currFilename + "']");

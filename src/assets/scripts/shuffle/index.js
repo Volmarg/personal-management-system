@@ -36,19 +36,18 @@ export default (function () {
         initShuffler: function () {
             let _this = this;
 
-            document.addEventListener('DOMContentLoaded', () => {
+            $(document).ready(() => {
                 let domGalleryHolder = document.getElementById(_this.selectors.other.galleryHolder);
                 let itemSelector     = _this.selectors.classes.itemSelector;
                 let searchSelector   = _this.selectors.classes.searchSelector;
 
-                let shuffler = new Shuffler(domGalleryHolder, itemSelector, searchSelector);
-                shuffler.init();
+                window.shuffler = new Shuffler(domGalleryHolder, itemSelector, searchSelector);
+                window.shuffler.init();
 
-                let tagsArray = shuffler.buildTagsArrayFromTagsForImages();
+                let tagsArray = window.shuffler.buildTagsArrayFromTagsForImages();
                 _this.appendTagsToFilter(tagsArray);
 
-                shuffler.addTagsButtonsEvents();
-
+                window.shuffler.addTagsButtonsEvents();
             });
 
         },
@@ -68,6 +67,39 @@ export default (function () {
 
                 $(domTagsHolder).append(button);
             });
+        },
+        removeTagsFromFilter: function(){
+            let domTagsHolder = $(this.selectors.classes.tagsHolder);
+            $(domTagsHolder).html('');
+        },
+        removeImageByDataUniqueId: function(id){
+            let allIShuffleItems = window.shuffler.shuffle.items;
+            let removedItem      = null;
+            let removedElement   = null;
+
+            $.each(allIShuffleItems, (index, item) => {
+
+                let domElement = item.element;
+                let uniqueId   = $(domElement).attr('data-unique-id');
+
+                if( uniqueId == id){
+                    removedItem     = item;
+                    removedElement  = domElement;
+                }
+
+            });
+
+            window.shuffler.shuffle.remove([removedElement]);
+        },
+        switchToGroupAllIfGroupIsRemoved: function(){
+            let selectedGroup       = window.shuffler.shuffle.group;
+            let domTagsHolder       = $(this.selectors.classes.tagsHolder);
+            let correspondingButton = $(domTagsHolder).find('[data-group^="' + selectedGroup + '"]');
+
+            if( 0 === correspondingButton.length ){
+                window.shuffler.shuffle.filter("all");
+            }
+
         }
     };
 
