@@ -13,40 +13,7 @@
         <div class="col-md-12">
             <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                 <h4 class="c-grey-900 mB-20 align-self-center">Images</h4>
-                <div class="my-images-all-images lightgallery">
-                    {# OLD #}
-{#                    <div class="my-gallery grid" data-masonry='{
-                        "itemSelector": ".grid-item",
-                        "columnWidth": 30
-                    }'
-                    >
-                        <div id="aniimated-thumbnials" class="grid-item my-shuffle-container">
-                            {% for image in images %}
-                                <a
-                                        href="/{{ image[KEY_FILE_FULL_PATH] }}"
-                                        style="position:relative; width:200px;"
-                                        data-groups='["city"]'
-                                        data-date-created="2016-06-09"
-                                        data-title="Crossroads"
-                                        class="picture-item d-block"
-                                >
-                                    #}{#
-                                        this is the only case when the leading "/" in twig tpl must be added
-                                        because to display images from upload dir it needs to have "/"
-                                    #}{#
-                                    <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px;"/>
-
-                                <div class="caption-wrapper"></div>
-                                    <span class="caption-text-holder image_{{ loop.index0 }}" data-filename="{{ image[KEY_FILE_NAME] }}">
-                                        {{ image[KEY_FILE_NAME] }}
-                                    </span>
-                                </a>
-                            {% endfor %}
-                            <div class="col-1@sm my-sizer-element"></div>
-                        </div>
-
-                    </div>#}
-{#NEW#}
+                <div class="my-images-all-images lightgallery" style="margin-left: 20px;">
 
                                                     {# Topbar #}
                     <div class="row">
@@ -79,9 +46,7 @@
 
                     </div>
 
-
                                                         {# Gallery #}
-
                    {#
                         this is the only case when the leading "/" in twig tpl must be added
                         because to display images from upload dir it needs to have "/"
@@ -90,6 +55,7 @@
                         {% for image in images %}
 
                             {% set tags = ( "" == image[KEY_TAGS] ? "[]" : image[KEY_TAGS] ) %}
+                            {% set tags_list = jsonDecode(tags) | join(', ') %}
 
                             <div class="col-4@sm grid-item"                     {# shuffle + lightgallery classes #}
                                  data-groups="{{ tags }}"                       {# shuffle attr #}
@@ -97,10 +63,21 @@
                                  data-title="{{ image[KEY_FILE_NAME] }}"        {# shuffle attr #}
                                  data-src="/{{ image[KEY_FILE_FULL_PATH] }}"    {# lightgallery attr #}
                                  data-unique-id="{{ loop.index0 }}"
-                                 style="                                        {# shuffle styles #}
-                                    position:relative;
-                                    margin: 5px;
+                                 data-toggle-popover="true"                     {# popover attr #}
+                                 data-html="true"                               {# popover attr #}
+                                 data-trigger="hover"                           {# popover attr #}
+                                 data-content="                                 {# popover attr #}
+                                     <p style='display: flex;'>
+                                        <span style='font-weight: bold; '>
+                                            Tags:&nbsp;
+                                        </span>
+                                            <span style='word-break: break-all;'>{{ tags_list }}</span>
+                                    </p>
                                  "
+                                 style="                                        {# shuffle styles #}
+                                         position:relative;
+                                         margin: 5px;
+                                         "
                             >
                                 <div class="aspect aspect--16x9">
                                     <div class="aspect__inner">

@@ -20,6 +20,7 @@ class Utils extends AbstractExtension {
             new TwigFunction('unset', [$this, '_unset']),
             new TwigFunction('keepMenuOpen', [$this, 'keepMenuOpen']),
             new TwigFunction('isDemo', [$this, 'isDemo']),
+            new TwigFunction('jsonDecode', [$this, 'jsonDecode']),
         ];
     }
 
@@ -66,6 +67,11 @@ class Utils extends AbstractExtension {
     public function isDemo() {
         $is_demo = Env::isDemo();
         return $is_demo;
+    }
+
+    public function jsonDecode(string $json): array {
+        $arr = json_decode($json, true);
+        return $arr;
     }
 
 }
