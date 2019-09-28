@@ -41,6 +41,10 @@ export default (function () {
                 let itemSelector     = _this.selectors.classes.itemSelector;
                 let searchSelector   = _this.selectors.classes.searchSelector;
 
+                if( undefined === domGalleryHolder || null === domGalleryHolder ){
+                    return;
+                }
+
                 window.shuffler = new Shuffler(domGalleryHolder, itemSelector, searchSelector);
                 window.shuffler.init();
 
