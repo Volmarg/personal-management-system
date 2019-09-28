@@ -48,10 +48,22 @@ var uploadWidget = {
 
         optgroupForModule.setAttribute('class', '');
 
+        // Todo - check if that's sure
         if( null === directoryPath ){ // main dir
             // do nothing - main is always selected first
             return;
         }
+
+        // first remove "selected" attr from currently auto selected option
+        directorySelectOptions.forEach((option, index) => {
+            let isSelected = option.getAttribute('selected');
+
+            if( isSelected ){
+                option.removeAttribute("selected");
+                return false;
+            }
+
+        });
 
         directorySelect.setAttribute("value", directoryPath);
         options.forEach(function (option, index) {
