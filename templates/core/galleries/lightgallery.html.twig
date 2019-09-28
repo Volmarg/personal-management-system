@@ -48,23 +48,39 @@
                     </div>#}
 {#NEW#}
 
-                    {# SEARCH #}
-                    <div class="container">
-                        <div class="row flex-row-reverse">
-                            <div class="">
-                                <div class="form-group">
-                                    <label for="filters-search-input" class="filter-label">Search</label>
-                                    <input
-                                            class="textfield filter__search js-shuffle-search form-control"
-                                            type="search"
-                                            id="filters-search-input"
-                                            placeholder="Search by title" >
+                                                    {# Topbar #}
+                    <div class="row">
+                                                    {# Tags #}
+                        <div class="row col-8">
+                            <div class="col-12@sm tags-group-wrap">
+                                <div class="tags-group">
+                                    <p class="tags-label">Tags</p>
+                                    <div class="btn-group shuffler-tags-options d-flex flex-wrap">
+                                        {# Buttons here will be generated via JS #}
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                                                 {# Search #}
+                        <div class="row col-4 flex-row-reverse">
+                            <div class="row flex-row-reverse">
+                                <div class="">
+                                    <div class="form-group">
+                                        <label for="filters-search-input" class="filter-label">Search</label>
+                                        <input
+                                                class="textfield filter__search js-shuffle-search form-control"
+                                                type="search"
+                                                id="filters-search-input"
+                                                placeholder="Search by title" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    {# GALLERY #}
+
+                                                        {# Gallery #}
 
                    {#
                         this is the only case when the leading "/" in twig tpl must be added
@@ -72,8 +88,11 @@
                     #}
                     <div class="row my-shuffle-container" id="aniimated-thumbnials"> {# This is a mix of shuffleJS and lightgallery #}
                         {% for image in images %}
+
+                            {% set tags = ( "" == image[KEY_TAGS] ? "[]" : image[KEY_TAGS] ) %}
+
                             <div class="col-4@sm grid-item"                     {# shuffle + lightgallery classes #}
-                                 data-groups='{{ image[KEY_TAGS] }}'            {# shuffle attr #}
+                                 data-groups="{{ tags }}"                       {# shuffle attr #}
                                  data-date-created="2016-08-12"                 {# shuffle attr #}
                                  data-title="{{ image[KEY_FILE_NAME] }}"        {# shuffle attr #}
                                  data-src="/{{ image[KEY_FILE_FULL_PATH] }}"    {# lightgallery attr #}
@@ -96,9 +115,6 @@
                             </div>
                         {% endfor %}
                     </div>
-
-                    {#END#}
-
 
                 </div>
             </div>
