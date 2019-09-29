@@ -88,22 +88,28 @@ export default (function () {
             maxUploadedFilesCount  : 1,
         },
         init: function () {
-            let _this = this;
             this.elements.init();
             this.vars.init();
+
+            this.handleFilesSelectOnChangeEvent();
+            this.attachFilesInputResetEventToXButton();
+            this.settings.addConfirmationBoxesToForms();
+        },
+        handleFilesSelectOnChangeEvent: function(){
+            let _this = this;
 
             this.elements.fileSelectButton.on('change', function () {
                 _this.setSelectedFilesNamesAndSize();
                 _this.setSelectedFilesCount();
             });
-
-            this.attachFilesInputResetEventToXButton();
-
-            this.settings.addConfirmationBoxesToForms();
         },
         setSelectedFilesNamesAndSize: function () {
 
-            let selectedFiles = $(this.elements.filesInput)[0].files;
+            let selectedFiles    = $(this.elements.filesInput)[0].files;
+
+            $(this.elements.selectedFilesList).html('');
+            this.vars.filesNames          = [];
+            this.vars.filesTotalSizeBytes = 0;
 
             for (let x = 0; x <= selectedFiles.length - 1 ; x++){
                 this.vars.filesNames.push(selectedFiles[x].name);
@@ -111,28 +117,24 @@ export default (function () {
 
                 let filesListWrapper = $("<LI>");
                 $(filesListWrapper).append(selectedFiles[x].name);
-
                 $(this.elements.selectedFilesList).append(filesListWrapper);
             }
+
 
             this.vars.filesTotalSizeMb = Math.floor(this.vars.filesTotalSizeBytes/this.vars.bytesInMb);
             this.appendFilesNamesAndSizeToDom();
 
         },
-        setSelectedFilesCount: () => {
-            let _this                            = ui.upload;
-            let selectedFiles                    = $(_this.elements.filesInput)[0].files;
+        setSelectedFilesCount: function () {
+            let selectedFiles                    = $(this.elements.filesInput)[0].files;
             let selectedFilesCount               = selectedFiles.length;
-            let currentUploadedFilesCountWrapper = _this.elements.currentUploadedFilesCountWrapper;
+            let currentUploadedFilesCountWrapper = this.elements.currentUploadedFilesCountWrapper;
 
-            let currentSelectCount = $(_this.selectors.classes.selectedFilesCount).text();
-            currentSelectCount     = parseInt(currentSelectCount) + parseInt(selectedFilesCount);
+            $(this.selectors.classes.selectedFilesCount).html(selectedFilesCount);
 
-            $(_this.selectors.classes.selectedFilesCount).html(currentSelectCount);
+            if( selectedFilesCount < this.vars.maxUploadedFilesCount ){
 
-            if( currentSelectCount < _this.vars.maxUploadedFilesCount ){
-
-                if( $(_this.elements.currentFileSizeWrapper).hasClass("text-danger") ){
+                if( $(this.elements.currentFileSizeWrapper).hasClass("text-danger") ){
                     return;
                 }
 
@@ -141,7 +143,7 @@ export default (function () {
             }else{
                 $(currentUploadedFilesCountWrapper).attr("class","");
                 $(currentUploadedFilesCountWrapper).addClass("text-danger");
-                $(_this.elements.submitButton).addClass("disabled");
+                $(this.elements.submitButton).addClass("disabled");
             }
         },
         appendFilesNamesAndSizeToDom: function(){

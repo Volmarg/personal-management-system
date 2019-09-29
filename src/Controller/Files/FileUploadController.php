@@ -86,8 +86,6 @@ class FileUploadController extends AbstractController {
      * @throws \Exception
      */
     public function displayUploadPage(Request $request) {
-        phpinfo();
-
         $this->sendData($request);
 
         if (!$request->isXmlHttpRequest()) {
