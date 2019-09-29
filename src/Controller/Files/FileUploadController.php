@@ -86,6 +86,8 @@ class FileUploadController extends AbstractController {
      * @throws \Exception
      */
     public function displayUploadPage(Request $request) {
+        phpinfo();
+
         $this->sendData($request);
 
         if (!$request->isXmlHttpRequest()) {
@@ -221,8 +223,16 @@ class FileUploadController extends AbstractController {
             $subdirectory       = $form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
             $upload_module_dir  = $form_data[static::KEY_UPLOAD_MODULE_DIR];
             $uploaded_files     = $form_data[FilesHandler::FILE_KEY];
+            $max_file_uploads   = (int)ini_get('max_file_uploads');
 
             foreach ($uploaded_files as $uploadedFile) {
+                $uploaded_files_count = count($uploaded_files);
+
+                if( $uploaded_files_count > $max_file_uploads){
+                    $response = new Response("You are trying to upload more files than You are allowed to!");
+                    break;
+                }
+
                 $response = $this->fileUploader->upload($uploadedFile, $request, $upload_module_dir, $subdirectory);
             }
 
