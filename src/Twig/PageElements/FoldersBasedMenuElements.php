@@ -106,9 +106,11 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $folder_path_in_module_upload_dir   = str_replace($upload_folder . DIRECTORY_SEPARATOR, '', $folder_path);
         $folder_name                        = basename($folder_path);
 
+        //urlencoded is needed since entire path is single param in controller, but then we need to unescape escaped spacebars
         $encoded_folder_path_in_module_upload_dir = urlencode($folder_path_in_module_upload_dir);
+        $folder_path_with_unescaped_spacebar      = str_replace("+"," ", $encoded_folder_path_in_module_upload_dir);
 
-        $href   = $this->buildPathForUploadModuleDir($encoded_folder_path_in_module_upload_dir, $upload_module_dir);
+        $href   = $this->buildPathForUploadModuleDir($folder_path_with_unescaped_spacebar, $upload_module_dir);
         $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
         $dropdownArrow  = '';

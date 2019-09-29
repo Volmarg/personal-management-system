@@ -78,7 +78,7 @@
     {% block twigToJavascript %}
         <script>
             var TWIG_GET_ATTRS = '{{ getAttrs | json_encode | raw }}';
-            var TWIG_ROUTE     = '{{ app.request.attributes.get('_route') }}'
+            var TWIG_ROUTE     = '{{ app.request.attributes.get('_route') }}';
         </script>
     {% endblock %}
 
