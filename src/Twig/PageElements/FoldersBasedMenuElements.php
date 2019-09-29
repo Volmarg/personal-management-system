@@ -10,6 +10,7 @@ namespace App\Twig\PageElements;
 
 use App\Controller\Files\FileUploadController;
 use App\Services\DirectoriesHandler;
+use App\Twig\Utils;
 use DirectoryIterator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -37,9 +38,15 @@ class FoldersBasedMenuElements extends AbstractExtension {
      */
     private $url_generator;
 
-    public function __construct(UrlGeneratorInterface $url_generator) {
+    /**
+     * @var Utils $twig_utils
+     */
+    private $twig_utils;
+
+    public function __construct(UrlGeneratorInterface $url_generator, Utils $twig_utils) {
         $this->finder           = new Finder();
         $this->url_generator    = $url_generator;
+        $this->twig_utils       = $twig_utils;
     }
 
 
@@ -74,13 +81,15 @@ class FoldersBasedMenuElements extends AbstractExtension {
     public function buildMenuForUploadType(string $upload_module_dir){
 
         $folders_tree   = $this->getUploadFolderSubdirectoriesTree($upload_module_dir);
+        $script         = $this->keepMenuOpenJS();
         $list           = '';
 
         array_walk($folders_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_module_dir) {
            $list = $this->buildList($subfolder_tree, $upload_module_dir, $folder_path, $list);
         });
 
-        return $list;
+
+        return $list.$script;
     }
 
     /**
@@ -102,19 +111,30 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $href   = $this->buildPathForUploadModuleDir($encoded_folder_path_in_module_upload_dir, $upload_module_dir);
         $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
-        $list  .= '<li class="nav-item dropdown">'.$link;
+        $dropdownArrow  = '';
+        $class          = '';
+        $isUl           = false;
+        $isOpen         = $this->twig_utils->keepMenuOpen($_SERVER['REQUEST_URI'], '',  $href);
 
-        if( empty(!$folder_tree) ){
-            $list .= static::DROPDOWN_ARROW_HTML;
+        if( !empty($folder_tree) ){
+            $dropdownArrow = static::DROPDOWN_ARROW_HTML;
+            $class         = 'nav-item dropdown';
+            $isUl          = true;
         }
 
-        $list .= '<ul class="dropdown-menu" >';
+        $list  .= '<li class="' . $class . ' ' . $isOpen . ' folder-based-menu-element">'.$link.$dropdownArrow;
 
-        array_walk($folder_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_module_dir) {
-            $list = static::buildList($subfolder_tree, $upload_module_dir, $folder_path, $list);
-        });
+        if( $isUl ) //prevent adding "open" class to menu elements which does not have any subtree
+        {
+            $list .= '<ul class="dropdown-menu folder-based-menu folder-based-menu-element" >';
 
-        $list .= '</ul>';
+            array_walk($folder_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_module_dir) {
+                $list = static::buildList($subfolder_tree, $upload_module_dir, $folder_path, $list);
+            });
+
+            $list .= '</ul>';
+        }
+
         $list .= '</li>';
 
         return $list;
@@ -141,6 +161,23 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
         return $path;
 
+    }
+
+    /**
+     * This code will be evaluated once menu is built
+     * In normal cases this is handled in twig via keepMenuOpen()
+     */
+    private function keepMenuOpenJS() {
+
+        $script= "
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    utils.ui.keepMenuOpenJS();
+                });
+            </script>
+        ";
+
+        return $script;
     }
 
 }

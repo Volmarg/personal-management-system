@@ -49,4 +49,19 @@ export default (function () {
 
     };
 
+    utils.ui = {
+        keepMenuOpenJS: function(){
+            let openedMenu       = $('.folder-based-menu .open');
+            let openedMenuParent = openedMenu;
+
+            while( $(openedMenuParent).hasClass('folder-based-menu-element') ){
+                openedMenuParent = $(openedMenuParent).parent();
+                $(openedMenuParent).addClass('open');
+                $(openedMenuParent).css({
+                    "display": "block"
+                });
+            }
+        }
+    }
+
 }());

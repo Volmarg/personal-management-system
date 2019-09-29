@@ -1,0 +1,12 @@
+/* Folder based menu */
+
+/* Fix for overlapping folders */
+.folder-based-menu li{
+  padding-bottom: 5px;
+}
+
+/* Blue dot on active element in menu */
+
+.folder-based-menu-element .sidebar-menu .sidebar-link.active::before {
+  top: 7px !important;
+}
