@@ -5,6 +5,7 @@
 {% set KEY_FILE_NAME        = constant(my_files_controller~"::KEY_FILE_NAME") %}
 {% set KEY_TAGS             = constant(FileTagger~"::KEY_TAGS") %}
 {% set bytes_in_mb          = 1048576 %}
+{% set max_filename_len     = 75 %}
 
 
 <div class="container-fluid">
@@ -85,7 +86,11 @@
 
                                         <div class="caption-wrapper"></div>
                                         <span class="caption-text-holder image_{{ loop.index0 }}" data-filename="{{ image[KEY_FILE_NAME] }}">
-                                            {{ image[KEY_FILE_NAME] }}
+                                            {% if  image[KEY_FILE_NAME] | length > max_filename_len %}
+                                                {{ image[KEY_FILE_NAME] | slice(0, max_filename_len) }}...
+                                            {% else %}
+                                                {{ image[KEY_FILE_NAME] }}
+                                            {% endif %}
                                         </span>
 
                                     </div>

@@ -17,15 +17,18 @@ export default (function () {
         selectors: {
             classes: {
                 currentSizeContainer    : ".selected-files-size",
-                clearSelectionButton    : ".clear-selection"
+                clearSelectionButton    : ".clear-selection",
+                selectedFilesCount      : ".selected-files-count"
             },
             id: {
-                fileSelectButton        : "#file-upload-file-select",
-                filesInput              : "#upload_form_file",
-                currentFileSizeWrapper  : "#currentFileSizeWrapper",
-                maxUploadSizeWrapper    : "#maxUploadSizeWrapper",
-                submitButton            : "#upload_form_submit",
-                selectedFilesList       : "#selectedFilesList",
+                fileSelectButton                 : "#file-upload-file-select",
+                filesInput                       : "#upload_form_file",
+                currentFileSizeWrapper           : "#currentFileSizeWrapper",
+                currentUploadedFilesCountWrapper : "#currentUploadedFilesCount",
+                maxUploadSizeWrapper             : "#maxUploadSizeWrapper",
+                submitButton                     : "#upload_form_submit",
+                selectedFilesList                : "#selectedFilesList",
+                maxAllowedFilesUploadCount       : "#maxAllowedFilesUploadCount",
                 settings: {
                     subdirectoryRenameSubmit    : "#upload_subdirectory_rename_submit",
                     subdirectoryMoveDataSubmit  : "#upload_subdirectory_move_data_submit",
@@ -35,28 +38,33 @@ export default (function () {
         },
         elements: {
           init: function () {
-            this.currentSizeContainer      = $(ui.upload.selectors.classes.currentSizeContainer);
-            this.clearSelectionButton      = $(ui.upload.selectors.classes.clearSelectionButton);
-            this.fileSelectButton          = $(ui.upload.selectors.id.fileSelectButton);
-            this.filesInput                = $(ui.upload.selectors.id.filesInput);
-            this.currentFileSizeWrapper    = $(ui.upload.selectors.id.currentFileSizeWrapper);
-            this.maxUploadSizeWrapper      = $(ui.upload.selectors.id.maxUploadSizeWrapper);
-            this.submitButton              = $(ui.upload.selectors.id.submitButton);
-            this.selectedFilesList         = $(ui.upload.selectors.id.selectedFilesList);
+            this.currentSizeContainer               = $(ui.upload.selectors.classes.currentSizeContainer);
+            this.clearSelectionButton               = $(ui.upload.selectors.classes.clearSelectionButton);
+            this.selectedFilesCount                 = $(ui.upload.selectors.classes.selectedFilesCount);
+            this.fileSelectButton                   = $(ui.upload.selectors.id.fileSelectButton);
+            this.filesInput                         = $(ui.upload.selectors.id.filesInput);
+            this.currentFileSizeWrapper             = $(ui.upload.selectors.id.currentFileSizeWrapper);
+            this.currentUploadedFilesCountWrapper   = $(ui.upload.selectors.id.currentUploadedFilesCountWrapper);
+            this.maxUploadSizeWrapper               = $(ui.upload.selectors.id.maxUploadSizeWrapper);
+            this.submitButton                       = $(ui.upload.selectors.id.submitButton);
+            this.selectedFilesList                  = $(ui.upload.selectors.id.selectedFilesList);
+            this.maxAllowedFilesUploadCount         = $(ui.upload.selectors.id.maxAllowedFilesUploadCount);
 
             this.settings.subdirectoryRenameSubmit        = $(ui.upload.selectors.id.settings.subdirectoryRenameSubmit);
             this.settings.subdirectoryMoveDataSubmit      = $(ui.upload.selectors.id.settings.subdirectoryMoveDataSubmit);
             this.settings.createSubdirectorySubmit        = $(ui.upload.selectors.id.settings.createSubdirectorySubmit);
 
           },
-          currentSizeContainer    : '',
-          filesInputResetButton   : '',
-          fileSelectButton        : '',
-          currentFileSizeWrapper  : '',
-          maxUploadSizeWrapper    : '',
-          submitButton            : '',
-          clearSelectionButton    : '',
-          selectedFilesList       : '',
+          currentSizeContainer          : '',
+          filesInputResetButton         : '',
+          fileSelectButton              : '',
+          currentFileSizeWrapper        : '',
+          selectedFilesCount            : '',
+          maxUploadSizeWrapper          : '',
+          submitButton                  : '',
+          clearSelectionButton          : '',
+          selectedFilesList             : '',
+          maxAllowedFilesUploadCount    : '',
             settings: {
                 subdirectoryRenameSubmit    : "",
                 subdirectoryMoveDataSubmit  : "",
@@ -64,56 +72,92 @@ export default (function () {
             }            
         },
         attributes:{
-            maxUploadSize         : "data-max-upload-size"
+            maxUploadSize              : "data-max-upload-size",
+            maxAllowedFilesUploadCount : "data-max-allowed-files-count"
         },
         vars: {
             init: function(){
-                this.maxUploadSize = $(ui.upload.elements.maxUploadSizeWrapper).attr('data-max-upload-size');
+                this.maxUploadSize         = $(ui.upload.elements.maxUploadSizeWrapper).attr(ui.upload.attributes.maxUploadSize);
+                this.maxUploadedFilesCount = $(ui.upload.elements.maxAllowedFilesUploadCount).attr(ui.upload.attributes.maxAllowedFilesUploadCount);
             },
             filesTotalSizeBytes    : 0,
             filesTotalSizeMb       : 0,
             bytesInMb              : 1048576,
             filesNames             : [],
-            maxUploadSize          : 1
+            maxUploadSize          : 1,
+            maxUploadedFilesCount  : 1,
         },
         init: function () {
+            let _this = this;
             this.elements.init();
             this.vars.init();
-            this.setSelectedFilesNamesAndSize();
+
+            this.elements.fileSelectButton.on('change', function () {
+                _this.setSelectedFilesNamesAndSize();
+                _this.setSelectedFilesCount();
+            });
+
             this.attachFilesInputResetEventToXButton();
 
             this.settings.addConfirmationBoxesToForms();
         },
         setSelectedFilesNamesAndSize: function () {
-            let _this = this;
 
-            this.elements.fileSelectButton.on('change', function () {
-                let selectedFiles       = $(_this.elements.filesInput)[0].files;
+            let selectedFiles = $(this.elements.filesInput)[0].files;
 
-                for (let x = 0; x <= selectedFiles.length - 1 ; x++){
-                    _this.vars.filesNames.push(selectedFiles[x].name);
-                    _this.vars.filesTotalSizeBytes += selectedFiles[x].size;
+            for (let x = 0; x <= selectedFiles.length - 1 ; x++){
+                this.vars.filesNames.push(selectedFiles[x].name);
+                this.vars.filesTotalSizeBytes += selectedFiles[x].size;
 
-                    let filesListWrapper = $("<LI>");
-                    $(filesListWrapper).append(selectedFiles[x].name);
+                let filesListWrapper = $("<LI>");
+                $(filesListWrapper).append(selectedFiles[x].name);
 
-                    $(_this.elements.selectedFilesList).append(filesListWrapper);
+                $(this.elements.selectedFilesList).append(filesListWrapper);
+            }
+
+            this.vars.filesTotalSizeMb = Math.floor(this.vars.filesTotalSizeBytes/this.vars.bytesInMb);
+            this.appendFilesNamesAndSizeToDom();
+
+        },
+        setSelectedFilesCount: () => {
+            let _this                            = ui.upload;
+            let selectedFiles                    = $(_this.elements.filesInput)[0].files;
+            let selectedFilesCount               = selectedFiles.length;
+            let currentUploadedFilesCountWrapper = _this.elements.currentUploadedFilesCountWrapper;
+
+            let currentSelectCount = $(_this.selectors.classes.selectedFilesCount).text();
+            currentSelectCount     = parseInt(currentSelectCount) + parseInt(selectedFilesCount);
+
+            $(_this.selectors.classes.selectedFilesCount).html(currentSelectCount);
+
+            if( currentSelectCount < _this.vars.maxUploadedFilesCount ){
+
+                if( $(_this.elements.currentFileSizeWrapper).hasClass("text-danger") ){
+                    return;
                 }
 
-                _this.vars.filesTotalSizeMb = Math.floor(_this.vars.filesTotalSizeBytes/_this.vars.bytesInMb);
-                _this.appendFilesNamesAndSizeToDom();
-
-            });
-
+                $(currentUploadedFilesCountWrapper).attr("class","");
+                $(currentUploadedFilesCountWrapper).addClass("text-success");
+            }else{
+                $(currentUploadedFilesCountWrapper).attr("class","");
+                $(currentUploadedFilesCountWrapper).addClass("text-danger");
+                $(_this.elements.submitButton).addClass("disabled");
+            }
         },
         appendFilesNamesAndSizeToDom: function(){
 
             $(this.elements.currentSizeContainer).html(this.vars.filesTotalSizeMb);
-            $(this.elements.currentFileSizeWrapper).attr("class","");
 
             if( this.vars.filesTotalSizeMb < this.vars.maxUploadSize ){
+
+                if( $(this.elements.currentFileSizeWrapper).hasClass("text-danger") ){ //something is blocking upload
+                    return;
+                }
+
+                $(this.elements.currentFileSizeWrapper).attr("class","");
                 $(this.elements.currentFileSizeWrapper).addClass("text-success");
             }else{
+                $(this.elements.currentFileSizeWrapper).attr("class","");
                 $(this.elements.currentFileSizeWrapper).addClass("text-danger");
                 $(this.elements.submitButton).addClass("disabled");
             }
@@ -128,10 +172,12 @@ export default (function () {
                 $(_this.elements.selectedFilesList).html("");
                 $(_this.elements.currentSizeContainer).html(0);
                 $(_this.elements.filesTotalSizeBytes).html(0);
+                $(_this.elements.selectedFilesCount).html(0);
 
                 $(_this.elements.submitButton).removeClass('disabled');
 
-                $(_this.elements.currentFileSizeWrapper).attr("class","");
+                $(_this.elements.currentFileSizeWrapper).attr("class","text-success");
+                $(_this.elements.currentUploadedFilesCountWrapper).attr("class","text-success");
 
                 _this.vars.filesTotalSizeBytes = 0;
             });

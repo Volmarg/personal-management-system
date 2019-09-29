@@ -121,17 +121,19 @@ class FileUploadController extends AbstractController {
      */
     private function renderTemplate($ajax_render)
     {
-        $upload_max_filesize = preg_replace("/[^0-9]/","",ini_get('upload_max_filesize'));
-        $post_max_size       = preg_replace("/[^0-9]/","",ini_get('post_max_size'));
+        $upload_max_filesize        = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
+        $post_max_size              = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
+        $max_allowed_files_count    = ini_get('max_file_uploads');
 
         $max_upload_size_mb  = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize);
 
         $form = $this->getUploadForm();
 
         $data = [
-            'ajax_render'           => $ajax_render,
-            'form'                  => $form->createView(),
-            'max_upload_size_mb'    => $max_upload_size_mb
+            'ajax_render'               => $ajax_render,
+            'form'                      => $form->createView(),
+            'max_upload_size_mb'        => $max_upload_size_mb,
+            'max_allowed_files_count'   => $max_allowed_files_count
         ];
 
         return $this->render(static::UPLOAD_PAGE_TWIG_TEMPLATE, $data);
