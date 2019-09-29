@@ -62,7 +62,7 @@ export default (function () {
                     clearTimeout(window.timeout);
                 }
 
-                ui.widgets.loader.toggleLoader();
+                ui.widgets.loader.showLoader();
 
                 window.timeout = setTimeout( () => {
                     $.ajax({
@@ -70,7 +70,7 @@ export default (function () {
                         url     : _this.methods.getSearchResultsDataForTag,
                         data    : data,
                     }).always((data)=>{
-                        ui.widgets.loader.toggleLoader();
+                        ui.widgets.loader.hideLoader();
 
                         let resultsCount = data['searchResults'].length;
 

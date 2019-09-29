@@ -273,15 +273,27 @@ export default (function () {
                 let loader = $(ui.widgets.elements.loader);
 
                 if( loader.hasClass('fadeOut') ){
+                    this.showLoader();
+                }else{
+                    this.hideLoader();
+                }
+            },
+            showLoader: (soft = true) => {
+                let loader = $(ui.widgets.elements.loader);
+
+                if( loader.hasClass('fadeOut') ){
                     if( soft ){
-                        $(loader).attr('style', 'background: rgba(255,255,255,0.5) !important');
+                        loader.attr('style', 'background: rgba(255,255,255,0.5) !important');
                     }
                     loader.removeClass('fadeOut');
-                }else{
-                    $(loader).removeAttr('style');
-                    loader.addClass('fadeOut');
                 }
 
+            },
+            hideLoader: () => {
+                let loader = $(ui.widgets.elements.loader);
+
+                loader.removeAttr('style');
+                loader.addClass('fadeOut');
             }
         }
 
