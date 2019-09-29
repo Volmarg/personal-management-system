@@ -4,6 +4,7 @@ import 'tinymce/plugins/lists';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/preview';
+import 'tinymce/plugins/paste';
 
 var IconPicker = require('@furcan/iconpicker');
 
@@ -70,10 +71,12 @@ export default (function () {
         config: {
             menubar: false,
             mode: "specific_textareas",
-            plugins: ['lists', 'table', 'image', 'preview'],
+            plugins: ['lists', 'table', 'image', 'preview', 'paste'],
             toolbar: 'bold italic | formatselect fontselect | forecolor colorpicker | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | image | preview',
             height: 400,
             forced_root_block: '',
+            paste_data_images: true,
+            image_uploadtab: true,
             images_dataimg_filter: function(img) {
                 return img.hasAttribute('internal-blob');
             },
