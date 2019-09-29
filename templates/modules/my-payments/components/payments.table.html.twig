@@ -22,7 +22,13 @@
             {% if date_group.date|date("Y-m") in payment.date|date("Y-m-d")%}
                 <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="MyPaymentsMonthly">
                     {% for column in columns_names %}
-                        <td class="{{ column }} {% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}">
+
+                        {% set timestamp = date( payment.date | date('m/d/yyyy') ).timestamp %}
+
+                        <td
+                                class="{{ column }} {% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}"
+                                data-order="{{ ( column == "date" ? timestamp : '' ) }}"
+                        >
 
                             {% if column == 'date' %}
                                 <span class="{{ column }} ">

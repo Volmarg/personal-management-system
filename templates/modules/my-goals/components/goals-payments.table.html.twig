@@ -16,6 +16,10 @@
         <tbody>
 
         {% for payment in all_goals_payments %}
+
+            {% set collectionStartTimestamp = date( payment.collectionStartDate | date('m/d/yyyy') ).timestamp %}
+            {% set deadlineTimestamp        = date( payment.deadline            | date('m/d/yyyy') ).timestamp %}
+
             {% if payment.displayOnDashboard %}
                 {% set checked = 'checked' %}
             {% else %}
@@ -32,7 +36,10 @@
                     {{ payment.name }}
                 </td>
 
-                <td class="collectionStartDate">
+                <td
+                        class="collectionStartDate"
+                        data-order="{{ collectionStartTimestamp }}"
+                >
                     <span class="collectionStartDate">
                         {% include 'page-elements/components/forms/input-datepicker.twig' with {
                             "value"     : payment.collectionStartDate|date('Y-m-d'),
@@ -41,7 +48,10 @@
                     </span>
                 </td>
 
-                <td class="">
+                <td
+                    class=""
+                    data-order="{{ deadlineTimestamp }}"
+                >
                     <span class="deadline">
                         {% include 'page-elements/components/forms/input-datepicker.twig' with {
                             "value"     : payment.deadline|date('Y-m-d'),
