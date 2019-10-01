@@ -1,0 +1,44 @@
+user:
+  headers:
+    profileSettings: User profile settings
+    changeSettings: Change settings
+    avatarPreview: Your avatar preview
+  texts:
+    passwordDisabledForDemo: Password changing has been disabled for demo
+
+goals:
+  list:
+    headers:
+      todolist: Todo list
+  payments:
+    timeElapsed: time elapsed
+    daysLeft: days left
+    days: days
+    paymentStartsIn: Payment starts in
+  settings:
+    headers:
+      addGoal: Add goal
+      addSubgoal: Add subgoal
+      addPaymentGoal: Add payment goal
+    goalsSection:
+      table:
+        name: Name
+        description: Description
+        displayOnDashboard: Display on Dashboard
+    subGoalsSection:
+      table:
+        name: Name
+        goal: Goal
+    goalsPaymentsSection:
+      table:
+        name: Name
+        collectionStartDate: Collection start date
+        deadline: Deadline
+        moneyGoal: Money goal
+        moneyCollected: Money collected
+        displayOnDashboard: Display on dashboard
+
+datatables:
+  table:
+    idHash: '#'
+    actions: Actions

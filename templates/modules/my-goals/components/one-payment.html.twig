@@ -9,13 +9,13 @@
         </div>
     </div>
     <div class="pool-info additional-info d-flex justify-content-center flex-column">
-        <span class="pool-end_date align-self-center">{{ payment.deadline|date('Y-m-d')  }} ({{ payment_days_left }} days left)</span>
+        <span class="pool-end_date align-self-center">{{ payment.deadline|date('Y-m-d')  }} ({{ payment_days_left }}  {{ translate('goals.payments.daysLeft') }})</span>
 
         <span class="pool-end_date align-self-center">
         {% if payment_start_in is defined %}
-            Payment starts in <b>{{ payment_start_in.days }}</b> days
+            {{ translate('goals.payments.paymentStartsIn') }} <b>{{ payment_start_in.days }}</b> {{ translate('goals.payments.days') }}
         {% else %}
-            {{ payment_percentage_days_left | round( 0, 'floor') }}% time elapsed
+            {{ payment_percentage_days_left | round( 0, 'floor') }}% {{ translate('goals.payments.timeElapsed') }}
         {% endif %}
         </span>
 

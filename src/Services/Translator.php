@@ -37,6 +37,11 @@ class Translator extends AbstractController {
     private $translator;
 
     /**
+     * @var bool $tr
+     */
+    private $translation_resources_added = false;
+
+    /**
      * @var string $user_defined_locale
      */
     private $user_defined_locale = '';
@@ -58,13 +63,23 @@ class Translator extends AbstractController {
      */
     public function translate(string $searched_key): string {
 
-        $this->findAllTranslationFiles();
+        $this->init();
         $this->checkDuplicatedKeys($searched_key);
-        $this->addTranslatorResources();
 
         $translation = $this->translator->trans($searched_key);
 
         return $translation;
+    }
+
+    /**
+     * This function will find all translation files and add the once to translator on creating self instance
+     */
+    private function init() {
+        if ( !$this->translation_resources_added ) {
+            $this->findAllTranslationFiles();
+            $this->addTranslatorResources();
+            $this->translation_resources_added = true;
+        }
     }
 
     /**
@@ -87,6 +102,7 @@ class Translator extends AbstractController {
 
         $is_translation_found = false;
         $found_in_file        = '';
+        $found_key            = '';
 
         /**
          * Now foreach call we build new Translator because we want to operate only on one resource at time
@@ -101,12 +117,13 @@ class Translator extends AbstractController {
             # In normal case if key was not found then searched key is returned
             if( $translationOutput !== $searched_key ){
 
-                if( $is_translation_found ){
+                if( $is_translation_found && $found_key === $searched_key ){
                     $duplicate_found_in_file = $file_path;
                     throw new ExceptionDuplicatedTranslationKey($searched_key, $found_in_file, $duplicate_found_in_file);
                 }
 
                 $is_translation_found = true;
+                $found_key            = $searched_key;
                 $found_in_file        = $file_path;
             }
 

@@ -7,7 +7,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-    <title>{% block title %}Personal Management System (PMS){% endblock %}</title>
+    <title>{% block title %}{{ translate('page.title') }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('assets/app.css') }}"/>
 
     {% block staticStyleSheets %}
@@ -124,7 +124,7 @@
         <!-- ### $App Screen Footer ### -->
         <footer class="bdT ta-c p-30 lh-0 fsz-sm c-grey-600">
             <span>
-                Copyright © 2019 Builded by
+                {{ translate('page.footerCopyright') }}
                 <a href="https://github.com/Volmarg" target='_blank' title="Volmarg Reiso">Volmarg Reiso</a>.
             </span>
         </footer>

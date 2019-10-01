@@ -1,6 +1,0 @@
-test: failed
-success: common.en
-
-failos:
-  test2: test3
-  test3: test4

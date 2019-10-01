@@ -3,6 +3,7 @@
 namespace App\Form\Modules\Goals;
 
 use App\Entity\Modules\Goals\MyGoalsPayments;
+use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -14,6 +15,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyGoalsPaymentsType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        $translator = new Translator();
+
         $builder
             ->add('name')
             ->add('collectionStartDate', DateType::class, [
@@ -25,7 +28,7 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => 'Collection start date'
+                'label'     => $translator->translate('forms.MyGoalsPaymentsType.collectionStartDate')
             ])
             ->add('deadline', DateType::class, [
                 'attr' => [
@@ -36,7 +39,7 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => 'Deadline'
+                'label'     => $translator->translate('forms.MyGoalsPaymentsType.deadline')
             ])
             ->add('moneyGoal', IntegerType::class,[
                 'attr' => [
@@ -49,7 +52,7 @@ class MyGoalsPaymentsType extends AbstractType {
                 ]
             ])
             ->add('displayOnDashboard',CheckboxType::class,[
-                'label'     => 'Display on dashboard',
+                'label'     => $translator->translate('forms.MyGoalsPaymentsType.displayOnDashboard'),
                 'required'  => false
             ])
             ->add('submit', SubmitType::class);

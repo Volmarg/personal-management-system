@@ -1,0 +1,5 @@
+forms:
+  MyGoalsPaymentsType:
+    collectionStartDate: Collection start date
+    displayOnDashboard: Display on dashboard
+    deadline: Deadline
