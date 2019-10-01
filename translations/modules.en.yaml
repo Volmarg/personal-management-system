@@ -38,7 +38,27 @@ goals:
         moneyCollected: Money collected
         displayOnDashboard: Display on dashboard
 
+notes:
+  create:
+    headers:
+      newNote: Add new note
+  category:
+    table:
+      category: Category
+      icon: Icon
+      color: Color
+      parent: Parent
+  settings:
+    headers:
+      settings:
+        label: My notes settings
+      categories:
+        label: Categories
+        editCategory: Edit categories
+        addCategory: Add category
+
 datatables:
   table:
     idHash: '#'
+    id: Id
     actions: Actions

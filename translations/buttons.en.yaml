@@ -1,2 +1,5 @@
 buttons:
-  close: close
+  close: Close
+  edit: Edit
+  delete: Deleted
+  saveChanges: Save changes

@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">My notes settings</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('notes.settings.headers.settings.label') }}</h4>
                         </div>
                     </div>
                 </div>
@@ -16,11 +16,11 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">Categories</h4>
-                            <h3>Edit categories</h3>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('notes.settings.headers.categories.label') }}</h4>
+                            <h3>{{ translate('notes.settings.headers.categories.editCategory') }}</h3>
                             {% include 'modules/my-notes/components/categories-settings.table.html.twig' %}
 
-                            <h3>Add category</h3>
+                            <h3>{{ translate('notes.settings.headers.categories.addCategory') }}</h3>
                             <div class="add-record-form">
                                 {{ form_start(form,{'attr':{' data-entity':"MyNotesCategories"}}) }}
                                 {{ form_end(form) }}

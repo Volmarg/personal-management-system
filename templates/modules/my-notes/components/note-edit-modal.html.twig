@@ -28,10 +28,10 @@
                     {% endfor %}
                 </select>
 
-                <button type="button" class="btn btn-warning edit-note">Edit</button>
-                <button type="button" class="btn btn-primary save-note" data-id="{{ note.id }}">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger delete-note" data-id="{{ note.id }}">Delete</button>
+                <button type="button" class="btn btn-warning edit-note">{{ translate('buttons.edit') }}</button>
+                <button type="button" class="btn btn-primary save-note" data-id="{{ note.id }}">{{ translate('buttons.saveChanges') }}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('buttons.close') }}</button>
+                <button type="button" class="btn btn-danger delete-note" data-id="{{ note.id }}">{{ translate('buttons.delete') }}</button>
             </div>
         </div>
     </div>

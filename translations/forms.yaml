@@ -3,3 +3,7 @@ forms:
     collectionStartDate: Collection start date
     displayOnDashboard: Display on dashboard
     deadline: Deadline
+  MyGoalsType:
+    displayOnDashboard: Display on dashboard
+  MyNotesCategoriesType:
+    parentId: Parent

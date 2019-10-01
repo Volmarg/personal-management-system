@@ -5,6 +5,7 @@ namespace App\Form\Modules\Notes;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Form\Type\FontawesomepickerType;
+use App\Services\Translator;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
@@ -25,6 +26,8 @@ class MyNotesCategoriesType extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        $translator = new Translator();
+
         $builder
             ->add('name', TextType::class)
             ->add('parent_id', EntityType::class, [
@@ -34,7 +37,7 @@ class MyNotesCategoriesType extends AbstractType {
                     return $note_category->getName();
                 },
                 'required' => false,
-                'label' => 'Parent'
+                'label' => $translator->translate('forms.MyNotesCategoriesType.parentId')
             ])
             ->add('icon', FontawesomepickerType::class, [])
             ->add('color', ColorType::class, [
