@@ -1,0 +1,65 @@
+sidebar:
+  menu:
+    dashboard:
+      label: Dashboard
+    achievements:
+      label: Achievements
+    goals:
+      label: Goals
+      list: List
+      payments: Payments
+      settings: Settings
+    car:
+      label: Car
+      schedules: Schedules
+      settings: Settings
+    contacts:
+      label: Contacts
+      phone: Phone numbers
+      email: Emails
+      other: Other
+      archived: Archived
+      settings: Settings
+    files:
+      label: Files
+      mainDir: Main folder
+    images:
+      label: Images
+      mainDir: Main folder
+    job:
+      label: Job
+      afterhours: Afterhours
+      holidays: Holidays
+      settings: Settings
+    passwords:
+      label: Passwords
+      passwords: Passwords
+      settings: Settings
+    payments:
+      label: Payments
+      productsPrices: Products prices
+      monthlyPayments: Monthly payments
+      moneyOwed: Money owed
+      settings: Settings
+    shopping:
+      label: Shopping
+      plans: Plans
+    travels:
+      label: Travels
+      ideas: Ideas
+    notes:
+      label: Notes
+      new: Create new
+      settings: Settings
+      categories: Categories
+    upload:
+      label: Upload
+      add: Add
+      manage: Manage
+
+topbar:
+  search:
+    placeholder: Search for files by tags...
+  user:
+    profile: Profile
+    logout: Logout

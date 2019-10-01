@@ -3,7 +3,7 @@
                 <span class="icon-holder">
                         <i class="fas fa-shopping-cart"></i>
                 </span>
-        <span class="title">My shopping</span>
+        <span class="title">{{ translate('sidebar.menu.shopping.label') }}</span>
         <span class="arrow">
                     <i class="ti-angle-right"></i>
                   </span>
@@ -11,7 +11,7 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-shopping-plans') }}">Plans</a>
+            <a class="sidebar-link" href="{{ path('my-shopping-plans') }}">{{ translate('sidebar.menu.shopping.plans') }}</a>
         </li>
     </ul>
 </li>

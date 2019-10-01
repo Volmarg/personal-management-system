@@ -9,6 +9,7 @@
 namespace App\Twig;
 
 use App\Controller\Utils\Env;
+use App\Services\Translator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -21,6 +22,7 @@ class Utils extends AbstractExtension {
             new TwigFunction('keepMenuOpen', [$this, 'keepMenuOpen']),
             new TwigFunction('isDemo', [$this, 'isDemo']),
             new TwigFunction('jsonDecode', [$this, 'jsonDecode']),
+            new TwigFunction('translate', [$this, 'translate']),
         ];
     }
 
@@ -74,4 +76,8 @@ class Utils extends AbstractExtension {
         return $arr;
     }
 
+    public function translate(string $key){
+        $translation = (new Translator())->translate($key);
+        return $translation;
+    }
 }

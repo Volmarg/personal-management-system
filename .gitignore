@@ -39,6 +39,7 @@ var/sessions/*
 .idea*
 *.zip
 src/DataFixtures/AppFixtures.php
+public/upload*
 #Password hasher secret key
 config/services.yaml
 src/Migrations/*

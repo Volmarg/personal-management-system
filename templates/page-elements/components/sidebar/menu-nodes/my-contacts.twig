@@ -3,7 +3,7 @@
                 <span class="icon-holder" style="color: rgb(231, 116, 27);">
                 <i class="far fa-users"></i>
                 </span>
-        <span class="title">My contacts</span>
+        <span class="title">{{ translate('sidebar.menu.contacts.label') }}</span>
         <span class="arrow">
                     <i class="ti-angle-right"></i>
                   </span>
@@ -11,19 +11,19 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'phone'} ) }}">Phone numbers</a>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'phone'} ) }}">{{ translate('sidebar.menu.contacts.phone') }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'email'} ) }}">Emails</a>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'email'} ) }}">{{ translate('sidebar.menu.contacts.email') }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'other'} )  }}">Other</a>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'other'} )  }}">{{ translate('sidebar.menu.contacts.other') }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'archived'} )  }}">Archived</a>
+            <a class="sidebar-link" href="{{ path('my-contacts', {'type' : 'archived'} )  }}">{{ translate('sidebar.menu.contacts.archived') }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-contacts-settings')  }}">Settings</a>
+            <a class="sidebar-link" href="{{ path('my-contacts-settings')  }}">{{ translate('sidebar.menu.contacts.settings') }}</a>
         </li>
     </ul>
 </li>
