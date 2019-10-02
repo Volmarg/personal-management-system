@@ -1,3 +1,4 @@
+# does not include auto generated labels from fields names
 forms:
   MyGoalsPaymentsType:
     collectionStartDate: Collection start date
@@ -7,3 +8,27 @@ forms:
     displayOnDashboard: Display on dashboard
   MyNotesCategoriesType:
     parentId: Parent
+  MyContactsType:
+    phone: Phone Number
+    email: Email
+    other: Contact
+    archived: Contact
+  MyCarSchedule:
+    scheduleType: Schedule type
+  MyTravelsIdeasType:
+    placeholders:
+      category:
+        exists: Either pick category from list or type name of new one
+        first: Add Your first category
+      image: Link to image
+      map: Link to google maps
+  MyJobHolidaysType:
+    placeholders:
+      daysSpent: Amount of days that You want to spend
+      information: Goal/Reason of spending holidays
+  MyJobHolidaysPoolType:
+    placeholders:
+      year: Add year
+      daysLeft: Amount of days that You have for this year
+      companyName: Provide company name
+  #files/images/dialogs

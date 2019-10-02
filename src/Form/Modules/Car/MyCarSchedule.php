@@ -5,6 +5,7 @@ namespace App\Form\Modules\Car;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Car\MyCar;
 use App\Entity\Modules\Car\MyCarSchedulesTypes;
+use App\Services\Translator;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -24,6 +25,8 @@ class MyCarSchedule extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        $translator = new Translator();
+
         $builder
             ->add('Name')
             ->add('Date', DateType::class, [
@@ -38,7 +41,7 @@ class MyCarSchedule extends AbstractType {
             ])
             ->add('Information')
             ->add('scheduleType', EntityType::class, [
-                'label'         => 'Schedule type',
+                'label'         => $translator->translate('forms.MyCarSchedule.scheduleType'),
                 'class'         => MyCarSchedulesTypes::class,
                 'choices'       => static::$app->repositories->myCarSchedulesTypesRepository->findBy(['deleted' => 0]),
                 'choice_label'  => function (MyCarSchedulesTypes $schedule_types) {

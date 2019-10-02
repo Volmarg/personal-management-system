@@ -3,6 +3,7 @@
 namespace App\Form\Modules\Job;
 
 use App\Entity\Modules\Job\MyJobHolidaysPool;
+use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -13,23 +14,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyJobHolidaysPoolType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+        $translator = new Translator();
+
         $builder
             ->add('year', IntegerType::class, [
                 'attr' => [
-                    'placeholder' => "Add year"
+                    'placeholder' => $translator->translate('forms.MyJobHolidaysPoolType.placeholders.year')
                 ]
             ])
             ->add('DaysLeft', IntegerType::class, [
                 'attr' => [
                     'min'           => 1,
-                    'placeholder'   => 'Amount of days that You have for this year'
+                    'placeholder'   => $translator->translate('forms.MyJobHolidaysPoolType.placeholders.daysLeft')
                 ]
             ])
             ->add('CompanyName', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Provide company name'
+                    'placeholder' => $translator->translate('forms.MyJobHolidaysPoolType.placeholders.companyName')
                 ]
             ])
             ->add('submit', SubmitType::class)

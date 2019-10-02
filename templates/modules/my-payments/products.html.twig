@@ -10,7 +10,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20">Products prices</h4>
+                                <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.productsPrices.headers.productPrices') }}</h4>
                                 {% include 'modules/my-payments/components/products.table.html.twig' with {type:product_type} %}
                             </div>
                         </div>
@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">Add product</h4>
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.productsPrices.headers.addProduct') }}</h4>
                             <div class="col-md-6 align-self-center add-record-form">
                                 {{ form_start(products_form_view,{'attr':{' data-entity':"MyPaymentsProduct"}}) }}
                                 {{ form_end(products_form_view) }}

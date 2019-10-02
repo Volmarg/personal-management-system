@@ -13,8 +13,8 @@
         {% for column in column_names %}
             <td class="{{ hideIdColumn(column) }}">{{ column|capitalize }}</td>
         {% endfor %}
-        <td>Schedule type</td>
-        <td>Actions</td>
+        <td>{{ translate('car.table.scheduleType') }}</td>
+        <td>{{ translate('datatables.table.actions') }}</td>
     </tr>
     </thead>
     <tbody>
@@ -91,7 +91,7 @@
     </tbody>
 </table>
 
-<h5>Legend</h5>
-<button class="btn btn-sm disabled color-legend-button" style="background-color:green;">In 30 - 60 days</button>
-<button class="btn btn-sm disabled color-legend-button" style="background-color:orange;">In 14 -30 days</button>
-<button class="btn btn-sm disabled color-legend-button" style="background-color:red;">In 14 days</button>
+<h5>{{ translate('car.legend.label') }}</h5>
+<button class="btn btn-sm disabled color-legend-button" style="background-color:green;">{{ translate('car.legend.30_60') }}</button>
+<button class="btn btn-sm disabled color-legend-button" style="background-color:orange;">{{ translate('car.legend.14_30') }}</button>
+<button class="btn btn-sm disabled color-legend-button" style="background-color:red;">{{ translate('car.legend.14') }}</button>

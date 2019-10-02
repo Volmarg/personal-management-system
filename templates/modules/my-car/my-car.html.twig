@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20">My car schedules table</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('car.headers.schedules') }}</h4>
                             {% include 'modules/my-car/components/table.html.twig' %}
                         </div>
                     </div>
@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">Add car schedule</h4>
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('car.headers.addSchedule') }}</h4>
                             <div class="col-md-6 align-self-center add-record-form">
                                 {{ form(car_schedule_form_view,{'attr':{' data-entity':"MyCar"}}) }}
                             </div>

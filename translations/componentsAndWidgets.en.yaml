@@ -1,0 +1,6 @@
+lightgallery:
+  headers:
+    images: Images
+  labels:
+    tags: Tags
+    search: Search

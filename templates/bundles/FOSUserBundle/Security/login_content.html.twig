@@ -15,21 +15,21 @@
                     <br/>
                 {% endif %}
 
-                <h3 class="text-center" style="color: #5DACBD;font-weight: 300;">Personal Management System</h3>
+                <h3 class="text-center" style="color: #5DACBD;font-weight: 300;">{{ translate('login.header.pageName') }}</h3>
                 <div class="d-flex" style="justify-content: space-around;">
                     <img src="http://185.204.216.136:8000/assets/images/logo/smaller.png" style="height: 65px;">
                 </div>
-                <h4 class="fw-300 c-grey-900 mB-40">Login</h4>
+                <h4 class="fw-300 c-grey-900 mB-40">{{ translate('login.header.login') }}</h4>
 
                 <form action="{{ path("fos_user_security_check") }}" method="POST">
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                     <div class="form-group">
-                        <label class="text-normal text-dark">Username:</label>
+                        <label class="text-normal text-dark">{{ translate('login.labels.username') }}</label>
                         <input type="text" class="form-control" placeholder="{{ 'security.login.username'|trans }}"
                                id="username" name="_username" value="{{ last_username }}" required="required">
                     </div>
                     <div class="form-group">
-                        <label class="text-normal text-dark">Password:</label>
+                        <label class="text-normal text-dark">{{ translate('login.labels.password') }}</label>
                         <input type="password" class="form-control" placeholder="{{ 'security.login.password'|trans }}"
                                id="password" name="_password" required="required">
                     </div>
@@ -39,7 +39,7 @@
                                 <div class="checkbox checkbox-circle checkbox-info peers ai-c">
                                     <input type="checkbox" id="inputCall1" name="inputCheckboxesCall" class="peer">
                                     <label for="inputCall1" class=" peers peer-greed js-sb ai-c">
-                                        <span class="peer peer-greed">Remember Me</span>
+                                        <span class="peer peer-greed">{{ translate('login.labels.remember') }}</span>
                                     </label>
                                 </div>
                             </div>

@@ -5,6 +5,7 @@ namespace App\Form\Modules\Job;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
+use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -26,8 +27,10 @@ class MyJobHolidaysType extends AbstractType
         static::$app = $app;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+
+        $translator = new Translator();
+
         $builder
             ->add('year', ChoiceType::class, [
                 'choices'       => $options['choices'],
@@ -41,13 +44,13 @@ class MyJobHolidaysType extends AbstractType
             ->add('daysSpent',IntegerType::class , [
                 'attr' => [
                     'min'           => 1,
-                    'placeholder'   => 'Amount of days that You want to spend'
+                    'placeholder'   => $translator->translate('forms.MyJobHolidaysType.placeholders.daysSpent')
                 ],
                 'label' => 'Days',
             ])
             ->add('information', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Goal/Reason of spending holidays'
+                    'placeholder' => $translator->translate('forms.MyJobHolidaysType.placeholders.information')
                 ],
             ])
             ->add('submit', SubmitType::class)

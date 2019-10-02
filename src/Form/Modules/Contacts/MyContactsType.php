@@ -5,6 +5,7 @@ namespace App\Form\Modules\Contacts;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Contacts\MyContacts;
 use App\Entity\Modules\Contacts\MyContactsGroups;
+use App\Services\Translator;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -25,21 +26,20 @@ class MyContactsType extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-
-        $label = '';
+        $translator = new Translator();
 
         switch ($options['type']) {
             case 'phone':
-                $label = 'Phone Number';
+                $label = $translator->translate('forms.MyContactsType.phone');
                 break;
             case 'email':
-                $label = 'Email';
+                $label = $translator->translate('forms.MyContactsType.email');
                 break;
             case 'other':
-                $label = 'Contact';
+                $label = $translator->translate('forms.MyContactsType.other');
                 break;
             case 'archived':
-                $label = 'Contact';
+                $label = $translator->translate('forms.MyContactsType.archived');
                 break;
             default:
                 throw new \Exception('Incorrect type was provided');

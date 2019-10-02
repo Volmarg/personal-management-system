@@ -8,7 +8,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20">All afterhours</h4>
+                                <h4 class="c-grey-900 mB-20 text-center">{{ translate('job.afterhours.headers.allAfterhours') }}</h4>
                                 {% include 'modules/my-job/components/afterhours.table.html.twig' with {'afterhours_type':'all', 'afterhours':afterhours_made } %}
                             </div>
                         </div>
@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20">Spent afterhours</h4>
+                                <h4 class="c-grey-900 mB-20 text-center">{{ translate('job.afterhours.headers.spentAfterhours') }}</h4>
                                 {% include 'modules/my-job/components/afterhours.table.html.twig' with {'afterhours_type':'spent', 'afterhours':afterhours_spent } %}
                             </div>
                         </div>
@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20">Remaining afterhours</h4>
+                                <h4 class="c-grey-900 mB-20 text-center">{{ translate('job.afterhours.headers.remainingAfterhours') }}</h4>
                                 {% for goal, remaining_time_to_spent in remaining_time_to_spend_per_goal %}
                                     <section>
                                         <span>I've got: </span> <b class="text-danger">{{ remaining_time_to_spent }}</b>
@@ -40,7 +40,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                                <h4 class="c-grey-900 mB-20 align-self-center">Add/Spend afterhours</h4>
+                                <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('job.afterhours.headers.addSpendAfterhours') }}</h4>
                                 <div class="col-md-6 align-self-center add-record-form">
                                     {{ form(afterhours_form_view,{'attr':{' data-entity':"MyJobAfterhours"}}) }}
                                 </div>

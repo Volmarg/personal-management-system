@@ -57,8 +57,148 @@ notes:
         editCategory: Edit categories
         addCategory: Add category
 
+contact:
+  headers:
+    addRemove: Add/Remove contact
+  tables:
+    contact: Contact
+    description: Description
+    group: Group
+    type: Type
+  settings:
+    headers:
+      changeAddContactGroup: Change/Add contact group
+    table:
+      name: Name
+
+passwords:
+  headers:
+    addRemoveCredentials: Add/Remove credentials
+  table:
+    login: Login
+    password: Password
+    url: Url
+    description: Description
+    group: Group
+  settings:
+    headers:
+      changeAddCredentialsGroup: Change/Add credentials group
+    table:
+      name: Name
+  hiddenPassword: '*****'
+
+achievements:
+  headers:
+    label: Achievements
+    addAchievement: Add achievements
+
+car:
+  settings:
+    headers:
+      changeAddCarScheduleType: Change/Add car schedule type
+  headers:
+    schedules: Schedules
+    addSchedule: Add schedule
+  legend:
+    label: Legend
+    30_60: In 30 - 60 days
+    14_30: In 14 -30 days
+    14: In 14 days
+  table:
+    scheduleType: Schedule type
+
+travels:
+  headers:
+    ideasForTraveling: Ideas for traveling
+    addIdea: Add idea
+
+payments:
+  productsPrices:
+    headers:
+      productPrices: Products prices
+      addProduct: Add product
+    table:
+      homeCurrenct: Home currency
+  moneyOwed:
+    headers:
+      owedByOthers: Money owed by others
+      owedByMe: Money owed by me
+      addRecord: Add record
+    table:
+      target: Target
+      amount: Amount
+      information: Information
+      date: Date
+  monthlyPayments:
+    headers:
+      monthlyPayments: Monthly payments
+      addPayment: Add payment
+    summary: 'Monthly payments summary:'
+    table:
+      type: Type
+  settings:
+    headers:
+      changeAddSetting: Change/Add settings
+      currencyMultiplier: Currency multiplier
+      paymentsTypes: Payments types
+    types:
+      table:
+        name: Name
+
 datatables:
   table:
     idHash: '#'
     id: Id
     actions: Actions
+
+shopping:
+  headers:
+    plannedShoppingItems: Planned shopping items
+    addPlannedItem: Add planned item
+
+job:
+  afterhours:
+    headers:
+      allAfterhours: All afterhours
+      spentAfterhours: Spent afterhours
+      remainingAfterhours: Remaining afterhours
+      addSpendAfterhours: Add/Spend afterhours
+  holidays:
+    headers:
+      summary: Holidays summary
+      spent: Holidays spent
+      spend: Spend holidays
+
+files:
+  label: Files
+  table:
+    name: Name
+    extension: Extension
+    size: Size (mb)
+    tags: Tags
+
+upload:
+  settings:
+    copyFolderData:
+      label: Copy folder data
+      from: From
+      to: To
+    renameFolder:
+      label: Rename folder
+    createFolder:
+      label: Create folder for module
+  headers:
+    uploadFiles: Upload files
+  demoText: >
+    For security reason (Demo instance) - some file types upload has been disabled.<br/>
+    You won't be informed about wrong file upload - that file will just be skipped.<br/>
+    All uploaded data will be removed couple of times a day.
+  securityTexts:
+    currentFileSize: "Selected files size:"
+    maxUploadSize: "Max upload size:"
+    currentUploadedFilesCount: "Selected files count:"
+    maxAllowedFilesUploadCount: "Max allowed files count:"
+  mb: Mb
+
+other:
+  summary: Summary

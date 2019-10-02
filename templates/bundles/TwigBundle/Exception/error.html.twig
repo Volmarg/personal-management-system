@@ -13,11 +13,11 @@
       </div>
 
       <div class='d-f jc-c fxd-c'>
-        <h1 class='mB-30 fw-900 lh-1 c-red-500' style="font-size: 60px;">Oops</h1>
-        <h3 class='mB-10 fsz-lg c-grey-900 tt-c'>Page Error</h3>
-        <p class='mB-30 fsz-def c-grey-700'>We track these errors automatically, but if the problem persists feel free to contact us.</p>
+        <h1 class='mB-30 fw-900 lh-1 c-red-500' style="font-size: 60px;">{{ translate('codePages.error.h1') }}</h1>
+        <h3 class='mB-10 fsz-lg c-grey-900 tt-c'>{{ translate('codePages.error.h3') }}</h3>
+        <p class='mB-30 fsz-def c-grey-700'>{{ translate('codePages.error.text') }}</p>
         <div>
-          <a href="{{  app.request.headers.get('referer') }}" type='primary' class='btn btn-primary'>Go to Home</a>
+          <a href="{{  app.request.headers.get('referer') }}" type='primary' class='btn btn-primary'>{{ translate('codePages.error.button') }}</a>
         </div>
       </div>
     </div>

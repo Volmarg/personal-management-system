@@ -4,6 +4,7 @@ namespace App\Form\Modules\Travels;
 
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
+use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -19,19 +20,20 @@ class MyTravelsIdeasType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         static::$choices = (is_array($options) ? $options['categories'] : []);
+        $translator = new Translator();
 
         $builder
             ->add('location')
             ->add('country')
             ->add('image', null,[
                 'attr'  => [
-                    'placeholder' => 'Link to image'
+                    'placeholder' => $translator->translate('forms.MyTravelsIdeasType.placeholders.image')
                 ]
             ])
             ->add('map', null, [
                 'attr' => [
                     'required'      => false,
-                    'placeholder'   => 'Link to google maps'
+                    'placeholder'   => $translator->translate('forms.MyTravelsIdeasType.placeholders.map')
                 ]
             ]);
 
@@ -40,7 +42,7 @@ class MyTravelsIdeasType extends AbstractType {
                     ->add('category', DatalistType::class, [
                         'choices' => static::$choices,
                         'attr'    => [
-                            'placeholder' => 'Either pick category from list or type name of new one'
+                            'placeholder' => $translator->translate('forms.MyTravelsIdeasType.placeholders.category.exists')
                         ]
                     ])
                     ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -53,7 +55,7 @@ class MyTravelsIdeasType extends AbstractType {
                 $builder
                     ->add('category', TextType::class, [
                         'attr'    => [
-                            'placeholder' => 'Add Your first category'
+                            'placeholder' => $translator->translate('forms.MyTravelsIdeasType.placeholders.category.first')
                         ],
                         'required' => true,
                     ]);
