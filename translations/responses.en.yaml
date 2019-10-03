@@ -2,12 +2,59 @@ responses:
   files:
     filePathIsAnEmptyString: "File path is an empty string"
     filePathIsIncorrectFileDoesNotExist:  "File provided in filepath is incorrect - such file does not exist"
+    fileSuccessfullyRemoved: "File has been successfully removed"
+    fileDoesNotExist: 'File does not exist.'
+    thereWasAnErrorWhileRemovingFile: 'There was an error while removing the file.'
+    thereWasAnErrorWhileRenamingFile: 'There was an error while renaming the file.'
+    filenameRemainsTheSame: 'File name remains the same.'
+    filenameCannotBeEmpty: 'File name cannot be empty!'
+    fileSuccessfullyRename: 'File has been successfully renamed.'
+    fileWithThisNameAlreadyExist: 'File with this name already exist.'
+    fileYouTryingToMoveDoesNotExist: 'The file You trying to move does not exist.'
+    fileWithThisNameAlreadyExistInTargetDirectory: 'File with this name already exists in target directory.'
+    fileHasBeenSuccesfullyMoved: "File has been successfully moved"
+    couldNotMoveTheFile: "Could not move the file."
+    #
+    currentUploadTypeIsMissingInRequest: "Current upload type is missing in request."
+    targetUploadTypeIsMissingInRequest: "Target upload type is missing in request."
+    currentSubdirectoryPathIsMissingInRequest: "Current subdirectory path in module upload dir is missing in request."
+    targetSubdirectoryPathIsMissingInRequest: "Target subdirectory path in module upload dir is missing in request."
+    cannotCopyDataToTheSameFolderForGivenModule: "Cannot copy data to the same folder for given module."
+    currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.'
+    targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.'
+    thereWasAnErrorWhileMovingDataBetweenFolders: 'There was an error while moving files from one folder to another.'
+    finishedCopyingData: 'Data has been successfully copied to new directory'
+    subdirectoryCurrentPathInModuleUploadDirIsMissingInRequest: "Subdirectory current path in module upload dir is missing in request."
+    thereWasAnErrorWhileCopyingAndRemovingDataViaPost: 'Then was an error while copying and removing data.'
+    thereWasAnErrorWhileCopyingData: 'Then was an error while copying data.'
+    dataHasBeenSuccesfulyCopiedAndRemoved: 'Data has been successfully copied and removed afterward.'
+  directories:
+    cannotRemoveMainFolder: 'Cannot remove main folder!'
+    youNeedToSelectUploadType: 'You need to select upload type!'
+    subdirectoryDoesNotExistForThisModule: 'This subdirectory does not exist for selected module.'
+    errorWhileRemovingSubdirectory: 'There was and error when trying to remove subdirectory!'
+    subdirectoryHasBeenRemove: 'Subdirectory has been successfully removed.'
+    subdirectoryNameWillNotChange: "You are trying to change folder name to the same that there already is - action aborted."
+    subdirectoryNewNameIsEmptyString: 'New name is an empty string - action aborted'
+    subdirectoryCurrentNameIsEmptyString: 'Current name is an empty string - action aborted'
+    missingUploadModuleType: 'Upload type is an empty string - action aborted'
+    thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
+    folderNameHasBeenSuccessfullyChanged: 'Folder name has been successfully changed'
+    renamedTargetDirectoryDoesNotExist: "Target directory for which You try to change name does not exist"
+    subdirectoryWithThisNameDoesNotExist: "Subdirectory with this name does not exist!"
+    renamingSubdirectoryWithThisNameAlreadyExist: "Cannot change subdirectory name! Subdirectory with this name already exist."
+    thereWasAnErrorWhileCreatingFolder: 'There was an error while trying to create new folder for given module'
+    createFoldedThisNameAlreadyExist: 'Subdirectory with this name for selected upload typ already exists.'
+    subdirectoryForModuleSuccessfullyCreated: 'Subdirectory for selected module has been successfully created'
+    #
   tags:
     errorWhileTryingToUpdateTagsViaApi: "There was an error while trying to update tags via api call"
   upload:
     noFilesWereUploaded: 'No files were uploaded'
     tryingToUploadMoreFilesThanAllowedTo: "You are trying to upload more files than You are allowed to!"
     moduleNameIsIncorrect: "Module name is incorrect."
+    invalidFileHasBeenSkipped: 'File is invalid, and has been skipped'
+    finishedUploading: 'File upload has been successfully finished'
   general:
     missingRequiredParameter: 'Missing request parameter named: '
   repositories:
@@ -17,3 +64,9 @@ responses:
     recordUpdateFail: 'Record could not been updated'
   password:
     changeHasBeenCanceled: 'Password change has been canceled due to the field validations!'
+  tagger:
+    allTagsHaveBeenRemoved: "All tags have been removed."
+    noTagsToAdd: "There were no new tags to add"
+    tagsHaveBeenCreated: "Tags have been created successfully."
+    noTagsToRemove: "There were no tags to remove"
+    tagsUpdated: "Tags have been updated successfully"

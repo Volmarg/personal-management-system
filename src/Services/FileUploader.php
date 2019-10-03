@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Controller\Files\FileUploadController;
 use Psr\Log\LoggerInterface;
@@ -51,10 +52,15 @@ class FileUploader extends AbstractController {
      */
     private $logger;
 
-    public function __construct(LoggerInterface $logger) {
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    public function __construct(LoggerInterface $logger, Application $app) {
         $this->finder     = new Finder();
         $this->logger     = $logger;
-
+        $this->app        = $app;
     }
 
     /**
@@ -67,13 +73,15 @@ class FileUploader extends AbstractController {
      */
     public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '') {
 
-        $this->logger->info("Started uploading files to subdirectory {$subdirectory}");
+        $message = $this->app->translator->translate('logs.upload.startedUploadingToSubdirectory') . $subdirectory;
+        $this->logger->info($message);
 
         if( Env::isDemo() ){
             $is_file_valid = $this->isFileValid($file, $request);
 
             if( !$is_file_valid ){
-                return new Response('File is invalid, and has been skipped', 500);
+                $message = $this->app->translator->translate('responses.upload.invalidFileHasBeenSkipped') . $subdirectory;
+                return new Response($message, 500);
             }
         }
 
@@ -91,8 +99,10 @@ class FileUploader extends AbstractController {
                 $target_directory = Env::getImagesUploadDir();
             break;
             default:
-                $this->logger->info("Performed upload action for not supported upload type: {$type}");
-                throw new \Exception('This type is not allowed');
+                $log_message = $this->app->translator->translate('logs.upload.triedToUploadForUnknownUploadType') . $type;
+                $exc_message = $this->app->translator->translate('exception.upload.thisUploadTypeIsNotAllowed') . $type;
+                $this->logger->info($log_message);
+                throw new \Exception($exc_message);
         }
 
         if (file_exists($target_directory . '/' . $file_name)) {
@@ -107,14 +117,17 @@ class FileUploader extends AbstractController {
         try {
             $file->move($target_directory, $file_name);
         } catch (FileException $e) {
-            $this->logger->info("Exception was thrown while uploading files: ", [
+            $message = $this->app->translator->translate('upload.errors.thereWasAnErrorWhileUploadingFiles');
+            $this->logger->info($message, [
                 'message' => $e->getMessage()
             ]);
-            return new Response('There was an error while uploading files', 500);
+            return new Response($message, 500);
         }
 
-        $this->logger->info('Finished uploading data.');
-        return new Response('File upload has been successfully finished', 200);
+        $log_message       = $this->app->translator->translate('logs.upload.finishedUploading');
+        $response_message  = $this->app->translator->translate('responses.upload.finishedUploading');
+        $this->logger->info($log_message);
+        return new Response($response_message, 200);
     }
 
     public function handleUploadDir() {
@@ -130,10 +143,12 @@ class FileUploader extends AbstractController {
 
         try{
             if($folder_count > 0){
-                throw new Exception("Found more than one upload folder named {$this->target_directory} !");
+                $message = $this->app->translator->translate('exceptions.upload.foundMoreThanOneDirWithName') . $this->target_directory;
+                throw new Exception($message);
             }
         }catch(\Exception $e){
-            $this->logger->info("Exception was thrown while uploading files: ", [
+            $message = $this->app->translator->translate('upload.errors.thereWasAnErrorWhileUploadingFiles');
+            $this->logger->info($message, [
                 'message' => $e->getMessage()
             ]);
         }

@@ -16,10 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class FileTagger {
 
-    const TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE = "File tagger has not been prepared - did You call 'prepare()' method?";
-    const NO_TAGS_TO_ADD_RESPONSE               = "There were no new tags to add";
-    const ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE   = "All tags have been removed.";
-    const KEY_TAGS                              = 'tags';
+    const KEY_TAGS = 'tags';
 
     /**
      * @var string
@@ -71,7 +68,8 @@ class FileTagger {
         $counted_files_with_tags = count($all_files_with_tags);
 
         if( $counted_files_with_tags > 1 ){
-            throw new \Exception("More than one FileTags records were found for given path '{$file_full_path}'! ");
+            $message = $this->app->translator->translate('exceptions.tagger.moreThanOneFileTagsRecordsFoundForPath') . $file_full_path;
+            throw new \Exception($message);
         }
 
         if( empty($all_files_with_tags) ){
@@ -91,7 +89,8 @@ class FileTagger {
     public function updateTags(){
 
         if( !$this->isPrepared() ){
-            throw new \Exception(static::TAGGER_NOT_PREPARED_EXCEPTION_MESSAGE);
+            $message = $this->app->translator->translate('exceptions.tagger.allTagsHaveBeenRemoved');
+            throw new \Exception($message);
         }
 
         try {
@@ -109,12 +108,14 @@ class FileTagger {
                 $this->app->em->persist($file_tags);
                 $this->app->em->flush();
 
-                return new Response("Tags have been created successfully.");
+                $message = $this->app->translator->translate('responses.tagger.tagsHaveBeenCreated');
+                return new Response($message);
             }
 
             # no tags exist and not adding any
             if ( empty($file_with_tags) && empty($this->tags) ){
-                return new Response(static::NO_TAGS_TO_ADD_RESPONSE);
+                $message = $this->app->translator->translate('responses.tagger.noTagsToAdd');
+                return new Response($message);
             }
 
             # tags exist but we just removed them all
@@ -122,7 +123,8 @@ class FileTagger {
                 $this->app->em->remove($file_with_tags);
                 $this->app->em->flush();
 
-                return new Response(static::ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE);
+                $message = $this->app->translator->translate('responses.tagger.allTagsHaveBeenRemoved');
+                return new Response($message);
             }
 
             $current_tags_json  = $file_with_tags->getTags();
@@ -134,7 +136,8 @@ class FileTagger {
             $are_tags_removed   = ( count($current_tags_array) !== count($common_tags) );
 
             if ( empty($new_tags) && !$are_tags_removed ) {
-                return new Response(static::NO_TAGS_TO_ADD_RESPONSE);
+                $message = $this->app->translator->translate('responses.tagger.noTagsToAdd');
+                return new Response($message);
             }
 
             $tags_array = array_merge($new_tags, $common_tags);
@@ -145,11 +148,12 @@ class FileTagger {
             $this->app->em->persist($file_with_tags);
             $this->app->em->flush();
 
-            return new Response("Tags have been updated successfully");
+            $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
+            return new Response($message);
 
         } catch (\Exception $e) {
-            var_dump($e->getMessage());
-            return new Response("There was an error while updating the tags.");
+            $message = $this->app->translator->translate('exceptions.tagger.thereWasAnError');
+            return new Response($message);
         }
 
     }
@@ -163,11 +167,14 @@ class FileTagger {
         $file_with_tags = $this->getEntity();
 
         if( empty($file_with_tags) ){
-            return new Response("There were no tags to remove");
+            $message = $this->app->translator->translate('responses.tagger.noTagsToRemove');
+            return new Response($message);
         }else{
             $this->app->em->remove($file_with_tags);
             $this->app->em->flush();
-            return new Response(static::ALL_TAGS_HAVE_BEEN_REMOVED_RESPONSE);
+
+            $message = $this->app->translator->translate('responses.tagger.allTagsHaveBeenRemoved');
+            return new Response($message);
         }
 
     }

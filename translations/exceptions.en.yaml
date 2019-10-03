@@ -6,6 +6,16 @@ exceptions:
     cannotRemoveMainFolder: "Cannot remove main folder!"
   upload:
     uploadDirNotSupported: "This upload dir is not associated with any module."
+    thisUploadTypeIsNotAllowed: 'This upload type is not allowed: '
+    foundMoreThanOneDirWithName: "Found more than one upload folder named: "
   repositories:
     recordHasChildrenCannotRemove: 'The record which You try to remove, is a parent of other record! Please remove children first!'
     inorrectId: "Incorrect id! Expected numeric value, received: "
+  tagger:
+    taggerNotPreapared: "File tagger has not been prepared - did You call 'prepare()' method?"
+    moreThanOneFileTagsRecordsFoundForPath: "More than one FileTags records were found for given path: "
+    thereWasAnError: "There was an error while updating the tags."
+  directories:
+    thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
+  download:
+    theFileYouTryToDownloadDoesNotExist: "The file that You are trying to download, does not exist: "

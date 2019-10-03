@@ -52,20 +52,24 @@ class DirectoriesHandler {
 
         $subdirectory_name = basename($current_directory_path_in_module_upload_dir);
 
-        $this->logger->info('Started removing folder: ', [
+        $message = $this->application->translator->translate('logs.directories.startedRemovingFolder');
+        $this->logger->info($message, [
             'upload_module_dir' => $upload_module_dir,
             'subdirectory_name' => $subdirectory_name,
-            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_module_upload_dir
+            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_module_upload_dir,
+             // napiac kiedy bedziemy - data
         ]);
 
         if( empty($subdirectory_name) )
         {
-            return new Response('Cannot remove main folder!', 500);
+            $message = $this->application->translator->translate('responses.directories.cannotRemoveMainFolder');
+            return new Response($message, 500);
         }
 
         if( empty($upload_module_dir) )
         {
-            return new Response('You need to select upload type!', 500);
+            $message = $this->application->translator->translate('responses.directories.youNeedToSelectUploadType');
+            return new Response($message, 500);
         }
 
         $target_upload_dir_for_module = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
@@ -73,16 +77,24 @@ class DirectoriesHandler {
         $subdirectory_path            = $target_upload_dir_for_module.'/'.$current_directory_path_in_module_upload_dir;
 
         if( $is_subdirectory_existing ){
-            $this->logger->info('Removed folder does not exists - removal aborted');
-            return new Response('This subdirectory does not exist for current upload type.', 500);
+            $log_message      = $this->application->translator->translate('logs.directories.removedFolderDoesNotExist');
+            $response_message = $this->application->translator->translate('responses.directories.subdirectoryDoesNotExistForThisModule');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         if( $blocks_removal ){
             $files_count_in_tree = FilesHandler::countFilesInTree($subdirectory_path);
 
             if ( $files_count_in_tree > 0 ){
-                $this->logger->info('Folder removal has been blocked - there are still files in tree.');
-                return new Response('There are still files in folders tree!', 500);
+                $log_message      = $this->application->translator->translate('logs.directories.folderRemovalHasBeenBlockedThereAreFilesInside');
+                $response_message = $this->application->translator->translate('responses.directories.subdirectoryDoesNotExistForThisModule');
+
+                $this->logger->info($log_message,[
+                    'subdirectoryPath' => $subdirectory_path
+                ]);
+                return new Response($response_message, 500);
             }
         }
 
@@ -90,14 +102,20 @@ class DirectoriesHandler {
         try{
             Utils::removeFolderRecursively($subdirectory_path);
         }catch(\Exception $e){
-            $this->logger->info('Could not remove folder: ', [
+            $log_message      = $this->application->translator->translate('logs.directories.couldNotRemoveFolder');
+            $response_message = $this->application->translator->translate('responses.directories.errorWhileRemovingSubdirectory');
+
+            $this->logger->info($log_message, [
                 'message' => $e->getMessage()
             ]);
-            return new Response('There was and error when trying to remove subdirectory!', 500);
+            return new Response($response_message, 500);
         }
 
-        $this->logger->info('Finished removing folder.');
-        return new Response('Subdirectory has been successfully removed.');
+        $log_message      = $this->application->translator->translate('logs.directories.finishedRemovingFolder');
+        $response_message = $this->application->translator->translate('responses.directories.subdirectoryHasBeenRemove');
+
+        $this->logger->info($log_message);
+        return new Response($response_message);
 
     }
 
@@ -111,15 +129,17 @@ class DirectoriesHandler {
     public function renameSubdirectoryByPostRequest(string $upload_type, Request $request) {
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME) ) {
-            return new Response("Subdirectory new name is missing in request.", 500);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NEW_NAME;
+            return new Response($message, 500);
         }
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME) ) {
-            return new Response("Subdirectory current name is missing in request.", 500);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME;
+            return new Response($message, 500);
         }
 
         $current_directory_path_in_module_upload_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-        $subdirectory_new_name                      = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
+        $subdirectory_new_name                        = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
 
         $response = $this->renameSubdirectory($upload_type, $current_directory_path_in_module_upload_dir, $subdirectory_new_name);
 
@@ -137,7 +157,8 @@ class DirectoriesHandler {
 
         $subdirectory_current_name = basename($current_directory_path_in_module_upload_dir);
 
-        $this->logger->info('Started renaming subdirectory: ', [
+        $log_message = $this->application->translator->translate('logs.directories.startedRenamingFolder');
+        $this->logger->info($log_message, [
             'upload_type'               => $upload_type,
             'subdirectory_current_name' => $subdirectory_current_name,
             'subdirectory_new_name'     => $subdirectory_new_name,
@@ -145,63 +166,93 @@ class DirectoriesHandler {
         ]);
 
         if( $subdirectory_current_name === $subdirectory_new_name ){
-            $this->logger->info('Subdirectory name will not change - renaming aborted.');
-            return new Response("You are trying to change folder name to the same that there already is - action aborted.", 500);
+            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryNameWillNotChange');
+            $response_message = $this->application->translator->translate('responses.directories.subdirectoryNameWillNotChange');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         if ( empty($subdirectory_new_name) ){
-            $this->logger->info('Subdirectory new name is an empty string - renaming aborted.');
-            return new Response('New name is an empty string - action aborted', 500);
+            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryNewNameIsEmptyString');
+            $response_message = $this->application->translator->translate('responses.directories.subdirectoryNewNameIsEmptyString');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         if ( empty($subdirectory_current_name) ){
-            $this->logger->info('Subdirectory current name is an empty string - renaming aborted.');
-            return new Response('Current name is an empty string - action aborted', 500);
+            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryCurrentNameIsEmptyString');
+            $response_message = $this->application->translator->translate('responses.directories.subdirectoryCurrentNameIsEmptyString');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         if ( empty($upload_type) ){
-            $this->logger->info('Upload type has not been provided - renaming aborted.');
-            return new Response('Upload type is an empty string - action aborted', 500);
+            $log_message      = $this->application->translator->translate('logs.directories.missingUploadModuleType');
+            $response_message = $this->application->translator->translate('responses.directories.missingUploadModuleType');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         $target_directory       = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
         $subdirectory_exists    = FileUploadController::isSubdirectoryForModuleDirExisting($target_directory, $current_directory_path_in_module_upload_dir);
 
         $current_directory_path = $target_directory.'/'.$current_directory_path_in_module_upload_dir;
-        $parent_subdirectories  = dirname($current_directory_path);
-        $new_directory_path     = $parent_subdirectories . '/' . $subdirectory_new_name;
+        $target_directory       = dirname($current_directory_path);
+        $new_directory_path     = $target_directory . '/' . $subdirectory_new_name;
 
         if( !file_exists($current_directory_path) ){
-            $this->logger->info("Target directory for which user tried to change name does not exist");
-            return new Response("Target directory for which You try to change name does not exist", 500);
+            $log_message      = $this->application->translator->translate('logs.directories.renamedTargetDirectoryDoesNotExist');
+            $response_message = $this->application->translator->translate('responses.directories.renamedTargetDirectoryDoesNotExist');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         if( !$subdirectory_exists ){
-            $message = "Subdirectory with this name does not exist!";
-            $this->logger->info($message);
-            return new Response($message, 500);
+            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryWithThisNameDoesNotExist');
+            $response_message = $this->application->translator->translate('responses.directories.subdirectoryWithThisNameDoesNotExist');
+            $this->logger->info($log_message, [
+                'targetDirectory'                 => $target_directory,
+                'currentDirPathInModuleUploadDir' => $current_directory_path_in_module_upload_dir
+            ]);
+            return new Response($response_message, 500);
         }
 
-        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForModuleDirExisting($parent_subdirectories, $subdirectory_new_name);
+        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForModuleDirExisting($target_directory, $subdirectory_new_name);
 
         if( $subdirectory_with_new_name_exists ){
-            $this->logger->info('Subdirectory with this name already exists - renaming aborted.');
-            return new Response(" Cannot change subdirectory name! Subdirectory with this name already exist.", 500);
+            $log_message      = $this->application->translator->translate('logs.directories.renamingSubdirectoryWithThisNameAlreadyExist');
+            $response_message = $this->application->translator->translate('responses.directories.renamingSubdirectoryWithThisNameAlreadyExist');
+
+            $this->logger->info($log_message, [
+                'new_name'          => $subdirectory_new_name,
+                'target_directory'  => $target_directory
+            ]);
+            return new Response($response_message, 500);
         }
 
         try{
             rename($current_directory_path, $new_directory_path);
             $this->file_tagger->updateFilePathByFolderPathChange($current_directory_path, $new_directory_path);
         }catch(\Exception $e){
-            $this->logger->info('Exception was thrown while renaming folder: ', [
+            $message = $this->application->translator->translate('logs.directories.thereWasAnErrorWhileRenamingFolder');
+            $this->logger->info($message, [
                 'message' => $e->getMessage()
             ]);
 
-            return new Response('There was an error when renaming the folder! Error message. Most likely due to unallowed characters used in name.', 500);
+            $message = $this->application->translator->translate('responses.directories.thereWasAnErrorWhileRenamingFolder');
+            return new Response($message, 500);
         }
 
-        $this->logger->info('Finished renaming subdirectory.');
-        return new Response('Folder name has been successfully changed', 200);
+        $log_message      = $this->application->translator->translate('logs.directories.finishedRenamingFolder');
+        $response_message = $this->application->translator->translate('responses.directories.folderNameHasBeenSuccessfullyChanged');
+
+        $this->logger->info($log_message);
+        return new Response($response_message, 200);
 
     }
 
@@ -214,7 +265,9 @@ class DirectoriesHandler {
      */
     public function createFolder(string $upload_type, string $subdirectory_name, string $target_directory_path_in_upload_type_dir){
 
-        $this->logger->info('Started creating subdirectory: ', [
+        $log_message = $this->application->translator->translate('logs.directories.startedCreatingSubdirectory');
+
+        $this->logger->info($log_message, [
             'upload_type'       => $upload_type,
             'subdirectory_name' => $subdirectory_name
         ]);
@@ -229,22 +282,31 @@ class DirectoriesHandler {
         }
 
         if( file_exists($full_subdir_path) ){
-            $this->logger->info('Subdirectory with this name already exists.');
-            return new Response('Subdirectory with this name for selected upload typ already exists.', 500);
+            $log_message        = $this->application->translator->translate('logs.directories.createFoldedThisNameAlreadyExist');
+            $response_message   = $this->application->translator->translate('responses.directories.thereWasAnErrorWhileCreatingFolder');
+
+            $this->logger->info($log_message);
+            return new Response($response_message, 500);
         }
 
         try {
             mkdir($full_subdir_path, 0777);
         } catch (\Exception $e) {
-            $this->logger->info('Exception was thrown while creating folder: ', [
+            $log_message        = $this->application->translator->translate('logs.directories.thereWasAnErrorWhileCreatingFolder');
+            $response_message   = $this->application->translator->translate('responses.directories.thereWasAnErrorWhileCreatingFolder');
+
+            $this->logger->info($log_message, [
                 'message' => $e->getMessage()
             ]);
 
-            return new Response('There was an error while trying to create new folder for given module', 500);
+            return new Response($response_message, 500);
         }
 
-        $this->logger->info('Finished creating subdirectory.');
-        return new Response ('Subdirectory for selected module has been successfully created', 200);
+        $log_message        = $this->application->translator->translate('logs.directories.finishedCreatingSubdirectory');
+        $response_message   = $this->application->translator->translate('responses.directories.subdirectoryForModuleSuccessfullyCreated');
+
+        $this->logger->info($log_message);
+        return new Response ($response_message, 200);
     }
 
     /**
