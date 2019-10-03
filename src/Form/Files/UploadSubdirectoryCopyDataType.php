@@ -3,6 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
 use App\Services\FilesHandler;
 use Symfony\Component\Form\AbstractType;
@@ -16,6 +17,15 @@ class UploadSubdirectoryCopyDataType extends AbstractType
 {
     const FIELD_REMOVE_CURRENT_FOLDER = 'remove_current_folder';
 
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
@@ -26,7 +36,7 @@ class UploadSubdirectoryCopyDataType extends AbstractType
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_current_path_in_module_upload_dir'
                 ],
-                'label' => 'Upload module',
+                'label' => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.currentUploadModuleDir')
             ])
             ->add(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
@@ -34,17 +44,17 @@ class UploadSubdirectoryCopyDataType extends AbstractType
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_target_path_in_module_upload_dir'
                 ],
-                'label' => 'Upload module',
+                'label' => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.targetUploadModuleDir')
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
                 'required'  => true,
-                'label'     => 'Target folder',
+                'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.currentSubdirectoryInModuleUploadDir')
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
                 'required'  => true,
-                'label'     => 'Target folder',
+                'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.targetSubdirectoryInModuleUploadDir')
             ])
             ->add('submit', SubmitType::class, [
 

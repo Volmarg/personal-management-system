@@ -19,14 +19,13 @@ class UploadFormType extends AbstractType {
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
 
     public function __construct(Application $app) {
-        static::$app = $app;
+        $this->app = $app;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $translator = new Translator();
 
         $builder
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class,[
@@ -34,9 +33,11 @@ class UploadFormType extends AbstractType {
                 'attr'          => [
                     'data-dependent-list-selector' => '#upload_form_subdirectory'
                 ],
+                'label' => $this->app->translator->translate('forms.UploadFormType.labels.uploadModuleDir')
             ])
             ->add('file', FileType::class, [
-                'multiple' => true
+                'multiple' => true,
+                'label' => $this->app->translator->translate('forms.UploadFormType.labels.file')
             ]);
 
         $builder
@@ -46,7 +47,8 @@ class UploadFormType extends AbstractType {
                 'attr' => [
                     'class' => 'form-control align-self-center',
                     'style' => 'height:50px;',
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.UploadFormType.labels.subdirectory')
             ]);
 
         $builder
@@ -55,7 +57,7 @@ class UploadFormType extends AbstractType {
                     'class' => 'upload-submit btn btn-sm btn-primary',
                     'style' => 'width:100%;'
                 ],
-                'label' => $translator->translate('forms.general.submit')
+                'label' => $this->app->translator->translate('forms.general.submit')
             ]);
 
         $builder

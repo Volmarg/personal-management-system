@@ -3,6 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
 use App\Services\FilesHandler;
 use Symfony\Component\Form\AbstractType;
@@ -15,6 +16,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class UploadSubdirectoryCreateType extends AbstractType
 {
 
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class, [
@@ -23,21 +33,23 @@ class UploadSubdirectoryCreateType extends AbstractType
                     'class'                         => 'form-control listFilterer',
                     'data-dependent-list-selector'  => '#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir'
                 ],
-                'label' => 'Upload module'
+                'label' => $this->app->translator->translate('forms.UploadSubdirectoryCreateType.labels.uploadModuleDir')
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NAME, TextType::class, [
-                'label' => 'Folder name',
                 'attr'  => [
-                    'placeholder' => 'Enter name of the new folder'
-                ]
+                    'placeholder' => $this->app->translator->translate('forms.UploadSubdirectoryCreateType.placeholders.subdirectoryName')
+                ],
+                'label' => $this->app->translator->translate('forms.UploadSubdirectoryCreateType.labels.subdirectoryName')
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
                 'required'  => true,
-                'label'     => 'Parent folder'
+                'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCreateType.labels.subdirectoryInModuleUploadDir')
 
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label'     => $this->app->translator->translate('forms.general.submit')
+            ]);
 
         /**
          * INFO: this is VERY IMPORTANT to use it here due to the difference between data passed as choice

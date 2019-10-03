@@ -3,6 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
 use App\Services\FilesHandler;
 use Symfony\Component\Form\AbstractType;
@@ -14,6 +15,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MoveSingleFileType extends AbstractType
 {
 
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, ChoiceType::class, [
@@ -21,11 +31,13 @@ class MoveSingleFileType extends AbstractType
                 'attr'    => [
                     'class'                        => 'form-control listFilterer',
                     'data-dependent-list-selector' => '#move_single_file_target_subdirectory_path'
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MoveSingleFileType.labels.targetUploadModuleDir')
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
-                'required'  => true
+                'required'  => true,
+                'label' => $this->app->translator->translate('forms.MoveSingleFileType.labels.targetUploadSubdirectoryInModuleDir')
             ])
             ->add('submit', SubmitType::class, [
             ]);

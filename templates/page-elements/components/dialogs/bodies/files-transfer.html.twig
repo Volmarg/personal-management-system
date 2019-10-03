@@ -13,7 +13,7 @@
 
     <div class="row">
         <div class="col-sm-4">
-            {{ form_label(form[KEY_TARGET_MODULE_UPLOAD_DIR], "Target module", { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+            {{ form_label(form[KEY_TARGET_MODULE_UPLOAD_DIR], null, { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
         </div>
         <div class="col-sm-6">
             {{ form_widget(form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
@@ -24,7 +24,7 @@
 
     <div class="row">
         <div class="col-sm-4">
-            {{ form_label(form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR], "Target folder", { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+            {{ form_label(form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR], null, { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
         </div>
         <div class="col-sm-6">
             {{ form_widget(form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR], {'id': 'move_single_file_target_subdirectory_path'}) }}

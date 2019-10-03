@@ -1,4 +1,3 @@
-# does not include auto generated labels from fields names
 forms:
   MyGoalsPaymentsType:
     collectionStartDate: Collection start date
@@ -148,6 +147,38 @@ forms:
       name: Name
       information: Informatipn
       example: Example
+  MoveSingleFileType:
+    labels:
+      targetUploadModuleDir: Target module
+      targetUploadSubdirectoryInModuleDir: Target folder
+  UpdateTagsType:
+    labels:
+      tags: Tags
+  UploadSubdirectoryCopyDataType:
+    labels:
+      currentUploadModuleDir: Upload module
+      currentSubdirectoryInModuleUploadDir: Target folder
+      targetUploadModuleDir: Upload module
+      targetSubdirectoryInModuleUploadDir: Target folder
+  UploadSubdirectoryCreateType:
+    labels:
+      uploadModuleDir: Upload module
+      subdirectoryName: Folder name
+      subdirectoryInModuleUploadDir: Parent folder
+    placeholders:
+      subdirectoryName: Enter name of the new folder
+  UploadSubdirectoryRenameType:
+    labels:
+      uploadModuleDir: Upload module
+      subdirectoryNewName: Folder new name
+      subdirectoryInModuleUploadDir: Target folder
+    placeholders:
+      subdirectoryNewName: Enter new name for selected folder
+  UploadFormType:
+    labels:
+      subdirectory: Subdirectory
+      file: File
+      uploadModuleDir: Upload module
   #files/images/dialogs
   general:
     submit: Submit
