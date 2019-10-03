@@ -18,17 +18,18 @@ class MyCarSchedule extends AbstractType {
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
 
     public function __construct(Application $app) {
-        static::$app = $app;
+        $this->app = $app;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $translator = new Translator();
 
         $builder
-            ->add('Name')
+            ->add('Name', null, [
+                'label' => $this->app->translator->translate('forms.MyCarSchedule.name'),
+            ])
             ->add('Date', DateType::class, [
                 'attr' => [
                     'data-provide'              => "datepicker",
@@ -38,19 +39,24 @@ class MyCarSchedule extends AbstractType {
                 ],
                 'widget' => 'single_text',
                 'format' => 'y-M-d',
+                'label'  => $this->app->translator->translate('forms.MyCarSchedule.date'),
             ])
-            ->add('Information')
+            ->add('Information', null, [
+                'label' => $this->app->translator->translate('forms.MyCarSchedule.information'),
+            ])
             ->add('scheduleType', EntityType::class, [
-                'label'         => $translator->translate('forms.MyCarSchedule.scheduleType'),
+                'label'         => $this->app->translator->translate('forms.MyCarSchedule.scheduleType'),
                 'class'         => MyCarSchedulesTypes::class,
-                'choices'       => static::$app->repositories->myCarSchedulesTypesRepository->findBy(['deleted' => 0]),
+                'choices'       => $this->app->repositories->myCarSchedulesTypesRepository->findBy(['deleted' => 0]),
                 'choice_label'  => function (MyCarSchedulesTypes $schedule_types) {
                     return $schedule_types->getName();
                 },
                 'required'      => false,
 
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit'),
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver) {

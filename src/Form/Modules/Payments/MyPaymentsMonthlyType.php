@@ -20,15 +20,15 @@ class MyPaymentsMonthlyType extends AbstractType {
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
 
     public function __construct(Application $app) {
-        static::$app = $app;
+        $this->app = $app;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $payments_types = static::$app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
+        $payments_types = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
 
         $builder
             ->add('date', DateType::class, [
@@ -40,9 +40,15 @@ class MyPaymentsMonthlyType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
+                'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.date')
+
             ])
-            ->add('money', NumberType::class)
-            ->add('description')
+            ->add('money', NumberType::class, [
+                'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.money')
+            ])
+            ->add('description', null, [
+                'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.description')
+            ])
             ->add('type', EntityType::class, [
                 'class' => MyPaymentsSettings::class,
                 'choices' => $payments_types,
@@ -51,10 +57,13 @@ class MyPaymentsMonthlyType extends AbstractType {
                 },
                 'attr' => [
                     'required' => true,
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.type')
             ]);
 
-            $builder->add('save', SubmitType::class);
+            $builder->add('save', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.save')
+            ]);
 
     }
 

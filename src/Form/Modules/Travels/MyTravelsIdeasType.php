@@ -2,6 +2,7 @@
 
 namespace App\Form\Modules\Travels;
 
+use App\Controller\Utils\Application;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
 use App\Services\Translator;
@@ -16,25 +17,40 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MyTravelsIdeasType extends AbstractType {
 
     const CATEGORY_LABEL = 'Category';
+    
     static $choices;
+
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         static::$choices = (is_array($options) ? $options['categories'] : []);
-        $translator = new Translator();
 
         $builder
-            ->add('location')
-            ->add('country')
+            ->add('location', null, [
+                'label'   => $this->app->translator->translate('forms.MyTravelsIdeasType.labels.location')
+            ])
+            ->add('country', null, [
+                'label'   => $this->app->translator->translate('forms.MyTravelsIdeasType.labels.country')
+            ])
             ->add('image', null,[
                 'attr'  => [
-                    'placeholder' => $translator->translate('forms.MyTravelsIdeasType.placeholders.image')
-                ]
+                    'placeholder' => $this->app->translator->translate('forms.MyTravelsIdeasType.placeholders.image')
+                ],
+                'label'   => $this->app->translator->translate('forms.MyTravelsIdeasType.labels.image')
             ])
             ->add('map', null, [
                 'attr' => [
                     'required'      => false,
-                    'placeholder'   => $translator->translate('forms.MyTravelsIdeasType.placeholders.map')
-                ]
+                    'placeholder'   => $this->app->translator->translate('forms.MyTravelsIdeasType.placeholders.map')
+                ],
+                'label'   => $this->app->translator->translate('forms.MyTravelsIdeasType.labels.map')
             ]);
 
             if(!empty(static::$choices)){
@@ -42,8 +58,9 @@ class MyTravelsIdeasType extends AbstractType {
                     ->add('category', DatalistType::class, [
                         'choices' => static::$choices,
                         'attr'    => [
-                            'placeholder' => $translator->translate('forms.MyTravelsIdeasType.placeholders.category.exists')
-                        ]
+                            'placeholder' => $this->app->translator->translate('forms.MyTravelsIdeasType.placeholders.category.exists')
+                        ],
+                        'label'   => $this->app->translator->translate('forms.MyTravelsIdeasType.labels.category')
                     ])
                     ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                         DatalistLogicOverride::postSubmit($event);
@@ -55,13 +72,16 @@ class MyTravelsIdeasType extends AbstractType {
                 $builder
                     ->add('category', TextType::class, [
                         'attr'    => [
-                            'placeholder' => $translator->translate('forms.MyTravelsIdeasType.placeholders.category.first')
+                            'placeholder' => $this->app->translator->translate('forms.MyTravelsIdeasType.placeholders.category.first')
                         ],
                         'required' => true,
+                        'label'   => $this->app->translator->translate('forms.MyTravelsIdeasType.labels.category')
                     ]);
             }
 
-        $builder->add('submit', SubmitType::class);
+        $builder->add('submit', SubmitType::class, [
+            'label'   => $this->app->translator->translate('forms.general.submit')
+        ]);
 
 
     }

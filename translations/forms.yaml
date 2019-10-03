@@ -4,17 +4,42 @@ forms:
     collectionStartDate: Collection start date
     displayOnDashboard: Display on dashboard
     deadline: Deadline
+    name: Name
+    moneyGoal: Money goal
+    moneyCollected: Money collected
   MyGoalsType:
     displayOnDashboard: Display on dashboard
+    name: Name
+    description: Description
+  MySubgoalsType:
+    name: Name
+    myGoal: My goal
   MyNotesCategoriesType:
     parentId: Parent
+    name: Name
+    icon: Icon
+    color: Color
+  MyNotesType:
+    labels:
+      title: Title
+      body: Body
+      category: Category
   MyContactsType:
     phone: Phone Number
     email: Email
     other: Contact
     archived: Contact
+    type: Type
+    description: Description
+    group: Group
   MyCarSchedule:
     scheduleType: Schedule type
+    name: Name
+    date: Date
+    information: Information
+  MyCarScheduleType:
+    labels:
+      name: Name
   MyTravelsIdeasType:
     placeholders:
       category:
@@ -22,13 +47,109 @@ forms:
         first: Add Your first category
       image: Link to image
       map: Link to google maps
+    labels:
+      location: Location
+      country: Country
+      image: Image
+      map: Map
+      category: Category
   MyJobHolidaysType:
     placeholders:
       daysSpent: Amount of days that You want to spend
       information: Goal/Reason of spending holidays
+    labels:
+      year: Year
+      daysSpent: Days
+      information: Information
   MyJobHolidaysPoolType:
     placeholders:
       year: Add year
       daysLeft: Amount of days that You have for this year
       companyName: Provide company name
+    labels:
+      year: Year
+      daysLeft: Days left
+      companyName: Company name
+  MyContactsGroupsType:
+    labels:
+      name: Name
+  MyPasswordsGroupsType:
+    labels:
+      name: Name
+  MyPasswordsType:
+    labels:
+      login: Login
+      password: Password
+      url: Url
+      description: Description
+      group: Group
+      submit: Submit
+  MyPaymentsMonthlyType:
+    labels:
+      date: Date
+      money: Money
+      description: Description
+      type: Type
+  MyPaymentsOwedType:
+    labels:
+      target: Target
+      information: Information
+      date: Date
+      amount: Amount
+      owedByMe: Owed by me
+    placeholders:
+      target: Who owes the money
+      information: Information about this borrow
+      date: yyyy-mm-dd
+      amount: Amount of money owed
+  MyPaymentsProductsType:
+    labels:
+      name: Name
+      price: Price
+      market: Market
+      products: Products
+      information: Information
+      rejected: Rejected
+  MyPaymentsSettingsCurrencyMultiplierType:
+    labels:
+      name: Name
+      value: Currency multiplier
+  MyPaymentsTypesType:
+    labels:
+      name: Name
+      value: Type name
+  UserAvatarType:
+    labels:
+      avatar: Avatar url
+    placeholders:
+      avatar: Internal or external url to some image
+  UserNicknameType:
+      labels:
+        nickname: Nickname
+      placeholder:
+        nickname: This will be displayed on page but login will not change.
+  UserPasswordType:
+    labels:
+      password: Password
+  AchievementType:
+    labels:
+      name: Name
+      description: Description
+      type: Type
+  MyJobAfterhoursType:
+    labels:
+      date: Date
+      description: Description
+      minutes: Minutes
+      goal: Goal
+      type: Type
+  MyShoppingPlansType:
+    labels:
+      name: Name
+      information: Informatipn
+      example: Example
   #files/images/dialogs
+  general:
+    submit: Submit
+    save: Save
+    add: Add

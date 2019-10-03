@@ -17,24 +17,29 @@ class MySubgoalsType extends AbstractType
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
 
     public function __construct(Application $app) {
-        static::$app = $app;
+        $this->app = $app;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    public function buildForm(FormBuilderInterface $builder, array $options) {
+
         $builder
-            ->add('name')
+            ->add('name', null, [
+               'label' => $this->app->translator->translate('forms.MySubgoalsType.name')
+            ])
             ->add('myGoal', EntityType::class, [
                 'class' => MyGoals::class,
-                'choices' => static::$app->repositories->myGoalsRepository->findBy(['deleted' => 0]),
+                'choices' => $this->app->repositories->myGoalsRepository->findBy(['deleted' => 0]),
                 'choice_label' => function (MyGoals $my_goal) {
                     return $my_goal->getName();
-                }
+                },
+                'label' => $this->app->translator->translate('forms.MySubgoalsType.myGoal')
             ])
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit')
+            ])
         ;
     }
 

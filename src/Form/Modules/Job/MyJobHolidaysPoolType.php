@@ -2,11 +2,10 @@
 
 namespace App\Form\Modules\Job;
 
+use App\Controller\Utils\Application;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
-use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,27 +13,41 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyJobHolidaysPoolType extends AbstractType
 {
+
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $translator = new Translator();
 
         $builder
             ->add('year', IntegerType::class, [
                 'attr' => [
-                    'placeholder' => $translator->translate('forms.MyJobHolidaysPoolType.placeholders.year')
-                ]
+                    'placeholder' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.placeholders.year')
+                ],
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.year')
             ])
             ->add('DaysLeft', IntegerType::class, [
                 'attr' => [
                     'min'           => 1,
-                    'placeholder'   => $translator->translate('forms.MyJobHolidaysPoolType.placeholders.daysLeft')
-                ]
+                    'placeholder'   => $this->app->translator->translate('forms.MyJobHolidaysPoolType.placeholders.daysLeft')
+                ],
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.daysLeft')
             ])
             ->add('CompanyName', TextType::class, [
                 'attr' => [
-                    'placeholder' => $translator->translate('forms.MyJobHolidaysPoolType.placeholders.companyName')
-                ]
+                    'placeholder' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.placeholders.companyName')
+                ],
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.companyName')
             ])
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit')
+            ])
         ;
     }
 

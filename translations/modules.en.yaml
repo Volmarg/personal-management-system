@@ -101,8 +101,8 @@ car:
     addSchedule: Add schedule
   legend:
     label: Legend
-    30_60: In 30 - 60 days
-    14_30: In 14 -30 days
+    over30: In 30 - 60 days
+    over14: In 14 -30 days
     14: In 14 days
   table:
     scheduleType: Schedule type

@@ -17,19 +17,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyJobHolidaysType extends AbstractType
 {
-
+    
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
 
     public function __construct(Application $app) {
-        static::$app = $app;
+        $this->app = $app;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $translator = new Translator();
+        $this->app->translator = new Translator();
 
         $builder
             ->add('year', ChoiceType::class, [
@@ -39,21 +39,25 @@ class MyJobHolidaysType extends AbstractType
                 },
                 'attr' => [
                     'required'      => 'required',
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysType.labels.year'),
             ])
             ->add('daysSpent',IntegerType::class , [
                 'attr' => [
                     'min'           => 1,
-                    'placeholder'   => $translator->translate('forms.MyJobHolidaysType.placeholders.daysSpent')
+                    'placeholder'   => $this->app->translator->translate('forms.MyJobHolidaysType.placeholders.daysSpent')
                 ],
-                'label' => 'Days',
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysType.labels.daysSpent'),
             ])
             ->add('information', TextType::class, [
                 'attr' => [
-                    'placeholder' => $translator->translate('forms.MyJobHolidaysType.placeholders.information')
+                    'placeholder' => $this->app->translator->translate('forms.MyJobHolidaysType.placeholders.information')
                 ],
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysType.labels.information'),
             ])
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit'),
+            ])
         ;
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Form\Modules\Job;
 
+use App\Controller\Utils\Application;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
@@ -19,6 +20,15 @@ class MyJobAfterhoursType extends AbstractType {
 
     static $choices;
 
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
         static::$choices = (is_array($options) ? $options['goals'] : []);
 
@@ -32,24 +42,28 @@ class MyJobAfterhoursType extends AbstractType {
                 ],
                 'widget' => 'single_text',
                 'format' => 'y-M-d',
+                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.date')
             ])
             ->add('Description', null, [
                 'attr' => [
                     'autocomplete' => 'off'
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.description')
             ])
             ->add('Minutes', null, [
                 'attr' => [
                     'autocomplete' => 'off'
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.minutes')
             ]);
 
         if(!empty(static::$choices)){
 
             $builder
                 ->add('Goal', DatalistType::class, [
-                    'choices'  => $options['goals'],
-                    'required' => false
+                    'choices'   => $options['goals'],
+                    'required'  => false,
+                    'label'     => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.goal')
                 ])
                 ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                     DatalistLogicOverride::postSubmit($event);
@@ -61,7 +75,8 @@ class MyJobAfterhoursType extends AbstractType {
         }else{
             $builder
                 ->add('Goal', TextType::class, [
-                    'required' => false
+                    'required'  => false,
+                    'label'     => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.goal')
                 ]);
         }
 
@@ -69,9 +84,12 @@ class MyJobAfterhoursType extends AbstractType {
             'choices' => $options['entity_enums'],
             'attr' => [
                 'autocomplete' => 'off'
-            ]
+            ],
+            'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.type')
         ]);
-        $builder->add('submit', SubmitType::class);
+        $builder->add('submit', SubmitType::class, [
+            'label' => $this->app->translator->translate('forms.general.submit')
+        ]);
 
     }
 

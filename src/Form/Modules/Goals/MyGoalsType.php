@@ -2,6 +2,7 @@
 
 namespace App\Form\Modules\Goals;
 
+use App\Controller\Utils\Application;
 use App\Entity\Modules\Goals\MyGoals;
 use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
@@ -12,17 +13,33 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyGoalsType extends AbstractType
 {
+
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $translator = new Translator();
+        $this->app->translator = new Translator();
 
         $builder
-            ->add('name')
-            ->add('description')
+            ->add('name', null, [
+                'label' => $this->app->translator->translate('forms.MyGoalsType.name'),
+            ])
+            ->add('description', null, [
+                'label' => $this->app->translator->translate('forms.MyGoalsType.description'),
+            ])
             ->add('displayOnDashboard',CheckboxType::class,[
-                'label'     => $translator->translate('forms.MyGoalsType.displayOnDashboard'),
+                'label'     => $this->app->translator->translate('forms.MyGoalsType.displayOnDashboard'),
                 'required'  => false
             ])
-            ->add('submit', SubmitType::class)
+            ->add('submit', SubmitType::class,[
+                'label' => $this->app->translator->translate('forms.general.submit'),
+            ])
         ;
     }
 

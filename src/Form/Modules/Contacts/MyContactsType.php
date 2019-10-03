@@ -19,27 +19,26 @@ class MyContactsType extends AbstractType {
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
 
     public function __construct(Application $app) {
-        static::$app = $app;
+        $this->app = $app;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $translator = new Translator();
 
         switch ($options['type']) {
             case 'phone':
-                $label = $translator->translate('forms.MyContactsType.phone');
+                $label = $this->app->translator->translate('forms.MyContactsType.phone');
                 break;
             case 'email':
-                $label = $translator->translate('forms.MyContactsType.email');
+                $label = $this->app->translator->translate('forms.MyContactsType.email');
                 break;
             case 'other':
-                $label = $translator->translate('forms.MyContactsType.other');
+                $label = $this->app->translator->translate('forms.MyContactsType.other');
                 break;
             case 'archived':
-                $label = $translator->translate('forms.MyContactsType.archived');
+                $label = $this->app->translator->translate('forms.MyContactsType.archived');
                 break;
             default:
                 throw new \Exception('Incorrect type was provided');
@@ -51,17 +50,23 @@ class MyContactsType extends AbstractType {
                 'label' => $label
             ])
             ->add('type', HiddenType::class, [
-                'data' => $options['type']
+                'data'  => $options['type'],
+                'label' => $this->app->translator->translate('forms.MyContactsType.type')
             ])
-            ->add('description',TextType::class)
+            ->add('description',TextType::class, [
+                'label' => $this->app->translator->translate('forms.MyContactsType.description')
+            ])
             ->add('group', EntityType::class, [
-                'class' => MyContactsGroups::class,
-                'choices' => static::$app->repositories->myContactsGroupsRepository->findBy(['deleted' => 0]),
-                'choice_label' => function (MyContactsGroups $contact_group) {
+                'class'         => MyContactsGroups::class,
+                'choices'       => $this->app->repositories->myContactsGroupsRepository->findBy(['deleted' => 0]),
+                'choice_label'  => function (MyContactsGroups $contact_group) {
                     return $contact_group->getName();
-                }
+                },
+                'label' => $this->app->translator->translate('forms.MyContactsType.group')
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit')
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver) {

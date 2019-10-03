@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
+use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -25,6 +26,7 @@ class UploadFormType extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+        $translator = new Translator();
 
         $builder
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class,[
@@ -52,7 +54,8 @@ class UploadFormType extends AbstractType {
                 'attr' => [
                     'class' => 'upload-submit btn btn-sm btn-primary',
                     'style' => 'width:100%;'
-                ]
+                ],
+                'label' => $translator->translate('forms.general.submit')
             ]);
 
         $builder

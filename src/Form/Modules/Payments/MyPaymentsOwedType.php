@@ -2,6 +2,7 @@
 
 namespace App\Form\Modules\Payments;
 
+use App\Controller\Utils\Application;
 use App\Entity\Modules\Payments\MyPaymentsOwed;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -14,18 +15,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyPaymentsOwedType extends AbstractType
 {
+
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('target', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Who owes the money'
-                ]
+                    'placeholder' => $this->app->translator->translate('forms.MyPaymentsOwedType.placeholders.target')
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.target')
             ])
             ->add('information', TextType::class, [
                 'attr' => [
-                    'placeholder' => 'Information about this borrow'
-                ]
+                    'placeholder' => $this->app->translator->translate('forms.MyPaymentsOwedType.placeholders.information')
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.information')
             ])
             ->add('date', DateType::class, [
                 'attr' => [
@@ -33,22 +46,27 @@ class MyPaymentsOwedType extends AbstractType
                     'data-date-format'          => "yyyy-mm-dd",
                     'data-date-today-highlight' => true,
                     'autocomplete'              => 'off',
-                    'placeholder'               => 'yyyy-mm-dd'
+                    'placeholder'               => $this->app->translator->translate('forms.MyPaymentsOwedType.placeholders.date')
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'required'  => false
+                'required'  => false,
+                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.date')
             ])
             ->add('amount', IntegerType::class, [
                 'attr' => [
                     'min'           => 1,
-                    'placeholder'   => 'Amount of money owed'
-                ]
+                    'placeholder'   => $this->app->translator->translate('forms.MyPaymentsOwedType.placeholders.amount')
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.amount')
             ])
             ->add('owedByMe', CheckboxType::class, [
-                'required' => false
+                'required' => false,
+                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.owedByMe')
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit')
+            ]);
         ;
     }
 

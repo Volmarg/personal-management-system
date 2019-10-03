@@ -2,23 +2,34 @@
 
 namespace App\Form\Modules\Goals;
 
+use App\Controller\Utils\Application;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyGoalsPaymentsType extends AbstractType {
+
+    /**
+     * @var Application
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $translator = new Translator();
 
         $builder
-            ->add('name')
+            ->add('name', null, [
+                'label' => $this->app->translator->translate('forms.MyGoalsPaymentsType.name')
+            ])
             ->add('collectionStartDate', DateType::class, [
                 'attr' => [
                     'data-provide'              => "datepicker",
@@ -28,7 +39,7 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $translator->translate('forms.MyGoalsPaymentsType.collectionStartDate')
+                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.collectionStartDate')
             ])
             ->add('deadline', DateType::class, [
                 'attr' => [
@@ -39,23 +50,27 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $translator->translate('forms.MyGoalsPaymentsType.deadline')
+                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.deadline')
             ])
             ->add('moneyGoal', IntegerType::class,[
                 'attr' => [
                     'min' => 1
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MyGoalsPaymentsType.moneyGoal')
             ])
             ->add('moneyCollected', IntegerType::class, [
                 'attr' => [
                     'min' => 1
-                ]
+                ],
+                'label' => $this->app->translator->translate('forms.MyGoalsPaymentsType.moneyCollected')
             ])
             ->add('displayOnDashboard',CheckboxType::class,[
-                'label'     => $translator->translate('forms.MyGoalsPaymentsType.displayOnDashboard'),
+                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.displayOnDashboard'),
                 'required'  => false
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit')
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver) {

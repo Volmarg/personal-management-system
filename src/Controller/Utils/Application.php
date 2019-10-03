@@ -9,6 +9,7 @@
 namespace App\Controller\Utils;
 
 
+use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -29,10 +30,16 @@ class Application extends AbstractController {
      */
     public $em;
 
+    /**
+     * @var Translator $translator
+     */
+    public $translator;
+
     public function __construct(Repositories $repositories, Forms $forms, EntityManagerInterface $em) {
         $this->repositories = $repositories;
         $this->forms = $forms;
         $this->em = $em;
+        $this->translator = new Translator();
     }
 
     /**

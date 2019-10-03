@@ -14,33 +14,39 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyNotesType extends AbstractType {
 
-    public function __construct(Application $app) {
-        static::$app = $app;
-    }
-
     /**
      * @var Application
      */
-    private static $app;
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
-            ->add('Title')
+            ->add('Title', null, [
+                'label' => $this->app->translator->translate('forms.MyNotesType.labels.title')
+            ])
             ->add('Body', TextareaType::class, [
                 'attr' => [
                     'class' => 'tiny-mce',
                 ],
-                'required' => false
+                'required' => false,
+                'label' => $this->app->translator->translate('forms.MyNotesType.labels.body')
             ])
             ->add('category', EntityType::class, [
                 'class' => MyNotesCategories::class,
-                'choices' => static::$app->repositories->myNotesCategoriesRepository->findBy(['deleted' => 0]),
+                'choices' => $this->app->repositories->myNotesCategoriesRepository->findBy(['deleted' => 0]),
                 'choice_label' => function (MyNotesCategories $note_category) {
                     return $note_category->getName();
-                }
+                },
+                'label' => $this->app->translator->translate('forms.MyNotesType.labels.category')
             ])
-            ->add('submit', SubmitType::class);
+            ->add('submit', SubmitType::class, [
+                'label' => $this->app->translator->translate('forms.general.submit')
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver) {

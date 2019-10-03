@@ -144,9 +144,7 @@ class MyPaymentsSettingsController extends AbstractController {
     }
 
     private function getCurrencyMultiplierForm() {
-        return $this->createForm(MyPaymentsSettingsCurrencyMultiplierType::class, null, [
-            'em' => $this->em
-        ]);
+        return $this->createForm(MyPaymentsSettingsCurrencyMultiplierType::class);
     }
 
     /**
