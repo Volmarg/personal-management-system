@@ -19,3 +19,7 @@ exceptions:
     thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
   download:
     theFileYouTryToDownloadDoesNotExist: "The file that You are trying to download, does not exist: "
+  MyPaymentsProductsController:
+    keyPriceNotFoundInProductsColumnsArray: "Key 'price' not found in products columns array"
+  MyGoalsSettingsController:
+    thisGoalTypeIsNotAllowed: "This goal type is not allowed"

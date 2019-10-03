@@ -130,12 +130,13 @@ class MyImagesController extends AbstractController {
     public function update(Request $request){
 
         if (!$request->request->has(Dialogs::KEY_FILE_CURRENT_PATH)) {
-            throw new \Exception('Missing request parameter named: ' . Dialogs::KEY_FILE_CURRENT_PATH);
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . Dialogs::KEY_FILE_CURRENT_PATH;
+            throw new \Exception($message);
         }
 
-
         if (!$request->request->has(FileTagger::KEY_TAGS)) {
-            throw new \Exception('Missing request parameter named: ' . FileTagger::KEY_TAGS);
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileTagger::KEY_TAGS;
+            throw new \Exception($message);
         }
 
         $file_current_path = $request->request->get(Dialogs::KEY_FILE_CURRENT_PATH);
@@ -144,9 +145,9 @@ class MyImagesController extends AbstractController {
 
         try{
             $this->files_tags_controller->updateTags($tags_string, $file_current_path);
-            $message = "Tags have been successfully updated";
+            $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
         } catch (\Exception $e){
-            $message = "There was a problem while trying to update file tags";
+            $message = $this->app->translator->translate('exceptions.tagger.thereWasAnError');
         }
 
         $response_data = [

@@ -89,6 +89,8 @@ class MyPaymentsProductsController extends AbstractController {
 
     /**
      * @Route("my-payments-products/update/",name="my-payments-products-update")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function UpdateDataInDB(Request $request) {
         $parameters = $request->request->all();
@@ -98,11 +100,17 @@ class MyPaymentsProductsController extends AbstractController {
         return $response;
     }
 
+    /**
+     * Todo: check later why is this done this strange way....
+     * @param $column_names
+     * @return array
+     */
     private function reorderPriceColumn($column_names) {
         $price_key = array_search(static::PRICE_COLUMN_NAME, $column_names);
 
         if (!array_key_exists(static::PRICE_COLUMN_NAME, $column_names)) {
-            new \Exception("Key 'price' not found in products columns array");
+            $message = $this->app->translator->translate('exceptions.MyPaymentsProductsController.keyPriceNotFoundInProductsColumnsArray');
+            new \Exception($message);
         }
 
         unset($column_names[$price_key]);

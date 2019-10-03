@@ -16,8 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MyGoalsSettingsController extends AbstractController
-{
+class MyGoalsSettingsController extends AbstractController {
+
+    const MY_GOALS          = 'MyGoals';
+    const MY_GOALS_SUBGOALS = 'MySubgoals';
+    const MY_GOALS_PAYMENTS = 'MyGoalsPayments';
 
     private $em;
     /**
@@ -55,7 +58,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/goals/settings/remove", name="goals_settings_remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function removeGoal(Request $request) {
@@ -75,7 +78,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/subgoals/settings/remove", name="subgoals_settings_remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function removeSubgoal(Request $request) {
@@ -95,7 +98,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/goals/payments/settings/remove", name="goals_payments_settings_remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function removeGoalPayment(Request $request) {
@@ -116,7 +119,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/goals/settings/update", name="goals_settings_update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function updateGoal(Request $request) {
@@ -130,7 +133,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/subgoals/settings/update", name="subgoals_settings_update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function updateSubgoal(Request $request) {
@@ -144,7 +147,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/goals/payments/settings/update", name="goals_payments_settings_update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function updateGoalPayment(Request $request) {
@@ -158,7 +161,7 @@ class MyGoalsSettingsController extends AbstractController
 
     /**
      * @param bool $ajax_render
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     private function renderTemplate($ajax_render = false) {
         $goals_form             = $this->getGoalsForm();
@@ -207,7 +210,7 @@ class MyGoalsSettingsController extends AbstractController
     /**
      * @Route("/admin/goals/settings/{type?}", name="goals_settings")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function display(Request $request) {
@@ -215,32 +218,25 @@ class MyGoalsSettingsController extends AbstractController
         $attributes     = $request->attributes->all();
         $type           = $attributes['type'];
 
-        $accepted_types = [
-            'MyGoals',
-            'MySubgoals',
-            'MyGoalsPayments'
-        ];
-
         switch($type){
-            case 'MyGoals':
+            case static::MY_GOALS:
                 $form = $this->getGoalsForm();
                 break;
-            case 'MySubgoals':
+            case static::MY_GOALS_SUBGOALS:
                 $form = $this->getSubGoalsForm();
                 break;
-            case 'MyGoalsPayments':
+            case static::MY_GOALS_PAYMENTS:
                 $form = $this->getGoalsPaymentsForm();
                 break;
+            default:
+                $message = $this->app->translator->translate('exceptions.MyGoalsSettingsController.thisGoalTypeIsNotAllowed');
+                throw new \Exception($message);
         }
 
-        if (in_array($type, $accepted_types)) {
+        $response = $this->addRecord($form, $request);
 
-            $response = $this->addRecord($form, $request);
-
-            if ($response->getStatusCode() != 200) {
-                return $response;
-            }
-
+        if ($response->getStatusCode() != 200) {
+            return $response;
         }
 
         if (!$request->isXmlHttpRequest()) {

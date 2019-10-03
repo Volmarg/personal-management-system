@@ -89,7 +89,10 @@ class MyFilesController extends AbstractController
         $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory_path);
 
         if( !file_exists($subdir_path_in_module_upload_dir) ){
-            $this->addFlash('danger', "Folder '{$subdirectory_path} does not exist.");
+
+            $message = $this->app->translator->translate('flash.filesController.folderDoesNotExist') . $subdirectory_path;
+            $this->addFlash('danger', $message );
+
             return $this->redirectToRoute('upload');
         }
 
@@ -136,7 +139,8 @@ class MyFilesController extends AbstractController
     {
 
         if( !$request->request->has(static::KEY_FILE_FULL_PATH)){
-            throw new \Exception('Request is missing key: ' . static::KEY_FILE_FULL_PATH);
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
+            throw new \Exception($message);
         }
 
         $file_full_path = $request->request->get(static::KEY_FILE_FULL_PATH);
@@ -221,7 +225,8 @@ class MyFilesController extends AbstractController
     public function update(Request $request){
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
-            throw new \Exception('Missing request parameter named: ' . static::KEY_FILE_FULL_PATH);
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
+            throw new \Exception($message);
         }
 
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
