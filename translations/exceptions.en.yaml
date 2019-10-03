@@ -1,0 +1,11 @@
+exceptions:
+  general:
+    missingRequiredParameter: 'Missing request parameter named: '
+  files:
+    subdirectoryLocationMissingInRequest: "Subdirectory location is missing in request."
+    cannotRemoveMainFolder: "Cannot remove main folder!"
+  upload:
+    uploadDirNotSupported: "This upload dir is not associated with any module."
+  repositories:
+    recordHasChildrenCannotRemove: 'The record which You try to remove, is a parent of other record! Please remove children first!'
+    inorrectId: "Incorrect id! Expected numeric value, received: "

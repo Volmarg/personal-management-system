@@ -31,7 +31,8 @@ class FilesSearchController extends AbstractController
     public function getSearchResultsDataForTag(Request $request){
 
         if( !$request->request->has(FileTagger::KEY_TAGS) ){
-            throw new \Exception("Request is missing the key: ". FileTagger::KEY_TAGS);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileTagger::KEY_TAGS;
+            throw new \Exception($message);
         }
 
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);

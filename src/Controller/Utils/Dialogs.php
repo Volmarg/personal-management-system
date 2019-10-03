@@ -47,22 +47,25 @@ class Dialogs extends AbstractController
     public function buildDataTransferDialogBody(Request $request) {
 
         if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_CURRENT_PATH;
             return new JsonResponse([
-                'errorMessage' => "Request is missing key: ".static::KEY_FILE_CURRENT_PATH
+                'errorMessage' => $message
             ]);
         }
 
         if( !$request->request->has(static::KEY_MODULE_NAME) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MODULE_NAME;
             return new JsonResponse([
-                'errorMessage' => "Request is missing key: ".static::KEY_MODULE_NAME
+                'errorMessage' => $message
             ]);
         }
 
         $module_name  = $request->request->get(static::KEY_MODULE_NAME);
 
         if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+            $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
             return new JsonResponse([
-                'errorMessage' => "Module name is incorrect."
+                'errorMessage' => $message
             ]);
         }
 
@@ -72,8 +75,9 @@ class Dialogs extends AbstractController
         $file = new File($file_current_path);
 
         if( !$file->isFile() ){
+            $message = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
             return new JsonResponse([
-                'errorMessage' => "File provided in filepath is incorrect - such file does not exist"
+                'errorMessage' => $message
             ]);
         }
 
@@ -107,16 +111,18 @@ class Dialogs extends AbstractController
     public function buildTagsUpdateDialogBody(Request $request) {
 
         if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_CURRENT_PATH;
             return new JsonResponse([
-                'errorMessage' => "Request is missing key: ".static::KEY_FILE_CURRENT_PATH
+                'errorMessage' => $message
             ]);
         }
 
         $module_name  = $request->request->get(static::KEY_MODULE_NAME);
 
         if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+            $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
             return new JsonResponse([
-                'errorMessage' => "Module name is incorrect."
+                'errorMessage' => $message
             ]);
         }
 
@@ -126,8 +132,9 @@ class Dialogs extends AbstractController
         $file = new File($file_current_path);
 
         if( !$file->isFile() ){
+            $message = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
             return new JsonResponse([
-                'errorMessage' => "File provided in filepath is incorrect - such file does not exist"
+                'errorMessage' => $message
             ]);
         }
 

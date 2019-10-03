@@ -81,15 +81,18 @@ class FilesController extends AbstractController {
     public function moveSingleFileViaPost(Request $request) {
 
         if (!$request->request->has(FilesHandler::KEY_FILE_CURRENT_PATH)) {
-            throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_FILE_CURRENT_PATH);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FilesHandler::KEY_FILE_CURRENT_PATH;
+            throw new \Exception($message);
         }
 
         if (!$request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR)) {
-            throw new \Exception('Missing request parameter named: ' . FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR;
+            throw new \Exception($message);
         }
 
         if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR)) {
-            throw new \Exception('Missing request parameter named: ' . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR;
+            throw new \Exception($message);
         }
 
         $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
@@ -132,13 +135,15 @@ class FilesController extends AbstractController {
         $block_removal = false;
 
         if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
-            $response = new Response("Subdirectory location is missing in request.", 500);
+            $message = $this->app->translator->translate('exceptions.files.subdirectoryLocationMissingInRequest');
+            $response = new Response($message, 500);
         }else{
 
             $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
 
             if( in_array($current_directory_path_in_module_upload_dir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
-                $response = new Response("Cannot remove main folder!", 500);
+                $message = $this->app->translator->translate('exceptions.files.cannotRemoveMainFolder');
+                $response = new Response($message, 500);
             }
             else {
 

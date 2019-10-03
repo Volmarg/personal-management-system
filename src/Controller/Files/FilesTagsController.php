@@ -39,15 +39,18 @@ class FilesTagsController extends AbstractController {
     public function apiUpdateTags(Request $request): Response {
 
         if (!$request->request->has(FileTagger::KEY_TAGS)){
-            throw new \Exception("Request is missing key: ".FileTagger::KEY_TAGS);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileTagger::KEY_TAGS;
+            throw new \Exception($message);
         }
 
         if (!$request->request->has(MyFilesController::KEY_FILE_FULL_PATH)){
-            throw new \Exception("Request is missing key: ".MyFilesController::KEY_FILE_FULL_PATH);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . MyFilesController::KEY_FILE_FULL_PATH;
+            throw new \Exception($message);
         }
 
         if( empty($file_full_path) ){
-            return new Response("File path is an empty string");
+            $message = $this->app->translator->translate('responses.files.filePathIsAnEmptyString');
+            return new Response($message);
         }
 
         $tags_string    = $request->request->get(FileTagger::KEY_TAGS);
@@ -65,7 +68,8 @@ class FilesTagsController extends AbstractController {
             $this->fileTagger->prepare($array_of_tags, $file_full_path);
             $response = $this->fileTagger->updateTags();
         }catch(\Exception $e){
-            $response = new Response("There was an error while trying to update tags via api call");
+            $message  = $this->app->translator->translate('responses.tags.errorWhileTryingToUpdateTagsViaApi');
+            $response = new Response($message);
         }
 
         return $response;
@@ -79,7 +83,8 @@ class FilesTagsController extends AbstractController {
     public function apiRemoveTags(Request $request): Response {
 
         if (!$request->request->has(MyFilesController::KEY_FILE_FULL_PATH)){
-            throw new \Exception("Request is missing key: ".MyFilesController::KEY_FILE_FULL_PATH);
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . MyFilesController::KEY_FILE_FULL_PATH;
+            throw new \Exception($message);
         }
 
         $file_full_path = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);

@@ -1,0 +1,19 @@
+responses:
+  files:
+    filePathIsAnEmptyString: "File path is an empty string"
+    filePathIsIncorrectFileDoesNotExist:  "File provided in filepath is incorrect - such file does not exist"
+  tags:
+    errorWhileTryingToUpdateTagsViaApi: "There was an error while trying to update tags via api call"
+  upload:
+    noFilesWereUploaded: 'No files were uploaded'
+    tryingToUploadMoreFilesThanAllowedTo: "You are trying to upload more files than You are allowed to!"
+    moduleNameIsIncorrect: "Module name is incorrect."
+  general:
+    missingRequiredParameter: 'Missing request parameter named: '
+  repositories:
+    recordDeletedSuccessfully: 'Record was deleted successfully'
+    couldNotDeleteRecord: 'Record could not been deleted'
+    recordUpdateSuccess: 'Record has been updated'
+    recordUpdateFail: 'Record could not been updated'
+  password:
+    changeHasBeenCanceled: 'Password change has been canceled due to the field validations!'

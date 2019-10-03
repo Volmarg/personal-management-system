@@ -12,6 +12,7 @@ use App\Form\UploadFormType;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
 use App\Services\FileUploader;
+use App\Services\Translator;
 use DirectoryIterator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -37,8 +38,6 @@ class FileUploadController extends AbstractController {
     const KEY_SUBDIRECTORY_NAME         = 'subdirectory_name';
 
     const KEY_UPLOAD_MODULE_DIR         = 'upload_module_dir';
-
-    const DEFAULT_KEY_IS_MISSING        = 'Required key is missing in request';
 
     const KEY_MAIN_FOLDER               = 'Main folder';
 
@@ -146,6 +145,7 @@ class FileUploadController extends AbstractController {
      * @throws \Exception
      */
     public static function getTargetDirectoryForUploadModuleDir(string $upload_module_dir){
+        $translator = new Translator();
 
         switch ($upload_module_dir) {
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
@@ -155,26 +155,11 @@ class FileUploadController extends AbstractController {
                 $targetDirectory = Env::getImagesUploadDir();
                 break;
             default:
-                throw new \Exception('This type is not allowed');
+                $message  = $translator->translate('responses.upload.uploadDirNotSupported');
+                throw new \Exception($message);
         }
 
         return $targetDirectory;
-    }
-
-    public static function getUploadModuleDirForTargetDirectory(string $target_directory) {
-
-        switch ($target_directory) {
-            case Env::getImagesUploadDir():
-                $target_module_upload_dir = MyImagesController::TARGET_UPLOAD_DIR;
-                break;
-            case Env::getFilesUploadDir():
-                $target_module_upload_dir = MyFilesController::TARGET_UPLOAD_DIR;
-                break;
-            default:
-                throw new \Exception('This target_directory is not allowed');
-        }
-
-        return $target_module_upload_dir;
     }
 
     /**
@@ -212,7 +197,8 @@ class FileUploadController extends AbstractController {
         $form = $this->getUploadForm();
         $form->handleRequest($request);
 
-        $response = new Response('No files were uploaded');
+        $message  = $this->app->translator->translate('responses.upload.noFilesWereUploaded');
+        $response = new Response($message);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -227,7 +213,8 @@ class FileUploadController extends AbstractController {
                 $uploaded_files_count = count($uploaded_files);
 
                 if( $uploaded_files_count > $max_file_uploads){
-                    $response = new Response("You are trying to upload more files than You are allowed to!");
+                    $message  = $this->app->translator->translate('responses.upload.tryingToUploadMoreFilesThanAllowedTo');
+                    $response = new Response($message);
                     break;
                 }
 

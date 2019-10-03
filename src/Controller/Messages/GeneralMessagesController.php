@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * TODO: remove that later, check if anything from here is used anywhere
  * Class GeneralMessagesController
  * @package App\Controller\Messages
  * In some places i returning common messages from backend to frontend - i store them here

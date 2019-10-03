@@ -38,6 +38,7 @@ use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionRepository;
+use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -71,6 +72,12 @@ class Repositories extends AbstractController {
     const FILE_TAGS_REPOSITORY                      = 'FilesTagsRepository';
 
     const PASSWORD_FIELD                            = 'password';
+
+    /**
+     * @var Translator $translator
+     */
+    private $translator;
+
     /**
      * @var MyNotesRepository $myNotesRepository
      */
@@ -266,7 +273,8 @@ class Repositories extends AbstractController {
             $record     = $repository->find($id);
 
             if ($this->hasChildren($record, $repository)) {
-                throw new \Exception('The record which You try to remove, is a parent of other record! Please remove children first!');
+                $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
+                throw new \Exception($message);
             }
 
             $record->setDeleted(1);
@@ -276,9 +284,11 @@ class Repositories extends AbstractController {
             $em->persist($record);
             $em->flush();
 
-            return new JsonResponse('Record was deleted successfully', 200);
+            $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
+            return new JsonResponse($message, 200);
         } catch (\Exception | ExceptionRepository $er) {
-            return new JsonResponse('Record could not been deleted', 500);
+            $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
+            return new JsonResponse($message, 500);
         }
     }
 
@@ -317,8 +327,10 @@ class Repositories extends AbstractController {
                     $value = false;
                 }
 
+                // Info/Todo: the password check should not be here...
                 if ($parameter === static::PASSWORD_FIELD && !$this->isPasswordValueValid($value)) {
-                    return new JsonResponse('For Your own safety! Password change has been canceled due to some field validations!', 500);
+                    $message = $this->translator->translate('responses.password.changeHasBeenCanceled');
+                    return new JsonResponse($message, 500);
                 }
 
                 if (is_array($value)) {
@@ -342,9 +354,11 @@ class Repositories extends AbstractController {
             $em->persist($entity);
             $em->flush();
 
-            return new JsonResponse('Record has been updated', 200);
+            $message = $this->translator->translate('responses.repositories.recordUpdateSuccess');
+            return new JsonResponse($message, 200);
         } catch (ExceptionRepository $er) {
-            return new JsonResponse('Record could not been updated', 500);
+            $message = $this->translator->translate('responses.repositories.recordUpdateFail');
+            return new JsonResponse($message, 500);
         }
     }
 
@@ -413,7 +427,8 @@ class Repositories extends AbstractController {
         $id = (int) trim($id);
 
         if (!is_numeric($id)) {
-            throw new \Exception("Incorrect id! Expected numeric value, received: $id");
+            $message = $this->translator->translate('responses.repositories.inorrectId') . $id;
+            throw new \Exception($message);
         }
 
         return $id;
