@@ -7,12 +7,8 @@
             {% if choice is iterable %}
                 <option value="Grouped options are not supported by this type!"></option>
             {% else %}
-
-                {# By default I assume that each value is unique! #}
-                {% if choice_attr is defined and choice_attr is not empty %}
-                    <option value="{{ choice }}" data-categories="{{ choice_attr[0][choice] | json_encode }}"></option>
-                {% endif %}
-
+            {# By default I assume that each value is unique! #}
+                <option value="{{ choice }}" ></option>
             {% endif %}
 
 
