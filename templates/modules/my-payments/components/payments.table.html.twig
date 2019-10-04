@@ -27,7 +27,7 @@
 
                         <td
                                 class="{{ column }} {% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}"
-                                data-order="{{ ( column == "date" ? timestamp : '' ) }}"
+                                {{ ( column == "date" ? "data-order="~timestamp : '' ) }}
                         >
 
                             {% if column == 'date' %}
