@@ -228,7 +228,8 @@ class Repositories extends AbstractController {
         MyJobSettingsRepository         $myJobSettingsRepository,
         MyPaymentsOwedRepository        $myPaymentsOwedRepository,
         FilesTagsRepository             $filesTagsRepository,
-        FilesSearchRepository           $filesSearchRepository
+        FilesSearchRepository           $filesSearchRepository,
+        Translator                      $translator
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -255,6 +256,7 @@ class Repositories extends AbstractController {
         $this->myPaymentsOwedRepository         = $myPaymentsOwedRepository;
         $this->filesTagsRepository              = $filesTagsRepository;
         $this->filesSearchRepository            = $filesSearchRepository;
+        $this->translator                       = $translator;
     }
 
     /**

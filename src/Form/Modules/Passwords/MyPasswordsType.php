@@ -27,18 +27,18 @@ class MyPasswordsType extends AbstractType {
 
         $builder
             ->add('login', TextType::class, [
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.label.login')
+                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.login')
             ])
             ->add('password', TextType::class, [
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.label.password')
+                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.password')
 
             ])
             ->add('url', TextType::class, [
                 'required' => false,
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.label.url')
+                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.url')
             ])
             ->add('description', TextType::class, [
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.label.description')
+                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.description')
             ])
             ->add('group', EntityType::class, [
                 'class' => MyPasswordsGroups::class,
@@ -46,7 +46,7 @@ class MyPasswordsType extends AbstractType {
                 'choice_label' => function (MyPasswordsGroups $password_group) {
                     return $password_group->getName();
                 },
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.label.group')
+                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.group')
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')

@@ -118,7 +118,7 @@ payments:
       productPrices: Products prices
       addProduct: Add product
     table:
-      homeCurrenct: Home currency
+      homeCurrency: Home currency
   moneyOwed:
     headers:
       owedByOthers: Money owed by others

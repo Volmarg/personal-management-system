@@ -228,14 +228,19 @@ class MyGoalsSettingsController extends AbstractController {
             case static::MY_GOALS_PAYMENTS:
                 $form = $this->getGoalsPaymentsForm();
                 break;
+            case null:
+                $form = null;
+                break;
             default:
                 $message = $this->app->translator->translate('exceptions.MyGoalsSettingsController.thisGoalTypeIsNotAllowed');
                 throw new \Exception($message);
         }
 
-        $response = $this->addRecord($form, $request);
+        if( !is_null($form) ){
+            $response = $this->addRecord($form, $request);
+        }
 
-        if ($response->getStatusCode() != 200) {
+        if ( isset($response) && $response->getStatusCode() != 200) {
             return $response;
         }
 
