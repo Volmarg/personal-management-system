@@ -1,3 +1,17 @@
+{% set app_controller = 'App\\Controller\\AppController::' %}
+{% set MENU_NODE_MODULE_NAME_ACHIEVEMENTS      = constant(app_controller~"MENU_NODE_MODULE_NAME_ACHIEVEMENTS") %}
+{% set MENU_NODE_MODULE_NAME_GOALS             = constant(app_controller~"MENU_NODE_MODULE_NAME_GOALS") %}
+{% set MENU_NODE_MODULE_NAME_MY_CONTACTS       = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_CONTACTS") %}
+{% set MENU_NODE_MODULE_NAME_MY_CAR            = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_CAR") %}
+{% set MENU_NODE_MODULE_NAME_MY_FILES          = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_FILES") %}
+{% set MENU_NODE_MODULE_NAME_MY_IMAGES         = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_IMAGES") %}
+{% set MENU_NODE_MODULE_NAME_MY_JOB            = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_JOB") %}
+{% set MENU_NODE_MODULE_NAME_MY_PASSWORDS      = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_PASSWORDS") %}
+{% set MENU_NODE_MODULE_NAME_MY_PAYMENTS       = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_PAYMENTS") %}
+{% set MENU_NODE_MODULE_NAME_MY_SHOPPING       = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_SHOPPING") %}
+{% set MENU_NODE_MODULE_NAME_MY_TRAVELS        = constant(app_controller~"MENU_NODE_MODULE_NAME_MY_TRAVELS") %}
+{% set MENU_NODE_MODULE_NAME_NOTES             = constant(app_controller~"MENU_NODE_MODULE_NAME_NOTES") %}
+
 <ul class="sidebar-menu scrollable pos-r">
     <li class="nav-item mT-30 active">
         <a class="sidebar-link" href="{{ path('dashboard') }}">
@@ -9,6 +23,12 @@
     </li>
 
     <hr/>
+
+    {#
+        <span class="sidebar-menu-node-element" data-menu-node-name="" data-menu-node-template="">
+            {% include 'page-elements/components/sidebar/menu-nodes/my-contacts.twig' %}
+        </span>
+    #}
 
     {% include 'page-elements/components/sidebar/menu-nodes/goals.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/notes.twig' %}

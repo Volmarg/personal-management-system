@@ -4,6 +4,7 @@
 namespace App\Controller\Files;
 
 use App\Controller\Utils\Application;
+use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
@@ -168,30 +169,64 @@ class FilesController extends AbstractController {
 
 
     /**
+     * It's possible to either call this method by using keys directly in data passed in ajax or serialized form
      * @Route("/files/actions/create-folder", name="create_subdirectory", methods="POST")
      * @param Request $request
      * @return Response
      */
     public function createSubdirectoryByPostRequest(Request $request){
 
-        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_NAME) ) {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
-            return new Response($message, 500);
-        }
+        $isForm = $request->request->has(UploadSubdirectoryCreateType::FORM_NAME);
 
-        if ( !$request->request->has(FileUploadController::KEY_UPLOAD_MODULE_DIR) ) {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
-            return new Response($message, 500);
-        }
+        switch ($isForm) {
 
-        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR) ) {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
-            return new Response($message, 500);
-        }
+            case true:
 
-        $subdirectory_name  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NAME);
-        $upload_module_dir  = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
-        $target_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+                $form = $request->request->get(UploadSubdirectoryCreateType::FORM_NAME);
+
+                if ( !array_key_exists(FileUploadController::KEY_SUBDIRECTORY_NAME, $form) ) {
+                    $message = $this->app->translator->translate('responses.general.missingFormInput') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+                    return new Response($message, 500);
+                }
+
+                if ( !array_key_exists(FileUploadController::KEY_UPLOAD_MODULE_DIR, $form) ) {
+                    $message = $this->app->translator->translate('responses.general.missingFormInput') . FileUploadController::KEY_UPLOAD_MODULE_DIR;
+                    return new Response($message, 500);
+                }
+
+                if ( !array_key_exists(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, $form) ) {
+                    $message = $this->app->translator->translate('responses.general.missingFormInput') . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR;
+                    return new Response($message, 500);
+                }
+
+                $subdirectory_name  = $form[FileUploadController::KEY_SUBDIRECTORY_NAME];
+                $upload_module_dir  = $form[FileUploadController::KEY_UPLOAD_MODULE_DIR];
+                $target_directory_path_in_module_upload_dir = $form[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
+
+                break;
+            case false:
+
+                if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_NAME) ) {
+                    $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+                    return new Response($message, 500);
+                }
+
+                if ( !$request->request->has(FileUploadController::KEY_UPLOAD_MODULE_DIR) ) {
+                    $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+                    return new Response($message, 500);
+                }
+
+                if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR) ) {
+                    $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+                    return new Response($message, 500);
+                }
+
+                $subdirectory_name  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NAME);
+                $upload_module_dir  = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+                $target_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+
+                break;
+        }
 
         $response = $this->directoriesHandler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
 

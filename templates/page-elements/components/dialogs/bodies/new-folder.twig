@@ -3,9 +3,13 @@
 {% set KEY_UPLOAD_MODULE_DIR  = constant(file_upload_controller~"KEY_UPLOAD_MODULE_DIR") %}
 {% set KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR = constant(file_upload_controller~"KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR") %}
 
+{% if menu_node_path is not defined %}
+    {% set menu_node_path = '' %}
+{% endif %}
+
 <main class="main-content bgc-grey-100" style="min-height: auto; padding: 10px;">
     <div id="mainContent">
-        <div class="container-fluid handle-single-form-via-ajax">
+        <div class="container-fluid add-record-form">
             {{ form_start( form, {'attr':{'data-form-target': "CreateFolder"}} ) }}
 
             <div class="row">
@@ -43,7 +47,12 @@
 
             <div class="row">
                 <div class="col-sm-12">
-                    {{ form_widget(form['submit'], {'attr': {'class': 'btn-primary btn float-right' }} ) }}
+                    {{
+                        form_widget(form['submit'], {'attr': {
+                            'class'        : 'btn-primary btn float-right',
+                            'data-params'  : '{ "menuNodeModuleName" : "'~menu_node_module_name~'" }'
+                        }} )
+                    }}
                 </div>
             </div>
 

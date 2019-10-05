@@ -196,11 +196,22 @@ export default (function () {
         attachRecordAddViaAjaxOnSubmit: function (reloadPage = true) {
             let _this = this;
             $('.add-record-form form').submit(function (event) {
-                let form = $(event.target);
-                let entity_name = form.attr('data-entity');
-                let method = form.attr('method');
+                let form                 = $(event.target);
+                let submitButton         = $(form).find('button');
+                let callbackParamsJson   = $(submitButton).attr('data-params');
+                let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
 
-                let create_data = _this.entity_actions[entity_name].makeCreateData();
+                let method      = form.attr('method');
+                let entity_name = form.attr('data-entity');
+                let create_data = null;
+
+                if( "undefined" != typeof entity_name){
+                    create_data = _this.entity_actions[entity_name].makeCreateData();
+                }else{
+                    let formTarget  = form.attr('data-form-target');
+                    create_data     = _this.form_target_actions[formTarget].makeCreateData();
+                }
+
                 ui.widgets.loader.toggleLoader();
                 $.ajax({
                     url: create_data.url,
@@ -213,12 +224,13 @@ export default (function () {
                      * Somewhere in code I call this function but i pass it as string so it's not getting dettected
                      */
                     bootstrap_notifications.notify(create_data.success_message, 'success');
-                    if (!reloadPage) {
-                        return;
-                    }
 
                     if (create_data.callback_before) {
-                        create_data.callback();
+                        create_data.callback(dataCallbackParams);
+                    }
+
+                    if (!reloadPage) {
+                        return;
                     }
 
                     $('.twig-body-section').html(template);
@@ -235,7 +247,7 @@ export default (function () {
         },
         attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm: function () {
             let _this = this;
-            $('.update-record-form form, .add-record-form form, .handle-single-form-via-ajax form').submit(function (event) {
+            $('.update-record-form form').submit(function (event) {
                 let form = $(event.target);
                 let formTarget = form.attr('data-form-target');
                 let updateData = _this.form_target_actions[formTarget].makeUpdateData(form);
@@ -383,6 +395,54 @@ export default (function () {
         },
         removeTableRow: function (tr_parent_element) {
             tr_parent_element.remove();
+
+        },
+        singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
+
+            let url  = '/actions/render-menu-node-template';
+            let menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');
+
+            if( "undefined" === typeof menuNodeModuleName ){
+                throw("Menu node name was not defined");
+            }
+
+            if( 0 === menuNode.length ){
+                throw('Menu node with name: ' + menuNodeModuleName + ' - was not found');
+            }
+
+            if( 1 < menuNode.length ){
+                throw('More than one menu nodes with name: ' + menuNodeModuleName + ' were found.');
+            }
+
+            let data = {
+                "menu_node_module_name": menuNodeModuleName
+            };
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: data,
+            }).always((data) => {
+
+                let message          = data['message'];
+                let code             = data['code'];
+                let tpl              = data['tpl'];
+                let notificationType = ( code == 200 ? "success" : "danger" );
+
+                if( "undefined" === typeof message ){
+                    return;
+                }
+
+                if( '' !== tpl ){
+                    $(menuNode).replaceWith(tpl);
+                    window.sidebar.links.init();
+                }
+
+                if(returnNotification){
+                    bootstrap_notifications.notify(message, notificationType)
+                }
+
+            });
 
         },
         entity_actions: {
@@ -1770,22 +1830,25 @@ export default (function () {
                 form_target_action_name: "User Password",
             },
             'CreateFolder': {
-                makeUpdateData: function (form) {
-                    let uploadModuleDir        = $(form).find('#upload_subdirectory_create_upload_module_dir').val();
-                    let subdirectoryTargetPath = $(form).find('#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir').val();
-                    let subdirectoryName       = $(form).find('#upload_subdirectory_create_subdirectory_name').val();
-
-                    let url = '/files/actions/create-folder';
-
-                    let ajax_data = {
-                        'subdirectory_name': subdirectoryName,
-                        'upload_module_dir': uploadModuleDir,
-                        'subdirectory_target_path_in_module_upload_dir': subdirectoryTargetPath,
-                    };
+                makeCreateData: function () {
+                    let url                 = '/files/actions/create-folder';
+                    let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.form_target_action_name);
+                    let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.form_target_action_name);
 
                     return {
-                        'url': url,
-                        'data': ajax_data
+                        'url'               : url,
+                        'success_message'   : success_message,
+                        'fail_message'      : fail_message,
+                        'callback': function (dataCallbackParams) {
+                            let menuNodeModuleName = dataCallbackParams.menuNodeModuleName;
+
+                            if( "undefined" == typeof menuNodeModuleName){
+                                throw ("menuNodeModuleName param is missing in CreateFolder::makeCreateData");
+                            }
+
+                            ui.crud.singleMenuNodeReload(menuNodeModuleName);
+                        },
+                        'callback_before': true,
                     };
                 },
                 form_target_action_name: "Create folder",

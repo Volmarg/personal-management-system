@@ -2,12 +2,94 @@
 
 namespace App\Controller;
 
+use App\Controller\Modules\ModulesController;
+use App\Controller\Utils\Application;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AppController extends Controller
 {
+    const TWIG_MENU_NODE_PATH = 'page-elements/components/sidebar/menu-nodes/';
+    const TWIG_EXT            = DOT.'twig';
+
+    const KEY_MENU_NODE_MODULE_NAME = 'menu_node_module_name';
+
+    const KEY_MESSAGE   = 'message';
+    const KEY_CODE      = 'code';
+    const KEY_TPL       = 'tpl';
+    const KEY_CURR_URL  = 'currUrl';
+
+    const MENU_NODE_MODULE_NAME_ACHIEVEMENTS  = ModulesController::MODULE_NAME_ACHIEVEMENTS;
+    const MENU_NODE_MODULE_NAME_GOALS         = ModulesController::MODULE_NAME_GOALS;
+    const MENU_NODE_MODULE_NAME_MY_CAR        = ModulesController::MODULE_NAME_CAR;
+    const MENU_NODE_MODULE_NAME_MY_CONTACTS   = ModulesController::MODULE_NAME_CONTACTS;
+    const MENU_NODE_MODULE_NAME_MY_FILES      = ModulesController::MODULE_NAME_FILES;
+    const MENU_NODE_MODULE_NAME_MY_IMAGES     = ModulesController::MODULE_NAME_IMAGES;
+    const MENU_NODE_MODULE_NAME_MY_JOB        = ModulesController::MODULE_NAME_JOB;
+    const MENU_NODE_MODULE_NAME_MY_PASSWORDS  = ModulesController::MODULE_NAME_PASSWORDS;
+    const MENU_NODE_MODULE_NAME_MY_PAYMENTS   = ModulesController::MODULE_NAME_PAYMENTS;
+    const MENU_NODE_MODULE_NAME_MY_SHOPPING   = ModulesController::MODULE_NAME_SHOPPING;
+    const MENU_NODE_MODULE_NAME_MY_TRAVELS    = ModulesController::MODULE_NAME_TRAVELS;
+    const MENU_NODE_MODULE_NAME_NOTES         = ModulesController::MODULE_NAME_NOTES;
+
+    /**
+     * For loading twig templates
+     */
+    const MENU_NODE_NAME_ACHIEVEMENTS  = 'achievements';
+    const MENU_NODE_NAME_GOALS         = 'goals';
+    const MENU_NODE_NAME_MY_CAR        = 'my-car';
+    const MENU_NODE_NAME_MY_CONTACTS   = 'my-contacts';
+    const MENU_NODE_NAME_MY_FILES      = 'my-files';
+    const MENU_NODE_NAME_MY_IMAGES     = 'my-images';
+    const MENU_NODE_NAME_MY_JOB        = 'my-job';
+    const MENU_NODE_NAME_MY_PASSWORDS  = 'my-passwords';
+    const MENU_NODE_NAME_MY_PAYMENTS   = 'my-payments';
+    const MENU_NODE_NAME_MY_SHOPPING   = 'my-shopping';
+    const MENU_NODE_NAME_MY_TRAVELS    = 'my-travels';
+    const MENU_NODE_NAME_NOTES         = 'notes';
+
+    const MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES = [
+        self::MENU_NODE_MODULE_NAME_ACHIEVEMENTS  => 'MENU_NODE_MODULE_NAME_ACHIEVEMENTS',
+        self::MENU_NODE_MODULE_NAME_GOALS         => 'MENU_NODE_MODULE_NAME_GOALS',
+        self::MENU_NODE_MODULE_NAME_MY_CAR        => 'MENU_NODE_MODULE_NAME_MY_CAR',
+        self::MENU_NODE_MODULE_NAME_MY_CONTACTS   => 'MENU_NODE_MODULE_NAME_MY_CONTACTS',
+        self::MENU_NODE_MODULE_NAME_MY_FILES      => 'MENU_NODE_MODULE_NAME_MY_FILES',
+        self::MENU_NODE_MODULE_NAME_MY_IMAGES     => 'MENU_NODE_MODULE_NAME_MY_IMAGES',
+        self::MENU_NODE_MODULE_NAME_MY_JOB        => 'MENU_NODE_MODULE_NAME_MY_JOB',
+        self::MENU_NODE_MODULE_NAME_MY_PASSWORDS  => 'MENU_NODE_MODULE_NAME_MY_PASSWORDS',
+        self::MENU_NODE_MODULE_NAME_MY_PAYMENTS   => 'MENU_NODE_MODULE_NAME_MY_PAYMENTS',
+        self::MENU_NODE_MODULE_NAME_MY_SHOPPING   => 'MENU_NODE_MODULE_NAME_MY_SHOPPING',
+        self::MENU_NODE_MODULE_NAME_MY_TRAVELS    => 'MENU_NODE_MODULE_NAME_MY_TRAVELS',
+        self::MENU_NODE_MODULE_NAME_NOTES         => 'MENU_NODE_MODULE_NAME_NOTES',
+    ];
+
+    const MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP = [
+        self::MENU_NODE_MODULE_NAME_ACHIEVEMENTS  => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_ACHIEVEMENTS . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_GOALS         => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_GOALS        . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_CAR        => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_CAR       . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_CONTACTS   => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_CONTACTS  . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_FILES      => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_FILES     . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_IMAGES     => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_IMAGES    . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_JOB        => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_JOB       . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_PASSWORDS  => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_PASSWORDS . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_PAYMENTS   => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_PAYMENTS  . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_SHOPPING   => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_SHOPPING  . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_TRAVELS    => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_TRAVELS   . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_NOTES         => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_NOTES        . self::TWIG_EXT,
+    ];
+
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    public function __construct(Application $app) {
+        $this->app = $app;
+    }
+
     /**
      * @Route("/", name="app_default")
      * This is also main redirect when user logs in
@@ -15,6 +97,68 @@ class AppController extends Controller
     public function index()
     {
         return $this->redirectToRoute('dashboard');
+    }
+
+    /**
+     * @Route("/actions/render-menu-node-template", name="render_menu_node_template")
+     * @param Request $request
+     * @return Response
+     */
+    public function renderMenuNodeTemplate(Request $request) {
+
+        $message = $this->app->translator->translate('responses.menu.nodeHasBeenRendered');
+        $code    = 200;
+        $tpl     = '';
+
+        if ( !$request->request->has(static::KEY_MENU_NODE_MODULE_NAME) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MENU_NODE_MODULE_NAME;
+            $code    = 500;
+
+            $response_data = [
+                static::KEY_MESSAGE => $message,
+                static::KEY_CODE    => $code,
+                static::KEY_TPL     => $tpl
+            ];
+
+            return new JsonResponse($response_data);
+        }
+
+        $menu_node_module_name = $request->request->get(static::KEY_MENU_NODE_MODULE_NAME);
+
+        if ( !array_key_exists($menu_node_module_name, static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP) ) {
+            $message = $this->app->translator->translate('responses.menu.menuNodeWithNameWasNotFound') . $menu_node_module_name;
+            $code    = 500;
+
+            $response_data = [
+                static::KEY_MESSAGE => $message,
+                static::KEY_CODE    => $code,
+                static::KEY_TPL     => $tpl
+            ];
+
+            return new JsonResponse($response_data);
+        }
+
+        $tpl_data = [
+            static::KEY_CURR_URL => $request->server->get('HTTP_REFERER'),
+            static::MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES[$menu_node_module_name] => $menu_node_module_name // because of constants used in tpl
+        ];
+
+        $tpl = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menu_node_module_name], $tpl_data)->getContent();
+
+        $response_data = [
+            static::KEY_MESSAGE  => $message,
+            static::KEY_CODE     => $code,
+            static::KEY_TPL      => $tpl
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
+    /**
+     * @Route("/actions/render-full-menu-template", name="render_full_menu_template")
+     */
+    public function renderFullMenuTemplate(){
+
     }
 
     /**

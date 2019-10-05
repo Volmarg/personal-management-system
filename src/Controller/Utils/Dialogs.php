@@ -2,6 +2,7 @@
 
 namespace App\Controller\Utils;
 
+use App\Controller\AppController;
 use App\Controller\Files\FileUploadController;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
@@ -175,11 +176,20 @@ class Dialogs extends AbstractController
      * @throws \Exception
      */
     public function buildCreateNewFolderDialogBody(Request $request) {
+        if( !$request->request->has(static::KEY_MODULE_NAME) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MODULE_NAME;
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $module_name = $request->request->get(static::KEY_MODULE_NAME);
 
         $create_subdir_form = $this->app->forms->uploadCreateSubdirectory();
 
         $template_data = [
-          'form' => $create_subdir_form->createView()
+          'form'                    => $create_subdir_form->createView(),
+          'menu_node_module_name'   => $module_name
         ];
 
         $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER, $template_data);

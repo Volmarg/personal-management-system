@@ -50,7 +50,7 @@ export default (function () {
     };
 
     utils.ui = {
-        keepMenuOpenJS: function(){
+        keepUploadBasedMenuOpen: function(){
             let openedMenu       = $('.folder-based-menu .open');
             let openedMenuParent = openedMenu;
 

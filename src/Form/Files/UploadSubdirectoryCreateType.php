@@ -16,6 +16,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class UploadSubdirectoryCreateType extends AbstractType
 {
 
+    const FORM_NAME = 'upload_subdirectory_create';
+
     /**
      * @var Application
      */

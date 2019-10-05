@@ -31,7 +31,7 @@ export default (function () {
             this.applyAccordion();
             this.selectize.applyTagsSelectize();
             this.selectize.disableTagsInputsForSelectorsOnPage();
-            this.callModalOnWidgetPlusIcon();
+            this.callModalOnWidgetIcon();
             this.addMonthlyPaymentSummaryToAccordinHeader();
             this.removeFolderOnFolderRemovalIconClick();
             this.popover.init();
@@ -75,7 +75,7 @@ export default (function () {
 
 
         },
-        callModalOnWidgetPlusIcon() {
+        callModalOnWidgetIcon() {
             let callModalButton = $(this.elements["call-widget-modal"]);
 
             if (callModalButton.length === 0) {
@@ -95,11 +95,18 @@ export default (function () {
                     message: () => {
                         if (settings.type !== undefined && settings.type !== null) {
 
+                            let data = '';
+
+                            if( "undefined" !== typeof settings.data ){
+                                data = settings.data;
+                            }
+
                             switch (settings.type) {
                                 case 'template':
                                     ui.widgets.loader.toggleLoader();
                                     $.ajax({
                                         method: 'POST',
+                                        data: data,
                                         url: settings.url
                                     }).done((data) => {
 

@@ -57,6 +57,7 @@ responses:
     finishedUploading: 'File upload has been successfully finished'
   general:
     missingRequiredParameter: 'Missing request parameter named: '
+    missingFormInput: 'Missing form input named: '
   repositories:
     recordDeletedSuccessfully: 'Record was deleted successfully'
     couldNotDeleteRecord: 'Record could not been deleted'
@@ -70,3 +71,7 @@ responses:
     tagsHaveBeenCreated: "Tags have been created successfully."
     noTagsToRemove: "There were no tags to remove"
     tagsUpdated: "Tags have been updated successfully"
+  menu:
+    nodeHasBeenRendered: "Menu has been rendered"
+    menuNodeWithNameWasNotFound: "Menu node with given name was not found"
+    thisModuleNameIsNotMappedToMenuNodePath: "This module name is not mapped to menu node path: "

@@ -81,7 +81,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
     public function buildMenuForUploadType(string $upload_module_dir){
 
         $folders_tree   = $this->getUploadFolderSubdirectoriesTree($upload_module_dir);
-        $script         = $this->keepMenuOpenJS();
+        $script         = $this->keepUploadBasedMenuOpenJS();
         $list           = '';
 
         array_walk($folders_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_module_dir) {
@@ -169,12 +169,12 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * This code will be evaluated once menu is built
      * In normal cases this is handled in twig via keepMenuOpen()
      */
-    private function keepMenuOpenJS() {
+    private function keepUploadBasedMenuOpenJS() {
 
         $script= "
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    utils.ui.keepMenuOpenJS();
+                    utils.ui.keepUploadBasedMenuOpen();
                 });
             </script>
         ";

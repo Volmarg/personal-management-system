@@ -69,15 +69,18 @@
                         "type": 'template',
                         "url": path('dialog_body_create_folder'),
                         'callFunctions': '
-                        ui.crud.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm();
-                        ui.upload.init();
-                        ui.forms.init();
-                        createFolderWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder();
+                            ui.crud.attachRecordAddViaAjaxOnSubmit(false);  // dont reload mainBody
+                            ui.upload.init();
+                            ui.forms.init();
+                            createFolderWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder();
 
-                        let mainContentInModal   = document.querySelector(".bootbox-body main.main-content");
-                        mainContentInModal.style = "min-height:auto; padding: 10px;";
+                            let mainContentInModal   = document.querySelector(".bootbox-body main.main-content");
+                            mainContentInModal.style = "min-height:auto; padding: 10px;";
                     ',
-                        'subtype':'form'
+                        'subtype':'form',
+                        "data": {
+                            "moduleName": constant(modules_controller~'MODULE_NAME_FILES')
+                        }
                     },
                     'style': "margin-top: 60px; background-color: #0062cc; opacity: .5;"
                 } %}
