@@ -68,7 +68,23 @@ input:checked + .slider:before {
   cursor: pointer;
 }
 
-/* Circle for quick access to something - like quick addnote */
+/* Widget */
+.widget {
+  opacity: 0.5;
+  height: 6em;
+  width: 6em;
+  font-size: .7em;
+  position: absolute!important;
+  border-radius: 100%;
+  right: 30px;
+
+  &:hover {
+    opacity: 0.8 !important;
+    cursor: pointer;
+  }
+}
+
+/* Plus widget */
 $cirlceColor: #0062cc;
 $plusColor: white;
 .circle-plus {
@@ -117,4 +133,19 @@ $plusColor: white;
 .color-legend-button {
   color: white;
   font-size: 13px !important;
+}
+
+/* Centered fontawesome element */
+.fontawesome-centered{
+  width: inherit;
+  height: inherit;
+  border-radius: 100%;
+  line-height: 58px;
+  text-align: center;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+.fontawesome-centered i {
+  line-height: inherit;
 }

@@ -3,6 +3,7 @@
 namespace App\Controller\Utils;
 
 use App\Controller\Files\FileUploadController;
+use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +21,7 @@ class Dialogs extends AbstractController
 {
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS    = 'page-elements/components/dialogs/bodies/update-tags.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER     = 'page-elements/components/dialogs/bodies/new-folder.twig';
     const KEY_FILE_CURRENT_PATH                    = 'fileCurrentPath';
     const KEY_MODULE_NAME                          = 'moduleName';
 
@@ -33,9 +35,15 @@ class Dialogs extends AbstractController
      */
     private $file_tagger;
 
-    public function __construct(Application $app, FileTagger $file_tagger) {
-        $this->app         = $app;
-        $this->file_tagger = $file_tagger;
+    /**
+     * @var DirectoriesHandler $directories_handler
+     */
+    private $directories_handler;
+
+    public function __construct(Application $app, FileTagger $file_tagger, DirectoriesHandler $directories_handler) {
+        $this->app                      = $app;
+        $this->file_tagger              = $file_tagger;
+        $this->directories_handler      = $directories_handler;
     }
 
     /**
@@ -160,5 +168,27 @@ class Dialogs extends AbstractController
         return new JsonResponse($response_data);
     }
 
+    /**
+     * @Route("/dialog/body/create-folder", name="dialog_body_create_folder", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function buildCreateNewFolderDialogBody(Request $request) {
+
+        $create_subdir_form = $this->app->forms->uploadCreateSubdirectory();
+
+        $template_data = [
+          'form' => $create_subdir_form->createView()
+        ];
+
+        $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+    }
 
 }

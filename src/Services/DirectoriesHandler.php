@@ -283,7 +283,7 @@ class DirectoriesHandler {
 
         if( file_exists($full_subdir_path) ){
             $log_message        = $this->application->translator->translate('logs.directories.createFoldedThisNameAlreadyExist');
-            $response_message   = $this->application->translator->translate('responses.directories.thereWasAnErrorWhileCreatingFolder');
+            $response_message   = $this->application->translator->translate('responses.directories.createFoldedThisNameAlreadyExist');
 
             $this->logger->info($log_message);
             return new Response($response_message, 500);

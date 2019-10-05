@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Json;
 
 class FilesController extends AbstractController {
 
@@ -160,6 +161,42 @@ class FilesController extends AbstractController {
         $response_data = [
             'message' => $response->getContent(),
             'code'    => $response->getStatusCode()
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
+
+    /**
+     * @Route("/files/actions/create-folder", name="create_subdirectory", methods="POST")
+     * @param Request $request
+     * @return Response
+     */
+    public function createSubdirectoryByPostRequest(Request $request){
+
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_NAME) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+            return new Response($message, 500);
+        }
+
+        if ( !$request->request->has(FileUploadController::KEY_UPLOAD_MODULE_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+            return new Response($message, 500);
+        }
+
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NAME;
+            return new Response($message, 500);
+        }
+
+        $subdirectory_name  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NAME);
+        $upload_module_dir  = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+        $target_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+
+        $response = $this->directoriesHandler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
+
+        $response_data = [
+            'message' => $response->getContent()
         ];
 
         return new JsonResponse($response_data);

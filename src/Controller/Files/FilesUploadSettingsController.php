@@ -68,9 +68,8 @@ class FilesUploadSettingsController extends AbstractController {
         $copy_data_form->handleRequest($request);
 
         $create_subdir_form = $this->getCreateSubdirectoryForm();
-        $create_subdir_form->handleRequest($request);
 
-        $this->handleForms($rename_form, $copy_data_form, $create_subdir_form);
+        $this->handleForms($rename_form, $copy_data_form);
 
         $data = [
             'ajax_render'           => false,
@@ -122,10 +121,9 @@ class FilesUploadSettingsController extends AbstractController {
     /**
      * @param FormInterface $rename_form
      * @param FormInterface $copy_data_form
-     * @param FormInterface $create_subdir_form
      * @throws \Exception
      */
-    private function handleForms(FormInterface $rename_form, FormInterface $copy_data_form, FormInterface $create_subdir_form){
+    private function handleForms(FormInterface $rename_form, FormInterface $copy_data_form){
 
         if($rename_form->isSubmitted() && $rename_form->isValid()) {
             $form_data      = $rename_form->getData();
@@ -147,15 +145,6 @@ class FilesUploadSettingsController extends AbstractController {
             $response = $this->files_handler->copyData(
                 $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
             );
-        }
-
-        if($create_subdir_form->isSubmitted() && $create_subdir_form->isValid()) {
-            $form_data          = $create_subdir_form->getData();
-            $subdirectory_name  = $form_data[FileUploadController::KEY_SUBDIRECTORY_NAME];
-            $upload_module_dir  = $form_data[FileUploadController::KEY_UPLOAD_MODULE_DIR];
-            $target_directory_path_in_module_upload_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
-
-            $response = $this->directories_handler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
         }
 
         if( isset($response) ){

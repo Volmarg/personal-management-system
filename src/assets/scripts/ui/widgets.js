@@ -82,10 +82,14 @@ export default (function () {
                 return;
             }
 
-            let settings = JSON.parse($(callModalButton).attr('data-settings'));
             let _this = this;
 
-            callModalButton.click(() => {
+            callModalButton.click((event) => {
+
+                let clickedButton = $(event.target).closest('[data-widget="true"]');
+                let jsonString    = $(clickedButton).attr('data-settings');
+                let settings      = JSON.parse(jsonString);
+
                 bootbox.alert({
 
                     message: () => {
@@ -98,6 +102,11 @@ export default (function () {
                                         method: 'POST',
                                         url: settings.url
                                     }).done((data) => {
+
+                                        if( undefined !== data['template'] ){
+                                            data = data['template'];
+                                        }
+
                                         let bootboxBody = $('.' + _this.elements.widgetModalClassName).find('.bootbox-body');
                                         bootboxBody.html(data);
 

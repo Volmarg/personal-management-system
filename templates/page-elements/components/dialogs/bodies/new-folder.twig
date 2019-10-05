@@ -1,0 +1,53 @@
+{% set file_upload_controller = 'App\\Controller\\Files\\FileUploadController::' %}
+{% set KEY_SUBDIRECTORY_NAME  = constant(file_upload_controller~"KEY_SUBDIRECTORY_NAME") %}
+{% set KEY_UPLOAD_MODULE_DIR  = constant(file_upload_controller~"KEY_UPLOAD_MODULE_DIR") %}
+{% set KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR = constant(file_upload_controller~"KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR") %}
+
+<main class="main-content bgc-grey-100" style="min-height: auto; padding: 10px;">
+    <div id="mainContent">
+        <div class="container-fluid handle-single-form-via-ajax">
+            {{ form_start( form, {'attr':{'data-form-target': "CreateFolder"}} ) }}
+
+            <div class="row">
+                <div class="col-sm-4">
+                    {{ form_label(form[KEY_UPLOAD_MODULE_DIR], null, { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form_widget(form[KEY_UPLOAD_MODULE_DIR], {'id': 'upload_subdirectory_create_upload_module_dir'}) }}
+                </div>
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    {{ form_label(form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR], null, { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form_widget(form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR], {'id': 'upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir'}) }}
+                </div>
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-sm-4">
+                    {{ form_label(form[KEY_SUBDIRECTORY_NAME], null, { 'label_attr': {'class': 'col-form-label col-sm-12 required'}} ) }}
+                </div>
+                <div class="col-sm-6">
+                    {{ form_widget(form[KEY_SUBDIRECTORY_NAME], {'id': 'upload_subdirectory_create_subdirectory_name' }) }}
+                </div>
+            </div>
+
+            <br/>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    {{ form_widget(form['submit'], {'attr': {'class': 'btn-primary btn float-right' }} ) }}
+                </div>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</main>

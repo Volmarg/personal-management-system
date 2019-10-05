@@ -235,7 +235,7 @@ export default (function () {
         },
         attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm: function () {
             let _this = this;
-            $('.update-record-form form').submit(function (event) {
+            $('.update-record-form form, .add-record-form form, .handle-single-form-via-ajax form').submit(function (event) {
                 let form = $(event.target);
                 let formTarget = form.attr('data-form-target');
                 let updateData = _this.form_target_actions[formTarget].makeUpdateData(form);
@@ -1768,6 +1768,27 @@ export default (function () {
                     };
                 },
                 form_target_action_name: "User Password",
+            },
+            'CreateFolder': {
+                makeUpdateData: function (form) {
+                    let uploadModuleDir        = $(form).find('#upload_subdirectory_create_upload_module_dir').val();
+                    let subdirectoryTargetPath = $(form).find('#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir').val();
+                    let subdirectoryName       = $(form).find('#upload_subdirectory_create_subdirectory_name').val();
+
+                    let url = '/files/actions/create-folder';
+
+                    let ajax_data = {
+                        'subdirectory_name': subdirectoryName,
+                        'upload_module_dir': uploadModuleDir,
+                        'subdirectory_target_path_in_module_upload_dir': subdirectoryTargetPath,
+                    };
+
+                    return {
+                        'url': url,
+                        'data': ajax_data
+                    };
+                },
+                form_target_action_name: "Create folder",
             }
         }
     };

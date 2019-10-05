@@ -1,0 +1,8 @@
+{% if style is not defined %}
+    {% set style = "" %}
+{% endif %}
+<div class="widget {{ widgetName }}-widget call-widget-modal" data-settings='{{ settings | json_encode | raw }}' style="{{ style }}" data-widget="true">
+    <div class="fontawesome-centered">
+        <i class="fa fa-folder-open" style="font-size: 25px; color: white;"></i>
+    </div>
+</div>
