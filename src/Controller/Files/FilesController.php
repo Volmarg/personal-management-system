@@ -170,7 +170,7 @@ class FilesController extends AbstractController {
 
     /**
      * It's possible to either call this method by using keys directly in data passed in ajax or serialized form
-     * @Route("/files/actions/create-folder", name="create_subdirectory", methods="POST")
+     * @Route("/files/actions/create-folder", name="action_create_subdirectory", methods="POST")
      * @param Request $request
      * @return Response
      */

@@ -29,6 +29,16 @@ class FoldersBasedMenuElements extends AbstractExtension {
                                  </a>';
 
     /**
+     * This array contains url for which it's allowed to use HTTP_REFERER instead of REQUEST_URI to determine
+     * which menu elements should be kept open, this is needed because of Quick Folder create widget which then reloads the menu node.
+     * The request uri for that case is the ajax url uri, but the call for quick create comes from upload based module.
+     * @var array
+     */
+    private $allow_referer_for_urls = [
+
+    ];
+
+    /**
      * @var Finder $finder
      */
     private $finder;
@@ -47,6 +57,10 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $this->finder           = new Finder();
         $this->url_generator    = $url_generator;
         $this->twig_utils       = $twig_utils;
+
+        $this->allow_referer_for_urls = [
+          $this->url_generator->generate('render_menu_node_template'),
+        ];
     }
 
 
@@ -113,10 +127,16 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $href   = $this->buildPathForUploadModuleDir($folder_path_with_unescaped_spacebar, $upload_module_dir);
         $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
 
+        $uri = $_SERVER['REQUEST_URI'];
+
+        if( in_array($uri, $this->allow_referer_for_urls) ){
+            $uri = $_SERVER['HTTP_REFERER'];
+        }
+
         $dropdownArrow  = '';
         $class          = '';
         $isUl           = false;
-        $isOpen         = $this->twig_utils->keepMenuOpen($_SERVER['REQUEST_URI'], '',  $href);
+        $isOpen         = $this->twig_utils->keepMenuOpen($uri, '',  $href);
 
         if( !empty($folder_tree) ){
             $dropdownArrow = static::DROPDOWN_ARROW_HTML;
