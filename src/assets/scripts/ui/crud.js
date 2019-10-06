@@ -397,54 +397,6 @@ export default (function () {
             tr_parent_element.remove();
 
         },
-        singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
-
-            let url  = '/actions/render-menu-node-template';
-            let menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');
-
-            if( "undefined" === typeof menuNodeModuleName ){
-                throw("Menu node name was not defined");
-            }
-
-            if( 0 === menuNode.length ){
-                throw('Menu node with name: ' + menuNodeModuleName + ' - was not found');
-            }
-
-            if( 1 < menuNode.length ){
-                throw('More than one menu nodes with name: ' + menuNodeModuleName + ' were found.');
-            }
-
-            let data = {
-                "menu_node_module_name": menuNodeModuleName
-            };
-
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: data,
-            }).always((data) => {
-
-                let message          = data['message'];
-                let code             = data['code'];
-                let tpl              = data['tpl'];
-                let notificationType = ( code == 200 ? "success" : "danger" );
-
-                if( "undefined" === typeof message ){
-                    return;
-                }
-
-                if( '' !== tpl ){
-                    $(menuNode).replaceWith(tpl);
-                    window.sidebar.links.init();
-                }
-
-                if(returnNotification){
-                    bootstrap_notifications.notify(message, notificationType)
-                }
-
-            });
-
-        },
         entity_actions: {
             "MyCar": {
                 makeUpdateData: function (tr_parent_element) {
@@ -1846,7 +1798,7 @@ export default (function () {
                                 throw ("menuNodeModuleName param is missing in CreateFolder::makeCreateData");
                             }
 
-                            ui.crud.singleMenuNodeReload(menuNodeModuleName);
+                            ui.ajax.singleMenuNodeReload(menuNodeModuleName);
                         },
                         'callback_before': true,
                     };

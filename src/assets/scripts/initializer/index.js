@@ -25,6 +25,14 @@ export default (function () {
             modules.myFiles.init();
             ui.filesSearch.init();
         },
+        /**
+         * Reinitialize is being called in alot of places when content is reloaded via js some logic is not allowed to
+         * reloaded, called more than once in lifecycle,
+         * it's NOT allowed to call this function from anywhere else than here.
+         */
+        oneTimeInit: function () {
+            ui.ajax.init();
+        },
         initStatic: function () {
             if ("undefined" !== typeof furcanIconPicker) {
                 furcanIconPicker.init();
@@ -37,5 +45,6 @@ export default (function () {
 
     initializer.init();
     initializer.initStatic();
+    initializer.oneTimeInit();
 }());
 // --

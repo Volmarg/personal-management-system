@@ -26,6 +26,18 @@ export default (function () {
 
     };
 
+    utils.array = {
+        /**
+         * For standard array with values
+         * @param array
+         * @returns {any[]}
+         */
+        unique: function (array) {
+            let uniqueItems = Array.from(new Set(array));
+            return uniqueItems;
+        }
+    };
+
     utils.window = {
         redirect: function (url, message) {
 
