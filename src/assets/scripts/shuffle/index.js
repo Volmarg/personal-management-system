@@ -32,6 +32,14 @@ export default (function () {
         },
         init: function(){
             this.initShuffler();
+
+            /**
+             * Fix: This is required when gallery is loaded via ajax, because elements in it are overlapping
+             */
+            if( "undefined" !== typeof window.shuffler.shuffle ){
+                window.shuffler.shuffle.sort();
+            }
+
         },
         initShuffler: function () {
             let _this = this;

@@ -12,7 +12,7 @@ export default (function () {
             }
         },
         init: function(){
-            //this.attachModuleContentLoadingViaAjaxOnMenuLinks();
+            this.attachModuleContentLoadingViaAjaxOnMenuLinks();
             /**
              * TODO: keep in mind
              *  keeping menu open is not working with ajax module load
