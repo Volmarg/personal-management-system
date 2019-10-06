@@ -93,8 +93,9 @@ input:checked + .slider:before {
  */
 .widgets-wrapper {
   position: fixed;
-  bottom: 20px;
+  bottom: 40px;
   right: 0;
+  z-index: 6;
 }
 
 /* Plus widget */
