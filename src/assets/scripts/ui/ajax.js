@@ -12,7 +12,13 @@ export default (function () {
             }
         },
         init: function(){
-            this.attachModuleContentLoadingViaAjaxOnMenuLinks();
+            //this.attachModuleContentLoadingViaAjaxOnMenuLinks();
+            /**
+             * TODO: keep in mind
+             *  keeping menu open is not working with ajax module load
+             *  widgets (quick) preselecting options does not work
+             *  shuffler in my images does not work - the layout is broken but rest is just ok
+             */
         },
         singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
 
@@ -120,7 +126,7 @@ export default (function () {
                 initializer.reinitialize();
 
                 ui.widgets.loader.toggleLoader();
-
+                history.pushState({}, null, url);
             });
 
         }

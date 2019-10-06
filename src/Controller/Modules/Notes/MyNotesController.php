@@ -9,6 +9,7 @@ use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Form\Modules\Notes\MyNotesType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
@@ -29,7 +30,7 @@ class MyNotesController extends AbstractController {
     /**
      * @Route("/my-notes/create", name="my-notes-create")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function createNote(Request $request) {
         $form_view = $this->getForm()->createView();
@@ -57,9 +58,23 @@ class MyNotesController extends AbstractController {
      * @param Request $request
      * @param $category
      * @param $category_id
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function openCategory(Request $request, $category, $category_id) {
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderCategoryTemplate($category, $category_id, false);
+        }
+        return $this->renderCategoryTemplate($category, $category_id, true);
+    }
+
+    /**
+     * @param string $category
+     * @param string $category_id
+     * @param bool $ajax_render
+     * @return RedirectResponse|Response
+     */
+    protected function renderCategoryTemplate(string $category, string $category_id, bool $ajax_render = false) {
 
         /**
          * @var MyNotesCategories $requested_category
@@ -81,10 +96,11 @@ class MyNotesController extends AbstractController {
         return $this->render('modules/my-notes/category.html.twig', [
             'category'      => $category,
             'category_id'   => $category_id,
-            'ajax_render'   => false,
-            'notes'         => $notes
+            'ajax_render'   => $ajax_render,
+            'notes'         => $notes,
         ]);
     }
+
 
     /**
      * @Route("/my-notes/category/{category}/note/{noteName}", name="my-notes-note")
@@ -106,10 +122,10 @@ class MyNotesController extends AbstractController {
      */
     public function update(Request $request): Response {
 
-        $parameters         = $request->request->all();
-        $entity             = $this->app->repositories->myNotesRepository->find($parameters['id']);
+        $parameters = $request->request->all();
+        $entity     = $this->app->repositories->myNotesRepository->find($parameters['id']);
 
-        $response           = $this->app->repositories->update($parameters, $entity);
+        $response   = $this->app->repositories->update($parameters, $entity);
 
         return $response;
     }

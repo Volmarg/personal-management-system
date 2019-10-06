@@ -1,2 +1,7 @@
 {# Used for ajax calls - simply templates that extend from this have only desired content in body block #}
-    {% block body %}{% endblock %}
+
+{# This must be done this way for controllers/etc - for unknown reason yaml defined globals are not working when trying to call constant() with them #}
+{% set modules_controller = 'App\\Controller\\Modules\\ModulesController::' %}
+{% set dialogs_controller = 'App\\Controller\\Utils\\Dialogs::' %}
+
+{% block body %}{% endblock %}

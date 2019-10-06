@@ -1,4 +1,11 @@
-{% extends "base.html.twig" %}
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
 
 {% block body %}
     <!-- ### $App Screen Content ### -->

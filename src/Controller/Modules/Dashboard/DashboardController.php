@@ -5,6 +5,7 @@ namespace App\Controller\Modules\Dashboard;
 use App\Controller\Utils\Application;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends Controller {
@@ -23,9 +24,18 @@ class DashboardController extends Controller {
 
     /**
      * @Route("/dashboard", name="dashboard")
+     * @param Request $request
      * @return Response
      */
-    public function default() {
+    public function display(Request $request) {
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderTemplate(false);
+        }
+        return $this->renderTemplate(true);
+    }
+
+    protected function renderTemplate($ajax_render = false) {
 
         $car_schedules              = $this->getCarSchedulesForWidget();
         $goals                      = $this->getGoalsForWidget();
@@ -35,6 +45,7 @@ class DashboardController extends Controller {
             'incomingCarSchedules'   => $car_schedules,
             'goals'                  => $goals,
             'goals_payments'         => $goals_payments,
+            'ajax_render'            => $ajax_render,
         ];
 
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);

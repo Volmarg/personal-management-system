@@ -82,7 +82,21 @@ class MyFilesController extends AbstractController
      */
     public function displayFiles(? string $encoded_subdirectory_path, Request $request) {
 
-        $ajax_render                      = false;
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
+        }
+        return $this->renderCategoryTemplate($encoded_subdirectory_path, true);
+
+    }
+
+    /**
+     * @param string|null $encoded_subdirectory_path
+     * @param bool $ajax_render
+     * @return array|RedirectResponse|Response
+     * @throws \App\Services\Exceptions\ExceptionDuplicatedTranslationKey
+     */
+    protected function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false) {
+
         $upload_dir                       = Env::getFilesUploadDir();
         $decoded_subdirectory_path        = urldecode($encoded_subdirectory_path);
         $subdirectory_path                = FilesHandler::trimFirstAndLastSlash($decoded_subdirectory_path);
@@ -109,10 +123,6 @@ class MyFilesController extends AbstractController
         # A bit dirty workaround
         if ($files instanceof RedirectResponse) {
             return $files;
-        }
-
-        if ( $request->isXmlHttpRequest() ) {
-            $ajax_render = true;
         }
 
         $is_main_dir = ( empty($subdirectory_path) );
