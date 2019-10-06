@@ -34,21 +34,23 @@
                 </div>
             </div>
 
-            <script src="/assets_/static-scripts/modules/my-notes-category.js"></script>
-            {% include 'page-elements/components/widgets/plus-icon.twig' with {
-                'widgetName': "add-note",
-                'settings':{
-                    "type": 'template',
-                    "url": '/my-notes/create',
-                    'callFunctions': '
-                        tinymce.remove(".tiny-mce");
-                        tinymce.custom.init();
-                        ui.crud.attachRecordAddViaAjaxOnSubmit(false);
-                        myNotesCategory.selectCurrentCategoryOptionForQuickNoteCreator();
-                    ',
-                    'subtype':'form'
-                }
-            } %}
+            <div class="widgets-wrapper">
+                <script src="/assets_/static-scripts/modules/my-notes-category.js"></script>
+                {% include 'page-elements/components/widgets/plus-icon.twig' with {
+                    'widgetName': "add-note",
+                    'settings':{
+                        "type": 'template',
+                        "url": '/my-notes/create',
+                        'callFunctions': '
+                            tinymce.remove(".tiny-mce");
+                            tinymce.custom.init();
+                            ui.crud.attachRecordAddViaAjaxOnSubmit(false);
+                            myNotesCategory.selectCurrentCategoryOptionForQuickNoteCreator();
+                        ',
+                        'subtype':'form'
+                    }
+                } %}
+            </div>
 
         </div>
     </main>
