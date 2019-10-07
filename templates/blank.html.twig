@@ -4,4 +4,15 @@
 {% set modules_controller = 'App\\Controller\\Modules\\ModulesController::' %}
 {% set dialogs_controller = 'App\\Controller\\Utils\\Dialogs::' %}
 
+{% set currUrl = path(app.request.attributes.get('_route'),
+    app.request.attributes.get('_route_params')) %}
+{% set getAttrs = app.request.attributes.get('_route_params') %}
+
+{% block twigToJavascript %}
+    <script>
+        var TWIG_GET_ATTRS = '{{ getAttrs | json_encode | raw }}';
+        var TWIG_ROUTE     = '{{ app.request.attributes.get('_route') }}';
+    </script>
+{% endblock %}
+
 {% block body %}{% endblock %}

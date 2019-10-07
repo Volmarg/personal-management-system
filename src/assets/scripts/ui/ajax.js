@@ -1,4 +1,5 @@
-var bootbox   = require('bootbox');
+var bootbox      = require('bootbox');
+var imagesLoaded = require('imagesloaded');
 
 export default (function () {
     if (typeof window.ui === 'undefined') {
@@ -18,6 +19,9 @@ export default (function () {
              *  keeping menu open is not working with ajax module load
              *  widgets (quick) preselecting options does not work
              *  shuffler in my images does not work - the layout is broken but rest is just ok
+             *      * mutation observers are not working
+             *      * timeout does not work as with more images the time needs to be bigger
+             *      * elementReady plugin is also not working
              */
         },
         singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
@@ -122,11 +126,19 @@ export default (function () {
                 method: "GET",
             }).always((data) => {
 
-                $('.twig-body-section').html(data);
-                initializer.reinitialize();
+                let twigBodySection = $('.twig-body-section');
+                twigBodySection.html(data);
 
-                ui.widgets.loader.toggleLoader();
-                history.pushState({}, null, url);
+                /**
+                 * Despite this being called imagesLoaded it works fine with normal content as well
+                 * This is badly required for case when module contains images
+                 */
+                imagesLoaded( twigBodySection, function() {
+                    initializer.reinitialize();
+                    ui.widgets.loader.toggleLoader();
+                    history.pushState({}, null, url);
+                });
+
             });
 
         }
