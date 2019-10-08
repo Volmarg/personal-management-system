@@ -58,8 +58,20 @@ class FilesUploadSettingsController extends AbstractController {
      */
     public function displaySettings(Request $request) {
 
-        //TODO: moving entire data must use main, and with this i need to block removed all if I select main + block it on backend
-        //$all_subdirectories_for_all_types_with_main_folders = FileUploadController::getSubdirectoriesForAllUploadTypes(true, true);
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderSettingsPage(false, $request);
+        }
+
+        return $this->renderSettingsPage(true, $request);
+    }
+
+    /**
+     * @param bool $ajax_render
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    private function renderSettingsPage(bool $ajax_render, Request $request){
 
         $rename_form    = $this->getRenameSubdirectoryForm();
         $rename_form->handleRequest($request);
@@ -72,7 +84,7 @@ class FilesUploadSettingsController extends AbstractController {
         $this->handleForms($rename_form, $copy_data_form);
 
         $data = [
-            'ajax_render'           => false,
+            'ajax_render'           => $ajax_render,
             'rename_form'           => $rename_form->createView(),
             'copy_data_form'        => $copy_data_form->createView(),
             'create_subdir_form'    => $create_subdir_form->createView()
