@@ -17,11 +17,6 @@ export default (function () {
             /**
              * TODO: keep in mind
              *  keeping menu open is not working with ajax module load
-             *  widgets (quick) preselecting options does not work
-             *  shuffler in my images does not work - the layout is broken but rest is just ok
-             *      * mutation observers are not working
-             *      * timeout does not work as with more images the time needs to be bigger
-             *      * elementReady plugin is also not working
              */
         },
         singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
@@ -65,12 +60,14 @@ export default (function () {
                 if( '' !== tpl ){
                     $(menuNode).replaceWith(tpl);
                     window.sidebar.links.init();
+                    initializer.reinitialize();
                 }
 
                 if(returnNotification){
                     bootstrap_notifications.notify(message, notificationType)
                 }
-
+                
+                this.attachModuleContentLoadingViaAjaxOnMenuLinks();
             });
 
         },

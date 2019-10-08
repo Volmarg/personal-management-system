@@ -114,11 +114,13 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param $ajax_render
+     * This function is also used for generating content for dialog (quick upload widget)
+     * @param bool $ajax_render
+     * @param string|null $twig_template
      * @return Response
      * @throws \Exception
      */
-    private function renderTemplate($ajax_render)
+    public function renderTemplate(bool $ajax_render, ?string $twig_template = null)
     {
         $upload_max_filesize        = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
         $post_max_size              = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
@@ -135,7 +137,9 @@ class FileUploadController extends AbstractController {
             'max_allowed_files_count'   => $max_allowed_files_count
         ];
 
-        return $this->render(static::UPLOAD_PAGE_TWIG_TEMPLATE, $data);
+        $template = $twig_template ?? static::UPLOAD_PAGE_TWIG_TEMPLATE;
+
+        return $this->render($template, $data);
 
     }
 

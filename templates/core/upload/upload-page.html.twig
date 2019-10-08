@@ -1,6 +1,3 @@
-{% set file_upload_controller   = 'App\\Controller\\Files\\FileUploadController' %}
-{% set KEY_UPLOAD_MODULE_DIR    = constant(file_upload_controller~"::KEY_UPLOAD_MODULE_DIR") %}
-
 {% if ajax_render == false %}
     {% set template= "base.html.twig" %}
 {% else %}
@@ -9,80 +6,6 @@
     {% extends template %}
 {% block body %}
 
-    <!-- ### $App Screen Content ### -->
-    <main class='main-content bgc-grey-100'>
-        <div id='mainContent'>
-            <div class="container-fluid">
-                {# Forms #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('upload.headers.uploadFiles') }}</h4>
-
-                            {% if isDemo() %}
-                                <p  class="text-center">
-                                    <i>
-                                        {{ translate('upload.demoText') | raw }}
-                                    </i>
-                                </p>
-                            {% endif %}
-
-                            <div class="col-md-6 file-upload-form justify-content-center align-self-center">
-                                {{ form_start(form, {'attr': {'class': 'flex-column', 'data-form-target':"Upload", "action" : path('upload_send') }}) }}
-
-                                {{ form_widget(form[KEY_UPLOAD_MODULE_DIR], {'attr': {'class': 'form-control upload-type listFilterer'}}) }}
-
-                                <section class="file-picker-and-folder-picker d-flex">
-                                    <section id="file-upload-file-select"
-                                             class=" btn btn-sm btn-primary d-flex"
-                                             style="width:50px; height:50px; padding: 0; "
-                                    >
-                                        {{ form_widget(form.file) }}
-
-                                    </section>
-                                    {{ form_widget(form.resetSelectedFiles) }}
-                                    {{ form_widget(form.subdirectory) }}
-                                </section>
-
-                                <section class="button-submit col-md-4">
-                                    {{ form_widget(form.submit) }}
-                                </section>
-
-                                {{ form_end(form) }}
-                                <small id="currentFileSizeWrapper" class="text-success">
-                                    {{ translate('upload.securityTexts.currentFileSize') }}
-                                    <span class="selected-files-size">0</span>
-                                    {{ translate('upload.mb') }}
-                                </small>
-                                <br/>
-                                <small id="maxUploadSizeWrapper" data-max-upload-size="{{ max_upload_size_mb }}">
-                                    {{ translate('upload.securityTexts.maxUploadSize') }}
-                                        {{ max_upload_size_mb }}
-                                    {{ translate('upload.mb') }}
-                                </small>
-                                <br/>
-                                <small id="currentUploadedFilesCount" class="text-success">
-                                    {{ translate('upload.securityTexts.currentUploadedFilesCount') }}
-                                    <span class="selected-files-count">0</span>
-                                </small>
-                                <br/>
-                                <small id="maxAllowedFilesUploadCount" data-max-allowed-files-count="{{ max_allowed_files_count }}">
-                                    {{ translate('upload.securityTexts.maxAllowedFilesUploadCount') }}
-                                    {{ max_allowed_files_count }}
-                                </small>
-                                <br/>
-                                <small>
-                                    <ul  id="selectedFilesList">
-
-                                    </ul>
-                                </small>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+   {% include 'core/upload/components/page-body.html.twig' %}
 
 {% endblock body %}

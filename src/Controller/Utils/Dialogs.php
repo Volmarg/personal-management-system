@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -23,6 +24,7 @@ class Dialogs extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS    = 'page-elements/components/dialogs/bodies/update-tags.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER     = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD         = 'page-elements/components/dialogs/bodies/new-folder.twig';
     const KEY_FILE_CURRENT_PATH                    = 'fileCurrentPath';
     const KEY_MODULE_NAME                          = 'moduleName';
 
@@ -41,10 +43,16 @@ class Dialogs extends AbstractController
      */
     private $directories_handler;
 
-    public function __construct(Application $app, FileTagger $file_tagger, DirectoriesHandler $directories_handler) {
+    /**
+     * @var FileUploadController $file_upload_controller
+     */
+    private $file_upload_controller;
+
+    public function __construct(Application $app, FileTagger $file_tagger, DirectoriesHandler $directories_handler, FileUploadController $file_upload_controller) {
         $this->app                      = $app;
         $this->file_tagger              = $file_tagger;
         $this->directories_handler      = $directories_handler;
+        $this->file_upload_controller   = $file_upload_controller;
     }
 
     /**
@@ -199,6 +207,20 @@ class Dialogs extends AbstractController
         ];
 
         return new JsonResponse($response_data);
+    }
+
+    /**
+     * @Route("/dialog/body/upload", name="dialog_body_upload", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function buildUploadDialogBody(Request $request) {
+        $template = 'page-elements/components/dialogs/bodies/upload.twig';
+
+        $rendered_template = $this->file_upload_controller->renderTemplate(false, $template);
+
+        return $rendered_template;
     }
 
 }

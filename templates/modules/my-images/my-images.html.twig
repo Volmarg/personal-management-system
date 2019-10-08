@@ -34,7 +34,7 @@
                     'widgetName': "upload-files-widget",
                     'settings':{
                         "type": 'template',
-                        "url": '/upload/',
+                        "url": path('dialog_body_upload'),
                         'callFunctions': '
                             ui.upload.init();
                             ui.forms.init();
@@ -43,7 +43,7 @@
                             let mainContentInModal   = document.querySelector(".bootbox-body main.main-content");
                             mainContentInModal.style = "min-height:auto; padding: 10px;";
                         ',
-                        'subtype':'form'
+                        'subtype':'quickFolderCreation'
                     }
                 } %}
 
