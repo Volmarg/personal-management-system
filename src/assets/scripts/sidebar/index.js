@@ -81,6 +81,24 @@ export default (function () {
           window.dispatchEvent(window.EVENT);
         }, 300);
       });
+    },
+    markCurrentMenuElementAsActive: function(){
+      // this is done directly by matching url in menu
+      //let currUrl       = unescape(window.location.pathname);
+      let currUrl       = window.location.pathname;
+      let currMenuLink  = $('[href="' + currUrl + '"');
+
+      let currActiveMenuLink = $('.sidebar-menu li.nav-item a.active');
+
+      if( 0 === currMenuLink.length ){
+        throw("Could not find menu link for currently visited page. (currUrl: " + currUrl + ")");
+      }
+
+      // first find curr active and deactivate it
+      $(currActiveMenuLink).removeClass('active');
+
+      // set current active
+      $(currMenuLink).addClass('active');
     }
   };
 

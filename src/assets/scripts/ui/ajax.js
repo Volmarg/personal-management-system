@@ -14,10 +14,6 @@ export default (function () {
         },
         init: function(){
             this.attachModuleContentLoadingViaAjaxOnMenuLinks();
-            /**
-             * TODO: keep in mind
-             *  keeping menu open is not working with ajax module load
-             */
         },
         singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
 
@@ -66,7 +62,7 @@ export default (function () {
                 if(returnNotification){
                     bootstrap_notifications.notify(message, notificationType)
                 }
-                
+
                 this.attachModuleContentLoadingViaAjaxOnMenuLinks();
             });
 
@@ -101,7 +97,6 @@ export default (function () {
 
                         event.preventDefault();
                         _this.loadModuleContentByUrl(href);
-
                     })
 
                 }
@@ -134,6 +129,7 @@ export default (function () {
                     initializer.reinitialize();
                     ui.widgets.loader.toggleLoader();
                     history.pushState({}, null, url);
+                    sidebar.links.markCurrentMenuElementAsActive();
                 });
 
             });
