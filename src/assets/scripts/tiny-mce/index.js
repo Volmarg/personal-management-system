@@ -43,6 +43,7 @@ export default (function () {
         },
         init: function () {
             let config = this.config;
+            tinymce.remove(tinymce.custom.classes["tiny-mce-selector"]);
             config.selector = tinymce.custom.classes["tiny-mce-selector"];
             tinymce.init(config);
 
