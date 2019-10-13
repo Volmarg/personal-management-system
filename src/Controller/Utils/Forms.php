@@ -13,6 +13,7 @@ use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
+use App\Form\Modules\Notes\MyNotesType;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -45,6 +46,10 @@ class Forms extends AbstractController {
 
     public function uploadCreateSubdirectory(array $params = []): FormInterface {
         return $this->createForm(UploadSubdirectoryCreateType::class, null, $params);
+    }
+
+    public function createNote(array $params = []): FormInterface {
+        return $this->createForm(MyNotesType::class, null, $params);
     }
 
 }

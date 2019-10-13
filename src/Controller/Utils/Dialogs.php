@@ -4,7 +4,11 @@ namespace App\Controller\Utils;
 
 use App\Controller\AppController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Messages\GeneralMessagesController;
+use App\Controller\Modules\Notes\MyNotesController;
+use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Services\DirectoriesHandler;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -221,6 +225,25 @@ class Dialogs extends AbstractController
         $rendered_template = $this->file_upload_controller->renderTemplate(false, $template);
 
         return $rendered_template;
+    }
+
+    /**
+     * @Route("/dialog/body/create-note/{category}/{category_id}", name="dialog_body_create_note", methods="POST")
+     * @param Request $request
+     * @param string $category
+     * @param string $category_id
+     * @return Response
+     */
+    public function buildCreateNoteDialogBody(Request $request, string $category, string $category_id) {
+        $template = 'page-elements/components/dialogs/bodies/create-note.twig';
+        $form_view = $this->app->forms->createNote()->createView();
+
+        $data = [
+            'form' => $form_view
+        ];
+
+        return $this->render($template, $data);
+
     }
 
 }

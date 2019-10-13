@@ -18,6 +18,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MyNotesController extends AbstractController {
 
+    const KEY_CATEGORY_ID   = 'category_id';
+    const KEY_CATEGORY_NAME = "category_name";
+
     /**
      * @var Application
      */

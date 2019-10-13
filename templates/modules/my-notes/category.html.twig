@@ -40,7 +40,7 @@
                     'widgetName': "add-note",
                     'settings':{
                         "type": 'template',
-                        "url": '/my-notes/create',
+                        "url": '/dialog/body/create-note/' ~ getAttrs.category ~ '/' ~ getAttrs.category_id,
                         'callFunctions': '
                             tinymce.remove(".tiny-mce");
                             tinymce.custom.init();
