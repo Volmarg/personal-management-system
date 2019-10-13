@@ -29,7 +29,7 @@
                 </select>
 
                 <button type="button" class="btn btn-warning edit-note">{{ translate('buttons.edit') }}</button>
-                <button type="button" class="btn btn-primary save-note" data-id="{{ note.id }}">{{ translate('buttons.saveChanges') }}</button>
+                <button type="button" class="btn btn-primary save-note modal-save-note" data-id="{{ note.id }}" onclick="ui.ajax.loadModuleContentByUrl(location.pathname)">{{ translate('buttons.saveChanges') }}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('buttons.close') }}</button>
                 <button type="button" class="btn btn-danger delete-note" data-id="{{ note.id }}">{{ translate('buttons.delete') }}</button>
             </div>

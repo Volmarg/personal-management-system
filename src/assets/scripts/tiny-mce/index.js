@@ -5,6 +5,7 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/preview';
 import 'tinymce/plugins/paste';
+import utils_custom from "../utils/utils_custom";
 
 var IconPicker = require('@furcan/iconpicker');
 
@@ -157,6 +158,8 @@ export default (function () {
                                 data: data,
                             }).done(() => {
                                 bootstrap_notifications.notify(tinymce.custom.messages["note-update-success"], 'success');
+                                ui.ajax.loadModuleContentByUrl(location.pathname);
+                                $('.modal-backdrop').remove();
                             }).fail(() => {
                                 bootstrap_notifications.notify(tinymce.custom.messages["note-update-fail"], 'danger');
                             });
@@ -179,6 +182,8 @@ export default (function () {
                             'id': noteId,
                         };
 
+                        ui.widgets.loader.showLoader();
+
                         $.ajax({
                             method: 'POST',
                             url: '/my-notes/delete-note/',
@@ -196,6 +201,8 @@ export default (function () {
 
                         }).fail(() => {
                             bootstrap_notifications.notify(tinymce.custom.messages["note-delete-fail"], 'danger');
+                        }).always( () => {
+                            ui.widgets.loader.hideLoader();
                         });
 
                     })
