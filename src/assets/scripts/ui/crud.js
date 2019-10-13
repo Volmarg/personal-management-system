@@ -195,11 +195,20 @@ export default (function () {
         },
         attachRecordAddViaAjaxOnSubmit: function (reloadPage = true) {
             let _this = this;
-            $('.add-record-form form').submit(function (event) {
+            let form  = $('.add-record-form form');
+
+            $(form).off("submit");
+            $(form).submit(function (event) {
                 let form                 = $(event.target);
-                let submitButton         = $(form).find('button');
+                let submitButton         = $(form).find('button[type="submit"]');
                 let callbackParamsJson   = $(submitButton).attr('data-params');
                 let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
+
+                // with this there is a possibility to load different template than the one from url used in ajax
+                // normally the same page should be reloaded but this is helpful for widgets when we want to call
+                // action from one page but load template of other
+                let dataTemplateUrl      = $(submitButton).attr('data-template-url');
+                let dataMethod           = $(submitButton).attr('data-template-method');
 
                 let method      = form.attr('method');
                 let entity_name = form.attr('data-entity');
@@ -212,7 +221,7 @@ export default (function () {
                     create_data     = _this.form_target_actions[formTarget].makeCreateData();
                 }
 
-                ui.widgets.loader.toggleLoader();
+                ui.widgets.loader.showLoader();
                 $.ajax({
                     url: create_data.url,
                     type: method,
@@ -221,25 +230,50 @@ export default (function () {
 
                     /**
                      * This reloadPage must stay like that,
-                     * Somewhere in code I call this function but i pass it as string so it's not getting dettected
+                     * Somewhere in code I call this function but i pass it as string so it's not getting detected
                      */
-                    bootstrap_notifications.notify(create_data.success_message, 'success');
 
                     if (create_data.callback_before) {
                         create_data.callback(dataCallbackParams);
                     }
 
                     if (!reloadPage) {
+                        bootstrap_notifications.notify(create_data.success_message, 'success');
                         return;
                     }
 
-                    $('.twig-body-section').html(template);
-                    initializer.reinitialize();
+                    if( "undefined" !== typeof dataTemplateUrl ){
+
+                        $.ajax({
+                            url: dataTemplateUrl,
+                            type: dataMethod,
+                        }).always(() => {
+                            ui.widgets.loader.hideLoader();
+                        }).fail((data) => {
+                            bootstrap_notifications.notify(data.responseText, 'danger');
+                        }).done((template) => {
+                            $('.twig-body-section').html(template);
+
+                            if(create_data.callback_for_data_template_url){
+                                create_data.callback(dataCallbackParams);
+                            }
+
+                            initializer.reinitialize();
+                        });
+
+                    }else {
+                        $('.twig-body-section').html(template);
+                        initializer.reinitialize();
+                    }
+                    bootstrap_notifications.notify(create_data.success_message, 'success');
 
                 }).fail((data) => {
                     bootstrap_notifications.notify(data.responseText, 'danger');
                 }).always(() => {
-                    ui.widgets.loader.toggleLoader();
+                    // hide loader only when there is no other ajax executed inside
+                    if( "undefined" === typeof dataTemplateUrl ){
+                        ui.widgets.loader.hideLoader();
+                    }
                 });
 
                 event.preventDefault();
@@ -1149,7 +1183,7 @@ export default (function () {
                         'callback': function () {
                             tinymce.remove(".tiny-mce"); //tinymce must be removed or won't be reinitialized.
                         },
-                        'callback_before': true,
+                        'callback_for_data_template_url': true,
                     };
                 },
                 entity_name: "My Notes",

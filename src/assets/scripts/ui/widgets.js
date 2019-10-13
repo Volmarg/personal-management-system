@@ -95,10 +95,10 @@ export default (function () {
                     message: () => {
                         if (settings.type !== undefined && settings.type !== null) {
 
-                            let data = '';
+                            let ajaxData = '';
 
                             if( "undefined" !== typeof settings.data ){
-                                data = settings.data;
+                                ajaxData = settings.data;
                             }
 
                             switch (settings.type) {
@@ -106,21 +106,36 @@ export default (function () {
                                     ui.widgets.loader.toggleLoader();
                                     $.ajax({
                                         method: 'POST',
-                                        data: data,
+                                        data: ajaxData,
                                         url: settings.url
-                                    }).done((data) => {
+                                    }).done((responseData) => {
 
-                                        if( undefined !== data['template'] ){
-                                            data = data['template'];
+                                        if( undefined !== responseData['template'] ){
+                                            responseData = responseData['template'];
                                         }
 
                                         let bootboxBody = $('.' + _this.elements.widgetModalClassName).find('.bootbox-body');
-                                        bootboxBody.html(data);
+                                        bootboxBody.html(responseData);
 
                                         if (settings.callFunctions !== undefined && settings.callFunctions !== null) {
                                             let func = new Function(settings.callFunctions);
                                             func();
                                         }
+
+                                        if( undefined !== settings.subtype ){
+
+                                            switch(settings.subtype){
+                                                case "add-note":
+                                                    let formSubmitButton = $('#my_notes_submit');
+                                                    formSubmitButton.attr('data-template-url', window.location.pathname);
+                                                    formSubmitButton.attr('data-template-method', 'GET');
+                                                    break;
+                                                default:
+                                                    throw "Unknow subtype was provided: " + settings.subtype;
+                                            }
+
+                                        }
+
                                     }).fail(() => {
                                         bootstrap_notifications.notify('There was an error while fetching data for bootbox modal', 'danger')
                                     }).always(() => {
