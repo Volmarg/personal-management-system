@@ -231,7 +231,8 @@ class FilesController extends AbstractController {
         $response = $this->directoriesHandler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
 
         $response_data = [
-            'message' => $response->getContent()
+            'message' => $response->getContent(),
+            'code'    => $response->getStatusCode()
         ];
 
         return new JsonResponse($response_data);

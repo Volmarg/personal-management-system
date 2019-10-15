@@ -227,18 +227,17 @@ export default (function () {
                     type: method,
                     data: form.serialize(),
                 }).done((template) => {
+                    //BUG: problem with using quick create folder
+                    if (create_data.callback_before) {
+                        create_data.callback(dataCallbackParams);
+                    }
 
                     /**
                      * This reloadPage must stay like that,
                      * Somewhere in code I call this function but i pass it as string so it's not getting detected
                      */
 
-                    if (create_data.callback_before) {
-                        create_data.callback(dataCallbackParams);
-                    }
-
                     if (!reloadPage) {
-                        bootstrap_notifications.notify(create_data.success_message, 'success');
                         return;
                     }
 
@@ -262,18 +261,42 @@ export default (function () {
                         });
 
                     }else {
+
+                        // do not attempt to reload template if this is not a template
+                        if( "undefined" !== typeof template['code'] ){
+                            return;
+                        }
+
                         $('.twig-body-section').html(template);
                         initializer.reinitialize();
                     }
-                    bootstrap_notifications.notify(create_data.success_message, 'success');
 
                 }).fail((data) => {
                     bootstrap_notifications.notify(data.responseText, 'danger');
-                }).always(() => {
+                }).always((data) => {
                     // hide loader only when there is no other ajax executed inside
                     if( "undefined" === typeof dataTemplateUrl ){
                         ui.widgets.loader.hideLoader();
                     }
+
+                    // if there is code there also must be message so i dont check it
+                    let code                = data['code'];
+                    let message             = data['message'];
+                    let notification_type   = '';
+
+                    if( undefined === code ){
+                        bootstrap_notifications.notify(create_data.success_message, 'success');
+                        return;
+                    }
+
+                    if( code === 200 ){
+                        notification_type = 'success';
+                    }else{
+                        notification_type = 'danger';
+                    }
+
+                    bootstrap_notifications.notify(message, notification_type);
+
                 });
 
                 event.preventDefault();
@@ -297,13 +320,27 @@ export default (function () {
                         initializer.reinitialize();
                     }
 
-                    if( undefined !== data['message'] ){
-                        bootstrap_notifications.notify(data['message'], 'success');
-                    }
-
                 }).fail((data) => {
                     bootstrap_notifications.notify(data.responseText, 'danger');
-                }).always(() => {
+                }).always((data) => {
+
+                    // if there is code there also must be message so i dont check it
+                    let code                = data['code'];
+                    let message             = data['message'];
+                    let notification_type   = '';
+
+                    if( undefined === code ){
+                        return;
+                    }
+
+                    if( code === 200 ){
+                        notification_type = 'success';
+                    }else{
+                        notification_type = 'danger';
+                    }
+
+                    bootstrap_notifications.notify(message, notification_type);
+
                     ui.widgets.loader.toggleLoader();
                 });
 

@@ -84,6 +84,7 @@ export default (function () {
 
             let _this = this;
 
+            callModalButton.off('click'); // prevent adding multiple click events
             callModalButton.click((event) => {
 
                 let clickedButton = $(event.target).closest('[data-widget="true"]');
@@ -130,8 +131,6 @@ export default (function () {
                                                     formSubmitButton.attr('data-template-url', window.location.pathname);
                                                     formSubmitButton.attr('data-template-method', 'GET');
                                                     break;
-                                                default:
-                                                    throw "Unknow subtype was provided: " + settings.subtype;
                                             }
 
                                         }

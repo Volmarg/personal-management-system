@@ -57,6 +57,7 @@ export default (function () {
         },
         appendTagsToFilter: function(tagsArray){
             let domTagsHolder = $(this.selectors.classes.tagsHolder);
+            domTagsHolder.html('');
 
             //append each tag as option
             $.each(tagsArray, (index, tag) => {
