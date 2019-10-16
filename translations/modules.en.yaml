@@ -136,6 +136,23 @@ payments:
     summary: 'Monthly payments summary:'
     table:
       type: Type
+  bills:
+    headers:
+      bills: Bills
+    forms:
+      bills: Add bill
+    table:
+      startDate: Start date
+      endDate: End date
+      name: Name
+      information: Information
+  bills_items:
+    forms:
+      bills_items: Add bill item
+    table:
+      amount: Amount
+      name: Name
+      bill: Bill
   settings:
     headers:
       changeAddSetting: Change/Add settings

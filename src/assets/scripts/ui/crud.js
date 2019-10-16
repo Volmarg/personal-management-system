@@ -193,6 +193,12 @@ export default (function () {
                 IconPicker.Run('.' + _this.classes["fontawesome-picker"] + index);
             })
         },
+        /**
+         * @info this function might require refactor as I'm passing "template" but sometimes there might be code/message
+         *  with this the backend should send data['template'] etc,
+         *      @see this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm()
+         * @param reloadPage
+         */
         attachRecordAddViaAjaxOnSubmit: function (reloadPage = true) {
             let _this = this;
             let form  = $('.add-record-form form');
@@ -227,7 +233,7 @@ export default (function () {
                     type: method,
                     data: form.serialize(),
                 }).done((template) => {
-                    //BUG: problem with using quick create folder
+
                     if (create_data.callback_before) {
                         create_data.callback(dataCallbackParams);
                     }

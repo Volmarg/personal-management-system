@@ -1,0 +1,92 @@
+<?php
+
+namespace App\Entity\Modules\Payments;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository")
+ */
+class MyPaymentsBillsItems
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $amount;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\MyPaymentsBills", inversedBy="item")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $bill;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $deleted = 0;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getAmount(): ?int
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(int $amount): self
+    {
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getBill(): ?MyPaymentsBills
+    {
+        return $this->bill;
+    }
+
+    public function setBill(?MyPaymentsBills $bill): self
+    {
+        $this->bill = $bill;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(bool $deleted): self
+    {
+        $this->deleted = $deleted;
+
+        return $this;
+    }
+}

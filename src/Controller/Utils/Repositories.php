@@ -9,9 +9,6 @@
 namespace App\Controller\Utils;
 
 
-use App\Entity\Modules\Job\MyJobHolidays;
-use App\Entity\Modules\Job\MyJobHolidaysPool;
-use App\Entity\Modules\Job\MyJobSettings;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
@@ -30,6 +27,8 @@ use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
+use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
+use App\Repository\Modules\Payments\MyPaymentsBillsRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
@@ -69,6 +68,8 @@ class Repositories extends AbstractController {
     const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME      = 'MyJobHolidaysPoolRepository';
     const MY_JOB_SETTINGS_REPOSITORY_NAME           = 'MyJobSettingsRepository';
     const MY_PAYMENTS_OWED_REPOSITORY_NAME          = 'MyPaymentsOwedRepository';
+    const MY_PAYMENTS_BILLS_REPOSITORY_NAME         = 'MyPaymentsBillsRepository';
+    const MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME   = 'MyPaymentsBillsItemsRepository';
     const FILE_TAGS_REPOSITORY                      = 'FilesTagsRepository';
 
     const PASSWORD_FIELD                            = 'password';
@@ -203,6 +204,16 @@ class Repositories extends AbstractController {
      */
     public $filesSearchRepository;
 
+    /**
+     * @var MyPaymentsBillsRepository $myPaymentsBillsRepository
+     */
+    public $myPaymentsBillsRepository;
+
+    /**
+     * @var MyPaymentsBillsItemsRepository $myPaymentsBillsItemsRepository
+     */
+    public $myPaymentsBillsItemsRepository;
+
     public function __construct(
         MyNotesRepository               $myNotesRepository,
         MyCarRepository                 $myCarRepository,
@@ -229,7 +240,9 @@ class Repositories extends AbstractController {
         MyPaymentsOwedRepository        $myPaymentsOwedRepository,
         FilesTagsRepository             $filesTagsRepository,
         FilesSearchRepository           $filesSearchRepository,
-        Translator                      $translator
+        Translator                      $translator,
+        MyPaymentsBillsRepository       $myPaymentsBillsRepository,
+        MyPaymentsBillsItemsRepository  $myPaymentsBillsItemsRepository
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -257,6 +270,8 @@ class Repositories extends AbstractController {
         $this->filesTagsRepository              = $filesTagsRepository;
         $this->filesSearchRepository            = $filesSearchRepository;
         $this->translator                       = $translator;
+        $this->myPaymentsBillsRepository        = $myPaymentsBillsRepository;
+        $this->myPaymentsBillsItemsRepository   = $myPaymentsBillsItemsRepository;
     }
 
     /**

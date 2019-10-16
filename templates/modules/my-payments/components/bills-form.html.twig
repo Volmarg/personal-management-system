@@ -1,0 +1,116 @@
+{% set my_payments_bills_items_class = 'App\\Form\\Modules\\Payments\\MyPaymentsBills::' %}
+{% set START_DATE       = constant(my_payments_bills_items_class ~ 'START_DATE' ) %}
+{% set END_DATE         = constant(my_payments_bills_items_class ~ 'END_DATE' ) %}
+{% set NAME             = constant(my_payments_bills_items_class ~ 'NAME' ) %}
+{% set INFORMATION      = constant(my_payments_bills_items_class ~ 'INFORMATION' ) %}
+{% set SUBMIT           = constant(my_payments_bills_items_class ~ 'SUBMIT' ) %}
+{% set PLANNED_AMOUNT   = constant(my_payments_bills_items_class ~ 'PLANNED_AMOUNT' ) %}
+
+{# creating subdirectory form #}
+<div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6 handle-single-form-via-ajax">
+    <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.bills.forms.bills') }}</h4>
+
+    {{ form_start(bills_form, {'attr':{'data-form-target': "MyPaymentsBillsItems"}}) }}
+
+    {# upload module dir #}
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_label(bills_form[START_DATE],
+                null,
+                {
+                    'label_attr':
+                    {
+                        'class': 'col-form-label col-sm-12 required'
+                    }
+                }
+            ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(bills_form[START_DATE]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_label(bills_form[END_DATE],
+                null,
+                {
+                    'label_attr':
+                    {
+                        'class': 'col-form-label col-sm-12 required'
+                    }
+                }
+            ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(bills_form[END_DATE]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_label(bills_form[NAME],
+                null,
+                {
+                    'label_attr':
+                    {
+                        'class': 'col-form-label col-sm-12 required'
+                    }
+                }
+            ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(bills_form[NAME]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_label(bills_form[INFORMATION],
+                null,
+                {
+                    'label_attr':
+                    {
+                        'class': 'col-form-label col-sm-12 required'
+                    }
+                }
+            ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(bills_form[INFORMATION]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <div class="row">
+        <div class="col-sm-6">
+            {{ form_label(bills_form[PLANNED_AMOUNT],
+                null,
+                {
+                    'label_attr':
+                    {
+                        'class': 'col-form-label col-sm-12 required'
+                    }
+                }
+            ) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(bills_form[PLANNED_AMOUNT]) }}
+        </div>
+    </div>
+
+    <br/>
+
+    <section class="d-flex justify-content-center flex-column align-items-center">
+        {{ form_widget(bills_form[SUBMIT]) }}
+    </section>
+
+    {{ form_end(bills_form) }}
+</div>

@@ -1,0 +1,75 @@
+{% set colors = ['deep-purple-text', 'pink-text', 'deep-orange-text','text-info','green-text','indigo-text'] %}
+{% set my_payments_bills_items_class = 'App\\Form\\Modules\\Payments\\MyPaymentsBillsItems::' %}
+{% set KEY_AMOUNT   = constant(my_payments_bills_items_class ~ 'KEY_AMOUNT' ) %}
+{% set KEY_NAME     = constant(my_payments_bills_items_class ~ 'KEY_NAME' ) %}
+{% set KEY_BILL     = constant(my_payments_bills_items_class ~ 'KEY_BILL' ) %}
+{% set KEY_SUBMIT   = constant(my_payments_bills_items_class ~ 'KEY_SUBMIT' ) %}
+
+{# Accordin inner div #}
+<div>
+
+    <table id="MyPaymentsBillsItems" class="table table-hover" cellspacing="0" width="100%" data-table="true">
+        <thead>
+        <tr>
+            <td class="d-none">{{ translate('datatables.table.id') }}</td>
+            <td>{{ translate('payments.bills_items.table.amount') }}</td>
+            <td>{{ translate('payments.bills_items.table.name') }}</td>
+            <td>{{ translate('datatables.table.actions') }}</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bill_item in bills_items %}
+
+            {% if bill.id == bill_item.bill.id %}
+
+                <tr class="trash-parent bill-item-single-data editable-parent save-parent" data-type="MyPaymentsBillsItems">
+
+                    <td class="d-none id">              {{ bill_item.id }}         </td>
+                    <td class="{{ KEY_AMOUNT }}">       {{ bill_item.amount }}     </td>
+                    <td class="{{ KEY_NAME }}">         {{ bill_item.name }}       </td>
+
+                    <td contenteditable="false">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        <i class="far fa-edit"></i>
+                        <i class="far fa-save d-none"></i>
+                    </td>
+                </tr>
+
+            {% endif %}
+
+        {% endfor %}
+        </tbody>
+    </table>
+{#
+    <section class="monthly-summary d-flex align-content-end justify-content-around"
+             style="font-size:17px;">
+        <div>
+            <ul class="d-flex flex-column" style="list-style-type: none;">
+
+                {% for payment_by_type_and_date in payments_by_type_and_date %}
+
+                    {% if date_group.date|date("Y-m") in payment_by_type_and_date.date %}
+                        <li class="align-self-end">
+                            <b>{{ payment_by_type_and_date.type | capitalize }}</b>:
+                            <span class="{{ colors[color_num] }}">{{ payment_by_type_and_date.money }}</span>
+                        </li>
+
+                        {% if color_num == (colors | length -1) %}
+                            {% set color_num = 0 %}
+                        {% else %}
+                            {% set color_num = color_num + 1 %}
+                        {% endif %}
+                    {% endif %}
+
+                {% endfor %}
+            </ul>
+            <hr style="border-color: lightgray;"/>
+            <b>
+                <span>{{ translate('payments.monthlyPayments.summary') }}</span>
+            </b>
+            <span class="text-primary amount">{{ summary_payment }}</span>
+        </div>
+    </section>
+#}
+
+</div>

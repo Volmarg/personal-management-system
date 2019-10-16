@@ -14,6 +14,8 @@ use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
 use App\Form\Modules\Notes\MyNotesType;
+use App\Form\Modules\Payments\MyPaymentsBills;
+use App\Form\Modules\Payments\MyPaymentsBillsItems;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -50,6 +52,14 @@ class Forms extends AbstractController {
 
     public function createNote(array $params = []): FormInterface {
         return $this->createForm(MyNotesType::class, null, $params);
+    }
+
+    public function paymentsBills(array $params = []): FormInterface {
+        return $this->createForm(MyPaymentsBills::class, null, $params);
+    }
+
+    public function paymentsBillsItems(array $params = []): FormInterface {
+        return $this->createForm(MyPaymentsBillsItems::class, null, $params);
     }
 
 }

@@ -1,0 +1,74 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+
+    {% set percentage_medium = 1.15 %}
+    {% set percentage_high   = 1.30 %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100' id="MyPaymentsBillsModuleBody">
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {# Bills #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.bills.headers.bills') }}</h4>
+
+                            <div id="accordion">
+                                {% for bill in bills %}
+                                    <div class="accordin-section">
+                                        <h3 class="
+                                           {% if bills_amounts_summaries[bill.id] is defined  %}
+                                                {% if bills_amounts_summaries[bill.id] <= bill.plannedAmount %}
+                                                    bg-success
+                                                {% elseif bills_amounts_summaries[bill.id] <= ( bill.plannedAmount * percentage_medium ) %}
+                                                    bg-warning
+                                                {% else %}
+                                                    bg-danger
+                                                 {% endif %}
+                                            {% endif %}
+                                        "
+                                        style="color:rgba(0,0,0,0.6);">
+                                            {{ bill.name }} -
+                                            <span class="bill-summary">
+                                                {% if bills_amounts_summaries[bill.id] is defined  %}
+                                                    {{ bills_amounts_summaries[bill.id] }}
+                                                {% endif %}
+                                                /
+                                                {{ bill.plannedAmount }}
+                                            </span>
+                                            ({{ bill.startDate|date("Y-m") }} - {{ bill.endDate|date("Y-m") }})
+                                        </h3>
+                                        {% include 'modules/my-payments/components/bills-table.html.twig' %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                {# Forms #}
+                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="row">
+                            {# bills form #}
+                            {% include 'modules/my-payments/components/bills-form.html.twig' %}
+
+                            {# bills items form #}
+                            {% include 'modules/my-payments/components/bills-items-form.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
