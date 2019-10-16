@@ -70,9 +70,10 @@ class MyPaymentsBillsController extends AbstractController
     }
 
     /**
+     * @Route("/my-payments-bills/add-bill", name="my-payments-bills-add")
      * @param Request $request
      */
-    protected function addBill(Request $request) {
+    public function addBill(Request $request) {
         $form = $this->app->forms->paymentsBills();
         $form->handleRequest($request);
 
@@ -85,9 +86,10 @@ class MyPaymentsBillsController extends AbstractController
     }
 
     /**
+     * @Route("/my-payments-bills/add-bill-item", name="my-payments-bills-items-add")
      * @param Request $request
      */
-    protected function addBillItem(Request $request) {
+    public function addBillItem(Request $request) {
         $form = $this->app->forms->paymentsBillsItems();
         $form->handleRequest($request);
 

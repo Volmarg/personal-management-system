@@ -7,10 +7,10 @@
 {% set PLANNED_AMOUNT   = constant(my_payments_bills_items_class ~ 'PLANNED_AMOUNT' ) %}
 
 {# creating subdirectory form #}
-<div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6 handle-single-form-via-ajax">
+<div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6 add-record-form">
     <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.bills.forms.bills') }}</h4>
 
-    {{ form_start(bills_form, {'attr':{'data-form-target': "MyPaymentsBillsItems"}}) }}
+    {{ form_start(bills_form, {'attr':{'data-form-target': "MyPaymentsBills"}}) }}
 
     {# upload module dir #}
     <div class="row">

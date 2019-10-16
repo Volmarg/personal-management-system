@@ -1881,6 +1881,34 @@ export default (function () {
                     };
                 },
                 form_target_action_name: "Create folder",
+            },
+            'MyPaymentsBills': {
+                makeCreateData: function () {
+                    let url                 = '/my-payments-bills';
+                    let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.form_target_action_name);
+                    let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.form_target_action_name);
+
+                    return {
+                        'url'               : url,
+                        'success_message'   : success_message,
+                        'fail_message'      : fail_message,
+                    };
+                },
+                form_target_action_name: "My Payments Bills",
+            },
+            'MyPaymentsBillsItems': {
+                makeCreateData: function () {
+                    let url                 = '/my-payments-bills';
+                    let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.form_target_action_name);
+                    let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.form_target_action_name);
+
+                    return {
+                        'url'               : url,
+                        'success_message'   : success_message,
+                        'fail_message'      : fail_message,
+                    };
+                },
+                form_target_action_name: "My Payments Bills Items",
             }
         }
     };

@@ -39,11 +39,13 @@
                                             <span class="bill-summary">
                                                 {% if bills_amounts_summaries[bill.id] is defined  %}
                                                     {{ bills_amounts_summaries[bill.id] }}
+                                                {% else %}
+                                                    0
                                                 {% endif %}
                                                 /
                                                 {{ bill.plannedAmount }}
                                             </span>
-                                            ({{ bill.startDate|date("Y-m") }} - {{ bill.endDate|date("Y-m") }})
+                                            ({{ bill.startDate|date("Y-m-d") }} - {{ bill.endDate|date("Y-m-d") }})
                                         </h3>
                                         {% include 'modules/my-payments/components/bills-table.html.twig' %}
                                     </div>
