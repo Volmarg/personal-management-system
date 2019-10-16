@@ -33,7 +33,11 @@ class ReportsRepository{
                     SUM(
                         mpm.money
                     ) +
-                    payment_bills.money,
+                CASE
+                  WHEN payment_bills.money IS NULL THEN 0
+                ELSE
+                  payment_bills.money
+                END,
                 2) AS money
             
             FROM my_payments_monthly mpm
