@@ -1845,6 +1845,54 @@ export default (function () {
                     };
                 },
                 entity_name: "My bill items"
+            },
+
+            "MyPaymentsBills": {
+                makeUpdateData: function (tr_parent_element) {
+                    let id              = $(tr_parent_element).find('.id').html();
+                    let name            = $(tr_parent_element).find('.name').html();
+                    let information     = $(tr_parent_element).find('.information').html();
+                    let startDate       = $(tr_parent_element).find('.startDate').val();
+                    let endDate         = $(tr_parent_element).find('.endDate').val();
+                    let plannedAmount   = $(tr_parent_element).find('.plannedAmount').html();
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = '/my-payments-bills/update-bill/';
+                    let ajax_data = {
+                        'id'            : id,
+                        'plannedAmount' : plannedAmount,
+                        'startDate'     : startDate,
+                        'endDate'       : endDate,
+                        'name'          : name,
+                        'information'   : information
+                    };
+
+                    return {
+                        'url': url,
+                        'data': ajax_data,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let id                  = $(parent_element).find('.id').html();
+                    let url                 = '/my-payments-bills/remove-bill/';
+                    let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                    let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                    return {
+                        'url'               : url,
+                        'data'              : {
+                            'id'            : id
+                        },
+                        'success_message'   : success_message,
+                        'fail_message'      : fail_message,
+                        'is_dataTable'      : false, //temporary
+                    };
+                },
+                entity_name: "My bill"
             }
         },
         form_target_actions: {

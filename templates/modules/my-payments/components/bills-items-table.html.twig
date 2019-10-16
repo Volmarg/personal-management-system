@@ -1,0 +1,56 @@
+{% set colors = ['deep-purple-text', 'pink-text', 'deep-orange-text','text-info','green-text','indigo-text'] %}
+{% set my_payments_bills_items_class = 'App\\Form\\Modules\\Payments\\MyPaymentsBillsItems::' %}
+{% set KEY_AMOUNT   = constant(my_payments_bills_items_class ~ 'KEY_AMOUNT' ) %}
+{% set KEY_NAME     = constant(my_payments_bills_items_class ~ 'KEY_NAME' ) %}
+{% set KEY_BILL     = constant(my_payments_bills_items_class ~ 'KEY_BILL' ) %}
+{% set KEY_SUBMIT   = constant(my_payments_bills_items_class ~ 'KEY_SUBMIT' ) %}
+{% set KEY_DATE     = constant(my_payments_bills_items_class ~ 'KEY_DATE' ) %}
+
+{# Accordin inner div #}
+<div>
+
+    <table id="MyPaymentsBillsItems" class="table table-hover" cellspacing="0" width="100%" data-table="true">
+        <thead>
+        <tr>
+            <td class="d-none">{{ translate('datatables.table.id') }}</td>
+            <td>{{ translate('payments.bills_items.table.amount') }}</td>
+            <td>{{ translate('payments.bills_items.table.name') }}</td>
+            <td>{{ translate('payments.bills_items.table.date') }}</td>
+            <td>{{ translate('datatables.table.actions') }}</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for bill_item in bills_items %}
+
+            {% if bill.id == bill_item.bill.id %}
+
+                {% set timestamp = date( bill_item.date | date('m/d/yyyy') ).timestamp %}
+
+                <tr class="trash-parent bill-item-single-data editable-parent save-parent" data-type="MyPaymentsBillsItems">
+
+                    <td class="d-none id">              {{ bill_item.id }}         </td>
+                    <td class="{{ KEY_AMOUNT }}">       {{ bill_item.amount }}     </td>
+                    <td class="{{ KEY_NAME }}">         {{ bill_item.name }}       </td>
+
+                    <td class="{{ KEY_DATE }}" data-order="{{ timestamp }}">
+                        <span class="{{ KEY_DATE }} ">
+                                {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                    "value"     : bill_item.date | date('Y-m-d'),
+                                    "disabled"  : true
+                                } %}
+                        </span>
+                    </td>
+
+                    <td contenteditable="false">
+                        <i class="fa fa-trash" aria-hidden="true"></i>
+                        <i class="far fa-edit"></i>
+                        <i class="far fa-save d-none"></i>
+                    </td>
+                </tr>
+
+            {% endif %}
+
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

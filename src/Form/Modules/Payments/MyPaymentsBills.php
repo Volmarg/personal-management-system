@@ -18,7 +18,7 @@ class MyPaymentsBills extends AbstractType {
     const NAME              = 'name';
     const INFORMATION       = 'information';
     const SUBMIT            = 'submit';
-    const PLANNED_AMOUNT    = 'planned_amount';
+    const PLANNED_AMOUNT    = 'plannedAmount';
 
     /**
      * @var Application

@@ -201,8 +201,4 @@ class MyPaymentsBillsController extends AbstractController
         return $summary;
     }
 
-    private function buildBillsSummariesForMonths(){
-
-    }
-
 }

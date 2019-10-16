@@ -68,8 +68,13 @@ class MyPaymentsBills
         return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $startDate): self
+    public function setStartDate($startDate): self
     {
+
+        if (is_string($startDate)) {
+            $startDate = new \DateTime($startDate);
+        }
+
         $this->startDate = $startDate;
 
         return $this;
@@ -80,8 +85,13 @@ class MyPaymentsBills
         return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $endDate): self
+    public function setEndDate($endDate): self
     {
+
+        if (is_string($endDate)) {
+            $endDate = new \DateTime($endDate);
+        }
+
         $this->endDate = $endDate;
 
         return $this;

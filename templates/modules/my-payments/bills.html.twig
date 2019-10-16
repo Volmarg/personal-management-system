@@ -14,11 +14,11 @@
     <main class='main-content bgc-grey-100' id="MyPaymentsBillsModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
-                {# Bills #}
+                {# Bills items #}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.bills.headers.bills') }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.bills.headers.billsSummaries') }}</h4>
 
                             <div id="accordion">
                                 {% for bill in bills %}
@@ -47,11 +47,21 @@
                                             </span>
                                             ({{ bill.startDate|date("Y-m-d") }} - {{ bill.endDate|date("Y-m-d") }})
                                         </h3>
-                                        {% include 'modules/my-payments/components/bills-table.html.twig' %}
+                                        {% include 'modules/my-payments/components/bills-items-table.html.twig' %}
                                     </div>
                                 {% endfor %}
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+
+                {# Bills #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.bills.headers.bills') }}</h4>
+                                {% include 'modules/my-payments/components/bills-table.html.twig' %}
                         </div>
                     </div>
                 </div>

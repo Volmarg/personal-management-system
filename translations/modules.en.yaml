@@ -138,6 +138,7 @@ payments:
       type: Type
   bills:
     headers:
+      billsSummaries: Bills summaries
       bills: Bills
     forms:
       bills: Add bill
@@ -146,6 +147,7 @@ payments:
       endDate: End date
       name: Name
       information: Information
+      plannedAmount: Planned amount
   bills_items:
     forms:
       bills_items: Add bill item
@@ -153,6 +155,7 @@ payments:
       amount: Amount
       name: Name
       bill: Bill
+      date: Date
   settings:
     headers:
       changeAddSetting: Change/Add settings
