@@ -1804,6 +1804,47 @@ export default (function () {
                     };
                 },
                 entity_name: "My files"
+            },
+            "MyPaymentsBillsItems": {
+                makeUpdateData: function (tr_parent_element) {
+                    let id      = $(tr_parent_element).find('.id').html();
+                    let amount  = $(tr_parent_element).find('.amount').html();
+                    let name    = $(tr_parent_element).find('.name').html();
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = '/my-payments-bills/update-bill-item/';
+                    let ajax_data = {
+                        'id'    : id,
+                        'amount': amount,
+                        'name'  : name
+                    };
+
+                    return {
+                        'url': url,
+                        'data': ajax_data,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let id                  = $(parent_element).find('.id').html();
+                    let url                 = '/my-payments-bills/remove-bill-item/';
+                    let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                    let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                    return {
+                        'url'               : url,
+                        'data'              : {
+                            'id'            : id
+                        },
+                        'success_message'   : success_message,
+                        'fail_message'      : fail_message,
+                        'is_dataTable'      : false, //temporary
+                    };
+                },
+                entity_name: "My bill items"
             }
         },
         form_target_actions: {

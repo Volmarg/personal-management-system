@@ -141,7 +141,7 @@ class MyPaymentsBillsController extends AbstractController
     }
 
     /**
-     * @Route("my-payments-bills/update-bill/" ,name="my-payments-bills-update-bill")
+     * @Route("/my-payments-bills/update-bill/" ,name="my-payments-bills-update-bill")
      * @param Request $request
      * @return JsonResponse
      */
@@ -154,7 +154,7 @@ class MyPaymentsBillsController extends AbstractController
     }
 
     /**
-     * @Route("my-payments-bills/update-bill-item/" ,name="my-payments-bills-update-bill-item")
+     * @Route("/my-payments-bills/update-bill-item/" ,name="my-payments-bills-update-bill-item")
      * @param Request $request
      * @return JsonResponse
      */
