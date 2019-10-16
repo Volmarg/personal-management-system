@@ -4,6 +4,7 @@
 {% set KEY_NAME     = constant(my_payments_bills_items_class ~ 'KEY_NAME' ) %}
 {% set KEY_BILL     = constant(my_payments_bills_items_class ~ 'KEY_BILL' ) %}
 {% set KEY_SUBMIT   = constant(my_payments_bills_items_class ~ 'KEY_SUBMIT' ) %}
+{% set KEY_DATE     = constant(my_payments_bills_items_class ~ 'KEY_DATE' ) %}
 
 {# Accordin inner div #}
 <div>
@@ -22,11 +23,22 @@
 
             {% if bill.id == bill_item.bill.id %}
 
+                {% set timestamp = date( bill_item.date | date('m/d/yyyy') ).timestamp %}
+
                 <tr class="trash-parent bill-item-single-data editable-parent save-parent" data-type="MyPaymentsBillsItems">
 
                     <td class="d-none id">              {{ bill_item.id }}         </td>
                     <td class="{{ KEY_AMOUNT }}">       {{ bill_item.amount }}     </td>
                     <td class="{{ KEY_NAME }}">         {{ bill_item.name }}       </td>
+
+                    <td class="{{ KEY_DATE }}" data-order="{{ timestamp }}">
+                        <span class="{{ KEY_DATE }} ">
+                                {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                    "value"     : bill_item.date | date('Y-m-d'),
+                                    "disabled"  : true
+                                } %}
+                        </span>
+                    </td>
 
                     <td contenteditable="false">
                         <i class="fa fa-trash" aria-hidden="true"></i>

@@ -34,22 +34,24 @@ class AppController extends Controller
     const MENU_NODE_MODULE_NAME_MY_SHOPPING   = ModulesController::MODULE_NAME_SHOPPING;
     const MENU_NODE_MODULE_NAME_MY_TRAVELS    = ModulesController::MODULE_NAME_TRAVELS;
     const MENU_NODE_MODULE_NAME_NOTES         = ModulesController::MODULE_NAME_NOTES;
+    const MENU_NODE_MODULE_NAME_REPORTS       = ModulesController::MENU_NODE_MODULE_NAME_REPORTS;
 
     /**
      * For loading twig templates
      */
-    const MENU_NODE_NAME_ACHIEVEMENTS  = 'achievements';
-    const MENU_NODE_NAME_GOALS         = 'goals';
-    const MENU_NODE_NAME_MY_CAR        = 'my-car';
-    const MENU_NODE_NAME_MY_CONTACTS   = 'my-contacts';
-    const MENU_NODE_NAME_MY_FILES      = 'my-files';
-    const MENU_NODE_NAME_MY_IMAGES     = 'my-images';
-    const MENU_NODE_NAME_MY_JOB        = 'my-job';
-    const MENU_NODE_NAME_MY_PASSWORDS  = 'my-passwords';
-    const MENU_NODE_NAME_MY_PAYMENTS   = 'my-payments';
-    const MENU_NODE_NAME_MY_SHOPPING   = 'my-shopping';
-    const MENU_NODE_NAME_MY_TRAVELS    = 'my-travels';
-    const MENU_NODE_NAME_NOTES         = 'notes';
+    const MENU_NODE_NAME_ACHIEVEMENTS       = 'achievements';
+    const MENU_NODE_NAME_GOALS              = 'goals';
+    const MENU_NODE_NAME_MY_CAR             = 'my-car';
+    const MENU_NODE_NAME_MY_CONTACTS        = 'my-contacts';
+    const MENU_NODE_NAME_MY_FILES           = 'my-files';
+    const MENU_NODE_NAME_MY_IMAGES          = 'my-images';
+    const MENU_NODE_NAME_MY_JOB             = 'my-job';
+    const MENU_NODE_NAME_MY_PASSWORDS       = 'my-passwords';
+    const MENU_NODE_NAME_MY_PAYMENTS        = 'my-payments';
+    const MENU_NODE_NAME_MY_SHOPPING        = 'my-shopping';
+    const MENU_NODE_NAME_MY_TRAVELS         = 'my-travels';
+    const MENU_NODE_NAME_NOTES              = 'notes';
+    const MENU_NODE_NAME_REPORTS            = 'my-reports';
 
     const MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES = [
         self::MENU_NODE_MODULE_NAME_ACHIEVEMENTS  => 'MENU_NODE_MODULE_NAME_ACHIEVEMENTS',
@@ -64,6 +66,7 @@ class AppController extends Controller
         self::MENU_NODE_MODULE_NAME_MY_SHOPPING   => 'MENU_NODE_MODULE_NAME_MY_SHOPPING',
         self::MENU_NODE_MODULE_NAME_MY_TRAVELS    => 'MENU_NODE_MODULE_NAME_MY_TRAVELS',
         self::MENU_NODE_MODULE_NAME_NOTES         => 'MENU_NODE_MODULE_NAME_NOTES',
+        self::MENU_NODE_MODULE_NAME_REPORTS       => 'MENU_NODE_MODULE_NAME_REPORTS',
     ];
 
     const MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP = [
@@ -79,6 +82,7 @@ class AppController extends Controller
         self::MENU_NODE_MODULE_NAME_MY_SHOPPING   => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_SHOPPING  . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_MY_TRAVELS    => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_TRAVELS   . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_NOTES         => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_NOTES        . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_REPORTS       => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_REPORTS      . self::TWIG_EXT,
     ];
 
     /**

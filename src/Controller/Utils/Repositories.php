@@ -33,6 +33,7 @@ use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
+use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\UserRepository;
@@ -71,6 +72,7 @@ class Repositories extends AbstractController {
     const MY_PAYMENTS_BILLS_REPOSITORY_NAME         = 'MyPaymentsBillsRepository';
     const MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME   = 'MyPaymentsBillsItemsRepository';
     const FILE_TAGS_REPOSITORY                      = 'FilesTagsRepository';
+    const REPORTS_REPOSITORY                        = 'ReportsRepository';
 
     const PASSWORD_FIELD                            = 'password';
 
@@ -214,6 +216,11 @@ class Repositories extends AbstractController {
      */
     public $myPaymentsBillsItemsRepository;
 
+    /**
+     * @var ReportsRepository $reportsRepository
+     */
+    public $reportsRepository;
+
     public function __construct(
         MyNotesRepository               $myNotesRepository,
         MyCarRepository                 $myCarRepository,
@@ -242,7 +249,8 @@ class Repositories extends AbstractController {
         FilesSearchRepository           $filesSearchRepository,
         Translator                      $translator,
         MyPaymentsBillsRepository       $myPaymentsBillsRepository,
-        MyPaymentsBillsItemsRepository  $myPaymentsBillsItemsRepository
+        MyPaymentsBillsItemsRepository  $myPaymentsBillsItemsRepository,
+        ReportsRepository               $reportsRepository
     ) {
         $this->myNotesRepository                = $myNotesRepository;
         $this->myCarRepository                  = $myCarRepository;
@@ -272,6 +280,7 @@ class Repositories extends AbstractController {
         $this->translator                       = $translator;
         $this->myPaymentsBillsRepository        = $myPaymentsBillsRepository;
         $this->myPaymentsBillsItemsRepository   = $myPaymentsBillsItemsRepository;
+        $this->reportsRepository                = $reportsRepository;
     }
 
     /**

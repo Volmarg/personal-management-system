@@ -23,6 +23,7 @@ class MyPaymentsBillsItems extends AbstractType {
     const KEY_NAME      = 'name';
     const KEY_BILL      = 'bill';
     const KEY_SUBMIT    = 'submit';
+    const KEY_DATE      = 'date';
 
     /**
      * @var Application
@@ -44,6 +45,17 @@ class MyPaymentsBillsItems extends AbstractType {
             ->add(static::KEY_NAME, null, [
 
                 'label' => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.name')
+            ])
+            ->add(static::KEY_DATE, DateType::class, [
+                'attr' => [
+                    'data-provide'              => "datepicker",
+                    'data-date-format'          => "yyyy-mm-dd",
+                    'data-date-today-highlight' => true,
+                    'autocomplete'              => 'off'
+                ],
+                'widget'    => 'single_text',
+                'format'    => 'y-M-d',
+                'label'     => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.date')
             ])
             ->add(static::KEY_BILL, EntityType::class, [
                 'class'         => MyPaymentsBillsEntity::class,

@@ -20,19 +20,4 @@ class MyPaymentsBillsRepository extends ServiceEntityRepository
         parent::__construct($registry, MyPaymentsBills::class);
     }
 
-    /**
-     * @throws DBALException
-     */
-    public function buildBillsSummariesForMonths(){
-        $connection = $this->_em->getConnection();
-
-        $sql = "
-        
-        ";
-
-        $stmt       = $connection->prepare($sql);
-        $results    = $stmt->execute();
-
-        return $results;
-    }
 }

@@ -162,6 +162,14 @@ payments:
       table:
         name: Name
 
+reports:
+  monthlyPaymentsSummaries:
+    information: >
+      <i>This report contains summary of payments from "<b>Monthly Payments</b>" and "<b>Bills</b>" for each month.</i>
+    table:
+      monthAndYear: Month and year
+      money: Money
+
 datatables:
   table:
     idHash: '#'

@@ -191,6 +191,7 @@ forms:
       amount: Amount
       name: Name
       bill: Bill
+      date: Date
   #files/images/dialogs
   general:
     submit: Submit

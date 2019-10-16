@@ -57,7 +57,9 @@ sidebar:
       label: Upload
       add: Add
       manage: Manage
-
+    reports:
+      label: Reports
+      monthlyPaymentsSummaries: Monthly payments summaries
 topbar:
   search:
     placeholder: Search for files by tags...
