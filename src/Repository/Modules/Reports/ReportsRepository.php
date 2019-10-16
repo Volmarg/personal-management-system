@@ -33,11 +33,15 @@ class ReportsRepository{
                     SUM(
                         mpm.money
                     ) +
-                CASE
-                  WHEN payment_bills.money IS NULL THEN 0
-                ELSE
-                  payment_bills.money
-                END,
+                IF(
+                    DATE_FORMAT(mpm.date,'%Y-%m') = yearAndMonth,
+                    CASE
+                        WHEN payment_bills.money IS NULL THEN 0
+                    ELSE
+                        payment_bills.money
+                    END,
+                    0
+                ),
                 2) AS money
             
             FROM my_payments_monthly mpm
