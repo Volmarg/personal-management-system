@@ -172,6 +172,8 @@ reports:
     table:
       monthAndYear: Month and year
       money: Money
+  headers:
+    monthlyPaymentsSummaries: Monthly payments summaries
 
 datatables:
   table:
