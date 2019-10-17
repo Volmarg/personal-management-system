@@ -41,12 +41,12 @@
         <li><b>🌴 Travels</b> - <span align="justify"> <i>Having some ideas of places to visit but without any specific plans to it? Add it to this Module with google map link and some image so you can come back to it at any moment. May the image remind you why you were interested in this particular place.</i></span></li><br/>
         <li><b>💸 Payments</b> - <span align="justify"> <i> Don't know how much money You spend on food, travels, domestic shopping? Simply from now on  add every shopping details to the list and let it do all the calculations, alongside with summary for given month. </i></span>
         <p align="justify"><i>On the other hand if you would like to keep an eye of prices for particular products you can add information about them in Products Prices submodule (which I'm personally using while being in other country - on the moment when I'm writing this).</i></p>
-	<p align="justify"><i>Here You can also keep track of who owes You some money or who You owe something to by using <b>owed money</b> submodule.</i></p>	
-	</li><br/>
-        <li><b>🛒 Shopping</b> - <span align="justify"><i>You got plans to buy something in future? Add it to the list, and then just check it out,  maybe You will be able to buy this particular thing just now.</i></span></li><br/>
+	<p align="justify"><i>Here You can also keep track of who owes You some money or who You owe something to by using <b>owed money</b> submodule.</i></p>	<p align="justify"><i><b>Bills</b> submodule allows saving information about money spent on certain things (separately from monthly payments for things like money spent on holiday etc.)</i></p></li><br/>
+	<li><b>🛒 Shopping</b> - <span align="justify"><i>You got plans to buy something in future? Add it to the list, and then just check it out,  maybe You will be able to buy this particular thing just now.</i></span></li><br/>
     <li><b>💻 Job</b> - <span align="justify"><i>The Afterhours submodule is a nice way to keep an eye of all the afterhours you've made in work. With this you can also separate specified minutes/hours for certain goal. For example you need 24h for trip and 4h to do something. Just add some time to pre existing goal, create new one or leave it blank (will go to general purpose pool). Holidays submodule is a simple way to track down how many days did You used from yearly holidays pool.</i></span> </li><br/>
     <li><b>📷 Images</b> - <span align="justify"><i>This module allows You to organize Your photos/scans/downloaded pics in form of masonry galleries. Clicking on image miniature will call lightbox gallery with possibility to rename, remove or download image. You can create as many galleries (folders) as You want.</i></span> </li><br/>	
     <li><b>📁 Files</b> - <span align="justify"><i>Files uploaded for this module are visible in form of DataTable where You can see simple information about the file - that is: extension, filetype icon (if there is one defined for given type), file size. Files can be renamed, downloaded and removed from the gui.</i></span> </li><br/>		
+    <li><b>📑 Reports</b> - <span align="justify"><i>contains readonly reports created from already existing data in database</i></span> </li><br/>		
 </ol>
 
 <h2>Preview</h2>
@@ -75,11 +75,6 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 <h3>Modules/Extensions</h3>
 
 <ul>
-<li><b>💸 Bills</b>  (<i>Temporary name</i>) - extension for <b>Payments</b>
-	<ul>
-	<li>For saving information about money spent on certain things (<i>I want to separate monthly payments from things like money spent on holiday etc.</i>)</li>
-    </ul>
-</li>	
 <li><b>📁 Files module</b> - improvements
 	<ul>
     	<li>Bugfixes</li>
