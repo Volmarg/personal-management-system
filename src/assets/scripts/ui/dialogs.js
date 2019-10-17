@@ -209,14 +209,22 @@ export default (function () {
                     let form             = $(modalMainWrapper).find('form');
                     let formSubmitButton = $(form).find("[type^='submit']");
 
-                    _this.attachTagsUpdateOnFormSubmit(formSubmitButton, callback);
+                    _this.attachTagsUpdateOnFormSubmit(formSubmitButton, form, callback);
                     ui.widgets.selectize.applyTagsSelectize();
                     ui.forms.init();
                 });
             },
-            attachTagsUpdateOnFormSubmit: function(button, callback = null){
+            attachTagsUpdateOnFormSubmit: function(button, form, callback = null){
                 let _this = this;
                 $(button).on('click', (event) => {
+
+                    let formValidity = $(form)[0].checkValidity();
+
+                    if( !formValidity ){
+                        $(form)[0].reportValidity();
+                        return;
+                    }
+
                     event.preventDefault();
                     _this.makeAjaxCallForTagsUpdate(callback);
                 });

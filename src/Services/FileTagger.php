@@ -119,7 +119,19 @@ class FileTagger {
             }
 
             # tags exist but we just removed them all
-            if( !empty($file_with_tags) && empty($this->tags) ){
+            if(
+                    // either there are not tags at all
+                (
+                        !empty($file_with_tags)
+                    &&   empty($this->tags)
+                )
+                ||  // or there is just one tag but it's empty
+                (
+                        count($this->tags) === 1
+                    &&  array_key_exists(0, $this->tags)
+                    &&  empty( reset($this->tags) )
+                )
+                ){
                 $this->app->em->remove($file_with_tags);
                 $this->app->em->flush();
 
