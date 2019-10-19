@@ -12,6 +12,7 @@
 {% set KEY_SUBDIRECTORY_NAME                                 = constant(file_upload_controller~"::KEY_SUBDIRECTORY_NAME") %}
 
 {% set FIELD_REMOVE_CURRENT_FOLDER      = constant("App\\Form\\Files\\UploadSubdirectoryCopyDataType::FIELD_REMOVE_CURRENT_FOLDER") %}
+{% set KEY_MOVE_FOLDER                  = constant("App\\Form\\Files\\UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER") %}
 
 {% if ajax_render == false %}
     {% set template= "base.html.twig" %}

@@ -16,6 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class UploadSubdirectoryCopyDataType extends AbstractType
 {
     const FIELD_REMOVE_CURRENT_FOLDER = 'remove_current_folder';
+    const KEY_MOVE_FOLDER             = 'move_folder';
 
     /**
      * @var Application
@@ -55,6 +56,10 @@ class UploadSubdirectoryCopyDataType extends AbstractType
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
                 'required'  => true,
                 'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.targetSubdirectoryInModuleUploadDir')
+            ])
+            ->add(static::KEY_MOVE_FOLDER, CheckboxType::class, [
+                'required'  => false,
+                'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.moveInsteadOfCopying')
             ])
             ->add('submit', SubmitType::class, [
 

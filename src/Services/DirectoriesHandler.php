@@ -2,11 +2,15 @@
 
 namespace App\Services;
 
+use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
+use App\Controller\Utils\Env;
 use App\Controller\Utils\Utils;
 use DirectoryIterator;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -35,10 +39,22 @@ class DirectoriesHandler {
      */
     private $file_tagger;
 
-    public function __construct(Application $application, LoggerInterface $logger,  FileTagger $file_tagger) {
-        $this->application = $application;
-        $this->logger      = $logger;
-        $this->file_tagger = $file_tagger;
+    /**
+     * @var Finder $finder
+     */
+    private $finder;
+
+    /**
+     * @var FilesTagsController $files_tags_controller
+     */
+    private $files_tags_controller;
+
+    public function __construct(Application $application, LoggerInterface $logger,  FileTagger $file_tagger, FilesTagsController $files_tags_controller) {
+        $this->application           = $application;
+        $this->logger                = $logger;
+        $this->finder                = new Finder();
+        $this->file_tagger           = $file_tagger;
+        $this->files_tags_controller = $files_tags_controller;
     }
 
     /**
@@ -341,6 +357,67 @@ class DirectoriesHandler {
         }
 
         return $directories_trees;
+    }
+
+    /**
+     * @param string $current_folder_path
+     * @param string $parent_folder_path
+     * @return Response
+     * @throws Exceptions\ExceptionDuplicatedTranslationKey
+     * @throws \Exception
+     */
+    public function moveDirectory(string $current_folder_path, string $parent_folder_path): Response{
+
+        $current_folder_name = basename($current_folder_path);
+        $new_folder_path     = $parent_folder_path . DIRECTORY_SEPARATOR . $current_folder_name;
+        $main_upload_dirs    = Env::getUploadDirs();
+
+        if( in_array($current_folder_path, $main_upload_dirs) ){
+            $message = $this->application->translator->translate('responses.directories.cannotMoveModuleMainUploadDir');
+            return new Response($message, 500);
+        }
+
+        if( file_exists($new_folder_path) ){
+            $message = $this->application->translator->translate('responses.directories.directoryWithThisNameAlreadyExistInTargetFolder');
+            return new Response($message, 500);
+        }
+
+        if( !file_exists($current_folder_path) ){
+            $message = $this->application->translator->translate('responses.directories.theDirectoryYouTryToMoveDoesNotExist');
+            return new Response($message, 500);
+        }
+
+        if( $current_folder_path === $parent_folder_path ){
+            $message = $this->application->translator->translate('responses.directories.currentDirectoryPathIsTheSameAsNewPath');
+            return new Response($message, 500);
+        }
+
+        $this->finder->files()->in($current_folder_path);
+
+        try{
+
+             /**
+             * Update tagger path for each file that has tags
+             * @var File $file
+             */
+            foreach( $this->finder as $file ){
+                $current_file_path  = $file->getPathname();
+                $current_file_name  = $file->getFilename();
+
+                $new_file_path = $new_folder_path . DIRECTORY_SEPARATOR . $current_file_name;
+
+                $this->file_tagger->updateFilePath($current_file_path, $new_file_path);
+            }
+
+            # Info: rename is using for handling file moving
+            rename($current_folder_path, $new_folder_path);
+
+        }catch(\Exception $e){
+            return new Response($e->getMessage(), $e->getCode());
+        }
+
+        $message = $this->application->translator->translate('responses.directories.directoryHasBeenSuccessfullyMoved');
+        return new Response($message, 200);
     }
 
 }

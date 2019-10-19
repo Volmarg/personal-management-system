@@ -160,6 +160,7 @@ forms:
       currentSubdirectoryInModuleUploadDir: Target folder
       targetUploadModuleDir: Upload module
       targetSubdirectoryInModuleUploadDir: Target folder
+      moveInsteadOfCopying: Move instead of copying
   UploadSubdirectoryCreateType:
     labels:
       uploadModuleDir: Upload module

@@ -8,6 +8,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class Env extends AbstractController {
 
 
+    public static function getUploadDirs() {
+        $dirs = [
+          self::getImagesUploadDir(),
+          self::getFilesUploadDir(),
+        ];
+
+        return $dirs;
+    }
+
     public static function getUploadDir() {
         return $_ENV['UPLOAD_DIR'];
     }

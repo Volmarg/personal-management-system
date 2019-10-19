@@ -3,6 +3,7 @@
 
 namespace App\Controller\Files;
 
+use App\Controller\Utils\Env;
 use App\Controller\Utils\Utils;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
@@ -154,9 +155,29 @@ class FilesUploadSettingsController extends AbstractController {
             $current_directory_path_in_module_upload_dir  = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR];
             $target_directory_path_in_module_upload_dir   = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
 
-            $response = $this->files_handler->copyData(
-                $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
-            );
+            if( $form_data[UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER] ){
+
+                $upload_dirs         = Env::getUploadDirs();
+                $current_folder_path = $current_directory_path_in_module_upload_dir;
+                $target_folder_path  = $target_directory_path_in_module_upload_dir;
+
+                //if not main folder then add upload dir
+                if( !in_array($current_directory_path_in_module_upload_dir, $upload_dirs) ){
+                    $current_folder_path =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $current_upload_module_dir . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
+                }
+
+                //if not main folder then add upload dir
+                if( !in_array($current_directory_path_in_module_upload_dir, $upload_dirs) ){
+                    $target_folder_path  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $target_upload_module_dir . DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
+                }
+
+                $response = $this->directories_handler->moveDirectory($current_folder_path, $target_folder_path);
+            }else{
+                $response = $this->files_handler->copyData(
+                    $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
+                );
+            }
+
         }
 
         if( isset($response) ){

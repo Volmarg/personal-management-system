@@ -46,6 +46,11 @@ responses:
     thereWasAnErrorWhileCreatingFolder: 'There was an error while trying to create new folder for given module'
     createFoldedThisNameAlreadyExist: 'Subdirectory with this name for selected upload typ already exists.'
     subdirectoryForModuleSuccessfullyCreated: 'Subdirectory for selected module has been successfully created'
+    directoryWithThisNameAlreadyExistInTargetFolder: 'Directory with this name already exist in target folder'
+    theDirectoryYouTryToMoveDoesNotExist: "The directory that You try to move does not exist"
+    directoryHasBeenSuccessfullyMoved: "Directory has been successfully moved"
+    cannotMoveModuleMainUploadDir: "Cannot move module main upload dir"
+    currentDirectoryPathIsTheSameAsNewPath: "Current directory path is the same as new path"
     #
   tags:
     errorWhileTryingToUpdateTagsViaApi: "There was an error while trying to update tags via api call"
