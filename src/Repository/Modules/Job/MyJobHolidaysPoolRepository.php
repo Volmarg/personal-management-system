@@ -87,7 +87,7 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
 
         $sql = "
             SELECT DISTINCT year
-            FROM my_job_holidays
+            FROM my_job_holidays_pool
             WHERE deleted = 0 ;
         ";
 

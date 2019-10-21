@@ -167,7 +167,7 @@ class FilesUploadSettingsController extends AbstractController {
                 }
 
                 //if not main folder then add upload dir
-                if( !in_array($current_directory_path_in_module_upload_dir, $upload_dirs) ){
+                if( !in_array($target_directory_path_in_module_upload_dir, $upload_dirs) ){
                     $target_folder_path  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $target_upload_module_dir . DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
                 }
 

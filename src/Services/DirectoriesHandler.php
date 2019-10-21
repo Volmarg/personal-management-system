@@ -368,6 +368,7 @@ class DirectoriesHandler {
      */
     public function moveDirectory(string $current_folder_path, string $parent_folder_path): Response{
 
+        # this vars are used to move the folder
         $current_folder_name = basename($current_folder_path);
         $new_folder_path     = $parent_folder_path . DIRECTORY_SEPARATOR . $current_folder_name;
         $main_upload_dirs    = Env::getUploadDirs();
@@ -401,10 +402,15 @@ class DirectoriesHandler {
              * @var File $file
              */
             foreach( $this->finder as $file ){
-                $current_file_path  = $file->getPathname();
-                $current_file_name  = $file->getFilename();
 
-                $new_file_path = $new_folder_path . DIRECTORY_SEPARATOR . $current_file_name;
+                # this vars are only used to update tags
+                $current_file_path = $file->getPathname();
+                $current_file_name = $file->getFilename();
+
+                $file_new_dir_path  = self::getFolderPathWithoutUploadDirForFolderPath($new_folder_path);
+                $module_upload_dir  = self::getUploadDirForFilePath($parent_folder_path);
+
+                $new_file_path = $module_upload_dir . DIRECTORY_SEPARATOR . $file_new_dir_path . DIRECTORY_SEPARATOR . $current_file_name;
 
                 $this->file_tagger->updateFilePath($current_file_path, $new_file_path);
             }
@@ -419,5 +425,48 @@ class DirectoriesHandler {
         $message = $this->application->translator->translate('responses.directories.directoryHasBeenSuccessfullyMoved');
         return new Response($message, 200);
     }
+
+    /**
+     * This function will strip upload dir for module from folder path if folder contains the upload dir
+     * it will not check if the upload dir is on the beginning so passing the absolute path will fail
+     * @param string $folder_path (relative)
+     * @return string
+     */
+    public static function getFolderPathWithoutUploadDirForFolderPath(string $folder_path): string{
+        $upload_dirs    = Env::getUploadDirs();
+        $modified_path  = $folder_path;
+
+        foreach($upload_dirs as $upload_dir){
+
+            if( strstr($folder_path, $upload_dir) ){
+                $modified_path = str_replace($upload_dir, "", $folder_path);
+            }
+
+        }
+
+        $stripped_path = $modified_path;
+        return FilesHandler::trimFirstAndLastSlash($stripped_path);
+    }
+
+    /**
+     * This function will return null or string if the upload dir is found in the file_path
+     * it will not check if the upload dir is on the beginning so passing the absolute path will fail
+     * @param string $file_path
+     * @return string | null
+     */
+    public static function getUploadDirForFilePath(string $file_path): ?string{
+        $upload_dirs = Env::getUploadDirs();
+
+        foreach($upload_dirs as $upload_dir){
+
+            if( strstr($file_path, $upload_dir) ){
+                return $upload_dir;
+            }
+
+        }
+
+        return null;
+    }
+
 
 }
