@@ -41,7 +41,7 @@
                                </span>
                             </a></b>
                     {% elseif column == 'image' %}
-                        <img src="https://images.unsplash.com/photo-1522689764216-4e6966e5e444?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" style="border:0;{{ content_width }} {{ td_center }}"/>
+                        <img src="{{ idea.image | trim }}" style="border:0;{{ content_width }} {{ td_center }}"/>
                     {% elseif column == 'category' %}
                         <i>{{ idea.category | trim }}</i>
                     {% elseif column != 'id' %}
