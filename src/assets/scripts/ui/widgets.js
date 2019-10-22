@@ -53,7 +53,7 @@ export default (function () {
              * In some cases accordion won't work if display is set to flex
              *  accordion needs to be initialized first and then css must be applied so it will work fine
              */
-            let accordionSectionSelectorForMyTravels = '.ui-accordion-content';
+            let accordionSectionSelectorForMyTravels = '.MyTravelIdeas .ui-accordion-content';
             let cssFlex = {
                 "display": "flex",
                 "flex-wrap": "wrap",
