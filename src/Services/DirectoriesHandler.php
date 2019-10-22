@@ -393,6 +393,11 @@ class DirectoriesHandler {
             return new Response($message, 500);
         }
 
+        if( strstr($parent_folder_path, $current_folder_path) ){
+            $message = $this->application->translator->translate('responses.directories.cannotMoveFolderInsideItsOwnSubfolder');
+            return new Response($message, 500);
+        }
+
         $this->finder->files()->in($current_folder_path);
 
         try{

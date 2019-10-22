@@ -51,6 +51,7 @@ responses:
     directoryHasBeenSuccessfullyMoved: "Directory has been successfully moved"
     cannotMoveModuleMainUploadDir: "Cannot move module main upload dir"
     currentDirectoryPathIsTheSameAsNewPath: "Current directory path is the same as new path"
+    cannotMoveFolderInsideItsOwnSubfolder: "Cannot move folder inside its own subfolder"
     #
   tags:
     errorWhileTryingToUpdateTagsViaApi: "There was an error while trying to update tags via api call"
