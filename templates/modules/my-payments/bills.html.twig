@@ -47,7 +47,9 @@
                                             </span>
                                             ({{ bill.startDate|date("Y-m-d") }} - {{ bill.endDate|date("Y-m-d") }})
                                         </h3>
-                                        {% include 'modules/my-payments/components/bills-items-table.html.twig' %}
+                                        <section>
+                                            {% include 'modules/my-payments/components/bills-items-table.html.twig' %}
+                                        </section>
                                     </div>
                                 {% endfor %}
                             </div>
