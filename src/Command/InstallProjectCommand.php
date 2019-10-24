@@ -21,14 +21,24 @@ class InstallProjectCommand extends Command{
     const MODE_DEVELOPMENT = 'Development';
     const MODE_PRODUCTION  = 'Production';
 
-    const UPLOAD_DIR        = 'upload';
-    const UPLOAD_DIR_IMAGES = 'upload/images';
-    const UPLOAD_DIR_FILES  = 'upload/files';
+    const UPLOAD_DIR        = 'public/upload';
+    const UPLOAD_DIR_IMAGES = 'public/upload/images';
+    const UPLOAD_DIR_FILES  = 'public/upload/files';
 
     const APP_SECRET        = 'b9abc19ae10d53eb7cf5b5684ec6511f';
 
     const ENV_DEV   = "dev";
     const ENV_PROD  = "prod";
+
+    const ENV_KEY_APP_ENV               = 'APP_ENV';
+    const ENV_KEY_APP_DEBUG             = 'APP_DEBUG';
+    const ENV_KEY_APP_SECRET            = 'APP_SECRET';
+    const ENV_KEY_APP_DEMO              = 'APP_DEMO';
+    const ENV_KEY_MAILER_URL            = 'MAILER_URL';
+    const ENV_KEY_DATABASE_URL          = 'DATABASE_URL';
+    const ENV_KEY_UPLOAD_DIR            = 'UPLOAD_DIR';
+    const ENV_KEY_IMAGES_UPLOAD_DIR     = 'IMAGES_UPLOAD_DIR';
+    const ENV_KEY_FILES_UPLOAD_DIR      = 'FILES_UPLOAD_DIR';
 
     private $failure_mark = "✗";
 
@@ -46,6 +56,8 @@ class InstallProjectCommand extends Command{
 
     private $mysql_port     = '';
 
+    private $mysql_host     = '';
+
     private $mysql_login    = '';
 
     private $mysql_password = '';
@@ -55,6 +67,8 @@ class InstallProjectCommand extends Command{
     private $user_selected_mode = '';
 
     private $dependencies_state = [];
+
+    private $encryption_key = '';
 
     // the name of the command (the part after "bin/console")
     protected static $defaultName = 'app:install:project';
@@ -81,10 +95,15 @@ class InstallProjectCommand extends Command{
         $this->tellUserToWait($output, $io);
 
         $this->buildEnv($io);
-        #$this->setDatabase();
-        #$this->installPackages();
-        #$this->setPermissions();
-        #$this->createFolders();
+        $this->setDatabase($output, $io);
+        $this->installPackages($output, $io);
+        $this->createFolders($output, $io);
+        $this->buildCache($output, $io);
+        $this->setPermissions($output, $io);
+
+        $this->generateEncryptionKey($output, $io);
+
+        $this->writeEndInformation($output, $io);
 
     }
 
@@ -102,8 +121,6 @@ class InstallProjectCommand extends Command{
 
         $output->writeln("");
         $output->writeln("");
-
-        $io->success("Started installing packages.");
     }
     /**
      * This function is responsible for interaction with user - getting information from him/her
@@ -126,6 +143,9 @@ class InstallProjectCommand extends Command{
 
         while( empty($this->mysql_port) ){
             $this->mysql_port = $io->ask("What is Your database port? ");
+        }
+        while( empty($this->mysql_host) ){
+            $this->mysql_host = $io->ask("What is Your database host? ");
         }
         while( empty($this->mysql_login) ){
             $this->mysql_login = $io->ask("What is Your database login? ");
@@ -228,6 +248,8 @@ class InstallProjectCommand extends Command{
      * This function will get all needed RAW information about dependencies
      */
     private function getDependenciesInformation(){
+        return;
+
         $node_is_installed_check_process     = new Process(['node', '-v']);
         $npm_is_installed_check_process      = new Process(['npm', '-v']);
 
@@ -267,15 +289,223 @@ class InstallProjectCommand extends Command{
     }
 
     /**
+     * This function will create database and run the migrations
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function setDatabase(OutputInterface $output, SymfonyStyle $io){
+
+        return;
+        $io->newLine();
+        $io->success("Started configuring the database.");
+        {
+            $drop_database_process    = new Process(['bin/console doctrine:database:drop', '-n']);
+            $create_database_process  = new Process(['bin/console doctrine:database:create', '-n']);
+            $run_migrations_process   = new Process(['bin/console doctrine:schema:update', '-n --env=dev --force']);
+
+            $drop_database_process->run();
+            $create_database_process->run();
+            $run_migrations_process->run();
+
+            $drop_database_result   = trim($drop_database_process->getOutput());
+            $io->newLine();
+            $output->write($drop_database_result);
+
+            $create_database_result = trim($create_database_process->getOutput());
+            $io->newLine();
+            $output->write($create_database_result);
+
+            $run_migrations_result  = trim($run_migrations_process->getOutput());
+            $io->newLine();
+            $output->write($run_migrations_result);
+        }
+        $io->newLine();
+        $io->success("Finished configuring the database.");
+
+    }
+
+    /**
+     * This function will install
+     *  - composer packages
+     *  - npm/node packages
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function installPackages(OutputInterface $output, SymfonyStyle $io){
+
+        return;
+        $io->newLine();
+        $io->success("Started installing packages.");
+        {
+            $install_composer_packages_process = new Process(['composer install']);
+
+            $install_composer_packages_process->run();
+            $install_composer_packages_result = trim($install_node_packages_process->getOutput());
+
+            $io->newLine();
+            $output->write($install_composer_packages_result);
+        }
+        $io->newLine();
+        $io->success("Finished installing packages.");
+
+    }
+
+    /**
+     * This function will crate all the required folders
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function createFolders(OutputInterface $output, SymfonyStyle $io){
+
+        return;
+        $io->newLine();
+        $io->success("Started creating folders.");
+        {
+            if( !file_exists(self::UPLOAD_DIR) ){
+                mkdir(self::UPLOAD_DIR);
+            }
+            if( !file_exists(self::UPLOAD_DIR_FILES) ){
+                mkdir(self::UPLOAD_DIR_FILES);
+            }
+            if( !file_exists(self::UPLOAD_DIR_IMAGES) ){
+                mkdir(self::UPLOAD_DIR_IMAGES);
+            }
+        }
+        $io->newLine();
+        $io->success("Finished creating folders.");
+    }
+
+    /**
+     * This function prepares the cache for initial project usage
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function buildCache(OutputInterface $output, SymfonyStyle $io){
+        return;
+        $io->newLine();
+        $io->success("Started building cache.");
+        {
+            $clear_cache_process    = new Process(['bin/console cache:clear']);
+            $clear_cache_process->run();
+            $clear_cache_result     = trim($clear_cache_process->getOutput());
+
+            $io->newLine();
+            $output->write($clear_cache_result);
+
+            $warmup_cache_process   = new Process(['bin/console cache:warmup']);
+            $warmup_cache_result    = trim($warmup_cache_process->getOutput());
+            $warmup_cache_process->run();
+
+            $io->newLine();
+            $output->write($warmup_cache_result);
+        }
+        $io->newLine();
+        $io->success("Finished building cache.");
+    }
+
+    /**
+     * This function will set the permissions for certain folders
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function setPermissions(OutputInterface $output, SymfonyStyle $io){
+        return;
+        $io->newLine();
+        $io->success("Started setting permissions.");
+        {
+            $chown_process = new Process(['chown -R www-data var']);
+            $chown_process->run();
+            $chown_result = trim($chown_process->getOutput());
+
+            $io->newLine();
+            $output->write($chown_result);
+
+            $chgrp_process = new Process(['chgrp -R www-data var']);
+            $chgrp_process->run();
+            $chgrp_result = trim($chgrp_process->getOutput());
+
+            $io->newLine();
+            $output->write($chgrp_result);
+
+            $chmod_process = new Process(['chmod -R 777 var']);
+            $chmod_process->run();
+            $chmod_result = trim($chmod_process->getOutput());
+
+            $io->newLine();
+            $output->write($chmod_result);
+        }
+        $io->newLine();
+        $io->success("Finished setting permissions.");
+    }
+
+    /**
+     * This function will generate the key used for encrypting passwords
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function generateEncryptionKey(OutputInterface $output, SymfonyStyle $io){
+        return;
+        $io->newLine();
+        $io->success("Started generating encryption key.");
+        {
+            $encryption_key_generate_process = new Process(['bin/console --env=dev encrypt:genkey']);
+            $encryption_key_generate_process->run();
+            $this->encryption_key = trim($encryption_key_generate_process->getOutput());
+
+            $io->newLine();
+            $output->write($this->encryption_key);
+        }
+        $io->newLine();
+        $io->success("Finished generating encryption key.");
+    }
+
+    /**
+     * This function writes additional information on the end
+     * @param OutputInterface $output
+     * @param SymfonyStyle $io
+     */
+    private function writeEndInformation(OutputInterface $output, SymfonyStyle $io){
+        $io->warning("Now this are the things that You need to do manually now.");
+        $io->warning("Password encryption:");
+        $output->writeln("<text>Open file: ./config/services.yaml </text>");
+        $output->writeln("<text>Modify paramters section, it should look like this now: </text>");
+
+        $output->writeln("<text>parameters</text>");
+        $output->writeln("<text   locale: 'en'</text>");
+        $output->writeln("<text>  encrypt_key: 'yJouvLW2cs-jfzMg5Mg52FiRU1YPBSjflcMgQTKqCt8r'</text>");
+
+        $io->warning("User register:");
+        $output->writeln("<text>Run this command and follow all steps:</text>");
+        $output->writeln("<text>sudo bin/console fos:user:create --super-admin</text>");
+
+
+        $io->success("Now You can start the project: bin/console --env=dev server:run 0.0.0.0:8001 (or other port)");
+        $io->success("Go to: http://127.0.0.1:8001");
+        $io->warning("For more information visit: https://volmarg.github.io/ (if still works)");
+
+        if( self::MODE_DEVELOPMENT === $this->user_selected_mode ){
+            $io->error("Since You decided to use development mode - please follow also this steps: https://volmarg.github.io/developer-mode/");
+            $io->warning("I decided NOT to run this commands in installation scripts as node can cause some problems so it's better to do it alone.");
+            $io->success("Well. You decided to use developer mode so You know how to run the commands and use my tips :D.");
+        }
+    }
+
+    /**
      * This function will build the basic version of env
      * @param SymfonyStyle $io
      */
     private function buildEnv(SymfonyStyle $io){
 
+        return;
+
+        $io->success("Started building env file.");
+
         if( file_exists('.env') ){
             $io->warning('Env file already exist so I am not modifying it - check later if everything is there in it.');
             return;
         }
+
+        $database_url = "mysql://{$this->mysql_login}:{$this->mysql_password}@{$this->mysql_host}:{$this->mysql_port}/{$this->mysql_database}";
 
         if( self::MODE_DEVELOPMENT === $this->user_selected_mode ){
             $env    = self::ENV_DEV;
@@ -284,6 +514,16 @@ class InstallProjectCommand extends Command{
             $env    = self::ENV_PROD;
             $debug  = false;
         }
+
+        $file_handler = fopen('.env', 'w+');
+        {
+            fwrite($file_handler,self::ENV_KEY_APP_ENV      . "="  . $env              . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_APP_DEBUG    . "="  . $debug            . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_APP_SECRET   . "="  . self::APP_SECRET  . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_MAILER_URL   . "="  . self::MAILER_URL  . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_DATABASE_URL . "="  . $database_url     . PHP_EOL);
+        }
+        fclose($file_handler);
 
         $io->newLine();
         $io->success('Env file has been created.');
