@@ -2,7 +2,12 @@
 
 namespace App;
 
-include_once 'src/Controller/Utils/CliHandler.php';
+/**
+ * This script is run from CLI (composer) but symfony will crash later that no such file is found
+ */
+if( php_sapi_name() === 'cli' ){
+    include_once 'src/Controller/Utils/CliHandler.php';
+}
 
 use App\Controller\Utils\CliHandler;
 /**
@@ -20,9 +25,11 @@ class AutoInstaller{
     const MODE_DEVELOPMENT = 'Development';
     const MODE_PRODUCTION  = 'Production';
 
-    const UPLOAD_DIR        = 'public/upload';
-    const UPLOAD_DIR_IMAGES = 'public/upload/images';
-    const UPLOAD_DIR_FILES  = 'public/upload/files';
+    const PUBLIC_DIR        = 'public';
+
+    const UPLOAD_DIR        = 'upload';
+    const UPLOAD_DIR_IMAGES = 'upload/images';
+    const UPLOAD_DIR_FILES  = 'upload/files';
 
     const APP_SECRET        = 'b9abc19ae10d53eb7cf5b5684ec6511f';
 
@@ -342,14 +349,18 @@ class AutoInstaller{
     private function createFolders(){
         CliHandler::infoText("Started creating folders.");
         {
-            if( !file_exists(self::UPLOAD_DIR) ){
-                mkdir(self::UPLOAD_DIR);
+            $upload_dir         = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR;
+            $upload_files_dir   = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_FILES;
+            $upload_images_dir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_IMAGES;
+
+            if( !file_exists($upload_dir) ){
+                mkdir($upload_dir);
             }
-            if( !file_exists(self::UPLOAD_DIR_FILES) ){
-                mkdir(self::UPLOAD_DIR_FILES);
+            if( !file_exists($upload_files_dir) ){
+                mkdir($upload_files_dir);
             }
-            if( !file_exists(self::UPLOAD_DIR_IMAGES) ){
-                mkdir(self::UPLOAD_DIR_IMAGES);
+            if( !file_exists($upload_images_dir) ){
+                mkdir($upload_images_dir);
             }
         }
         CliHandler::infoText("Finished creating folders.");
@@ -482,4 +493,8 @@ class AutoInstaller{
         }
         CliHandler::infoText("Finished checking Mysql mode.");
     }
+    /**
+     * TODO:
+     *  add checking php version in composer
+     */
 }
