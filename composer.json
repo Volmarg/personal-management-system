@@ -87,10 +87,12 @@
             "security-checker security:check": "script"
         },
         "post-install-cmd": [
-            "@auto-scripts"
+            "clear",
+            "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty"
+
         ],
         "post-update-cmd": [
-            "@auto-scripts"
+
         ]
     },
     "conflict": {
