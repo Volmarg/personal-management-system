@@ -69,7 +69,11 @@
                 </td>
 
                 <td class="">
-                    <input type="checkbox" class="disabled displayOnDashboard checkbox-disabled" {{ checked }}/>
+                    {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
+                        "checked": checked,
+                        "label"  : "",
+                        "classes": "disabled checkbox-disabled"
+                    } %}
                 </td>
 
                 <td contenteditable="false">

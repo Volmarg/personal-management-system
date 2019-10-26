@@ -4,9 +4,8 @@ namespace App\Form\Modules\Goals;
 
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Goals\MyGoalsPayments;
-use App\Services\Translator;
+use App\Form\Type\RoundcheckboxType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -64,7 +63,7 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'label' => $this->app->translator->translate('forms.MyGoalsPaymentsType.moneyCollected')
             ])
-            ->add('displayOnDashboard',CheckboxType::class,[
+            ->add('displayOnDashboard',RoundcheckboxType::class,[
                 'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.displayOnDashboard'),
                 'required'  => false
             ])

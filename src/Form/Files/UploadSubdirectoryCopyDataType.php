@@ -5,9 +5,9 @@ namespace App\Form\Files;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
+use App\Form\Type\RoundcheckboxType;
 use App\Services\FilesHandler;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -57,7 +57,7 @@ class UploadSubdirectoryCopyDataType extends AbstractType
                 'required'  => true,
                 'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.targetSubdirectoryInModuleUploadDir')
             ])
-            ->add(static::KEY_MOVE_FOLDER, CheckboxType::class, [
+            ->add(static::KEY_MOVE_FOLDER, RoundCheckboxType::class, [
                 'required'  => false,
                 'label'     => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.moveInsteadOfCopying')
             ])

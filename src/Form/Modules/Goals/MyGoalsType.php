@@ -4,9 +4,9 @@ namespace App\Form\Modules\Goals;
 
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Goals\MyGoals;
+use App\Form\Type\RoundcheckboxType;
 use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -33,7 +33,7 @@ class MyGoalsType extends AbstractType
             ->add('description', null, [
                 'label' => $this->app->translator->translate('forms.MyGoalsType.description'),
             ])
-            ->add('displayOnDashboard',CheckboxType::class,[
+            ->add('displayOnDashboard',RoundcheckboxType::class,[
                 'label'     => $this->app->translator->translate('forms.MyGoalsType.displayOnDashboard'),
                 'required'  => false
             ])

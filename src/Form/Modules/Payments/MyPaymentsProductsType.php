@@ -4,6 +4,7 @@ namespace App\Form\Modules\Payments;
 
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
+use App\Form\Type\RoundcheckboxType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -37,7 +38,7 @@ class MyPaymentsProductsType extends AbstractType {
             ->add('Information', null, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.information')
             ])
-            ->add('Rejected', null, [
+            ->add('Rejected', RoundcheckboxType::class, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.rejected')
             ])
             ->add('save', SubmitType::class,[

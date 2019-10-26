@@ -1,0 +1,15 @@
+{# This field type is only for handling folder based upload modules options list in form #}
+{% block roundcheckbox_widget %}
+
+    <div class="checkbox checkbox-circle checkbox-info peers ai-c">
+        <input type="checkbox" class="peer" {{ block('widget_attributes') }} >
+        <label class=" peers peer-greed js-sb ai-c">
+
+            <span class="peer peer-greed">
+                {{ label }}
+            </span>
+
+        </label>
+    </div>
+
+{% endblock %}
