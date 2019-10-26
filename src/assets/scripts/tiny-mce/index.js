@@ -31,6 +31,7 @@ export default (function () {
             'note-wrapper': '.single-note-details',
             'modal-shadow': '.modal-backdrop',
             'note-button': '.note-button',
+            'note-modal-close-button': 'button.close',
             prefixless: {
                 'hidden': 'd-none'
             }
@@ -98,7 +99,7 @@ export default (function () {
                 let config  = tinymce.custom.config;
 
                 config.selector = tinymce.custom.classes["note-modal-tinymce-content"] + id;
-                
+
                 tinymce.init(config);
             },
             attachEditEvent: function () {
@@ -131,9 +132,10 @@ export default (function () {
                 $(saveButtons).each((index, button) => {
 
                     $(button).click((event) => {
-                        let clickedButton = event.target;
-                        let modal = $(clickedButton).closest(tinymce.custom.classes.modal);
-                        let tinymceModal = $(modal).find('iframe');
+                        let clickedButton       = event.target;
+                        let modal               = $(clickedButton).closest(tinymce.custom.classes.modal);
+                        let tinymceModal        = $(modal).find('iframe');
+                        let modalCloseButton    = $(modal).find(tinymce.custom.classes["note-modal-close-button"]);
 
                         if (tinymceModal.length !== 0) {
                             let noteId = $(clickedButton).attr('data-id');
@@ -159,6 +161,7 @@ export default (function () {
                             }).done(() => {
                                 bootstrap_notifications.notify(tinymce.custom.messages["note-update-success"], 'success');
                                 ui.ajax.loadModuleContentByUrl(location.pathname);
+                                $(modalCloseButton).click();
                                 $('.modal-backdrop').remove();
                             }).fail(() => {
                                 bootstrap_notifications.notify(tinymce.custom.messages["note-update-fail"], 'danger');
