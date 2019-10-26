@@ -2,11 +2,15 @@
 
 namespace App\Repository;
 
-use Doctrine\DBAL\Driver\PDOConnection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 class FilesSearchRepository
 {
+
+    const SEARCH_TYPE_FILES = 'files';
+    const SEARCH_TYPE_NOTES = 'notes';
 
     /**
      * @var EntityManagerInterface $em
@@ -19,31 +23,67 @@ class FilesSearchRepository
 
     /**
      * @param array $tags
+     * @param string $search_type
      * @param bool $do_like_percent
      * @return mixed[]
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     * @throws Exception
      */
-    public function getSearchResultsDataForTag(array $tags, bool $do_like_percent = false) {
+    public function getSearchResultsDataForTag(array $tags, string $search_type, bool $do_like_percent = false) {
 
         $binded_values = [];
         $index         = 0;
 
         $tags_sql      = '';
 
-        array_map(function($value) use ($do_like_percent, &$binded_values,  &$tags_sql, &$index) {
+        array_map(function($value) use ($do_like_percent, &$binded_values,  &$tags_sql, &$index, $search_type) {
             $binded_values[]       = ( $do_like_percent ? "%{$value}%" : $value );
-            $tags_sql             .= (0 === $index ? " " : " OR ") . " tags LIKE ?";
+
+            switch($search_type){
+                case self::SEARCH_TYPE_FILES:
+                    $tags_sql .= (0 === $index ? " " : " OR ") . " tags LIKE ?";
+                    break;
+                case self::SEARCH_TYPE_NOTES:
+                    $tags_sql .= (0 === $index ? " " : " OR ") . " title LIKE ?";
+                    break;
+                default:
+                    throw new Exception("Undefined search type for search results: {$search_type}.");
+            }
+
             $index++;
         }, $tags);
 
         $connection = $this->em->getConnection();
 
+        switch($search_type){
+            case self::SEARCH_TYPE_FILES:
+                $sql = $this->getSqlForFileSearch($tags_sql);
+                break;
+            case self::SEARCH_TYPE_NOTES:
+                $sql = $this->getSqlForNotesSearch($tags_sql);
+                break;
+            default:
+                throw new Exception("Undefined search type for search results: {$search_type}.");
+        }
+
+        $stmt    = $connection->executeQuery($sql, $binded_values);
+        $results = $stmt->fetchAll();
+
+        return $results;
+    }
+
+    /**
+     * @param string $tags_sql
+     * @return string
+     */
+    private function getSqlForFileSearch(string $tags_sql){
         $sql = "
             SELECT
                 ft.tags                      AS tags,
                 ft.full_file_path            AS fullFilePath,
                 files_tags_module.module     AS module,
                 files_tags_filename.filename AS filename,
+                'file'                       AS type,
             CONCAT(  '/', -- to have absolute path  
                     CASE -- here add part of url pointing to the module name
                         WHEN full_file_path LIKE '%images%' THEN 'my-images'
@@ -109,10 +149,34 @@ class FilesSearchRepository
                 AND deleted = 0;
         ";
 
-        $stmt          = $connection->executeQuery($sql, $binded_values);
-        $results       = $stmt->fetchAll();
+        return $sql;
+    }
 
-        return $results;
+    /**
+     * @param string $tags_sql
+     * @return string
+     */
+    private function getSqlForNotesSearch(string $tags_sql){
+        $sql = "
+            SELECT 
+                mn.title    AS title,
+                mn.id       AS noteId,
+                mnc.name    AS category,
+                mnc.id      AS categoryId,
+                'note'      AS type
+            
+            FROM my_notes mn
+            
+            LEFT JOIN my_notes_categories mnc
+                ON mnc.id = mn.category_id
+                AND mnc.deleted = 0
+            
+            WHERE 1
+                AND ($tags_sql) -- limit to entered tags
+                AND mn.deleted = 0;
+        ";
+
+        return $sql;
     }
 
 }

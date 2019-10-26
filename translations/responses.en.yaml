@@ -77,6 +77,8 @@ responses:
     tagsHaveBeenCreated: "Tags have been created successfully."
     noTagsToRemove: "There were no tags to remove"
     tagsUpdated: "Tags have been updated successfully"
+  notes:
+    couldNotFindNoteForId: "Could not find note for id: "
   menu:
     nodeHasBeenRendered: "Menu has been rendered"
     menuNodeWithNameWasNotFound: "Menu node with given name was not found"

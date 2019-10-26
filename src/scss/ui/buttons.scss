@@ -163,3 +163,15 @@ $plusColor: white;
 .fontawesome-centered i {
   line-height: inherit;
 }
+
+/* Button based on favicon */
+.button-icon {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  display: inline;
+}

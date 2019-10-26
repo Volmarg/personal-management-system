@@ -27,6 +27,8 @@ export default (function () {
         placeholders: {
             fileName            : "%fileName%",
             targetUploadType    : "%currentUploadType%",
+            noteId              : "%noteId%",
+            categoryId          : "%categoryId%"
         },
         messages: {
         },
@@ -34,7 +36,8 @@ export default (function () {
             moveSingleFile                  : '/files/action/move-single-file',
             updateTagsForMyImages           : '/api/my-images/update-tags',
             getDataTransferDialogTemplate   : '/dialog/body/data-transfer',
-            getTagsUpdateDialogTemplate     : '/dialog/body/tags-update'
+            getTagsUpdateDialogTemplate     : '/dialog/body/tags-update',
+            getNotePreviewDialogTemplate    : '/dialog/body/note-preview/%noteId%/%categoryId%',
         },
         vars: {
             fileCurrentPath : '',
@@ -271,6 +274,59 @@ export default (function () {
 
 
             }
+        },
+        notePreview: {
+            buildTagManagementDialog: function (noteId, categoryId, callback = null) {
+                let _this = this;
+                let that  = dialogs.ui;
+                let getDialogTemplate = dialogs.ui.methods.getNotePreviewDialogTemplate;
+
+                let url = getDialogTemplate.replace(that.placeholders.categoryId, categoryId);
+                    url = url.replace(that.placeholders.noteId, noteId);
+
+                ui.widgets.loader.toggleLoader();
+                $.ajax({
+                    method: "GET",
+                    url: url
+                }).always((data) => {
+                    ui.widgets.loader.toggleLoader();
+
+                    if( undefined !== data['template'] ){
+                        _this.callTagManagementDialog(data['template'], callback);
+                    } else if( undefined !== data['errorMessage'] ) {
+                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
+                    }else{
+                        let message = 'Something went wrong while trying to load dialog template.';
+                        bootstrap_notifications.notify(message, 'danger');
+                    }
+
+                })
+
+            },
+            callTagManagementDialog: function (template, callback = null) {
+
+                let _this  = this;
+
+                let dialog = bootbox.alert({
+                    size: "large",
+                    backdrop: true,
+                    closeButton: false,
+                    message: template,
+                    buttons: {
+                        ok: {
+                            label: 'Cancel',
+                            className: 'btn-primary dialog-ok-button',
+                            callback: () => {}
+                        },
+                    },
+                    callback: function () {
+                    }
+                });
+
+                dialog.init( () => {
+                    let modalMainWrapper = $(dialogs.ui.selectors.classes.bootboxModalMainWrapper);
+                });
+            },
         }
 
     };

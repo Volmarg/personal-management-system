@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ note.title }}</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<section id="tiny-mce-wrapper" class="p-20">
+    <div class="modal-body modal-tinymce-body-{{ note.id }}">
+        {{ note.body | raw }}
+    </div>
+</section>
+<div class="modal-footer modal-note-details-buttons">
+
+    <select class="form-control d-none note-modal-categories-list note-category"
+            style="max-width:100px; float:left;">
+        {% set categories = getMyNotesCategories(true) %}
+        {% for category_on_list in categories %}
+            <option value="{{ category_on_list.category_id }}"
+                    {% if category_id  == category_on_list.category_id %}selected{% endif %}>
+                {{ category_on_list.category | capitalize }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="button" class="btn btn-warning edit-note">{{ translate('buttons.edit') }}</button>
+    <button type="button" class="btn btn-primary save-note modal-save-note" data-id="{{ note.id }}"
+            onclick="ui.ajax.loadModuleContentByUrl(location.pathname)">{{ translate('buttons.saveChanges') }}</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('buttons.close') }}</button>
+    <button type="button" class="btn btn-danger delete-note"
+            data-id="{{ note.id }}">{{ translate('buttons.delete') }}</button>
+</div>

@@ -23,7 +23,7 @@ export default (function () {
             gallery.lightgallery.init();
             ui.shuffler.init();
             modules.myFiles.init();
-            ui.filesSearch.init();
+            ui.search.init();
         },
         /**
          * Reinitialize is being called in alot of places when content is reloaded via js some logic is not allowed to

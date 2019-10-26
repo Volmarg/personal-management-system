@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Utils\Application;
+use App\Repository\FilesSearchRepository;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -10,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class FilesSearchController extends AbstractController
+class SearchController extends AbstractController
 {
 
     /**
@@ -38,7 +39,13 @@ class FilesSearchController extends AbstractController
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
         $tags_array   = explode(',', $tags_string);
 
-        $search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, true);
+        $files_search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_FILES, true);
+        $notes_search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_NOTES, true);
+
+        $search_results = array_merge(
+            $files_search_results,
+            $notes_search_results
+        );
 
         return new JsonResponse([
             'searchResults' => $search_results

@@ -29,6 +29,7 @@ class Dialogs extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS    = 'page-elements/components/dialogs/bodies/update-tags.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER     = 'page-elements/components/dialogs/bodies/new-folder.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD         = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_NOTE_EDIT_MODAL            = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                    = 'fileCurrentPath';
     const KEY_MODULE_NAME                          = 'moduleName';
 
@@ -243,6 +244,40 @@ class Dialogs extends AbstractController
         ];
 
         return $this->render($template, $data);
+
+    }
+
+    /**
+     * @Route("/dialog/body/note-preview/{note_id}/{category_id}", name="dialog_body_create_note", methods="GET")
+     * @param Request $request
+     * @param string $note_id
+     * @param string $category_id
+     * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
+     */
+    public function buildPreviewNoteDialogBody(Request $request, string $note_id, string $category_id) {
+
+        $note = $this->app->repositories->myNotesRepository->find($note_id);
+
+        if( is_null($note) ){
+            $message = $this->app->translator->translate('responses.notes.couldNotFindNoteForId') . $note_id;
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $template_data = [
+            'note'          => $note,
+            'category_id'   => $category_id
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_NOTE_EDIT_MODAL, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
 
     }
 
