@@ -94,11 +94,11 @@ export default (function () {
         },
         "MyNotes": {
             init: function (editButton) {
-                let modalContent = $(editButton).closest(tinymce.custom.classes["note-modal-content"]);
-                let id = $(modalContent).closest(tinymce.custom.classes.modal).attr('data-id');
+                let id      = $(editButton).attr('data-id');
+                let config  = tinymce.custom.config;
 
-                let config = tinymce.custom.config;
                 config.selector = tinymce.custom.classes["note-modal-tinymce-content"] + id;
+                
                 tinymce.init(config);
             },
             attachEditEvent: function () {
@@ -109,7 +109,7 @@ export default (function () {
                     $(button).click((event) => {
 
                         let clickedButton = event.target;
-                        let modal = $(clickedButton).closest(tinymce.custom.classes.modal);
+                        let modal = $(clickedButton).closest(tinymce.custom.classes['note-modal-content']);
                         let noteTitle = $(modal).find(tinymce.custom.classes["note-modal-title"]);
                         let categoriesList = $(modal).find(tinymce.custom.classes["note-modal-categories-list"]);
 

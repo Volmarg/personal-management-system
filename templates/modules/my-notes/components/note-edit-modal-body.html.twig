@@ -9,7 +9,7 @@
         {{ note.body | raw }}
     </div>
 </section>
-<div class="modal-footer modal-note-details-buttons">
+<div class="d-flex justify-content-end modal-note-details-buttons">
 
     <select class="form-control d-none note-modal-categories-list note-category"
             style="max-width:100px; float:left;">
@@ -22,7 +22,7 @@
         {% endfor %}
     </select>
 
-    <button type="button" class="btn btn-warning edit-note">{{ translate('buttons.edit') }}</button>
+    <button type="button" class="btn btn-warning edit-note" data-id="{{ note.id }}">{{ translate('buttons.edit') }}</button>
     <button type="button" class="btn btn-primary save-note modal-save-note" data-id="{{ note.id }}"
             onclick="ui.ajax.loadModuleContentByUrl(location.pathname)">{{ translate('buttons.saveChanges') }}</button>
     <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ translate('buttons.close') }}</button>

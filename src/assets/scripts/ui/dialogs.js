@@ -324,7 +324,7 @@ export default (function () {
                 });
 
                 dialog.init( () => {
-                    let modalMainWrapper = $(dialogs.ui.selectors.classes.bootboxModalMainWrapper);
+                    tinymce.custom.init();
                 });
             },
         }
