@@ -74,7 +74,7 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 
 <h3> Linux installer </h3>
 <p>
-	The project can also be installed by simply calling <b>bin/console</b> in project root folder <b>(Read the information that will popup)</b>.
+	The project can also be installed by simply calling <b>composer install</b> in project root folder <b>(Read the information that will popup)</b>.
 You will be guided through the autoinstaller - it won't do everything for You but will attempt to help You setting up the project.
 </p>
 
