@@ -10,8 +10,6 @@ namespace App\Controller\Utils;
  */
 class CliHandler{
 
-    # Cli handling below:
-    # Todo: make a separate class from this - into utils
     static $foreground_colors = array();
 
     static $background_colors = array();
@@ -59,6 +57,13 @@ class CliHandler{
         self::$background_colors['light_gray'] = '47';
     }
 
+    /**
+     * Handles coloring string in cli
+     * @param string $string
+     * @param string|null $foreground_color
+     * @param string|null $background_color
+     * @return string
+     */
     public static function getColoredString(string $string, ?string $foreground_color = null, ?string $background_color = null) {
         $colored_string = "";
 
@@ -77,6 +82,11 @@ class CliHandler{
         return $colored_string;
     }
 
+    /**
+     * Returns colored string for cli
+     * @param string $string
+     * @param bool $new_line
+     */
     public static function errorText(string $string, bool $new_line = true){
 
         if($new_line){
@@ -90,6 +100,11 @@ class CliHandler{
         }
     }
 
+    /**
+     * Returns colored string for cli
+     * @param string $string
+     * @param bool $new_line
+     */
     public static function infoText(string $string, bool $new_line = true){
 
         if($new_line){
@@ -103,6 +118,11 @@ class CliHandler{
         }
     }
 
+    /**
+     * Displays standard string
+     * @param string $string
+     * @param bool $new_line
+     */
     public static function text(string $string, bool $new_line = true){
 
         echo $string;
@@ -116,6 +136,12 @@ class CliHandler{
         echo PHP_EOL;
     }
 
+    /**
+     * This function returns line separator with either default settings or customized
+     * @param int $line_size
+     * @param string $symbol
+     * @param string|null $color
+     */
     public static function lineSeparator(int $line_size = 30, string $symbol = '-', ?string $color = null)
     {
         $line = '';
@@ -127,14 +153,27 @@ class CliHandler{
         echo  PHP_EOL . self::getColoredString($line, $color) . PHP_EOL;
     }
 
+    /**
+     * This function returns '✓' character
+     * @return string
+     */
     public static function successMark(){
         return self::getColoredString(self::$success_mark);
     }
 
+    /**
+     * This function returns '✗' character
+     * @return string
+     */
     public static function failureMark(){
         return self::getColoredString(self::$failure_mark, self::$text_red);
     }
 
+    /**
+     * This method will get a single line user input
+     * @param $message
+     * @return string
+     */
     public static function getUserInput($message){
         echo "{$message}: ";
         $line = readline();

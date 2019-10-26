@@ -17,8 +17,8 @@ use App\Controller\Utils\CliHandler;
  */
 class AutoInstaller{
 
-    const YES = "yes";
-    const NO  = "no";
+    const YES = "Yes";
+    const NO  = "No";
 
     const MAILER_URL = 'null://localhost';
 
@@ -285,23 +285,20 @@ class AutoInstaller{
     private function setDatabase(){
         CliHandler::infoText("Started configuring the database.");
         {
-            $drop_database_command   = "bin/console doctrine:database:drop -n";
+            $drop_database_command   = "bin/console doctrine:database:drop -n --force";
             $create_database_command = "bin/console doctrine:database:create -n";
             $build_tables            = "bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
 
             shell_exec($drop_database_command);
-            echo "Database has been dropped (if You provided the existing one)";
-            CliHandler::newLine();
+            CliHandler::text("Database has been dropped (if You provided the existing one)");
 
             shell_exec($create_database_command);
-            echo "Database has been created";
-            CliHandler::newLine();
+            CliHandler::text("Database has been created");
 
-            echo "Creating database tables, please wait";
-            CliHandler::newLine();
+            CliHandler::text("Creating database tables, please wait");
 
             shell_exec($build_tables);
-            echo "Database tables has been created";
+            CliHandler::text("Database tables has been created", false);
 
         }
         CliHandler::infoText("Finished configuring the database.");
@@ -322,22 +319,17 @@ class AutoInstaller{
                 $npm_sas_rebuild_command    = 'npm rebuild node-sass';
 
                 shell_exec($npm_update_command);
-                echo "Npm update has been finished.";
-                CliHandler::newLine();
+                CliHandler::text("Npm update has been finished.");
 
                 shell_exec($npm_install_command);
-                echo "Npm install has been finished.";
-                CliHandler::newLine();
+                CliHandler::text("Npm install has been finished.");
 
                 shell_exec($npm_sass_command);
-                CliHandler::newLine();
-
                 shell_exec($npm_sass_command_2);
-                echo "Npm sass install has been finished.";
-                CliHandler::newLine();
+                CliHandler::text("Npm sass install has been finished.");
 
                 shell_exec($npm_sas_rebuild_command);
-                echo "Npm sass rebuild has been finished.";
+                CliHandler::text("Npm sass rebuild has been finished.", false);
             }
             CliHandler::infoText("Finished installing node modules.");
         }
@@ -376,11 +368,10 @@ class AutoInstaller{
             $warmup_cache_command   = "bin/console cache:warmup";
 
             shell_exec($clear_cache_command);
-            echo "Cache has been cleared.";
-            CliHandler::newLine();
+            CliHandler::text("Cache has been cleared.");
 
             shell_exec($warmup_cache_command);
-            echo "Cache has been warmed up.";
+            CliHandler::text("Cache has been warmed up.", false);
         }
         CliHandler::infoText("Finished building cache.");
     }
@@ -397,15 +388,13 @@ class AutoInstaller{
             $chmod_command = "chmod -R 777 var";
 
             shell_exec($chown_command);
-            echo "Owner has been set.";
-            CliHandler::newLine();
+            CliHandler::text("Owner has been set.");
 
             shell_exec($chgrp_command);
-            echo "Group has been set.";
-            CliHandler::newLine();
+            CliHandler::text("Group has been set.");
 
             shell_exec($chmod_command);
-            echo "Read, write, execute permissions have been set.";
+            CliHandler::text("Read, write, execute permissions have been set.", false);
         }
         CliHandler::infoText("Finished setting permissions.");
 
@@ -426,10 +415,7 @@ class AutoInstaller{
         {
             $encryption_key_generation_command = 'bin/console --env=dev encrypt:genkey';
             $encryption_key = trim( shell_exec($encryption_key_generation_command) );
-
-            echo $encryption_key;
-            CliHandler::newLine();
-
+            CliHandler::text($encryption_key, false);
         }
         CliHandler::infoText("Finished generating encryption key.");
     }
