@@ -22,11 +22,12 @@
             <td class="text-info">
                 {{ calculateHomeProductPrice(product_data.price,currency_multiplier) }}
             </td>
-            <td contenteditable="false">
-                <i class="fa fa-trash" aria-hidden="true"></i>
-                <i class="far fa-edit"></i>
-                <i class="far fa-save d-none"></i>
-            </td>
+            {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                "trash": true,
+                "edit": true,
+                "save": true
+            } %}
+
         {% endif %}
         </tr>
     {% endfor %}

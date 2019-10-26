@@ -1,6 +1,8 @@
 import "../../../node_modules/bootstrap/dist/js/bootstrap.js";
 
 import './utils/utils_custom.js';
+import './utils/domAttributes.js';
+import './utils/domElements.js';
 
 import './ui/crud.js';
 import './ui/widgets.js';

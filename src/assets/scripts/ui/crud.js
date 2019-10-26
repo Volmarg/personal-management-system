@@ -354,11 +354,11 @@ export default (function () {
             });
         },
         toggleContentEditable: function (tr_closest_parent) {
-            let is_content_editable = this.isContentEditable(tr_closest_parent);
-            let param_entity_name = $(tr_closest_parent).attr('data-type');
+            let is_content_editable = utils.domAttributes.isContentEditable(tr_closest_parent, 'td');
+            let param_entity_name   = $(tr_closest_parent).attr('data-type');
 
             if (!is_content_editable) {
-                $(tr_closest_parent).attr({"contentEditable": "true"});
+                utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.set,  'td', 'input, select');
                 $(tr_closest_parent).addClass(this.classes["table-active"]);
                 this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
                 this.toggleDisabledClassForTableRow(tr_closest_parent);
@@ -370,7 +370,7 @@ export default (function () {
             this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
             this.toggleDisabledClassForTableRow(tr_closest_parent);
 
-            $(tr_closest_parent).attr({"contentEditable": "false"});
+            utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.unset,'td', 'input, select');
             $(tr_closest_parent).removeClass(this.classes["table-active"]);
             bootstrap_notifications.notify(this.messages.entityEditEnd(this.entity_actions[param_entity_name].entity_name), 'success');
         },
@@ -396,9 +396,10 @@ export default (function () {
         toggleDisabledClassForTableRow: function (tr_parent_element) {
             let color_pickers   = $(tr_parent_element).find('.color-picker');
             let option_pickers  = $(tr_parent_element).find('.option-picker');
+            let date_pickers    = $(tr_parent_element).find('.date-picker');
             let checkbox        = $(tr_parent_element).find('.checkbox-disabled');
             let selectize       = $(tr_parent_element).find('.selectize-control');
-            let elements_to_toggle = [color_pickers, option_pickers, checkbox, selectize];
+            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize];
             let _this = this;
 
             $(elements_to_toggle).each((index, element_type) => {
@@ -417,9 +418,6 @@ export default (function () {
 
             })
 
-        },
-        isContentEditable: function (tr_parent_element) {
-            return (typeof $(tr_parent_element).attr("contentEditable") == 'undefined' || $(tr_parent_element).attr("contentEditable") != "true" ? false : true);
         },
         ajaxUpdateDatabaseRecord: function (tr_parent_element) {
             let param_entity_name = $(tr_parent_element).attr('data-type');
