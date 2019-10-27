@@ -268,7 +268,9 @@ class Dialogs extends AbstractController
 
         $template_data = [
             'note'          => $note,
-            'category_id'   => $category_id
+            'category_id'   => $category_id,
+            'no_delete'     => true,
+            'no_close'      => true,
         ];
 
         $rendered_view = $this->render(self::TWIG_TEMPLATE_NOTE_EDIT_MODAL, $template_data);
