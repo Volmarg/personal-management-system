@@ -22,7 +22,8 @@ export default (function () {
         selectors: {
             classes:{
                 massActionButtons               : ".datatable-mass-actions",
-                massActionRemoveRecordsButton   : ".datatable-remove-records"
+                massActionRemoveRecordsButton   : ".datatable-remove-records",
+                checkboxCell                    : ".select-checkbox"
             },
             attributes: {
                 targetTable: "data-target-table-selector"
@@ -36,19 +37,23 @@ export default (function () {
             $(document).ready(() => {
 
                 let all_tables = $('body').find('table[data-table="true"]');
-                $(all_tables).each(function (index, element) {
+                $(all_tables).each(function (index, table) {
 
-                    let config = {};
-                    let checkboxesAttr = $(element).attr('data-table-checkboxes');
+                    let config          = {};
+                    let checkboxesAttr  = $(table).attr('data-table-checkboxes');
+                    let isSelectable    = ( "true" === checkboxesAttr );
 
-                    if( "true" === checkboxesAttr ){
+                    if( isSelectable ){
                         config = _this.configs.checkboxes;
                     }
 
-                    $(element).DataTable(config);
-                });
+                    $(table).DataTable(config);
 
-                _this.initSelectOptions();
+                    if( isSelectable ){
+                        _this.initSelectOptions(table);
+                    }
+
+                });
             })
         },
         reinit: function (table_id) {
@@ -62,18 +67,21 @@ export default (function () {
 
             $(table).DataTable(config);
         },
-        initSelectOptions: function(){
+        initSelectOptions: function(table){
+            // TODO: check how this behaves for 2 tables like Payments Products
 
             let massActionButtons = $(this.selectors.classes.massActionButtons);
-
+            // Buttons MUST be there for this options logic
             if( 0 === $(massActionButtons).length ){
                 return;
             }
 
+            this.attachSelectingCheckboxForCheckboxCell(table);
+
             let massActionRemoveRecordsButton = $(massActionButtons).find(this.selectors.classes.massActionRemoveRecordsButton);
 
             if( 0 !==  $(massActionRemoveRecordsButton).length ){ // replace selector for files
-                this.iniSelectOptionRemoveFiles(massActionRemoveRecordsButton);
+                this.attachFilesRemoveEventOnRemoveFileButton(massActionRemoveRecordsButton);
             }
 
         },
@@ -84,7 +92,7 @@ export default (function () {
          * This function is written specifically for files module
          * @param massActionRemoveRecordsButton
          */
-        iniSelectOptionRemoveFiles: function(massActionRemoveRecordsButton){
+        attachFilesRemoveEventOnRemoveFileButton: function(massActionRemoveRecordsButton){
             let _this = this;
             $(massActionRemoveRecordsButton).on('click', () => {
                 let targetTableSelector     = $(massActionRemoveRecordsButton).attr(_this.selectors.attributes.targetTable);
@@ -107,6 +115,24 @@ export default (function () {
                 });
 
             });
+        },
+        attachSelectingCheckboxForCheckboxCell: function(table){
+
+            let allSelectCells = $(table).find(this.selectors.classes.checkboxCell);
+            allSelectCells.on('click', (event) => {
+
+                let clickedCell = event.currentTarget;
+                let checkbox    = $(clickedCell).find('input');
+                let isChecked   = utils.domAttributes.isChecked(checkbox);
+
+                if( isChecked ){
+                    utils.domAttributes.unsetChecked(checkbox)
+                }else{
+                    utils.domAttributes.setChecked(checkbox)
+                }
+
+            });
+
         }
     };
 

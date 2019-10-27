@@ -25,7 +25,9 @@
     {% for file in files %}
         <tr class="trash-parent editable-parent save-parent"
             data-type="MyFiles">
-            <td></td> {# checkbox #}
+            <td>
+                {% include 'page-elements/components/forms/input-rounded-checkbox.twig'%}
+            </td> {# checkbox #}
             <td class="mass-action-remove-file-path d-none">{{ file[KEY_FILE_FULL_PATH] }}</td> {# filepath used for mass acction - remove #}
             <td class="{{ KEY_FILE_NAME }}">
                 {% include 'modules/my-files/components/file-icon.html.twig' with {'extension': file[KEY_FILE_EXTENSION]} %}

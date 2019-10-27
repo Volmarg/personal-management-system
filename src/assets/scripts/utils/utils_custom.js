@@ -17,6 +17,23 @@ export default (function () {
         unique: function (array) {
             let uniqueItems = Array.from(new Set(array));
             return uniqueItems;
+        },
+        /**
+         * This function will return true if needle is in haystack
+         * @param needle
+         * @param haystack
+         */
+        inArray: function(needle, haystack){
+            let isInArray = false;
+
+            $.each(haystack, (index, value) => {
+                if( needle === value ){
+                    isInArray = true;
+                    return false;
+                }
+            });
+
+            return isInArray;
         }
     };
 

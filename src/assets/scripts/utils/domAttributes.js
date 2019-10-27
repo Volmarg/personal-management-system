@@ -143,6 +143,61 @@ export default (function () {
 
             }
 
+        },
+        /**
+         * Will check if provided element is a checkbox, and if not then exception will be thrown,
+         * or exception will be skipped if second param will be passed
+         * @param element
+         * @param throwException
+         */
+        isCheckbox(element, throwException = true){
+            let type = $(element).attr('type');
+
+            if( type !== "checkbox" ){
+
+                if(throwException){
+                    throw({
+                       "message": "This element is not a checkbox",
+                       "element": element
+                    });
+                }
+                return false;
+            }
+
+            return true;
+        },
+        /**
+         * Will mark checkbox as checked
+         * @param element
+         */
+        setChecked: function(element){
+            if( this.isCheckbox(element) ){
+                $(element).attr("checked", "checked");
+            }
+        },
+        /**
+         * Will uncheck checkbox
+         * @param element
+         */
+        unsetChecked: function(element){
+            if( this.isCheckbox(element) ){
+                $(element).removeAttr("checked");
+            }
+        },
+        /**
+         * Will check if checkbox is checked
+         */
+        isChecked: function(element){
+            if( this.isCheckbox(element) ){
+                let checkedAttr     = $(element).attr("checked");
+                let checkedValues   = [
+                    "true", true, "checked"
+                ];
+
+                let isInArray = utils.array.inArray(checkedAttr, checkedValues);
+
+                return isInArray;
+            }
         }
     };
 
