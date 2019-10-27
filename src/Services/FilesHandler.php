@@ -24,6 +24,7 @@ class FilesHandler {
     const KEY_CURRENT_SUBDIRECTORY_NAME = 'current_subdirectory_name';
     const KEY_TARGET_SUBDIRECTORY_NAME  = 'target_subdirectory_name';
     const KEY_FILE_FULL_PATH            = 'file_full_path';
+    const KEY_FILES_FULL_PATHS          = 'files_full_paths';
     const KEY_FILE_NEW_NAME             = 'file_new_name';
     const KEY_FILE_CURRENT_PATH         = 'file_current_location';
     const KEY_FILE_NEW_PATH             = 'file_new_location';
@@ -275,12 +276,31 @@ class FilesHandler {
      */
     public function removeFile(Request $request) {
 
-        if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
-            $message   = $this->application->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
+        if (
+                !$request->request->has(static::KEY_FILE_FULL_PATH)
+            &&  !$request->request->has(static::KEY_FILES_FULL_PATHS)
+        ) {
+            $message = $this->application->translator->translate('responses.general.missingRequiredParameter');
+            $message .= static::KEY_FILE_FULL_PATH . ', ' . static::KEY_FILE_FULL_PATH;
+
             throw new \Exception($message);
         }
 
-        $filepath = $request->request->get(static::KEY_FILE_FULL_PATH);
+        if( $request->request->has(static::KEY_FILE_FULL_PATH) ){
+            $filepath = $request->request->get(static::KEY_FILE_FULL_PATH);
+
+        }elseif($request->request->has(static::KEY_FILES_FULL_PATHS)){
+            $filepaths = $request->request->get(static::KEY_FILES_FULL_PATHS);
+
+            // Call Yourself for each filepath, this will fall into single filepath call
+            foreach($filepaths as $filepath){
+                $request = new Request();
+                $request->request->set(static::KEY_FILE_FULL_PATH, $filepath);
+                $this->removeFile($request);
+            }
+
+        }
+
 
         try{
 

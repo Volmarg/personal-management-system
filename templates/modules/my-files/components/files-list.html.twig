@@ -8,9 +8,11 @@
 {% set file_tagger_service = 'App\\Services\\FileTagger' %}
 {% set KEY_TAGS            = constant(file_tagger_service~"::KEY_TAGS") %}
 
-<table id="MyFiles" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+<table id="MyFiles" class="table table-striped table-bordered" cellspacing="0" data-table="true" data-table-checkboxes="true" width="100%">
     <thead>
     <tr>
+        <td></td> {# checkbox #}
+        <td class="d-none"></td>
         <td>{{ translate('files.table.name') }}</td>
         <td>{{ translate('files.table.extension') }}</td>
         <td>{{ translate('files.table.size') }}</td>
@@ -23,6 +25,8 @@
     {% for file in files %}
         <tr class="trash-parent editable-parent save-parent"
             data-type="MyFiles">
+            <td></td> {# checkbox #}
+            <td class="mass-action-remove-file-path d-none">{{ file[KEY_FILE_FULL_PATH] }}</td> {# filepath used for mass acction - remove #}
             <td class="{{ KEY_FILE_NAME }}">
                 {% include 'modules/my-files/components/file-icon.html.twig' with {'extension': file[KEY_FILE_EXTENSION]} %}
                 {{ file[KEY_FILE_NAME] }}
@@ -61,3 +65,10 @@
 
     </tbody>
 </table>
+
+{# TODO: make twig tpl from this #}
+<section class="datatable-mass-actions">
+    <button class="btn btn-sm datatable-remove-records" data-target-table-selector="#MyFiles">
+        Remove files
+    </button>
+</section>
