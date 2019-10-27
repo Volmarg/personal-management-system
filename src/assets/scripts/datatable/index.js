@@ -23,7 +23,8 @@ export default (function () {
         selectors: {
             classes:{
                 massActionButtons               : ".datatable-mass-actions",
-                massActionRemoveRecordsButton   : ".datatable-remove-records",
+                massActionRemoveFilesButton     : ".datatable-remove-files",
+                massActionTransferFilesButton   : ".datatable-transfer-files",
                 checkboxCell                    : ".select-checkbox"
             },
             attributes: {
@@ -82,10 +83,15 @@ export default (function () {
 
             this.attachSelectingCheckboxForCheckboxCell(table);
 
-            let massActionRemoveRecordsButton = $(massActionButtons).find(this.selectors.classes.massActionRemoveRecordsButton);
+            let massActionRemoveFilesButton   = $(massActionButtons).find(this.selectors.classes.massActionRemoveFilesButton);
+            let massActionTransferFilesButton = $(massActionButtons).find(this.selectors.classes.massActionTransferFilesButton);
 
-            if( 0 !==  $(massActionRemoveRecordsButton).length ){ // replace selector for files
-                this.attachFilesRemoveEventOnRemoveFileButton(massActionRemoveRecordsButton);
+            if( 0 !==  $(massActionRemoveFilesButton).length ){ // replace selector for files
+                this.attachFilesRemoveEventOnRemoveFileButton(massActionRemoveFilesButton);
+            }
+
+            if( 0 !==  $(massActionTransferFilesButton).length ){
+                this.attachFilesTransferEventOnTransferFileButton(massActionTransferFilesButton);
             }
 
         },
@@ -152,6 +158,38 @@ export default (function () {
                     }
                 });
 
+            });
+        },
+        /**
+         * This function is written specifically for files module
+         * @param massActionRemoveRecordsButton
+         */
+        attachFilesTransferEventOnTransferFileButton: function(massActionRemoveRecordsButton){
+            let _this = this;
+            $(massActionRemoveRecordsButton).on('click', () => {
+                let targetTableSelector     = $(massActionRemoveRecordsButton).attr(_this.selectors.attributes.targetTable);
+                let table                   = $(targetTableSelector);
+                let dataTable               = $(table).DataTable();
+                let selectedRows            = dataTable.rows( { selected: true } );
+                let pathsOfFilesToTransfer  = [];
+
+                if( 0 === selectedRows.count() ){
+                    return;
+                }
+
+                let filePathCellIndex         = selectedRows.row(1).cell('.mass-action-remove-file-path').index().column;
+                let fileSubdirectoryCellIndex = selectedRows.row(1).cell('.mass-action-remove-file-subdirectory').index().column;
+                let subdirectory              = '';
+
+                selectedRows.indexes().each((index) => {
+                    let rowData  = selectedRows.row(index).data();
+                    let filePath = rowData[filePathCellIndex];
+
+                    pathsOfFilesToTransfer.push(filePath);
+                    subdirectory = rowData[fileSubdirectoryCellIndex];
+                });
+
+                dialogs.ui.dataTransfer.buildDataTransferDialog(pathsOfFilesToTransfer, 'My Files');
             });
         },
         attachSelectingCheckboxForCheckboxCell: function(table){

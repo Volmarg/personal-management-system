@@ -11,6 +11,7 @@ namespace App\Controller\Utils;
 
 use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Application extends AbstractController {
@@ -35,11 +36,17 @@ class Application extends AbstractController {
      */
     public $translator;
 
-    public function __construct(Repositories $repositories, Forms $forms, EntityManagerInterface $em) {
-        $this->repositories = $repositories;
-        $this->forms = $forms;
-        $this->em = $em;
-        $this->translator = new Translator();
+    /**
+     * @var LoggerInterface $logger
+     */
+    public $logger;
+
+    public function __construct(Repositories $repositories, Forms $forms, EntityManagerInterface $em, LoggerInterface $logger) {
+        $this->repositories     = $repositories;
+        $this->logger           = $logger;
+        $this->forms            = $forms;
+        $this->em               = $em;
+        $this->translator       = new Translator();
     }
 
     /**

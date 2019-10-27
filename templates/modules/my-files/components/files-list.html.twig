@@ -70,9 +70,8 @@
     </tbody>
 </table>
 
-{# TODO: make twig tpl from this #}
-<section class="datatable-mass-actions">
-    <button class="btn btn-sm datatable-remove-records" data-target-table-selector="#MyFiles">
-        Remove files
-    </button>
-</section>
+{% include 'modules/common/components/datatable-mass-actions.html.twig' with {
+    "remove_files"               : true,
+    "copy_files"                 : true,
+    "data_target_table_selector" : "#MyFiles"
+}%}

@@ -68,8 +68,8 @@ class Dialogs extends AbstractController
      */
     public function buildDataTransferDialogBody(Request $request) {
 
-        if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_CURRENT_PATH;
+        if( !$request->request->has(FilesHandler::KEY_FILES_CURRENT_PATHS) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FilesHandler::KEY_FILES_CURRENT_PATHS;
             return new JsonResponse([
                 'errorMessage' => $message
             ]);
@@ -92,15 +92,26 @@ class Dialogs extends AbstractController
         }
 
         // in ligthgallery.html.twig
-        $file_current_path = FilesHandler::trimFirstAndLastSlash($request->request->get(static::KEY_FILE_CURRENT_PATH));
+        $files_current_paths = $request->request->get(FilesHandler::KEY_FILES_CURRENT_PATHS);
 
-        $file = new File($file_current_path);
+        //check if any of the files path is invalid
+        foreach($files_current_paths as $file_current_path){
 
-        if( !$file->isFile() ){
-            $message = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
-            return new JsonResponse([
+            $message       = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
+            $response_data = [
                 'errorMessage' => $message
-            ]);
+            ];
+
+            try{
+                $file = new File($file_current_path);
+
+                if( !$file->isFile() ){
+                    return new JsonResponse($response_data);
+                }
+            }catch(\Exception $e) {
+                return new JsonResponse($response_data);
+            }
+
         }
 
         $all_upload_based_modules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
@@ -108,7 +119,8 @@ class Dialogs extends AbstractController
         $form_data  = [
             FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
         ];
-        $form = $this->app->forms->moveSingleFile($form_data);
+
+        $form = $this->app->forms->moveSingleFile($form_data); //todo: change name to moveFiles
 
         $template_data = [
             'form' => $form->createView()

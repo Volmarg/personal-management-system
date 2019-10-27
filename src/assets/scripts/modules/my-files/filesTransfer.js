@@ -33,7 +33,6 @@ export default (function () {
                 $(this.elements.fileTransferButton).on('click', (event) => {
                     let clickedButton           = $(event.target);
                     let tr                      = $(clickedButton).closest('tr');
-                    let fileName                = $(tr).find('.file_name').text();
                     let fileCurrentPath         = $(tr).find('[name^="file_full_path"]').val();
 
                     let callback = function (){
@@ -42,7 +41,7 @@ export default (function () {
                         ui.crud.removeDataTableTableRow(table_id, parent_wrapper);
                     };
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, fileCurrentPath, 'My Files', callback);
+                    dialogs.ui.dataTransfer.buildDataTransferDialog([fileCurrentPath], 'My Files', callback);
                 });
 
             }

@@ -10,6 +10,7 @@ use App\Services\FilesHandler;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Json;
 
 class FilesController extends AbstractController {
+
+    const KEY_RESPONSE_CODE     = 'response_code';
+
+    const KEY_RESPONSE_MESSAGE  = 'response_message';
+
+    const KEY_RESPONSE_DATA         = 'response_data';
+
+    const KEY_RESPONSE_ERRORS_DATA  = 'response_errors_data';
 
     /**
      * @var Application $app
@@ -75,6 +84,98 @@ class FilesController extends AbstractController {
 
 
     /**
+     * @Route("/files/action/move-multiple-files", name="move_multiple_multiple", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
+     */
+    public function moveMultipleFilesViaPost(Request $request){
+
+        if( !$request->request->has(FilesHandler::KEY_FILES_CURRENT_PATHS) ){
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FilesHandler::KEY_FILES_CURRENT_PATHS;
+            throw new \Exception($message);
+        }
+
+        if (!$request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR)) {
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR;
+            throw new \Exception($message);
+        }
+
+        if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR)) {
+            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR;
+            throw new \Exception($message);
+        }
+
+        /** @info: this will be used to build single file transfer for each path */
+        $files_current_paths = $request->request->get(FilesHandler::KEY_FILES_CURRENT_PATHS);
+
+        $response_errors_data  = [];
+        $response_success_data = [];
+
+        foreach($files_current_paths as $file_current_path){
+            $target_module_upload_dir                      = $request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+            $subdirectory_target_path_in_module_upload_dir = $request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+
+            $request = new Request();
+            $request->request->set(FilesHandler::KEY_FILE_CURRENT_PATH, $file_current_path);
+            $request->request->set(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, $target_module_upload_dir);
+            $request->request->set(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, $subdirectory_target_path_in_module_upload_dir);
+
+            try{
+                $response = $this->moveSingleFileViaPost($request);
+            }catch(Exception $e){
+                $message  = ""; //add message here
+                $response = new Response($message);
+                return $response;
+            }
+            $response_data = json_decode($response->getContent());
+
+            if( array_key_exists(self::KEY_RESPONSE_CODE, $response_data) ){
+
+                if( $request[self::KEY_RESPONSE_CODE] >= 300){
+                    $response_errors_data[] = [
+                        self:: KEY_RESPONSE_DATA            => $response_data,
+                        FilesHandler::KEY_FILE_CURRENT_PATH => $file_current_path,
+                    ];
+                }else{
+                    $response_success_data = $response_data;
+                }
+
+            }
+
+        }
+
+        //all files copied
+        if( empty($response_success_data) ){
+            $message = $this->app->translator->translate('responses.files.filesHasBeenSuccesfullyMoved');
+            $code    = 200;
+        }else{
+
+            // all failed
+            $message = $this->app->translator->translate('responses.files.couldNotTheFiles');
+            $code    = 500;
+
+            // some failed
+            if( !empty($response_success_data) && !empty($response_errors_data) ) {
+                $message = $this->app->translator->translate('responses.files.couldNotMoveSomeFiles');
+                $code    = 202;
+            }
+
+            $this->app->logger->warning($message, [
+                self::KEY_RESPONSE_ERRORS_DATA => $response_errors_data
+            ]);
+        }
+
+        $response_data = [
+            self::KEY_RESPONSE_MESSAGE => $message,
+            self::KEY_RESPONSE_CODE    => $code,
+        ];
+
+        return new JsonResponse($response_data);
+
+    }
+
+    /**
      * @Route("/files/action/move-single-file", name="move_single_file", methods="POST")
      * @param Request $request
      * @return Response
@@ -116,8 +217,8 @@ class FilesController extends AbstractController {
         $response = $this->filesHandler->moveSingleFile($current_file_location, $target_file_location);
 
         $response_data = [
-            'response_message' => $response->getContent(),
-            'response_code'    => $response->getStatusCode(),
+            self::KEY_RESPONSE_MESSAGE => $response->getContent(),
+            self::KEY_RESPONSE_CODE    => $response->getStatusCode(),
         ];
 
         return new JsonResponse($response_data);

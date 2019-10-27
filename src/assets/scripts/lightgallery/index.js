@@ -303,12 +303,9 @@ export default (function () {
             if( $(button).length > 0 ){
 
                 $(button).on('click', (event) => {
-                    let clickedButton           = $(event.target);
-                    let buttonsToolbar          = $(clickedButton).closest(_this.selectors.classes.upperToolbar);
-                    let galleryMainWrapper      = $(clickedButton).closest(_this.selectors.classes.galleryMainWrapper);
-
-                    let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
-                    let fileName                = $(galleryMainWrapper).find(_this.selectors.classes.currentViewedFilename).text();
+                    let clickedButton   = $(event.target);
+                    let buttonsToolbar  = $(clickedButton).closest(_this.selectors.classes.upperToolbar);
+                    let fileCurrentPath = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
 
                     let callback = function (){
                         _this.removeImageWithMiniature(fileCurrentPath);
@@ -317,7 +314,7 @@ export default (function () {
 
                     let escapedFileCurrentPath = ( fileCurrentPath.indexOf('/') === 0 ? fileCurrentPath.replace("/", "") : fileCurrentPath ) ;
 
-                    dialogs.ui.dataTransfer.buildDataTransferDialog(fileName, escapedFileCurrentPath, 'My Images', callback);
+                    dialogs.ui.dataTransfer.buildDataTransferDialog([escapedFileCurrentPath], 'My Images', callback);
                 });
 
             }

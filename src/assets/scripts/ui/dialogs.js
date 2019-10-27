@@ -18,6 +18,7 @@ export default (function () {
             },
             classes: {
                 fileTransferButton      : '.file-transfer',
+                filesTransferButton     : '.files-transfer',
                 bootboxModalMainWrapper : '.modal-dialog'
             },
             other: {
@@ -31,27 +32,36 @@ export default (function () {
             categoryId          : "%categoryId%"
         },
         messages: {
+            doYouReallyWantToMoveSelectedFiles: "Do You really want to move selected files?"
         },
         methods: {
             moveSingleFile                  : '/files/action/move-single-file',
+            moveMultipleFiles               : '/files/action/move-multiple-files',
             updateTagsForMyImages           : '/api/my-images/update-tags',
             getDataTransferDialogTemplate   : '/dialog/body/data-transfer',
             getTagsUpdateDialogTemplate     : '/dialog/body/tags-update',
             getNotePreviewDialogTemplate    : '/dialog/body/note-preview/%noteId%/%categoryId%',
         },
         vars: {
-            fileCurrentPath : '',
-            tags            : ''
+            fileCurrentPath     : '',
+            filesCurrentPaths   : '',
+            tags                : ''
         },
         dataTransfer: {
-            buildDataTransferDialog: function (fileName, fileCurrentPath, moduleName, callback = null) {
-                dialogs.ui.vars.fileCurrentPath = fileCurrentPath;
+            /**
+             *
+             * @param filesCurrentPaths array
+             * @param moduleName string
+             * @param callback function
+             */
+            buildDataTransferDialog: function (filesCurrentPaths, moduleName, callback = null) {
+                dialogs.ui.vars.filesCurrentPaths = filesCurrentPaths;
                 let _this = this;
                 let getDataTransferDialogTemplate = dialogs.ui.methods.getDataTransferDialogTemplate;
 
                 let data = {
-                    'fileCurrentPath': fileCurrentPath,
-                    'moduleName'     : moduleName
+                    'files_current_locations' : filesCurrentPaths,
+                    'moduleName'              : moduleName
                 };
 
                 ui.widgets.loader.toggleLoader();
@@ -63,10 +73,7 @@ export default (function () {
                     ui.widgets.loader.toggleLoader();
 
                     if( undefined !== data['template'] ){
-
-                        let message = data['template'].replace(dialogs.ui.placeholders.fileName, fileName);
-                        _this.callDataTransferDialog(message, callback);
-
+                        _this.callDataTransferDialog(data['template'], callback);
                     } else if(undefined !== data['errorMessage']) {
                         bootstrap_notifications.notify(data['errorMessage'], 'danger');
                     }else{
@@ -114,20 +121,21 @@ export default (function () {
                 });
             },
             makeAjaxCallForDataTransfer(callback = null){
-
-                let fileCurrentPath             = dialogs.ui.vars.fileCurrentPath;
+                // todo: change single file data transfer after these changes
+                // todo: check if naming is correct [ moving/ not copying]
+                let filesCurrentPaths           = dialogs.ui.vars.filesCurrentPaths;
                 let targetUploadModuleDirInput  = $(dialogs.ui.selectors.ids.targetUploadModuleDirInput).val();
                 let targetSubdirectoryPath      = $(dialogs.ui.selectors.ids.targetSubdirectoryTypeInput).val();
 
                 let data = {
-                    'file_current_location'                         : fileCurrentPath,
+                    'files_current_locations'                       : filesCurrentPaths,
                     'target_upload_module_dir'                      : targetUploadModuleDirInput,
                     'subdirectory_target_path_in_module_upload_dir' : targetSubdirectoryPath
                 };
                 ui.widgets.loader.toggleLoader();
                 $.ajax({
                     method: "POST",
-                    url:dialogs.ui.methods.moveSingleFile,
+                    url:dialogs.ui.methods.moveMultipleFiles,
                     data: data
                 }).always( (data) => {
                     ui.widgets.loader.toggleLoader();
@@ -147,6 +155,7 @@ export default (function () {
                     }else{
                         notifyType = 'danger';
                     }
+                    // todo: add === 200, >200 <300 else // color warning
 
                     // not checking if code is set because if message is then code must be also
                     if( undefined !== message ){
