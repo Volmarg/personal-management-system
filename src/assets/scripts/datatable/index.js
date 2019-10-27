@@ -1,6 +1,7 @@
 import * as $ from 'jquery';
 import 'datatables';
 import 'datatables.net-select';
+var bootbox = require('bootbox');
 
 export default (function () {
     window.datatable = {};
@@ -31,6 +32,9 @@ export default (function () {
         },
         destroy: function (table_id) {
             $('#' + table_id).DataTable().destroy();
+        },
+        api: {
+          removeFiles: '/my-files/remove-file'
         },
         init: function () {
             let _this = this;
@@ -100,18 +104,52 @@ export default (function () {
                 let dataTable               = $(table).DataTable();
                 let selectedRows            = dataTable.rows( { selected: true } );
                 let pathsOfFilesToRemove    = [];
+                let url                     = _this.api.removeFiles;
 
                 if( 0 === selectedRows.count() ){
                     return;
                 }
 
-                let filePathCellIndex  = selectedRows.row(1).cell('.mass-action-remove-file-path').index().column;
+                let filePathCellIndex           = selectedRows.row(1).cell('.mass-action-remove-file-path').index().column;
+                let fileSubdirectoryCellIndex   = selectedRows.row(1).cell('.mass-action-remove-file-subdirectory').index().column;
+                let subdirectory                = '';
 
                 selectedRows.indexes().each((index) => {
                     let rowData  = selectedRows.row(index).data();
                     let filePath = rowData[filePathCellIndex];
 
                     pathsOfFilesToRemove.push(filePath);
+                    subdirectory = rowData[fileSubdirectoryCellIndex];
+                });
+
+                let data = {
+                    'files_full_paths': pathsOfFilesToRemove,
+                    'subdirectory'    : subdirectory
+                };
+
+                bootbox.confirm({
+                    message: "Do You really want to remove selected files?",
+                    backdrop: true,
+                    callback: function (result) {
+                        if (result) {
+                            ui.widgets.loader.showLoader();
+                            $.ajax({
+                                url: url,
+                                method: "POST",
+                                data: data,
+                                success: (template) => {
+                                    bootstrap_notifications.notify("Files have been removed", 'success');
+
+                                    $('.twig-body-section').html(template);
+                                    initializer.reinitialize();
+                                },
+                            }).fail(() => {
+                                bootstrap_notifications.notify("There was an error while trying to remove the files", 'danger')
+                            }).always(() => {
+                                ui.widgets.loader.hideLoader();
+                            });
+                        }
+                    }
                 });
 
             });

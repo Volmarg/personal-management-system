@@ -11,8 +11,9 @@
 <table id="MyFiles" class="table table-striped table-bordered" cellspacing="0" data-table="true" data-table-checkboxes="true" width="100%">
     <thead>
     <tr>
-        <td></td> {# checkbox #}
-        <td class="d-none"></td>
+        <td></td>                   {# checkbox #}
+        <td class="d-none"></td>    {# filepath used for mass acction - remove #}
+        <td class="d-none"></td>    {# subdirectory used for mass acction - remove #}
         <td>{{ translate('files.table.name') }}</td>
         <td>{{ translate('files.table.extension') }}</td>
         <td>{{ translate('files.table.size') }}</td>
@@ -27,8 +28,9 @@
             data-type="MyFiles">
             <td>
                 {% include 'page-elements/components/forms/input-rounded-checkbox.twig'%}
-            </td> {# checkbox #}
-            <td class="mass-action-remove-file-path d-none">{{ file[KEY_FILE_FULL_PATH] }}</td> {# filepath used for mass acction - remove #}
+            </td>                                                                                   {# checkbox #}
+            <td class="mass-action-remove-file-path d-none">{{ file[KEY_FILE_FULL_PATH] }}</td>     {# filepath used for mass acction - remove #}
+            <td class="mass-action-remove-file-subdirectory d-none">{{ subdirectory_path }}</td>    {# subdriectory used for mass acction - remove #}
             <td class="{{ KEY_FILE_NAME }}">
                 {% include 'modules/my-files/components/file-icon.html.twig' with {'extension': file[KEY_FILE_EXTENSION]} %}
                 {{ file[KEY_FILE_NAME] }}
