@@ -12,6 +12,7 @@
     <script>
         var TWIG_GET_ATTRS = '{{ getAttrs | json_encode | raw }}';
         var TWIG_ROUTE     = '{{ app.request.attributes.get('_route') }}';
+        var TWIG_REQUEST_URI    = '{{ app.request.requestUri }}';
     </script>
 {% endblock %}
 

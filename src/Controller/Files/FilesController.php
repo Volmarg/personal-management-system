@@ -113,8 +113,8 @@ class FilesController extends AbstractController {
         $response_success_data = [];
 
         foreach($files_current_paths as $file_current_path){
-            $target_module_upload_dir                      = $request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
-            $subdirectory_target_path_in_module_upload_dir = $request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+            $target_module_upload_dir                      = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+            $subdirectory_target_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
 
             $request = new Request();
             $request->request->set(FilesHandler::KEY_FILE_CURRENT_PATH, $file_current_path);
@@ -124,15 +124,15 @@ class FilesController extends AbstractController {
             try{
                 $response = $this->moveSingleFileViaPost($request);
             }catch(Exception $e){
-                $message  = ""; //add message here
+                $message  = $this->app->translator->translate("responses.files.thereWasAnErrorWhileTryingToMoveFile");
                 $response = new Response($message);
                 return $response;
             }
-            $response_data = json_decode($response->getContent());
+            $response_data = json_decode($response->getContent(), true);
 
             if( array_key_exists(self::KEY_RESPONSE_CODE, $response_data) ){
 
-                if( $request[self::KEY_RESPONSE_CODE] >= 300){
+                if( $response->getStatusCode() >= 300){
                     $response_errors_data[] = [
                         self:: KEY_RESPONSE_DATA            => $response_data,
                         FilesHandler::KEY_FILE_CURRENT_PATH => $file_current_path,
@@ -146,7 +146,7 @@ class FilesController extends AbstractController {
         }
 
         //all files copied
-        if( empty($response_success_data) ){
+        if( empty($response_errors_data) ){
             $message = $this->app->translator->translate('responses.files.filesHasBeenSuccesfullyMoved');
             $code    = 200;
         }else{

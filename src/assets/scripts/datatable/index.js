@@ -189,7 +189,16 @@ export default (function () {
                     subdirectory = rowData[fileSubdirectoryCellIndex];
                 });
 
-                dialogs.ui.dataTransfer.buildDataTransferDialog(pathsOfFilesToTransfer, 'My Files');
+                let callback = function (){
+                    if( "undefined" === typeof TWIG_REQUEST_URI ){
+                        throw({
+                           "message" : "Variable TWIG_REQUEST_URI was not defined."
+                        });
+                    }
+                    ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                };
+
+                dialogs.ui.dataTransfer.buildDataTransferDialog(pathsOfFilesToTransfer, 'My Files', callback);
             });
         },
         attachSelectingCheckboxForCheckboxCell: function(table){

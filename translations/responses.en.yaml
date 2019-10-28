@@ -17,6 +17,7 @@ responses:
     couldNotMoveTheFile: "Could not move the file."
     couldNotMoveSomeFiles: "Could not move some files."
     couldNotTheFiles: "Could not move the files."
+    thereWasAnErrorWhileTryingToMoveFile: "There was an error while trying to move file"
     #
     currentUploadTypeIsMissingInRequest: "Current upload type is missing in request."
     targetUploadTypeIsMissingInRequest: "Target upload type is missing in request."

@@ -121,8 +121,6 @@ export default (function () {
                 });
             },
             makeAjaxCallForDataTransfer(callback = null){
-                // todo: change single file data transfer after these changes
-                // todo: check if naming is correct [ moving/ not copying]
                 let filesCurrentPaths           = dialogs.ui.vars.filesCurrentPaths;
                 let targetUploadModuleDirInput  = $(dialogs.ui.selectors.ids.targetUploadModuleDirInput).val();
                 let targetSubdirectoryPath      = $(dialogs.ui.selectors.ids.targetSubdirectoryTypeInput).val();
@@ -152,10 +150,15 @@ export default (function () {
                         }
 
                         notifyType = 'success'
+                    }else if( responseCode >200 && responseCode < 300){
+                        if( 'function' === typeof(callback) ){
+                            callback();
+                            bootbox.hideAll()
+                        }
+                        notifyType = 'warning';
                     }else{
                         notifyType = 'danger';
                     }
-                    // todo: add === 200, >200 <300 else // color warning
 
                     // not checking if code is set because if message is then code must be also
                     if( undefined !== message ){
