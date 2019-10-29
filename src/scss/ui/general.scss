@@ -119,3 +119,8 @@ h3{
 .dataTables_wrapper {
   width: 100%;
 }
+
+.dataTable tbody tr td .checkbox label::before,
+.dataTable tbody tr td .checkbox label::after{
+  left: inherit !important;
+}

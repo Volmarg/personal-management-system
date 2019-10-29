@@ -206,6 +206,9 @@ files:
     extension: Extension
     size: Size (mb)
     tags: Tags
+  massActions:
+    remove: Remove files
+    transferFiles: Transfer files
 
 upload:
   settings:

@@ -1,16 +1,15 @@
-{# Add strings to translator #}
 <div class="row" style="width: 100%;">
         <section class="datatable-mass-actions">
 
                 {% if remove_files is defined and remove_files %}
-                        <button class="btn btn-sm btn-primary datatable-remove-files" data-target-table-selector="{{ data_target_table_selector }}">
-                                Remove files
+                        <button class="btn btn-sm btn-primary datatable-remove-files disabled" data-target-table-selector="{{ data_target_table_selector }}">
+                                {{ translate('files.massActions.remove') }}
                         </button>
                 {% endif %}
 
                 {% if copy_files is defined and copy_files %}
-                        <button class="btn btn-sm btn-primary datatable-transfer-files" data-target-table-selector="{{ data_target_table_selector }}">
-                                Transfer files
+                        <button class="btn btn-sm btn-primary datatable-transfer-files disabled" data-target-table-selector="{{ data_target_table_selector }}">
+                            {{ translate('files.massActions.transferFiles') }}
                         </button>
                 {% endif %}
 

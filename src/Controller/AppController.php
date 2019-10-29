@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Application;
+use phpseclib\Net\SFTP;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;

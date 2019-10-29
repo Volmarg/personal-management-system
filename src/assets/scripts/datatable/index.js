@@ -22,7 +22,7 @@ export default (function () {
         },
         selectors: {
             classes:{
-                massActionButtons               : ".datatable-mass-actions",
+                massActionButtonsSection        : ".datatable-mass-actions",
                 massActionRemoveFilesButton     : ".datatable-remove-files",
                 massActionTransferFilesButton   : ".datatable-transfer-files",
                 checkboxCell                    : ".select-checkbox"
@@ -75,18 +75,20 @@ export default (function () {
         initSelectOptions: function(table){
             // TODO: check how this behaves for 2 tables like Payments Products
 
-            let massActionButtons = $(this.selectors.classes.massActionButtons);
+            let massActionButtonsSection = $(this.selectors.classes.massActionButtonsSection);
+            let massActionButtons        = $(massActionButtonsSection).find('button');
             // Buttons MUST be there for this options logic
             if( 0 === $(massActionButtons).length ){
                 return;
             }
 
             this.attachSelectingCheckboxForCheckboxCell(table);
+            this.attachEnablingAndDisablingMassActionButtonsToCheckboxCells(table, massActionButtons);
 
-            let massActionRemoveFilesButton   = $(massActionButtons).find(this.selectors.classes.massActionRemoveFilesButton);
-            let massActionTransferFilesButton = $(massActionButtons).find(this.selectors.classes.massActionTransferFilesButton);
+            let massActionRemoveFilesButton   = $(massActionButtonsSection).find(this.selectors.classes.massActionRemoveFilesButton);
+            let massActionTransferFilesButton = $(massActionButtonsSection).find(this.selectors.classes.massActionTransferFilesButton);
 
-            if( 0 !==  $(massActionRemoveFilesButton).length ){ // replace selector for files
+            if( 0 !==  $(massActionRemoveFilesButton).length ){
                 this.attachFilesRemoveEventOnRemoveFileButton(massActionRemoveFilesButton);
             }
 
@@ -215,6 +217,27 @@ export default (function () {
                 }else{
                     utils.domAttributes.setChecked(checkbox)
                 }
+
+            });
+
+        },
+        attachEnablingAndDisablingMassActionButtonsToCheckboxCells: function(table, massActionButtons){
+            let dataTable = $(table).DataTable();
+
+            dataTable.on('select deselect', () => {
+                let selectedRows      = dataTable.rows( { selected: true } );
+                let selectedRowsCount = 0;
+
+                selectedRows.indexes().each((index) => {
+                    selectedRowsCount++;
+                });
+
+                if( 0 === selectedRowsCount ){
+                    $(massActionButtons).addClass('disabled');
+                    return;
+                }
+
+                $(massActionButtons).removeClass('disabled');
 
             });
 
