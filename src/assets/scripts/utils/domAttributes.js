@@ -147,8 +147,8 @@ export default (function () {
         /**
          * Will check if provided element is a checkbox, and if not then exception will be thrown,
          * or exception will be skipped if second param will be passed
-         * @param element
-         * @param throwException
+         * @param element {object}
+         * @param throwException {boolean}
          */
         isCheckbox(element, throwException = true){
             let type = $(element).attr('type');
@@ -168,7 +168,7 @@ export default (function () {
         },
         /**
          * Will mark checkbox as checked
-         * @param element
+         * @param element {object}
          */
         setChecked: function(element){
             if( this.isCheckbox(element) ){
@@ -177,7 +177,7 @@ export default (function () {
         },
         /**
          * Will uncheck checkbox
-         * @param element
+         * @param element {object}
          */
         unsetChecked: function(element){
             if( this.isCheckbox(element) ){
@@ -186,6 +186,7 @@ export default (function () {
         },
         /**
          * Will check if checkbox is checked
+         * @param element {object}
          */
         isChecked: function(element){
             if( this.isCheckbox(element) ){
@@ -198,7 +199,31 @@ export default (function () {
 
                 return isInArray;
             }
-        }
+        },
+        /**
+         * Will check if checkbox is checked
+         * @param element {object}
+         * @return {boolean}
+         */
+        isDisabled: function(element){
+            let isDisabled = $(element).hasClass('disabled');
+            return isDisabled;
+        },
+        /**
+         * Will set disabled class
+         * @param element {object}
+         */
+        setDisabled: function(element){
+            $(element).addClass("disabled");
+        },
+        /**
+         * Will unset disabled class
+         * @param element {object}
+         */
+        unsetDisabled: function(element){
+            $(element).removeClass("disabled");
+        },
+
     };
 
 

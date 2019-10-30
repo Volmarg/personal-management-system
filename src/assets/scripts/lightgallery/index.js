@@ -27,15 +27,21 @@ export default (function () {
                 tagsManageButton        : '#lightgallery_manage_tags_button'
             },
             classes: {
-                upperToolbar            : '.lg-toolbar',
-                thumbnails              : '.lg-thumb',
-                nextButton              : '.lg-next ',
-                downloadButton          : '.lg-download',
-                currentViewedImage      : '.lg-current',
-                imagePreviewWrapper     : '.lg-inner',
-                currentViewedFilename   : '.lg-sub-html',
-                galleryMainWrapper      : '.lg',
-                textHolderCaption       : '.caption-text-holder'
+                upperToolbar                : '.lg-toolbar',
+                thumbnails                  : '.lg-thumb',
+                nextButton                  : '.lg-next ',
+                downloadButton              : '.lg-download',
+                currentViewedImage          : '.lg-current',
+                imagePreviewWrapper         : '.lg-inner',
+                currentViewedFilename       : '.lg-sub-html',
+                galleryMainWrapper          : '.lg',
+                textHolderCaption           : '.caption-text-holder',
+                massActionRemoveButton      : '.mass-action-lightgallery-remove-images',
+                massActionTransferButton    : '.mass-action-lightgallery-transfer-images',
+                massActionButtons           : '.mass-action-lightgallery-button',
+            },
+            other: {
+                checkboxForImage:       '.checkbox-circle input'
             }
         },
         messages: {
@@ -55,7 +61,10 @@ export default (function () {
         init: function () {
             this.initGallery();
             this.addPlugins();
+            this.preventCheckboxEventTriggering();
+            this.handleWidgets();
             this.handleGalleryEvents();
+            this.handleCheckboxForImageInGalleryView();
         },
         initGallery: function(){
             if( $(this.selectors.ids.lightboxGallery).length > 0 ){
@@ -66,11 +75,41 @@ export default (function () {
 
             }
         },
+        reinitGallery: function(){
+            if( $(this.selectors.ids.lightboxGallery).length > 0 ){
+
+                $(this.selectors.ids.lightboxGallery).data('lightGallery').destroy(true);
+                this.initGallery();
+
+            }
+        },
         addPlugins: function(){
             this.addPluginRemoveFile();
             this.addPluginRenameFile();
             this.addPluginTransferFile();
             this.addPluginManageFileTags();
+        },
+        handleWidgets: function(){
+
+            let massActionRemoveButton   = $(this.selectors.classes.massActionRemoveButton);
+            let massActionTransferButton = $(this.selectors.classes.massActionTransferButton);
+
+            if( 0 === massActionRemoveButton.length )
+            {
+                throw({
+                    "message": "Mass action remove button (widget) was not found"
+                })
+            }
+
+            if( 0 === massActionTransferButton.length )
+            {
+                throw({
+                    "message": "Mass action transfer button (widget) was not found"
+                })
+            }
+
+            this.handleWidgetMassActionRemove(massActionRemoveButton);
+            this.handleWidgetMassActionTransfer(massActionTransferButton);
         },
         addPluginRemoveFile(){
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
@@ -425,8 +464,7 @@ export default (function () {
         },
         handleRebuildingEntireGalleryWhenClosingIt: function(lightboxGallery){
             // Handling rebuilding entire gallery when closing - needed because plugin somehows stores data in it's object not in storage
-            lightboxGallery.data('lightGallery').destroy(true);
-            this.initGallery();
+            this.reinitGallery();
         },
         handleClosingGalleryIfThereAreNoMoreImages: function(lightboxGallery) {
             let foundImages = $(lightboxGallery).find('img');
@@ -435,6 +473,78 @@ export default (function () {
             if( $(foundImages).length === 0 ){
                 $(closeButton).click();
             }
+        },
+        /**
+         * This function will prevent triggering events such as showing gallery for image in wrapper (click)
+         */
+        preventCheckboxEventTriggering:function(){
+            let lightboxGallery      = $(this.selectors.ids.lightboxGallery);
+            let checkboxesForImages  = ( lightboxGallery.find(this.selectors.other.checkboxForImage) );
+
+            checkboxesForImages.on('click', (event) => {
+                event.stopImmediatePropagation();
+            })
+        },
+        /**
+         * This function will handle toggling disability for mass action buttons, at least one image must be checked
+         * to remove the disabled class.
+         */
+        handleCheckboxForImageInGalleryView: function(){
+            let _this                = this;
+            let lightboxGallery      = $(this.selectors.ids.lightboxGallery);
+            let checkboxesForImages  = ( lightboxGallery.find(this.selectors.other.checkboxForImage) );
+
+            $(checkboxesForImages).on('change', () => {
+                let checkedCheckboxes = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
+                let massActionButtons = $(_this.selectors.classes.massActionButtons);
+
+                if( 0 !== $(checkedCheckboxes).length ){
+                    utils.domAttributes.unsetDisabled(massActionButtons);
+                    return false;
+                }
+
+                utils.domAttributes.setDisabled(massActionButtons);
+            })
+
+        },
+        /**
+         * This function will handle the mass action removal button
+         * @param button {object}
+         */
+        handleWidgetMassActionRemove: function(button){
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+            let _this           = this;
+
+            $(button).on('click', (event) => {
+                let isDisabled = utils.domAttributes.isDisabled(this);
+
+                if(isDisabled){
+                    return false;
+                }
+
+                let checkedCheckboxes  = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
+
+                $.each(checkedCheckboxes, (index, checkbox) => {
+                    utils.domAttributes.isCheckbox(checkbox);
+
+                    let imageWrapper     = $(checkbox).closest('.shuffle-item');
+                    let filePath         = $(imageWrapper).attr('data-src');
+
+                    _this.removeImageWithMiniature(filePath);
+                    _this.reinitGallery();
+
+                });
+
+            });
+
+        },
+        /**
+         * This function will handle the mass action transfer button
+         * @param button {object}
+         */
+        handleWidgetMassActionTransfer: function(button){
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+
         }
     }
 

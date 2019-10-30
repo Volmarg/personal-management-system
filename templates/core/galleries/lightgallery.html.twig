@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                         </div>
-                                                 {# Search #}
+                        {# Search #}
                         <div class="row col-4 flex-row-reverse">
                             <div class="row flex-row-reverse">
                                 <div class="">
@@ -82,6 +82,16 @@
                             >
                                 <div class="aspect aspect--16x9">
                                     <div class="aspect__inner">
+
+                                        <section class="image-checkbox" style="
+                                            position: absolute;
+                                            top: 10px;
+                                            left: 10px;
+                                            z-index: 999999999;
+                                        ">
+                                            {% include 'page-elements/components/forms/input-rounded-checkbox.twig' %}
+                                        </section>
+
                                         <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px; "/>
 
                                         <div class="caption-wrapper"></div>

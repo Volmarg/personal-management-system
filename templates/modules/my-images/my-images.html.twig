@@ -69,6 +69,21 @@
                     },
                     'style': "margin-top: 10px; background-color: #0062cc; opacity: .5;"
                 } %}
+
+                <script src=""></script>
+                {% include 'page-elements/components/widgets/trash-remove-icon.twig' with {
+                    'widgetName': "mass-action-lightgallery-remove-images",
+                    'style'     : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "classes"   : "disabled mass-action-lightgallery-remove-images mass-action-lightgallery-button"
+                } %}
+
+                <script src=""></script>
+                {% include 'page-elements/components/widgets/data-transfer-icon.twig' with {
+                    'widgetName': "mass-action-lightgallery-transfer-images",
+                    'style'     : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "classes"   : "disabled mass-action-lightgallery-transfer-images mass-action-lightgallery-button"
+                } %}
+
             </div>
 
         </div>

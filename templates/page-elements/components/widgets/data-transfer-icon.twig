@@ -1,0 +1,8 @@
+{% if style is not defined %}
+    {% set style = "" %}
+{% endif %}
+<div class="widget {{ widgetName }}-widget {{ classes }}" style="{{ style }}" data-widget="true">
+    <div class="fontawesome-centered">
+        <i class="fa fa-random" style="font-size: 25px; color: white;"></i>
+    </div>
+</div>
