@@ -45,7 +45,7 @@ export default (function () {
             }
         },
         messages: {
-            imageRemovalConfirmation    : "Do You want to remove this image?",
+            imageRemovalConfirmation    : "Do You want to remove this image/s?",
             imageNameEditConfirmation   : "Do You want to rename this image?",
         },
         apiUrls: {
@@ -114,7 +114,6 @@ export default (function () {
         addPluginRemoveFile(){
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
             let _this           = this;
-            var filePath        = '';
 
             // Handling removing images
             lightboxGallery.on('onAfterOpen.lg', function () {
@@ -123,44 +122,24 @@ export default (function () {
 
                 let trashButton     = $(_this.selectors.ids.trashButton);
                 let downloadButton  = $(_this.selectors.ids.downloadButton);
+                let filePath        = $(downloadButton).attr('href');
+
+                let callback = function(){
+                    // Rebuilding thumbnails etc
+                    _this.removeImageWithMiniature(filePath);
+                    _this.handleClosingGalleryIfThereAreNoMoreImages();
+                };
 
                 // Button click
                 $(trashButton).click(() => {
 
-                    // Confirmation box
                     bootbox.confirm({
-                        message: _this.messages.imageRemovalConfirmation,
+                        message: message,
                         backdrop: true,
                         callback: function (result) {
                             if (result) {
-
-                                let filePath        = $(downloadButton).attr('href');
-                                let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
-
-                                let data = {
-                                    "file_full_path":  escapedFilePath
-                                };
-
                                 //  File removal ajax
-                                ui.widgets.loader.toggleLoader();
-                                $.ajax({
-                                   method: "POST",
-                                   url:     _this.apiUrls.fileRemoval,
-                                   data:    data,
-                                   success: (data) => {
-                                        bootstrap_notifications.notify(data, 'success');
-
-                                        // Rebuilding thumbnails etc
-                                       _this.removeImageWithMiniature(filePath);
-                                       _this.handleClosingGalleryIfThereAreNoMoreImages(lightboxGallery);
-
-                                   },
-                                }).fail((data) => {
-                                    bootstrap_notifications.notify(data.responseText, 'danger')
-                                }).always(() => {
-                                    ui.widgets.loader.toggleLoader();
-                                });
-
+                                _this.callAjaxFileRemovalForImageLink(filePath, callback);
                             }
                         }
                     });
@@ -169,6 +148,33 @@ export default (function () {
 
             });
 
+        },
+        callAjaxFileRemovalForImageLink: function(filePath, callback = null){
+            let _this           = this;
+            let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
+
+            let data = {
+                "file_full_path":  escapedFilePath
+            };
+
+            ui.widgets.loader.toggleLoader();
+            $.ajax({
+                method: "POST",
+                url:     _this.apiUrls.fileRemoval,
+                data:    data,
+                success: (data) => {
+                    bootstrap_notifications.notify(data, 'success');
+
+                    if( 'function' === typeof(callback) ){
+                        callback();
+                    }
+
+                },
+            }).fail((data) => {
+                bootstrap_notifications.notify(data.responseText, 'danger')
+            }).always(() => {
+                ui.widgets.loader.toggleLoader();
+            });
         },
         addPluginRenameFile(){
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
@@ -203,7 +209,8 @@ export default (function () {
                                 let data = {
                                     file_new_name   :  newFileName,
                                     file_full_path  :  filePath.replace("/", "")
-                                }
+                                };
+
                                 ui.widgets.loader.toggleLoader();
                                 $.ajax({
                                     method: "POST",
@@ -466,9 +473,10 @@ export default (function () {
             // Handling rebuilding entire gallery when closing - needed because plugin somehows stores data in it's object not in storage
             this.reinitGallery();
         },
-        handleClosingGalleryIfThereAreNoMoreImages: function(lightboxGallery) {
-            let foundImages = $(lightboxGallery).find('img');
-            let closeButton = $('.lg-close');
+        handleClosingGalleryIfThereAreNoMoreImages: function() {
+            let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+            let foundImages     = $(lightboxGallery).find('img');
+            let closeButton     = $('.lg-close');
 
             if( $(foundImages).length === 0 ){
                 $(closeButton).click();
@@ -527,14 +535,18 @@ export default (function () {
                 $.each(checkedCheckboxes, (index, checkbox) => {
                     utils.domAttributes.isCheckbox(checkbox);
 
-                    let imageWrapper     = $(checkbox).closest('.shuffle-item');
-                    let filePath         = $(imageWrapper).attr('data-src');
+                    let imageWrapper = $(checkbox).closest('.shuffle-item');
+                    let filePath     = $(imageWrapper).attr('data-src');
 
-                    _this.removeImageWithMiniature(filePath);
-                    _this.reinitGallery();
+                    let callback = function(){
+                        // Rebuilding thumbnails etc
+                        _this.removeImageWithMiniature(filePath);
+                    };
 
+                    _this.callAjaxFileRemovalForImageLink(filePath, callback);
                 });
 
+                _this.reinitGallery();
             });
 
         },
