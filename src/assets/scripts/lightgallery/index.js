@@ -134,7 +134,7 @@ export default (function () {
                 $(trashButton).click(() => {
 
                     bootbox.confirm({
-                        message: message,
+                        message: _this.messages.imageRemovalConfirmation,
                         backdrop: true,
                         callback: function (result) {
                             if (result) {
@@ -532,21 +532,32 @@ export default (function () {
 
                 let checkedCheckboxes  = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
 
-                $.each(checkedCheckboxes, (index, checkbox) => {
-                    utils.domAttributes.isCheckbox(checkbox);
+                bootbox.confirm({
+                    message: _this.messages.imageRemovalConfirmation,
+                    backdrop: true,
+                    callback: function (result) {
+                        if (result) {
 
-                    let imageWrapper = $(checkbox).closest('.shuffle-item');
-                    let filePath     = $(imageWrapper).attr('data-src');
+                            $.each(checkedCheckboxes, (index, checkbox) => {
+                                utils.domAttributes.isCheckbox(checkbox);
 
-                    let callback = function(){
-                        // Rebuilding thumbnails etc
-                        _this.removeImageWithMiniature(filePath);
-                    };
+                                let imageWrapper = $(checkbox).closest('.shuffle-item');
+                                let filePath     = $(imageWrapper).attr('data-src');
 
-                    _this.callAjaxFileRemovalForImageLink(filePath, callback);
+                                let callback = function(){
+                                    // Rebuilding thumbnails etc
+                                    _this.removeImageWithMiniature(filePath);
+                                };
+
+                                _this.callAjaxFileRemovalForImageLink(filePath, callback);
+                            });
+
+                            _this.reinitGallery();
+
+                        }
+                    }
                 });
 
-                _this.reinitGallery();
             });
 
         },
