@@ -41,7 +41,8 @@ export default (function () {
                 massActionButtons           : '.mass-action-lightgallery-button',
             },
             other: {
-                checkboxForImage:       '.checkbox-circle input'
+                checkboxForImage:       '.checkbox-circle input',
+                checkboxForImageWrapper:'.checkbox-circle'
             }
         },
         messages: {
@@ -486,12 +487,37 @@ export default (function () {
          * This function will prevent triggering events such as showing gallery for image in wrapper (click)
          */
         preventCheckboxEventTriggering:function(){
-            let lightboxGallery      = $(this.selectors.ids.lightboxGallery);
-            let checkboxesForImages  = ( lightboxGallery.find(this.selectors.other.checkboxForImage) );
+            let lightboxGallery              = $(this.selectors.ids.lightboxGallery);
+            let checkboxesForImagesWrappers  = $( lightboxGallery.find(this.selectors.other.checkboxForImageWrapper) );
+            let checkboxesForImages          = $( lightboxGallery.find(this.selectors.other.checkboxForImage) );
+
+            $(checkboxesForImagesWrappers).on('click', (event) => {
+                event.stopImmediatePropagation();
+
+                let clickedElement  = event.currentTarget;
+                let isCheckbox      = utils.domAttributes.isCheckbox(clickedElement, false);
+
+                if( !isCheckbox ){
+                    let checkbox  = $(clickedElement).find('input');
+                    let isChecked = utils.domAttributes.isChecked(checkbox);
+
+                    if(isChecked){
+                        utils.domAttributes.unsetChecked(checkbox);
+                        $(checkbox).trigger('click');
+                        return false;
+                    }
+
+                    utils.domAttributes.setChecked(checkbox);
+                    $(checkbox).trigger('click');
+                }
+
+            });
+
 
             checkboxesForImages.on('click', (event) => {
                 event.stopImmediatePropagation();
             })
+
         },
         /**
          * This function will handle toggling disability for mass action buttons, at least one image must be checked

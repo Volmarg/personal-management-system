@@ -89,7 +89,9 @@
                                             left: 10px;
                                             z-index: 999999999;
                                         ">
-                                            {% include 'page-elements/components/forms/input-rounded-checkbox.twig' %}
+                                            {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
+                                                "wrapperStyles": "padding: 10px;"
+                                            }%}
                                         </section>
 
                                         <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px; "/>
