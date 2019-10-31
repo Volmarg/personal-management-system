@@ -179,16 +179,13 @@ export default (function () {
                     return;
                 }
 
-                let filePathCellIndex         = selectedRows.row(1).cell('.mass-action-remove-file-path').index().column;
-                let fileSubdirectoryCellIndex = selectedRows.row(1).cell('.mass-action-remove-file-subdirectory').index().column;
-                let subdirectory              = '';
+                let filePathCellIndex = selectedRows.row(1).cell('.mass-action-remove-file-path').index().column;
 
                 selectedRows.indexes().each((index) => {
                     let rowData  = selectedRows.row(index).data();
                     let filePath = rowData[filePathCellIndex];
 
                     pathsOfFilesToTransfer.push(filePath);
-                    subdirectory = rowData[fileSubdirectoryCellIndex];
                 });
 
                 let callback = function (){

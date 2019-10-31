@@ -57,7 +57,8 @@ export default (function () {
             KEY_FILE_FULL_PATH          : "file_full_path"
         },
         vars: {
-          currentFilename               : ''
+          currentFilename               : '',
+          moduleRoute                   : 'modules_my_images'
         },
         init: function () {
             this.initGallery();
@@ -94,6 +95,10 @@ export default (function () {
 
             let massActionRemoveButton   = $(this.selectors.classes.massActionRemoveButton);
             let massActionTransferButton = $(this.selectors.classes.massActionTransferButton);
+
+            if( TWIG_ROUTE !== this.vars.moduleRoute ){
+                return;
+            }
 
             if( 0 === massActionRemoveButton.length )
             {
@@ -593,6 +598,39 @@ export default (function () {
          */
         handleWidgetMassActionTransfer: function(button){
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+            let _this           = this;
+
+            $(button).on('click', (event) => {
+                let isDisabled = utils.domAttributes.isDisabled(this);
+
+                if(isDisabled){
+                    return false;
+                }
+
+                let checkedCheckboxes   = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
+                let imageWrappers       = $(checkedCheckboxes).closest('.shuffle-item');
+                let filePaths           = [];
+
+                $.each(imageWrappers, (index, wrapper) => {
+                    let filePath        = $(wrapper).attr('data-src');
+                    let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
+
+                    filePaths.push(escapedFilePath);
+                });
+
+                let callback = function (){
+                    if( "undefined" === typeof TWIG_REQUEST_URI ){
+                        throw({
+                            "message" : "Variable TWIG_REQUEST_URI was not defined."
+                        });
+                    }
+                    ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                    _this.reinitGallery();
+                };
+
+                dialogs.ui.dataTransfer.buildDataTransferDialog(filePaths, 'My Files', callback);
+
+            });
 
         }
     }
