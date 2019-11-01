@@ -1,3 +1,6 @@
+import * as $ from 'jquery';
+import 'datatables';
+import 'datatables.net-select';
 var bootbox = require('bootbox');
 
 export default (function () {
@@ -29,6 +32,7 @@ export default (function () {
                 submitButton                     : "#upload_form_submit",
                 selectedFilesList                : "#selectedFilesList",
                 maxAllowedFilesUploadCount       : "#maxAllowedFilesUploadCount",
+                uploadTable                      : "#uploadTable",
                 settings: {
                     subdirectoryRenameSubmit    : "#upload_subdirectory_rename_submit",
                     subdirectoryMoveDataSubmit  : "#upload_subdirectory_move_data_submit",
@@ -99,31 +103,23 @@ export default (function () {
             let _this = this;
 
             this.elements.fileSelectButton.on('change', function () {
-                _this.setSelectedFilesNamesAndSize();
+                let selectedFiles = $(_this.elements.filesInput)[0].files;
+
+                _this.setSelectedFilesSize(selectedFiles);
                 _this.setSelectedFilesCount();
+                _this.handleFillingDatatable(selectedFiles);
             });
         },
-        setSelectedFilesNamesAndSize: function () {
+        setSelectedFilesSize: function (selectedFiles) {
 
-            let selectedFiles    = $(this.elements.filesInput)[0].files;
-
-            $(this.elements.selectedFilesList).html('');
-            this.vars.filesNames          = [];
             this.vars.filesTotalSizeBytes = 0;
 
             for (let x = 0; x <= selectedFiles.length - 1 ; x++){
-                this.vars.filesNames.push(selectedFiles[x].name);
                 this.vars.filesTotalSizeBytes += selectedFiles[x].size;
-
-                let filesListWrapper = $("<LI>");
-                $(filesListWrapper).append(selectedFiles[x].name);
-                $(this.elements.selectedFilesList).append(filesListWrapper);
             }
 
-
             this.vars.filesTotalSizeMb = Math.floor(this.vars.filesTotalSizeBytes/this.vars.bytesInMb);
-            this.appendFilesNamesAndSizeToDom();
-
+            this.appendFilesSizeToDom();
         },
         setSelectedFilesCount: function () {
             let selectedFiles                    = $(this.elements.filesInput)[0].files;
@@ -146,7 +142,7 @@ export default (function () {
                 $(this.elements.submitButton).addClass("disabled");
             }
         },
-        appendFilesNamesAndSizeToDom: function(){
+        appendFilesSizeToDom: function(){
 
             $(this.elements.currentSizeContainer).html(this.vars.filesTotalSizeMb);
 
@@ -184,6 +180,45 @@ export default (function () {
                 _this.vars.filesTotalSizeBytes = 0;
             });
 
+        },
+        handleFillingDatatable: function(selectedFiles){
+            let uploadTable = $(this.selectors.id.uploadTable);
+            let dataTable   = $(uploadTable).DataTable();
+
+            dataTable.clear().draw();
+
+            for (let x = 0; x <= selectedFiles.length - 1 ; x++){
+
+                let fullFileName             = selectedFiles[x].name;
+
+                let filenameRegex            = /((.*)\.([^.]+))?$/;
+                let matches                  = filenameRegex.exec(fullFileName);
+
+                let fileNameWithoutExtension = matches[2];
+                let fileExtension            = matches[3];
+
+                let inputTagsString          = this.buildInput(x, 'tag', 'tags');
+                let inputFileNameString      = this.buildInput(x, 'fileName', 'form-control', fileNameWithoutExtension);
+                let inputFileExtensionString = this.buildInput(x, 'fileExtension', 'disabled form-control', fileExtension);
+
+                dataTable.row.add([
+                    x,
+                    inputFileNameString,
+                    inputFileExtensionString,
+                    inputTagsString
+                ]).draw( false );
+
+            }
+
+            ui.widgets.selectize.applyTagsSelectize();
+
+        },
+        buildInput: function(id, prefix, classes = '', value = '', dataValue = '{}'){
+            return `<input class="` + classes + `" 
+                            id="` + prefix+id + `" 
+                            name="upload_table[` + prefix + id + `]" 
+                            value="` + value + `" 
+                            data-value="` + dataValue + `"/>`;
         },
         settings: {
             addConfirmationBoxesToForms: function(){

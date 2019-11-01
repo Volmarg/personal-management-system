@@ -41,6 +41,11 @@ class FileUploadController extends AbstractController {
 
     const KEY_MAIN_FOLDER               = 'Main folder';
 
+    const KEY_TAG           = 'tag';
+    const KEY_FILENAME      = 'fileName';
+    const KEY_EXTENSION     = 'fileExtension';
+    const KEY_UPLOAD_TABLE  = 'upload_table';
+
     const MODULES_UPLOAD_DIRS = [
         self::MODULE_UPLOAD_DIR_FOR_IMAGES => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
         self::MODULE_UPLOAD_DIR_FOR_FILES  => self::MODULE_UPLOAD_DIR_FOR_FILES
@@ -207,13 +212,23 @@ class FileUploadController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             $form_data = $form->getData();
+            $upload_table_data = $request->request->get(self::KEY_UPLOAD_TABLE);
 
             $subdirectory       = $form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
             $upload_module_dir  = $form_data[static::KEY_UPLOAD_MODULE_DIR];
             $uploaded_files     = $form_data[FilesHandler::FILE_KEY];
             $max_file_uploads   = (int)ini_get('max_file_uploads');
 
-            foreach ($uploaded_files as $uploadedFile) {
+            foreach ($uploaded_files as $index => $uploadedFile) {
+
+                $file_extension_key  = self::KEY_EXTENSION . $index;
+                $filename_key        = self::KEY_FILENAME . $index;
+                $tag_key             = self::KEY_TAG . $index;
+
+                $filename   = $upload_table_data[$filename_key];
+                $extension  = $upload_table_data[$file_extension_key];
+                $tags       = $upload_table_data[$tag_key];
+
                 $uploaded_files_count = count($uploaded_files);
 
                 if( $uploaded_files_count > $max_file_uploads){
@@ -222,7 +237,7 @@ class FileUploadController extends AbstractController {
                     break;
                 }
 
-                $response = $this->fileUploader->upload($uploadedFile, $request, $upload_module_dir, $subdirectory);
+                $response = $this->fileUploader->upload($uploadedFile, $request, $upload_module_dir, $subdirectory, $filename, $extension, $tags);
             }
 
             $flash_type  = Utils::getFlashTypeForRequest($response);

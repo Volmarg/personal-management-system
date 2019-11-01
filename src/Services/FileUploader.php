@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Controller\Files\FilesTagsController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Controller\Files\FileUploadController;
@@ -57,10 +58,16 @@ class FileUploader extends AbstractController {
      */
     private $app;
 
-    public function __construct(LoggerInterface $logger, Application $app) {
-        $this->finder     = new Finder();
-        $this->logger     = $logger;
-        $this->app        = $app;
+    /**
+     * @var FilesTagsController $files_tags_controller
+     */
+    private $files_tags_controller;
+
+    public function __construct(LoggerInterface $logger, Application $app, FilesTagsController $files_tags_controller) {
+        $this->files_tags_controller = $files_tags_controller;
+        $this->finder                = new Finder();
+        $this->logger                = $logger;
+        $this->app                   = $app;
     }
 
     /**
@@ -68,10 +75,13 @@ class FileUploader extends AbstractController {
      * @param Request $request
      * @param string $type
      * @param string $subdirectory
+     * @param string $filename
+     * @param string $extension
+     * @param string $tags
      * @return Response
-     * @throws \Exception
+     * @throws Exceptions\ExceptionDuplicatedTranslationKey
      */
-    public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '') {
+    public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '', string $filename = '', string $extension = '', string $tags = '') {
 
         $message = $this->app->translator->translate('logs.upload.startedUploadingToSubdirectory') . $subdirectory;
         $this->logger->info($message);
@@ -87,9 +97,7 @@ class FileUploader extends AbstractController {
 
         $this->handleUploadDir();
 
-        $now                = new \DateTime();
-        $original_filename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $file_name          = $original_filename . '-' . uniqid() . '.' . $file->guessExtension();
+        $now = new \DateTime();
 
         switch($type){
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
@@ -105,8 +113,10 @@ class FileUploader extends AbstractController {
                 throw new \Exception($exc_message);
         }
 
-        if (file_exists($target_directory . '/' . $file_name)) {
-            $file_name .= '_' . $now->format('Y_m_d');
+
+        $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
+        if (file_exists($file_full_path)) {
+            $filename .= '_' . $now->format('Y_m_d') . DOT . $extension;
         }
 
         # check if the target folder is main folder
@@ -115,7 +125,9 @@ class FileUploader extends AbstractController {
         }
 
         try {
-            $file->move($target_directory, $file_name);
+            $file->move($target_directory, $filename);
+            $this->files_tags_controller->updateTags($tags, $file_full_path);
+
         } catch (FileException $e) {
             $message = $this->app->translator->translate('upload.errors.thereWasAnErrorWhileUploadingFiles');
             $this->logger->info($message, [
