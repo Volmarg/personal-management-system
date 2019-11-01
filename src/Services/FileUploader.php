@@ -113,6 +113,11 @@ class FileUploader extends AbstractController {
                 throw new \Exception($exc_message);
         }
 
+        $original_filename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $file_extension     = $file->guessExtension();
+
+        $extension = $extension ?: $file_extension;
+        $filename  = $filename  ?: $original_filename;
 
         $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
         if (file_exists($file_full_path)) {
@@ -126,7 +131,10 @@ class FileUploader extends AbstractController {
 
         try {
             $file->move($target_directory, $filename);
-            $this->files_tags_controller->updateTags($tags, $file_full_path);
+
+            if( !empty($tags) ){
+                $this->files_tags_controller->updateTags($tags, $file_full_path);
+            }
 
         } catch (FileException $e) {
             $message = $this->app->translator->translate('upload.errors.thereWasAnErrorWhileUploadingFiles');
