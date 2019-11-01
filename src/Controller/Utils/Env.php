@@ -2,6 +2,8 @@
 
 namespace App\Controller\Utils;
 
+use App\DTO\DatabaseCredentialsDTO;
+use mysql_xdevapi\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -27,6 +29,41 @@ class Env extends AbstractController {
 
     public static function getFilesUploadDir() {
         return $_ENV['FILES_UPLOAD_DIR'];
+    }
+
+    public static function getDatabaseUrl() {
+        return $_ENV['DATABASE_URL'];
+    }
+
+    /**
+     * @return DatabaseCredentialsDTO
+     */
+    public static function getDatabaseCredentials(){
+        $regex        = '/^mysql:\/\/(.*):(.*)@(.*):(.*)\/(.*)/';
+        $database_url = self::getDatabaseUrl();
+
+        preg_match($regex, $database_url, $matches);
+
+        try{
+
+            $login          = $matches[1];
+            $password       = $matches[2];
+            $host           = $matches[3];
+            $port           = $matches[4];
+            $database_name  = $matches[5];
+
+        }catch(\Exception $e){
+            throw new Exception("There was ane error while parsing database connection from .env.");
+        }
+
+        $dto = new DatabaseCredentialsDTO();
+        $dto->setDatabaseLogin($login);
+        $dto->setDatabaseHost($host);
+        $dto->setDatabasePassword($password);
+        $dto->setDatabasePort($port);
+        $dto->setDatabaseName($database_name);
+
+        return $dto;
     }
 
     public static function isDemo() {
