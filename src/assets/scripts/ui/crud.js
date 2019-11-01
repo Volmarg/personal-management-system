@@ -358,7 +358,7 @@ export default (function () {
             let param_entity_name   = $(tr_closest_parent).attr('data-type');
 
             if (!is_content_editable) {
-                utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.set,  'td', 'input, select');
+                utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.set,  'td', 'input, select, button');
                 $(tr_closest_parent).addClass(this.classes["table-active"]);
                 this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
                 this.toggleDisabledClassForTableRow(tr_closest_parent);
@@ -370,7 +370,7 @@ export default (function () {
             this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
             this.toggleDisabledClassForTableRow(tr_closest_parent);
 
-            utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.unset,'td', 'input, select');
+            utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.unset,'td', 'input, select, button');
             $(tr_closest_parent).removeClass(this.classes["table-active"]);
             bootstrap_notifications.notify(this.messages.entityEditEnd(this.entity_actions[param_entity_name].entity_name), 'success');
         },
