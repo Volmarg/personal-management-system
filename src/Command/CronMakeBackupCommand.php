@@ -9,7 +9,6 @@ use App\Controller\Utils\Env;
 use App\Services\Database\DatabaseExporter;
 use App\Services\Files\Archivizer;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +24,7 @@ class CronMakeBackupCommand extends Command
     const BACKUP_FILES_FILENAME      = 'files';
 
     const OPTION_SKIP_FILES             = 'skip-files';
-    const OPRION_SKIP_UPLOAD_MODULE   = 'skip-upload-module';
+    const OPTION_SKIP_UPLOAD_MODULE     = 'skip-upload-module';
 
     const PUBLIC_DIR_ROOT               = DOT . DIRECTORY_SEPARATOR . 'public';
 
@@ -61,7 +60,7 @@ class CronMakeBackupCommand extends Command
         $this
             ->setDescription('This command allows to make backup of: ' . $backup_types)
             ->addOption(self::OPTION_SKIP_FILES, null,InputOption::VALUE_NONE, 'If set - will skip backing up the upload directory.')
-            ->addOption(self::OPRION_SKIP_UPLOAD_MODULE, null, InputOption::VALUE_REQUIRED,
+            ->addOption(self::OPTION_SKIP_UPLOAD_MODULE, null, InputOption::VALUE_REQUIRED,
               "
                 Will skip backup of files for given upload based module. Possible values: [{$upload_modules_names}]
                 Use example: --skip-files=My\ Images,My\ Files (escaped spacebars).
@@ -85,7 +84,7 @@ class CronMakeBackupCommand extends Command
             if( !$option_skip_files ){
 
                 try{
-                    $skipped_modules = explode(',', $input->getOption(self::OPRION_SKIP_UPLOAD_MODULE));
+                    $skipped_modules = explode(',', $input->getOption(self::OPTION_SKIP_UPLOAD_MODULE));
                 }catch(\Exception $e){
                     $io->error("Could not parse data for skipped modules. Did You provided valid values like in example?");
                     return false;

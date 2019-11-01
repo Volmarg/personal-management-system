@@ -369,6 +369,8 @@ class Archivizer {
 
     /**
      * This function will zip files recursively for given directory
+     * Iterator makes archived structure a bit messy by adding absolute path that's why there is a bit dirty logic in
+     *  we extract new path based on absolute path and replace it in archive itself
      * @param $source
      */
     private function addRecursively($source){
@@ -382,11 +384,14 @@ class Archivizer {
             foreach ($files as $file) {
                 $file = realpath($file);
 
-                if (is_dir($file) === true) {
-                    $this->zip->addEmptyDir(str_replace($source . DIRECTORY_SEPARATOR, '', $file . DIRECTORY_SEPARATOR));
+                $target_directory_regex = $this->rebuildSourceDirectoryForArchiveStructure($source);
 
-                } else if (is_file($file) === true) {
-                    $this->zip->addFile($file, str_replace($source . DIRECTORY_SEPARATOR, '', $file));
+                if ( is_dir($file) ) {
+                    $archived_directory = $this->extractArchiveDirectoryFromAbsolutePath($file, $target_directory_regex);
+                    $this->zip->addEmptyDir($archived_directory . DIRECTORY_SEPARATOR);
+                } else if (is_file($file) ) {
+                    $archived_file = $this->extractArchiveFileFromAbsolutePath($file, $target_directory_regex);
+                    $this->zip->addFile($file, $archived_file);
                 }
             }
 
@@ -394,5 +399,61 @@ class Archivizer {
             $this->zip->addFile($source);
         }
 
+    }
+
+    /**
+     * This is a dirty function but for zipping we provide "./public/..."
+     * And for changing the structure inside archive itself we need "public/..."
+     * Returns string usable for regex match - the result itself is useless - it's only needed for regex
+     * @param string $source_path
+     * @return string
+     */
+    private function rebuildSourceDirectoryForArchiveStructure(string $source_path): string {
+
+        $target_directory   = $source_path;
+        $dot_position       = strpos($source_path, DOT);
+        $slash_position     = strpos($source_path, DIRECTORY_SEPARATOR);
+
+        if( !is_bool($dot_position) && 0 === $dot_position ){
+            $target_directory = str_replace(DOT . DIRECTORY_SEPARATOR, '', $source_path); // escape dot
+        }elseif(!is_bool($slash_position) && 0 === $slash_position){
+            $target_directory = substr($source_path, 1);    // escape first slash
+        }
+
+        $target_directory_regex = str_replace( DIRECTORY_SEPARATOR , "\\" . DIRECTORY_SEPARATOR, $target_directory); //escape chars for regex
+
+        return $target_directory_regex;
+    }
+
+    /**
+     * Extract the directory to make in archive by finding in absolute path everything from $target_directory_regex path to the end
+     * For example from: /var/www/html/personal-management-system-dev/public/upload/images/123/2/4/test/testo2123/
+     * This will be extracted: public/upload/images/123/2/4/test/testo2123/
+     * @param string $absolute_path
+     * @param string $target_directory_regex
+     * @return string
+     */
+    private function extractArchiveDirectoryFromAbsolutePath(string $absolute_path, string $target_directory_regex): string{
+
+        preg_match('#' . $target_directory_regex . '(.*)[^\/]#', $absolute_path, $matches);
+        $archived_directory = DIRECTORY_SEPARATOR . $matches[0];
+
+        return $archived_directory;
+    }
+
+    /**
+     * Extract the file to add in archive by finding in absolute path everything from $target_directory_regex path to the end
+     * For example from: /var/www/html/personal-management-system-dev/public/upload/images/123/2/4/test/testo2123/file.jpg
+     * This will be extracted: public/upload/images/123/2/4/test/testo2123/file.jpg
+     * @param string $absolute_path
+     * @param string $target_directory_regex
+     * @return string
+     */
+    private function extractArchiveFileFromAbsolutePath(string $absolute_path, string $target_directory_regex): string{
+
+        preg_match('#' . $target_directory_regex . '(.*)#', $absolute_path, $matches);
+        $archived_file = DIRECTORY_SEPARATOR . $matches[0];
+
+        return $archived_file;
     }
 }
