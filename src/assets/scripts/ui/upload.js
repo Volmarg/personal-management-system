@@ -81,8 +81,10 @@ export default (function () {
         },
         vars: {
             init: function(){
-                this.maxUploadSize         = $(ui.upload.elements.maxUploadSizeWrapper).attr(ui.upload.attributes.maxUploadSize);
-                this.maxUploadedFilesCount = $(ui.upload.elements.maxAllowedFilesUploadCount).attr(ui.upload.attributes.maxAllowedFilesUploadCount);
+                this.maxUploadSize          = $(ui.upload.elements.maxUploadSizeWrapper).attr(ui.upload.attributes.maxUploadSize);
+                this.maxUploadedFilesCount  = $(ui.upload.elements.maxAllowedFilesUploadCount).attr(ui.upload.attributes.maxAllowedFilesUploadCount);
+                this.uploadTable            = $(ui.upload.selectors.id.uploadTable);
+                this.uploadDataTable        = $(this.uploadTable).DataTable();
             },
             filesTotalSizeBytes    : 0,
             filesTotalSizeMb       : 0,
@@ -90,6 +92,8 @@ export default (function () {
             filesNames             : [],
             maxUploadSize          : 1,
             maxUploadedFilesCount  : 1,
+            uploadTable            : null,
+            uploadDataTable        : null
         },
         init: function () {
             this.elements.init();
@@ -104,6 +108,10 @@ export default (function () {
 
             this.elements.fileSelectButton.on('change', function () {
                 let selectedFiles = $(_this.elements.filesInput)[0].files;
+
+                //for reset as form resets its internal files list when picking new data
+                _this.appendFilesSizeToDom();
+                _this.setSelectedFilesCount();
 
                 _this.setSelectedFilesSize(selectedFiles);
                 _this.setSelectedFilesCount();
@@ -134,10 +142,10 @@ export default (function () {
                     return;
                 }
 
-                $(currentUploadedFilesCountWrapper).attr("class","");
+                $(currentUploadedFilesCountWrapper).removeClass('text-success text-danger');
                 $(currentUploadedFilesCountWrapper).addClass("text-success");
             }else{
-                $(currentUploadedFilesCountWrapper).attr("class","");
+                $(currentUploadedFilesCountWrapper).attr("text-success text-danger");
                 $(currentUploadedFilesCountWrapper).addClass("text-danger");
                 $(this.elements.submitButton).addClass("disabled");
             }
@@ -148,14 +156,18 @@ export default (function () {
 
             if( this.vars.filesTotalSizeMb < this.vars.maxUploadSize ){
 
-                if( $(this.elements.currentFileSizeWrapper).hasClass("text-danger") ){ //something is blocking upload
+                if(
+                        $(this.elements.currentFileSizeWrapper).hasClass("text-danger")
+                    &&  0 !== this.vars.filesTotalSizeMb
+                ){ //something is blocking upload
                     return;
                 }
 
-                $(this.elements.currentFileSizeWrapper).attr("class","");
+                $(this.elements.currentFileSizeWrapper).removeClass('text-success text-danger');
                 $(this.elements.currentFileSizeWrapper).addClass("text-success");
+                $(this.elements.submitButton).removeClass("disabled");
             }else{
-                $(this.elements.currentFileSizeWrapper).attr("class","");
+                $(this.elements.currentFileSizeWrapper).removeClass('text-success text-danger');
                 $(this.elements.currentFileSizeWrapper).addClass("text-danger");
                 $(this.elements.submitButton).addClass("disabled");
             }
@@ -174,18 +186,18 @@ export default (function () {
 
                 $(_this.elements.submitButton).removeClass('disabled');
 
-                $(_this.elements.currentFileSizeWrapper).attr("class","text-success");
-                $(_this.elements.currentUploadedFilesCountWrapper).attr("class","text-success");
+                $(_this.elements.currentFileSizeWrapper).removeClass('text-danger');
+                $(_this.elements.currentFileSizeWrapper).addClass("text-success");
+                $(_this.elements.currentUploadedFilesCountWrapper).removeClass('text-danger');
+                $(_this.elements.currentUploadedFilesCountWrapper).addClass("text-success");
 
                 _this.vars.filesTotalSizeBytes = 0;
+                _this.vars.uploadDataTable.clear().draw();
             });
 
         },
         handleFillingDatatable: function(selectedFiles){
-            let uploadTable = $(this.selectors.id.uploadTable);
-            let dataTable   = $(uploadTable).DataTable();
-
-            dataTable.clear().draw();
+            this.cleaUploadTable();
 
             for (let x = 0; x <= selectedFiles.length - 1 ; x++){
 
@@ -201,7 +213,7 @@ export default (function () {
                 let inputFileNameString      = this.buildInput(x, 'fileName', 'form-control', fileNameWithoutExtension);
                 let inputFileExtensionString = this.buildInput(x, 'fileExtension', 'disabled form-control', fileExtension);
 
-                dataTable.row.add([
+                this.vars.uploadDataTable.row.add([
                     x,
                     inputFileNameString,
                     inputFileExtensionString,
@@ -219,6 +231,9 @@ export default (function () {
                             name="upload_table[` + prefix + id + `]" 
                             value="` + value + `" 
                             data-value="` + dataValue + `"/>`;
+        },
+        cleaUploadTable: function(){
+            this.vars.uploadDataTable.clear().draw();
         },
         settings: {
             addConfirmationBoxesToForms: function(){
