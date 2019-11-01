@@ -87,7 +87,6 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 	<ul>
     	<li>Bugfixes</li>
 	<li>Handling server responses</li>	
-	<li>Moving files to other modules/folders from view of given module</li>
     </ul>
 </li>
 <li><b>🔎 Job search</b> - (VERY future development plan, not sure if will make it at all)
@@ -107,7 +106,6 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 	<li>Dashboard settings - which modules widgets should be displayed</li>
 	<li>Recurring payments for </b>Payments</b> module</li>
 	<li>Adding images for <b>Contacts</b> </li>
-	<li>Auto deployment - creating full working instance with one bash command </li>	
 </ul>
 <hr>
 
