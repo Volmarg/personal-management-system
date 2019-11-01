@@ -2,7 +2,32 @@
 
 namespace App\Services\Files;
 
+use App\Controller\Utils\Application;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use ZipArchive;
+
 class Archivizer {
+
+    const EXTENSION = '.zip';
+
+    const EXPORT_MESSAGE_COULD_NOT_CREATE_FOLDER            = "Could not create folder for export.";
+
+    const EXPORT_MESSAGE_BACKUP_DIRECTORY_DOES_NOT_EXIST    = 'Backup directory does not exist';
+
+    const EXPORT_MESSAGE_EXPORT_FILE_DOES_NOT_EXIST         = "Exported file does not exist.";
+
+    const EXPORT_MESSAGE_EXPORTED_DATABASE_IS_TO_SMALL      = "Exported zip size is small.";
+
+    const EXPORT_MESSAGE_GENERAL_ERROR                      = "There was an error while building zip archive.";
+
+    const EXPORT_MESSAGE_SUCCESS                            = "Archive has been successfully created";
+
+    const EXPORT_MESSAGE_ZIP_HAS_NO_PERMISSIONS_TO_SAVE     = "No permissions to save in backup directory";
+
+    const MINIMUM_BACKUP_SIZE = 102400; // bytes = 100kb
+
+    const FILE_POSTFIX_MODE_CURRENT_DATE_TIME = 'FILE_POSTFIX_MODE_CURRENT_DATE_TIME';
 
     /**
      * @var string
@@ -15,9 +40,9 @@ class Archivizer {
     private $archive_name;
 
     /**
-     * @var string
+     * @var string[]
      */
-    private $directory_to_zip;
+    private $directories_to_zip;
 
     /**
      * @var bool
@@ -35,6 +60,27 @@ class Archivizer {
     private $zip;
 
     /**
+     * @var string
+     */
+    private $backup_directory;
+
+    /**
+     * Safety postfix - should be unique so that existing db sql for today won't be overwritten
+     * @var string $file_postfix
+     */
+    private $file_prefix = '';
+
+    /**
+     * @var string
+     */
+    private $archive_full_path = '';
+
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    /**
      * @return string
      */
     public function getZippingStatus(): string {
@@ -44,7 +90,7 @@ class Archivizer {
     /**
      * @param string $zipping_status
      */
-    public function setZippingStatus(string $zipping_status): void {
+    private function setZippingStatus(string $zipping_status): void {
         $this->zipping_status = $zipping_status;
     }
 
@@ -59,21 +105,21 @@ class Archivizer {
      * @param string $archive_name
      */
     public function setArchiveName(string $archive_name): void {
-        $this->archive_name = $archive_name;
+        $this->archive_name = $archive_name . self::EXTENSION;
     }
 
     /**
-     * @return string
+     * @return  string[]
      */
-    public function getDirectoryToZip(): string {
-        return $this->directory_to_zip;
+    public function getDirectoriesToZip(): string {
+        return $this->directories_to_zip;
     }
 
     /**
-     * @param string $directory_to_zip
+     * @param string[] $directory_to_zip
      */
-    public function setDirectoryToZip(string $directory_to_zip): void {
-        $this->directory_to_zip = $directory_to_zip;
+    public function setDirectoriesToZip(array $directory_to_zip): void {
+        $this->directories_to_zip = $directory_to_zip;
     }
 
     /**
@@ -100,18 +146,248 @@ class Archivizer {
     /**
      * @param bool $isZippedSuccessfully
      */
-    public function setIsZippedSuccessfully(bool $isZippedSuccessfully): void {
+    private function setIsZippedSuccessfully(bool $isZippedSuccessfully): void {
         $this->isZippedSuccessfully = $isZippedSuccessfully;
     }
 
     /**
-     * DatabaseExporter constructor.
-     * @param ZipArchive $zip_archive
+     * @param string $backup_directory
      */
-    public function __construct(ZipArchive $zip_archive) {
-        $this->zip = $zip_archive;
+    public function setBackupDirectory(string $backup_directory): void {
+        $this->backup_directory = $backup_directory;
     }
 
+    /**
+     * @return string
+     */
+    private function getBackupDirectory(): string {
+        return $this->backup_directory;
+    }
 
+    /**
+     * @return string
+     */
+    private function getFilePrefix(): string {
+        return $this->file_prefix;
+    }
 
+    /**
+     * @param string $mode
+     * @throws \Exception
+     */
+    public function setFilePrefix(string $mode = null): void {
+
+        if( is_null($mode) ){
+            $mode = self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME;
+        }
+
+        switch( $mode ){
+            case self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME:
+                $curr_date_time = new \DateTime();
+                $prefix = $curr_date_time->format('Y_m_d_H_i_s_');
+                break;
+            default:
+                throw new \Exception("This mode is not supported: {$mode}");
+        }
+
+        $this->file_prefix = $prefix;
+    }
+
+    /**
+     * @return string
+     */
+    private function getArchiveFullPath(): string {
+        return $this->archive_full_path;
+    }
+
+    /**
+     * @param string $archive_full_path
+     */
+    private function setArchiveFullPath(string $archive_full_path): void {
+        $this->archive_full_path = $archive_full_path;
+    }
+
+    /**
+     * DatabaseExporter constructor.
+     * @param Application $app
+     * @throws \Exception
+     */
+    public function __construct(Application $app) {
+        $this->zip = new ZipArchive();
+        $this->app = $app;
+
+        $this->setFilePrefix(self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME);
+    }
+
+    public function zip(){
+
+        $backup_directory_exists = file_exists($this->getBackupDirectory());
+
+        if( !$backup_directory_exists ){
+            $this->setZippingStatus(self::EXPORT_MESSAGE_BACKUP_DIRECTORY_DOES_NOT_EXIST);
+            $this->setIsZippedSuccessfully(false);
+            return;
+        }
+
+        try{
+            $this->prepareBackupDirectory();
+            $this->buildArchive();
+            $this->checkArchive();
+        }catch(\Exception $e){
+            $this->app->logger->critical($e->getMessage());
+            $this->setZippingStatus(self::EXPORT_MESSAGE_GENERAL_ERROR);
+            $this->setIsZippedSuccessfully(false);
+        }
+
+    }
+
+    /**
+     * This function will create directory with current date and it will be used to save zip inside it
+     * Also sets backup directory so that it points to the folder with current date
+     */
+    private function prepareBackupDirectory():void {
+        $curr_date_time = new \DateTime();
+        $curr_date      = $curr_date_time->format('Y-m-d');
+
+        $backup_directory = $this->getBackupDirectory();
+
+        $target_directory = $backup_directory . DIRECTORY_SEPARATOR . $curr_date;
+
+        $dir_exists = file_exists($target_directory);
+
+        // first checking if it exist and if not then create it
+        if( !$dir_exists ){
+            mkdir($target_directory);
+        }
+
+        // this is safety check, if folder didnt existed and still does not exist then it's undesired state
+        if( !$dir_exists ){
+            $this->setZippingStatus(self::EXPORT_MESSAGE_COULD_NOT_CREATE_FOLDER);
+            $this->setIsZippedSuccessfully(false);
+        }
+
+        $this->setBackupDirectory($target_directory);
+        $this->setArchiveFullPath($target_directory . DIRECTORY_SEPARATOR . $this->archive_name);
+    }
+
+    /**
+     * This function will check if the archive was created and it's size is withing range
+     */
+    private function checkArchive(){
+
+        $is_dump_existing = file_exists($this->getArchiveFullPath());
+
+        if( !$is_dump_existing ){
+            $this->setIsZippedSuccessfully(false);
+            $this->setZippingStatus(self::EXPORT_MESSAGE_EXPORT_FILE_DOES_NOT_EXIST);
+        }else{
+            $archive_size = filesize($this->getArchiveFullPath());
+
+            if( self::MINIMUM_BACKUP_SIZE > $archive_size ){
+                $this->setIsZippedSuccessfully(false);
+                $this->setZippingStatus(self::EXPORT_MESSAGE_EXPORTED_DATABASE_IS_TO_SMALL);
+                return;
+            }
+
+            $this->setIsZippedSuccessfully(true);
+            $this->setZippingStatus(self::EXPORT_MESSAGE_SUCCESS);
+        }
+
+    }
+
+    /**
+     * This function will build archive for provided directories
+     */
+    private function buildArchive(){
+
+        if ( !$this->zip->open($this->archive_full_path, ZipArchive::CREATE) ) {
+            $this->setIsZippedSuccessfully(false);
+            $this->setZippingStatus(self::EXPORT_MESSAGE_ZIP_HAS_NO_PERMISSIONS_TO_SAVE);
+            return;
+        }
+
+        foreach( $this->directories_to_zip as $directory_to_zip ){
+           $this->addRecursively($directory_to_zip);
+        }
+
+        if( ZipArchive::ER_OK !== $this->zip->status ){
+            $this->app->logger->critical("Zip archive has returned error status", [
+                $this->zip->status => self::getHumanReadableStatus($this->zip->status),
+            ]);
+        }
+
+        if( 0 === $this->zip->numFiles ){
+            $this->app->logger->critical("No files have been archived");
+        }
+
+        $this->zip->close();
+
+    }
+
+    /**
+     * This function returns status code in human readable string
+     * @param $status
+     * @return string
+     */
+    private static function getHumanReadableStatus( $status )
+    {
+        switch( (int) $status )
+        {
+            case ZipArchive::ER_OK           : return 'N No error';
+            case ZipArchive::ER_MULTIDISK    : return 'N Multi-disk zip archives not supported';
+            case ZipArchive::ER_RENAME       : return 'S Renaming temporary file failed';
+            case ZipArchive::ER_CLOSE        : return 'S Closing zip archive failed';
+            case ZipArchive::ER_SEEK         : return 'S Seek error';
+            case ZipArchive::ER_READ         : return 'S Read error';
+            case ZipArchive::ER_WRITE        : return 'S Write error';
+            case ZipArchive::ER_CRC          : return 'N CRC error';
+            case ZipArchive::ER_ZIPCLOSED    : return 'N Containing zip archive was closed';
+            case ZipArchive::ER_NOENT        : return 'N No such file';
+            case ZipArchive::ER_EXISTS       : return 'N File already exists';
+            case ZipArchive::ER_OPEN         : return 'S Can\'t open file';
+            case ZipArchive::ER_TMPOPEN      : return 'S Failure to create temporary file';
+            case ZipArchive::ER_ZLIB         : return 'Z Zlib error';
+            case ZipArchive::ER_MEMORY       : return 'N Malloc failure';
+            case ZipArchive::ER_CHANGED      : return 'N Entry has been changed';
+            case ZipArchive::ER_COMPNOTSUPP  : return 'N Compression method not supported';
+            case ZipArchive::ER_EOF          : return 'N Premature EOF';
+            case ZipArchive::ER_INVAL        : return 'N Invalid argument';
+            case ZipArchive::ER_NOZIP        : return 'N Not a zip archive';
+            case ZipArchive::ER_INTERNAL     : return 'N Internal error';
+            case ZipArchive::ER_INCONS       : return 'N Zip archive inconsistent';
+            case ZipArchive::ER_REMOVE       : return 'S Can\'t remove file';
+            case ZipArchive::ER_DELETED      : return 'N Entry has been deleted';
+
+            default: return sprintf('Unknown status %s', $status );
+        }
+    }
+
+    /**
+     * This function will zip files recursively for given directory
+     * @param $source
+     */
+    private function addRecursively($source){
+
+        if ( is_dir($source) ) {
+
+            $iterator = new RecursiveDirectoryIterator($source);
+            $iterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
+            $files    = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+
+            foreach ($files as $file) {
+                $file = realpath($file);
+
+                if (is_dir($file) === true) {
+                    $this->zip->addEmptyDir(str_replace($source . DIRECTORY_SEPARATOR, '', $file . DIRECTORY_SEPARATOR));
+
+                } else if (is_file($file) === true) {
+                    $this->zip->addFile($file, str_replace($source . DIRECTORY_SEPARATOR, '', $file));
+                }
+            }
+
+        } else if (is_file($source) === true) {
+            $this->zip->addFile($source);
+        }
+
+    }
 }
