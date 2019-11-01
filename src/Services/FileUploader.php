@@ -121,7 +121,8 @@ class FileUploader extends AbstractController {
 
         $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
         if (file_exists($file_full_path)) {
-            $filename .= '_' . $now->format('Y_m_d') . DOT . $extension;
+            $filename .= '_' . $now->format('Y_m_d_H_i_s_u') . DOT . $extension;
+            $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
         }
 
         # check if the target folder is main folder
