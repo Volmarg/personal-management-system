@@ -1,16 +1,14 @@
 <table id="uploadTable" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
-
     <thead>
         <tr>
-            <th>#</th>
-            <th>File name</th>
-            <th>File extension</th>
-            <th>Tags</th>
+            <th style="max-width: 100px;">{{ translate('datatables.table.idHash') }}</th>
+            <th style="max-width: 300px;">{{ translate('upload.uploadTable.fileName') }}</th>
+            <th style="max-width: 150px;">{{ translate('upload.uploadTable.fileExtension') }}</th>
+            <th>{{ translate('upload.uploadTable.tags') }}</th>
         </tr>
     </thead>
 
     <tbody>
-
+        {# Filled via js #}
     </tbody>
-
 </table>

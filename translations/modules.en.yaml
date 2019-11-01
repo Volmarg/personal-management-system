@@ -232,6 +232,10 @@ upload:
     currentUploadedFilesCount: "Selected files count:"
     maxAllowedFilesUploadCount: "Max allowed files count:"
   mb: Mb
+  uploadTable:
+    fileName: File name
+    fileExtension: File extension
+    tags: Tags
 
 other:
   summary: Summary

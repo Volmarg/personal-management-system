@@ -24,7 +24,13 @@
                         {% endif %}
 
                         <div class="col-md-12 file-upload-form">
-                            {{ form_start(form, {'attr': {'class': 'flex-column d-flex', 'data-form-target':"Upload", "action" : path('upload_send') }}) }}
+                            {{ form_start(form, {
+                                'attr': {
+                                    'class': 'flex-column d-flex',
+                                    'data-form-target':"Upload",
+                                    "action" : path('upload_send'),
+                                    'onkeydown': "return event.key != 'Enter';"
+                                }}) }}
 
                                 <div class="col-md-6 justify-content-center align-self-center">
 
@@ -46,44 +52,51 @@
                                         {{ form_widget(form.submit) }}
                                     </section>
 
-                                    <small id="currentFileSizeWrapper" class="text-success">
-                                        {{ translate('upload.securityTexts.currentFileSize') }}
-                                        <span class="selected-files-size">0</span>
-                                        {{ translate('upload.mb') }}
-                                    </small>
-                                    <br/>
-                                    <small id="maxUploadSizeWrapper" data-max-upload-size="{{ max_upload_size_mb }}">
-                                        {{ translate('upload.securityTexts.maxUploadSize') }}
-                                        {{ max_upload_size_mb }}
-                                        {{ translate('upload.mb') }}
-                                    </small>
-                                    <br/>
-                                    <small id="currentUploadedFilesCount" class="text-success">
-                                        {{ translate('upload.securityTexts.currentUploadedFilesCount') }}
-                                        <span class="selected-files-count">0</span>
-                                    </small>
-                                    <br/>
-                                    <small id="maxAllowedFilesUploadCount"
-                                           data-max-allowed-files-count="{{ max_allowed_files_count }}">
-                                        {{ translate('upload.securityTexts.maxAllowedFilesUploadCount') }}
-                                        {{ max_allowed_files_count }}
-                                    </small>
-                                    <br/>
-                                    <small>
-                                        <ul id="selectedFilesList">
-
-                                        </ul>
-                                    </small>
 
                                 </div>
                                 {# table #}
-                                <div class="row">
+                                <div class="row mT-50">
                                     <div class="col-md-12">
                                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                                             {% include 'core/upload/components/upload-table.twig' %}
                                         </div>
                                     </div>
                                 </div>
+
+                            <section class="d-flex flex-column justify-content-center">
+                                {# Stats #}
+
+                                <p id="currentFileSizeWrapper" class="text-success align-self-center m-0">
+                                    {{ translate('upload.securityTexts.currentFileSize') }}
+                                    <span class="selected-files-size">0</span>
+                                    {{ translate('upload.mb') }}
+                                </p>
+
+                                <p id="maxUploadSizeWrapper" data-max-upload-size="{{ max_upload_size_mb }}" class="align-self-center m-0">
+                                    {{ translate('upload.securityTexts.maxUploadSize') }}
+                                    {{ max_upload_size_mb }}
+                                    {{ translate('upload.mb') }}
+                                </p>
+
+                                <p id="currentUploadedFilesCount" class="text-success align-self-center m-0">
+                                    {{ translate('upload.securityTexts.currentUploadedFilesCount') }}
+                                    <span class="selected-files-count">0</span>
+                                </p>
+
+                                <p id="maxAllowedFilesUploadCount"
+                                       data-max-allowed-files-count="{{ max_allowed_files_count }}"
+                                       class="text-success align-self-center m-0">
+                                    {{ translate('upload.securityTexts.maxAllowedFilesUploadCount') }}
+                                    {{ max_allowed_files_count }}
+                                </p>
+
+                                <p class="align-self-center m-0">
+                                    <ul id="selectedFilesList">
+
+                                    </ul>
+                                </p>
+
+                            </section>
 
                             {{ form_end(form) }}
 
