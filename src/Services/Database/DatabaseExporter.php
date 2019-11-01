@@ -28,9 +28,11 @@ class DatabaseExporter {
 
     const EXPORT_MESSAGE_SUCCESS                            = "Database has been successfully exported";
 
+    const EXPORT_ERROR = "Database dump has failed!";
+
     const MINIMUM_BACKUP_SIZE = 102400; // bytes = 100kb
 
-    const FILE_POSTFIX_MODE_CURRENT_DATE_TIME = 'FILE_POSTFIX_MODE_CURRENT_DATE_TIME';
+    const FILE_PREFIX_MODE_CURRENT_DATE_TIME = 'FILE_PREFIX_MODE_CURRENT_DATE_TIME';
 
     /**
      * @var string
@@ -176,11 +178,11 @@ class DatabaseExporter {
     public function setFilePrefix(string $mode = null): void {
 
         if( is_null($mode) ){
-            $mode = self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME;
+            $mode = self::FILE_PREFIX_MODE_CURRENT_DATE_TIME;
         }
 
         switch( $mode ){
-            case self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME:
+            case self::FILE_PREFIX_MODE_CURRENT_DATE_TIME:
                     $curr_date_time = new \DateTime();
                     $prefix = $curr_date_time->format('Y_m_d_H_i_s_');
                 break;
@@ -199,7 +201,7 @@ class DatabaseExporter {
     public function __construct(Application $app) {
         $this->app = $app;
         $this->setDumpExtension();
-        $this->setFilePrefix(self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME);
+        $this->setFilePrefix(self::FILE_PREFIX_MODE_CURRENT_DATE_TIME);
     }
 
     /**
@@ -226,6 +228,9 @@ class DatabaseExporter {
             $this->checkDump();
         }catch(\Exception $e){
             $this->app->logger->critical($e->getMessage());
+            $this->app->logger->critical(self::EXPORT_ERROR,[
+                'date' => (new \DateTime())->format('Y-m-d H:i:s')
+            ]);
             $this->setExportMessage(self::EXPORT_MESSAGE_GENERAL_ERROR);
             $this->setIsExportedSuccessfully(false);
         }

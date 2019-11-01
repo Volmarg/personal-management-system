@@ -25,9 +25,11 @@ class Archivizer {
 
     const EXPORT_MESSAGE_ZIP_HAS_NO_PERMISSIONS_TO_SAVE     = "No permissions to save in backup directory";
 
-    const MINIMUM_BACKUP_SIZE = 102400; // bytes = 100kb
+    const EXPORT_ERROR = "Archive export has failed!";
 
-    const FILE_POSTFIX_MODE_CURRENT_DATE_TIME = 'FILE_POSTFIX_MODE_CURRENT_DATE_TIME';
+    const MINIMUM_BACKUP_SIZE = 1024000; // bytes ~1mb
+
+    const FILE_PREFIX_MODE_CURRENT_DATE_TIME = 'FILE_PREFIX_MODE_CURRENT_DATE_TIME';
 
     /**
      * @var string
@@ -178,11 +180,11 @@ class Archivizer {
     public function setFilePrefix(string $mode = null): void {
 
         if( is_null($mode) ){
-            $mode = self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME;
+            $mode = self::FILE_PREFIX_MODE_CURRENT_DATE_TIME;
         }
 
         switch( $mode ){
-            case self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME:
+            case self::FILE_PREFIX_MODE_CURRENT_DATE_TIME:
                 $curr_date_time = new \DateTime();
                 $prefix = $curr_date_time->format('Y_m_d_H_i_s_');
                 break;
@@ -216,7 +218,7 @@ class Archivizer {
         $this->zip = new ZipArchive();
         $this->app = $app;
 
-        $this->setFilePrefix(self::FILE_POSTFIX_MODE_CURRENT_DATE_TIME);
+        $this->setFilePrefix(self::FILE_PREFIX_MODE_CURRENT_DATE_TIME);
     }
 
     public function zip(){
@@ -235,6 +237,9 @@ class Archivizer {
             $this->checkArchive();
         }catch(\Exception $e){
             $this->app->logger->critical($e->getMessage());
+            $this->app->logger->critical(self::EXPORT_ERROR,[
+                'date' => (new \DateTime())->format('Y-m-d H:i:s')
+            ]);
             $this->setZippingStatus(self::EXPORT_MESSAGE_GENERAL_ERROR);
             $this->setIsZippedSuccessfully(false);
         }
@@ -267,7 +272,7 @@ class Archivizer {
         }
 
         $this->setBackupDirectory($target_directory);
-        $this->setArchiveFullPath($target_directory . DIRECTORY_SEPARATOR . $this->archive_name);
+        $this->setArchiveFullPath($target_directory . DIRECTORY_SEPARATOR . $this->file_prefix .$this->archive_name);
     }
 
     /**
