@@ -119,19 +119,21 @@ class FileUploader extends AbstractController {
         $extension = $extension ?: $file_extension;
         $filename  = $filename  ?: $original_filename;
 
+        # check if the target folder is main folder
+        if ( !empty($subdirectory) && $subdirectory !== $target_directory ) {
+            $target_directory .= DIRECTORY_SEPARATOR . $subdirectory;
+        }
+
         $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
         if (file_exists($file_full_path)) {
-            $filename .= '_' . $now->format('Y_m_d_H_i_s_u') . DOT . $extension;
+            $filename .= '_' . $now->format('Y_m_d_H_i_s_u');
             $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
         }
 
-        # check if the target folder is main folder
-        if ( !empty($subdirectory) && $subdirectory !== $target_directory ) {
-            $target_directory .= '/' . $subdirectory;
-        }
+        $filename_with_extension = $filename . DOT . $extension;
 
         try {
-            $file->move($target_directory, $filename);
+            $file->move($target_directory, $filename_with_extension);
 
             if( !empty($tags) ){
                 $this->files_tags_controller->updateTags($tags, $file_full_path);
