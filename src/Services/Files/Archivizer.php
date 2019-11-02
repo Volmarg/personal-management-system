@@ -215,6 +215,11 @@ class Archivizer {
      * @throws \Exception
      */
     public function __construct(Application $app) {
+
+        if ( !class_exists('ZipArchive') ){
+            throw new \Exception("Class ZipArchive is not present. Install package 'php-zip'.");
+        }
+
         $this->zip = new ZipArchive();
         $this->app = $app;
 
