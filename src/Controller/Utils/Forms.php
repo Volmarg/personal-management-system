@@ -17,6 +17,7 @@ use App\Form\Modules\Notes\MyNotesType;
 use App\Form\Modules\Payments\MyPaymentsBills;
 use App\Form\Modules\Payments\MyPaymentsBillsItems;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
+use App\Form\Modules\Payments\MyRecurringPaymentsMonthlyType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 
@@ -60,6 +61,10 @@ class Forms extends AbstractController {
 
     public function paymentsBillsItems(array $params = []): FormInterface {
         return $this->createForm(MyPaymentsBillsItems::class, null, $params);
+    }
+
+    public function recurringPayments(array $params = []): FormInterface {
+        return $this->createForm(MyRecurringPaymentsMonthlyType::class, null, $params);
     }
 
 }

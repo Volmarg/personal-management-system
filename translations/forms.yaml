@@ -89,6 +89,12 @@ forms:
       money: Money
       description: Description
       type: Type
+  MyRecurringPaymentMonthlyType:
+    labels:
+      date: Date
+      money: Money
+      description: Description
+      type: Type
   MyPaymentsOwedType:
     labels:
       target: Target

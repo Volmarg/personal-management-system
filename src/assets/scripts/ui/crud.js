@@ -761,6 +761,67 @@ export default (function () {
                 },
                 entity_name: "My Payments Monthly",
             },
+            "MyRecurringPaymentsMonthly": {
+                makeUpdateData: function (tr_parent_element) {
+                    let id          = $(tr_parent_element).find('.id').html();
+                    let date        = $(tr_parent_element).find('.date input').val();
+                    let money       = $(tr_parent_element).find('.money').html();
+                    let description = $(tr_parent_element).find('.description').html();
+                    let paymentType = $(tr_parent_element).find('.type :selected');
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = 'my-recurring-payments-monthly/update/';
+                    let ajax_data = {
+                        'id': id,
+                        'date': date,
+                        'money': money,
+                        'description': description,
+                        'type': {
+                            "type": "entity",
+                            'namespace': 'App\\Entity\\Modules\\Payments\\MyPaymentsSettings',
+                            'id': $(paymentType).val(),
+                        },
+                    };
+
+                    return {
+                        'url': url,
+                        'data': ajax_data,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let id = $(parent_element).find('.id').html();
+                    let url = '/my-recurring-payments-monthly/remove/';
+                    let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                    let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'data': {
+                            'id': id
+                        },
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                        'is_dataTable': false, //temporary
+                    };
+
+                },
+                makeCreateData: function () {
+                    let url = '/my-recurring-payments-monthly-settings';
+                    let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                    let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                entity_name: "My Recurring Payments Monthly",
+            },
             "MyPaymentsOwed": {
                 makeUpdateData: function (tr_parent_element) {
                     let id          = $(tr_parent_element).find('.id').html();

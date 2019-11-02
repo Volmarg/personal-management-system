@@ -161,9 +161,16 @@ payments:
       changeAddSetting: Change/Add settings
       currencyMultiplier: Currency multiplier
       paymentsTypes: Payments types
+      recurringPayments: Recurring payments
     types:
       table:
         name: Name
+    recurring:
+      table:
+        date: Date
+        money: Money
+        description: Description
+        type: Type
 
 reports:
   monthlyPaymentsSummaries:

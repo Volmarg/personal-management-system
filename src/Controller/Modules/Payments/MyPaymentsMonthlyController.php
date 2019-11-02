@@ -9,6 +9,7 @@ use App\Form\Modules\Payments\MyPaymentsMonthlyType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MyPaymentsMonthlyController extends AbstractController {
@@ -25,6 +26,8 @@ class MyPaymentsMonthlyController extends AbstractController {
 
     /**
      * @Route("/my-payments-monthly", name="my-payments-monthly")
+     * @param Request $request
+     * @return Response
      */
     public function display(Request $request) {
         $this->addFormDataToDB($this->getForm(), $request);
@@ -76,7 +79,7 @@ class MyPaymentsMonthlyController extends AbstractController {
     /**
      * @Route("/my-payments-monthly/remove/", name="my-payments-monthly-remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function remove(Request $request) {

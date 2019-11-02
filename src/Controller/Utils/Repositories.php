@@ -33,6 +33,7 @@ use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
+use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
@@ -45,34 +46,35 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Repositories extends AbstractController {
 
-    const ACHIEVEMENT_REPOSITORY_NAME               = 'AchievementRepository';
-    const MY_NOTES_REPOSITORY_NAME                  = 'MyNotesRepository';
-    const MY_NOTES_CATEGORIES_REPOSITORY_NAME       = 'MyNotesCategoriesRepository';
-    const MY_CAR_REPOSITORY_NAME                    = 'MyCarRepository';
-    const MY_JOB_AFTERHOURS_REPOSITORY_NAME         = 'MyJobAfterhoursRepository';
-    const MY_PAYMENTS_MONTHLY_REPOSITORY_NAME       = 'MyPaymentsMonthlyRepository';
-    const MY_PAYMENTS_PRODUCTS_REPOSITORY_NAME      = 'MyPaymentsProductRepository';
-    const MY_PAYMENTS_SETTINGS_REPOSITORY_NAME      = 'MyPaymentsSettingsRepository';
-    const MY_SHOPPING_PLANS_REPOSITORY_NAME         = 'MyShoppingPlansRepository';
-    const MY_TRAVELS_IDEAS_REPOSITORY_NAME          = 'MyTravelsIdeasRepository';
-    const INTEGRATIONS_RESOURCES_REPOSITORY_NAME    = 'IntegrationResourceRepository';
-    const MY_CONTACTS_REPOOSITORY_NAME              = 'MyContactsRepository';
-    const MY_CONTACTS_GROUPS_REPOSITORY_NAME        = 'MyContactsGroupsRepository';
-    const MY_PASSWORDS_REPOSITORY_NAME              = 'MyPasswordsRepository';
-    const MY_PASSWORDS_GROUPS_REPOSITORY_NAME       = 'MyPasswordsGroupsRepository';
-    const USER_REPOSITORY                           = 'UserRepository';
-    const MY_GOALS_REPOSITORY_NAME                  = 'MyGoalsRepository';
-    const MY_SUBGOALS_REPOSITORY_NAME               = 'MyGoalsSubgoalsRepository';
-    const MY_GOALS_PAYMENTS_REPOSITORY_NAME         = 'MyGoalsPaymentsRepository';
-    const MY_CAR_SCHEDULES_TYPES_REPOSITORY_NAME    = 'MyCarSchedulesTypesRepository';
-    const MY_JOB_HOLIDAYS_REPOSITORY_NAME           = 'MyJobHolidaysRepository';
-    const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME      = 'MyJobHolidaysPoolRepository';
-    const MY_JOB_SETTINGS_REPOSITORY_NAME           = 'MyJobSettingsRepository';
-    const MY_PAYMENTS_OWED_REPOSITORY_NAME          = 'MyPaymentsOwedRepository';
-    const MY_PAYMENTS_BILLS_REPOSITORY_NAME         = 'MyPaymentsBillsRepository';
-    const MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME   = 'MyPaymentsBillsItemsRepository';
-    const FILE_TAGS_REPOSITORY                      = 'FilesTagsRepository';
-    const REPORTS_REPOSITORY                        = 'ReportsRepository';
+    const ACHIEVEMENT_REPOSITORY_NAME                   = 'AchievementRepository';
+    const MY_NOTES_REPOSITORY_NAME                      = 'MyNotesRepository';
+    const MY_NOTES_CATEGORIES_REPOSITORY_NAME           = 'MyNotesCategoriesRepository';
+    const MY_CAR_REPOSITORY_NAME                        = 'MyCarRepository';
+    const MY_JOB_AFTERHOURS_REPOSITORY_NAME             = 'MyJobAfterhoursRepository';
+    const MY_PAYMENTS_MONTHLY_REPOSITORY_NAME           = 'MyPaymentsMonthlyRepository';
+    const MY_PAYMENTS_PRODUCTS_REPOSITORY_NAME          = 'MyPaymentsProductRepository';
+    const MY_PAYMENTS_SETTINGS_REPOSITORY_NAME          = 'MyPaymentsSettingsRepository';
+    const MY_SHOPPING_PLANS_REPOSITORY_NAME             = 'MyShoppingPlansRepository';
+    const MY_TRAVELS_IDEAS_REPOSITORY_NAME              = 'MyTravelsIdeasRepository';
+    const INTEGRATIONS_RESOURCES_REPOSITORY_NAME        = 'IntegrationResourceRepository';
+    const MY_CONTACTS_REPOOSITORY_NAME                  = 'MyContactsRepository';
+    const MY_CONTACTS_GROUPS_REPOSITORY_NAME            = 'MyContactsGroupsRepository';
+    const MY_PASSWORDS_REPOSITORY_NAME                  = 'MyPasswordsRepository';
+    const MY_PASSWORDS_GROUPS_REPOSITORY_NAME           = 'MyPasswordsGroupsRepository';
+    const USER_REPOSITORY                               = 'UserRepository';
+    const MY_GOALS_REPOSITORY_NAME                      = 'MyGoalsRepository';
+    const MY_SUBGOALS_REPOSITORY_NAME                   = 'MyGoalsSubgoalsRepository';
+    const MY_GOALS_PAYMENTS_REPOSITORY_NAME             = 'MyGoalsPaymentsRepository';
+    const MY_CAR_SCHEDULES_TYPES_REPOSITORY_NAME        = 'MyCarSchedulesTypesRepository';
+    const MY_JOB_HOLIDAYS_REPOSITORY_NAME               = 'MyJobHolidaysRepository';
+    const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME          = 'MyJobHolidaysPoolRepository';
+    const MY_JOB_SETTINGS_REPOSITORY_NAME               = 'MyJobSettingsRepository';
+    const MY_PAYMENTS_OWED_REPOSITORY_NAME              = 'MyPaymentsOwedRepository';
+    const MY_PAYMENTS_BILLS_REPOSITORY_NAME             = 'MyPaymentsBillsRepository';
+    const MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME       = 'MyPaymentsBillsItemsRepository';
+    const FILE_TAGS_REPOSITORY                          = 'FilesTagsRepository';
+    const REPORTS_REPOSITORY                            = 'ReportsRepository';
+    const MY_RECURRING_PAYMENT_MONTHLY_REPOSITORY_NAME  = 'MyRecurringPaymentMonthlyRepository';
 
     const PASSWORD_FIELD                            = 'password';
 
@@ -221,66 +223,73 @@ class Repositories extends AbstractController {
      */
     public $reportsRepository;
 
+    /**
+     * @var MyRecurringPaymentMonthlyRepository
+     */
+    public $myRecurringPaymentMonthlyRepository;
+
     public function __construct(
-        MyNotesRepository               $myNotesRepository,
-        MyCarRepository                 $myCarRepository,
-        AchievementRepository           $myAchievementsRepository,
-        MyJobAfterhoursRepository       $myJobAfterhoursRepository,
-        MyPaymentsMonthlyRepository     $myPaymentsMonthlyRepository,
-        MyPaymentsProductRepository     $myPaymentsProductRepository,
-        MyShoppingPlansRepository       $myShoppingPlansRepository,
-        MyTravelsIdeasRepository        $myTravelIdeasRepository,
-        MyPaymentsSettingsRepository    $myPaymentsSettingsRepository,
-        MyNotesCategoriesRepository     $myNotesCategoriesRepository,
-        MyContactsRepository            $myContactsRepository,
-        MyContactsGroupsRepository      $myContactsGroupsRepository,
-        MyPasswordsRepository           $myPasswordsRepository,
-        MyPasswordsGroupsRepository     $myPasswordsGroupsRepository,
-        UserRepository                  $userRepository,
-        MyGoalsRepository               $myGoalsRepository,
-        MyGoalsSubgoalsRepository       $myGoalsSubgoalsRepository,
-        MyGoalsPaymentsRepository       $myGoalsPaymentsRepository,
-        MyCarSchedulesTypesRepository   $myCarSchedulesTypesRepository,
-        MyJobHolidaysRepository         $myJobHolidaysRepository,
-        MyJobHolidaysPoolRepository     $myJobHolidaysPoolRepository,
-        MyJobSettingsRepository         $myJobSettingsRepository,
-        MyPaymentsOwedRepository        $myPaymentsOwedRepository,
-        FilesTagsRepository             $filesTagsRepository,
-        FilesSearchRepository           $filesSearchRepository,
-        Translator                      $translator,
-        MyPaymentsBillsRepository       $myPaymentsBillsRepository,
-        MyPaymentsBillsItemsRepository  $myPaymentsBillsItemsRepository,
-        ReportsRepository               $reportsRepository
+        MyNotesRepository                   $myNotesRepository,
+        MyCarRepository                     $myCarRepository,
+        AchievementRepository               $myAchievementsRepository,
+        MyJobAfterhoursRepository           $myJobAfterhoursRepository,
+        MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
+        MyPaymentsProductRepository         $myPaymentsProductRepository,
+        MyShoppingPlansRepository           $myShoppingPlansRepository,
+        MyTravelsIdeasRepository            $myTravelIdeasRepository,
+        MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
+        MyNotesCategoriesRepository         $myNotesCategoriesRepository,
+        MyContactsRepository                $myContactsRepository,
+        MyContactsGroupsRepository          $myContactsGroupsRepository,
+        MyPasswordsRepository               $myPasswordsRepository,
+        MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
+        UserRepository                      $userRepository,
+        MyGoalsRepository                   $myGoalsRepository,
+        MyGoalsSubgoalsRepository           $myGoalsSubgoalsRepository,
+        MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
+        MyCarSchedulesTypesRepository       $myCarSchedulesTypesRepository,
+        MyJobHolidaysRepository             $myJobHolidaysRepository,
+        MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
+        MyJobSettingsRepository             $myJobSettingsRepository,
+        MyPaymentsOwedRepository            $myPaymentsOwedRepository,
+        FilesTagsRepository                 $filesTagsRepository,
+        FilesSearchRepository               $filesSearchRepository,
+        Translator                          $translator,
+        MyPaymentsBillsRepository           $myPaymentsBillsRepository,
+        MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
+        ReportsRepository                   $reportsRepository,
+        MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository
     ) {
-        $this->myNotesRepository                = $myNotesRepository;
-        $this->myCarRepository                  = $myCarRepository;
-        $this->achievementRepository            = $myAchievementsRepository;
-        $this->myJobAfterhoursRepository        = $myJobAfterhoursRepository;
-        $this->myPaymentsMonthlyRepository      = $myPaymentsMonthlyRepository;
-        $this->myPaymentsProductRepository      = $myPaymentsProductRepository;
-        $this->myShoppingPlansRepository        = $myShoppingPlansRepository;
-        $this->myTravelsIdeasRepository         = $myTravelIdeasRepository;
-        $this->myPaymentsSettingsRepository     = $myPaymentsSettingsRepository;
-        $this->myNotesCategoriesRepository      = $myNotesCategoriesRepository;
-        $this->myContactsRepository             = $myContactsRepository;
-        $this->myContactsGroupsRepository       = $myContactsGroupsRepository;
-        $this->myPasswordsRepository            = $myPasswordsRepository;
-        $this->myPasswordsGroupsRepository      = $myPasswordsGroupsRepository;
-        $this->userRepository                   = $userRepository;
-        $this->myGoalsRepository                = $myGoalsRepository;
-        $this->myGoalsSubgoalsRepository        = $myGoalsSubgoalsRepository;
-        $this->myGoalsPaymentsRepository        = $myGoalsPaymentsRepository;
-        $this->myCarSchedulesTypesRepository    = $myCarSchedulesTypesRepository;
-        $this->myJobHolidaysRepository          = $myJobHolidaysRepository;
-        $this->myJobHolidaysPoolRepository      = $myJobHolidaysPoolRepository;
-        $this->myJobSettingsRepository          = $myJobSettingsRepository;
-        $this->myPaymentsOwedRepository         = $myPaymentsOwedRepository;
-        $this->filesTagsRepository              = $filesTagsRepository;
-        $this->filesSearchRepository            = $filesSearchRepository;
-        $this->translator                       = $translator;
-        $this->myPaymentsBillsRepository        = $myPaymentsBillsRepository;
-        $this->myPaymentsBillsItemsRepository   = $myPaymentsBillsItemsRepository;
-        $this->reportsRepository                = $reportsRepository;
+        $this->myNotesRepository                    = $myNotesRepository;
+        $this->myCarRepository                      = $myCarRepository;
+        $this->achievementRepository                = $myAchievementsRepository;
+        $this->myJobAfterhoursRepository            = $myJobAfterhoursRepository;
+        $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
+        $this->myPaymentsProductRepository          = $myPaymentsProductRepository;
+        $this->myShoppingPlansRepository            = $myShoppingPlansRepository;
+        $this->myTravelsIdeasRepository             = $myTravelIdeasRepository;
+        $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
+        $this->myNotesCategoriesRepository          = $myNotesCategoriesRepository;
+        $this->myContactsRepository                 = $myContactsRepository;
+        $this->myContactsGroupsRepository           = $myContactsGroupsRepository;
+        $this->myPasswordsRepository                = $myPasswordsRepository;
+        $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
+        $this->userRepository                       = $userRepository;
+        $this->myGoalsRepository                    = $myGoalsRepository;
+        $this->myGoalsSubgoalsRepository            = $myGoalsSubgoalsRepository;
+        $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
+        $this->myCarSchedulesTypesRepository        = $myCarSchedulesTypesRepository;
+        $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
+        $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
+        $this->myJobSettingsRepository              = $myJobSettingsRepository;
+        $this->myPaymentsOwedRepository             = $myPaymentsOwedRepository;
+        $this->filesTagsRepository                  = $filesTagsRepository;
+        $this->filesSearchRepository                = $filesSearchRepository;
+        $this->translator                           = $translator;
+        $this->myPaymentsBillsRepository            = $myPaymentsBillsRepository;
+        $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
+        $this->reportsRepository                    = $reportsRepository;
+        $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
     }
 
     /**

@@ -18,6 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MyPaymentsSettingsController extends AbstractController {
 
+    const TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS = 'modules/my-payments/components/recurring-payments-settings.html.twig';
+
     private $em;
     /**
      * @var Application
@@ -32,7 +34,7 @@ class MyPaymentsSettingsController extends AbstractController {
     /**
      * @Route("/my-payments-settings", name="my-payments-settings")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function display(Request $request) {
         $setting_type = $request->request->all();
@@ -58,17 +60,17 @@ class MyPaymentsSettingsController extends AbstractController {
         }
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderSettingsTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        return $this->renderSettingsTemplate(true);
 
     }
 
     /**
      * @Route("/my-payments-settings/remove/", name="my-payments-settings-remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function remove(Request $request) {
@@ -78,7 +80,7 @@ class MyPaymentsSettingsController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            return $this->renderSettingsTemplate(true);
         }
         return $response;
     }
@@ -86,7 +88,7 @@ class MyPaymentsSettingsController extends AbstractController {
     /**
      * @Route("/my-payments-settings/update", name="my-payments-settings-update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function update(Request $request) {
@@ -126,16 +128,36 @@ class MyPaymentsSettingsController extends AbstractController {
 
     /**
      * @param bool $ajax_render
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
-        $payments_types = $this->app->repositories->myPaymentsSettingsRepository->getAllPaymentsTypes();
+    public function renderSettingsTemplate($ajax_render = false) {
+        $recurring_payments_template_view = $this->renderRecurringPaymentTemplate();
+        $payments_types                   = $this->app->repositories->myPaymentsSettingsRepository->getAllPaymentsTypes();
 
         return $this->render('modules/my-payments/settings.html.twig', [
-            'currency_multiplier_form'  => $this->getCurrencyMultiplierForm()->createView(),
-            'payments_types_form'       => $this->getPaymentTypeForm()->createView(),
-            'payments_types'            => $payments_types,
-            'ajax_render'               => $ajax_render
+            'recurring_payments_template_view'  => $recurring_payments_template_view->getContent(),
+            'currency_multiplier_form'          => $this->getCurrencyMultiplierForm()->createView(),
+            'payments_types_form'               => $this->getPaymentTypeForm()->createView(),
+            'payments_types'                    => $payments_types,
+            'ajax_render'                       => $ajax_render
+        ]);
+    }
+
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     */
+    public function renderRecurringPaymentTemplate($ajax_render = false) {
+        $recurring_payments_form    = $this->app->forms->recurringPayments();
+
+        $all_recurring__payments    = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => '0'], ['date' => 'ASC']);
+        $payments_types             = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => '0', 'name' => 'type']);
+
+        return $this->render(self::TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS, [
+            'form'               => $recurring_payments_form->createView(),
+            'ajax_render'        => $ajax_render,
+            'recurring_payments' => $all_recurring__payments,
+            'payments_types'     => $payments_types
         ]);
     }
 
