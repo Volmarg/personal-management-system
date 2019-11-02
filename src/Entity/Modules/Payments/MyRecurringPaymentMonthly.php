@@ -125,19 +125,11 @@ class MyRecurringPaymentMonthly {
      * This function will be called after entity is persisted
      * Must be public for CallbackEvent
      * We set hash based on description and date to ensure that data of given description and date is in DB (cron use)
-     * @ORM\PrePersist
+     * @ORM\PreFlush
      */
     public function setHash(): self {
 
-        if( $this->date instanceof \DateTime ){
-            $date = $this->date->format('Y-m');
-        }else{
-            $date = $this->date;
-        }
-
-        $string = $date . $this->description;
-
-        $hash = sha1($string);
+        $hash = $this->calculateHash();
 
         $this->hash = $hash;
 
@@ -147,4 +139,19 @@ class MyRecurringPaymentMonthly {
     public function isHashEqual($hash): bool {
         return ($this->hash === $hash);
     }
+
+    public function calculateHash(){
+        if( $this->date instanceof \DateTime ){
+            $date = $this->date->format('Y-m-d');
+        }else{
+            $date = $this->date;
+        }
+
+        $string = $date . $this->description;
+
+        $hash = sha1($string);
+
+        return $hash;
+    }
+
 }
