@@ -199,6 +199,10 @@ forms:
       name: Name
       bill: Bill
       date: Date
+  SettingsDashboardType:
+    labels:
+      name: Name
+      value: Value
   #files/images/dialogs
   general:
     submit: Submit

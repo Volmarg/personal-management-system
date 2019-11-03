@@ -37,7 +37,9 @@ use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
+use App\Repository\SettingRepository;
 use App\Repository\UserRepository;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -75,6 +77,7 @@ class Repositories extends AbstractController {
     const FILE_TAGS_REPOSITORY                          = 'FilesTagsRepository';
     const REPORTS_REPOSITORY                            = 'ReportsRepository';
     const MY_RECURRING_PAYMENT_MONTHLY_REPOSITORY_NAME  = 'MyRecurringPaymentMonthlyRepository';
+    const SETTING_REPOSITORY                            = 'SettingRepository';
 
     const PASSWORD_FIELD                            = 'password';
 
@@ -228,6 +231,11 @@ class Repositories extends AbstractController {
      */
     public $myRecurringPaymentMonthlyRepository;
 
+    /**
+     * @var SettingRepository
+     */
+    public $settingRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         MyCarRepository                     $myCarRepository,
@@ -258,7 +266,8 @@ class Repositories extends AbstractController {
         MyPaymentsBillsRepository           $myPaymentsBillsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         ReportsRepository                   $reportsRepository,
-        MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository
+        MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
+        SettingRepository                   $settingRepository
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->myCarRepository                      = $myCarRepository;
@@ -290,6 +299,7 @@ class Repositories extends AbstractController {
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->reportsRepository                    = $reportsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
+        $this->settingRepository                    = $settingRepository;
     }
 
     /**
@@ -340,6 +350,7 @@ class Repositories extends AbstractController {
      * 'namespace': 'App\\Entity\\MyNotesCategories',
      * 'id': $(noteCategoryId).val(),
      * },
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(array $parameters, $entity, array $findByParams = []) {
 
