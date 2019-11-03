@@ -1905,7 +1905,6 @@ export default (function () {
                 },
                 entity_name: "My bill items"
             },
-
             "MyPaymentsBills": {
                 makeUpdateData: function (tr_parent_element) {
                     let id              = $(tr_parent_element).find('.id').html();
@@ -1952,7 +1951,58 @@ export default (function () {
                     };
                 },
                 entity_name: "My bill"
-            }
+            },
+            'settingsDashboardWidgetsVisibility':{
+                /**
+                 * data from all records must be sent at once
+                 * @param tr_parent_element {object}
+                 */
+                makeUpdateData: function (tr_parent_element) {
+
+                    let table         = $(tr_parent_element).closest('tbody');
+                    let allRows       = $(table).find('tr');
+                    let allRowsData   = [];
+
+                    if( 0 === table.length || 0 === allRows.length ){
+                        throw({
+                           "message": "Either no form or rows were found for entity update",
+                           "entity" : "Settings",
+                           "method" : "settingsDashboardWidgetsVisibility::makeUpdateData"
+                        });
+                    }
+
+                    $.each(allRows, (index, row) => {
+
+                        let name            = $(row).find('.widget-name').text();
+                        let isCheckedInput  = $(row).find('.is-checked').find('input');
+                        let isChecked       = utils.domAttributes.isChecked(isCheckedInput);
+
+                        let rowData = {
+                            'name'          : name,
+                            'is_visible'    : isChecked,
+                        };
+
+                        allRowsData.push(rowData);
+                    });
+
+                    let ajax_data = {
+                        'all_rows_data': allRowsData
+                    };
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = '/api/settings-dashboard/update-widgets-visibility';
+
+                    return {
+                        'url'             : url,
+                        'data'            : ajax_data,
+                        'success_message' : success_message,
+                        'fail_message'    : fail_message,
+                    };
+                },
+            entity_name: "Settings",
+        },
         },
         form_target_actions: {
             "UserAvatar": {

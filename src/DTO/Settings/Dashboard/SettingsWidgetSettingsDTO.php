@@ -30,6 +30,20 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
     }
 
     /**
+     * @param array $widgets_visibility_dtos
+     * @throws \Exception
+     */
+    public function setWidgetVisibility(array $widgets_visibility_dtos){
+
+        $has_dto = reset($widgets_visibility_dtos) instanceof SettingsWidgetVisibilityDTO;
+
+        if( !$has_dto ){
+            throw new \Exception("There are no SettingsWidgetVisibilityDTO in array ");
+        }
+
+    }
+
+    /**
      * @param string $widgets_settings_json
      * @return SettingsWidgetSettingsDTO
      * @throws \Exception

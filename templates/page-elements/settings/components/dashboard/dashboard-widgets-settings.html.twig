@@ -1,13 +1,14 @@
-{% set settings_dashboard_controller_class = 'App\\Controller\\Page\\SettingsDashboardController::' %}
-{% set KEY_WIDGET_NAME    = constant(settings_dashboard_controller_class ~ 'KEY_WIDGET_NAME' ) %}
-{% set KEY_DISPLAY_WIDGET = constant(settings_dashboard_controller_class ~ 'KEY_DISPLAY_WIDGET' ) %}
+{% set settings_widget_visibility_dto = 'App\\DTO\\Settings\\Dashboard\\Widget\\SettingsWidgetVisibilityDTO::' %}
+{% set KEY_NAME         = constant(settings_widget_visibility_dto ~ 'KEY_NAME' ) %}
+{% set KEY_IS_VISIBLE   = constant(settings_widget_visibility_dto ~ 'KEY_IS_VISIBLE' ) %}
 
 <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
     <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('settings.dashboard.widgets.visibility.label') }} </h5>
 
-    <table id="SettingsDashboardWidgetsVisibility" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+    <table id="settingsDashboardWidgetsVisibility" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
         <thead>
         <tr>
+            <td class="d-none"></td>
             <td>    {{ translate('settings.dashboard.widgets.visibility.table.labels.name') }}              </td>
             <td>    {{ translate('settings.dashboard.widgets.visibility.table.labels.displayWidget') }}     </td>
             <td>    {{ translate('datatables.table.actions') }}                                             </td>
@@ -15,7 +16,11 @@
         </thead>
         <tbody>
             {% for widget_name, widget_translation in widgets_names %}
-                <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="SettingsDashboardWidgetsVisibility">
+                <tr class="editable-parent save-parent" data-type="settingsDashboardWidgetsVisibility">
+
+                    <td class="widget-name d-none">
+                        {{ widget_name }}
+                    </td>
 
                 {% set is_visible = false %}
 
@@ -28,17 +33,16 @@
                     <td>
                         {{ widget_translation }}
                     </td>
-                    <td>
+                    <td class="is-checked">
                         {% include 'page-elements/components/forms/toggle-button.twig' with {
                             "value"     : is_visible,
-                            "yes_no"    : true,
-                            "classes"   : " disabled"
+                            "yes_no"    : true
                         }%}
                     </td>
-                {% include 'modules/common/components/table-cells/actions.html.twig' with {
-                    "edit": true,
-                    "save": true
-                } %}
+                    {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                        "edit": true,
+                        "save": true
+                    } %}
                 </tr>
             {% endfor %}
         </tbody>

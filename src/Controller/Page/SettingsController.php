@@ -101,9 +101,14 @@ class SettingsController extends AbstractController {
      * This function will use the db json and build dto
      * @throws \Exception
      */
-    public function buildSettingsDashboardDtoFromSettingsJson(){
+    public function buildSettingsDashboardDtoFromSettingsJson():?SettingsDashboardDTO {
         $setting_json = $this->settings_loader->fetchSettingsForDashboard();
-        $dto          = SettingsDashboardDTO::fromJson($setting_json);
+
+        if( empty($setting_json) ){
+            return null;
+        }
+
+        $dto = SettingsDashboardDTO::fromJson($setting_json);
 
         return $dto;
     }
