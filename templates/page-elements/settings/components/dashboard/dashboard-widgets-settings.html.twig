@@ -1,0 +1,46 @@
+{% set settings_dashboard_controller_class = 'App\\Controller\\Page\\SettingsDashboardController::' %}
+{% set KEY_WIDGET_NAME    = constant(settings_dashboard_controller_class ~ 'KEY_WIDGET_NAME' ) %}
+{% set KEY_DISPLAY_WIDGET = constant(settings_dashboard_controller_class ~ 'KEY_DISPLAY_WIDGET' ) %}
+
+<div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+    <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('settings.dashboard.widgets.visibility.label') }} </h5>
+
+    <table id="SettingsDashboardWidgetsVisibility" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+        <thead>
+        <tr>
+            <td>    {{ translate('settings.dashboard.widgets.visibility.table.labels.name') }}              </td>
+            <td>    {{ translate('settings.dashboard.widgets.visibility.table.labels.displayWidget') }}     </td>
+            <td>    {{ translate('datatables.table.actions') }}                                             </td>
+        </tr>
+        </thead>
+        <tbody>
+            {% for widget_name, widget_translation in widgets_names %}
+                <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="SettingsDashboardWidgetsVisibility">
+
+                {% set is_visible = false %}
+
+                    {% for widget_visibility_setting in widgets_visibility_settings %}
+                        {% if widget_visibility_setting.name == widget_name and  widget_visibility_setting.isVisible() %}
+                            {% set is_visible = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    <td>
+                        {{ widget_translation }}
+                    </td>
+                    <td>
+                        {% include 'page-elements/components/forms/toggle-button.twig' with {
+                            "value"     : is_visible,
+                            "yes_no"    : true,
+                            "classes"   : " disabled"
+                        }%}
+                    </td>
+                {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                    "edit": true,
+                    "save": true
+                } %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

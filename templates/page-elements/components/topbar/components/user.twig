@@ -28,6 +28,12 @@
                 <span>{{ translate('topbar.user.profile') }}</span>
             </a>
         </li>
+        <li>
+            <a href="{{ path('page-settings') }}" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700">
+                <i class="fas fa-cog mR-10"></i>
+                <span>{{ translate('topbar.user.settings') }}</span>
+            </a>
+        </li>
         <li role="separator" class="divider"></li>
         <li>
             <a href="{{ path('fos_user_security_logout') }}"

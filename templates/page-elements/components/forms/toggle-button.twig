@@ -1,0 +1,27 @@
+{% set data_on  =  translate('buttons.toggle.on') %}
+{% set data_off =  translate('buttons.toggle.off') %}
+
+{% if yes_no is defined and yes_no %}
+    {% set data_on  =  translate('buttons.toggle.yes') %}
+    {% set data_off =  translate('buttons.toggle.no') %}
+{% endif %}
+
+{% if classes is not defined %}
+    {% set classes = '' %}
+{% endif %}
+
+{% set checked = "" %}
+{% if value is defined and value %}
+    {% set checked = "checked" %}
+{% endif %}
+
+
+<input
+    type="checkbox"
+    data-toggle="toggle"
+    data-on="{{ data_on }}"
+    data-off="{{ data_off }}"
+    data-toggle-class="{{ classes }}"
+    data-toggle-bootstrap-toggle="true"
+    {{ checked }}
+>

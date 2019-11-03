@@ -36,3 +36,15 @@ codePages:
 upload:
   errors:
     thereWasAnErrorWhileUploadingFiles: There was an error while uploading files
+
+settings:
+  label: Settings
+  dashboard:
+    label: Dashboard
+    widgets:
+      visibility:
+        label: Widgets visibility
+        table:
+          labels:
+            name: Name
+            displayWidget: Display widget

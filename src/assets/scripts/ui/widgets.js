@@ -1,5 +1,8 @@
 var bootbox   = require('bootbox');
 import * as selectize from "selectize";
+import * as bootstrapToggle from "bootstrap-toggle";
+
+import 'bootstrap-toggle/css/bootstrap2-toggle.min.css';
 import 'selectize/dist/css/selectize.css';
 import 'selectize/dist/css/selectize.bootstrap3.css';
 
@@ -35,6 +38,7 @@ export default (function () {
             this.addMonthlyPaymentSummaryToAccordinHeader();
             this.removeFolderOnFolderRemovalIconClick();
             this.popover.init();
+            this.bootstrapToggle.init();
 
             $(document).ready(function(){
                 ui.widgets.fixAccordions();
@@ -296,6 +300,28 @@ export default (function () {
         popover: {
             init: function(){
                 $('[data-toggle-popover="true"]').popover();
+            }
+        },
+        bootstrapToggle: {
+            init: function(){
+
+                let allElementsToTransform = $('[data-toggle-bootstrap-toggle="true"]');
+
+                $.each(allElementsToTransform, function(index, element){
+                    let classes = $(this).attr('data-toggle-class');
+
+                    if( "undefined" === typeof classes){
+                        classes = '';
+                    }
+
+                    $(element).bootstrapToggle({
+                        size    : "small",
+                        onstyle : "success",
+                        offstyle: "info",
+                        style   : classes
+                    });
+                });
+
             }
         },
         loader: {

@@ -4,3 +4,12 @@ lightgallery:
   labels:
     tags: Tags
     search: Search
+
+dashboard:
+  widgets:
+    carSchedules:
+      label: Car schedules
+    goalsPayments:
+      label: Goals payments
+    goalsProgress:
+      label: Goals progress

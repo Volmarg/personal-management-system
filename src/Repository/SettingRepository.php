@@ -2,8 +2,8 @@
 
 namespace App\Repository;
 
-use App\Controller\Page\SettingsController;
 use App\Entity\Setting;
+use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException as DBALExceptionAlias;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -38,7 +38,7 @@ class SettingRepository extends ServiceEntityRepository
         ";
 
         $params = [
-            'key' => SettingsController::SETTING_NAME_DASHBOARD
+            'key' => SettingsLoader::SETTING_NAME_DASHBOARD
         ];
 
         $stmt   = $connection->executeQuery($sql, $params);

@@ -65,4 +65,5 @@ topbar:
     placeholder: Search for files by tags...
   user:
     profile: Profile
+    settings: Settings
     logout: Logout
