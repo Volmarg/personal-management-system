@@ -41,6 +41,7 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
             throw new \Exception("There are no SettingsWidgetVisibilityDTO in array ");
         }
 
+        $this->widgets_visibility = $widgets_visibility_dtos;
     }
 
     /**
@@ -71,13 +72,26 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
      */
     public function toJson(): string{
 
+        $array_of_visibilities_jsons = [];
+
+        foreacH($this->getWidgetsVisibility() as $widget_visibility ){
+            $array_of_visibilities_jsons[] = $widget_visibility->toArray();
+        }
+
         $array = [
-            self::KEY_WIDGETS_VISIBILITY => $this->getWidgetsVisibility(),
+            self::KEY_WIDGETS_VISIBILITY => $array_of_visibilities_jsons,
         ];
 
         $json = json_encode($array);
 
         return $json;
+    }
+
+    public function toArray(): array {
+        $json  = $this->toJson();
+        $array = json_decode($json, true);
+
+        return $array;
     }
 
 }

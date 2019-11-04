@@ -72,14 +72,20 @@ class SettingsWidgetVisibilityDTO extends AbstractDTO implements dtoInterface{
      */
     public function toJson(): string{
 
+        $array = $this->toArray();
+        $json  = json_encode($array);
+
+        return $json;
+    }
+
+    public function toArray(): array{
+
         $array = [
             self::KEY_NAME       => $this->getName(),
             self::KEY_IS_VISIBLE => $this->isVisible(),
         ];
 
-        $json = json_encode($array);
-
-        return $json;
+        return $array;
     }
 
 }

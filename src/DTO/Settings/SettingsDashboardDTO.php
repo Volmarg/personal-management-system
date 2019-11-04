@@ -54,7 +54,7 @@ class SettingsDashboardDTO extends AbstractDTO implements dtoInterface{
     public function toJson(): string{
 
         $array = [
-            self::KEY_WIDGETS_SETTINGS => $this->getWidgetSettings(),
+            self::KEY_WIDGETS_SETTINGS => $this->getWidgetSettings()->toArray(),
         ];
 
         $json = json_encode($array);

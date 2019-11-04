@@ -74,7 +74,7 @@ class SettingsSaver {
         $dashboard_settings_json = $dto->toJson();
 
         $setting = new Setting();
-        $setting->setName(SettingsDashboardDTO::KEY_WIDGETS_SETTINGS);
+        $setting->setName(SettingsController::KEY_DASHBOARD_SETTINGS);
         $setting->setValue($dashboard_settings_json);
 
         $this->app->em->persist($setting);

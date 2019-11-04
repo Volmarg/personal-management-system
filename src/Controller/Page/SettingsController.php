@@ -15,6 +15,8 @@ class SettingsController extends AbstractController {
 
     const TWIG_SETTINGS_TEMPLATE = 'page-elements/settings/layout.html.twig' ;
 
+    const KEY_DASHBOARD_SETTINGS = 'dashboard';
+
     /**
      * @var Application
      */
