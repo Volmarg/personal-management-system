@@ -62,7 +62,9 @@ class SettingsSaver {
      * @throws \Exception
      */
     public function saveSettingsForDashboardWidgetsVisibility(array $array_of_widgets_visibility_dto): void {
-        $dto                = $this->settings_controller->buildSettingsDashboardDtoFromSettingsJson();
+        $dto     = $this->settings_controller->buildSettingsDashboardDtoFromSettingsJsonInDb();
+        $setting = $this->settings_loader->getSettingsForDashboard();
+
         $are_settings_in_db = !empty($dto);
 
         if( $are_settings_in_db ){
@@ -73,7 +75,6 @@ class SettingsSaver {
 
         $dashboard_settings_json = $dto->toJson();
 
-        $setting = new Setting();
         $setting->setName(SettingsController::KEY_DASHBOARD_SETTINGS);
         $setting->setValue($dashboard_settings_json);
 

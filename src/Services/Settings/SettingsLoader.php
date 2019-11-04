@@ -3,6 +3,7 @@
 namespace App\Services\Settings;
 
 use App\Controller\Utils\Application;
+use App\Entity\Setting;
 use Doctrine\DBAL\DBALException;
 
 /**
@@ -29,10 +30,10 @@ class SettingsLoader {
     }
 
     /**
-     * @throws DBALException
+     * @return Setting|null
      */
-    public function fetchSettingsForDashboard(): string{
-        $setting_json = $this->app->repositories->settingRepository->fetchSettingsForDashboard();
-        return $setting_json;
+    public function getSettingsForDashboard(): ?Setting {
+        $setting = $this->app->repositories->settingRepository->getSettingsForDashboard();
+        return $setting;
     }
 }

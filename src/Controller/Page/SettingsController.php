@@ -42,7 +42,7 @@ class SettingsController extends AbstractController {
         $this->settings_loader        = $settings_loader;
         $this->app                    = $app;
 
-        $this->settings_dashboard_dto = $this->buildSettingsDashboardDtoFromSettingsJson();
+        $this->settings_dashboard_dto = $this->buildSettingsDashboardDtoFromSettingsJsonInDb();
 
     }
 
@@ -85,7 +85,7 @@ class SettingsController extends AbstractController {
      */
     private function renderSettingsDashboardTemplate($ajax_render = false) {
 
-        $dashboard_settings_dto         = $this->buildSettingsDashboardDtoFromSettingsJson();
+        $dashboard_settings_dto         = $this->buildSettingsDashboardDtoFromSettingsJsonInDb();
         $widgets_visibility_settings    = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
         $widgets_names                  = SettingsDashboardController::getDashboardWidgetsNames($this->app);
 
@@ -103,8 +103,9 @@ class SettingsController extends AbstractController {
      * This function will use the db json and build dto
      * @throws \Exception
      */
-    public function buildSettingsDashboardDtoFromSettingsJson():?SettingsDashboardDTO {
-        $setting_json = $this->settings_loader->fetchSettingsForDashboard();
+    public function buildSettingsDashboardDtoFromSettingsJsonInDb():?SettingsDashboardDTO {
+        $setting      = $this->settings_loader->getSettingsForDashboard();
+        $setting_json = $setting->getValue();
 
         if( empty($setting_json) ){
             return null;

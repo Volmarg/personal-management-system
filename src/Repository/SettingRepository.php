@@ -22,32 +22,15 @@ class SettingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return string
-     * @throws DBALExceptionAlias
+     * @return Setting|null
      */
-    public function fetchSettingsForDashboard():string {
+    public function getSettingsForDashboard():?Setting {
+        $result = $this->findBy(['name' => SettingsLoader::SETTING_NAME_DASHBOARD]);
 
-        $connection = $this->_em->getConnection();
-
-        $sql = "
-            SELECT 
-                value AS value
-                
-             FROM setting
-             WHERE name = :key
-        ";
-
-        $params = [
-            'key' => SettingsLoader::SETTING_NAME_DASHBOARD
-        ];
-
-        $stmt   = $connection->executeQuery($sql, $params);
-        $result = $stmt->fetchColumn();
-
-        if( false == $result ){
-            return '';
+        if( empty($result) ){
+            return null;
         }
 
-        return $result;
+        return reset($result);
     }
 }
