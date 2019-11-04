@@ -308,18 +308,29 @@ export default (function () {
                 let allElementsToTransform = $('[data-toggle-bootstrap-toggle="true"]');
 
                 $.each(allElementsToTransform, function(index, element){
-                    let classes = $(this).attr('data-toggle-class');
-
+                    let classes  = $(this).attr('data-toggle-class');
+                    let $element = $(element);
                     if( "undefined" === typeof classes){
                         classes = '';
                     }
 
-                    $(element).bootstrapToggle({
+                   $element.bootstrapToggle({
                         size    : "small",
                         onstyle : "success",
                         offstyle: "info",
                         style   : classes
                     });
+
+                    let toggleButton = $(element).closest('.toggle');
+
+                    $(toggleButton).on('click', () =>{
+                        if( utils.domAttributes.isChecked($element)){
+                            utils.domAttributes.unsetChecked($element);
+                        }else{
+                            utils.domAttributes.setChecked($element);
+                        }
+                    })
+
                 });
 
             }
