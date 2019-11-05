@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Setting;
 use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException as DBALExceptionAlias;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**

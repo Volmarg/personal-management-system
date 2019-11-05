@@ -6,6 +6,8 @@ use App\Controller\Utils\Application;
 use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -21,6 +23,12 @@ class SettingsDashboardController extends AbstractController {
     const DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS = 'dashboard_widget_goals_payments';
     const DASHBOARD_WIDGET_NAME_CAR_SCHEDULES  = 'dashboard_widget_car_schedules';
 
+    const ALL_DASHBOARD_WIDGETS_NAMES = [
+        self::DASHBOARD_WIDGET_NAME_GOALS_PROGRESS,
+        self::DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS,
+        self::DASHBOARD_WIDGET_NAME_CAR_SCHEDULES,
+    ];
+
     const KEY_ALL_ROWS_DATA = 'all_rows_data';
 
     /**
@@ -33,20 +41,70 @@ class SettingsDashboardController extends AbstractController {
      */
     private $settings_saver;
 
-    public function __construct(Application $app, SettingsSaver $settings_saver) {
+    /**
+     * @var SettingsLoader $settings_loader
+     */
+    private $settings_loader;
+
+    /**
+     * @var SettingsViewController $settings_view_controller
+     */
+    private $settings_view_controller;
+
+    public function __construct(Application $app, SettingsSaver $settings_saver, SettingsLoader $settings_loader, SettingsViewController $settings_view_controller) {
+        $this->settings_view_controller = $settings_view_controller;
+        $this->settings_loader = $settings_loader;
         $this->settings_saver = $settings_saver;
         $this->app = $app;
     }
 
+    /**
+     * Returns array of widgets names with their translations
+     * @param Application $app
+     * @return array
+     * @throws ExceptionDuplicatedTranslationKey
+     */
     public static function getDashboardWidgetsNames(Application $app):array {
 
-        $dashboard_widgets = [
-            self::DASHBOARD_WIDGET_NAME_CAR_SCHEDULES  => $app->translator->translate('dashboard.widgets.carSchedules.label'),
-            self::DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS => $app->translator->translate('dashboard.widgets.goalsPayments.label'),
-            self::DASHBOARD_WIDGET_NAME_GOALS_PROGRESS => $app->translator->translate('dashboard.widgets.goalsProgress.label')
-        ];
+        $dashboard_widgets_names = [];
 
-        return $dashboard_widgets;
+        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
+            $dashboard_widgets_names[$widget_name] = $app->translator->translate('dashboard.widgets.' . $widget_name . '.label');
+        }
+
+        return $dashboard_widgets_names;
+    }
+
+    /**
+     * Returns array of widgets names with initial visibilities
+     * @param bool $all_visible
+     * @return array
+     */
+    public static function getDashboardWidgetsInitialVisibility($all_visible = true){
+        $dashboard_widgets_visibility = [];
+
+        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
+            $dashboard_widgets_visibility[$widget_name] = $all_visible;
+        }
+
+        return $dashboard_widgets_visibility;
+    }
+
+    public static function buildArrayOfWidgetsVisibilityDtoForInitialVisibility($all_visible = true){
+
+        $array_of_widgets_visibility_dto = [];
+
+
+        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
+
+            $settings_widget_visibility_dto = new SettingsWidgetVisibilityDTO();
+            $settings_widget_visibility_dto->setName($widget_name);
+            $settings_widget_visibility_dto->setIsVisible($all_visible);
+
+            $array_of_widgets_visibility_dto[] = $settings_widget_visibility_dto;
+        }
+
+        return $array_of_widgets_visibility_dto;
     }
 
     /**
@@ -93,8 +151,7 @@ class SettingsDashboardController extends AbstractController {
 
         $this->settings_saver->saveSettingsForDashboardWidgetsVisibility($widgets_visibilities_settings_dtos);
 
-        //todo
-        return '';
+        return $this->settings_view_controller->renderSettingsTemplate(false);
     }
 
     /**
