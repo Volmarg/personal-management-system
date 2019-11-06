@@ -2,9 +2,9 @@
 
 namespace App\Controller\Page;
 
-use App\Controller\Utils\Application;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Services\Settings\SettingsLoader;
+use App\Services\Translator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,9 +20,9 @@ class SettingsViewController extends AbstractController {
     const KEY_DASHBOARD_SETTINGS = 'dashboard';
 
     /**
-     * @var Application
+     * @var Translator
      */
-    private $app;
+    private $translator;
 
     /**
      * @var SettingsLoader $settings_loader
@@ -31,12 +31,12 @@ class SettingsViewController extends AbstractController {
 
     /**
      * SettingsController constructor.
-     * @param Application $app
+     * @param Translator $translator
      * @param SettingsLoader $settings_loader
      */
-    public function __construct(Application $app, SettingsLoader $settings_loader) {
+    public function __construct(Translator $translator, SettingsLoader $settings_loader) {
         $this->settings_loader = $settings_loader;
-        $this->app = $app;
+        $this->translator      = $translator;
     }
 
     /**
@@ -77,7 +77,7 @@ class SettingsViewController extends AbstractController {
         }
 
         $widgets_visibility_settings    = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
-        $widgets_names                  = SettingsDashboardController::getDashboardWidgetsNames($this->app);
+        $widgets_names                  = SettingsDashboardController::getDashboardWidgetsNames($this->translator);
 
         $data = [
             'ajax_render'                 => $ajax_render,

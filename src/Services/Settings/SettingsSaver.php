@@ -4,10 +4,10 @@ namespace App\Services\Settings;
 
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
-use App\Controller\Utils\Application;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class SettingsSaver
@@ -16,9 +16,9 @@ use App\Entity\Setting;
 class SettingsSaver {
 
     /**
-     * @var Application $app
+     * @var EntityManagerInterface $em
      */
-    private $app;
+    private $em;
 
     /**
      * @var SettingsLoader $settings_loader
@@ -26,15 +26,15 @@ class SettingsSaver {
     private $settings_loader;
 
     /**
-     * @param Application $app
+     * @param EntityManagerInterface $em
      * @param SettingsLoader $settings_loader
      */
     public function __construct(
-        Application    $app,
-        SettingsLoader $settings_loader
+        EntityManagerInterface  $em,
+        SettingsLoader          $settings_loader
 
     ) {
-        $this->app = $app;
+        $this->em = $em;
         $this->settings_loader = $settings_loader;
     }
 
@@ -45,8 +45,8 @@ class SettingsSaver {
         $setting->setName(SettingsLoader::SETTING_NAME_DASHBOARD);
         $setting->setValue($json);
 
-        $this->app->em->persist($setting);
-        $this->app->em->flush();
+        $this->em->persist($setting);
+        $this->em->flush();
     }
 
     /**
@@ -74,9 +74,8 @@ class SettingsSaver {
         $setting->setName(SettingsController::KEY_DASHBOARD_SETTINGS);
         $setting->setValue($dashboard_settings_json);
 
-        $this->app->em->persist($setting);
-        $this->app->em->flush();
-
+        $this->em->persist($setting);
+        $this->em->flush();
     }
 
 }

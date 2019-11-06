@@ -9,6 +9,7 @@ use App\DTO\Settings\SettingsDashboardDTO;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
+use App\Services\Translator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -19,9 +20,10 @@ class SettingsDashboardController extends AbstractController {
 
     const TWIG_DASHBOARD_SETTINGS_TEMPLATE = 'page-elements/settings/components/dashboard-settings.html.twig' ;
 
-    const DASHBOARD_WIDGET_NAME_GOALS_PROGRESS = 'dashboard_widget_goals_progress';
-    const DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS = 'dashboard_widget_goals_payments';
-    const DASHBOARD_WIDGET_NAME_CAR_SCHEDULES  = 'dashboard_widget_car_schedules';
+    #Info: this must be equivalent to the template name modules/my-dashboard-widgets
+    const DASHBOARD_WIDGET_NAME_GOALS_PROGRESS = 'my-goals';
+    const DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS = 'my-goals-payments';
+    const DASHBOARD_WIDGET_NAME_CAR_SCHEDULES  = 'incoming-car-schedules';
 
     const ALL_DASHBOARD_WIDGETS_NAMES = [
         self::DASHBOARD_WIDGET_NAME_GOALS_PROGRESS,
@@ -32,9 +34,9 @@ class SettingsDashboardController extends AbstractController {
     const KEY_ALL_ROWS_DATA = 'all_rows_data';
 
     /**
-     * @var Application
+     * @var Translator $translator
      */
-    private $app;
+    private $translator;
 
     /**
      * @var SettingsSaver $settings_saver
@@ -51,25 +53,25 @@ class SettingsDashboardController extends AbstractController {
      */
     private $settings_view_controller;
 
-    public function __construct(Application $app, SettingsSaver $settings_saver, SettingsLoader $settings_loader, SettingsViewController $settings_view_controller) {
+    public function __construct(Translator $translator, SettingsSaver $settings_saver, SettingsLoader $settings_loader, SettingsViewController $settings_view_controller) {
         $this->settings_view_controller = $settings_view_controller;
         $this->settings_loader = $settings_loader;
         $this->settings_saver = $settings_saver;
-        $this->app = $app;
+        $this->translator = $translator;
     }
 
     /**
      * Returns array of widgets names with their translations
-     * @param Application $app
+     * @param Translator $translator
      * @return array
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public static function getDashboardWidgetsNames(Application $app):array {
+    public static function getDashboardWidgetsNames(Translator $translator):array {
 
         $dashboard_widgets_names = [];
 
         foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
-            $dashboard_widgets_names[$widget_name] = $app->translator->translate('dashboard.widgets.' . $widget_name . '.label');
+            $dashboard_widgets_names[$widget_name] = $translator->translate('dashboard.widgets.' . $widget_name . '.label');
         }
 
         return $dashboard_widgets_names;
@@ -130,12 +132,12 @@ class SettingsDashboardController extends AbstractController {
         foreach($all_rows_data as $row_data){
 
             if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE, $row_data)){
-                $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE;
+                $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE;
                 throw new \Exception($message);
             }
 
             if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_NAME, $row_data)){
-                $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_NAME;
+                $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_NAME;
                 throw new \Exception($message);
             }
 

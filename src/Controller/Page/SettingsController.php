@@ -2,7 +2,6 @@
 
 namespace App\Controller\Page;
 
-use App\Controller\Utils\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,11 +15,6 @@ class SettingsController extends AbstractController {
     const KEY_DASHBOARD_SETTINGS = 'dashboard';
 
     /**
-     * @var Application
-     */
-    private $app;
-
-    /**
      * @var SettingsViewController $settings_view_controller
      */
     private $settings_view_controller;
@@ -32,15 +26,13 @@ class SettingsController extends AbstractController {
 
     /**
      * SettingsController constructor.
-     * @param Application $app
      * @param SettingsDashboardController $settings_dashboard_controller
      * @param SettingsViewController $settings_view_controller
      * @throws \Exception
      */
-    public function __construct(Application $app, SettingsDashboardController $settings_dashboard_controller, SettingsViewController $settings_view_controller) {
+    public function __construct(SettingsDashboardController $settings_dashboard_controller, SettingsViewController $settings_view_controller) {
         $this->settings_dashboard_controller = $settings_dashboard_controller;
         $this->settings_view_controller = $settings_view_controller;
-        $this->app                      = $app;
     }
 
     /**

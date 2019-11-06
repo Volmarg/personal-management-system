@@ -3,6 +3,7 @@
 namespace App\Services\Settings;
 
 use App\Controller\Utils\Application;
+use App\Controller\Utils\Repositories;
 use App\Entity\Setting;
 use Doctrine\DBAL\DBALException;
 
@@ -16,24 +17,24 @@ class SettingsLoader {
     const SETTING_NAME_DASHBOARD = 'dashboard';
 
     /**
-     * @var Application $app
+     * @var Repositories $repositories
      */
-    private $app;
+    private $repositories;
 
     /**
      * DatabaseExporter constructor.
-     * @param Application $app
+     * @param Repositories $repositories
      * @throws \Exception
      */
-    public function __construct(Application $app) {
-        $this->app = $app;
+    public function __construct(Repositories $repositories) {
+        $this->repositories = $repositories;
     }
 
     /**
      * @return Setting|null
      */
     public function getSettingsForDashboard(): ?Setting {
-        $setting = $this->app->repositories->settingRepository->getSettingsForDashboard();
+        $setting = $this->repositories->settingRepository->getSettingsForDashboard();
         return $setting;
     }
 }
