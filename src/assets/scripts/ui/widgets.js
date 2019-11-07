@@ -300,7 +300,7 @@ export default (function () {
         popover: {
             init: function(){
                 $('[data-toggle-popover="true"]').popover();
-            }
+            },
         },
         bootstrapToggle: {
             init: function(){
@@ -333,6 +333,14 @@ export default (function () {
 
                 });
 
+                this.initEventsAttach();
+            },
+            /**
+             * This function will attach:
+             *   - save event for settings (normally save works with action buttons but I want it here too just for toggle with specific class);
+             */
+            initEventsAttach: function(){
+                ui.crud.attachContentSaveEventOnSaveIcon();
             }
         },
         loader: {

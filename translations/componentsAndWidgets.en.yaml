@@ -7,9 +7,9 @@ lightgallery:
 
 dashboard:
   widgets:
-    dashboard_widget_car_schedules:
+    incoming-car-schedules:
       label: Car schedules
-    dashboard_widget_goals_payments:
+    my-goals-payments:
       label: Goals payments
-    dashboard_widget_goals_progress:
+    my-goals:
       label: Goals progress
