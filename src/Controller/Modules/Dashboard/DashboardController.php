@@ -52,9 +52,9 @@ class DashboardController extends Controller {
             $dashboard_widgets_visibility_dtos   = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $car_schedules              = $this->getCarSchedulesForWidget();
-        $goals                      = $this->getGoalsForWidget();
-        $goals_payments             = $this->getGoalsPayments();
+        $car_schedules  = $this->getCarSchedulesForWidget();
+        $goals          = $this->getGoalsForWidget();
+        $goals_payments = $this->getGoalsPayments();
 
         $data = [
             'dashboard_widgets_visibility_dtos'  => $dashboard_widgets_visibility_dtos,

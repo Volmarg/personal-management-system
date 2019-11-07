@@ -16,7 +16,7 @@ class AbstractDTO{
      * @return string
      * @throws \Exception
      */
-    public static function checkAndGetKey(array $array,string $key, bool $asString = true) {
+    public static function checkAndGetKey(array $array, string $key, bool $asString = true) {
 
         if( array_key_exists($key, $array) ){
             $value = $array[$key];

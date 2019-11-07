@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Modules\ModulesController;
-use App\Controller\Page\SettingsController;
 use App\Controller\Utils\Application;
-use phpseclib\Net\SFTP;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -181,21 +179,6 @@ class AppController extends Controller
                 $pageName
             )
         );
-    }
-
-    /**
-     * @Route("/tests", name="tests")
-     */
-    public function tests(){
-
-        $ctrl = new SettingsController($this->app);
-
-        $dto = $ctrl->setSettingsDashboardDto();
-
-        dump($dto);
-
-        return new JsonResponse($dto);
-
     }
 
 }

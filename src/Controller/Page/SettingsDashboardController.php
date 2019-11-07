@@ -2,7 +2,6 @@
 
 namespace App\Controller\Page;
 
-use App\Controller\Utils\Application;
 use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
@@ -92,6 +91,11 @@ class SettingsDashboardController extends AbstractController {
         return $dashboard_widgets_visibility;
     }
 
+    /**
+     * Builds array of widgets visibilities dto
+     * @param bool $all_visible
+     * @return array
+     */
     public static function buildArrayOfWidgetsVisibilityDtoForInitialVisibility($all_visible = true){
 
         $array_of_widgets_visibility_dto = [];
@@ -122,7 +126,7 @@ class SettingsDashboardController extends AbstractController {
     public function updateWidgetsVisibility(Request $request){
 
         if (!$request->request->has(self::KEY_ALL_ROWS_DATA)) {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ALL_ROWS_DATA;
+            $message = $this->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ALL_ROWS_DATA;
             throw new \Exception($message);
         }
 
