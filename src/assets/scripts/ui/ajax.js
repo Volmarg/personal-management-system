@@ -1,5 +1,6 @@
 var bootbox      = require('bootbox');
 var imagesLoaded = require('imagesloaded');
+import Masonry from 'masonry-layout';
 
 export default (function () {
     if (typeof window.ui === 'undefined') {
@@ -130,6 +131,7 @@ export default (function () {
                     ui.widgets.loader.toggleLoader();
                     history.pushState({}, null, url);
                     sidebar.links.markCurrentMenuElementAsActive();
+                    ui.masonry.init();
                 });
 
             });
