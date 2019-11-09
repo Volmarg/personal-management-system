@@ -47,6 +47,7 @@ forms:
   MyScheduleTypeType:
     labels:
       name: Name
+      icon: Icon
   MyTravelsIdeasType:
     placeholders:
       category:

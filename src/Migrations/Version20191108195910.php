@@ -44,8 +44,8 @@ final class Version20191108195910 extends AbstractMigration
                     name            AS name,
                     date            AS date,
                         CASE
-                            WHEN date IS NULL THEN 1
-                            ELSE 0
+                            WHEN date IS NULL THEN 0
+                            ELSE 1
                         END         AS is_date_based,
                     information     AS information,
                     deleted         AS deleted

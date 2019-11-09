@@ -1,5 +1,22 @@
+{% set global_variables_twig_class  = '\\App\\Twig\\GlobalVariables::' %}
+{% set KEY_SCHEDULES_COUNT          = constant(global_variables_twig_class ~ 'KEY_SCHEDULES_COUNT') %}
+{% set KEY_SCHEDULES                = constant(global_variables_twig_class ~ 'KEY_SCHEDULES') %}
+
+{% set my_schedule_repository_class = '\\App\\Repository\\Modules\\Schedules\\MyScheduleRepository::' %}
+{% set KEY_NAME          = constant(my_schedule_repository_class ~ 'KEY_NAME') %}
+{% set KEY_ICON          = constant(my_schedule_repository_class ~ 'KEY_ICON') %}
+{% set KEY_DATE          = constant(my_schedule_repository_class ~ 'KEY_DATE') %}
+{% set KEY_DAYS_DIFF     = constant(my_schedule_repository_class ~ 'KEY_DAYS_DIFF') %}
+{% set KEY_SCHEDULE_TYPE = constant(my_schedule_repository_class ~ 'KEY_SCHEDULE_TYPE') %}
+
+{% set data             = getSchedulesForNotifications(60) %}
+{% set schedules_count  = data[KEY_SCHEDULES_COUNT] %}
+{% set schedules        = data[KEY_SCHEDULES] %}
+
 <li class="notifications dropdown">
-    <span class="counter bgc-red">3</span>
+    {% if 0 != schedules_count %}
+        <span class="counter bgc-red">{{ schedules_count }}</span>
+    {% endif %}
     <a href="" class="dropdown-toggle no-after" data-toggle="dropdown">
         <i class="ti-bell"></i>
     </a>
@@ -11,67 +28,31 @@
         </li>
         <li>
             <ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm">
-                <li>
-                    <a href="" class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
-                        <div class="peer mR-15">
-                            <img class="w-3r bdrs-50p"
-                                 src="https://randomuser.me/api/portraits/men/1.jpg" alt="">
-                        </div>
-                        <div class="peer peer-greed">
-                            <span>
-                              <span class="fw-500">John Doe</span>
-                              <span class="c-grey-600">liked your <span class="text-dark">post</span>
-                              </span>
-                            </span>
-                            <p class="m-0">
-                                <small class="fsz-xs">5 mins ago</small>
-                            </p>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="" class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
-                        <div class="peer mR-15">
-                            <img class="w-3r bdrs-50p"
-                                 src="https://randomuser.me/api/portraits/men/2.jpg" alt="">
-                        </div>
-                        <div class="peer peer-greed">
-                            <span>
-                              <span class="fw-500">Moo Doe</span>
-                              <span class="c-grey-600">liked your <span class="text-dark">cover image</span>
-                              </span>
-                            </span>
-                            <p class="m-0">
-                                <small class="fsz-xs">7 mins ago</small>
-                            </p>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="" class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
-                        <div class="peer mR-15">
-                            <img class="w-3r bdrs-50p"
-                                 src="https://randomuser.me/api/portraits/men/3.jpg" alt="">
-                        </div>
-                        <div class="peer peer-greed">
-                            <span>
-                              <span class="fw-500">Lee Doe</span>
-                              <span class="c-grey-600">commented on your <span class="text-dark">video</span>
-                              </span>
-                            </span>
-                            <p class="m-0">
-                                <small class="fsz-xs">10 mins ago</small>
-                            </p>
-                        </div>
-                    </a>
-                </li>
+
+                {% for schedule in schedules %}
+                    <li>
+                        <a href="" class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
+                            <div class="peer mR-15">
+                                <i class="{{ schedule[KEY_ICON] }}"></i>
+                            </div>
+                            <div class="peer peer-greed">
+                                <span>
+                                      <span class="fw-500">{{ schedule[KEY_NAME] }}</span>
+                                      <span class="c-grey-600">in <span class="text-dark">{{ schedule[KEY_DAYS_DIFF] }}</span> day/s</span>
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+
             </ul>
         </li>
-        <li class="pX-20 pY-15 ta-c bdT">
-                    <span>
-                      <a href="" class="c-grey-600 cH-blue fsz-sm td-n">View All Notifications <i
-                                  class="ti-angle-right fsz-xs mL-10"></i></a>
-                    </span>
-        </li>
+{#        <li class="pX-20 pY-15 ta-c bdT">#}
+{#            <span>#}
+{#              <a href="" class="c-grey-600 cH-blue fsz-sm td-n">#}
+{#                  View All Notifications #}
+{#                  <i class="ti-angle-right fsz-xs mL-10"></i></a>#}
+{#            </span>#}
+{#        </li>#}
     </ul>
 </li>

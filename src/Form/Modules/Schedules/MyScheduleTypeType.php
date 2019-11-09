@@ -3,6 +3,7 @@
 namespace App\Form\Modules\Schedules;
 
 use App\Controller\Utils\Application;
+use App\Form\Type\FontawesomepickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,6 +26,9 @@ class MyScheduleTypeType extends AbstractType {
         $builder
             ->add('name', null, [
                 'label' => $this->app->translator->translate('forms.MyScheduleTypeType.labels.name')
+            ])
+            ->add('icon', FontawesomepickerType::class, [
+                'label' => $this->app->translator->translate('forms.MyScheduleTypeType.labels.icon')
             ])
             ->add('submit', SubmitType::class,[
                 'label' => $this->app->translator->translate('forms.general.submit')

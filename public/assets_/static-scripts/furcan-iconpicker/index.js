@@ -2,21 +2,21 @@ window.furcanIconPicker = {};
 
 furcanIconPicker = {
     identifiers: {
-        'iconpicker-button': 'my_notes_categories_iconButton'
+        'iconpicker-button': 'input[data-iconpicker="true"]'
     },
     init: function () {
         this.initForMyNotesCategories();
     },
     initForMyNotesCategories: function () {
-        let notes_category_picker = document.getElementById(this.identifiers["iconpicker-button"]);
-        if (notes_category_picker !== undefined && notes_category_picker !== false && notes_category_picker !== null) {
+        let icon_picker = document.querySelector(this.identifiers["iconpicker-button"]);
+        if (icon_picker !== undefined && icon_picker !== false && icon_picker !== null) {
             IconPicker.Init({
                 jsonUrl: '/assets_/static-libs/furcan-iconpicker/iconpicker-1.0.0.json',
                 searchPlaceholder: 'Search Icon',
                 showAllButton: 'Show All',
                 cancelButton: 'Cancel',
             });
-            IconPicker.Run('#' + this.identifiers["iconpicker-button"]);
+            IconPicker.Run(this.identifiers["iconpicker-button"]);
         }
     }
 };

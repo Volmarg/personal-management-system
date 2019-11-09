@@ -540,6 +540,7 @@ export default (function () {
                 makeUpdateData: function (tr_parent_element) {
                     let id   = $(tr_parent_element).find('.id').html();
                     let name = $(tr_parent_element).find('.name').html();
+                    let icon = $(tr_parent_element).find('.icon').html();
 
                     let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                     let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -547,6 +548,7 @@ export default (function () {
                     let url = '/my-schedule-settings/schedule-type/update';
                     let ajax_data = {
                         'name': name,
+                        'icon': icon,
                         'id'  : id
                     };
 

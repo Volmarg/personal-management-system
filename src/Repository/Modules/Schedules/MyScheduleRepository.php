@@ -3,7 +3,6 @@
 namespace App\Repository\Modules\Schedules;
 
 use App\Entity\Modules\Schedules\MySchedule;
-use App\Entity\Modules\Schedules\MyScheduleType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -14,6 +13,13 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MySchedule[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyScheduleRepository extends ServiceEntityRepository {
+
+    const KEY_NAME          = 'name';
+    const KEY_DATE          = 'date';
+    const KEY_ICON          = 'icon';
+    const KEY_DAYS_DIFF     = 'daysDiff';
+    const KEY_SCHEDULE_TYPE = 'scheduleType';
+
     public function __construct(RegistryInterface $registry) {
         parent::__construct($registry, MySchedule::class);
     }
@@ -23,9 +29,11 @@ class MyScheduleRepository extends ServiceEntityRepository {
         $connection = $this->getEntityManager()->getConnection();
         $sql = "
             SELECT 
-                mch.name                    AS name,
-                mch.date                    AS date,
-                DATEDIFF(mch.date ,NOW())   AS daysDiff
+                mch.name                    AS :name,
+                mch.date                    AS :date,
+                DATEDIFF(mch.date ,NOW())   AS :daysDiff,
+                mcht.name                   AS :scheduleType,
+                mcht.icon                   AS :icon
 
             FROM my_schedule mch
             
@@ -33,16 +41,19 @@ class MyScheduleRepository extends ServiceEntityRepository {
             ON mcht.id = mch.schedule_type_id
             
             WHERE 
-            mch.date BETWEEN NOW() AND NOW() + INTERVAL 'days' DAY
+            mch.date BETWEEN NOW() AND NOW() + INTERVAL :days DAY
             AND DATEDIFF (mch.date, NOW()) > 0
-            AND mch.deleted = 0
-            AND mcht.deleted =0
-            
-            
+            AND mch.deleted  = 0
+            AND mcht.deleted = 0
         ";
 
         $binded_values = [
-          'days'  => $days
+          'name'         => self::KEY_NAME,
+          'date'         => self::KEY_DATE,
+          'daysDiff'     => self::KEY_DAYS_DIFF,
+          'scheduleType' => self::KEY_SCHEDULE_TYPE,
+          'icon'         => self::KEY_ICON,
+          'days'         => $days
         ];
 
         $statement = $connection->executeQuery($sql, $binded_values);

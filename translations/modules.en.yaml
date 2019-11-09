@@ -113,6 +113,7 @@ schedules:
       changeAddScheduleType: Change/Add schedule type
     table:
       name: Name
+      icon: Icon
   headers:
     schedules: Schedules
     addSchedule: Add schedule

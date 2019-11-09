@@ -24,6 +24,11 @@ class MyScheduleType
     private $name;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $icon;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $deleted = 0;
@@ -65,6 +70,20 @@ class MyScheduleType
         $this->deleted = $deleted;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIcon() {
+        return $this->icon;
+    }
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon($icon): void {
+        $this->icon = $icon;
     }
 
     /**
