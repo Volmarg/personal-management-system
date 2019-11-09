@@ -25,7 +25,7 @@ final class Version20191108195910 extends AbstractMigration
 
         $this->isTransactional();
 
-        $this->addSql('CREATE TABLE my_schedule_type (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE my_schedule_type (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, icon TINYINT(1) NOT NULL, deleted TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE my_schedule (id INT AUTO_INCREMENT NOT NULL, schedule_type_id INT DEFAULT NULL, name VARCHAR(255) NOT NULL, date DATE DEFAULT NULL, is_date_based TINYINT(1) NOT NULL, information VARCHAR(255) DEFAULT NULL, deleted TINYINT(1) NOT NULL, INDEX IDX_686A84B44826A022 (schedule_type_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('ALTER TABLE my_schedule ADD CONSTRAINT FK_686A84B44826A022 FOREIGN KEY (schedule_type_id) REFERENCES my_schedule_type (id)');
 
