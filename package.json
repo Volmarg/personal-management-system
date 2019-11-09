@@ -70,7 +70,7 @@
     "fullcalendar": "^3.6.2",
     "imagesloaded": "^4.1.4",
     "izimodal": "^1.5.1",
-    "jquery": "3.3.1",
+    "jquery": "3.4.0",
     "jquery-autocompleter": "^0.3.0",
     "jquery-migrate": "^3.0.1",
     "jquery-sparkline": "^2.4.0",
