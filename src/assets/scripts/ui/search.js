@@ -230,7 +230,7 @@ export default (function () {
         },
         buildNotesSearchResultsListElement: function(data){
             let title           = data['title'];
-            let shortTitle      = '';
+            let shortTitle      = title;
             let category        = data['category'];
             let categoryId      = data['categoryId'];
             let noteId          = data['noteId'];
