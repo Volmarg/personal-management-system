@@ -31,8 +31,8 @@ final class Version20191108195910 extends AbstractMigration
 
         // Transferring my_car into schedules
         $this->addSql("
-            INSERT INTO `my_schedule_type` (`id`, `name`, `deleted`) 
-                VALUES (1, 'car', 0)"
+            INSERT INTO `my_schedule_type` (`id`, `name`, `icon`, `deleted`) 
+                VALUES (1, 'car', 'far fa-car', 0)"
         );
 
         $this->addSql("

@@ -30,10 +30,12 @@
             <ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm">
 
                 {% for schedule in schedules %}
+                    {% set icon_classes = getClassesForSchedulesNotifications(schedule[KEY_DAYS_DIFF]) %}
+
                     <li>
-                        <a href="" class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
+                        <a href="#" class='peers fxw-nw td-n p-20 bdB c-grey-800 cH-blue bgcH-grey-100'>
                             <div class="peer mR-15">
-                                <i class="{{ schedule[KEY_ICON] }}"></i>
+                                <i class="{{ schedule[KEY_ICON] }} {{ icon_classes }}"></i>
                             </div>
                             <div class="peer peer-greed">
                                 <span>

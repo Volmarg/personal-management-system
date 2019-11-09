@@ -138,4 +138,5 @@ class CssClasses extends AbstractExtension {
 
         return $status;
     }
+
 }

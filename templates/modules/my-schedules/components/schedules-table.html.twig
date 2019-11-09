@@ -1,18 +1,3 @@
-{#
-Todo: refactor the table from my car to work with all types of schedules
-    Update entity
-#}
-
-{# Info: setting styles #}
-{% set in_2_months      = ' table-success' %}
-{% set in_1_months      = ' table-warning' %}
-{% set in_2_weeks       = ' table-danger'  %}
-{% set common_style     = "" %}
-{% set font_style       = " font-weight:bold;" %}
-
-{# Info: setting local vars #}
-{% set curr_date        =  "now"|date("m/d/Y") %}
-
 <table id="MySchedules" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
     <thead>
     <tr>
@@ -25,33 +10,15 @@ Todo: refactor the table from my car to work with all types of schedules
     </tr>
     </thead>
     <tbody>
-    {#todo: maybe calc the styles etc in backend or store them in DB ?#}
     {% for schedule in schedules %}
 
         {% set schedule_timestamp = date( schedule.date | date('m/d/yyyy') ).timestamp %}
-        {% set table_style        = '' %}
+        {% set row_classes        = getClassesForSchedulesTable(schedule.date) %}
 
-        {% if schedule.date is not empty %}
-            {% set dates_difference = date(curr_date).diff(date(schedule.date)) %}
-
-            {% if dates_difference.days > 30 and dates_difference.days < 60 %}
-                {% set table_style = in_2_months %}
-                {% set common_style     = font_style %}
-            {% elseif dates_difference.days > 14 and dates_difference.days < 30 %}
-                {% set table_style = in_1_months %}
-                {% set common_style     = font_style %}
-            {% elseif dates_difference.days < 14 %}
-                {% set table_style = in_2_weeks %}
-                {% set common_style     = font_style %}
-            {% else %}
-                {% set table_style = '' %}
-            {% endif %}
-        {% endif %}
-
-        <tr class="trash-parent car-single-data editable-parent save-parent {{ table_style }}" data-type="MySchedules">
+        <tr class="trash-parent car-single-data editable-parent save-parent {{ row_classes }}" data-type="MySchedules">
 
             <td class="id d-none">{{ schedule.id }}</td>
-            <td class="name" style="{{ common_style }}">{{ schedule.name }}</td>
+            <td class="name" >{{ schedule.name }}</td>
 
             <td data-order="{{ schedule_timestamp }}"
             >

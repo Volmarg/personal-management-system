@@ -52,13 +52,13 @@ class DashboardController extends Controller {
             $dashboard_widgets_visibility_dtos   = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $car_schedules  = $this->getCarSchedulesForWidget();
+        $schedules      = $this->getIncommingSchedules();
         $goals          = $this->getGoalsForWidget();
         $goals_payments = $this->getGoalsPayments();
 
         $data = [
             'dashboard_widgets_visibility_dtos'  => $dashboard_widgets_visibility_dtos,
-            'incomingCarSchedules'               => $car_schedules,
+            'schedules'                          => $schedules,
             'goals'                              => $goals,
             'goals_payments'                     => $goals_payments,
             'ajax_render'                        => $ajax_render,
@@ -68,7 +68,7 @@ class DashboardController extends Controller {
     }
 
     // todo: change for schedules
-    private function getCarSchedulesForWidget() {
+    private function getIncommingSchedules() {
         return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::CAR_SCHEDULE_DAYS_INTERVAL);
     }
 
