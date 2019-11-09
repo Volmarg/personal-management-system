@@ -9,6 +9,7 @@
 namespace App\Twig;
 
 use App\Controller\Utils\Application;
+use App\Entity\Modules\Schedules\MyScheduleType;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -23,6 +24,7 @@ class GlobalVariables extends AbstractExtension {
     public function getFunctions() {
         return [
             new TwigFunction('getMyNotesCategories', [$this, 'getMyNotesCategories']),
+            new TwigFunction('getSchedulesTypes', [$this, 'getSchedulesTypes']),
         ];
     }
 
@@ -41,4 +43,10 @@ class GlobalVariables extends AbstractExtension {
         return $new_results;
     }
 
+    /**
+     * @return MyScheduleType[]
+     */
+    public function getSchedulesTypes():array {
+        return $this->app->repositories->myScheduleTypeRepository->getAllTypes();
+    }
 }

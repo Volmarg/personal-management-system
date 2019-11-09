@@ -7,7 +7,7 @@ use App\Entity\Modules\Car\MyCarSchedulesTypes;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-
+//todo: adjust to schedules
 class MyCarSchedulesTypesFixtures extends Fixture implements OrderedFixtureInterface
 {
 

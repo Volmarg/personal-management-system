@@ -22,7 +22,7 @@
                      {% for widget_visibility_dto in dashboard_widgets_visibility_dtos %}
 
                          {% if widget_visibility_dto.isVisible() %}
-                             {% include ('modules/my-dashboard/widgets/' ~ widget_visibility_dto.getName() ~ '.html.twig') %}
+                             {% include ('modules/my-dashboard/widgets/' ~ widget_visibility_dto.getName() ~ '.html.twig' ) with {'widget_name': widget_visibility_dto.getName()} %}
                          {% endif %}
 
                      {% endfor %}
@@ -30,7 +30,7 @@
                       {# load all if settings are not present #}
                  {% else %}
                      {% for widget_name in ALL_DASHBOARD_WIDGETS_NAMES %}
-                             {% include ('modules/my-dashboard/widgets/' ~ widget_name ~ '.html.twig') %}
+                             {% include ('modules/my-dashboard/widgets/' ~ widget_name ~ '.html.twig') with {'widget_name': widget_name} %}
                      {% endfor %}
                  {% endif %}
 

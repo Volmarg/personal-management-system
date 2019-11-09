@@ -9,11 +9,10 @@
 namespace App\Controller\Utils;
 
 
+use App\Entity\Modules\Schedules\MySchedule;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
-use App\Repository\Modules\Car\MyCarRepository;
-use App\Repository\Modules\Car\MyCarSchedulesTypesRepository;
 use App\Repository\Modules\Contacts\MyContactsGroupsRepository;
 use App\Repository\Modules\Contacts\MyContactsRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
@@ -35,6 +34,8 @@ use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
+use App\Repository\Modules\Schedules\MyScheduleRepository;
+use App\Repository\Modules\Schedules\MyScheduleTypeRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\SettingRepository;
@@ -51,7 +52,6 @@ class Repositories extends AbstractController {
     const ACHIEVEMENT_REPOSITORY_NAME                   = 'AchievementRepository';
     const MY_NOTES_REPOSITORY_NAME                      = 'MyNotesRepository';
     const MY_NOTES_CATEGORIES_REPOSITORY_NAME           = 'MyNotesCategoriesRepository';
-    const MY_CAR_REPOSITORY_NAME                        = 'MyCarRepository';
     const MY_JOB_AFTERHOURS_REPOSITORY_NAME             = 'MyJobAfterhoursRepository';
     const MY_PAYMENTS_MONTHLY_REPOSITORY_NAME           = 'MyPaymentsMonthlyRepository';
     const MY_PAYMENTS_PRODUCTS_REPOSITORY_NAME          = 'MyPaymentsProductRepository';
@@ -67,7 +67,6 @@ class Repositories extends AbstractController {
     const MY_GOALS_REPOSITORY_NAME                      = 'MyGoalsRepository';
     const MY_SUBGOALS_REPOSITORY_NAME                   = 'MyGoalsSubgoalsRepository';
     const MY_GOALS_PAYMENTS_REPOSITORY_NAME             = 'MyGoalsPaymentsRepository';
-    const MY_CAR_SCHEDULES_TYPES_REPOSITORY_NAME        = 'MyCarSchedulesTypesRepository';
     const MY_JOB_HOLIDAYS_REPOSITORY_NAME               = 'MyJobHolidaysRepository';
     const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME          = 'MyJobHolidaysPoolRepository';
     const MY_JOB_SETTINGS_REPOSITORY_NAME               = 'MyJobSettingsRepository';
@@ -78,6 +77,8 @@ class Repositories extends AbstractController {
     const REPORTS_REPOSITORY                            = 'ReportsRepository';
     const MY_RECURRING_PAYMENT_MONTHLY_REPOSITORY_NAME  = 'MyRecurringPaymentMonthlyRepository';
     const SETTING_REPOSITORY                            = 'SettingRepository';
+    const MY_SCHEDULE_REPOSITORY                        = "MyScheduleRepository";
+    const MY_SCHEDULE_TYPE_REPOSITORY                   = "MyScheduleTypeRepository";
 
     const PASSWORD_FIELD                            = 'password';
 
@@ -90,11 +91,6 @@ class Repositories extends AbstractController {
      * @var MyNotesRepository $myNotesRepository
      */
     public $myNotesRepository;
-
-    /**
-     * @var MyCarRepository
-     */
-    public $myCarRepository;
 
     /**
      * @var AchievementRepository
@@ -177,11 +173,6 @@ class Repositories extends AbstractController {
     public $myGoalsPaymentsRepository;
 
     /**
-     * @var MyCarSchedulesTypesRepository
-     */
-    public $myCarSchedulesTypesRepository;
-
-    /**
      * @var MyJobHolidaysRepository
      */
     public $myJobHolidaysRepository;
@@ -236,9 +227,18 @@ class Repositories extends AbstractController {
      */
     public $settingRepository;
 
+    /**
+     * @var MyScheduleRepository $myScheduleRepository
+     */
+    public $myScheduleRepository;
+
+    /**
+     * @var MyScheduleTypeRepository $myScheduleTypeRepository
+     */
+    public $myScheduleTypeRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
-        MyCarRepository                     $myCarRepository,
         AchievementRepository               $myAchievementsRepository,
         MyJobAfterhoursRepository           $myJobAfterhoursRepository,
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
@@ -255,7 +255,6 @@ class Repositories extends AbstractController {
         MyGoalsRepository                   $myGoalsRepository,
         MyGoalsSubgoalsRepository           $myGoalsSubgoalsRepository,
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
-        MyCarSchedulesTypesRepository       $myCarSchedulesTypesRepository,
         MyJobHolidaysRepository             $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
         MyJobSettingsRepository             $myJobSettingsRepository,
@@ -267,10 +266,11 @@ class Repositories extends AbstractController {
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         ReportsRepository                   $reportsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
-        SettingRepository                   $settingRepository
+        SettingRepository                   $settingRepository,
+        MyScheduleRepository                $myScheduleRepository,
+        MyScheduleTypeRepository            $myScheduleTypeRepository
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
-        $this->myCarRepository                      = $myCarRepository;
         $this->achievementRepository                = $myAchievementsRepository;
         $this->myJobAfterhoursRepository            = $myJobAfterhoursRepository;
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
@@ -287,7 +287,6 @@ class Repositories extends AbstractController {
         $this->myGoalsRepository                    = $myGoalsRepository;
         $this->myGoalsSubgoalsRepository            = $myGoalsSubgoalsRepository;
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
-        $this->myCarSchedulesTypesRepository        = $myCarSchedulesTypesRepository;
         $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
         $this->myJobSettingsRepository              = $myJobSettingsRepository;
@@ -300,6 +299,8 @@ class Repositories extends AbstractController {
         $this->reportsRepository                    = $reportsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
+        $this->myScheduleRepository                 = $myScheduleRepository;
+        $this->myScheduleTypeRepository             = $myScheduleTypeRepository;
     }
 
     /**

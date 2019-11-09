@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Entity\Modules\Car;
+namespace App\Entity\Modules\Schedules;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Car\MyCarSchedulesTypesRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Modules\Schedules\MyScheduleTypeRepository")
  */
-class MyCarSchedulesTypes
+class MyScheduleType
 {
     /**
      * @ORM\Id()
@@ -29,13 +29,13 @@ class MyCarSchedulesTypes
     private $deleted = 0;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Car\MyCar", mappedBy="scheduleType")
+     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Schedules\MySchedule", mappedBy="scheduleType")
      */
-    private $myCars;
+    private $mySchedule;
 
     public function __construct()
     {
-        $this->myCars = new ArrayCollection();
+        $this->mySchedule = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,30 +68,30 @@ class MyCarSchedulesTypes
     }
 
     /**
-     * @return Collection|MyCar[]
+     * @return Collection|MySchedule[]
      */
-    public function getMyCars(): Collection
+    public function getMySchedule(): Collection
     {
-        return $this->myCars;
+        return $this->mySchedule;
     }
 
-    public function addMyCar(MyCar $myCar): self
+    public function addMySchedule(MySchedule $mySchedule): self
     {
-        if (!$this->myCars->contains($myCar)) {
-            $this->myCars[] = $myCar;
-            $myCar->setScheduleType($this);
+        if (!$this->mySchedule->contains($mySchedule)) {
+            $this->mySchedule[] = $mySchedule;
+            $mySchedule->setScheduleType($this);
         }
 
         return $this;
     }
 
-    public function removeMyCar(MyCar $myCar): self
+    public function removeMySchedule(MySchedule $mySchedule): self
     {
-        if ($this->myCars->contains($myCar)) {
-            $this->myCars->removeElement($myCar);
+        if ($this->mySchedule->contains($mySchedule)) {
+            $this->mySchedule->removeElement($mySchedule);
             // set the owning side to null (unless already changed)
-            if ($myCar->getScheduleType() === $this) {
-                $myCar->setScheduleType(null);
+            if ($mySchedule->getScheduleType() === $this) {
+                $mySchedule->setScheduleType(null);
             }
         }
 

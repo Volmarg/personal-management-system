@@ -1,0 +1,24 @@
+<li class="nav-item dropdown sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SCHEDULES }}">
+    <a class="sidebar-link" href="javascript:void(0);">
+                <span class="icon-holder" style="color:black;">
+                    <i class="far fa-calendar-alt"></i>
+                </span>
+        <span class="title">{{ translate('sidebar.menu.schedules.label') }}</span>
+        <span class="arrow">
+                    <i class="ti-angle-right"></i>
+                  </span>
+    </a>
+
+    <ul class="dropdown-menu">
+
+        {% for scheduleType in getSchedulesTypes() %}
+            <li>
+                <a class="sidebar-link" href="{{ path('my_schedules', {'schedules_type': scheduleType.name}) }}">{{ scheduleType.name | capitalize }}</a>
+            </li>
+        {% endfor %}
+        <li>
+            <a class="sidebar-link" href="{{ path('my_schedules_settings') }}">{{ translate('sidebar.menu.schedules.settings') }}</a>
+        </li>
+    </ul>
+    </a>
+</li>

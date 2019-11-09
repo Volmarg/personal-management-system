@@ -18,6 +18,8 @@ use App\Form\Modules\Payments\MyPaymentsBills;
 use App\Form\Modules\Payments\MyPaymentsBillsItems;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
 use App\Form\Modules\Payments\MyRecurringPaymentsMonthlyType;
+use App\Form\Modules\Schedules\MyScheduleType;
+use App\Form\Modules\Schedules\MyScheduleTypeType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 
@@ -67,4 +69,11 @@ class Forms extends AbstractController {
         return $this->createForm(MyRecurringPaymentsMonthlyType::class, null, $params);
     }
 
+    public function schedule(array $params = []): FormInterface {
+        return $this->createForm(MyScheduleType::class, null, $params);
+    }
+
+    public function scheduleType(array $params = []): FormInterface {
+        return $this->createForm(MyScheduleTypeType::class, null, $params);
+    }
 }

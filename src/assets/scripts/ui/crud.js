@@ -473,7 +473,7 @@ export default (function () {
 
         },
         entity_actions: {
-            "MyCar": {
+            "MySchedules": {
                 makeUpdateData: function (tr_parent_element) {
                     let id              = $(tr_parent_element).find('.id').html();
                     let name            = $(tr_parent_element).find('.name').html();
@@ -484,7 +484,7 @@ export default (function () {
                     let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                     let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
 
-                    let url = '/my-car/update/';
+                    let url = '/my-schedule/update/';
                     let ajax_data = {
                         'name': name,
                         'date': date,
@@ -492,7 +492,7 @@ export default (function () {
                         'id': id,
                         'scheduleType': {
                             "type": "entity",
-                            'namespace': 'App\\Entity\\Modules\\Car\\MyCarSchedulesTypes',
+                            'namespace': 'App\\Entity\\Modules\\Schedules\\MyScheduleType',
                             'id': $(scheduleType).val(),
                         },
                     };
@@ -506,7 +506,7 @@ export default (function () {
                 },
                 makeRemoveData: function (parent_element) {
                     let id = $(parent_element).find('.id').html();
-                    let url = '/my-car/remove/';
+                    let url = '/my-schedule/remove/';
                     let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                     let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
 
@@ -522,7 +522,9 @@ export default (function () {
 
                 },
                 makeCreateData: function () {
-                    let url = '/my-car';
+                    let schedulesType = JSON.parse(TWIG_GET_ATTRS).schedules_type;
+
+                    let url = '/my-schedules/' + schedulesType;
                     let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
                     let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
 
@@ -532,9 +534,9 @@ export default (function () {
                         'fail_message': fail_message,
                     };
                 },
-                entity_name: "My Car",
+                entity_name: "My schedule",
             },
-            "MyCarSchedulesTypes": {
+            "MySchedulesTypes": {
                 makeUpdateData: function (tr_parent_element) {
                     let id   = $(tr_parent_element).find('.id').html();
                     let name = $(tr_parent_element).find('.name').html();
@@ -542,7 +544,7 @@ export default (function () {
                     let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                     let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
 
-                    let url = '/my-car-settings/schedule-type/update';
+                    let url = '/my-schedule-settings/schedule-type/update';
                     let ajax_data = {
                         'name': name,
                         'id'  : id
@@ -558,7 +560,7 @@ export default (function () {
                 makeRemoveData: function (parent_element) {
                     let id              = $(parent_element).find('.id').html();
                     let name            = $(parent_element).find('.name').html();
-                    let url             = '/my-car-settings/schedule-type/remove';
+                    let url             = '/my-schedule-settings/schedule-type/remove';
                     let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                     let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
 
@@ -575,7 +577,7 @@ export default (function () {
                     };
                 },
                 makeCreateData: function () {
-                    let url = '/my-car-settings';
+                    let url = '/my-schedules-settings';
                     let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
                     let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
 
@@ -585,7 +587,7 @@ export default (function () {
                         'fail_message': fail_message,
                     };
                 },
-                entity_name: "My Car Schedule Type",
+                entity_name: "My schedule type",
             },
             "IntegrationResource": {
                 makeUpdateData: function (tr_parent_element) {

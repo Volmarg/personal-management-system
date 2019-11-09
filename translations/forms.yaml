@@ -39,6 +39,14 @@ forms:
   MyCarScheduleType:
     labels:
       name: Name
+  MyScheduleType:
+    scheduleType: Schedule type
+    name: Name
+    date: Date
+    information: Information
+  MyScheduleTypeType:
+    labels:
+      name: Name
   MyTravelsIdeasType:
     placeholders:
       category:

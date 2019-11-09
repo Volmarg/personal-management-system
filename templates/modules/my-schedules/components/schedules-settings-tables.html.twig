@@ -1,0 +1,30 @@
+{#
+Todo: rework the settings table - add new column [module] so only give module will be able to see given type
+    Update entity
+#}
+
+
+<table id="MySchedulesTypes" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+    <thead>
+    <tr>
+        <td class="d-none">{{ translate('datatables.table.idHash') }}</td>
+        <td>{{ translate('schedules.settings.table.name') }}</td>
+        <td>{{ translate('datatables.table.actions') }}</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for type in types %}
+        <tr class="trash-parent editable-parent save-parent" data-type="MySchedulesTypes">
+            <td class="d-none id">{{ type.id }}</td>
+            <td class="name"> {{ type.name }}</td>
+
+            {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                "trash": true,
+                "edit": true,
+                "save": true
+            } %}
+
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

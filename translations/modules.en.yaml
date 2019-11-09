@@ -107,6 +107,26 @@ car:
   table:
     scheduleType: Schedule type
 
+schedules:
+  settings:
+    headers:
+      changeAddScheduleType: Change/Add schedule type
+    table:
+      name: Name
+  headers:
+    schedules: Schedules
+    addSchedule: Add schedule
+  legend:
+    label: Legend
+    over30: In 30 - 60 days
+    over14: In 14 -30 days
+    14: In 14 days
+  table:
+    scheduleType: Schedule type
+    information: Information
+    date: Date
+    name: Name
+
 travels:
   headers:
     ideasForTraveling: Ideas for traveling

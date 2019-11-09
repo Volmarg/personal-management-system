@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends Controller {
 
-    const CAR_SCHEDULE_MONTHS_INTERVAL = 2;
+    const CAR_SCHEDULE_DAYS_INTERVAL = 60;
 
     /**
      * @var Application
@@ -67,8 +67,9 @@ class DashboardController extends Controller {
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);
     }
 
+    // todo: change for schedules
     private function getCarSchedulesForWidget() {
-        return $this->app->repositories->myCarRepository->getIncomingCarSchedulesInMonths(static::CAR_SCHEDULE_MONTHS_INTERVAL);
+        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::CAR_SCHEDULE_DAYS_INTERVAL);
     }
 
     # todo: at refactor - make widgets repo and move both there

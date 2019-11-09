@@ -7,7 +7,7 @@
     {% extends template %}
 
 {% block body %}
-    <!-- ### $App Screen Content ### -->
+
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
             <div class="container-fluid">
@@ -15,8 +15,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('car.headers.schedules') }}</h4>
-                            {% include 'modules/my-car/components/table.html.twig' %}
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('schedules.headers.schedules') }}</h4>
+                            {% include 'modules/my-schedules/components/schedules-table.html.twig' %}
                         </div>
                     </div>
                 </div>
@@ -24,9 +24,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('car.headers.addSchedule') }}</h4>
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('schedules.headers.addSchedule') }}</h4>
                             <div class="col-md-6 align-self-center add-record-form">
-                                {{ form(car_schedule_form_view,{'attr':{' data-entity':"MyCar"}}) }}
+                                {{ form(form ,{'attr':{' data-entity':"MySchedules"}}) }}
                             </div>
                         </div>
                     </div>

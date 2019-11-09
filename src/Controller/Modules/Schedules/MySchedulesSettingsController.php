@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Controller\Modules\Car;
+namespace App\Controller\Modules\Schedules;
 
 use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
-use App\Form\Modules\Car\MyCarScheduleType;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MyCarSettingsController extends AbstractController
+class MySchedulesSettingsController extends AbstractController
 {
+
+    const TWIG_TEMPLATE = 'modules/my-schedules/settings.html.twig';
 
     /**
      * @var Application
@@ -26,13 +27,12 @@ class MyCarSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/my-car-settings", name="my_car_settings")
+     * @Route("/my-schedules-settings", name="my_schedules_settings")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function display(Request $request) {
-        $response = $this->submitForm($request);
+        $response = $this->addRecord($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
@@ -45,16 +45,15 @@ class MyCarSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/my-car-settings/schedule-type/remove", name="my_car_settings_schedule_car_remove")
+     * @Route("/my-schedule-settings/schedule-type/remove", name="my_schedule_settings_schedule_remove")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      */
     public function remove(Request $request) {
 
         $response = $this->app->repositories->deleteById(
-            Repositories::MY_CAR_SCHEDULES_TYPES_REPOSITORY_NAME,
+            Repositories::MY_SCHEDULE_TYPE_REPOSITORY,
             $request->request->get('id')
         );
 
@@ -65,13 +64,14 @@ class MyCarSettingsController extends AbstractController
     }
 
     /**
-     * @Route("/my-car-settings/schedule-type/update",name="my_car_settings_schedule_car_update")
+     * @Route("/my-schedule-settings/schedule-type/update",name="my_schedule_settings_schedule_update")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myCarSchedulesTypesRepository->find($parameters['id']);
+        $entity     = $this->app->repositories->myScheduleTypeRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return $response;
@@ -80,14 +80,13 @@ class MyCarSettingsController extends AbstractController
     /**
      * @param bool $ajax_render
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      */
     private function renderTemplate($ajax_render = false) {
 
-        $form   = $this->getForm();
-        $types  = $this->app->repositories->myCarSchedulesTypesRepository->findBy(['deleted' => 0]);
+        $form   = $this->app->forms->scheduleType();
+        $types  = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
 
-        return $this->render('modules/my-car/settings.html.twig',
+        return $this->render(self::TWIG_TEMPLATE,
             [
                 'ajax_render'   => $ajax_render,
                 'types'         => $types,
@@ -100,18 +99,14 @@ class MyCarSettingsController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    private function submitForm(Request $request) {
-        /**
-         * @var FormInterface $form
-         */
-        $form=$this->getForm();
+    private function addRecord(Request $request) {
+        $form=$this->app->forms->scheduleType();
         $form->handleRequest($request);
-        /**
-         * @var MyCarScheduleType $form_data
-         */
+
         $form_data = $form->getData();
 
-        if (!is_null($form_data) && $this->app->repositories->myCarSchedulesTypesRepository->findBy(['name' => $form_data->getName()])) {
+        // info: i can make general util with this
+        if (!is_null($form_data) && $this->app->repositories->myScheduleTypeRepository->findBy(['name' => $form_data->getName()])) {
             return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
         }
 
@@ -121,10 +116,6 @@ class MyCarSettingsController extends AbstractController
         }
 
         return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED, 200);
-    }
-
-    private function getForm() {
-        return $this->createForm(MyCarScheduleType::class);
     }
 
 }

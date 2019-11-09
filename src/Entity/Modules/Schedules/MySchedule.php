@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Entity\Modules\Car;
+namespace App\Entity\Modules\Schedules;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Car\MyCarRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Modules\Schedules\MyScheduleRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
-class MyCar {
+class MySchedule {
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -26,6 +27,12 @@ class MyCar {
     private $Date;
 
     /**
+     * @ORM\Column(type="integer")
+     * @var bool $isDateBased
+     */
+    private $isDateBased = false;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $Information;
@@ -36,10 +43,31 @@ class MyCar {
     private $deleted = 0;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Car\MyCarSchedulesTypes", inversedBy="myCars")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Schedules\MyScheduleType", inversedBy="mySchedule")
      * @ORM\JoinColumn(nullable=true)
      */
     private $scheduleType;
+
+    /**
+     * @return bool
+     */
+    public function isDateBased(): bool {
+        return $this->isDateBased;
+    }
+
+    /**
+     * This function will be called after entity is persisted
+     * Must be public for CallbackEvent
+     * @ORM\PreFlush
+     */
+    public function setIsDateBased(): self {
+
+        if( $this->getDate() instanceof \DateTime ){
+            $this->isDateBased = true;
+        }
+
+        return $this;
+    }
 
     public function getId(): ?int {
         return $this->id;
@@ -61,7 +89,7 @@ class MyCar {
 
     /**
      * @param $Date
-     * @return MyCar
+     * @return MySchedule
      * @throws \Exception
      */
     public function setDate($Date): self {
@@ -97,12 +125,12 @@ class MyCar {
         return $this;
     }
 
-    public function getScheduleType(): ?MyCarSchedulesTypes
+    public function getScheduleType(): ?MyScheduleType
     {
         return $this->scheduleType;
     }
 
-    public function setScheduleType(?MyCarSchedulesTypes $scheduleType): self
+    public function setScheduleType(?MyScheduleType $scheduleType): self
     {
         $this->scheduleType = $scheduleType;
 

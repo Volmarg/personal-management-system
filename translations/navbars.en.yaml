@@ -13,6 +13,12 @@ sidebar:
       label: Car
       schedules: Schedules
       settings: Settings
+    schedules:
+      label: Schedules
+      submodule:
+        car:
+          label: Car
+      settings: Settings
     contacts:
       label: Contacts
       phone: Phone numbers
