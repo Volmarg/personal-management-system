@@ -15,6 +15,8 @@ use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Repository\Modules\Contacts\MyContactsGroupsRepository;
 use App\Repository\Modules\Contacts\MyContactsRepository;
+use App\Repository\Modules\Contacts2\MyContactRepository;
+use App\Repository\Modules\Contacts2\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Goals\MyGoalsRepository;
 use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
@@ -79,6 +81,8 @@ class Repositories extends AbstractController {
     const SETTING_REPOSITORY                            = 'SettingRepository';
     const MY_SCHEDULE_REPOSITORY                        = "MyScheduleRepository";
     const MY_SCHEDULE_TYPE_REPOSITORY                   = "MyScheduleTypeRepository";
+    const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
+    const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
 
     const PASSWORD_FIELD                            = 'password';
 
@@ -237,6 +241,16 @@ class Repositories extends AbstractController {
      */
     public $myScheduleTypeRepository;
 
+    /**
+     * @var MyContactRepository $myContactRepository
+     */
+    public $myContactRepository;
+
+    /**
+     * @var MyContactTypeRepository $myContactTypeRepository
+     */
+    public $myContactTypeRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -268,7 +282,9 @@ class Repositories extends AbstractController {
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
         MyScheduleRepository                $myScheduleRepository,
-        MyScheduleTypeRepository            $myScheduleTypeRepository
+        MyScheduleTypeRepository            $myScheduleTypeRepository,
+        MyContactTypeRepository             $myContactTypeRepository,
+        MyContactRepository                 $myContactRepository
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->achievementRepository                = $myAchievementsRepository;
@@ -301,6 +317,8 @@ class Repositories extends AbstractController {
         $this->settingRepository                    = $settingRepository;
         $this->myScheduleRepository                 = $myScheduleRepository;
         $this->myScheduleTypeRepository             = $myScheduleTypeRepository;
+        $this->myContactTypeRepository              = $myContactTypeRepository;
+        $this->myContactRepository                  = $myContactRepository;
     }
 
     /**

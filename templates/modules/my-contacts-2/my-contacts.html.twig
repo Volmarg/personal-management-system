@@ -1,0 +1,39 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+
+
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bdrs-3 p-20 mB-20 d-flex flex-wrap justify-content-around">
+
+                            {# Todo: add contact in form of widget button? #}
+                            {% for contact in contacts %}
+                                <div class="" style="min-width: 350px; padding-top:20px; padding-left:10px; ">
+                                    <div class="">
+                                        <div class="layers">
+                                            {% include('modules/my-contacts-2/components/contact-card.html.twig') %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

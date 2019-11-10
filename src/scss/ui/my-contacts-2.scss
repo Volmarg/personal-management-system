@@ -1,0 +1,362 @@
+/**
+  Original css
+ */
+
+.contact-area {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.contact {
+  position: relative;
+  max-width: 420px;
+  padding: 40px 20px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+@media (min-width: 1024px) {
+  .contact {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+  }
+}
+.contact main {
+  float: left;
+  width: 100%;
+  position: relative;
+}
+.contact main section {
+  border-radius: 5px;
+  float: left;
+  width: 100%;
+  background-color: #eb524a;
+}
+.contact main section .content {
+  float: left;
+  width: 100%;
+  padding: 20px 30px 50px 30px;
+  position: relative;
+  text-align: center;
+}
+@media (min-width: 414px) {
+  .contact main section .content {
+    text-align: left;
+  }
+}
+.contact main section .content img {
+  display: inline-block;
+  width: 140px;
+  border-radius: 50%;
+}
+@media (min-width: 414px) {
+  .contact main section .content img {
+    float: left;
+    width: 30%;
+    margin-right: 10%;
+  }
+}
+.contact main section .content aside {
+  float: left;
+  width: 100%;
+  color: #ffffff;
+  margin-top: 10px;
+}
+@media (min-width: 414px) {
+  .contact main section .content aside {
+    width: 60%;
+  }
+}
+.contact main section .content aside h1 {
+  font-weight: 100;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+.contact main section .content aside p {
+  font-size: 14px;
+  letter-spacing: .5px;
+  line-height: 160%;
+}
+.contact main .title {
+  float: left;
+  width: 100%;
+  background-color: #c63535;
+  max-height: 0px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  overflow: hidden;
+  -webkit-transition: all 0.55s;
+  -moz-transition: all 0.55s;
+  -o-transition: all 0.55s;
+  transition: all 0.55s;
+}
+.contact main .title.active {
+  max-height: 100px;
+  -webkit-transition: all 1.3s;
+  -moz-transition: all 1.3s;
+  -o-transition: all 1.3s;
+  transition: all 1.3s;
+}
+.contact main .title.active p {
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  -o-transform: scale(1);
+  transform: scale(1);
+  transition-delay: .2s;
+}
+.contact main .title p {
+  padding: 15px 30px;
+  color: #ffffff;
+  font-size: 16px;
+  display: inline-block;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  -webkit-transform: scale(0);
+  -moz-transform: scale(0);
+  -ms-transform: scale(0);
+  -o-transform: scale(0);
+  transform: scale(0);
+}
+.contact main button {
+  position: absolute;
+  bottom: 0;
+  right: 50%;
+  background-color: #ffbe44;
+  color: #c63535;
+  border: 0;
+  width: 200px;
+  height: 48px;
+  text-align: center;
+  border-radius: 30px;
+  font-size: 16px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  margin-bottom: -24px;
+  margin-right: -100px;
+  -webkit-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  transition: all 0.4s;
+  transition-delay: .1s;
+  outline: none;
+  overflow: hidden;
+  z-index: 10;
+  font-family: inherit;
+}
+.contact main button span {
+  opacity: 1;
+  -webkit-transition: opacity 0.2s;
+  -moz-transition: opacity 0.2s;
+  -o-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+  transition-delay: .4s;
+  display: block;
+  width: 200px;
+  float: left;
+  padding: 15px 0px;
+}
+.contact main button svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  -webkit-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  transition: all 0.4s;
+}
+.contact main button svg path {
+  fill: #c63535;
+}
+.contact main button.active {
+  margin-right: 0;
+  right: 20px;
+  width: 65px;
+  height: 65px;
+  margin-bottom: -32.5px;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 65px;
+  box-shadow: 0px 3px 15px rgba(0, 0, 0, 0.2);
+}
+.contact main button.active span {
+  opacity: 0;
+  transition-delay: 0s;
+  width: 200px;
+}
+.contact main button.active svg {
+  opacity: 1;
+  transition-delay: .5s;
+}
+.contact nav {
+  float: left;
+  width: 100%;
+  overflow: hidden;
+  max-height: 0px;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+.contact nav.active {
+  max-height: 600px;
+  -webkit-transition: all 1s;
+  -moz-transition: all 1s;
+  -o-transition: all 1s;
+  transition: all 1s;
+}
+.contact nav.active a {
+  opacity: 1;
+  -webkit-transform: translateY(0px);
+  -moz-transform: translateY(0px);
+  -ms-transform: translateY(0px);
+  -o-transform: translateY(0px);
+  transform: translateY(0px);
+  -webkit-transition: all 0.7s;
+  -moz-transition: all 0.7s;
+  -o-transition: all 0.7s;
+  transition: all 0.7s;
+}
+.contact nav.active a:nth-of-type(1) {
+  transition-delay: .5s;
+}
+.contact nav.active a:nth-of-type(2) {
+  transition-delay: .7s;
+}
+.contact nav.active a:nth-of-type(3) {
+  transition-delay: .9s;
+}
+.contact nav a {
+  float: left;
+  width: 100%;
+  margin-top: 18px;
+  background-color: #ffffff;
+  padding: 18px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+  opacity: 0;
+  -webkit-transform: translateY(-10px);
+  -moz-transform: translateY(-10px);
+  -ms-transform: translateY(-10px);
+  -o-transform: translateY(-10px);
+  transform: translateY(-10px);
+  position: relative;
+}
+@media (min-width: 414px) {
+  .contact nav a {
+    padding: 18px 30px;
+  }
+}
+.contact nav a .arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -moz-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  -o-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+.contact nav a .arrow path {
+  fill: #e6e6e6;
+}
+.contact nav a.gmail .icon svg {
+  background-color: #d14836;
+}
+.contact nav a.gmail .content h1 {
+  color: #d14836;
+}
+.contact nav a.facebook .icon svg {
+  background-color: #3b5998;
+}
+.contact nav a.facebook .content h1 {
+  color: #3b5998;
+}
+.contact nav a.twitter .icon svg {
+  background-color: #1da1f2;
+}
+.contact nav a.twitter .content h1 {
+  color: #1da1f2;
+}
+.contact nav a .icon {
+  float: left;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 20px;
+}
+.contact nav a .icon svg {
+  width: 100%;
+  height: 100%;
+  padding: 14px;
+}
+.contact nav a .icon svg path {
+  fill: #ffffff;
+}
+.contact nav a .content h1 {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 160%;
+  letter-spacing: .4px;
+}
+.contact nav a .content span {
+  font-size: 14px;
+  color: #b3b3b3;
+  display: block;
+  letter-spacing: .4px;
+}
+
+/**
+  My modifications
+ */
+
+.contact-card-border{
+  border: 1px solid rgba(0,0,0,.0625);
+}
+
+.contact-card-no-padding{
+  padding: 0 !important;;
+}
+
+.contact-cards-contacts-wrapper{
+  background-color: white;
+}
+
+.contact-cards-contacts-wrapper a {
+  margin-top: 5px !important;
+  padding-bottom: 5px !important;
+  padding-top:7px !important;
+}
+
+.contact-cards-contacts-wrapper h1{
+  font-size: 17px !important;
+  margin-bottom: 0 !important;
+}
+
+.contact-area{
+  min-height: 400px !important;
+  height: 400px !important;
+}

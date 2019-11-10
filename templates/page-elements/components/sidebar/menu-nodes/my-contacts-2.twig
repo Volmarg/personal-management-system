@@ -1,0 +1,20 @@
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-contacts') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_CONTACTS }}">
+    <a class="sidebar-link" href="javascript:void(0);">
+                <span class="icon-holder" style="color: rgb(231, 116, 27);">
+                <i class="far fa-users"></i>
+                </span>
+        <span class="title">{{ translate('sidebar.menu.contacts.label') }}</span>
+        <span class="arrow">
+                    <i class="ti-angle-right"></i>
+                  </span>
+    </a>
+
+    <ul class="dropdown-menu">
+        <li>
+            <a class="sidebar-link" href="{{ path('my-contacts-2') }}">{{ translate('sidebar.menu.contacts.phone') }}</a>
+        </li>
+{#        <li>#}
+{#            <a class="sidebar-link" href="{{ path('my-contacts-settings-2')  }}">{{ translate('sidebar.menu.contacts.settings') }}</a>#}
+{#        </li>#}
+    </ul>
+</li>
