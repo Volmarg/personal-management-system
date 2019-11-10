@@ -1,6 +1,4 @@
-var bootbox      = require('bootbox');
 var imagesLoaded = require('imagesloaded');
-import Masonry from 'masonry-layout';
 
 export default (function () {
     if (typeof window.ui === 'undefined') {
@@ -10,6 +8,10 @@ export default (function () {
         methods: {
             singleMenuNodeReload: {
                 url: '/actions/render-menu-node-template',
+                method: "POST"
+            },
+            getFormView: {
+                url: '/api/get-form-view-by-class-name',
                 method: "POST"
             }
         },
@@ -133,6 +135,40 @@ export default (function () {
                     sidebar.links.markCurrentMenuElementAsActive();
                     ui.masonry.init();
                 });
+
+            });
+
+        },
+        /**
+         * This function will get the form view for namespace if such form exists, otherwise - error
+         * @param namespace
+         */
+        getFormViewByNamespace: function(namespace, callback){
+
+            ui.widgets.loader.showLoader();
+
+            let data = {
+                'form_namespace': namespace
+            };
+
+            $.ajax({
+                url: this.methods.getFormView.url,
+                method: this.methods.getFormView.method,
+                data: data
+            }).always((data) => {
+                ui.widgets.loader.hideLoader();
+
+                let error    = data['error'];
+                let formView = data['form_view'];
+
+                if( "undefined" !== typeof error ){
+                    bootstrap_notifications.notify(error, 'danger');
+                    return false;
+                }
+
+                if( "function" === typeof callback ){
+                    callback(formView);
+                }
 
             });
 

@@ -25,13 +25,14 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class Dialogs extends AbstractController
 {
-    const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS    = 'page-elements/components/dialogs/bodies/update-tags.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER     = 'page-elements/components/dialogs/bodies/new-folder.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD         = 'page-elements/components/dialogs/bodies/new-folder.twig';
-    const TWIG_TEMPLATE_NOTE_EDIT_MODAL            = 'modules/my-notes/components/note-edit-modal-body.html.twig';
-    const KEY_FILE_CURRENT_PATH                    = 'fileCurrentPath';
-    const KEY_MODULE_NAME                          = 'moduleName';
+    const TWIG_TEMPLATE_DIALOG_BODY_CREATE_CONTACT_CARD = 'page-elements/components/dialogs/bodies/create-contact-card.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER      = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS         = 'page-elements/components/dialogs/bodies/update-tags.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER          = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD              = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_NOTE_EDIT_MODAL                 = 'modules/my-notes/components/note-edit-modal-body.html.twig';
+    const KEY_FILE_CURRENT_PATH                         = 'fileCurrentPath';
+    const KEY_MODULE_NAME                               = 'moduleName';
 
     /**
      * @var Application $app
@@ -286,6 +287,39 @@ class Dialogs extends AbstractController
         ];
 
         $rendered_view = $this->render(self::TWIG_TEMPLATE_NOTE_EDIT_MODAL, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+
+    }
+
+    /**
+     * @Route("/dialog/body/create-contact-card", name="dialog_body_create_contact_card", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
+     */
+    public function buildCreateContactCardDialogBody(Request $request) {
+
+        $contact_types = $this->app->repositories->myContactTypeRepository->getAllNotDeleted();
+        $contact_form  = $this->app->forms->contact();
+
+        if( is_null($contact_types) ){
+            $message = $this->app->translator->translate('No contacts types were defined'); //todo
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $template_data = [
+            'contact_types' => $contact_types,
+            'contact_form'  => $contact_form->createView(),
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_CONTACT_CARD, $template_data);
 
         $response_data = [
             'template' => $rendered_view->getContent()

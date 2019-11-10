@@ -21,34 +21,48 @@ export default (function () {
                 throw({
                     "message"        : "Could not find the selector for element.",
                     "element"        : element,
-                    "selectorToFind" : selectorToSearchInElement
+                    "selectorToFind" : selector
                 })
             }
 
             return childElement;
         },
-        setContentEditable: function(element, selectorToSearchInElement = null){
-            let childElement = null;
+        /**
+         * Fetches the form view for given form name and appends it to the targetSelector
+         * @param formName
+         * @param targetSelector
+         */
+        appendFormView: function(formName, targetSelector){
 
-            if( null !== selectorToSearchInElement ){
-                childElement = $(element).find(selectorToSearchInElement);
+            let $targetElement = $(targetSelector);
 
-                if( 0 === $(childElement).length)
-                {
-                    throw({
-                        "message"        : "Could not find the selector for element.",
-                        "element"        : element,
-                        "selectorToFind" : selectorToSearchInElement
-                    })
-                }
-                element = childElement;
+            if( 0 === $targetElement.length ){
+                throw ({
+                    "message"   : "No element with given selector was found",
+                    "selector"  : targetSelector
+                })
             }
 
-        },
-        unsetContentEditable: function(element, selectorToSearchInElement = null){
+            try{
+                var namespace = dataProcessors.forms[formName].getFormNamespace();
+            }catch(Exception){
+                throw({
+                    'message'   : "Could not load form namespace from data processors.",
+                    'formName'  : formName
+                })
+            }
 
-        },
+            let callback = function(formView){
+                $targetElement.append(formView)
+            };
+
+            ui.ajax.getFormViewByNamespace(namespace, callback);
+        }
     };
 
+    // build subform based on namespace\class
+    // [+] will add the same form below
+    // use ui/ajax to implement form fetching
+    // handle [+] here
 
 }());

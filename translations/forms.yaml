@@ -212,8 +212,22 @@ forms:
     labels:
       name: Name
       value: Value
+  MyContactType:
+    labels:
+      name: Name
+      description: Description
+      image_path: Image path
+      name_background_color: Name background color
+      description_background_color: Description background color
+      contacts: Contacts
+  MyContactTypeDtoType:
+    labels:
+      name: Name
+      type: Type
   #files/images/dialogs
   general:
     submit: Submit
     save: Save
     add: Add
+    errors:
+      couldNotLoadFormForGivenNamespace: Could not load form for given namespace

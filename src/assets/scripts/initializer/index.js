@@ -12,6 +12,7 @@ export default (function () {
             this.initStatic();
         },
         init: function () {
+            events.general.init();
             ui.crud.init();
             ui.widgets.init();
             ui.forms.init();

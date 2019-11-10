@@ -17,4 +17,11 @@ class MyContactTypeRepository extends ServiceEntityRepository {
         parent::__construct($registry, MyContactType::class);
     }
 
+    /**
+     * @return MyContactType[]
+     */
+    public function getAllNotDeleted():array {
+        return $this->findBy(['deleted' => 0]);
+    }
+
 }

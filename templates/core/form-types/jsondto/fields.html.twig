@@ -1,0 +1,8 @@
+{# This form allows to add multiple fields (on front via js) that will be later transformed into json #}
+{# todo: add js logic to it - but so that it can be adapted to any other fields #}
+{# todo: shall the main input be hidden and only the [+] be shown ? #}
+{% block jsondto_widget %}
+
+        <input {{ block('widget_attributes') }} autocomplete="off" class="form-control col-sm-6" data-json-dto-main-input="true">
+
+{% endblock %}

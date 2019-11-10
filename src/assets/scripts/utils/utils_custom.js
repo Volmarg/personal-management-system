@@ -51,11 +51,29 @@ export default (function () {
 
     utils.validations = {
 
+        /**
+         * Checks if the provided string is "true"
+         * @param $stringBoolean
+         * @returns {boolean}
+         */
         isTrue: function($stringBoolean){
             return ( $stringBoolean === 'true');
         },
+        /**
+         * Checks if the provided string is "false"
+         * @param $stringBoolean
+         * @returns {boolean}
+         */
         isFalse: function($stringBoolean){
             return ( $stringBoolean === 'false');
+        },
+        /**
+         * Checks if there are existing elements for domElements selected with $();
+         * @param elements
+         * @returns {boolean}
+         */
+        doElementsExists: function(elements){
+            return 0 !== $(elements).length;
         }
 
     };
