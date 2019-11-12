@@ -43,12 +43,10 @@ class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
         $contact_types_array = [];
 
         foreach($this->contact_type_dtos as $contact_type_dto){
-            $contact_types_array = $contact_type_dto->toArray();
+            $contact_types_array[] = $contact_type_dto->toArray();
         }
 
-        return [
-            self::KEY_CONTACT_TYPE_DTOS => $contact_types_array
-        ];
+        return $contact_types_array; #info: no key - this is required for this solution
     }
 
     /**

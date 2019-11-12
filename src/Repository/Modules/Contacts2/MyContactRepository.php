@@ -4,6 +4,8 @@ namespace App\Repository\Modules\Contacts2;
 
 use App\Entity\Modules\Contacts2\MyContact;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -24,6 +26,17 @@ class MyContactRepository extends ServiceEntityRepository
      */
     public function findAllNotDeleted():array {
         return $this->findBy(['deleted' => 0]);
+    }
+
+    /**
+     * This function flushes the $entity
+     * @param MyContact $my_contact
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveEntity(MyContact $my_contact){
+        $this->_em->persist($my_contact);
+        $this->_em->flush();
     }
 
 }

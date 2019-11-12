@@ -4,6 +4,12 @@ namespace App\Form\Modules\Contacts2;
 
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Contacts2\MyContactType;
+use Exception;
+use Ramsey\Uuid\Codec\GuidStringCodec;
+use Ramsey\Uuid\Converter\Number\DegradedNumberConverter;
+use Ramsey\Uuid\Converter\NumberConverterInterface;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +22,7 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class MyContactTypeDtoType extends AbstractType {
 
-    const KEY_NAME = 'name';
+    const KEY_NAME = 'name';  // todo: change to details
     const KEY_TYPE = 'type';
 
     /**
@@ -45,4 +51,13 @@ class MyContactTypeDtoType extends AbstractType {
         ;
     }
 
+    /**
+     * @return UuidInterface|string
+     * @throws Exception
+     */
+    public function getBlockPrefix(){
+        // each form name must be unique
+        // TODO: returns only number
+        return Uuid::uuid1();
+    }
 }

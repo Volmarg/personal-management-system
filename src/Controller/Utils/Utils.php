@@ -6,6 +6,7 @@ use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Form\Util\StringUtil;
 use Symfony\Component\HttpFoundation\Response;
 
 class Utils extends AbstractController {
@@ -116,5 +117,35 @@ class Utils extends AbstractController {
 
         return $randoms;
     }
+
+    /**
+     * This function will search for forms with names in @param array $keys_to_filter
+     * This function should be used only when there are more than one forms in the request
+     *  otherwise it will filter unwanted data
+     * @param array $request_arrays
+     * @return array
+     * @see $keysToFilter and unset them in $request arrays
+     */
+    public static function filterRequestForms(array $keys_to_filter, array $request_arrays):array {
+
+        foreach($keys_to_filter as $key){
+
+            if( array_key_exists($key, $request_arrays) ){
+                unset($request_arrays[$key]);
+            }
+
+        }
+
+        return $request_arrays;
+    }
+
+    /**
+     * @param string $class
+     * @return string
+     */
+    public static function formClassToFormPrefix(string $class){
+        return StringUtil::fqcnToBlockPrefix($class) ?: '';
+    }
+
 
 }

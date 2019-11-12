@@ -10,6 +10,7 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
     const KEY_NAME      = 'name';
     const KEY_ICON_PATH = 'icon_path';
     const KEY_DETAILS   = 'details';
+    const KEY_UUID      = 'uuid';
 
     /**
      * @var string $name
@@ -25,6 +26,12 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
      * @var string $details
      */
     private $details;
+
+    /**
+     * This value is later used on front to identify which contact type in json we change as one contact may have few discord type contacts
+     * @var string $uuid
+     */
+    private $uuid;
 
     /**
      * @return string
@@ -71,6 +78,20 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
     /**
      * @return string
      */
+    public function getUuid(): string {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     */
+    public function setUuid(string $uuid): void {
+        $this->uuid = $uuid;
+    }
+
+    /**
+     * @return string
+     */
     public function toJson():string {
         $array = $this->toArray();
         $json  = json_decode($array);
@@ -80,6 +101,7 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
     public function toArray():array {
         return [
             self::KEY_NAME      => $this->getName(),
+            self::KEY_UUID      => $this->getUuid(),
             self::KEY_DETAILS   => $this->getDetails(),
             self::KEY_ICON_PATH => $this->getIconPath(),
         ];
@@ -95,11 +117,13 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
         $name       = static::checkAndGetKey($array, self::KEY_NAME);
         $icon_path  = static::checkAndGetKey($array, self::KEY_ICON_PATH);
         $details    = static::checkAndGetKey($array, self::KEY_DETAILS);
+        $uuid       = static::checkAndGetKey($array, self::KEY_UUID);
 
         $contact_type_dto = new ContactTypeDTO();
         $contact_type_dto->setName($name);
         $contact_type_dto->setIconPath($icon_path);
         $contact_type_dto->setDetails($details);
+        $contact_type_dto->setUuid($uuid);
 
         return $contact_type_dto;
     }

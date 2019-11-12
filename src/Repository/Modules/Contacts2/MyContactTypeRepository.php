@@ -4,6 +4,7 @@ namespace App\Repository\Modules\Contacts2;
 
 use App\Entity\Modules\Contacts2\MyContactType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -23,5 +24,58 @@ class MyContactTypeRepository extends ServiceEntityRepository {
     public function getAllNotDeleted():array {
         return $this->findBy(['deleted' => 0]);
     }
+
+    /**
+     * Returns image path for contactType by it's id
+     * @param string $id
+     * @return false|mixed
+     * @throws DBALException
+     */
+    public function getImagePathForTypeById(string $id){
+
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT image_path
+            FROM my_contact_type
+            WHERE id = :id
+        ";
+
+        $params = [
+          "id" => $id
+        ];
+
+        $stmt   = $connection->executeQuery($sql, $params);
+        $result = $stmt->fetchColumn();
+
+        return $result;
+    }
+
+    /**
+     * Returns type name for contactType by it's id
+     * @param string $id
+     * @return false|mixed
+     * @throws DBALException
+     */
+    public function getTypeNameTypeById(string $id){
+
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT name
+            FROM my_contact_type
+            WHERE id = :id
+        ";
+
+        $params = [
+            "id" => $id
+        ];
+
+        $stmt   = $connection->executeQuery($sql, $params);
+        $result = $stmt->fetchColumn();
+
+        return $result;
+    }
+
 
 }

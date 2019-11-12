@@ -7,6 +7,7 @@ use App\Entity\Modules\Contacts2\MyContact;
 use App\Form\Type\JsondtoType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,7 +17,6 @@ class MyContactType extends AbstractType {
 
     const KEY_NAME                          = 'name';
     const KEY_DESCRIPTION                   = 'description';
-    const KEY_CONTACTS                      = 'contacts'; // todo: think how to handle this - get dto and pass json?
     const KEY_IMAGE_PATH                    = 'image_path';
     const KEY_NAME_BACKGROUND_COLOR         = 'name_background_color';
     const KEY_DESCRIPTION_BACKGROUND_COLOR  = 'description_background_color';
@@ -57,9 +57,6 @@ class MyContactType extends AbstractType {
                 ],
                 'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_DESCRIPTION_BACKGROUND_COLOR)
             ])
-            ->add(self::KEY_CONTACTS, JsondtoType::class, [
-                'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_CONTACTS)
-            ])
             ->add(self::KEY_SUBMIT, SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')
             ]);
@@ -67,7 +64,8 @@ class MyContactType extends AbstractType {
 
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
-            'data_class' => MyContact::class,
+            'data_class'         => MyContact::class,
+            'allow_extra_fields' => true,
         ]);
     }
 }

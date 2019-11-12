@@ -142,8 +142,12 @@ export default (function () {
         /**
          * This function will get the form view for namespace if such form exists, otherwise - error
          * @param namespace
+         * @param callback
+         * @param stripFormTag    - if set to true then form opening and closing tags will removed ,
+         *  this is required in case when one form is subform, it won't even send data to backend,
+         *  symfony does not allow to submit multiple forms at once.
          */
-        getFormViewByNamespace: function(namespace, callback){
+        getFormViewByNamespace: function(namespace, callback, stripFormTag = true){
 
             ui.widgets.loader.showLoader();
 
@@ -164,6 +168,11 @@ export default (function () {
                 if( "undefined" !== typeof error ){
                     bootstrap_notifications.notify(error, 'danger');
                     return false;
+                }
+
+                if( stripFormTag ){
+                    formView = formView.replace(/<(.*?)form(.*?)>/, '');
+                    formView = formView.replace('</form>','');
                 }
 
                 if( "function" === typeof callback ){
