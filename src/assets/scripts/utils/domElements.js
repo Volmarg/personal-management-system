@@ -31,8 +31,9 @@ export default (function () {
          * Fetches the form view for given form name and appends it to the targetSelector
          * @param formName
          * @param targetSelector
+         * @param callbackParam {function}
          */
-        appendFormView: function(formName, targetSelector){
+        appendFormView: function(formName, targetSelector, callbackParam){
 
             let $targetElement = $(targetSelector);
 
@@ -53,10 +54,20 @@ export default (function () {
             }
 
             let callback = function(formView){
-                $targetElement.append(formView)
+                $targetElement.append(formView);
+                if( "function" === typeof callbackParam){
+                    callbackParam();
+                }
             };
 
             ui.ajax.getFormViewByNamespace(namespace, callback);
+        },
+        /**
+         * This function will remove the parent element with given selector
+         */
+        removeParentForSelector: function($element, selector){
+            let parentToRemove = $($element).closest(selector);
+            parentToRemove.remove();
         }
     };
 
