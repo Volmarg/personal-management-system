@@ -49,7 +49,7 @@ export default (function () {
         }
     };
 
-    utils.validations = {
+    utils.validations = { //crashes here - why ? todo:
 
         /**
          * Checks if the provided string is "true"

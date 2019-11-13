@@ -1,7 +1,35 @@
 {# Todo: add some predefined images for this module - platforms, ignore upload #}
 {# Todo: clean the template #}
+{# Todo: for editing just call the same modal as creation one + prefill the data #}
 
-<div class="contact-area ">
+{# Todo: move styles #}
+{# Todo: make actions visible on hover?#}
+<style>
+    .contact-card-actions {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        right: -22px;
+        top: -20px;
+        font-size: 24px;
+    }
+
+    .contact-card-actions .action i{
+        cursor: pointer;
+    }
+</style>
+
+<div class="contact-area">
+
+    <section class="contact-card-actions">
+        <div class="contact-card-action-edit action"  data-entity-id="{{ contact.getId() }}" data-repository-name="MyContactRepository">
+            <i class="far fa-pen-square"></i>
+        </div>
+        <div class="contact-card-action-remove action entity-remove-action"  data-entity-id="{{ contact.getId() }}" data-repository-name="MyContactRepository">
+            <i class="far fa-times-circle"></i>
+        </div>
+    </section>
+
     <div class="contact contact-card-border contact-card-no-padding" style="width: 100%;">
         <main>
             <section>

@@ -10,12 +10,13 @@ export default (function () {
             'saved-element-class': '.save-parent',
         },
         classes: {
-            'hidden': 'd-none',
-            'disabled': 'disabled',
-            'table-active': 'table-active',
+            'hidden'                    : 'd-none',
+            'disabled'                  : 'disabled',
+            'table-active'              : 'table-active',
             'fontawesome-picker-preview': 'fontawesome-preview',
-            'fontawesome-picker-input': 'fontawesome-input',
-            'fontawesome-picker': 'fontawesome-picker'
+            'fontawesome-picker-input'  : 'fontawesome-input',
+            'fontawesome-picker'        : 'fontawesome-picker',
+            'entity-remove-action'      : '.entity-remove-action'
         },
         messages: {
             entityUpdateSuccess: function (entity_name) {
@@ -61,10 +62,110 @@ export default (function () {
             this.attachFontawesomePickEventOnEmojiIcon();
             this.attachRecordAddViaAjaxOnSubmit();
             this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm();
+            this.general.init();
         },
+        general: {
+            selectors:{
+                classes:{
+                    entityRemoveAction: '.entity-remove-action'
+                }
+            },
+            methods:{
+              removeEntity: {
+                  url: "/api/repository/remove/entity{repository_name}/{id}",
+                  method: "GET",
+                  params: {
+                      repositoryName: "{repository_name}",
+                      id: "{id}"
+                  }
+              }
+            },
+            messages: {
+                doYouWantToRemoveThisRecord: function(){
+                    return "Do You want to remove this record?";
+                },
+                couldNotRemoveEntityFromRepository: function(repositoryName){
+                    return "Could not remove entity from " + repositoryName;
+                },
+                entityHasBeenRemovedFromRepository: function(){
+                    return "Record has been removed successfully";
+                },
+            colors:{
+                red     : 'danger',
+                green   : 'success'
+            }
+            },
+            init: function(){
+                this.attachEntityRemovalEvent(this.selectors.classes.entityRemoveAction);
+            },
+            attachEntityRemovalEvent: function(selector){
+                let element = $(selector);
+                let _this   = this;
+
+                if( !utils.validations.doElementsExists(element) ){
+                    return false;
+                }
+
+                let afterRemovalCallback = function(){
+                    ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                } ;
+
+                $(element).on('click', function() {
+                    let clickedElement  = $(this);
+                    let entityId        = $(clickedElement).attr('data-entity-id');
+                    let repositoryName  = $(clickedElement).attr('data-repository-name'); // consts from Repositories class
+
+                    _this.removeEntityById(entityId, repositoryName, afterRemovalCallback);
+
+                })
+            },
+            removeEntityById: function(entityId, repositoryName, afterRemovalCallback){
+
+                let _this = this;
+                let url   = this.methods.removeEntity.url.replace(this.methods.removeEntity.params.repositoryName, repositoryName);
+                url       = url.replace(this.methods.removeEntity.params.id, entityId);
+
+                let message = this.messages.doYouWantToRemoveThisRecord();
+
+                bootbox.confirm({
+                    message:  message,
+                    backdrop: true,
+                    callback: function (result) {
+                        if (result) {
+                            ui.widgets.loader.toggleLoader();
+
+                            $.ajax({
+                                url: url,
+                                method: _this.methods.removeEntity.method,
+                            }).fail((data) => {
+                                let message = _this.messages.couldNotRemoveEntityFromRepository(repositoryName);
+                                let type    = _this.messages.colors.red;
+                                bootstrap_notifications.notify(message, type)
+                            }).done((data) => {
+                                if( "function" === typeof afterRemovalCallback ){
+                                    afterRemovalCallback();
+                                }
+
+                                let message = _this.messages.entityHasBeenRemovedFromRepository();
+                                let type    = _this.messages.colors.green;
+                                bootstrap_notifications.notify(message, type)
+                            }).always((data) => {
+                                ui.widgets.loader.toggleLoader();
+                            });
+
+                        }
+                    }
+                });
+
+            }
+        },
+        /**
+         * These are all for datatables
+         * Todo: make section for them
+         */
         attachRemovingEventOnTrashIcon: function () {
             let _this = this;
-            $('.fa-trash').click(function () {
+            $('.fa-trash').click(function () { //todo: change selector for action...something
                 let parent_wrapper = $(this).closest(_this.elements["removed-element-class"]);
                 let param_entity_name = $(parent_wrapper).attr('data-type');
                 let remove_data = _this.entity_actions[param_entity_name].makeRemoveData(parent_wrapper);
@@ -110,13 +211,13 @@ export default (function () {
         },
         attachContentEditEventOnEditIcon: function () {
             let _this = this;
-            $('.fa-edit').click(function () {
+            $('.fa-edit').click(function () { //todo: change selector for action...something
                 let closest_parent = this.closest(_this.elements["edited-element-class"]);
                 _this.toggleContentEditable(closest_parent);
             });
         },
         attachContentCopyEventOnCopyIcon: function () {
-            let allCopyButtons = $('.fa-copy');
+            let allCopyButtons = $('.fa-copy'); //todo: change selector for action...something
             let _this = this;
 
             if ($(allCopyButtons).length > 0) {
@@ -159,7 +260,7 @@ export default (function () {
         },
         attachContentSaveEventOnSaveIcon: function () {
             let _this = this;
-            $('.fa-save').click(function () {
+            $('.fa-save').click(function () { //todo: change selector for action...something
                 let closest_parent = this.closest(_this.elements["saved-element-class"]);
                 _this.ajaxUpdateDatabaseRecord(closest_parent);
             });

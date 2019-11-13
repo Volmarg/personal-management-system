@@ -48,6 +48,7 @@ use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
 class Repositories extends AbstractController {
 
@@ -322,6 +323,7 @@ class Repositories extends AbstractController {
     }
 
     /**
+     * @Route("/api/repository/remove/entity{repository_name}/{id}", name="api_repository_remove_entity")
      * @param string $repository_name
      * @param $id
      * This is general method for all common record soft delete called from front
