@@ -551,7 +551,7 @@ export default (function () {
             let param_entity_name   = $(tr_closest_parent).attr('data-type');
 
             if (!is_content_editable) {
-                utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.set,  'td', 'input, select, button');
+                utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.set,  'td', 'input, select, button, img');
                 $(tr_closest_parent).addClass(this.classes["table-active"]);
                 this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
                 this.toggleDisabledClassForTableRow(tr_closest_parent);
@@ -563,7 +563,7 @@ export default (function () {
             this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
             this.toggleDisabledClassForTableRow(tr_closest_parent);
 
-            utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.unset,'td', 'input, select, button');
+            utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.unset,'td', 'input, select, button, img');
             $(tr_closest_parent).removeClass(this.classes["table-active"]);
             bootstrap_notifications.notify(this.messages.entityEditEnd(this.entity_actions[param_entity_name].entity_name), 'success');
         },
@@ -592,7 +592,8 @@ export default (function () {
             let date_pickers    = $(tr_parent_element).find('.date-picker');
             let checkbox        = $(tr_parent_element).find('.checkbox-disabled');
             let selectize       = $(tr_parent_element).find('.selectize-control');
-            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize];
+            let imagePreview    = $(tr_parent_element).find('.image_preview');
+            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, imagePreview];
             let _this = this;
 
             $(elements_to_toggle).each((index, element_type) => {
@@ -1653,18 +1654,20 @@ export default (function () {
                 },
                 entity_name: "My Contacts",
             },
-            "MyContactsGroups": {
+            "MyContactType": {
                 makeUpdateData: function (tr_parent_element) {
-                    let id = $(tr_parent_element).find('.id').html();
-                    let name = $(tr_parent_element).find('.name').html();
+                    let id          = $(tr_parent_element).find('.id').html();
+                    let name        = $(tr_parent_element).find('.name').html();
+                    let imagePath   = $(tr_parent_element).find('.image_path').html();
 
                     let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                    let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
 
-                    let url = '/my-contacts-groups/update';
+                    let url = '/my-contacts-types-2/update';
                     let ajax_data = {
-                        'name': name,
-                        'id': id
+                        'image_path': imagePath,
+                        'name'      : name,
+                        'id'        : id
                     };
 
                     return {
@@ -1675,13 +1678,13 @@ export default (function () {
                     };
                 },
                 makeRemoveData: function (parent_element) {
-                    let id = $(parent_element).find('.id').html();
+                    let id   = $(parent_element).find('.id').html();
                     let name = $(parent_element).find('.name').html();
-                    let url = '/my-contacts-groups/remove';
+                    let url  = '/my-contacts-types-2/remove';
                     let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                    let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
 
-                    let message = 'You are about to remove group named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
+                    let message = 'You are about to remove type named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
                     return {
                         'url': url,
                         'data': {
@@ -1694,9 +1697,9 @@ export default (function () {
                     };
                 },
                 makeCreateData: function () {
-                    let url = '/my-contacts-settings';
+                    let url = '/my-contacts-settings-2';
                     let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                    let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
 
                     return {
                         'url': url,
@@ -1704,7 +1707,7 @@ export default (function () {
                         'fail_message': fail_message,
                     };
                 },
-                entity_name: "My Contacts Groups",
+                entity_name: "My contact type",
             },
             "MyPasswords": {
                 makeUpdateData: function (tr_parent_element) {

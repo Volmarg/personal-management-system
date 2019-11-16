@@ -13,6 +13,7 @@ use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Modules\Contacts2\MyContactType;
+use App\Form\Modules\Contacts2\MyContactTypeType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
 use App\Form\Modules\Notes\MyNotesType;
@@ -95,6 +96,10 @@ class Forms extends AbstractController {
 
     public function contact(array $params = [], MyContact $my_contact_type = null): FormInterface {
         return $this->createForm(MyContactType::class, $my_contact_type, $params);
+    }
+
+    public function contactType(array $params = []): FormInterface {
+        return $this->createForm(MyContactTypeType::class, null, $params);
     }
 
     /**

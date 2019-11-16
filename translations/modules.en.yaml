@@ -67,9 +67,11 @@ contact:
     type: Type
   settings:
     headers:
-      changeAddContactGroup: Change/Add contact group
+      changeAddContactType: Change/Add contact type
     table:
       name: Name
+      imagePath: Image path
+      imagePreview: Image preview
 
 passwords:
   headers:

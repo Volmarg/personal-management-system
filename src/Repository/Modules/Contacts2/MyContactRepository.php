@@ -40,6 +40,8 @@ class MyContactRepository extends ServiceEntityRepository
     public function saveEntity(MyContact $my_contact, bool $search_and_rebuild_entity = false){
 
         if( $search_and_rebuild_entity ){
+            $found_entity = null;
+
             $id                             = $my_contact->getId();
             $name                           = $my_contact->getName();
             $contacts                       = $my_contact->getContacts();
@@ -48,8 +50,12 @@ class MyContactRepository extends ServiceEntityRepository
             $name_background_color          = $my_contact->getNameBackgroundColor();
             $description_background_color   = $my_contact->getDescriptionBackgroundColor();
 
-            $found_entity = $this->find($id);
+            // new entity
+            if( !empty($id) ){
+                $found_entity = $this->find($id);
+            }
 
+            //updated
             if( !empty($found_entity) ){
                 $my_contact = $found_entity;
                 $my_contact->setName($name);

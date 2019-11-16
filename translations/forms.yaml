@@ -78,9 +78,10 @@ forms:
       year: Year
       daysLeft: Days left
       companyName: Company name
-  MyContactsGroupsType:
+  MyContactTypeType:
     labels:
       name: Name
+      imagePath: Image path
   MyPasswordsGroupsType:
     labels:
       name: Name

@@ -21,10 +21,6 @@ sidebar:
       settings: Settings
     contacts:
       label: Contacts
-      phone: Phone numbers
-      email: Emails
-      other: Other
-      archived: Archived
       settings: Settings
     files:
       label: Files

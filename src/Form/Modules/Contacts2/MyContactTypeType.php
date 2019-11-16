@@ -12,6 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyContactTypeType extends AbstractType {
 
+    const KEY_NAME       = 'name';
+    const KEY_IMAGE_PATH = 'image_path';
+    const KEY_SUBMIT     = "submit";
+
     /**
      * @var Application
      */
@@ -24,10 +28,13 @@ class MyContactTypeType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
-            ->add('name', null, [
-                'label' => $this->app->translator->translate('forms.MyContactsGroupsType.labels.name')
+            ->add(self::KEY_NAME, null, [
+                'label' => $this->app->translator->translate('forms.MyContactTypeType.labels.name')
             ])
-            ->add('submit',SubmitType::class, [
+            ->add(self::KEY_IMAGE_PATH, null, [
+                'label' => $this->app->translator->translate('forms.MyContactTypeType.labels.imagePath')
+            ])
+            ->add(self::KEY_SUBMIT,SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')
             ])
         ;
