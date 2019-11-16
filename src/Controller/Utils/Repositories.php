@@ -436,7 +436,7 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @Route("/api/repository/update/entity", name="api_repository_remove_entity")
+     * @Route("/api/repository/update/entity", name="api_repository_update_entity")
      * @param Request $request
      * @return JsonResponse
      * @throws Exception

@@ -358,9 +358,7 @@ class Dialogs extends AbstractController
             $forms_renders[] = $this->app->forms->getFormViewWithoutFormTags(MyContactTypeDtoType::class, $options);
         }
 
-        $contact_form = $this->app->forms->contact();
-        $contact_form->setData($contact);
-
+        $contact_form = $this->app->forms->contact([], $contact);
 
         $template_data = [
             'contact_types_dtos' => $contact_types_dtos, //todo - need to append few type forms with dto data

@@ -8,6 +8,7 @@
 
 namespace App\Controller\Utils;
 
+use App\Entity\Modules\Contacts2\MyContact;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCreateType;
@@ -92,8 +93,8 @@ class Forms extends AbstractController {
         return $this->createForm(MyScheduleTypeType::class, null, $params);
     }
 
-    public function contact(array $params = []): FormInterface {
-        return $this->createForm(MyContactType::class, null, $params);
+    public function contact(array $params = [], MyContact $my_contact_type = null): FormInterface {
+        return $this->createForm(MyContactType::class, $my_contact_type, $params);
     }
 
     /**

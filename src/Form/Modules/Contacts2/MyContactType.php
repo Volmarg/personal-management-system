@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyContactType extends AbstractType {
 
+    const KEY_ID                            = "id";
     const KEY_NAME                          = 'name';
     const KEY_DESCRIPTION                   = 'description';
     const KEY_IMAGE_PATH                    = 'image_path';
@@ -36,6 +37,7 @@ class MyContactType extends AbstractType {
         // todo: contacts field is invisible so it has to be validated additionally on front + back
 
         $builder
+            ->add(self::KEY_ID, HiddenType::class)
             ->add(self::KEY_NAME, TextType::class, [
                 'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_NAME)
             ])

@@ -115,6 +115,7 @@ class MyContactsController extends AbstractController {
         // build request for processing the main form
         $request = new Request();
         $request->request->set($contact_type_form_prefix, $my_contact_type_form);
+
         $contact_form = $this->app->forms->contact()->handleRequest($request);
         $contact_form->submit($my_contact_type_form);
 
@@ -171,7 +172,7 @@ class MyContactsController extends AbstractController {
 
             $my_contact->setContacts($contacts_json);
 
-            $this->app->repositories->myContactRepository->saveEntity($my_contact );
+            $this->app->repositories->myContactRepository->saveEntity($my_contact, true);
         }
 
 
