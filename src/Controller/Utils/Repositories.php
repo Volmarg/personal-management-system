@@ -46,8 +46,10 @@ use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class Repositories extends AbstractController {
@@ -85,7 +87,11 @@ class Repositories extends AbstractController {
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
 
-    const PASSWORD_FIELD                            = 'password';
+    const KEY_PARAMETERS        = 'parameters';
+    const KEY_ENTITY_ID         = 'entity_id';
+    const KEY_REPOSITORY_NAME   = 'repository_name';
+
+    const PASSWORD_FIELD        = 'password';
 
     /**
      * @var Translator $translator
@@ -323,13 +329,13 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @Route("/api/repository/remove/entity{repository_name}/{id}", name="api_repository_remove_entity")
+     * @Route("/api/repository/remove/entity/{repository_name}/{id}", name="api_repository_remove_entity")
      * @param string $repository_name
      * @param $id
      * This is general method for all common record soft delete called from front
      * @param array $findByParams
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteById(string $repository_name, $id, array $findByParams = []) {
         try {
@@ -340,7 +346,7 @@ class Repositories extends AbstractController {
 
             if ($this->hasChildren($record, $repository)) {
                 $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
-                throw new \Exception($message);
+                throw new Exception($message);
             }
 
             $record->setDeleted(1);
@@ -352,7 +358,7 @@ class Repositories extends AbstractController {
 
             $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
             return new JsonResponse($message, 200);
-        } catch (\Exception | ExceptionRepository $er) {
+        } catch (Exception | ExceptionRepository $er) {
             $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
             return new JsonResponse($message, 500);
         }
@@ -429,6 +435,42 @@ class Repositories extends AbstractController {
         }
     }
 
+    /**
+     * @Route("/api/repository/update/entity", name="api_repository_remove_entity")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function updateByRequest(Request $request){
+
+        if( !$request->request->has(self::KEY_PARAMETERS) ){
+            $message = $this->translator->translate('missingRequiredParameter') . self::KEY_PARAMETERS;
+            return new JsonResponse($message, 500);
+        }
+
+        if( !$request->request->has(self::KEY_ENTITY_ID) ){
+            $message = $this->translator->translate('missingRequiredParameter') . self::KEY_ENTITY_ID;
+            return new JsonResponse($message, 500);
+        }
+
+        if( !$request->request->has(self::KEY_REPOSITORY_NAME) ){
+            $message = $this->translator->translate('missingRequiredParameter') . self::KEY_REPOSITORY_NAME;
+            return new JsonResponse($message, 500);
+        }
+
+        $parameters      = $request->request->get(self::KEY_PARAMETERS);
+        $id              = $request->request->get(self::KEY_ENTITY_ID);
+        $repository_name = $request->request->get(self::KEY_REPOSITORY_NAME);
+
+        $id         = $this->trimAndCheckId($id);
+        $repository = $this->{lcfirst($repository_name)};
+        $entity     = $repository->find($id);
+
+        $response = $this->update($parameters, $entity);
+
+        return $response;
+    }
+
     private function getEntity(array $entity_data) {
         $entity = null;
 
@@ -488,14 +530,14 @@ class Repositories extends AbstractController {
      *
      * @param $id
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     private function trimAndCheckId($id){
         $id = (int) trim($id);
 
         if (!is_numeric($id)) {
             $message = $this->translator->translate('responses.repositories.inorrectId') . $id;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         return $id;

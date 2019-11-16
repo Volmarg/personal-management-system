@@ -26,6 +26,14 @@ class MyContactTypeRepository extends ServiceEntityRepository {
     }
 
     /**
+     * @param string $name
+     * @return MyContactType|null
+     */
+    public function getOneNonDeletedByName(string $name):?MyContactType {
+        return $this->findOneBy( ["name" => $name] );
+    }
+
+    /**
      * Returns image path for contactType by it's id
      * @param string $id
      * @return false|mixed

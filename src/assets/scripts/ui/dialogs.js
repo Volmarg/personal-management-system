@@ -47,6 +47,94 @@ export default (function () {
             filesCurrentPaths   : '',
             tags                : ''
         },
+        general: {
+            /**
+             * Attaches dialog calling logic for given selector and reads data from it to build dialog
+             * @param selector {string}
+             * @param url {string}
+             * @param method {string}
+             * @param requestData {array}
+             * @param callback {function}
+             */
+            attachDialogCallEventOnSelector(selector, url, method, requestData, callback) {
+
+                let element = $(selector);
+                let _this   = this;
+
+                $(element).on('click', function(){
+                   _this.buildDialogBody(url, method, requestData, callback);
+                });
+
+            },
+            /**
+             * General function for calling the modal
+             * @param url {string}
+             * @param method {string}
+             * @param requestData {object}
+             * @param callback {function}
+             */
+            buildDialogBody: function(url, method, requestData, callback) {
+
+                if( "undefined" === typeof callback ){
+                    callback = null;
+                }
+
+                let _this = this;
+
+                ui.widgets.loader.toggleLoader();
+                $.ajax({
+                    method: method,
+                    url: url,
+                    data: requestData
+                }).always((data) => {
+                    ui.widgets.loader.toggleLoader();
+
+                    if( undefined !== data['template'] ){
+                        _this.callDialog(data['template'], callback);
+                    } else if(undefined !== data['errorMessage']) {
+                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
+                    }else{
+                        let message = 'Something went wrong while trying to load dialog template.';
+                        bootstrap_notifications.notify(message, 'danger');
+                    }
+
+                })
+            },
+            /**
+             * Call the dialog and insert template in it's body
+             * @param template {string}
+             * @param callback {function}
+             */
+            callDialog: function (template, callback = null) {
+
+                let dialog = bootbox.alert({
+                    size: "large",
+                    backdrop: true,
+                    closeButton: false,
+                    message: template,
+                    buttons: {
+                        ok: {
+                            label: 'Cancel',
+                            className: 'btn-primary dialog-ok-button',
+                            callback: () => {}
+                        },
+                    },
+                    callback: function () {
+                    }
+                });
+
+                dialog.init( () => {
+
+                    if( "function" === typeof callback ){
+                        callback();
+                    }
+
+                    ui.forms.init();
+                });
+
+            },
+
+        },
         dataTransfer: {
             /**
              *

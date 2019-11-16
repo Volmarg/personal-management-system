@@ -134,4 +134,27 @@ class Forms extends AbstractController {
 
         return new JsonResponse($data);
     }
+
+    /**
+     * @param string $form_namespace
+     * @param array $options
+     * @return string
+     */
+    public function getFormViewWithoutFormTags(string $form_namespace, array $options = []): string {
+
+        $form        = $this->createForm($form_namespace, null, $options);
+        $form_view   = $form->createView();
+
+        if( !empty($form_data) ){
+            $form->setData($form_data);
+        }
+
+        $form_render = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form_view])->getContent();
+        //todo: better regex
+        $form_content = preg_replace('#<(.*)form(.*)>#U','', $form_render,1);
+        $form_content = str_replace('</form>','', $form_content);
+
+        return $form_content;
+
+    }
 }

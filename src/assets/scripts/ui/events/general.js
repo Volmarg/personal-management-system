@@ -59,7 +59,8 @@ export default (function () {
                 return;
             }
 
-            $(targetElements.on('click', function(){
+            $(targetElements.on('click', function(event){
+                event.preventDefault();
                 let targetElementSelector = $(this).attr('data-removed-selector');
                 let clickedElement        = $(this);
 

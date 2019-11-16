@@ -29,6 +29,7 @@ class MyContactType
     private $id;
 
     /**
+     * todo: add unique key
      * @ORM\Column(type="string", length=255)
      */
     private $name;

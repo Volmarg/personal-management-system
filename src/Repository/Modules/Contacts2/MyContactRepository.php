@@ -39,4 +39,13 @@ class MyContactRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
+    /**
+     * This function will search for single (not deleted) entity with given id
+     * @param int $id
+     * @return MyContact|null
+     */
+    public function findOneById(int $id):?MyContact {
+        return $this->findOneBy(['id' => $id]);
+    }
+
 }

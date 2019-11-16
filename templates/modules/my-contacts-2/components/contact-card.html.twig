@@ -20,12 +20,18 @@
 </style>
 
 <div class="contact-area">
-
+{# todo: Use constants from repositories.php #}
     <section class="contact-card-actions">
-        <div class="contact-card-action-edit action"  data-entity-id="{{ contact.getId() }}" data-repository-name="MyContactRepository">
+        <div class="action"
+             data-entity-id="{{ contact.getId() }}"
+             data-repository-name="MyContactRepository"
+             data-entity-modal-edit-action="true">
             <i class="far fa-pen-square"></i>
         </div>
-        <div class="contact-card-action-remove action entity-remove-action"  data-entity-id="{{ contact.getId() }}" data-repository-name="MyContactRepository">
+        <div class="action"
+             data-entity-id="{{ contact.getId() }}"
+             data-repository-name="MyContactRepository"
+             data-entity-removal-action="true">
             <i class="far fa-times-circle"></i>
         </div>
     </section>

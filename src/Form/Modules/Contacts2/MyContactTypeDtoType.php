@@ -13,6 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * This form is called as subform in the "createContactCard" widget for contacts
@@ -36,9 +37,24 @@ class MyContactTypeDtoType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
+        $name_value      = '';
+        $selected_entity = null;
+
+        if( array_key_exists(self::KEY_NAME, $options)){
+            $name_value = $options[self::KEY_NAME];
+        }
+
+        if( array_key_exists(self::KEY_TYPE, $options)){
+            $type_name = $options[self::KEY_TYPE];
+            $selected_entity = $this->app->repositories->myContactTypeRepository->getOneNonDeletedByName($type_name);
+        }
+
         $builder
             ->add(self::KEY_NAME, null, [
-                'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_NAME)
+                'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_NAME),
+                "attr"  => [
+                    'value' => $name_value
+                ]
             ])
             ->add(self::KEY_TYPE,EntityType::class, [
                 'class'         => MyContactType::class,
@@ -46,9 +62,16 @@ class MyContactTypeDtoType extends AbstractType {
                 'choice_label'  => function (MyContactType $contact_type) {
                     return $contact_type->getName();
                 },
-                'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_TYPE)
+                'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_TYPE),
+                'data'  => $selected_entity
             ])
         ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefined(self::KEY_NAME);
+        $resolver->setDefined(self::KEY_TYPE);
     }
 
     /**

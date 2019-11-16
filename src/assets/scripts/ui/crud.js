@@ -67,18 +67,41 @@ export default (function () {
         general: {
             selectors:{
                 classes:{
-                    entityRemoveAction: '.entity-remove-action'
+                    entityRemoveAction        : '[data-entity-removal-action="true"]',
+                    entityCallEditModalAction : '[data-entity-modal-edit-action="true"]'
                 }
             },
-            methods:{
-              removeEntity: {
-                  url: "/api/repository/remove/entity{repository_name}/{id}",
-                  method: "GET",
-                  params: {
-                      repositoryName: "{repository_name}",
-                      id: "{id}"
-                  }
-              }
+            methods: {
+                removeEntity: {
+                    url: "/api/repository/remove/entity/{repository_name}/{id}",
+                    method: "GET",
+                    params: {
+                        repositoryName: "{repository_name}",
+                        id: "{id}"
+                    }
+                },
+                buildEditEntityModalByRepositoryName: {
+                    MyContactRepository: {
+                        url     : "/dialog/body/edit-contact-card",
+                        method  : "POST",
+                        callback: function(){
+                            events.general.attachFormViewAppendEvent();
+                            events.general.attachRemoveParentEvent();
+                        }
+                    },
+                    /**
+                     * Each dialog method should have target repository
+                     * @param entityId
+                     */
+                    callModal: function(entityId){
+
+                    }
+                },
+                updateEntityByRepositoryName: {
+                    MyContactRepository: {
+                        // special submission button goes here - like sending all data at once stripping forms etc
+                    }
+                }
             },
             messages: {
                 doYouWantToRemoveThisRecord: function(){
@@ -97,7 +120,13 @@ export default (function () {
             },
             init: function(){
                 this.attachEntityRemovalEvent(this.selectors.classes.entityRemoveAction);
+                this.attachEntityEditModalCallEvent(this.selectors.classes.entityCallEditModalAction);
             },
+            /**
+             * Removal is based on one click with aproval box
+             * @param selector
+             * @returns {boolean}
+             */
             attachEntityRemovalEvent: function(selector){
                 let element = $(selector);
                 let _this   = this;
@@ -119,6 +148,12 @@ export default (function () {
 
                 })
             },
+            /**
+             * Uses global repositories remove function for all repositories defined there
+             * @param entityId
+             * @param repositoryName
+             * @param afterRemovalCallback
+             */
             removeEntityById: function(entityId, repositoryName, afterRemovalCallback){
 
                 let _this = this;
@@ -156,6 +191,63 @@ export default (function () {
                         }
                     }
                 });
+
+            },
+            /**
+             * Editing is based on modal
+             * @param selector
+             * @returns {boolean}
+             */
+            attachEntityEditModalCallEvent: function(selector){
+                let element = $(selector);
+                let _this   = this;
+
+                if( !utils.validations.doElementsExists(element) ){
+                    return false;
+                }
+
+                $(element).on('click', function() {
+                    let clickedElement  = $(this);
+                    let entityId        = $(clickedElement).attr('data-entity-id');
+                    let repositoryName  = $(clickedElement).attr('data-repository-name'); // consts from Repositories class
+
+                    _this.callModalForEntity(entityId, repositoryName);
+                })
+            },
+            /**
+             * Uses the modal building logic for calling box with prefilled data
+             * @param entityId
+             * @param repositoryName
+             */
+            callModalForEntity: function(entityId, repositoryName){
+                let modalUrl = this.methods.buildEditEntityModalByRepositoryName[repositoryName].url;
+                let method   = this.methods.buildEditEntityModalByRepositoryName[repositoryName].method;
+                let callback = this.methods.buildEditEntityModalByRepositoryName[repositoryName].callback;
+
+
+                if( "undefined" === typeof modalUrl ){
+                    throw({
+                       "message"        : "There is no url defined for editing modal call for given repository",
+                       "repositoryName" : repositoryName
+                    });
+                }
+
+                let requestData = {
+                    entityId: entityId
+                };
+
+                dialogs.ui.general.buildDialogBody(modalUrl, method, requestData, callback);
+
+            },
+            /**
+             * Update is done via general update method in repositories
+             * @param entityId
+             */
+            updateEntityById: function(entityId){
+
+                let afterEditCallback = function(){
+                    ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                };
 
             }
         },

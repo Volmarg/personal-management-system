@@ -2,15 +2,14 @@
 
 namespace App\Controller\Utils;
 
-use App\Controller\AppController;
 use App\Controller\Files\FileUploadController;
-use App\Controller\Messages\GeneralMessagesController;
-use App\Controller\Modules\Notes\MyNotesController;
-use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Form\Modules\Contacts2\MyContactType;
+use App\Form\Modules\Contacts2\MyContactTypeDtoType;
 use App\Services\DirectoriesHandler;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
+use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,6 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class Dialogs extends AbstractController
 {
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_CONTACT_CARD = 'page-elements/components/dialogs/bodies/create-contact-card.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_EDIT_CONTACT_CARD   = 'page-elements/components/dialogs/bodies/edit-contact-card.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER      = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS         = 'page-elements/components/dialogs/bodies/update-tags.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER          = 'page-elements/components/dialogs/bodies/new-folder.twig';
@@ -33,6 +33,7 @@ class Dialogs extends AbstractController
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                 = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                         = 'fileCurrentPath';
     const KEY_MODULE_NAME                               = 'moduleName';
+    const KEY_ENTITY_ID                                 = "entityId";
 
     /**
      * @var Application $app
@@ -300,22 +301,12 @@ class Dialogs extends AbstractController
      * @Route("/dialog/body/create-contact-card", name="dialog_body_create_contact_card", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
      */
     public function buildCreateContactCardDialogBody(Request $request) {
 
-        $contact_types = $this->app->repositories->myContactTypeRepository->getAllNotDeleted();
         $contact_form  = $this->app->forms->contact();
 
-        if( is_null($contact_types) ){
-            $message = $this->app->translator->translate('No contacts types were defined'); //todo
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
-
         $template_data = [
-            'contact_types' => $contact_types,
             'contact_form'  => $contact_form->createView(),
         ];
 
@@ -328,5 +319,63 @@ class Dialogs extends AbstractController
         return new JsonResponse($response_data);
 
     }
+
+    /**
+     * @Route("/dialog/body/edit-contact-card", name="dialog_body_edit_contact_card", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
+     * @throws \Exception
+     */
+    public function buildEditContactCardDialogBody(Request $request) {
+
+        if( !$request->request->has(self::KEY_ENTITY_ID) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $entity_id      = $request->request->get(self::KEY_ENTITY_ID);
+        $contact        = $this->app->repositories->myContactRepository->findOneById($entity_id);
+        $forms_renders  = [];
+
+        if( is_null($contact) ){
+            $message = $this->app->translator->translate("No entity was found for id: {$entity_id}"); //todo
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $contact_types_dtos = $contact->getContacts()->getContactTypeDtos();
+
+        foreach( $contact_types_dtos as $contact_type_dto ){
+            $options = [
+                MyContactTypeDtoType::KEY_NAME => $contact_type_dto->getDetails(),
+                MyContactTypeDtoType::KEY_TYPE => $contact_type_dto->getName()
+            ];
+
+            $forms_renders[] = $this->app->forms->getFormViewWithoutFormTags(MyContactTypeDtoType::class, $options);
+        }
+
+        $contact_form = $this->app->forms->contact();
+        $contact_form->setData($contact);
+
+
+        $template_data = [
+            'contact_types_dtos' => $contact_types_dtos, //todo - need to append few type forms with dto data
+            'contact_form'       => $contact_form->createView(),
+            'subforms'           => $forms_renders
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CONTACT_CARD, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
 
 }
