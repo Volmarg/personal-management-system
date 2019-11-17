@@ -221,6 +221,7 @@ forms:
       name_background_color: Name background color
       description_background_color: Description background color
       contacts: Contacts
+      addType: Add type
   MyContactTypeDtoType:
     labels:
       name: Name

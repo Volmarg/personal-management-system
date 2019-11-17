@@ -114,7 +114,7 @@ export default (function () {
          */
         loadModuleContentByUrl: function (url){
 
-            ui.widgets.loader.toggleLoader();
+            ui.widgets.loader.showLoader();
 
             $.ajax({
                 url: url,
@@ -130,7 +130,7 @@ export default (function () {
                  */
                 imagesLoaded( twigBodySection, function() {
                     initializer.reinitialize();
-                    ui.widgets.loader.toggleLoader();
+                    ui.widgets.loader.hideLoader();
                     history.pushState({}, null, url);
                     sidebar.links.markCurrentMenuElementAsActive();
                     ui.masonry.init();

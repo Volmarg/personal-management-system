@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MyContactTypeType extends AbstractType {
 
     const KEY_NAME       = 'name';
-    const KEY_IMAGE_PATH = 'image_path';
+    const KEY_IMAGE_PATH = 'imagePath';
     const KEY_SUBMIT     = "submit";
 
     /**

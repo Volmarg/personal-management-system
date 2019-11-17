@@ -351,8 +351,11 @@ export default (function () {
 
         },
         attachContentSaveEventOnSaveIcon: function () {
-            let _this = this;
-            $('.fa-save').click(function () { //todo: change selector for action...something
+            let _this      = this;
+            let saveButton = $('.fa-save');
+
+            $(saveButton).off('click'); // to prevent double attachement on reinit
+            $(saveButton).on('click', function () { //todo: change selector for action...something
                 let closest_parent = this.closest(_this.elements["saved-element-class"]);
                 _this.ajaxUpdateDatabaseRecord(closest_parent);
             });
@@ -637,24 +640,18 @@ export default (function () {
 
         },
         makeAjaxRecordUpdateCall: function (update_data) {
-            ui.widgets.loader.toggleLoader();
+            ui.widgets.loader.showLoader();
             $.ajax({
                 url: update_data.url,
                 method: 'POST',
                 data: update_data.data,
-                success: (template) => {
+                success: (data) => {
                     bootstrap_notifications.notify(update_data.success_message, 'success');
-
-                    if( true === update_data.update_template ){
-                        $('.twig-body-section').html(template);
-                        initializer.reinitialize();
-                    }
-
                 },
             }).fail(() => {
                 bootstrap_notifications.notify(update_data.fail_message, 'danger')
             }).always(() => {
-                ui.widgets.loader.toggleLoader();
+                ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
             });
         },
         removeDataTableTableRow: function (table_id, tr_parent_element) {
@@ -1665,7 +1662,7 @@ export default (function () {
 
                     let url = '/my-contacts-types-2/update';
                     let ajax_data = {
-                        'image_path': imagePath,
+                        'imagePath': imagePath,
                         'name'      : name,
                         'id'        : id
                     };

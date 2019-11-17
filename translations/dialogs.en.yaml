@@ -1,3 +1,5 @@
 dialogs:
   createContactCard:
     header: Create contact card
+  editContactCard:
+    header: Edit contact card
