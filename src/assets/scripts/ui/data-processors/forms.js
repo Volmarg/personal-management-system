@@ -12,7 +12,7 @@ export default (function () {
     dataProcessors.forms = {
         "contactTypeDto": {
             getFormNamespace:function(){
-                return 'App\\Form\\Modules\\Contacts2\\MyContactTypeDtoType'; // todo: change it later
+                return 'App\\Form\\Modules\\Contacts\\MyContactTypeDtoType';
             }
         }
     };

@@ -3,8 +3,8 @@
 namespace App\Controller\Utils;
 
 use App\Controller\Files\FileUploadController;
-use App\Form\Modules\Contacts2\MyContactType;
-use App\Form\Modules\Contacts2\MyContactTypeDtoType;
+use App\Form\Modules\Contacts\MyContactType;
+use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Services\DirectoriesHandler;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;

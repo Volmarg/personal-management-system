@@ -1543,114 +1543,6 @@ export default (function () {
                 },
                 entity_name: "My Payments Settings",
             },
-            "MyContacts": {
-                makeUpdateData: function (tr_parent_element) {
-                    let id = $(tr_parent_element).find('.id').html();
-                    let contact = $(tr_parent_element).find('.contact').html();
-                    let description = $(tr_parent_element).find('.description').html();
-                    let type = $(tr_parent_element).find('.type').html();
-                    let groupId = $(tr_parent_element).find('.group :selected').val();
-
-                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                    let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
-
-                    let url = '/my-contacts/update/' + type.trim();
-                    let ajax_data = {
-                        'contact': contact,
-                        'description': description,
-                        'id': id,
-                        'group': {
-                            "type": "entity",
-                            'namespace': 'App\\Entity\\Modules\\Contacts\\MyContactsGroups',
-                            'id': groupId,
-                        },
-                    };
-
-                    return {
-                        'url': url,
-                        'data': ajax_data,
-                        'success_message': success_message,
-                        'fail_message': fail_message
-                    }
-                },
-                makeRemoveData: function (parent_element, type = '') {
-                    let id = $(parent_element).find('.id').html();
-                    let url = '/my-contacts/remove/' + type;
-                    let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                    let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
-
-                    return {
-                        'url': url,
-                        'data': {
-                            'id': id
-                        },
-                        'success_message': success_message,
-                        'fail_message': fail_message,
-                        'is_dataTable': false, //temporary
-                    };
-
-                },
-                makeCreateData: function (type = '') {
-                    let url = '/my-contacts' + type;
-                    let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                    let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
-
-                    return {
-                        'url': url,
-                        'success_message': success_message,
-                        'fail_message': fail_message,
-                    };
-                },
-                entity_name: "My Contacts",
-            },
-            "MyContactsPhone": {
-                makeUpdateData: function (tr_parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeUpdateData(tr_parent_element);
-                },
-                makeRemoveData: function (parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeRemoveData(parent_element, 'phone');
-                },
-                makeCreateData: function () {
-                    return ui.crud.entity_actions.MyContacts.makeCreateData('/phone');
-                },
-                entity_name: "My Contacts",
-            },
-            "MyContactsEmail": {
-                makeUpdateData: function (tr_parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeUpdateData(tr_parent_element);
-                },
-                makeRemoveData: function (parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeRemoveData(parent_element, 'email');
-                },
-                makeCreateData: function () {
-                    return ui.crud.entity_actions.MyContacts.makeCreateData('/email');
-                },
-                entity_name: "My Contacts",
-            },
-            "MyContactsOther": {
-                makeUpdateData: function (tr_parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeUpdateData(tr_parent_element);
-                },
-                makeRemoveData: function (parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeRemoveData(parent_element, 'other');
-                },
-                makeCreateData: function () {
-                    return ui.crud.entity_actions.MyContacts.makeCreateData('/other');
-                },
-                entity_name: "My Contacts",
-            },
-            "MyContactsArchived": {
-                makeUpdateData: function (tr_parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeUpdateData(tr_parent_element);
-                },
-                makeRemoveData: function (parent_element) {
-                    return ui.crud.entity_actions.MyContacts.makeRemoveData(parent_element, 'archived');
-                },
-                makeCreateData: function () {
-                    return ui.crud.entity_actions.MyContacts.makeCreateData('/archived');
-                },
-                entity_name: "My Contacts",
-            },
             "MyContactType": {
                 makeUpdateData: function (tr_parent_element) {
                     let id          = $(tr_parent_element).find('.id').html();
@@ -1660,7 +1552,7 @@ export default (function () {
                     let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                     let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
 
-                    let url = '/my-contacts-types-2/update';
+                    let url = '/my-contacts-types/update';
                     let ajax_data = {
                         'imagePath': imagePath,
                         'name'      : name,
@@ -1677,7 +1569,7 @@ export default (function () {
                 makeRemoveData: function (parent_element) {
                     let id   = $(parent_element).find('.id').html();
                     let name = $(parent_element).find('.name').html();
-                    let url  = '/my-contacts-types-2/remove';
+                    let url  = '/my-contacts-types/remove';
                     let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                     let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
 
@@ -1694,7 +1586,7 @@ export default (function () {
                     };
                 },
                 makeCreateData: function () {
-                    let url = '/my-contacts-settings-2';
+                    let url = '/my-contacts-settings';
                     let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
                     let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
 

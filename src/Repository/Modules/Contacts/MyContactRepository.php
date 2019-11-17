@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository\Modules\Contacts2;
+namespace App\Repository\Modules\Contacts;
 
-use App\Entity\Modules\Contacts2\MyContact;
+use App\Entity\Modules\Contacts\MyContact;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;

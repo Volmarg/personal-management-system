@@ -13,10 +13,8 @@ use App\Entity\Modules\Schedules\MySchedule;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
-use App\Repository\Modules\Contacts\MyContactsGroupsRepository;
-use App\Repository\Modules\Contacts\MyContactsRepository;
-use App\Repository\Modules\Contacts2\MyContactRepository;
-use App\Repository\Modules\Contacts2\MyContactTypeRepository;
+use App\Repository\Modules\Contacts\MyContactRepository;
+use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Goals\MyGoalsRepository;
 use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
@@ -64,8 +62,6 @@ class Repositories extends AbstractController {
     const MY_SHOPPING_PLANS_REPOSITORY_NAME             = 'MyShoppingPlansRepository';
     const MY_TRAVELS_IDEAS_REPOSITORY_NAME              = 'MyTravelsIdeasRepository';
     const INTEGRATIONS_RESOURCES_REPOSITORY_NAME        = 'IntegrationResourceRepository';
-    const MY_CONTACTS_REPOOSITORY_NAME                  = 'MyContactsRepository';
-    const MY_CONTACTS_GROUPS_REPOSITORY_NAME            = 'MyContactsGroupsRepository';
     const MY_PASSWORDS_REPOSITORY_NAME                  = 'MyPasswordsRepository';
     const MY_PASSWORDS_GROUPS_REPOSITORY_NAME           = 'MyPasswordsGroupsRepository';
     const USER_REPOSITORY                               = 'UserRepository';
@@ -142,16 +138,6 @@ class Repositories extends AbstractController {
      * @var MyNotesCategoriesRepository
      */
     public $myNotesCategoriesRepository;
-
-    /**
-     * @var MyContactsRepository
-     */
-    public $myContactsRepository;
-
-    /**
-     * @var MyContactsGroupsRepository
-     */
-    public $myContactsGroupsRepository;
 
     /**
      * @var MyPasswordsRepository
@@ -268,8 +254,6 @@ class Repositories extends AbstractController {
         MyTravelsIdeasRepository            $myTravelIdeasRepository,
         MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
         MyNotesCategoriesRepository         $myNotesCategoriesRepository,
-        MyContactsRepository                $myContactsRepository,
-        MyContactsGroupsRepository          $myContactsGroupsRepository,
         MyPasswordsRepository               $myPasswordsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         UserRepository                      $userRepository,
@@ -302,8 +286,6 @@ class Repositories extends AbstractController {
         $this->myTravelsIdeasRepository             = $myTravelIdeasRepository;
         $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
         $this->myNotesCategoriesRepository          = $myNotesCategoriesRepository;
-        $this->myContactsRepository                 = $myContactsRepository;
-        $this->myContactsGroupsRepository           = $myContactsGroupsRepository;
         $this->myPasswordsRepository                = $myPasswordsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->userRepository                       = $userRepository;

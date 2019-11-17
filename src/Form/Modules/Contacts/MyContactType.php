@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Form\Modules\Contacts2;
+namespace App\Form\Modules\Contacts;
 
 use App\Controller\Utils\Application;
-use App\Entity\Modules\Contacts2\MyContact;
-use App\Form\Type\JsondtoType;
+use App\Entity\Modules\Contacts\MyContact;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

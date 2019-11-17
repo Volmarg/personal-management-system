@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Form\Modules\Contacts2;
+namespace App\Form\Modules\Contacts;
 
 use App\Controller\Utils\Application;
-use App\Entity\Modules\Contacts2\MyContactType;
+use App\Entity\Modules\Contacts\MyContactType;
 use Exception;
-use Ramsey\Uuid\Codec\GuidStringCodec;
-use Ramsey\Uuid\Converter\Number\DegradedNumberConverter;
-use Ramsey\Uuid\Converter\NumberConverterInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,7 +16,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * This form is called as subform in the "createContactCard" widget for contacts
  * It does not have submit on purpose
  * Class MyContactTypeDtoType
- * @package App\Form\Modules\Contacts2
+ * @package App\Form\Modules\Contacts
  */
 class MyContactTypeDtoType extends AbstractType {
 

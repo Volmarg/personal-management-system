@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository\Modules\Contacts2;
+namespace App\Repository\Modules\Contacts;
 
-use App\Entity\Modules\Contacts2\MyContactType;
+use App\Entity\Modules\Contacts\MyContactType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;

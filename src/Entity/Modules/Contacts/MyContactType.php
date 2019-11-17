@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Modules\Contacts2;
+namespace App\Entity\Modules\Contacts;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,17 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyContactType
 {
-    const TYPE_ARCHIVED = 'archived';
-    const TYPE_PHONE    = 'phone';
-    const TYPE_OTHER    = 'other';
-    const TYPE_EMAIL    = 'email';
-
-    const ALL_TYPES = [
-        self::TYPE_ARCHIVED,
-        self::TYPE_PHONE,
-        self::TYPE_OTHER,
-        self::TYPE_EMAIL,
-    ];
 
     /**
      * @ORM\Id()
@@ -29,8 +18,8 @@ class MyContactType
     private $id;
 
     /**
-     * todo: add unique key
-     * @ORM\Column(type="string", length=255)
+     * todo: generate migration for that unique key
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;
 

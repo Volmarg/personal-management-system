@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Modules\Contacts2;
+namespace App\Entity\Modules\Contacts;
 
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
 use Doctrine\ORM\Mapping as ORM;

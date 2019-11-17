@@ -8,12 +8,12 @@
 
 namespace App\Controller\Utils;
 
-use App\Entity\Modules\Contacts2\MyContact;
+use App\Entity\Modules\Contacts\MyContact;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCreateType;
-use App\Form\Modules\Contacts2\MyContactType;
-use App\Form\Modules\Contacts2\MyContactTypeType;
+use App\Form\Modules\Contacts\MyContactType;
+use App\Form\Modules\Contacts\MyContactTypeType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
 use App\Form\Modules\Notes\MyNotesType;

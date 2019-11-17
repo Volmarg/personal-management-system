@@ -4,111 +4,178 @@ namespace App\Controller\Modules\Contacts;
 
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
-use App\Form\Modules\Contacts\MyContactsType;
+use App\Controller\Utils\Utils;
+use App\DTO\Modules\Contacts\ContactsTypesDTO;
+use App\DTO\Modules\Contacts\ContactTypeDTO;
+use App\Entity\Modules\Contacts\MyContact;
+use App\Form\Modules\Contacts\MyContactType;
+use App\Form\Modules\Contacts\MyContactTypeDtoType;
+use App\Form\Modules\Contacts\MyContactTypeType;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MyContactsController extends AbstractController {
+
+    const TWIG_TEMPLATE = 'modules/my-contacts/my-contacts.html.twig';
+
+    const KEY_CONTACTS    = 'contacts';
+    const KEY_AJAX_RENDER = 'ajax_render';
+    const KEY_TYPE        = 'type';
+
     /**
      * @var Application $app
      */
     private $app;
 
     public function __construct(Application $app) {
-
         $this->app = $app;
     }
 
     /**
-     * @Route("/my-contacts/{type?}", name="my-contacts")
+     * @Route("/my-contacts", name="my-contacts")
      * @param Request $request
-     * @param $type
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
-    public function display(Request $request, $type) {
+    public function display(Request $request) {
 
-        if (is_null($type)) {
-            return $this->redirectToRoute('my-contacts', ['type' => 'phone']);
-        }
-
-        $this->addFormDataToDB($this->getForm($type), $request);
+        $this->handleForms($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($type, false);
+            return $this->renderTemplate( false);
         }
-        return $this->renderTemplate($type, true);
+        return $this->renderTemplate( true);
     }
 
-    protected function renderTemplate($type, $ajax_render = false) {
+    protected function renderTemplate($ajax_render = false) {
 
-        $form       = $this->getForm($type);
-        $form_view  = $form->createView();
-        $contacts   = $this->app->repositories->myContactsRepository->findBy(['type' => $type, 'deleted' => 0]);
-        $groups     = $this->app->repositories->myContactsGroupsRepository->findBy(['deleted' => 0]);
+        $contacts = $this->app->repositories->myContactRepository->findAllNotDeleted();
 
-        return $this->render('modules/my-contacts/my-contacts.html.twig', [
-            'form' => $form_view,
-            'ajax_render' => $ajax_render,
-            'contacts' => $contacts,
-            'type' => $type,
-            'groups' => $groups
-        ]);
+        $data = [
+            self::KEY_AJAX_RENDER   => $ajax_render,
+            self::KEY_CONTACTS      => $contacts
+        ];
 
+        return $this->render(self::TWIG_TEMPLATE, $data);
     }
 
     /**
-     * @param $form
-     * @param $request
-     */
-    protected function addFormDataToDB($form, $request) {
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted($request) && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($form->getData());
-            $em->flush();
-        }
-
-    }
-
-    /**
-     * @Route("/my-contacts/remove/{type?}", name="my-contacts-remove")
+     * @Route("/my-contacts/remove", name="my-contacts-remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
-    public function remove(Request $request, $type) {
+    public function remove(Request $request) {
 
         $response = $this->app->repositories->deleteById(
-            Repositories::MY_CONTACTS_REPOOSITORY_NAME,
+            Repositories::MY_CONTACT_REPOSITORY,
             $request->request->get('id')
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($type, true);
+            return $this->renderTemplate(true);
         }
         return $response;
     }
 
     /**
-     * @Route("my-contacts/update/{type?}" ,name="my-contacts-update")
+     * @Route("my-contacts/update" ,name="my-contacts-update")
      * @param Request $request
      * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myContactsRepository->find($parameters['id']);
+        $entity     = $this->app->repositories->myContactRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return $response;
     }
 
-    private function getForm($type) {
+    /**
+     * @param Request $request
+     * @throws DBALException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function handleForms(Request $request){
 
-        return $this->createForm(MyContactsType::class, null, ['type' => $type]);
+        $contact_type_form_prefix   = Utils::formClassToFormPrefix(MyContactType::class);
+        $my_contact_type_form       = $request->request->get($contact_type_form_prefix);
+        $forms                      = $request->request->all();
+        $filtered_types_forms       = Utils::filterRequestForms([$contact_type_form_prefix], $forms);
+
+        // build request for processing the main form
+        $request = new Request();
+        $request->request->set($contact_type_form_prefix, $my_contact_type_form);
+
+        $contact_form = $this->app->forms->contact()->handleRequest($request);
+        $contact_form->submit($my_contact_type_form);
+
+        if( $contact_form->isSubmitted() && $contact_form->isValid() ){
+
+            $array_of_contacts_types_dtos = [];
+
+            // Build contacts from all passed in forms
+
+            foreach( $filtered_types_forms as $uuid => $form ){
+
+                if( !array_key_exists(MyContactTypeDtoType::KEY_NAME, $form) ){
+                    $message = '';
+                    throw new \Exception($message);
+                }elseif( !array_key_exists(MyContactTypeDtoType::KEY_TYPE, $form) ){
+                    $message = '';
+                    throw new \Exception($message);
+                }
+
+                $type_details   = $form[MyContactTypeDtoType::KEY_NAME];
+                $type_id        = $form[MyContactTypeDtoType::KEY_TYPE];
+
+                $icon_path   = $this->app->repositories->myContactTypeRepository->getImagePathForTypeById($type_id);
+                $type_name   = $this->app->repositories->myContactTypeRepository->getTypeNameTypeById($type_id);
+
+                if( empty($icon_path) ){
+                    $message = '';
+                    throw new \Exception($message);
+                }
+
+                $contact_type_dto = new ContactTypeDTO();
+                $contact_type_dto->setDetails($type_details);
+                $contact_type_dto->setName($type_name);
+                $contact_type_dto->setIconPath($icon_path);
+                $contact_type_dto->setUuid($uuid);
+
+                $array_of_contacts_types_dtos[] = $contact_type_dto;
+
+            }
+
+            $contacts_types_dto = new ContactsTypesDTO();
+            $contacts_types_dto->setContactTypeDtos($array_of_contacts_types_dtos);
+            $contacts_json = $contacts_types_dto->toJson();
+
+            /**
+             * @var MyContact $my_contact
+             */
+            $my_contact = $contact_form->getData();
+
+            if( !$my_contact instanceof MyContact ){
+                $message = '';
+                throw new \Exception($message);
+            }
+
+            $my_contact->setContacts($contacts_json);
+
+            $this->app->repositories->myContactRepository->saveEntity($my_contact, true);
+        }
+
+
     }
+
 }
