@@ -7,7 +7,18 @@
 
 <div class="contact-area">
 
-    <section style="margin-top: 10px; background-color: white; opacity: .5;" class="round-wrapper contact-group-circle">
+    <section style="margin-top: 10px; background-color: white; opacity: .5;"
+             data-toggle-popover="true"
+             data-html="true"                               {# popover attr #}
+             data-trigger="hover"                           {# popover attr #}
+             data-content="                                 {# popover attr #}
+             <p style='display: flex;'>
+                <span style='font-weight: bold; '>
+                    <span style='word-break: break-all;'>{{ contact.getGroup().getName() }}</span>
+                </span>
+            </p>
+            "
+             class="round-wrapper contact-group-circle">
         <div class="fontawesome-centered">
             <i class="{{ contact.getGroup().getIcon() }} fontawesome-holder" style="color: {{ contact.getGroup().getColor() }};"></i>
         </div>
