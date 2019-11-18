@@ -9,6 +9,12 @@ export default (function () {
 
   ui.masonry = {
     init: function(){
+
+      let masonryTargets = $('.masonry');
+      if( 0 === masonryTargets.length ){
+        return;
+      }
+
       new Masonry('.masonry', {
         itemSelector: '.masonry-item',
         columnWidth: '.masonry-sizer',

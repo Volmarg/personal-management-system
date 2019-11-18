@@ -15,8 +15,8 @@
         <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyContactGroup">
             <td class="d-none id">      {{ group.id }}                           </td>
             <td class="name">           {{ group.name | capitalize}}             </td>
-            <td class="data-preview d-flex justify-content-center">  <i class="{{ group.getIcon() }}"></i>  </td>
-            <td class="icon">           {{ group.getIcon() }}                </td>
+            <td class="data-preview" style="text-align:center">  <i class="{{ group.getIcon() }}"></i>  </td>
+            <td class="icon fontawesome-input{{ loop.index0 }}">           {{ group.getIcon() }}                </td>
             <td class="color">
                 <button class="jscolor {value:'{{ group.getColor() }}'} btn btn-sm disabled color-picker"
                         data-color="{{ group.getColor() }}"></button>
@@ -25,7 +25,8 @@
             {% include 'modules/common/components/table-cells/actions.html.twig' with {
                 "trash": true,
                 "edit": true,
-                "save": true
+                "save": true,
+                "fontawesome": true,
             } %}
 
         </tr>

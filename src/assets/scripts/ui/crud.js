@@ -1598,6 +1598,63 @@ export default (function () {
                 },
                 entity_name: "My contact type",
             },
+            "MyContactGroup": {
+                makeUpdateData: function (tr_parent_element) {
+                    let id     = $(tr_parent_element).find('.id').html();
+                    let name   = $(tr_parent_element).find('.name').html();
+                    let icon   = $(tr_parent_element).find('.icon').html();
+                    let color  = $(tr_parent_element).find('.color').text();
+
+                    let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                    let url = '/my-contacts-groups/update';
+                    let ajax_data = {
+                        'name'      : name,
+                        'color'     : color,
+                        'icon'      : icon,
+                        'id'        : id
+                    };
+
+                    return {
+                        'url': url,
+                        'data': ajax_data,
+                        'success_message': success_message,
+                        'fail_message': fail_message
+                    };
+                },
+                makeRemoveData: function (parent_element) {
+                    let id   = $(parent_element).find('.id').html();
+                    let name = $(parent_element).find('.name').html();
+                    let url  = '/my-contacts-groups/remove';
+                    let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                    let message = 'You are about to remove group named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
+                    return {
+                        'url': url,
+                        'data': {
+                            'id': id
+                        },
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                        'is_dataTable': false, //temporary
+                        'confirm_message': message
+                    };
+                },
+                makeCreateData: function () {
+                    let url = '/my-contacts-settings';
+                    let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                    let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                    return {
+                        'url': url,
+                        'success_message': success_message,
+                        'fail_message': fail_message,
+                    };
+                },
+                entity_name: "My contact group",
+            },
             "MyPasswords": {
                 makeUpdateData: function (tr_parent_element) {
                     let id = $(tr_parent_element).find('.id').html().trim();
