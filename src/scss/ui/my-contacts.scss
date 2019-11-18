@@ -360,3 +360,33 @@
   min-height: 400px !important;
   height: 400px !important;
 }
+
+/* Widget */
+.contact-area .round-wrapper {
+  font-size: .7em;
+  position: relative;
+  border-radius: 100%;
+  right: 30px;
+
+  height: 4.3em;
+  width: 4.3em;
+  border: 1px solid rgba(0, 0, 0, 0.0625);
+}
+
+.contact-area .contact-group-circle{
+  margin-top: 10px;
+  background-color: green;
+  opacity: 1 !important;
+  position: absolute;
+  top: -34px;
+  left: -20px;
+  z-index: 1;
+}
+
+.contact-area .fontawesome-centered {
+  line-height: 40px;
+}
+
+.contact-area .fontawesome-holder {
+  font-size: 18px;
+}

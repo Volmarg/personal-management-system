@@ -9,9 +9,11 @@
 namespace App\Controller\Utils;
 
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCreateType;
+use App\Form\Modules\Contacts\MyContactGroupType;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
@@ -100,6 +102,10 @@ class Forms extends AbstractController {
 
     public function contactType(array $params = []): FormInterface {
         return $this->createForm(MyContactTypeType::class, null, $params);
+    }
+
+    public function contactGroup(array $params = []): FormInterface {
+        return $this->createForm(MyContactGroupType::class, null, $params);
     }
 
     /**

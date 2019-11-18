@@ -1,5 +1,6 @@
 {% set my_contact_form_class = '\\App\\Form\\Modules\\Contacts\\MyContactType::' %}
 {% set KEY_NAME                         = constant(my_contact_form_class ~ 'KEY_NAME') %}
+{% set KEY_GROUP                        = constant(my_contact_form_class ~ 'KEY_GROUP') %}
 {% set KEY_SUBMIT                       = constant(my_contact_form_class ~ 'KEY_SUBMIT') %}
 {% set KEY_IMAGE_PATH                   = constant(my_contact_form_class ~ 'KEY_IMAGE_PATH') %}
 {% set KEY_DESCRIPTION                  = constant(my_contact_form_class ~ 'KEY_DESCRIPTION') %}
@@ -41,6 +42,15 @@
                                 </div>
                                 <div class="col-md-8">
                                     {{ form_widget(contact_form[KEY_IMAGE_PATH]) }}
+                                </div>
+                            </div>
+
+                            <div class="row mT-10">
+                                <div class="col-md-4">
+                                    {{ form_label(contact_form[KEY_GROUP]) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form_widget(contact_form[KEY_GROUP]) }}
                                 </div>
                             </div>
 

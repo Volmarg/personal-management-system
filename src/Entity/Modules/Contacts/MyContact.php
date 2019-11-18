@@ -52,6 +52,12 @@ class MyContact {
     private $descriptionBackgroundColor;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Contacts\MyContactGroup", inversedBy="myContacts")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $group;
+
+    /**
      * todo: check what happens if there are no contacts for this entry
      * Contacts in DB are stored as JSON bo we need dto to work with the data
      * @return ContactsTypesDTO
@@ -163,6 +169,18 @@ class MyContact {
      */
     public function setDeleted(bool $deleted): self {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getGroup(): ?MyContactGroup
+    {
+        return $this->group;
+    }
+
+    public function setGroup(?MyContactGroup $group): self
+    {
+        $this->group = $group;
 
         return $this;
     }

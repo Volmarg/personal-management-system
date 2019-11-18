@@ -68,10 +68,13 @@ contact:
   settings:
     headers:
       changeAddContactType: Change/Add contact type
+      changeAddContactGroup: Change/Add contact group
     table:
       name: Name
       imagePath: Image path
-      imagePreview: Image preview
+      preview: Preview
+      icon: Icon
+      color: Color
 
 passwords:
   headers:

@@ -595,8 +595,8 @@ export default (function () {
             let date_pickers    = $(tr_parent_element).find('.date-picker');
             let checkbox        = $(tr_parent_element).find('.checkbox-disabled');
             let selectize       = $(tr_parent_element).find('.selectize-control');
-            let imagePreview    = $(tr_parent_element).find('.image_preview');
-            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, imagePreview];
+            let dataPreview     = $(tr_parent_element).find('.data-preview');
+            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, dataPreview];
             let _this = this;
 
             $(elements_to_toggle).each((index, element_type) => {

@@ -9,10 +9,11 @@
 namespace App\Controller\Utils;
 
 
-use App\Entity\Modules\Schedules\MySchedule;
+use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
+use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
@@ -43,7 +44,6 @@ use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Translator;
-use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -82,6 +82,7 @@ class Repositories extends AbstractController {
     const MY_SCHEDULE_TYPE_REPOSITORY                   = "MyScheduleTypeRepository";
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
+    const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
 
     const KEY_PARAMETERS        = 'parameters';
     const KEY_ENTITY_ID         = 'entity_id';
@@ -244,6 +245,11 @@ class Repositories extends AbstractController {
      */
     public $myContactTypeRepository;
 
+    /**
+     * @var MyContactGroupRepository $myContactGroupRepository
+     */
+    public $myContactGroupRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -275,6 +281,7 @@ class Repositories extends AbstractController {
         MyScheduleRepository                $myScheduleRepository,
         MyScheduleTypeRepository            $myScheduleTypeRepository,
         MyContactTypeRepository             $myContactTypeRepository,
+        MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -307,6 +314,7 @@ class Repositories extends AbstractController {
         $this->myScheduleRepository                 = $myScheduleRepository;
         $this->myScheduleTypeRepository             = $myScheduleTypeRepository;
         $this->myContactTypeRepository              = $myContactTypeRepository;
+        $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
     }
 

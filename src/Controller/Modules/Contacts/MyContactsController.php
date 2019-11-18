@@ -10,7 +10,6 @@ use App\DTO\Modules\Contacts\ContactTypeDTO;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
-use App\Form\Modules\Contacts\MyContactTypeType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;

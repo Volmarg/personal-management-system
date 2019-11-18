@@ -82,6 +82,11 @@ forms:
     labels:
       name: Name
       imagePath: Image path
+  MyContactGroupType:
+    labels:
+      name: Name
+      icon: Icon
+      color: Color
   MyPasswordsGroupsType:
     labels:
       name: Name
@@ -222,6 +227,7 @@ forms:
       description_background_color: Description background color
       contacts: Contacts
       addType: Add type
+      group: Group
   MyContactTypeDtoType:
     labels:
       name: Name

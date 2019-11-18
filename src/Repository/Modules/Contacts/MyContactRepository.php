@@ -44,6 +44,7 @@ class MyContactRepository extends ServiceEntityRepository
 
             $id                             = $my_contact->getId();
             $name                           = $my_contact->getName();
+            $group                          = $my_contact->getGroup();
             $contacts                       = $my_contact->getContacts();
             $description                    = $my_contact->getDescription();
             $image_path                     = $my_contact->getImagePath();
@@ -59,6 +60,7 @@ class MyContactRepository extends ServiceEntityRepository
             if( !empty($found_entity) ){
                 $my_contact = $found_entity;
                 $my_contact->setName($name);
+                $my_contact->setGroup($group);
                 $my_contact->setContacts($contacts->toJson());
                 $my_contact->setImagePath($image_path);
                 $my_contact->setDescription($description);

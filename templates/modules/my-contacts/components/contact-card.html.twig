@@ -6,7 +6,15 @@
 {# Todo: make actions visible on hover?#}
 
 <div class="contact-area">
-{# todo: Use constants from repositories.php #}
+
+    <section style="margin-top: 10px; background-color: white; opacity: .5;" class="round-wrapper contact-group-circle">
+        <div class="fontawesome-centered">
+            <i class="{{ contact.getGroup().getIcon() }} fontawesome-holder" style="color: {{ contact.getGroup().getColor() }};"></i>
+        </div>
+    </section>
+
+
+    {# todo: Use constants from repositories.php #}
     <section class="contact-card-actions">
         <div class="action"
              data-entity-id="{{ contact.getId() }}"

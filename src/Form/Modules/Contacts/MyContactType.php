@@ -4,6 +4,8 @@ namespace App\Form\Modules\Contacts;
 
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Contacts\MyContactGroup;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -21,6 +23,7 @@ class MyContactType extends AbstractType {
     const KEY_NAME_BACKGROUND_COLOR         = 'name_background_color';
     const KEY_DESCRIPTION_BACKGROUND_COLOR  = 'description_background_color';
     const KEY_SUBMIT                        = 'submit';
+    const KEY_GROUP                         = "group";
 
     /**
      * @var Application
@@ -45,6 +48,14 @@ class MyContactType extends AbstractType {
             ])
             ->add(self::KEY_IMAGE_PATH, TextType::class, [
                 'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_IMAGE_PATH)
+            ])
+            ->add(self::KEY_GROUP,EntityType::class, [
+                'class'         => MyContactGroup::class,
+                'choices'       => $this->app->repositories->myContactGroupRepository->getAllNotDeleted(),
+                'choice_label'  => function (MyContactGroup $contact_group) {
+                    return $contact_group->getName();
+                },
+                'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_GROUP),
             ])
             ->add(self::KEY_NAME_BACKGROUND_COLOR, ColorType::class, [
                 'attr' => [
