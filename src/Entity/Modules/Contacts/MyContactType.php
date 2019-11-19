@@ -18,7 +18,6 @@ class MyContactType
     private $id;
 
     /**
-     * todo: generate migration for that unique key
      * @ORM\Column(type="string", length=255, unique=true)
      */
     private $name;

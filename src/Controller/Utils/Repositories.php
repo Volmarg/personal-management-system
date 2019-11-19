@@ -9,6 +9,8 @@
 namespace App\Controller\Utils;
 
 
+use App\Controller\Messages\GeneralMessagesController;
+use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
@@ -44,6 +46,8 @@ use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Translator;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -89,6 +93,13 @@ class Repositories extends AbstractController {
     const KEY_REPOSITORY_NAME   = 'repository_name';
 
     const PASSWORD_FIELD        = 'password';
+
+    const KEY_MESSAGE           = "message";
+
+    /**
+     * @var EntityManagerInterface $entity_manager
+     */
+    private $entity_manager;
 
     /**
      * @var Translator $translator
@@ -282,7 +293,8 @@ class Repositories extends AbstractController {
         MyScheduleTypeRepository            $myScheduleTypeRepository,
         MyContactTypeRepository             $myContactTypeRepository,
         MyContactGroupRepository            $myContactGroupRepository,
-        MyContactRepository                 $myContactRepository
+        MyContactRepository                 $myContactRepository,
+        EntityManagerInterface              $entity_manager
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->achievementRepository                = $myAchievementsRepository;
@@ -316,6 +328,7 @@ class Repositories extends AbstractController {
         $this->myContactTypeRepository              = $myContactTypeRepository;
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
+        $this->entity_manager                       = $entity_manager;
     }
 
     /**
@@ -325,7 +338,7 @@ class Repositories extends AbstractController {
      * This is general method for all common record soft delete called from front
      * @param array $findByParams
      * @return JsonResponse
-     * @throws Exception
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function deleteById(string $repository_name, $id, array $findByParams = []) {
         try {
@@ -335,22 +348,54 @@ class Repositories extends AbstractController {
             $record     = $repository->find($id);
 
             if ($this->hasChildren($record, $repository)) {
-                $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
-                throw new Exception($message);
+                $response_data = [
+                    self::KEY_MESSAGE => $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove'),
+                ];
+                return new JsonResponse($response_data, 500);
+            }
+
+            #Info: this is used to detected constraint violation so it will prevent also soft delete
+            $isConstraintViolation = false;
+            $this->entity_manager->beginTransaction();
+            {
+                try{
+                    $this->entity_manager->remove($record);
+                    $this->entity_manager->flush();
+                }catch(ForeignKeyConstraintViolationException $e){
+                    $isConstraintViolation = true;
+                }
+            }
+            $this->entity_manager->rollback();
+
+            #Info: Reattach the entity - doctrine based issue
+            $this->entity_manager->clear();
+            $record = $repository->find($id);
+
+            if( $isConstraintViolation )
+            {
+                $response_data = [
+                    self::KEY_MESSAGE => GeneralMessagesController::FOREIGN_KEY_VIOLATION,
+                ];
+                return new JsonResponse($response_data, 500);
             }
 
             $record->setDeleted(1);
+            $record = $this->changeRecordData($repository_name, $record);
 
             $em = $this->getDoctrine()->getManager();
 
             $em->persist($record);
             $em->flush();
 
-            $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
-            return new JsonResponse($message, 200);
+            $response_data = [
+                self::KEY_MESSAGE => $this->translator->translate('responses.repositories.recordDeletedSuccessfully'),
+            ];
+            return new JsonResponse($response_data, 200);
         } catch (Exception | ExceptionRepository $er) {
-            $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
-            return new JsonResponse($message, 500);
+            $response_data = [
+                self::KEY_MESSAGE => $this->translator->translate('responses.repositories.couldNotDeleteRecord'),
+            ];
+            return new JsonResponse($response_data, 500);
         }
     }
 
@@ -531,5 +576,24 @@ class Repositories extends AbstractController {
         }
 
         return $id;
+    }
+
+    /**
+     * This function changes the record before soft delete
+     * @param string $repository_name
+     * @param $record
+     */
+    private function changeRecordData(string $repository_name, $record) {
+
+        switch( $repository_name ){
+            case self::MY_CONTACT_REPOSITORY:
+                /**
+                 * @var MyContact $record
+                 */
+                $record->setGroup(NULL);
+                break;
+        }
+
+        return $record;
     }
 }

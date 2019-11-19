@@ -53,7 +53,7 @@ class MyContact {
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Contacts\MyContactGroup", inversedBy="myContacts")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $group;
 

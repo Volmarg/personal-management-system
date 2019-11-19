@@ -30,7 +30,7 @@ final class Version20191110042650 extends AbstractMigration
         $this->addSql('CREATE TABLE my_contact_group (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(255) NOT NULL, color VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_929F246B5E237E06 (name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_DCD489F05E237E06 ON my_contact_type (name)');
 
-        $this->addSql('ALTER TABLE my_contact ADD group_id INT NOT NULL');
+        $this->addSql('ALTER TABLE my_contact ADD group_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE my_contact ADD CONSTRAINT FK_C69B4A14647145D0 FOREIGN KEY (group_id) REFERENCES my_contact_group (id)');
         $this->addSql('CREATE INDEX IDX_C69B4A14647145D0 ON my_contact (group_id)');
 

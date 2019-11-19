@@ -1,3 +1,4 @@
+{# Todo: colors from colorPicker in form are saved in different form than jscolor - either make new type or standarize format #}
 <table id="MyContactGroup" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
     <thead>
     <tr>
@@ -15,8 +16,8 @@
         <tr class="trash-parent editable-parent save-parent" data-type="MyContactGroup">
             <td class="d-none id">      {{ group.id }}                           </td>
             <td class="name">           {{ group.name | capitalize}}             </td>
-            <td class="data-preview" style="text-align:center">  <i class="{{ group.getIcon() }}" style="font-size: 20px;"></i>  </td>
-            <td class="icon fontawesome-input{{ loop.index0 }}">           {{ group.getIcon() }}                </td>
+            <td class="data-preview" style="text-align:center; color:{{ group.getColor() }}">  <i class="{{ group.getIcon() }}" style="font-size: 20px;"></i>  </td>
+            <td class="icon fontawesome-input{{ loop.index0 }}"> {{ group.getIcon() }}  </td>
             <td class="color">
                 <button class="jscolor {value:'{{ group.getColor() }}'} btn btn-sm disabled color-picker"
                         data-color="{{ group.getColor() }}"></button>

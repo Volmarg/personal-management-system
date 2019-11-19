@@ -26,5 +26,6 @@ class GeneralMessagesController extends AbstractController
      */
     const RECORD_WITH_NAME_EXISTS   = 'Record with this name already exists!';
     const FORM_SUBMITTED            = 'Form was submitted successfully';
+    const FOREIGN_KEY_VIOLATION     = "This record cannot be removed - it's connected with existing records.";
 
 }

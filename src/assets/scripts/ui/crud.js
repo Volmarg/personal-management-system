@@ -258,9 +258,9 @@ export default (function () {
         attachRemovingEventOnTrashIcon: function () {
             let _this = this;
             $('.fa-trash').click(function () { //todo: change selector for action...something
-                let parent_wrapper = $(this).closest(_this.elements["removed-element-class"]);
+                let parent_wrapper    = $(this).closest(_this.elements["removed-element-class"]);
                 let param_entity_name = $(parent_wrapper).attr('data-type');
-                let remove_data = _this.entity_actions[param_entity_name].makeRemoveData(parent_wrapper);
+                let remove_data       = _this.entity_actions[param_entity_name].makeRemoveData(parent_wrapper);
 
                 let removal_message = (
                     remove_data.confirm_message !== undefined
@@ -290,8 +290,21 @@ export default (function () {
                                     $('.twig-body-section').html(template);
                                     initializer.reinitialize();
                                 },
-                            }).fail(() => {
-                                bootstrap_notifications.notify(remove_data.fail_message, 'danger')
+                            }).fail((data) => {
+
+                                let message  = remove_data.fail_message;
+                                let response = data.responseJSON;
+
+                                if(
+                                        "object" === typeof response
+                                    &&  remove_data.use_ajax_fail_message
+                                    &&  "undefined" !== typeof response.message
+                                )
+                                {
+                                    message = response.message;
+                                }
+
+                                bootstrap_notifications.notify(message, 'danger')
                             }).always(() => {
                                 ui.widgets.loader.toggleLoader();
                             });
@@ -1581,6 +1594,7 @@ export default (function () {
                         },
                         'success_message': success_message,
                         'fail_message': fail_message,
+                        'use_ajax_fail_message': true,
                         'is_dataTable': false, //temporary
                         'confirm_message': message
                     };
@@ -1639,7 +1653,8 @@ export default (function () {
                         'success_message': success_message,
                         'fail_message': fail_message,
                         'is_dataTable': false, //temporary
-                        'confirm_message': message
+                        'confirm_message': message,
+                        'use_ajax_fail_message': true
                     };
                 },
                 makeCreateData: function () {
