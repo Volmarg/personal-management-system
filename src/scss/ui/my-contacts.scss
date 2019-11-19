@@ -390,3 +390,25 @@
 .contact-area .fontawesome-holder {
   font-size: 18px;
 }
+
+.contact-card-actions {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: -22px;
+  top: -7px;
+  font-size: 24px;
+}
+
+.contact-card-actions .action i {
+  cursor: pointer;
+}
+
+.contact nav.active {
+  max-height: 260px;
+}
+
+.contact nav {
+  overflow: hidden;
+  overflow-y: scroll;
+}

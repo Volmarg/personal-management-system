@@ -24,16 +24,15 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class Dialogs extends AbstractController
 {
-    const TWIG_TEMPLATE_DIALOG_BODY_CREATE_CONTACT_CARD = 'page-elements/components/dialogs/bodies/create-contact-card.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_EDIT_CONTACT_CARD   = 'page-elements/components/dialogs/bodies/edit-contact-card.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER      = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS         = 'page-elements/components/dialogs/bodies/update-tags.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER          = 'page-elements/components/dialogs/bodies/new-folder.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD              = 'page-elements/components/dialogs/bodies/new-folder.twig';
-    const TWIG_TEMPLATE_NOTE_EDIT_MODAL                 = 'modules/my-notes/components/note-edit-modal-body.html.twig';
-    const KEY_FILE_CURRENT_PATH                         = 'fileCurrentPath';
-    const KEY_MODULE_NAME                               = 'moduleName';
-    const KEY_ENTITY_ID                                 = "entityId";
+    const TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD = 'page-elements/components/dialogs/bodies/edit-create-contact-card.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER           = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS              = 'page-elements/components/dialogs/bodies/update-tags.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER               = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD                   = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
+    const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
+    const KEY_MODULE_NAME                                    = 'moduleName';
+    const KEY_ENTITY_ID                                      = "entityId";
 
     /**
      * @var Application $app
@@ -310,7 +309,7 @@ class Dialogs extends AbstractController
             'contact_form'  => $contact_form->createView(),
         ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_CONTACT_CARD, $template_data);
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD, $template_data);
 
         $response_data = [
             'template' => $rendered_view->getContent()
@@ -366,7 +365,7 @@ class Dialogs extends AbstractController
             'subforms'           => $forms_renders
         ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CONTACT_CARD, $template_data);
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD, $template_data);
 
         $response_data = [
             'template' => $rendered_view->getContent()

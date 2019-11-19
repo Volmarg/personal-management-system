@@ -23,6 +23,7 @@
         "beberlei/DoctrineExtensions": "^1.2",
         "friendsofsymfony/user-bundle": "dev-master",
         "google/apiclient": "^2.0",
+        "ramsey/uuid": "^3.8",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
         "specshaper/encrypt-bundle": "^1.1",
