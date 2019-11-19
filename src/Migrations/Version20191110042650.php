@@ -56,6 +56,18 @@ final class Version20191110042650 extends AbstractMigration
             (NULL,	'WhatsApp',	'upload/images/system/contactIcons/whatsapp.png',	0);
         ");
 
+        $this->addSql("
+            INSERT INTO `my_contact_group` (`id`, `name`, `icon`, `color`, `deleted`) VALUES
+            (NULL,	'Medic',	'far fa-medkit',	'#399e05',	0),
+            (NULL,	'Work',	'far fa-suitcase',	'#be5e05',	0),
+            (NULL,	'Service',	'far fa-cog',	'#3f3b3b',	0),
+            (NULL,	'Family',	'far fa-home',	'#276ad7',	0),
+            (NULL,	'Friend',	'far fa-male',	'#cd2ecc',	0),
+            (NULL,	'Vip',	'far fa-star',	'#ffd000',	0),
+            (NULL,	'Game fellow',	'far fa-gamepad',	'#f23e4e',	0),
+            (NULL,	'Archived',	'far fa-times-circle',	'#fb5705',	0);
+        ");
+
     }
 
     public function down(Schema $schema) : void
