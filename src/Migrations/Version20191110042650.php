@@ -33,6 +33,29 @@ final class Version20191110042650 extends AbstractMigration
         $this->addSql('ALTER TABLE my_contact ADD group_id INT NOT NULL');
         $this->addSql('ALTER TABLE my_contact ADD CONSTRAINT FK_C69B4A14647145D0 FOREIGN KEY (group_id) REFERENCES my_contact_group (id)');
         $this->addSql('CREATE INDEX IDX_C69B4A14647145D0 ON my_contact (group_id)');
+
+        $this->addSql("
+            INSERT INTO `my_contact_type` (`id`, `name`, `image_path`, `deleted`) VALUES
+            (NULL,	'Discord',	'upload/images/system/contactIcons/discord.png',	0),
+            (NULL,	'Steam',	'upload/images/system/contactIcons/steam.png',	0),
+            (NULL,	'Facebook',	'upload/images/system/contactIcons/facebook.png',	0),
+            (NULL,	'Linkedin',	'upload/images/system/contactIcons/linkedin.png',	0),
+            (NULL,	'Endomondo',	'upload/images/system/contactIcons/endomondo.png',	0),
+            (NULL,	'Github',	'upload/images/system/contactIcons/github.png',	0),
+            (NULL,	'Instagram',	'upload/images/system/contactIcons/instagram.png',	0),
+            (NULL,	'Location',	'upload/images/system/contactIcons/location.png',	0),
+            (NULL,	'Email',	'upload/images/system/contactIcons/mail.png',	0),
+            (NULL,	'Mobile',	'upload/images/system/contactIcons/mobile.png',	0),
+            (NULL,	'Phone',	'upload/images/system/contactIcons/phone.png',	0),
+            (NULL,	'Reddit',	'upload/images/system/contactIcons/reddit.png',	0),
+            (NULL,	'Skype',	'upload/images/system/contactIcons/skype.png',	0),
+            (NULL,	'Spotify',	'upload/images/system/contactIcons/spotify.png',	0),
+            (NULL,	'Twitter',	'upload/images/system/contactIcons/twitter.png',	0),
+            (NULL,	'Viber',	'upload/images/system/contactIcons/viber.png',	0),
+            (NULL,	'Website',	'upload/images/system/contactIcons/website.png',	0),
+            (NULL,	'WhatsApp',	'upload/images/system/contactIcons/whatsapp.png',	0);
+        ");
+
     }
 
     public function down(Schema $schema) : void

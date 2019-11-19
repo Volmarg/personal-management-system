@@ -12,10 +12,10 @@
     <tbody>
 
     {% for group in groups %}
-        <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyContactGroup">
+        <tr class="trash-parent editable-parent save-parent" data-type="MyContactGroup">
             <td class="d-none id">      {{ group.id }}                           </td>
             <td class="name">           {{ group.name | capitalize}}             </td>
-            <td class="data-preview" style="text-align:center">  <i class="{{ group.getIcon() }}"></i>  </td>
+            <td class="data-preview" style="text-align:center">  <i class="{{ group.getIcon() }}" style="font-size: 20px;"></i>  </td>
             <td class="icon fontawesome-input{{ loop.index0 }}">           {{ group.getIcon() }}                </td>
             <td class="color">
                 <button class="jscolor {value:'{{ group.getColor() }}'} btn btn-sm disabled color-picker"

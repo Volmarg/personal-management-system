@@ -1,11 +1,7 @@
 {# Todo: add some predefined images for this module - platforms, ignore upload #}
-{# Todo: clean the template #}
-{# Todo: for editing just call the same modal as creation one + prefill the data #}
-{# Todo: check ifi can use the same modal for both views - create/edit #}
+{# Todo: block possibility to remove group and type if these ar attached, handle renaming and icon changes #}
+{# Todo: check how card behaves without group - that is if group is removed from db #}
 
-{# Todo: move styles #}
-{# Todo: make actions visible on hover?#}
-{# Todo: check how card behaves without group - that is if group is removed from db#}
 <div class="contact-area">
 
     <section style="margin-top: 10px; background-color: white; opacity: .5;"
@@ -21,7 +17,7 @@
             "
              class="round-wrapper contact-group-circle">
         <div class="fontawesome-centered">
-            <i class="{{ contact.getGroup().getIcon() }} fontawesome-holder" style="color: {{ contact.getGroup().getColor() }};"></i>
+            <i class="{{ contact.getGroup().getIcon() }} fontawesome-holder" style="color: #{{ contact.getGroup().getColor() }};"></i>
         </div>
     </section>
 

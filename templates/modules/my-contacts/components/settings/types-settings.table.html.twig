@@ -11,7 +11,7 @@
     <tbody>
 
     {% for type in types %}
-        <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyContactType">
+        <tr class="trash-parent editable-parent save-parent" data-type="MyContactType">
             <td class="d-none id">      {{ type.id }}                           </td>
             <td class="name">           {{ type.name | capitalize}}             </td>
             <td class="data-preview d-flex justify-content-center"> <img src="{{ type.getImagePath() }}" style="width:40px; height:40px;"/>  </td>
