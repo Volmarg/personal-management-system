@@ -88,11 +88,12 @@ class MyContactRepository extends ServiceEntityRepository
      * @param string $contact_type_name
      * @return MyContact[]|null
      */
-    public function findContactsWithContactType(string $contact_type_name): ?array
+    public function findContactsWithContactTypeByContactTypeName(string $contact_type_name): ?array
     {
         $qb = $this->createQueryBuilder("mc");
         $qb->select("mc")
             ->where('mc.contacts LIKE :contact_type_name')
+            ->andWhere("mc.deleted = 0")
             ->setParameter('contact_type_name', '%"name":"'. $contact_type_name .'"%');
 
         $query   = $qb->getQuery();

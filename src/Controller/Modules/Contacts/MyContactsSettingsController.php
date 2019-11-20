@@ -22,6 +22,8 @@ class MyContactsSettingsController extends AbstractController {
     const TWIG_TEMPLATE_CONTACT_TYPES_TABLE  = 'modules/my-contacts/components/settings/types-settings.table.html.twig';
     const TWIG_TEMPLATE_CONTACT_GROUPS_TABLE = 'modules/my-contacts/components/settings/groups-settings.table.html.twig';
 
+    const KEY_MESSAGE = "message";
+
     /**
      * @var Application
      */
@@ -167,15 +169,39 @@ class MyContactsSettingsController extends AbstractController {
      */
     public function removeContactType(Request $request) {
 
+        $record_id  = $request->request->get('id');
+        $are_there_active_contacts_with_contact_type = $this->areThereActiveContactsWithContactType($record_id);
+
+        if( $are_there_active_contacts_with_contact_type ){
+            $response_data = [
+                self::KEY_MESSAGE => GeneralMessagesController::FOREIGN_KEY_VIOLATION,
+            ];
+            return new JsonResponse($response_data, 500);
+        }
+
         $response = $this->app->repositories->deleteById(
             Repositories::MY_CONTACT_TYPE_REPOSITORY,
-            $request->request->get('id')
+            $record_id
         );
 
         if ($response->getStatusCode() == 200) {
             return $this->renderSettingsTemplate(true);
         }
         return $response;
+    }
+
+    /**
+     * This function checks if there are any contacts with deleted = 0 that still use this contact type
+     * Jsons are not cleared for removal - with this minimal data that there is, it's possible to revert the contact
+     * @param string $record_id
+     * @return bool
+     */
+    private function areThereActiveContactsWithContactType(string $record_id):bool {
+        $removed_record     = $this->app->repositories->myContactTypeRepository->find($record_id);
+        $contact_type_name  = $removed_record->getName();
+        $contacts           = $this->app->repositories->myContactRepository->findContactsWithContactTypeByContactTypeName($contact_type_name);
+
+        return !empty($contacts);
     }
 
     /**
@@ -219,7 +245,7 @@ class MyContactsSettingsController extends AbstractController {
         $new_contact_type_name       = $entity_after_update->getName();
         $new_contact_type_image_path = $entity_after_update->getImagePath();
 
-        $contacts_to_update = $this->app->repositories->myContactRepository->findContactsWithContactType($previous_contact_type_name);
+        $contacts_to_update = $this->app->repositories->myContactRepository->findContactsWithContactTypeByContactTypeName($previous_contact_type_name);
 
         foreach($contacts_to_update as $contact_to_update)
         {
