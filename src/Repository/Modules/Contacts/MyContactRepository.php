@@ -83,4 +83,21 @@ class MyContactRepository extends ServiceEntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
+    /**
+     * This function will return the contacts that contain give contact type in contacts json
+     * @param string $contact_type_name
+     * @return MyContact[]|null
+     */
+    public function findContactsWithContactType(string $contact_type_name): ?array
+    {
+        $qb = $this->createQueryBuilder("mc");
+        $qb->select("mc")
+            ->where('mc.contacts LIKE :contact_type_name')
+            ->setParameter('contact_type_name', '%"name":"'. $contact_type_name .'"%');
+
+        $query   = $qb->getQuery();
+        $results = $query->getResult();
+
+        return $results;
+    }
 }

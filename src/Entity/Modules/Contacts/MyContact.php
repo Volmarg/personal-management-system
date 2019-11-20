@@ -74,7 +74,7 @@ class MyContact {
     /**
      * @param string $contacts (json)
      */
-    public function setContacts($contacts): void {
+    public function setContacts(string $contacts): void {
         $this->contacts = $contacts;
     }
 
