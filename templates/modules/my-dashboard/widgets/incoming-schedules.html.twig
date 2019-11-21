@@ -9,17 +9,19 @@
                 <ul class="list-task list-group" data-role="tasklist">
 
                     {% for schedule in schedules %}
-                    {% set classes = getClassesForSchedulesWidget(schedule.daysDiff) %}
+                        {% set icon_classes  = getClassesForSchedulesNotifications(schedule.daysDiff) %}
+                        {% set badge_classes = getClassesForSchedulesWidget(schedule.daysDiff) %}
 
                         <li class="list-group-item bdw-0" data-role="task">
                             <div class="peers ai-c">
                                 <label for="inputCall1" class=" peers peer-greed js-sb ai-c">
                                         <span class="peer peer-greed">
+                                            <i class="{{ schedule.icon }} {{ icon_classes }}"></i>
                                             {{ schedule.name }}
                                             ({{ schedule.date }})
                                         </span>
                                         <span class="peer">
-                                            <span class="badge badge-pill fl-r {{ classes }} lh-0 p-10">
+                                            <span class="badge badge-pill fl-r {{ badge_classes }} lh-0 p-10">
                                                 {{ schedule.daysDiff }} days
                                             </span>
                                         </span>
