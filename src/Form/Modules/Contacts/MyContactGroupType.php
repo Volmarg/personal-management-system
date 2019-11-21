@@ -5,8 +5,8 @@ namespace App\Form\Modules\Contacts;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Form\Type\FontawesomepickerType;
+use App\Form\Type\JscolorpickerType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,7 +36,7 @@ class MyContactGroupType extends AbstractType {
             ->add(self::KEY_ICON, FontawesomepickerType::class, [
                 'label' => $this->app->translator->translate('forms.MyContactGroupType.labels.icon')
             ])
-            ->add(self::KEY_COLOR, ColorType::class, [
+            ->add(self::KEY_COLOR, JscolorpickerType::class, [
                 'attr' => [
                     'style' => 'height:40px !important; width:80px !important;'
                 ],

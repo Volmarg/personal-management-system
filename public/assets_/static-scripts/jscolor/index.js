@@ -11,8 +11,13 @@ jscolorCustom = {
         if (all_pickers.length !== 0) {
 
             all_pickers.forEach((element, index) => {
-                let color = element.getAttribute('data-color');
-                new jscolor(element, {'value': color});
+
+                if( !element.hasPicker ){
+                    let color   = element.getAttribute('data-color');
+                    new jscolor(element, {'value': color});
+                    element.hasPicker = true;
+                }
+
             });
 
         }

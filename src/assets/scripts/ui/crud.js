@@ -87,6 +87,7 @@ export default (function () {
                         callback: function(){
                             events.general.attachFormViewAppendEvent();
                             events.general.attachRemoveParentEvent();
+                            jscolorCustom.init();
                         }
                     },
                     /**

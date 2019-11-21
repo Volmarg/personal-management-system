@@ -5,9 +5,9 @@ namespace App\Form\Modules\Contacts;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
+use App\Form\Type\JscolorpickerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -57,13 +57,13 @@ class MyContactType extends AbstractType {
                 },
                 'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_GROUP),
             ])
-            ->add(self::KEY_NAME_BACKGROUND_COLOR, ColorType::class, [
+            ->add(self::KEY_NAME_BACKGROUND_COLOR, JscolorpickerType::class, [
                 'attr' => [
                     'style' => 'height:40px !important; width:80px !important;'
                 ],
                 'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_NAME_BACKGROUND_COLOR)
             ])
-            ->add(self::KEY_DESCRIPTION_BACKGROUND_COLOR, ColorType::class, [
+            ->add(self::KEY_DESCRIPTION_BACKGROUND_COLOR, JscolorpickerType::class, [
                 'attr' => [
                     'style' => 'height:40px !important; width:80px !important;'
                 ],
