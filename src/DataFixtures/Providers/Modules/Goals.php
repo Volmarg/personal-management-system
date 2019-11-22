@@ -59,19 +59,10 @@ class Goals{
         ];
 
         const GOAL_FINISH_SKYRIM = [
-            'Body building' => [
+            'Skyrim' => [
                 'Finish main story'         => true,
                 'Do all the side quests'    => true,
                 'Finish all dungeons'       => true,
-            ]
-        ];
-
-        const GOAL_CHECK_JORDAN_PETERSON_MATERIALS = [
-            'Check Jordan Peterson materials' => [
-                'Watch his lectures on YT'      => true,
-                'Get his "12 Rules book"'       => true,
-                "Finish the book"               => false,
-                "Check out his self-authoring"  => false
             ]
         ];
 
@@ -83,7 +74,6 @@ class Goals{
             self::GOAL_TRAVEL_TO_FRANCE,
             self::GOAL_BODY_BUILDING,
             self::GOAL_FINISH_SKYRIM,
-            self::GOAL_CHECK_JORDAN_PETERSON_MATERIALS,
         ];
 
     /**
