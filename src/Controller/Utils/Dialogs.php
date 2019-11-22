@@ -261,7 +261,7 @@ class Dialogs extends AbstractController
     }
 
     /**
-     * @Route("/dialog/body/note-preview/{note_id}/{category_id}", name="dialog_body_create_note", methods="GET")
+     * @Route("/dialog/body/note-preview/{note_id}/{category_id}", name="dialog_body_preview_note", methods="GET")
      * @param Request $request
      * @param string $note_id
      * @param string $category_id
