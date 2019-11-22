@@ -146,10 +146,11 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
             $contacts_types_dtos = new ContactsTypesDTO();
             $contacts_types_dtos->setContactTypeDtos($contact_type_dtos);
+            $contacts_types_json = $contacts_types_dtos->toJson();
 
             $contact = new MyContact();
             $contact->setName($person_name);
-            $contact->setContacts($contacts_types_dtos);
+            $contact->setContacts($contacts_types_json);
             $contact->setDescription($person_nickname);
 
             $color_set = Utils::arrayGetRandom(Contact::ALL_COLORS_SETS);
