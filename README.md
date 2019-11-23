@@ -2,7 +2,7 @@
 <img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/public/assets/images/logo/smaller.png?raw=true" width="150px;" />
 </p>
 <p align="center">
-<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/bar.jpg?raw=true" />
+<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/bar.jpg?raw=true" />
 </p>
 
 <h1 align="center"> Personal Management System</h1>
@@ -58,11 +58,16 @@
 </ul>
 <p><i><b>Info!</b> All data on demo instance is removed and <b>generated</b> each day. If the demo is not working then either someone did his best to enter some untested invalid data, or server is simply down.</i></p>
 	
-<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/preview2.png?raw=true">
+	
+<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/1.20_contacts.jpg?raw=true">
+
+<hr>	
+	
+<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/preview2.png?raw=true">
 
 <hr>
 
-<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/github/preview3.png?raw=true">
+<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/preview3.png?raw=true">
 </div>
 
 <hr>
@@ -83,12 +88,6 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 <h3>Modules/Extensions</h3>
 
 <ul>
-<li><b>📁 Files module</b> - improvements
-	<ul>
-    	<li>Bugfixes</li>
-	<li>Handling server responses</li>	
-    </ul>
-</li>
 <li><b>🔎 Job search</b> - (VERY future development plan, not sure if will make it at all)
 	<ul>
     	<li>I have totally different project on laravel for searching job on portals it can be turned into module but requires bigger amount of time, so that's just an idea. I don't really need it as module - so far far on end.</li>
@@ -98,15 +97,8 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 
 <h3>Improvements</h3>
 <p>
-	<i>This things are planned for way later - first of all i need additonal working modules.</i>
+	<i>See: <a href="https://github.com/Volmarg/personal-management-system/projects"> here </a></i>
 </p>	
-<ul>
-	<li>Better page content reload with ajax</li>
-	<li>Better CRUD for tables - preventing removing <i>td</i> subelements</li>
-	<li>Dashboard settings - which modules widgets should be displayed</li>
-	<li>Recurring payments for </b>Payments</b> module</li>
-	<li>Adding images for <b>Contacts</b> </li>
-</ul>
 <hr>
 
 <h2>Support</h2>
@@ -125,7 +117,7 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 </ul>
 
 <p>
-	I mean for real. Just <b>Chrome</b>. I know about bug with copying password in Firefox for example. But I just do everything in Chrome so I'm not really planning to check that on other browsers. 
+	I mean for real. Just <b>Chrome</b>. I know about bug with copying password in Firefox for example. But I just do everything in Chrome so I'm not really planning to check that on other browsers. And before You ask why I only support chrome - I don't do it because of "chrome is the best" or anything like that, I just use that browser for 98% of time and that's just it.
 </p>
 
 <hr>
