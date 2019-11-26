@@ -7,7 +7,7 @@ use App\Entity\Modules\Payments\MyPaymentsOwed;
 use App\Form\Type\RoundcheckboxType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -53,12 +53,12 @@ class MyPaymentsOwedType extends AbstractType
                 'required'  => false,
                 'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.date')
             ])
-            ->add('amount', IntegerType::class, [
+            ->add('amount', NumberType::class, [
                 'attr' => [
-                    'min'           => 1,
+                    'min'           => 0.1,
                     'placeholder'   => $this->app->translator->translate('forms.MyPaymentsOwedType.placeholders.amount')
                 ],
-                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.amount')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.amount'),
             ])
             ->add('owedByMe', RoundcheckboxType::class, [
                 'required' => false,
