@@ -6,9 +6,11 @@ use App\Controller\Utils\Application;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
 use App\Form\Type\RoundcheckboxType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class MyPaymentsProductsType extends AbstractType {
 
@@ -26,8 +28,12 @@ class MyPaymentsProductsType extends AbstractType {
             ->add('Name', null, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.name')
             ])
-            ->add('Price', null, [
-                'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.price')
+            ->add('Price', NumberType::class, [
+                "attr" => [
+                    "min"  => 0.1,
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.price'),
+                'html5' => true,
             ])
             ->add('Market', null, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.market')
@@ -39,7 +45,8 @@ class MyPaymentsProductsType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.information')
             ])
             ->add('Rejected', RoundcheckboxType::class, [
-                'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.rejected')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.rejected'),
+                "required"  => false
             ])
             ->add('save', SubmitType::class,[
                 'label' => $this->app->translator->translate('forms.general.save')
