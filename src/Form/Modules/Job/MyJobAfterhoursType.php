@@ -9,6 +9,7 @@ use App\Form\Type\DatalistType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -50,11 +51,13 @@ class MyJobAfterhoursType extends AbstractType {
                 ],
                 'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.description')
             ])
-            ->add('Minutes', null, [
+            ->add('Minutes', NumberType::class, [
                 'attr' => [
-                    'autocomplete' => 'off'
+                    'autocomplete' => 'off',
+                    'min'          => 1
                 ],
-                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.minutes')
+                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.minutes'),
+                "html5" => true,
             ]);
 
         if(!empty(static::$choices)){

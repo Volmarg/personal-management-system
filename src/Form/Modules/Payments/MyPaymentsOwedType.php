@@ -56,9 +56,11 @@ class MyPaymentsOwedType extends AbstractType
             ->add('amount', NumberType::class, [
                 'attr' => [
                     'min'           => 0.1,
+                    "step"          => 0.01,
                     'placeholder'   => $this->app->translator->translate('forms.MyPaymentsOwedType.placeholders.amount')
                 ],
                 'label'     => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.amount'),
+                "html5"     => true,
             ])
             ->add('owedByMe', RoundcheckboxType::class, [
                 'required' => false,
