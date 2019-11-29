@@ -11,6 +11,7 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use App\Services\FilesHandler;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;

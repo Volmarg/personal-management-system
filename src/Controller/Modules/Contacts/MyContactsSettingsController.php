@@ -6,7 +6,6 @@ use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
-use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
@@ -118,16 +117,20 @@ class MyContactsSettingsController extends AbstractController {
         if ($form->isSubmitted() && $form->isValid()) {
 
             /**
-             * @var MyContactType $form_data
+             * @var MyContactType $contact_type
              */
-            $form_data = $form->getData();
-            $name      = $form_data->getName();
+            $contact_type = $form->getData();
+            $name         = $contact_type->getName();
 
-            if (!is_null($form_data) && $this->app->repositories->myContactTypeRepository->findBy([ 'name' => $name ] )) {
+            if (!is_null($contact_type) && $this->app->repositories->myContactTypeRepository->findBy([ 'name' => $name ] )) {
                 return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
             }
 
-            $this->app->em->persist($form_data);
+            $original_image_path = $contact_type->getImagePath();
+            $image_path          = FilesHandler::addTrailingSlashIfMissing($original_image_path, true);
+            $contact_type->setImagePath($image_path);
+
+            $this->app->em->persist($contact_type);
             $this->app->em->flush();
         }
 

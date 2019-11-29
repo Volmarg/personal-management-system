@@ -483,4 +483,37 @@ class FilesHandler {
         return $files_count_in_tree;
     }
 
+    /**
+     * This function will return file path with leading slash if such is missing
+     * @param string $file_path
+     * @param bool $skip_adding_for_links
+     * @return string
+     */
+    public static function addTrailingSlashIfMissing(string $file_path, $skip_adding_for_links = false): string{
+
+        $is_file_path_without_trailing_slash = ( 0 !== strpos($file_path, DIRECTORY_SEPARATOR) );
+
+        $is_skipped = false;
+        $matches_to_skip_links = [
+          "www",
+          "http"
+        ];
+
+        if( $is_file_path_without_trailing_slash ){
+
+            foreach( $matches_to_skip_links as $single_match ){
+                if( strstr($file_path, $single_match) ) {
+                    $is_skipped = true;
+                    break;
+                }
+            }
+
+            if( !$is_skipped ){
+                $file_path = DIRECTORY_SEPARATOR . $file_path;
+            }
+        }
+
+        return $file_path;
+    }
+
 }

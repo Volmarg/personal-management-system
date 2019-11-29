@@ -22,6 +22,13 @@ final class Version20191126160422 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
         $this->addSql('ALTER TABLE my_payments_owed CHANGE amount amount DOUBLE PRECISION NOT NULL');
+        $this->addSql('
+            UPDATE my_contact_type mct
+            SET mct.image_path = CONCAT("/", mct.image_path)
+            
+            WHERE 1
+            AND mct.image_path LIKE "upload/images/system/contactIcons/%"
+        ');
     }
 
     public function down(Schema $schema) : void
