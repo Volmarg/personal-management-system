@@ -29,7 +29,13 @@ final class Version20191126160422 extends AbstractMigration
             WHERE 1
             AND mct.image_path LIKE "upload/images/system/contactIcons/%"
         ');
-    }
+
+        $this->addSql('
+            UPDATE my_contact mc
+            SET mc.contacts = REPLACE(mc.contacts, \'"icon_path":"upload\\/images\\/system\\/contactIcons\\/\', \'"icon_path":"\/upload\/images\/system\/contactIcons\/\')
+        ');
+
+   }
 
     public function down(Schema $schema) : void
     {
