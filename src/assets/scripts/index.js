@@ -4,6 +4,9 @@ import './utils/utils_custom.js';
 import './utils/domAttributes.js';
 import './utils/domElements.js';
 
+import './ui/data-processors/entities.js';
+import './ui/data-processors/forms.js';
+import './ui/data-processors/single-targets.js';
 import './ui/crud.js';
 import './ui/widgets.js';
 import './ui/forms.js';
@@ -12,9 +15,6 @@ import './ui/dialogs.js';
 import './ui/search.js';
 import './ui/ajax.js';
 import './ui/events/general.js';
-import './ui/data-processors/entities.js';
-import './ui/data-processors/forms.js';
-import './ui/data-processors/single-targets.js';
 
 import './modules/my-files/filesTransfer.js';
 
