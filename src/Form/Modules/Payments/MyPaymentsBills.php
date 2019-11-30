@@ -6,7 +6,7 @@ use App\Controller\Utils\Application;
 use App\Entity\Modules\Payments\MyPaymentsBills as MyPaymentsBillsEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -60,8 +60,12 @@ class MyPaymentsBills extends AbstractType {
             ->add(static::INFORMATION, null, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsBills.labels.information')
             ])
-            ->add(static::PLANNED_AMOUNT, IntegerType::class, [
-                'label' => $this->app->translator->translate('forms.MyPaymentsBills.labels.plannedAmount')
+            ->add(static::PLANNED_AMOUNT, NumberType::class, [
+                "attr"  => [
+                    "min" => 1
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsBills.labels.plannedAmount'),
+                "html5" => true,
             ]);
 
             $builder->add(static::SUBMIT, SubmitType::class, [

@@ -5,12 +5,8 @@ namespace App\Form\Modules\Payments;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Payments\MyPaymentsBills as MyPaymentsBillsEntity;
 use App\Entity\Modules\Payments\MyPaymentsBillsItems as MyPaymentsBillsItemsEntity;
-use App\Entity\Modules\Payments\MyPaymentsMonthly;
-use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -40,7 +36,11 @@ class MyPaymentsBillsItems extends AbstractType {
 
         $builder
             ->add(static::KEY_AMOUNT, NumberType::class, [
-                'label' => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.amount')
+                "attr"  => [
+                    "min" => 1
+                ],
+                'label' => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.amount'),
+                "html5" => true,
             ])
             ->add(static::KEY_NAME, null, [
 
