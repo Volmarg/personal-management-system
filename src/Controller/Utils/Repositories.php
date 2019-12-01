@@ -447,8 +447,11 @@ class Repositories extends AbstractController {
                     }
                 }
 
-                $methodName = 'set' . ucfirst($parameter);
-                $methodName = (strstr($methodName, '_id') ? str_replace('_id', 'Id', $methodName) : $methodName);
+                $methodName     = 'set' . ucfirst($parameter);
+                $hasRelation    = strstr($methodName, '_id');
+                $methodName     = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
+
+                $value          = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
 
                 if (is_object($value)) {
                     $entity->$methodName($value);

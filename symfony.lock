@@ -173,6 +173,9 @@
     "paragonie/random_compat": {
         "version": "v2.0.11"
     },
+    "php": {
+        "version": "7.2"
+    },
     "php-cs-fixer/diff": {
         "version": "v1.2.0"
     },
@@ -196,6 +199,9 @@
     },
     "ralouphie/getallheaders": {
         "version": "2.0.5"
+    },
+    "ramsey/uuid": {
+        "version": "3.8.0"
     },
     "sensio/framework-extra-bundle": {
         "version": "4.0",
@@ -280,6 +286,9 @@
     },
     "symfony/dotenv": {
         "version": "v4.0.3"
+    },
+    "symfony/error-handler": {
+        "version": "v4.4.0"
     },
     "symfony/event-dispatcher": {
         "version": "v4.0.3"

@@ -1400,7 +1400,9 @@ export default (function () {
              */
             makeUpdateData: function (tr_parent_element) {
 
-                let table         = $(tr_parent_element).closest('tbody');
+                let table               = $(tr_parent_element).closest('tbody');
+                let modifiedSettingName = $(tr_parent_element).find('.widget-name').text();
+
                 let allRows       = $(table).find('tr');
                 let allRowsData   = [];
 
@@ -1417,6 +1419,11 @@ export default (function () {
                     let name            = $(row).find('.widget-name').text();
                     let isCheckedInput  = $(row).find('.is-checked').find('input');
                     let isChecked       = utils.domAttributes.isChecked(isCheckedInput);
+
+                    // we make update before the state is changed so we take opposite state for modified setting
+                    if( modifiedSettingName === name ){
+                        isChecked = !isChecked;
+                    }
 
                     let rowData = {
                         'name'          : name,
