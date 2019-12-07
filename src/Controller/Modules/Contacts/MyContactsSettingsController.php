@@ -2,7 +2,6 @@
 
 namespace App\Controller\Modules\Contacts;
 
-use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
@@ -123,7 +122,8 @@ class MyContactsSettingsController extends AbstractController {
             $name         = $contact_type->getName();
 
             if (!is_null($contact_type) && $this->app->repositories->myContactTypeRepository->findBy([ 'name' => $name ] )) {
-                return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
+                $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
+                return new JsonResponse($record_with_this_name_exist, 409);
             }
 
             $original_image_path = $contact_type->getImagePath();
@@ -134,7 +134,8 @@ class MyContactsSettingsController extends AbstractController {
             $this->app->em->flush();
         }
 
-        return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED, 200);
+        $form_submitted_message = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($form_submitted_message, 200);
     }
 
     /**
@@ -154,14 +155,16 @@ class MyContactsSettingsController extends AbstractController {
             $name      = $form_data->getName();
 
             if (!is_null($form_data) && $this->app->repositories->myContactGroupRepository->findBy([ 'name' => $name ] )) {
-                return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
+                $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
+                return new JsonResponse($record_with_this_name_exist, 409);
             }
 
             $this->app->em->persist($form_data);
             $this->app->em->flush();
         }
 
-        return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED, 200);
+        $form_submitted_message = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($form_submitted_message, 200);
     }
 
     /**
@@ -176,8 +179,9 @@ class MyContactsSettingsController extends AbstractController {
         $are_there_active_contacts_with_contact_type = $this->areThereActiveContactsWithContactType($record_id);
 
         if( $are_there_active_contacts_with_contact_type ){
+            $message = $this->app->translator->translate('db.foreignKeyViolation');
             $response_data = [
-                self::KEY_MESSAGE => GeneralMessagesController::FOREIGN_KEY_VIOLATION,
+                self::KEY_MESSAGE => $message,
             ];
             return new JsonResponse($response_data, 500);
         }

@@ -239,3 +239,4 @@ forms:
     add: Add
     errors:
       couldNotLoadFormForGivenNamespace: Could not load form for given namespace
+    success: Form was submitted successfully

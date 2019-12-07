@@ -2,17 +2,13 @@
 
 namespace App\Controller\Modules\Notes;
 
-use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
-use App\Form\Modules\Notes\MyNotesType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -80,14 +76,16 @@ class MyNotesController extends AbstractController {
         $requested_category = $this->app->repositories->myNotesCategoriesRepository->find($category_id);
 
         if (!$requested_category || $category != $requested_category->getName()) {
-            $this->addFlash('danger', GeneralMessagesController::CATEGORY_EXISTS);
+            $message = $this->app->translator->translate('notes.category.error.categoryWithThisNameOrIdExist');
+            $this->addFlash('danger', $message);
             return $this->redirect($this->generateUrl('my-notes-create'));
         }
 
         $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($category_id);
 
         if (empty($notes)) {
-            $this->addFlash('danger', GeneralMessagesController::CATEGORY_EMPTY_REDIRECT);
+            $message = $this->app->translator->translate('notes.category.error.categoryIsEmpty');
+            $this->addFlash('danger', $message);
             return $this->redirect($this->generateUrl('my-notes-create'));
         }
 

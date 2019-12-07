@@ -48,6 +48,9 @@ notes:
       icon: Icon
       color: Color
       parent: Parent
+    error:
+      categoryWithThisNameOrIdExist: Category with this name or id does not exist!
+      categoryIsEmpty: The category which You've just tried to enter is empty, therefore You were redirected
   settings:
     headers:
       settings:

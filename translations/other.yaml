@@ -48,3 +48,7 @@ settings:
           labels:
             name: Name
             displayWidget: Display widget
+
+db:
+  foreignKeyViolation: This record cannot be removed - it's connected with existing records.
+  recordWithThisNameExist: Record with this name already exists!

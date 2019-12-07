@@ -2,7 +2,6 @@
 
 namespace App\Controller\Modules\Schedules;
 
-use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
@@ -107,7 +106,8 @@ class MySchedulesSettingsController extends AbstractController
 
         // info: i can make general util with this
         if (!is_null($form_data) && $this->app->repositories->myScheduleTypeRepository->findBy(['name' => $form_data->getName()])) {
-            return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
+            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new JsonResponse($record_with_this_name_exist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -115,7 +115,8 @@ class MySchedulesSettingsController extends AbstractController
             $this->app->em->flush();
         }
 
-        return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED, 200);
+        $form_submitted_message = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($form_submitted_message, 200);
     }
 
 }

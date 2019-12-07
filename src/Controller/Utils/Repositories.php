@@ -9,9 +9,7 @@
 namespace App\Controller\Utils;
 
 
-use App\Controller\Messages\GeneralMessagesController;
 use App\Entity\Modules\Contacts\MyContact;
-use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
@@ -373,8 +371,9 @@ class Repositories extends AbstractController {
 
             if( $isConstraintViolation )
             {
+                $message = $this->translator->translate('db.foreignKeyViolation');
                 $response_data = [
-                    self::KEY_MESSAGE => GeneralMessagesController::FOREIGN_KEY_VIOLATION,
+                    self::KEY_MESSAGE => $message,
                 ];
                 return new JsonResponse($response_data, 500);
             }

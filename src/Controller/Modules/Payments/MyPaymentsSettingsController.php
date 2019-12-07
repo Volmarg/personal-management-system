@@ -2,7 +2,6 @@
 
 namespace App\Controller\Modules\Payments;
 
-use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
@@ -113,7 +112,8 @@ class MyPaymentsSettingsController extends AbstractController {
         $form_data = $payments_types_form->getData();
 
         if (!is_null($form_data) && $this->app->repositories->myPaymentsSettingsRepository->findBy(['value' => $form_data->getValue()])) {
-            return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
+            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new JsonResponse($record_with_this_name_exist, 409);
         }
 
         if ($payments_types_form->isSubmitted() && $payments_types_form->isValid()) {
@@ -122,7 +122,8 @@ class MyPaymentsSettingsController extends AbstractController {
             $em->flush();
         }
 
-        return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED, 200);
+        $form_submitted_message = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($form_submitted_message, 200);
 
     }
 

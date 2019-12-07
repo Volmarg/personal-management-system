@@ -2,12 +2,8 @@
 
 namespace App\Controller\Modules\Goals;
 
-use App\Controller\Messages\GeneralMessagesController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
-use App\Form\Modules\Goals\MyGoalsPaymentsType;
-use App\Form\Modules\Goals\MyGoalsType;
-use App\Form\Modules\Goals\MySubgoalsType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -43,7 +39,8 @@ class MyGoalsSettingsController extends AbstractController {
         $form_data = $form->getData();
 
         if (!is_null($form_data) && $this->app->repositories->myGoalsRepository->findBy(['name' => $form_data->getName()])) {
-            return new JsonResponse(GeneralMessagesController::RECORD_WITH_NAME_EXISTS, 409);
+            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new JsonResponse($record_with_this_name_exist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -52,7 +49,8 @@ class MyGoalsSettingsController extends AbstractController {
             $em->flush();
         }
 
-        return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED,200);
+        $form_submitted_message = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($form_submitted_message,200);
     }
 
     /**
