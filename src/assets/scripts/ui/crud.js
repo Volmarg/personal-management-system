@@ -1,6 +1,9 @@
 var bootbox = require('bootbox');
 import * as selectize from "selectize";
 
+/**
+ * If possible - avoid moving logic from this script - some methods are called as plain string in twig tpls
+ */
 export default (function () {
     window.ui = {};
     ui.crud = {
@@ -254,7 +257,6 @@ export default (function () {
         },
         /**
          * These are all for datatables
-         * Todo: make section for them
          */
         attachRemovingEventOnTrashIcon: function () {
             let _this = this;
