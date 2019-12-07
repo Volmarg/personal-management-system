@@ -59,7 +59,7 @@ class MySchedulesController extends AbstractController {
      */
     protected function renderTemplate(string $schedules_type, $ajax_render = false) {
 
-        $form = $form = $this->app->forms->schedule([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
+        $form = $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
 
         $schedules       = $this->app->repositories->myScheduleRepository->getSchedulesByScheduleTypeName($schedules_type);
         $schedules_types = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
@@ -80,7 +80,7 @@ class MySchedulesController extends AbstractController {
      */
     private function addFormDataToDB(Request $request, string $schedules_type): void {
 
-        $form = $this->app->forms->schedule([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
+        $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
 
         $form->handleRequest($request);
 

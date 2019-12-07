@@ -23,7 +23,4 @@ class JsondtoType extends AbstractType {
         $view->vars['label'] = $options['label'];
     }
 
-    // todo: check if there is some way to implement some kind of logic here which is based on what is coming back
-    //  maybe there is some flow control. buildView() controls what goes OUT, something for IN?
-
 }

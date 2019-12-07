@@ -44,7 +44,7 @@ class MyJobSettingsController extends AbstractController
     public function renderTemplate($ajax_render) {
 
         $all_holidays_pools      = $this->app->repositories->myJobHolidaysPoolRepository->findBy(['deleted' => 0]);
-        $job_holidays_pool_form  = $this->app->forms->jobHolidaysPool();
+        $job_holidays_pool_form  = $this->app->forms->jobHolidaysPoolForm();
 
         $twig_data = [
             'ajax_render'                       => $ajax_render,
@@ -61,7 +61,7 @@ class MyJobSettingsController extends AbstractController
      */
     public function addJobHolidayPool(Request $request): void {
 
-        $form = $this->app->forms->jobHolidaysPool();
+        $form = $this->app->forms->jobHolidaysPoolForm();
 
         $form->handleRequest($request);
 

@@ -3,6 +3,7 @@
 
 namespace App\Controller\Files;
 
+use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Controller\Utils\Utils;
 use App\Form\Files\UploadSubdirectoryCreateType;
@@ -44,7 +45,13 @@ class FilesUploadSettingsController extends AbstractController {
      */
     private $files_handler;
 
-    public function __construct(FileUploadController $file_upload_controller, DirectoriesHandler $directories_handler, FilesHandler $files_handler) {
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    public function __construct(FileUploadController $file_upload_controller, DirectoriesHandler $directories_handler, FilesHandler $files_handler, Application $app) {
+        $this->app                    = $app;
         $this->finder                 = new Finder();
         $this->file_upload_controller = $file_upload_controller;
         $this->directories_handler    = $directories_handler;
@@ -74,13 +81,13 @@ class FilesUploadSettingsController extends AbstractController {
      */
     private function renderSettingsPage(bool $ajax_render, Request $request){
 
-        $rename_form    = $this->getRenameSubdirectoryForm();
+        $rename_form    = $this->app->forms->renameSubdirectoryForm();
         $rename_form->handleRequest($request);
 
-        $copy_data_form = $this->getCopyUploadSubdirectoryDataForm();
+        $copy_data_form = $this->app->forms->copyUploadSubdirectoryDataForm();
         $copy_data_form->handleRequest($request);
 
-        $create_subdir_form = $this->getCreateSubdirectoryForm();
+        $create_subdir_form = $this->app->forms->createSubdirectoryForm();
 
         $this->handleForms($rename_form, $copy_data_form);
 
@@ -92,31 +99,6 @@ class FilesUploadSettingsController extends AbstractController {
         ];
 
         return $this->render(static::TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS, $data);
-    }
-
-    /**
-     * @return \Symfony\Component\Form\FormInterface
-     */
-    public function getRenameSubdirectoryForm(){
-        $form = $this->createForm(UploadSubdirectoryRenameType::class);
-
-        return $form;
-    }
-
-    /**
-     * @return FormInterface
-     */
-    public function getCopyUploadSubdirectoryDataForm() {
-        $form = $this->createForm(UploadSubdirectoryCopyDataType::class);
-
-        return $form;
-    }
-
-    public function getCreateSubdirectoryForm() {
-
-        $form = $this->createForm(UploadSubdirectoryCreateType::class);
-
-        return $form;
     }
 
     /**

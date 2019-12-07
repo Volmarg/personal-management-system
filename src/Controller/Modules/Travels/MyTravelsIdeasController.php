@@ -13,21 +13,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MyTravelsIdeasController extends AbstractController {
 
-    static $MY_TRAVELS_IDEAS_ENTITY_NAME;
-
     /**
      * @var Application $app
      */
     private $app;
 
     public function __construct(Application $app) {
-        static::$MY_TRAVELS_IDEAS_ENTITY_NAME = MyTravelsIdeas::class;
         $this->app = $app;
     }
 
     private function getForm() {
         $categories = $this->getAllCategories();
-        return $this->createForm(MyTravelsIdeasType::class, null, ['categories' => $categories]);
+        $travel_ideas_form = $this->app->forms->travelIdeasForm($categories);
+        return $travel_ideas_form;
     }
 
     /**
@@ -47,7 +45,7 @@ class MyTravelsIdeasController extends AbstractController {
     protected function renderTemplate($form, $ajax_render = false) {
         $form_view = $form->createView();
 
-        $columns_names = $this->app->em->getClassMetadata(static::$MY_TRAVELS_IDEAS_ENTITY_NAME)->getColumnNames();
+        $columns_names = $this->app->em->getClassMetadata(MyTravelsIdeas::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($columns_names);
 
         $all_ideas  = $this->app->repositories->myTravelsIdeasRepository->findBy(['deleted' => 0]);
@@ -74,18 +72,10 @@ class MyTravelsIdeasController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form_data = $request->request->get('my_travels_ideas');
+            $travel_idea = $request->request->get('my_travels_ideas');
 
-            $idea = new MyTravelsIdeas();
-            $idea->setCategory($form_data['category']);
-            $idea->setCountry($form_data['country']);
-            $idea->setLocation($form_data['location']);
-            $idea->setImage($form_data['image']);
-            $idea->setMap($form_data['map']);
-
-            $this->app->em->persist($idea);
+            $this->app->em->persist($travel_idea);
             $this->app->em->flush();
-
         }
     }
 

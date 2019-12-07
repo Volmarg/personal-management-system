@@ -164,9 +164,9 @@ class MyGoalsSettingsController extends AbstractController {
      * @return Response
      */
     private function renderTemplate($ajax_render = false) {
-        $goals_form             = $this->getGoalsForm();
-        $subgoals_form          = $this->getSubGoalsForm();
-        $goals_payments_form    = $this->getGoalsPaymentsForm();
+        $goals_form             = $this->app->forms->goalForm();
+        $subgoals_form          = $this->app->forms->subgoalForm();
+        $goals_payments_form    = $this->app->forms->goalPaymentForm();
 
         $all_goals              = $this->app->repositories->myGoalsRepository->findBy(['deleted' => 0]);
         $all_subgoals           = $this->app->repositories->myGoalsSubgoalsRepository->findBy(['deleted' => 0]);
@@ -186,28 +186,6 @@ class MyGoalsSettingsController extends AbstractController {
     }
 
     /**
-     * @return FormInterface
-     */
-    private function getGoalsForm() {
-        return $this->createForm(MyGoalsType::class);
-    }
-
-    /**
-     * @return FormInterface
-     */
-    private function getSubGoalsForm() {
-        return $this->createForm(MySubgoalsType::class);
-    }
-
-    /**
-     * @return FormInterface
-     */
-    private function getGoalsPaymentsForm() {
-        return $this->createForm(MyGoalsPaymentsType::class);
-    }
-
-
-    /**
      * @Route("/admin/goals/settings/{type?}", name="goals_settings")
      * @param Request $request
      * @return Response
@@ -220,13 +198,13 @@ class MyGoalsSettingsController extends AbstractController {
 
         switch($type){
             case static::MY_GOALS:
-                $form = $this->getGoalsForm();
+                $form = $this->app->forms->goalForm();
                 break;
             case static::MY_GOALS_SUBGOALS:
-                $form = $this->getSubGoalsForm();
+                $form = $this->app->forms->subgoalForm();
                 break;
             case static::MY_GOALS_PAYMENTS:
-                $form = $this->getGoalsPaymentsForm();
+                $form = $this->app->forms->goalPaymentForm();
                 break;
             case null:
                 $form = null;

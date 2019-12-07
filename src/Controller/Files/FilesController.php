@@ -33,25 +33,25 @@ class FilesController extends AbstractController {
     private $app;
 
     /**
-     * @var FilesHandler
+     * @var FilesHandler $files_handler
      */
-    private $filesHandler;
+    private $files_handler;
 
     /**
-     * @var DirectoriesHandler $directoriesHandler
+     * @var DirectoriesHandler $directories_handler
      */
-    private $directoriesHandler;
+    private $directories_handler;
 
     /**
      * @var FileTagger $file_tagger
      */
     private $file_tagger;
 
-    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app, FileTagger $file_tagger) {
-        $this->app                  = $app;
-        $this->file_tagger          = $file_tagger;
-        $this->filesHandler         = $filesHandler;
-        $this->directoriesHandler   = $directoriesHandler;
+    public function __construct(FilesHandler $files_handler, DirectoriesHandler $directories_handler, Application $app, FileTagger $file_tagger) {
+        $this->app                   = $app;
+        $this->file_tagger           = $file_tagger;
+        $this->files_handler         = $files_handler;
+        $this->directories_handler   = $directories_handler;
     }
 
 
@@ -62,7 +62,7 @@ class FilesController extends AbstractController {
      * @throws \Exception
      */
     public function removeFileViaPost(Request $request) {
-        $response = $this->filesHandler->removeFile($request);
+        $response = $this->files_handler->removeFile($request);
         return $response;
     }
 
@@ -78,7 +78,7 @@ class FilesController extends AbstractController {
             $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
         };
 
-        $response = $this->filesHandler->renameFileViaRequest($request, $update_file_path_for_tags);
+        $response = $this->files_handler->renameFileViaRequest($request, $update_file_path_for_tags);
         return $response;
     }
 
@@ -214,7 +214,7 @@ class FilesController extends AbstractController {
         $filename               = basename($current_file_location);
         $target_file_location   = FilesHandler::buildFileFullPathFromDirLocationAndFileName($subdirectory_path_in_upload_dir, $filename);
 
-        $response = $this->filesHandler->moveSingleFile($current_file_location, $target_file_location);
+        $response = $this->files_handler->moveSingleFile($current_file_location, $target_file_location);
 
         $response_data = [
             self::KEY_RESPONSE_MESSAGE => $response->getContent(),
@@ -238,7 +238,7 @@ class FilesController extends AbstractController {
         $block_removal = false;
 
         if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
-            $message = $this->app->translator->translate('exceptions.files.subdirectoryLocationMissingInRequest');
+            $message  = $this->app->translator->translate('exceptions.files.subdirectoryLocationMissingInRequest');
             $response = new Response($message, 500);
         }else{
 
@@ -254,7 +254,7 @@ class FilesController extends AbstractController {
                     $block_removal = true;
                 }
 
-                $response = $this->directoriesHandler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
+                $response = $this->directories_handler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
 
             }
 
@@ -329,7 +329,7 @@ class FilesController extends AbstractController {
                 break;
         }
 
-        $response = $this->directoriesHandler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
+        $response = $this->directories_handler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
 
         $response_data = [
             'message' => $response->getContent(),

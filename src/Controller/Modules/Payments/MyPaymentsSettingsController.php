@@ -148,7 +148,7 @@ class MyPaymentsSettingsController extends AbstractController {
      * @return Response
      */
     public function renderRecurringPaymentTemplate($ajax_render = false) {
-        $recurring_payments_form    = $this->app->forms->recurringPayments();
+        $recurring_payments_form    = $this->app->forms->recurringPaymentsForm();
 
         $all_recurring__payments    = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => '0'], ['date' => 'ASC']);
         $payments_types             = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => '0', 'name' => 'type']);

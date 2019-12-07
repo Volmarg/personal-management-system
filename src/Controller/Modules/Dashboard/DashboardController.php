@@ -27,6 +27,7 @@ class DashboardController extends Controller {
      * @Route("/dashboard", name="dashboard")
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function display(Request $request) {
 
@@ -52,7 +53,7 @@ class DashboardController extends Controller {
             $dashboard_widgets_visibility_dtos   = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $schedules      = $this->getIncommingSchedules();
+        $schedules      = $this->getIncomingSchedules();
         $goals          = $this->getGoalsForWidget();
         $goals_payments = $this->getGoalsPayments();
 
@@ -67,24 +68,16 @@ class DashboardController extends Controller {
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);
     }
 
-    // todo: change for schedules
-    private function getIncommingSchedules() {
+    private function getIncomingSchedules() {
         return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::CAR_SCHEDULE_DAYS_INTERVAL);
     }
 
-    # todo: at refactor - make widgets repo and move both there
     private function getGoalsForWidget(){
-        return $this->app->repositories->myGoalsRepository->findBy([
-            'displayOnDashboard' => 1,
-            'deleted'            => 0
-        ]);
+        return $this->app->repositories->myGoalsRepository->getGoalsForWidget();
     }
 
     private function getGoalsPayments(){
-        return $this->app->repositories->myGoalsPaymentsRepository->findBy([
-            'displayOnDashboard' => 1,
-            'deleted'            => 0
-        ]);
+        return $this->app->repositories->myGoalsPaymentsRepository->getGoalsPayments();
     }
 
 }

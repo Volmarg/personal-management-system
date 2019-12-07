@@ -28,7 +28,7 @@ class MyPaymentsSettingsRepository extends ServiceEntityRepository {
 
     public function getAllPaymentsTypes() {
         return $this->findBy([
-            'name' => 'type',
+            'name'    => 'type',
             'deleted' => 0
         ]);
     }

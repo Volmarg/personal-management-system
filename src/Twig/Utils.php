@@ -32,31 +32,31 @@ class Utils extends AbstractExtension {
     }
 
     /**
-     * @param string $currUrl
-     * @param string $pathUrl
-     * @param string $searchedString
-     * @param mixed $chidlrensSubmenuIds
+     * @param string $curr_url
+     * @param string $path_url
+     * @param string $searched_string
+     * @param mixed $chidlrens_submenu_ids
      * @return string|void
      */
-    public function keepMenuOpen(string $currUrl, string $pathUrl = '', string $searchedString = '',  $chidlrensSubmenuIds = '') {
-        $dropdownOpenClass = 'open';
+    public function keepMenuOpen(string $curr_url, string $path_url = '', string $searched_string = '', $chidlrens_submenu_ids = '') {
+        $dropdown_open_class = 'open';
 
-        if (!empty($pathUrl) && $currUrl == $pathUrl) {
+        if (!empty($path_url) && $curr_url == $path_url) {
 
-            return $dropdownOpenClass;
-        } elseif (!empty($searchedString) && strstr($currUrl, $searchedString)) {
+            return $dropdown_open_class;
+        } elseif (!empty($searched_string) && strstr($curr_url, $searched_string)) {
 
-            return $dropdownOpenClass;
-        } elseif (!empty($chidlrensSubmenuIds)) {
+            return $dropdown_open_class;
+        } elseif (!empty($chidlrens_submenu_ids)) {
 
             /**
              * Info: not a perfect solution, but fine for now
              *  might cause problems if url has some numbers in name (equal to child node id)
              */
-            foreach ($chidlrensSubmenuIds as $childSubmenuId) {
+            foreach ($chidlrens_submenu_ids as $child_submenu_id) {
 
-                if (strstr($currUrl, $childSubmenuId)) {
-                    return $dropdownOpenClass;
+                if (strstr($curr_url, $child_submenu_id)) {
+                    return $dropdown_open_class;
                 }
 
             }

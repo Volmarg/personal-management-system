@@ -47,8 +47,8 @@ class MyPaymentsBillsController extends AbstractController
      */
     protected function renderTemplate($ajax_render = false) {
 
-        $bills_form         = $this->app->forms->paymentsBills();
-        $bills_items_form   = $this->app->forms->paymentsBillsItems();
+        $bills_form         = $this->app->forms->paymentsBillsForm();
+        $bills_items_form   = $this->app->forms->paymentsBillsItemsForm();
 
         $bills              = $this->app->repositories->myPaymentsBillsRepository->findBy(['deleted' => 0]);
         $bills_items        = $this->app->repositories->myPaymentsBillsItemsRepository->findBy(['deleted' => 0]);
@@ -74,7 +74,7 @@ class MyPaymentsBillsController extends AbstractController
      * @param Request $request
      */
     public function addBill(Request $request) {
-        $form = $this->app->forms->paymentsBills();
+        $form = $this->app->forms->paymentsBillsForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -90,7 +90,7 @@ class MyPaymentsBillsController extends AbstractController
      * @param Request $request
      */
     public function addBillItem(Request $request) {
-        $form = $this->app->forms->paymentsBillsItems();
+        $form = $this->app->forms->paymentsBillsItemsForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

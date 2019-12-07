@@ -133,20 +133,20 @@ class FoldersBasedMenuElements extends AbstractExtension {
             $uri = $_SERVER['HTTP_REFERER'];
         }
 
-        $dropdownArrow  = '';
+        $dropdown_arrow = '';
         $class          = '';
-        $isUl           = false;
+        $is_url         = false;
         $isOpen         = $this->twig_utils->keepMenuOpen($uri, '',  $href);
 
         if( !empty($folder_tree) ){
-            $dropdownArrow = static::DROPDOWN_ARROW_HTML;
+            $dropdown_arrow = static::DROPDOWN_ARROW_HTML;
             $class         = 'nav-item dropdown';
-            $isUl          = true;
+            $is_url        = true;
         }
 
-        $list  .= '<li class="' . $class . ' ' . $isOpen . ' folder-based-menu-element">'.$link.$dropdownArrow;
+        $list  .= '<li class="' . $class . ' ' . $isOpen . ' folder-based-menu-element">'.$link.$dropdown_arrow;
 
-        if( $isUl ) //prevent adding "open" class to menu elements which does not have any subtree
+        if( $is_url ) //prevent adding "open" class to menu elements which does not have any subtree
         {
             $list .= '<ul class="dropdown-menu folder-based-menu folder-based-menu-element" >';
 

@@ -7,7 +7,6 @@ use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\Modules\Notes\MyNotes;
-use App\Form\Modules\Notes\MyNotesCategoriesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,16 +32,17 @@ class MyNotesCategoriesController extends AbstractController {
      * @throws \Doctrine\DBAL\DBALException
      */
     public function display(Request $request) {
-        $response = $this->submitForm($this->getForm(), $request);
+        $form = $this->app->forms->noteCategoryForm();
+        $response = $this->submitForm($form, $request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($this->getForm(), false);
+            return $this->renderTemplate($form, false);
         }
 
         if ($response->getStatusCode() != 200) {
             return $response;
         }
-        return $this->renderTemplate($this->getForm(), true);
+        return $this->renderTemplate($form, true);
     }
 
     /**
@@ -59,7 +59,8 @@ class MyNotesCategoriesController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($this->getForm(), true);
+            $form = $this->app->forms->noteCategoryForm();
+            return $this->renderTemplate($form, true);
         }
         return $response;
     }
@@ -124,7 +125,4 @@ class MyNotesCategoriesController extends AbstractController {
         return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED,200);
     }
 
-    private function getForm() {
-        return $this->createForm(MyNotesCategoriesType::class);
-    }
 }

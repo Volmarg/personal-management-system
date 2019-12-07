@@ -67,7 +67,7 @@ class SettingsController extends AbstractController {
         $response   = $this->app->repositories->update($parameters, $this->current_user);
 
         $data = [
-          'template'        => $this->renderTemplate(true)->getContent(),
+          'template'       => $this->renderTemplate(true)->getContent(),
           'message'        => $response->getContent(),
           'status_code'    => $response->getStatusCode(),
         ];
@@ -77,9 +77,12 @@ class SettingsController extends AbstractController {
     }
 
     protected function renderTemplate($ajax_render = false) {
-        $avatarForm   = $this->getAvatarForm();
-        $passwordForm = $this->getPasswordForm();
-        $nicknameForm = $this->getNicknameForm();
+        $avatar   = $this->current_user->getAvatar();
+        $nickname = $this->current_user->getNickname();
+
+        $avatarForm   = $this->app->forms->userAvatarForm(['avatar' => $avatar]);
+        $passwordForm = $this->app->forms->userPasswordForm();
+        $nicknameForm = $this->app->forms->userNicknameForm(['nickname' => $nickname]);
 
         $data = [
             'ajax_render'       => $ajax_render,
@@ -89,20 +92,6 @@ class SettingsController extends AbstractController {
         ];
 
         return $this->render('page-elements/user/settings.html.twig', $data);
-    }
-
-    private function getAvatarForm() {
-        $avatar = $this->current_user->getAvatar();
-        return $this->createForm(UserAvatarType::class, null, ['avatar' => $avatar]);
-    }
-
-    private function getPasswordForm() {
-        return $this->createForm(UserPasswordType::class);
-    }
-
-    private function getNicknameForm() {
-        $nickname = $this->current_user->getNickname();
-        return $this->createForm(UserNicknameType::class, null, ['nickname' => $nickname]);
     }
 
 }

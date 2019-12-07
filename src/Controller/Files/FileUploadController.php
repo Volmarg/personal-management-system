@@ -57,14 +57,14 @@ class FileUploadController extends AbstractController {
     ];
 
     /**
-     * @var FileUploader $fileUploader
+     * @var FileUploader $file_uploader
      */
-    private $fileUploader;
+    private $file_uploader;
 
     /**
-     * @var FilesHandler $filesHandler
+     * @var FilesHandler $files_handler
      */
-    private $filesHandler;
+    private $files_handler;
 
     /**
      * @var Application $app
@@ -72,15 +72,15 @@ class FileUploadController extends AbstractController {
     private $app;
 
     /**
-     * @var DirectoriesHandler $directoriesHandler
+     * @var DirectoriesHandler $directories_handler
      */
-    private $directoriesHandler;
+    private $directories_handler;
 
     public function __construct(FileUploader $fileUploader, FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app) {
-        $this->fileUploader         = $fileUploader;
-        $this->app                  = $app;
-        $this->filesHandler         = $filesHandler;
-        $this->directoriesHandler   = $directoriesHandler;
+        $this->file_uploader         = $fileUploader;
+        $this->app                   = $app;
+        $this->files_handler         = $filesHandler;
+        $this->directories_handler   = $directoriesHandler;
     }
 
     /**
@@ -131,7 +131,7 @@ class FileUploadController extends AbstractController {
         $post_max_size              = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
         $max_allowed_files_count    = ini_get('max_file_uploads');
 
-        $max_upload_size_mb  = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize);
+        $max_upload_size_mb  = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize );
 
         $form = $this->getUploadForm();
 
@@ -211,7 +211,7 @@ class FileUploadController extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $form_data = $form->getData();
+            $form_data         = $form->getData();
             $upload_table_data = $request->request->get(self::KEY_UPLOAD_TABLE);
 
             $subdirectory       = $form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
@@ -219,7 +219,7 @@ class FileUploadController extends AbstractController {
             $uploaded_files     = $form_data[FilesHandler::FILE_KEY];
             $max_file_uploads   = (int)ini_get('max_file_uploads');
 
-            foreach ($uploaded_files as $index => $uploadedFile) {
+            foreach ($uploaded_files as $index => $uploaded_file) {
 
                 $file_extension_key  = self::KEY_EXTENSION . $index;
                 $filename_key        = self::KEY_FILENAME . $index;
@@ -237,7 +237,7 @@ class FileUploadController extends AbstractController {
                     break;
                 }
 
-                $response = $this->fileUploader->upload($uploadedFile, $request, $upload_module_dir, $subdirectory, $filename, $extension, $tags);
+                $response = $this->file_uploader->upload($uploaded_file, $request, $upload_module_dir, $subdirectory, $filename, $extension, $tags);
             }
 
             $flash_type  = Utils::getFlashTypeForRequest($response);

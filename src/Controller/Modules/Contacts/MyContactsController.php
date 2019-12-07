@@ -116,7 +116,7 @@ class MyContactsController extends AbstractController {
         $request = new Request();
         $request->request->set($contact_type_form_prefix, $my_contact_type_form);
 
-        $contact_form = $this->app->forms->contact()->handleRequest($request);
+        $contact_form = $this->app->forms->contactForm()->handleRequest($request);
         $contact_form->submit($my_contact_type_form);
 
         if( $contact_form->isSubmitted() && $contact_form->isValid() ){

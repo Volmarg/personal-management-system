@@ -47,7 +47,7 @@ class MyRecurringPaymentsMonthlyController extends AbstractController {
      */
     protected function add($request) {
 
-        $recurring_payments_form = $this->app->forms->recurringPayments();
+        $recurring_payments_form = $this->app->forms->recurringPaymentsForm();
         $recurring_payments_form->handleRequest($request);
 
         if ($recurring_payments_form->isSubmitted() && $recurring_payments_form->isValid()) {

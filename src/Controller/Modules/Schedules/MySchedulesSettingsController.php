@@ -83,7 +83,7 @@ class MySchedulesSettingsController extends AbstractController
      */
     private function renderTemplate($ajax_render = false) {
 
-        $form   = $this->app->forms->scheduleType();
+        $form   = $this->app->forms->scheduleTypeForm();
         $types  = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
 
         return $this->render(self::TWIG_TEMPLATE,
@@ -100,7 +100,7 @@ class MySchedulesSettingsController extends AbstractController
      * @return JsonResponse
      */
     private function addRecord(Request $request) {
-        $form=$this->app->forms->scheduleType();
+        $form=$this->app->forms->scheduleTypeForm();
         $form->handleRequest($request);
 
         $form_data = $form->getData();

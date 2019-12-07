@@ -121,7 +121,7 @@ class Dialogs extends AbstractController
             FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
         ];
 
-        $form = $this->app->forms->moveSingleFile($form_data); //todo: change name to moveFiles
+        $form = $this->app->forms->moveSingleFileForm($form_data); //todo: change name to moveFiles
 
         $template_data = [
             'form' => $form->createView()
@@ -180,7 +180,7 @@ class Dialogs extends AbstractController
         $form_data  = [
             FileTagger::KEY_TAGS=> $tags_json
         ];
-        $form = $this->app->forms->updateTags($form_data);
+        $form = $this->app->forms->updateTagsForm($form_data);
 
         $template_data = [
             'form' => $form->createView()
@@ -211,7 +211,7 @@ class Dialogs extends AbstractController
 
         $module_name = $request->request->get(static::KEY_MODULE_NAME);
 
-        $create_subdir_form = $this->app->forms->uploadCreateSubdirectory();
+        $create_subdir_form = $this->app->forms->uploadCreateSubdirectoryForm();
 
         $template_data = [
           'form'                    => $create_subdir_form->createView(),
@@ -250,7 +250,7 @@ class Dialogs extends AbstractController
      */
     public function buildCreateNoteDialogBody(Request $request, string $category, string $category_id) {
         $template = 'page-elements/components/dialogs/bodies/create-note.twig';
-        $form_view = $this->app->forms->createNote()->createView();
+        $form_view = $this->app->forms->noteTypeForm()->createView();
 
         $data = [
             'form' => $form_view
@@ -303,7 +303,7 @@ class Dialogs extends AbstractController
      */
     public function buildCreateContactCardDialogBody(Request $request) {
 
-        $contact_form  = $this->app->forms->contact();
+        $contact_form  = $this->app->forms->contactForm();
 
         $template_data = [
             'contact_form'  => $contact_form->createView(),
@@ -357,7 +357,7 @@ class Dialogs extends AbstractController
             $forms_renders[] = $this->app->forms->getFormViewWithoutFormTags(MyContactTypeDtoType::class, $options);
         }
 
-        $contact_form = $this->app->forms->contact([], $contact);
+        $contact_form = $this->app->forms->contactForm([], $contact);
 
         $template_data = [
             'contact_types_dtos' => $contact_types_dtos, //todo - need to append few type forms with dto data

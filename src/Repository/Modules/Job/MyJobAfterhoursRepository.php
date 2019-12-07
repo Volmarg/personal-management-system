@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class MyJobAfterhoursRepository extends ServiceEntityRepository {
 
-    const GOAL_FIELD = 'goal';
+    const GOAL_FIELD         = 'goal';
     const TIME_SUMMARY_FIELD = 'timeSummary';
 
     public function __construct(RegistryInterface $registry) {
@@ -60,7 +60,8 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         ];
 
         $connection = $this->getEntityManager()->getConnection();
-        $statement = $connection->prepare($sql);
+        $statement  = $connection->prepare($sql);
+
         $statement->execute($binded_values);
         $results = $statement->fetchAll();
 
@@ -77,7 +78,8 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         ";
 
         $connection = $this->getEntityManager()->getConnection();
-        $statement = $connection->prepare($sql);
+        $statement  = $connection->prepare($sql);
+
         $statement->execute();
         $results = $statement->fetchAll();
 

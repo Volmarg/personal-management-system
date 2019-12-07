@@ -159,13 +159,6 @@ class AppController extends Controller
     }
 
     /**
-     * @Route("/actions/render-full-menu-template", name="render_full_menu_template")
-     */
-    public function renderFullMenuTemplate(){
-
-    }
-
-    /**
      * This originally came with symfonator
      * @Route("admin/{pageName}", name="admin_default")
      * @param string $pageName Page name

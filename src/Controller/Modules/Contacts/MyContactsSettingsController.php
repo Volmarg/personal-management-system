@@ -60,8 +60,8 @@ class MyContactsSettingsController extends AbstractController {
 
     public function renderSettingsTemplate($ajax_render = false) {
 
-        $type_form  = $this->app->forms->contactType();
-        $group_form = $this->app->forms->contactGroup();
+        $type_form  = $this->app->forms->contactTypeForm();
+        $group_form = $this->app->forms->contactGroupForm();
 
         $data = [
           'type_form'            => $type_form->createView(),
@@ -111,7 +111,7 @@ class MyContactsSettingsController extends AbstractController {
      * @return Response
      */
     private function submitContactTypeForm(Request $request):Response {
-        $form = $this->app->forms->contactType();
+        $form = $this->app->forms->contactTypeForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -142,7 +142,7 @@ class MyContactsSettingsController extends AbstractController {
      * @return Response
      */
     private function submitContactGroupForm(Request $request):Response {
-        $form = $this->app->forms->contactGroup();
+        $form = $this->app->forms->contactGroupForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

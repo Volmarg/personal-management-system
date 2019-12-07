@@ -19,32 +19,4 @@ class MyPaymentsBillsItemsRepository extends ServiceEntityRepository
         parent::__construct($registry, MyPaymentsBillsItems::class);
     }
 
-    // /**
-    //  * @return MyPaymentsBillsItems[] Returns an array of MyPaymentsBillsItems objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?MyPaymentsBillsItems
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -21,13 +21,13 @@ class FilesTagsController extends AbstractController {
     private $app;
 
     /**
-     * @var FileTagger $fileTagger
+     * @var FileTagger $file_tagger
      */
-    private $fileTagger;
+    private $file_tagger;
 
     public function __construct(Application $app, FileTagger $file_tagger) {
-        $this->app        = $app;
-        $this->fileTagger = $file_tagger;
+        $this->app         = $app;
+        $this->file_tagger = $file_tagger;
     }
 
     /**
@@ -65,8 +65,8 @@ class FilesTagsController extends AbstractController {
         $array_of_tags  = explode(',', $tags_string);
 
         try{
-            $this->fileTagger->prepare($array_of_tags, $file_full_path);
-            $response = $this->fileTagger->updateTags();
+            $this->file_tagger->prepare($array_of_tags, $file_full_path);
+            $response = $this->file_tagger->updateTags();
         }catch(\Exception $e){
             $message  = $this->app->translator->translate('responses.tags.errorWhileTryingToUpdateTagsViaApi');
             $response = new Response($message);
@@ -99,8 +99,8 @@ class FilesTagsController extends AbstractController {
      * @throws \Exception
      */
     public function removeTags(string $file_full_path): Response {
-        $this->fileTagger->prepare([], $file_full_path);
-        $response = $this->fileTagger->removeTags();
+        $this->file_tagger->prepare([], $file_full_path);
+        $response = $this->file_tagger->removeTags();
         return $response;
     }
 

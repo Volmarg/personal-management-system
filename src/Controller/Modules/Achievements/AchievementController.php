@@ -5,9 +5,8 @@ namespace App\Controller\Modules\Achievements;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Achievements\Achievement;
-use App\Form\Modules\Achievements\AchievementType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +21,7 @@ class AchievementController extends AbstractController {
     private $enum_types = [];
 
     public function __construct(Application $app) {
-        $enum_type = [Achievement::ENUM_SIMPLE, Achievement::ENUM_MEDIUM, Achievement::ENUM_HARD, Achievement::ENUM_HARDCORE];
+        $enum_type        = [Achievement::ENUM_SIMPLE, Achievement::ENUM_MEDIUM, Achievement::ENUM_HARD, Achievement::ENUM_HARDCORE];
         $this->enum_types = array_combine(
             array_map('ucfirst', array_values($enum_type)),
             $enum_type
@@ -37,12 +36,13 @@ class AchievementController extends AbstractController {
      * @return Response
      */
     public function display(Request $request) {
-        $this->addFormDataToDB($this->getForm(), $request);
+        $form = $this->app->forms->achievementForm();
+        $this->addFormDataToDB($form, $request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($this->getForm(), false);
+            return $this->renderTemplate($form, false);
         }
-        return $this->renderTemplate($this->getForm(), true);
+        return $this->renderTemplate($form, true);
     }
 
     /**
@@ -53,7 +53,7 @@ class AchievementController extends AbstractController {
     protected function renderTemplate($achievement_form, $ajax_render = false) {
         $achievement_form_view = $achievement_form->createView();
 
-        $columns_names = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
+        $columns_names    = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
         $all_achievements = $this->app->repositories->achievementRepository->findBy(['deleted' => 0]);
 
         return $this->render('modules/my-achievements/index.html.twig', [
@@ -65,16 +65,11 @@ class AchievementController extends AbstractController {
         ]);
     }
 
-    private function getForm() {
-        return $this->createForm(AchievementType::class, null, ['enum_types' => $this->enum_types]);
-    }
-
-
     /**
-     * @param Form $achievement_form
+     * @param FormInterface $achievement_form
      * @param Request $request
      */
-    protected function addFormDataToDB(Form $achievement_form, Request $request) {
+    protected function addFormDataToDB(FormInterface $achievement_form, Request $request) {
         $achievement_form->handleRequest($request);
 
         if ($achievement_form->isSubmitted() && $achievement_form->isValid()) {
@@ -114,10 +109,10 @@ class AchievementController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($this->getForm(), true);
+            $form = $this->app->forms->achievementForm();
+            return $this->renderTemplate($form, true);
         }
         return $response;
-
     }
 
 }

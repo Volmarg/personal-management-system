@@ -15,8 +15,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MyJobAfterhoursController extends AbstractController {
 
-    static $AFTERHOURS_ENTITY_CLASS;
-
     const GENERAL_USAGE = 'general usage';
 
     /**
@@ -30,9 +28,7 @@ class MyJobAfterhoursController extends AbstractController {
     private $app;
 
     public function __construct(Application $app) {
-        static::$AFTERHOURS_ENTITY_CLASS = MyJobAfterhours::class;
-
-        $entity_enums       = [static::$AFTERHOURS_ENTITY_CLASS::TYPE_MADE, static::$AFTERHOURS_ENTITY_CLASS::TYPE_SPENT];
+        $entity_enums       = [MyJobAfterhours::TYPE_MADE, MyJobAfterhours::TYPE_SPENT];
 
         $this->entity_enums = array_combine(
             array_map('ucfirst', array_values($entity_enums)),
@@ -65,24 +61,26 @@ class MyJobAfterhoursController extends AbstractController {
     protected function renderTemplate($form, $ajax_render = false) {
         $afterhours_form_view = $form->createView();
 
-        $column_names       = $this->getDoctrine()->getManager()->getClassMetadata(static::$AFTERHOURS_ENTITY_CLASS)->getColumnNames();
+        $column_names       = $this->getDoctrine()->getManager()->getClassMetadata(MyJobAfterhours::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($column_names);
 
         $afterhours_all     = $this->app->repositories->myJobAfterhoursRepository->findBy(['deleted' => 0]);
-        $afterhours_spent   = $this->filterAfterhours($afterhours_all, static::$AFTERHOURS_ENTITY_CLASS::TYPE_SPENT);
-        $afterhours_made    = $this->filterAfterhours($afterhours_all, static::$AFTERHOURS_ENTITY_CLASS::TYPE_MADE);
+        $afterhours_spent   = $this->filterAfterhours($afterhours_all, MyJobAfterhours::TYPE_SPENT);
+        $afterhours_made    = $this->filterAfterhours($afterhours_all, MyJobAfterhours::TYPE_MADE);
 
         $remaining_time_to_spend_per_goal = $this->getTimeToSpend();
 
-        return $this->render('modules/my-job/afterhours.html.twig', compact(
-            'afterhours_form_view',
-            'column_names',
-            'afterhours_all',
-            'afterhours_spent',
-            'afterhours_made',
-            'remaining_time_to_spend_per_goal',
-            'ajax_render'
-        ));
+        $twig_data = [
+            'afterhours_form_view'              => $afterhours_form_view,
+            'column_names'                      => $column_names,
+            'afterhours_all'                    => $afterhours_all,
+            'afterhours_spent'                  => $afterhours_spent,
+            'afterhours_made'                   => $afterhours_made,
+            'remaining_time_to_spend_per_goal'  => $remaining_time_to_spend_per_goal,
+            'ajax_render'                       => $ajax_render,
+        ];
+
+        return $this->render('modules/my-job/afterhours.html.twig', $twig_data);
     }
 
     private function filterAfterhours(array $afterhours_all, string $type_filtered): array {

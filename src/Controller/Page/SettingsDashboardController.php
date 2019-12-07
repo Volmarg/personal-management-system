@@ -54,9 +54,9 @@ class SettingsDashboardController extends AbstractController {
 
     public function __construct(Translator $translator, SettingsSaver $settings_saver, SettingsLoader $settings_loader, SettingsViewController $settings_view_controller) {
         $this->settings_view_controller = $settings_view_controller;
-        $this->settings_loader = $settings_loader;
-        $this->settings_saver = $settings_saver;
-        $this->translator = $translator;
+        $this->settings_loader          = $settings_loader;
+        $this->settings_saver           = $settings_saver;
+        $this->translator               = $translator;
     }
 
     /**

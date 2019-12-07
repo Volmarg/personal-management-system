@@ -96,7 +96,8 @@ class MyNotesRepository extends ServiceEntityRepository {
         ";
 
         $bindedValues = ['category_id' => $category_id];
-        $statement = $this->connection->prepare($sql);
+        $statement    = $this->connection->prepare($sql);
+
         $statement->execute($bindedValues);
         $results = $statement->fetchAll();
 

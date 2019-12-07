@@ -43,9 +43,9 @@ class MyFilesController extends AbstractController
     private $file_downloader;
 
     /**
-     * @var FilesHandler $filesHandler
+     * @var FilesHandler $files_handler
      */
-    private $filesHandler;
+    private $files_handler;
 
     /**
      * @var FilesTagsController $files_tags_controller
@@ -62,12 +62,12 @@ class MyFilesController extends AbstractController
      */
     private $file_tagger;
 
-    public function __construct(FileDownloader $file_downloader, FilesHandler $filesHandler, FilesTagsController $files_tags_controller, Application $app, FileTagger $file_tagger) {
+    public function __construct(FileDownloader $file_downloader, FilesHandler $files_handler, FilesTagsController $files_tags_controller, Application $app, FileTagger $file_tagger) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
 
         $this->file_downloader       = $file_downloader;
-        $this->filesHandler          = $filesHandler;
+        $this->files_handler         = $files_handler;
         $this->files_tags_controller = $files_tags_controller;
         $this->app                   = $app;
         $this->file_tagger           = $file_tagger;
@@ -220,7 +220,7 @@ class MyFilesController extends AbstractController
      */
     public function removeFileViaPost(Request $request) {
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
-        $this->filesHandler->removeFile($request);
+        $this->files_handler->removeFile($request);
 
         return $this->displayFiles($subdirectory, $request);
     }
@@ -247,7 +247,7 @@ class MyFilesController extends AbstractController
             $this->files_tags_controller->updateTags($tags_string, $new_relative_file_path);
         };
 
-        $this->filesHandler->renameFileViaRequest($request, $update_file_path_for_tags);
+        $this->files_handler->renameFileViaRequest($request, $update_file_path_for_tags);
         return $this->displayFiles($subdirectory, $request);
     }
 

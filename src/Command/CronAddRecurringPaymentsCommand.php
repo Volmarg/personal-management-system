@@ -18,22 +18,22 @@ class CronAddRecurringPaymentsCommand extends Command
     protected static $defaultName = 'cron:set-recurring-payments';
 
     /**
-     * @var int
+     * @var int $count_of_payments_to_add
      */
     private $count_of_payments_to_add = 0;
 
     /**
-     * @var int
+     * @var int $count_of_already_existing_payments
      */
     private $count_of_already_existing_payments = 0;
 
     /**
-     * @var int
+     * @var int $count_of_filtered_payments
      */
     private $count_of_filtered_payments = 0;
 
     /**
-     * @var int
+     * @var int $count_of_added_payments
      */
     private $count_of_added_payments = 0;
 
@@ -43,13 +43,13 @@ class CronAddRecurringPaymentsCommand extends Command
     private $app;
 
     /**
-     * @var string
+     * @var string $curr_year_month
      */
     private $curr_year_month;
 
     public function __construct(Application $app, string $name = null) {
         parent::__construct($name);
-        $this->app = $app;
+        $this->app             = $app;
         $this->curr_year_month = (new \DateTime())->format('Y-m');
     }
 
@@ -98,13 +98,14 @@ class CronAddRecurringPaymentsCommand extends Command
      * @return array
      */
     private function getRecurringPaymentsAndFilterExistingRecords(SymfonyStyle $io):array {
-        $recurring_payments = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => 0]);
+        $recurring_payments             = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => 0]);
         $this->count_of_payments_to_add = count($recurring_payments);
 
         foreach($recurring_payments as $index => $recurring_payment){
 
-            $hash = $recurring_payment->getHash();
+            $hash                       = $recurring_payment->getHash();
             $recurring_payment_for_hash = $this->app->repositories->myPaymentsMonthlyRepository->findByDateAndDescriptionHash($hash);
+
             $this->count_of_already_existing_payments += count($recurring_payment_for_hash);
 
             if( !empty($recurring_payment_for_hash) ){

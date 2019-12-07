@@ -23,9 +23,9 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
      */
     public function findActiveCategories($only_category = false) {
         $connection = $this->_em->getConnection();
-        $icon = (!$only_category ? ", mnc.icon AS icon" : "");
-        $color = (!$only_category ? ", mnc.color AS color" : "");
-        $parent_id = (!$only_category ? ", mnc.parent_id AS parent_id" : "");
+        $icon       = (!$only_category ? ", mnc.icon AS icon"           : "");
+        $color      = (!$only_category ? ", mnc.color AS color"         : "");
+        $parent_id  = (!$only_category ? ", mnc.parent_id AS parent_id" : "");
 
         $sql = "
           SELECT 

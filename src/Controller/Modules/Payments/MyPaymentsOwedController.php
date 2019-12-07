@@ -47,7 +47,7 @@ class MyPaymentsOwedController extends AbstractController
      */
     protected function renderTemplate($ajax_render = false) {
 
-        $form           = $this->app->forms->moneyOwed();
+        $form           = $this->app->forms->moneyOwedForm();
         $owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->findBy([
             'deleted'  => 0,
             'owedByMe' => 1
@@ -75,7 +75,7 @@ class MyPaymentsOwedController extends AbstractController
      * @param Request $request
      */
     protected function add(Request $request) {
-        $form = $this->app->forms->moneyOwed();
+        $form = $this->app->forms->moneyOwedForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

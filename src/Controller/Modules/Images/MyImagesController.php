@@ -118,7 +118,7 @@ class MyImagesController extends AbstractController {
 
         foreach ($this->finder as $image) {
 
-            $file_full_path = $image->getPath() . '/' . $image->getFilename();
+            $file_full_path = $image->getPath() . DIRECTORY_SEPARATOR . $image->getFilename();
             $file_tags      = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_full_path);
             $tags_json      = ( $file_tags instanceof FilesTags ? $file_tags->getTags() : "" );
 

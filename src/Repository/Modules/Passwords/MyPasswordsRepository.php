@@ -35,10 +35,11 @@ class MyPasswordsRepository extends ServiceEntityRepository {
         ";
 
         $binded_params = ['id' => $id];
-        $statement = $connection->prepare($sql);
+        $statement     = $connection->prepare($sql);
         $statement->execute($binded_params);
-        $result = $statement->fetchAll();
-        $returned = (!empty($result) ? $result[0]->password : '');
+
+        $result     = $statement->fetchAll();
+        $returned   = (!empty($result) ? $result[0]->password : '');
 
         return $returned;
     }

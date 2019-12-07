@@ -28,12 +28,13 @@ class MyShoppingPlansController extends AbstractController {
      * @return Response
      */
     public function display(Request $request) {
-        $this->addFormDataToDB($this->getForm(), $request);
+        $shopping_plan_form = $this->app->forms->myShoppingPlanForm();
+        $this->addFormDataToDB($shopping_plan_form, $request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($this->getForm(), false);
+            return $this->renderTemplate($shopping_plan_form, false);
         }
-        return $this->renderTemplate($this->getForm(), true);
+        return $this->renderTemplate($shopping_plan_form, true);
     }
 
     /**
@@ -48,9 +49,12 @@ class MyShoppingPlansController extends AbstractController {
 
         $all_plans = $this->app->repositories->myShoppingPlansRepository->findBy(['deleted' => 0]);
 
-        return $this->render('modules/my-shopping/plans.html.twig', compact(
-            'plans_form_view', 'columns_names', 'all_plans', 'ajax_render'
-        ));
+        return $this->render('modules/my-shopping/plans.html.twig', [
+            'plans_form_view' => $plans_form_view,
+            'columns_names'   => $columns_names,
+            'all_plans'       => $all_plans,
+            'ajax_render'     => $ajax_render,
+        ]);
     }
 
     /**
@@ -95,14 +99,10 @@ class MyShoppingPlansController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($this->getForm(), true);
+            $shopping_plan_form = $this->app->forms->myShoppingPlanForm();
+            return $this->renderTemplate($shopping_plan_form, true);
         }
         return $response;
-    }
-
-    private function getForm() {
-        return $this->createForm(MyShoppingPlansType::class);
-
     }
 
 }

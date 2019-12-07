@@ -32,7 +32,8 @@ class MyPasswordsGroupsController extends AbstractController {
      * @throws \Doctrine\DBAL\DBALException
      */
     public function display(Request $request) {
-        $response = $this->submitForm($this->getGroupsForm(), $request);
+        $password_group_form = $this->app->forms->passwordGroupForm();
+        $response = $this->submitForm($password_group_form , $request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
@@ -79,20 +80,16 @@ class MyPasswordsGroupsController extends AbstractController {
     /**
      * @param bool $ajax_render
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      */
     private function renderTemplate($ajax_render = false) {
+        $password_group_form = $this->app->forms->passwordGroupForm();
+        $groups              = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
 
-        $groups_form    = $this->getGroupsForm();
-        $groups         = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
-
-        return $this->render('modules/my-passwords/settings.html.twig',
-            [
+        return $this->render('modules/my-passwords/settings.html.twig', [
                 'ajax_render'   => $ajax_render,
                 'groups'        => $groups,
-                'groups_form'   => $groups_form->createView()
-            ]
-        );
+                'groups_form'   => $password_group_form->createView()
+            ]);
     }
 
     /**
@@ -118,10 +115,5 @@ class MyPasswordsGroupsController extends AbstractController {
 
         return new JsonResponse(GeneralMessagesController::FORM_SUBMITTED, 200);
     }
-
-    private function getGroupsForm() {
-        return $this->createForm(MyPasswordsGroupsType::class);
-    }
-
 
 }

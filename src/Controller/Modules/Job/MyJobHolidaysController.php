@@ -53,7 +53,7 @@ class MyJobHolidaysController extends AbstractController
         $job_holidays_summary               = $this->app->repositories->myJobHolidaysPoolRepository->getHolidaysSummaryGroupedByYears();
         $job_holidays_available_totally     = $this->app->repositories->myJobHolidaysPoolRepository->getAvailableDaysTotally();
 
-        $job_holidays_form  = $this->app->forms->jobHolidays([
+        $job_holidays_form  = $this->app->forms->jobHolidaysForm([
             static::KEY_CHOICES => $all_pools_years
         ]);
 
@@ -75,7 +75,7 @@ class MyJobHolidaysController extends AbstractController
      */
     public function add(Request $request, array $all_pools_years): void {
 
-        $form = $this->app->forms->jobHolidays([
+        $form = $this->app->forms->jobHolidaysForm([
             static::KEY_CHOICES => $all_pools_years
         ]);
 

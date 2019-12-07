@@ -36,24 +36,19 @@ class MyNotesController extends AbstractController {
      * @return Response
      */
     public function createNote(Request $request) {
-        $form_view = $this->getForm()->createView();
-        $this->addToDB($this->getForm(), $request);
+        $form       = $this->app->forms->noteTypeForm();
+        $form_view  = $form->createView();
+        $this->addToDB($form, $request);
+        $ajax_render = true;
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->render('modules/my-notes/new-note.html.twig',
-                [
-                    'ajax_render' => false,
-                    'form'        => $form_view
-                ]
-            );
+            $ajax_render = false;
         }
 
-        return $this->render('modules/my-notes/new-note.html.twig',
-            [
-                'ajax_render'   => true,
+        return $this->render('modules/my-notes/new-note.html.twig', [
+                'ajax_render'   => $ajax_render,
                 'form'          => $form_view
-            ]
-        );
+            ]);
     }
 
     /**
@@ -166,11 +161,6 @@ class MyNotesController extends AbstractController {
             $em->persist($form->getData());
             $em->flush();
         }
-    }
-
-    private function getForm() {
-
-        return $this->createForm(MyNotesType::class);
     }
 
 }

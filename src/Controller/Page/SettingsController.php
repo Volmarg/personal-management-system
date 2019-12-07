@@ -32,7 +32,7 @@ class SettingsController extends AbstractController {
      */
     public function __construct(SettingsDashboardController $settings_dashboard_controller, SettingsViewController $settings_view_controller) {
         $this->settings_dashboard_controller = $settings_dashboard_controller;
-        $this->settings_view_controller = $settings_view_controller;
+        $this->settings_view_controller      = $settings_view_controller;
     }
 
     /**

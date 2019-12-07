@@ -34,8 +34,8 @@ class MyPasswordsController extends AbstractController {
      * @throws \Exception
      */
     public function display(Request $request) {
-
-        $this->addFormDataToDB($this->getForm(), $request);
+        $password_form = $this->app->forms->myPasswordForm();
+        $this->addFormDataToDB($password_form, $request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
@@ -77,10 +77,10 @@ class MyPasswordsController extends AbstractController {
 
     protected function renderTemplate($ajax_render = false) {
 
-        $form       = $this->getForm();
-        $form_view  = $form->createView();
-        $passwords  = $this->app->repositories->myPasswordsRepository->findBy(['deleted' => 0]);
-        $groups     = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
+        $password_form  = $this->app->forms->myPasswordForm();
+        $form_view      = $password_form->createView();
+        $passwords      = $this->app->repositories->myPasswordsRepository->findBy(['deleted' => 0]);
+        $groups         = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
 
         return $this->render('modules/my-passwords/my-passwords.html.twig', [
             'form'          => $form_view,
@@ -127,7 +127,4 @@ class MyPasswordsController extends AbstractController {
         }
     }
 
-    private function getForm() {
-        return $this->createForm(MyPasswordsType::class);
-    }
 }

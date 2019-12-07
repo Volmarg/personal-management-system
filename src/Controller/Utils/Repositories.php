@@ -435,9 +435,10 @@ class Repositories extends AbstractController {
                     $value = false;
                 }
 
-                // Info/Todo: the password check should not be here...
-                if ($parameter === static::PASSWORD_FIELD && !$this->isPasswordValueValid($value)) {
-                    $message = $this->translator->translate('responses.password.changeHasBeenCanceled');
+                $isParameterValid = $this->isParameterValid($parameter, $value);
+
+                if ($isParameterValid) {
+                    $message = $this->translator->translate('responses.general.invalidParameterValue');
                     return new JsonResponse($message, 500);
                 }
 
@@ -558,8 +559,23 @@ class Repositories extends AbstractController {
         }
     }
 
-    private function isPasswordValueValid($value) {
-        return !empty($value);
+    /**
+     * This function validates given fields by set of rules
+     * @param string $parameter
+     * @param $value
+     * @return bool
+     */
+    private function isParameterValid(string $parameter, $value):bool
+    {
+        switch( $parameter ){
+            case static::PASSWORD_FIELD:
+                $isValid = !empty($value);
+                break;
+            default:
+                $isValid = true;
+        }
+
+        return $isValid;
     }
 
     /**
