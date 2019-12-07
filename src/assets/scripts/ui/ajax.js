@@ -78,10 +78,10 @@ export default (function () {
                 /^#.*/g
             ];
 
-            let allSidebarLinks = $('.sidebar-menu .sidebar-link');
+            let allElements = $('.sidebar-menu .sidebar-link, .ajax-content-load');
 
-            $.each(allSidebarLinks, (index, link) => {
-                let href = $(link).attr('href');
+            $.each(allElements, (index, element) => {
+                let href = $(element).attr('href');
                 let skip = false;
 
                 $.each(excludeHrefsRegexPatterns, (index, pattern) => {
@@ -93,10 +93,10 @@ export default (function () {
                 if ( !skip && "" == href ){
                     skip = true;
                 }
-
+0
                 if( !skip ){
 
-                    $(link).on('click', (event) => {
+                    $(element).on('click', (event) => {
 
                         event.preventDefault();
                         _this.loadModuleContentByUrl(href);
