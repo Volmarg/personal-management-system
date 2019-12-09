@@ -436,7 +436,7 @@ class Repositories extends AbstractController {
 
                 $isParameterValid = $this->isParameterValid($parameter, $value);
 
-                if ($isParameterValid) {
+                if (!$isParameterValid) {
                     $message = $this->translator->translate('responses.general.invalidParameterValue');
                     return new JsonResponse($message, 500);
                 }
