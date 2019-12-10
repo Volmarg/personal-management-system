@@ -1,0 +1,37 @@
+
+{% if value is not defined %}
+    {% set value = '' %}
+{% endif %}
+
+{% if type is not defined %}
+    {% set type = 'text' %}
+{% endif %}
+
+{% if max is not defined %}
+    {% set max = '' %}
+{% endif %}
+
+{% if min is not defined %}
+    {% set min = 'min' %}
+{% endif %}
+
+{% if disabled is not defined %}
+    {% set disabled = '' %}
+{% else %}
+    {% set disabled = 'disabled' %}
+{% endif %}
+
+{% if attrs is not defined %}
+    {% set attrs = "" %}
+{% endif %}
+
+<input
+    autocomplete = 'off'
+    value        = "{{ value }}"
+    type         = "{{ type }}"
+    class        = "date-picker form-control {{ disabled }}"
+    style        = "max-width: 100px;"
+    min          = "{{ min }}"
+    max          = "{{ max }}"
+    {{ attrs }}
+/>

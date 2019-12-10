@@ -223,6 +223,20 @@ export default (function () {
         unsetDisabled: function(element){
             $(element).removeClass("disabled");
         },
+        /**
+         * Will set error class - mostly used for form elements
+         * @param element
+         */
+        setErrorClass: function(element){
+            $(element).addClass("has-error");
+        },
+        /**
+         * Will unset error class
+         * @param element
+         */
+        unsetErrorClass: function(element){
+            $(element).removeClass("has-error");
+        }
 
     };
 

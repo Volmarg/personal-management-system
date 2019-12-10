@@ -429,7 +429,7 @@ export default (function () {
             makeUpdateData: function (tr_parent_element) {
                 let id          = $(tr_parent_element).find('.id').html();
                 let year        = $(tr_parent_element).find('.year').html();
-                let daysSpent   = $(tr_parent_element).find('.daysSpent').html();
+                let daysSpent   = $(tr_parent_element).find('.daysSpent').find("input").val();
                 let information = $(tr_parent_element).find('.information').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
