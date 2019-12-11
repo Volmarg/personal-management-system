@@ -22,8 +22,8 @@
         <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyJobHolidays">
 
             <td class="d-none id">{{ holidays_spent.id }}</td>
-            <td class="year">{{ holidays_spent.year }}</td>
-            <td class="daysSpent">
+            <td class="year disabled" data-order="{{ holidays_spent.year }}">{{ holidays_spent.year }}</td>
+            <td class="daysSpent" data-order="{{ holidays_spent.daysSpent }}">
                 {% include 'page-elements/components/forms/input-standard-value.twig' with {
                     type     : "number",
                     value    : holidays_spent.daysSpent,

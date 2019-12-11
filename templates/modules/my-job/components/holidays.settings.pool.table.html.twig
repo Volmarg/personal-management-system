@@ -15,8 +15,24 @@
                 <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyJobHolidaysPool">
 
                     <td class="d-none id">      {{ holiday_pool.id }}           </td>
-                    <td class="year">           {{ holiday_pool.year }}         </td>
-                    <td class="daysLeft">       {{ holiday_pool.DaysLeft }}     </td>
+                    <td class="year" data-order="{{ holiday_pool.year }}">
+                        {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                            type     : "number",
+                            value    : holiday_pool.year,
+                            disabled : true,
+                            min      : 1900,
+                            attrs    : "data-validate-form-element=true"
+                        }%}
+                    </td>
+                    <td class="daysLeft" data-order="{{ holiday_pool.DaysLeft }}">
+                        {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                            type     : "number",
+                            value    : holiday_pool.DaysLeft,
+                            disabled : true,
+                            min      : 1,
+                            attrs    : "data-validate-form-element=true"
+                        }%}
+                    </td>
                     <td class="companyName">    {{ holiday_pool.CompanyName }}  </td>
 
                     {% include 'modules/common/components/table-cells/actions.html.twig' with {

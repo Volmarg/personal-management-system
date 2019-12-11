@@ -482,8 +482,8 @@ export default (function () {
         "MyJobHolidaysPool": {
             makeUpdateData: function (tr_parent_element) {
                 let id          = $(tr_parent_element).find('.id').html();
-                let year        = $(tr_parent_element).find('.year').html();
-                let daysLeft    = $(tr_parent_element).find('.daysLeft').html();
+                let year        = $(tr_parent_element).find('.year input').val();
+                let daysLeft    = $(tr_parent_element).find('.daysLeft input').val();
                 let companyName = $(tr_parent_element).find('.companyName').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
