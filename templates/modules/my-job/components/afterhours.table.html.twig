@@ -17,7 +17,20 @@
 
                 <td
                         class="{{ column }} {%  if column == 'type' or column == id_column  %}d-none{% endif %}"
-                        data-order="{% if timestamp is defined %}{{ timestamp }}{% endif %}"
+
+                        data-order="
+
+                        {% if column == "date" %}
+
+                            {% if timestamp is defined %}
+                                {{ timestamp }}
+                            {% endif %}
+
+                        {% elseif column == "minutes" %}
+                            {{ attribute(afterhour,column) }}
+                        {% endif %}
+
+                        "
                 >
                     {% if column == 'date' %}
                         <span class="{{ column }} ">
@@ -26,6 +39,14 @@
                                 "disabled"  : true
                             } %}
                         </span>
+                    {% elseif column == "minutes" %}
+                        {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                            type     : "number",
+                            value    : attribute(afterhour,column),
+                            disabled : true,
+                            min      : 1,
+                            attrs    : "data-validate-form-element=true"
+                        }%}
                     {% else %}
                         {{ attribute(afterhour,column) }}
                     {% endif %}

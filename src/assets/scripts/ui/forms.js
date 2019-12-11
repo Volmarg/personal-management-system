@@ -131,13 +131,13 @@ export default (function () {
             let isAboveMax = false;
 
             if( "undefined" !== typeof minVal ){
-                if( minVal < val ){
+                if( val < minVal ){
                     isBelowMin = true;
                 }
             }
 
             if( "undefined" !== typeof maxVal ){
-                if( maxVal > val){
+                if( val > maxVal){
                     isAboveMax = true;
                 }
             }

@@ -7,14 +7,6 @@
     {% set type = 'text' %}
 {% endif %}
 
-{% if max is not defined %}
-    {% set max = '' %}
-{% endif %}
-
-{% if min is not defined %}
-    {% set min = 'min' %}
-{% endif %}
-
 {% if disabled is not defined %}
     {% set disabled = '' %}
 {% else %}
@@ -31,7 +23,14 @@
     type         = "{{ type }}"
     class        = "date-picker form-control {{ disabled }}"
     style        = "max-width: 100px;"
-    min          = "{{ min }}"
-    max          = "{{ max }}"
+
+    {% if min is defined %}
+        min = "{{ min }}"
+    {% endif %}
+
+    {% if max is defined %}
+        max = "{{ max }}"
+    {% endif %}
+
     {{ attrs }}
 />

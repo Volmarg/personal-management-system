@@ -369,12 +369,12 @@ export default (function () {
         },
         "MyJobAfterhours": {
             makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let date = $(tr_parent_element).find('.date input').val();
-                let minutes = $(tr_parent_element).find('.minutes').html();
+                let id          = $(tr_parent_element).find('.id').html();
+                let date        = $(tr_parent_element).find('.date input').val();
+                let minutes     = $(tr_parent_element).find('.minutes input').val();
                 let description = $(tr_parent_element).find('.description').html();
-                let type = $(tr_parent_element).find('.type').html();
-                let goal = $(tr_parent_element).find('.goal').html();
+                let type        = $(tr_parent_element).find('.type').html();
+                let goal        = $(tr_parent_element).find('.goal').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
