@@ -85,19 +85,9 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 
 <h2>Future development plans</h2>
 
-<h3>Modules/Extensions</h3>
-
-<ul>
-<li><b>🔎 Job search</b> - (VERY future development plan, not sure if will make it at all)
-	<ul>
-    	<li>I have totally different project on laravel for searching job on portals it can be turned into module but requires bigger amount of time, so that's just an idea. I don't really need it as module - so far far on end.</li>
-	</ul>
-</li>
-</ul>
-
 <h3>Improvements</h3>
 <p>
-	<i>See: <a href="https://github.com/Volmarg/personal-management-system/projects"> here </a></i>
+	<i>Overally I will just add some bug fixes/improvements/modules from time to time - anything that I will just need.</i>
 </p>	
 <hr>
 
