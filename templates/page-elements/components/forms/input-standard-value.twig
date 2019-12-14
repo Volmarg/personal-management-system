@@ -32,5 +32,9 @@
         max = "{{ max }}"
     {% endif %}
 
+    {% if step is defined %}
+        step = "{{ step }}"
+    {% endif %}
+
     {{ attrs }}
 />

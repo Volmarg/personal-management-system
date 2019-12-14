@@ -132,11 +132,11 @@ export default (function () {
             makeUpdateData: function (tr_parent_element) {
                 let id = $(tr_parent_element).find('.id').html();
                 let name = $(tr_parent_element).find('.name').html();
-                let price = $(tr_parent_element).find('.price').html();
+                let price = $(tr_parent_element).find('.price input').val();
                 let market = $(tr_parent_element).find('.market').html();
                 let products = $(tr_parent_element).find('.products').html();
                 let information = $(tr_parent_element).find('.information').html();
-                let rejected = $(tr_parent_element).find('.rejected').html();
+                let rejected = $(tr_parent_element).find('.rejected input').prop("checked");
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
