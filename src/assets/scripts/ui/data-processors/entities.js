@@ -93,7 +93,11 @@ export default (function () {
                     'url'               : url,
                     'data'              : ajax_data,
                     'success_message'   : success_message,
-                    'fail_message'      : fail_message
+                    'fail_message'      : fail_message,
+                    'callback'          : function () {
+                        ui.ajax.entireMenuReload();
+                    },
+                    'callback_after': true,
                 };
             },
             makeRemoveData: function (parent_element) {
@@ -110,9 +114,13 @@ export default (function () {
                         'id': id
                     },
                     'success_message': success_message,
-                    'fail_message': fail_message,
-                    'is_dataTable': false, //temporary
-                    'confirm_message': message
+                    'fail_message'   : fail_message,
+                    'is_dataTable'   : false, //temporary
+                    'confirm_message': message,
+                    'callback'       : function () {
+                        ui.ajax.entireMenuReload();
+                    },
+                    'callback_after': true,
                 };
             },
             makeCreateData: function () {
@@ -124,6 +132,16 @@ export default (function () {
                     'url': url,
                     'success_message': success_message,
                     'fail_message': fail_message,
+                    'callback'       : function (dataCallbackParams) {
+                        let menuNodeModuleName = dataCallbackParams.menuNodeModuleName;
+
+                        if( "undefined" == typeof menuNodeModuleName){
+                            throw ("menuNodeModuleName param is missing in ScheduleType::makeCreateData");
+                        }
+
+                        ui.ajax.singleMenuNodeReload(menuNodeModuleName);
+                    },
+                    'callback_after': true,
                 };
             },
             entity_name: "Schedule type",

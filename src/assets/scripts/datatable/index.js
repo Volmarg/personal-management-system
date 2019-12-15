@@ -52,10 +52,14 @@ export default (function () {
                         config = _this.configs.checkboxes;
                     }
 
-                    $(table).DataTable(config);
+                    // reinitializing
+                    if( !$.fn.dataTable.isDataTable(table) )
+                    {
+                        $(table).DataTable(config);
 
-                    if( isSelectable ){
-                        _this.initSelectOptions(table);
+                        if( isSelectable ){
+                            _this.initSelectOptions(table);
+                        }
                     }
 
                 });

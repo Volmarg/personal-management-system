@@ -259,8 +259,11 @@ export default (function () {
          * These are all for datatables
          */
         attachRemovingEventOnTrashIcon: function () {
-            let _this = this;
-            $('.fa-trash').click(function () { //todo: change selector for action...something
+            let _this        = this;
+            let removeButton = $('.fa-trash');
+
+            $(removeButton).off('click'); // to prevent double attachement on reinit
+            $(removeButton).click(function () { //todo: change selector for action...something
                 let parent_wrapper    = $(this).closest(_this.elements["removed-element-class"]);
                 let param_entity_name = $(parent_wrapper).attr('data-type');
                 let remove_data       = dataProcessors.entities[param_entity_name].makeRemoveData(parent_wrapper);
@@ -290,6 +293,10 @@ export default (function () {
                                     }
                                     _this.removeTableRow(parent_wrapper);
 
+                                    if (remove_data.callback_after) {
+                                        remove_data.callback();
+                                    }
+
                                     $('.twig-body-section').html(template);
                                     initializer.reinitialize();
                                 },
@@ -318,8 +325,11 @@ export default (function () {
             });
         },
         attachContentEditEventOnEditIcon: function () {
-            let _this = this;
-            $('.fa-edit').click(function () { //todo: change selector for action...something
+            let _this      = this;
+            let editButton = $('.fa-edit');
+
+            $(editButton).off('click'); // to prevent double attachement on reinit
+            $(editButton).click(function () { //todo: change selector for action...something
                 let closest_parent = this.closest(_this.elements["edited-element-class"]);
                 _this.toggleContentEditable(closest_parent);
             });
@@ -486,6 +496,10 @@ export default (function () {
 
                         $('.twig-body-section').html(template);
                         initializer.reinitialize();
+                    }
+
+                    if (create_data.callback_after) {
+                        create_data.callback(dataCallbackParams);
                     }
 
                 }).fail((data) => {
@@ -661,6 +675,10 @@ export default (function () {
                 data: update_data.data,
                 success: (data) => {
                     bootstrap_notifications.notify(update_data.success_message, 'success');
+
+                    if (update_data.callback_after) {
+                        update_data.callback();
+                    }
                 },
             }).fail(() => {
                 bootstrap_notifications.notify(update_data.fail_message, 'danger')

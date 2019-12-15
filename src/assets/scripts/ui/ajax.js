@@ -18,6 +18,9 @@ export default (function () {
         init: function(){
             this.attachModuleContentLoadingViaAjaxOnMenuLinks();
         },
+        entireMenuReload: function(){
+
+        },
         singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
 
             let menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');

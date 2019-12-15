@@ -2,6 +2,7 @@
 
 namespace App\Form\Modules\Schedules;
 
+use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Application;
 use App\Form\Type\FontawesomepickerType;
 use Symfony\Component\Form\AbstractType;
@@ -31,7 +32,10 @@ class MyScheduleTypeType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyScheduleTypeType.labels.icon')
             ])
             ->add('submit', SubmitType::class,[
-                'label' => $this->app->translator->translate('forms.general.submit')
+                'label' => $this->app->translator->translate('forms.general.submit'),
+                'attr'  => [
+                    'data-params' => '{ "menuNodeModuleName" : "' . ModulesController::MENU_NODE_MODULE_NAME_MY_SCHEDULES .'" }'
+                ],
             ]);
     }
 
