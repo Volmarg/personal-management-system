@@ -132,11 +132,11 @@ export default (function () {
             makeUpdateData: function (tr_parent_element) {
                 let id = $(tr_parent_element).find('.id').html();
                 let name = $(tr_parent_element).find('.name').html();
-                let price = $(tr_parent_element).find('.price').html();
+                let price = $(tr_parent_element).find('.price input').val();
                 let market = $(tr_parent_element).find('.market').html();
                 let products = $(tr_parent_element).find('.products').html();
                 let information = $(tr_parent_element).find('.information').html();
-                let rejected = $(tr_parent_element).find('.rejected').html();
+                let rejected = $(tr_parent_element).find('.rejected input').prop("checked");
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -369,12 +369,12 @@ export default (function () {
         },
         "MyJobAfterhours": {
             makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let date = $(tr_parent_element).find('.date input').val();
-                let minutes = $(tr_parent_element).find('.minutes').html();
+                let id          = $(tr_parent_element).find('.id').html();
+                let date        = $(tr_parent_element).find('.date input').val();
+                let minutes     = $(tr_parent_element).find('.minutes input').val();
                 let description = $(tr_parent_element).find('.description').html();
-                let type = $(tr_parent_element).find('.type').html();
-                let goal = $(tr_parent_element).find('.goal').html();
+                let type        = $(tr_parent_element).find('.type').html();
+                let goal        = $(tr_parent_element).find('.goal').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -429,7 +429,7 @@ export default (function () {
             makeUpdateData: function (tr_parent_element) {
                 let id          = $(tr_parent_element).find('.id').html();
                 let year        = $(tr_parent_element).find('.year').html();
-                let daysSpent   = $(tr_parent_element).find('.daysSpent').html();
+                let daysSpent   = $(tr_parent_element).find('.daysSpent').find("input").val();
                 let information = $(tr_parent_element).find('.information').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
@@ -482,8 +482,8 @@ export default (function () {
         "MyJobHolidaysPool": {
             makeUpdateData: function (tr_parent_element) {
                 let id          = $(tr_parent_element).find('.id').html();
-                let year        = $(tr_parent_element).find('.year').html();
-                let daysLeft    = $(tr_parent_element).find('.daysLeft').html();
+                let year        = $(tr_parent_element).find('.year input').val();
+                let daysLeft    = $(tr_parent_element).find('.daysLeft input').val();
                 let companyName = $(tr_parent_element).find('.companyName').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);

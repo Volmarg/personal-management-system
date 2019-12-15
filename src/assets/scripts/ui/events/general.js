@@ -19,6 +19,7 @@ export default (function () {
         init: function(){
             this.attachFormViewAppendEvent();
             this.attachRemoveParentEvent();
+            this.attachFormElementsOnChangeValidationEvent();
         },
         /**
          * This function attaches event on button which clicked appends given form to dom target
@@ -61,6 +62,20 @@ export default (function () {
 
                 utils.domElements.removeParentForSelector(clickedElement, targetElementSelector);
             }))
+
+        },
+        /**
+         * This function will attach events for validations and limitations to the various form elements
+         */
+        attachFormElementsOnChangeValidationEvent: function(){
+            let elementsToValidate = $("[data-validate-form-element='true']");
+
+            elementsToValidate.on('change', function(event){
+                let changedElement = $(event.currentTarget);
+
+                ui.forms.validateBetweenMinMax(changedElement);
+
+            });
 
         }
     };

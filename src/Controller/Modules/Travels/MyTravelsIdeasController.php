@@ -24,7 +24,7 @@ class MyTravelsIdeasController extends AbstractController {
 
     private function getForm() {
         $categories = $this->getAllCategories();
-        $travel_ideas_form = $this->app->forms->travelIdeasForm($categories);
+        $travel_ideas_form = $this->app->forms->travelIdeasForm(['categories' => $categories]);
         return $travel_ideas_form;
     }
 

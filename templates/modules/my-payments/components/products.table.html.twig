@@ -15,11 +15,39 @@
         {% if isRowHiddenForProductType(type,product_data.rejected) == true %}
             <tr class="trash-parent product-single-data editable-parent save-parent" data-type="MyPaymentsProduct">
             {% for column in column_names %}
-                <td class="{{ column }} {% if column=='price' %}{{ getClassForProductType(type,product_data.rejected,column) }}{% endif %} {{ hideIdColumn(column) }}">
-                    {{ attribute(product_data,column) }}
-                </td>
+
+                {% if column == "price" %}
+
+                    <td
+                        class="{{ column }} {% if column=='price' %}{{ getClassForProductType(type,product_data.rejected,column) }}{% endif %} {{ hideIdColumn(column) }}"
+                        data-order="{{ attribute(product_data,column) }}"
+                    >
+                        {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                            type     : "number",
+                            value    : attribute(product_data,column),
+                            disabled : true,
+                            min      : 0.01,
+                            step     : 0.01,
+                            attrs    : "data-validate-form-element=true"
+                        }%}
+                    </td>
+
+                {% elseif column == "rejected" %}
+                    <td class="rejected">
+                        {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
+                            "checked": ( attribute(product_data,column) ? "checked" : '' ),
+                            "label"  : "",
+                            "classes": "disabled checkbox-disabled"
+                        } %}
+                    </td>
+                {% else %}
+                    <td class="{{ column }} {{ hideIdColumn(column) }}">
+                        {{ attribute(product_data,column) }}
+                    </td>
+                {% endif %}
+
             {% endfor %}
-            <td class="text-info">
+            <td class="text-info disabled" data-order="{{ calculateHomeProductPrice(product_data.price,currency_multiplier) }}">
                 {{ calculateHomeProductPrice(product_data.price,currency_multiplier) }}
             </td>
             {% include 'modules/common/components/table-cells/actions.html.twig' with {

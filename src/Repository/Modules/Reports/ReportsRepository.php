@@ -57,7 +57,7 @@ class ReportsRepository{
                     DATE_FORMAT(mpbi.date,'%Y-%m')
                 )
             ) AS payment_bills
-            ON true
+            ON DATE_FORMAT(mpm.date,'%Y-%m') = payment_bills.yearAndMonth
             
             GROUP BY (
                 DATE_FORMAT(mpm.date,'%Y-%m')

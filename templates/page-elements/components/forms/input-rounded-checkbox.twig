@@ -4,8 +4,8 @@
 {% set wrapperStyles =  ( wrapperStyles is not defined   ? "" : wrapperStyles ) %}
 
 <div class="checkbox checkbox-circle checkbox-info peers ai-c" style="{{ wrapperStyles }}">
-    <input type="checkbox" name="inputCheckboxesCall" class="peer {{ classes }}" {{ checked }}>
-    <label class=" peers peer-greed js-sb ai-c">
+    <input type="checkbox" name="inputCheckboxesCall" class="peer {{ classes }}" {{ checked }} style="width: 30px;">
+    <label class=" peers peer-greed js-sb ai-c" style="position: absolute;">
 
             <span class="peer peer-greed">
                 {{ label }}

@@ -13,6 +13,7 @@ export default (function () {
         },
         init: function () {
             this.filterDependentListOnChange();
+            this.validateBetweenMinMax();
         },
         /**
          * This function depends on the ChoiceType optgroup, and filters by value of optgroup label
@@ -120,8 +121,33 @@ export default (function () {
             }
 
 
-        }
+        },
+        validateBetweenMinMax: function(element){
+            let minVal = $(element).attr('min');
+            let maxVal = $(element).attr('max');
+            let val    = $(element).val();
 
+            let isBelowMin = false;
+            let isAboveMax = false;
+
+            if( "undefined" !== typeof minVal ){
+                if( val < minVal ){
+                    isBelowMin = true;
+                }
+            }
+
+            if( "undefined" !== typeof maxVal ){
+                if( val > maxVal){
+                    isAboveMax = true;
+                }
+            }
+
+            if( isAboveMax ){
+                $(element).val(maxVal);
+            }else if( isBelowMin ){
+                $(element).val(minVal);
+            }
+        },
     }
 
 }());

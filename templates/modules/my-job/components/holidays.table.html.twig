@@ -11,11 +11,28 @@
     </thead>
     <tbody>
     {% for holidays_spent in all_holidays_spent %}
+        {% set days_left = 0 %}
+
+        {% for job_holiday_summary in job_holidays_summary %}
+            {% if holidays_spent.year == job_holiday_summary.year %}
+                {% set days_left = job_holiday_summary.daysLeftForYear %}
+            {% endif %}
+        {% endfor %}
+
         <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyJobHolidays">
 
             <td class="d-none id">{{ holidays_spent.id }}</td>
-            <td class="year">{{ holidays_spent.year }}</td>
-            <td class="daysSpent">{{ holidays_spent.daysSpent }}</td>
+            <td class="year disabled" data-order="{{ holidays_spent.year }}">{{ holidays_spent.year }}</td>
+            <td class="daysSpent" data-order="{{ holidays_spent.daysSpent }}">
+                {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                    type     : "number",
+                    value    : holidays_spent.daysSpent,
+                    disabled : true,
+                    min      : 1,
+                    max      : holidays_spent.daysSpent + days_left,
+                    attrs    : "data-validate-form-element=true"
+                }%}
+            </td>
             <td class="information">{{ holidays_spent.Information }}</td>
 
             {% include 'modules/common/components/table-cells/actions.html.twig' with {
