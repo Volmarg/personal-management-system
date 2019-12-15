@@ -1,4 +1,10 @@
-<td contenteditable="false" data-content-editable="false">
+<td
+        contenteditable="false"
+        data-content-editable="false"
+        {% if tableClasses is defined %}
+        class="{{ tableClasses }}"
+        {% endif %}
+>
 
     {% if trash is defined and trash %}
         <i class="fa fa-trash"

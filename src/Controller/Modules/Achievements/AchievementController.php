@@ -36,7 +36,7 @@ class AchievementController extends AbstractController {
      * @return Response
      */
     public function display(Request $request) {
-        $form = $this->app->forms->achievementForm();
+        $form = $this->app->forms->achievementForm(['enum_types' => $this->enum_types]);
         $this->addFormDataToDB($form, $request);
 
         if (!$request->isXmlHttpRequest()) {
@@ -109,7 +109,7 @@ class AchievementController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            $form = $this->app->forms->achievementForm();
+            $form = $this->app->forms->achievementForm(['enum_types' => $this->enum_types]);
             return $this->renderTemplate($form, true);
         }
         return $response;
