@@ -3,6 +3,7 @@
 namespace App\Form\Modules\Travels;
 
 use App\Controller\Utils\Application;
+use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
 use App\Services\Translator;
@@ -88,7 +89,7 @@ class MyTravelsIdeasType extends AbstractType {
 
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults([
-            'data_class' => null,
+            'data_class' => MyTravelsIdeas::class,
         ]);
         $resolver->setRequired('categories');
     }

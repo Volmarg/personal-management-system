@@ -22,7 +22,7 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
             SELECT category
-            FROM my_travels_ideas
+            FROM my_travel_idea
             WHERE category IS NOT NULL
         ';
 

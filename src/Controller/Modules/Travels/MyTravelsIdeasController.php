@@ -72,7 +72,7 @@ class MyTravelsIdeasController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $travel_idea = $request->request->get('my_travels_ideas');
+            $travel_idea = $form->getData();
 
             $this->app->em->persist($travel_idea);
             $this->app->em->flush();
