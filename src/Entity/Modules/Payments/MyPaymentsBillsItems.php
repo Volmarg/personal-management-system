@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository")
+ * @ORM\Table(name="my_payment_bill_item")
  */
 class MyPaymentsBillsItems
 {

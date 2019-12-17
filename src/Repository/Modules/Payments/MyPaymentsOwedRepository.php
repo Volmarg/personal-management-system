@@ -33,7 +33,7 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
                 SUM(amount) AS amount,
                 owed_by_me  AS owedByMe
             
-            FROM my_payments_owed
+            FROM my_payment_owed
             WHERE 1 
                 AND owed_by_me  = :owed_by_me
                 AND deleted     = 0

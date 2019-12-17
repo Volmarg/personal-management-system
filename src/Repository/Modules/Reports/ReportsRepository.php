@@ -44,7 +44,7 @@ class ReportsRepository{
                 ),
                 2) AS money
             
-            FROM my_payments_monthly mpm
+            FROM my_payment_monthly mpm
             
             LEFT JOIN (
                 SELECT

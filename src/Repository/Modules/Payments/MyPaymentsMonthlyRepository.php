@@ -40,8 +40,8 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
             mps.id AS type_id,
             YEAR(mpm.date) AS group_date_year, 
             MONTH(mpm.date) AS group_date_month 
-          FROM my_payments_monthly mpm
-          JOIN my_payments_settings mps
+          FROM my_payment_monthly mpm
+          JOIN my_payment_setting mps
             ON mpm.type_id = mps.id
             AND mpm.deleted = 0
           WHERE mpm.deleted = 0 

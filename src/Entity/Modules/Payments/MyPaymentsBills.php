@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsBillsRepository")
+ * @ORM\Table(name="my_payment_bill")
  */
 class MyPaymentsBills
 {
