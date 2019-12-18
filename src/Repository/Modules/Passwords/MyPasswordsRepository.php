@@ -29,7 +29,7 @@ class MyPasswordsRepository extends ServiceEntityRepository {
 
         $sql = "
             SELECT password
-            FROM my_passwords
+            FROM my_password
             WHERE id = :id
             AND deleted = 0
         ";

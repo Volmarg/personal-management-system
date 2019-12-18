@@ -34,7 +34,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
             $icon
             $color
             $parent_id
-          FROM my_notes_categories mnc
+          FROM my_note_category mnc
           WHERE mnc.deleted <> 1
           GROUP BY mnc.name;
         ";

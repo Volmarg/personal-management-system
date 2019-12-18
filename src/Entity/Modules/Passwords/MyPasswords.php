@@ -7,6 +7,7 @@ use SpecShaper\EncryptBundle\Annotations\Encrypted;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsRepository")
+ * @ORM\Table(name="my_password")
  */
 class MyPasswords {
     /**

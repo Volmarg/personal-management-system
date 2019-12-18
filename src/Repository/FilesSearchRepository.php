@@ -165,9 +165,9 @@ class FilesSearchRepository
                 mnc.id      AS categoryId,
                 'note'      AS type
             
-            FROM my_notes mn
+            FROM my_note mn
             
-            LEFT JOIN my_notes_categories mnc
+            LEFT JOIN my_note_category mnc
                 ON mnc.id = mn.category_id
                 AND mnc.deleted = 0
             

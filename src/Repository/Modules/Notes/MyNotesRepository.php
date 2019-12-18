@@ -37,12 +37,12 @@ class MyNotesRepository extends ServiceEntityRepository {
                 OR 
                 (
                     SELECT GROUP_CONCAT(note.id) AS noteId
-                    FROM my_notes AS note
+                    FROM my_note AS note
                     WHERE note.category_id IN 
                         (
                             SELECT DISTINCT mnc_.id
-                            FROM my_notes_categories mnc_
-                            LEFT JOIN my_notes mn_
+                            FROM my_note_category mnc_
+                            LEFT JOIN my_note mn_
                               ON mnc_.id = mn_.category_id
                             WHERE mnc_.parent_id = mnc.id
                               AND mnc_.parent_id IS NOT NULL
@@ -62,16 +62,16 @@ class MyNotesRepository extends ServiceEntityRepository {
             mnc.parent_id AS parent_id,
              ( -- get children categories
                SELECT GROUP_CONCAT(DISTINCT mnc_.id)
-               FROM my_notes_categories mnc_
-               LEFT JOIN my_notes mn_
+               FROM my_note_category mnc_
+               LEFT JOIN my_note mn_
                ON mnc_.id = mn_.category_id
                WHERE mnc_.parent_id = mnc.id
                AND mnc_.parent_id IS NOT NULL
                AND mnc_.deleted = 0
                AND mn_.deleted  = 0
               ) AS childrens_id
-          FROM my_notes mn
-          JOIN my_notes_categories mnc
+          FROM my_note mn
+          JOIN my_note_category mnc
             $categoriesWithNotes
           WHERE mn.deleted = 0
             AND mnc.deleted = 0
@@ -90,7 +90,7 @@ class MyNotesRepository extends ServiceEntityRepository {
 
         $sql = "
             SELECT * 
-            FROM my_notes
+            FROM my_note
             WHERE category_id = :category_id
                 AND deleted <> 1
         ";
@@ -111,7 +111,7 @@ class MyNotesRepository extends ServiceEntityRepository {
      */
     public function countNotesInCategoryByCategoryId(int $category_id) {
 
-        $sql = "SELECT COUNT(*) FROM my_notes WHERE category_id = ? AND deleted = 0";
+        $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = ? AND deleted = 0";
 
         $statement = $this->connection->executeQuery($sql, [$category_id]);
         $results = $statement->fetchColumn();

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsGroupsRepository")
+ * @ORM\Table(name="my_password_group")
  */
 class MyPasswordsGroups
 {
