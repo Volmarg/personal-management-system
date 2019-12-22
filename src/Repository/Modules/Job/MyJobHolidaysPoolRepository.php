@@ -32,10 +32,10 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
                   mjhp.days_left - SUM(mjh_days_spent.days_spent)
                 END                                             AS daysLeftForYear
             
-            FROM my_job_holidays_pool mjhp
+            FROM my_job_holiday_pool mjhp
             
-            -- now I join my_job_holidays to get amount of days spent
-            LEFT JOIN my_job_holidays mjh_days_spent
+            -- now I join my_job_holiday to get amount of days spent
+            LEFT JOIN my_job_holiday mjh_days_spent
                 ON mjh_days_spent.year = mjhp.year
                 AND mjh_days_spent.deleted = 0
             
@@ -61,13 +61,13 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
                 -- daysSpent.daysSpentForAllYears                          AS daysSpentForAllYears,
                 SUM(mjhp.days_left) - daysSpent.daysSpentForAllYears    AS daysAvailableTotally
             
-            FROM my_job_holidays_pool mjhp
+            FROM my_job_holiday_pool mjhp
             
-            -- now I join my_job_holidays to get amount of days spent
+            -- now I join my_job_holiday to get amount of days spent
             JOIN 
             (
               SELECT SUM(mjh_days_spent.days_spent) AS daysSpentForAllYears
-              FROM my_job_holidays mjh_days_spent
+              FROM my_job_holiday mjh_days_spent
               WHERE deleted = 0
             ) AS daysSpent
             
@@ -87,7 +87,7 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
 
         $sql = "
             SELECT DISTINCT year
-            FROM my_job_holidays_pool
+            FROM my_job_holiday_pool
             WHERE deleted = 0 ;
         ";
 

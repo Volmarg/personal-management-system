@@ -24,8 +24,8 @@ class MyGoalsRepository extends ServiceEntityRepository
         $connection = $this->getEntityManager()->getConnection();
 
         $sql ="
-            SELECT COUNT(my_goals_subgoals.id) > 0
-            FROM my_goals_subgoals
+            SELECT COUNT(my_goal_subgoal.id) > 0
+            FROM my_goal_subgoal
             WHERE my_goal_id = :goal_id
             AND completed = 1
         ";
@@ -47,7 +47,7 @@ class MyGoalsRepository extends ServiceEntityRepository
         $connection = $this->getEntityManager()->getConnection();
 
         $sql ="
-            UPDATE my_goals 
+            UPDATE my_goal 
                 SET completed = :completed
             WHERE id = :id
         ";

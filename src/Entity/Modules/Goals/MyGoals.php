@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsRepository")
+ * @ORM\Table(name="my_goal")
  */
 class MyGoals
 {

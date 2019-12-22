@@ -40,12 +40,12 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
                   SEC_TO_TIME((SUM(mja2.minutes) - 0) * 60)
                ELSE 0
             END AS timeSummary
-            FROM my_job_afterhours AS mja
-            LEFT JOIN my_job_afterhours AS mja2
+            FROM my_job_afterhour AS mja
+            LEFT JOIN my_job_afterhour AS mja2
               ON mja.id = mja2.id
               AND mja2.type = :type_made
               AND mja2.deleted = 0
-            LEFT JOIN my_job_afterhours AS mja3
+            LEFT JOIN my_job_afterhour AS mja3
               ON mja.id = mja3.id
               AND  mja3.type = :type_spent
               AND mja3.deleted = 0
@@ -72,7 +72,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
 
         $sql = "
             SELECT DISTINCT goal
-            FROM my_job_afterhours
+            FROM my_job_afterhour
             WHERE 1
                 AND goal IS NOT NULL;
         ";

@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsSubgoalsRepository")
+ * @ORM\Table(name="my_goal_subgoal")
  */
 class MyGoalsSubgoals
 {

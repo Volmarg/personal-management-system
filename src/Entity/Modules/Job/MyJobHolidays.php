@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysRepository")
+ * @ORM\Table(name="my_job_holiday")
  */
 class MyJobHolidays {
     /**
