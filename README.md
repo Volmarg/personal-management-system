@@ -123,7 +123,7 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 <li>Php 7.2.x</li>
 <li>JS</li>
 <li>JQ</li>
-<li>Symfony 4.3.2</li>
+<li>Symfony 4.4</li>
 <li>MySQL</li>
 <li>Css</li>
 <li>Scss</li>
