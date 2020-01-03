@@ -51,7 +51,7 @@ class ReportsRepository{
                 DATE_FORMAT(mpbi.date,'%Y-%m') AS yearAndMonth,
                 SUM(mpbi.amount) AS money
             
-                FROM my_payments_bills_items mpbi
+                FROM my_payment_bill_item mpbi
             
                 GROUP BY (
                     DATE_FORMAT(mpbi.date,'%Y-%m')
