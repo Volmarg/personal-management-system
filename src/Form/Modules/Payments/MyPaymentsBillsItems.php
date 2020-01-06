@@ -37,7 +37,8 @@ class MyPaymentsBillsItems extends AbstractType {
         $builder
             ->add(static::KEY_AMOUNT, NumberType::class, [
                 "attr"  => [
-                    "min" => 1
+                    'min'  => 0.1,
+                    "step" => 0.01,
                 ],
                 'label' => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.amount'),
                 "html5" => true,
