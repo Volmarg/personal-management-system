@@ -32,4 +32,17 @@ class SettingRepository extends ServiceEntityRepository
 
         return reset($result);
     }
+
+    /**
+     * @return Setting|null
+     */
+    public function getSettingsForFinances():?Setting {
+        $result = $this->findBy(['name' => SettingsLoader::SETTING_NAME_FINANCES]);
+
+        if( empty($result) ){
+            return null;
+        }
+
+        return reset($result);
+    }
 }

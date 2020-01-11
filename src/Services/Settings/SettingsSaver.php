@@ -5,6 +5,8 @@ namespace App\Services\Settings;
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
+use App\DTO\Settings\Finances\SettingsCurrencyDTO;
+use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
 use Doctrine\ORM\EntityManagerInterface;
@@ -64,6 +66,35 @@ class SettingsSaver {
             $dto          = SettingsDashboardDTO::fromJson($setting_json);
 
             $dto->getWidgetSettings()->setWidgetVisibility($array_of_widgets_visibility_dto);
+        }else{
+            $setting = new Setting();
+            $dto     = SettingsDashboardController::buildDashboardSettingsDto($array_of_widgets_visibility_dto);
+        }
+
+        $dashboard_settings_json = $dto->toJson();
+
+        $setting->setName(SettingsController::KEY_DASHBOARD_SETTINGS);
+        $setting->setValue($dashboard_settings_json);
+
+        $this->em->persist($setting);
+        $this->em->flush();
+    }
+
+    /**
+     * @param SettingsCurrencyDTO[] $currencies_settings_dtos
+     * @throws \Exception
+     */
+    public function saveSettingsForFinancesCurrencies(array $currencies_settings_dtos): void {
+
+        $setting = $this->settings_loader->getSettingsForFinances();
+
+        $are_settings_in_db = !empty($setting);
+
+        if( $are_settings_in_db ){
+            $setting_json = $setting->getValue();
+            $dto          = SettingsFinancesDTO::fromJson($setting_json);
+
+            $dto->setSettingsCurrencyDtos($currencies_settings_dtos);
         }else{
             $setting = new Setting();
             $dto     = SettingsDashboardController::buildDashboardSettingsDto($array_of_widgets_visibility_dto);

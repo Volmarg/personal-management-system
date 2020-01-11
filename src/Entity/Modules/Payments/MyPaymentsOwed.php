@@ -47,6 +47,12 @@ class MyPaymentsOwed
      */
     private $owedByMe = 0;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\MyPaymentCurrency", inversedBy="myPaymentOwed")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $currency;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +132,18 @@ class MyPaymentsOwed
     public function setOwedByMe(bool $owedByMe): self
     {
         $this->owedByMe = $owedByMe;
+
+        return $this;
+    }
+
+    public function getCurrency(): ?MyPaymentCurrency
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency(?MyPaymentCurrency $currency): self
+    {
+        $this->currency = $currency;
 
         return $this;
     }

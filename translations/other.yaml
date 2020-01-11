@@ -48,6 +48,16 @@ settings:
           labels:
             name: Name
             displayWidget: Display widget
+  finances:
+    label: Finances
+    type:
+      currencies:
+        label: Currencies
+        table:
+          name: Name
+          symbol: Symbol
+          multiplier: Multiplier
+          isDefault: Is default
 
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.

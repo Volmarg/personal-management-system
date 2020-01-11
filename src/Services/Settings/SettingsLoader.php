@@ -2,10 +2,8 @@
 
 namespace App\Services\Settings;
 
-use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Setting;
-use Doctrine\DBAL\DBALException;
 
 /**
  * This class is responsible for fetching settings json from DB
@@ -15,6 +13,7 @@ use Doctrine\DBAL\DBALException;
 class SettingsLoader {
 
     const SETTING_NAME_DASHBOARD = 'dashboard';
+    const SETTING_NAME_FINANCES  = 'finances';
 
     /**
      * @var Repositories $repositories
@@ -37,4 +36,13 @@ class SettingsLoader {
         $setting = $this->repositories->settingRepository->getSettingsForDashboard();
         return $setting;
     }
+
+    /**
+     * @return Setting|null
+     */
+    public function getSettingsForFinances(): ?Setting {
+        $setting = $this->repositories->settingRepository->getSettingsForFinances();
+        return $setting;
+    }
+
 }

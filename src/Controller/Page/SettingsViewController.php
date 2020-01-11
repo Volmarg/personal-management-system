@@ -2,9 +2,14 @@
 
 namespace App\Controller\Page;
 
+use App\Controller\Utils\Application;
+use App\DTO\Settings\Finances\SettingsCurrencyDTO;
+use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
+use App\Form\Page\Settings\Finances\CurrencyType;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Translator;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,25 +47,26 @@ class SettingsViewController extends AbstractController {
     /**
      * @param bool $ajax_render
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function renderSettingsTemplate($ajax_render = false) {
 
         $dashboard_settings_view = $this->renderSettingsDashboardTemplate($ajax_render)->getContent();
+        $finances_settings_view  = $this->renderSettingsFinancesTemplate($ajax_render)->getContent();
 
         $data = [
             'ajax_render'             => $ajax_render,
-            'dashboard_settings_view' => $dashboard_settings_view
+            'dashboard_settings_view' => $dashboard_settings_view,
+            'finances_settings_view'  => $finances_settings_view,
         ];
 
         return $this->render(self::TWIG_SETTINGS_TEMPLATE, $data);
-
     }
 
     /**
      * @param bool $ajax_render
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     private function renderSettingsDashboardTemplate($ajax_render = false) {
 
@@ -86,6 +92,42 @@ class SettingsViewController extends AbstractController {
         ];
 
         return $this->render(SettingsDashboardController::TWIG_DASHBOARD_SETTINGS_TEMPLATE, $data);
+    }
+
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     * @throws Exception
+     */
+    private function renderSettingsFinancesTemplate(bool $ajax_render = false):Response {
+        $settings_for_finances  = $this->settings_loader->getSettingsForFinances();
+        $are_settings_in_db     = !empty($settings_for_finances);
+
+        if( $are_settings_in_db ){
+            $setting_json           = $settings_for_finances->getValue();
+            $finances_settings_dto  = SettingsFinancesDTO::fromJson($setting_json);
+        }else{
+            $finances_settings_dto  = SettingsFinancesController::buildFinancesSettingsDto();
+
+            // test
+            $currencies_dto = new SettingsCurrencyDTO();
+            $currencies_dto->setIsDefault(false);
+            $currencies_dto->setName("test");
+            $currencies_dto->setSymbol('$$');;
+            $currencies_dto->setMultiplier(1);
+
+            $finances_settings_dto->setSettingsCurrencyDtos([$currencies_dto]);
+        }
+
+        $currency_form = $this->createForm(CurrencyType::class);
+
+        $data = [
+            'ajax_render'         => $ajax_render,
+            "currencies_settings" => $finances_settings_dto->getSettingsCurrencyDto(),
+            'currency_form'       => $currency_form->createView()
+        ];
+
+        return $this->render(SettingsFinancesController::TWIG_FINANCES_SETTINGS_TEMPLATE, $data);
     }
 
 }
