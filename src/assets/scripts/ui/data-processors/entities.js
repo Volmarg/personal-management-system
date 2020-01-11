@@ -1469,6 +1469,30 @@ export default (function () {
             },
             entity_name: "Setting",
         },
+        'settingsFinancesCurrencyTable':{
+            /**
+             * data from all records must be sent at once
+             * @param tr_parent_element {object}
+             */
+            makeUpdateData: function (tr_parent_element) {
+                console.log('todo');
+            },
+            entity_name: "Setting",
+        },
+        'settingsFinancesCurrencyForm':{
+            makeCreateData: function () {
+                let url                 = '/page-settings';
+                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                return {
+                    'url'               : url,
+                    'success_message'   : success_message,
+                    'fail_message'      : fail_message,
+                };
+            },
+            entity_name: "Setting",
+        },
     };
 
 }());

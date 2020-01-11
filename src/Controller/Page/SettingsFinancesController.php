@@ -4,6 +4,7 @@ namespace App\Controller\Page;
 
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
+use App\Form\Page\Settings\Finances\CurrencyType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
@@ -127,4 +128,52 @@ class SettingsFinancesController extends AbstractController {
 
         return $finances_settings_dto;
     }
+
+    /**
+     * @param Request $request
+     * @throws Exception
+     */
+    public function handleFinancesCurrencyForm(Request $request){
+        $currency_type_form = $this->createForm(CurrencyType::class);
+        $currency_type_form->handleRequest($request);
+
+        if( $currency_type_form->isSubmitted() && $currency_type_form->isValid() ){
+            $form_data = $currency_type_form->getData();
+            $name       = $form_data[SettingsCurrencyDTO::KEY_NAME]       ?? "";
+            $symbol     = $form_data[SettingsCurrencyDTO::KEY_SYMBOL]     ?? "";
+            $multiplier = $form_data[SettingsCurrencyDTO::KEY_MULTIPLIER] ?? "";
+            $is_default = $form_data[SettingsCurrencyDTO::KEY_IS_DEFAULT] ?? "";
+
+            $settings_finances_currency_dto = new SettingsCurrencyDTO();
+            $settings_finances_currency_dto->setName($name);
+            $settings_finances_currency_dto->setSymbol($symbol);
+            $settings_finances_currency_dto->setMultiplier($multiplier);
+            $settings_finances_currency_dto->setIsDefault($is_default);
+
+            $this->addCurrencyToFinancesCurrencySettings($settings_finances_currency_dto);
+        }
+    }
+
+    /**
+     * @param SettingsCurrencyDTO $settings_finances_currency_dto
+     * @throws Exception
+     */
+    private function addCurrencyToFinancesCurrencySettings(SettingsCurrencyDTO $settings_finances_currency_dto){
+        $finances_currency_settings     = $this->settings_loader->getSettingsForFinances();
+
+        if( !empty($finances_currency_settings) ){
+            $finances_currency_settings_json = $finances_currency_settings->getValue();
+
+            $finances_settings_dto                     = SettingsFinancesDTO::fromJson($finances_currency_settings_json);
+            $saved_settings_finances_currencies_dtos   = $finances_settings_dto->getSettingsCurrencyDtos();
+            $saved_settings_finances_currencies_dtos[] = $settings_finances_currency_dto;
+
+            $this->settings_saver->saveSettingsForFinancesCurrencies($saved_settings_finances_currencies_dtos);
+            return;
+        }
+
+        $this->settings_saver->saveSettingsForFinancesCurrencies([$settings_finances_currency_dto]);
+        return;
+    }
+
 }

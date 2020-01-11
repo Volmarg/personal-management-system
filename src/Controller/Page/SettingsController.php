@@ -12,8 +12,6 @@ class SettingsController extends AbstractController {
 
     const TWIG_SETTINGS_TEMPLATE = 'page-elements/settings/layout.html.twig' ;
 
-    const KEY_DASHBOARD_SETTINGS = 'dashboard';
-
     /**
      * @var SettingsViewController $settings_view_controller
      */
@@ -25,14 +23,24 @@ class SettingsController extends AbstractController {
     private $settings_dashboard_controller;
 
     /**
+     * @var SettingsFinancesController $settings_finances_controller
+     */
+    private $settings_finances_controller;
+
+    /**
      * SettingsController constructor.
      * @param SettingsDashboardController $settings_dashboard_controller
      * @param SettingsViewController $settings_view_controller
-     * @throws \Exception
+     * @param SettingsFinancesController $settings_finances_controller
      */
-    public function __construct(SettingsDashboardController $settings_dashboard_controller, SettingsViewController $settings_view_controller) {
+    public function __construct(
+        SettingsDashboardController $settings_dashboard_controller,
+        SettingsViewController      $settings_view_controller,
+        SettingsFinancesController  $settings_finances_controller
+    ) {
         $this->settings_dashboard_controller = $settings_dashboard_controller;
         $this->settings_view_controller      = $settings_view_controller;
+        $this->settings_finances_controller  = $settings_finances_controller;
     }
 
     /**
@@ -42,10 +50,20 @@ class SettingsController extends AbstractController {
      * @throws \Exception
      */
     public function display(Request $request) {
+        $this->handleForms($request);
+
         if (!$request->isXmlHttpRequest()) {
             return $this->settings_view_controller->renderSettingsTemplate(false);
         }
         return $this->settings_view_controller->renderSettingsTemplate(true);
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Exception
+     */
+    private function handleForms(Request $request){
+        $this->settings_finances_controller->handleFinancesCurrencyForm($request);
     }
 
 }

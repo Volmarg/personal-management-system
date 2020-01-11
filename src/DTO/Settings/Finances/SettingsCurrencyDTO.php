@@ -16,7 +16,7 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
     /**
      * @var string $name
      */
-    private $name = "name";
+    private $name = "";
 
     /**
      * @var string $symbol

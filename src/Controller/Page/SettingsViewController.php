@@ -102,28 +102,18 @@ class SettingsViewController extends AbstractController {
     private function renderSettingsFinancesTemplate(bool $ajax_render = false):Response {
         $settings_for_finances  = $this->settings_loader->getSettingsForFinances();
         $are_settings_in_db     = !empty($settings_for_finances);
+        $currencies_settings    = [];
+        $currency_form          = $this->createForm(CurrencyType::class);
 
         if( $are_settings_in_db ){
             $setting_json           = $settings_for_finances->getValue();
             $finances_settings_dto  = SettingsFinancesDTO::fromJson($setting_json);
-        }else{
-            $finances_settings_dto  = SettingsFinancesController::buildFinancesSettingsDto();
-
-            // test
-            $currencies_dto = new SettingsCurrencyDTO();
-            $currencies_dto->setIsDefault(false);
-            $currencies_dto->setName("test");
-            $currencies_dto->setSymbol('$$');;
-            $currencies_dto->setMultiplier(1);
-
-            $finances_settings_dto->setSettingsCurrencyDtos([$currencies_dto]);
+            $currencies_settings    = $finances_settings_dto->getSettingsCurrencyDtos();
         }
-
-        $currency_form = $this->createForm(CurrencyType::class);
 
         $data = [
             'ajax_render'         => $ajax_render,
-            "currencies_settings" => $finances_settings_dto->getSettingsCurrencyDto(),
+            "currencies_settings" => $currencies_settings,
             'currency_form'       => $currency_form->createView()
         ];
 

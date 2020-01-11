@@ -18,7 +18,7 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
     /**
      * @return SettingsCurrencyDTO[]
      */
-    public function getSettingsCurrencyDto(): array {
+    public function getSettingsCurrencyDtos(): array {
         return $this->settings_currency_dto;
     }
 
@@ -73,7 +73,7 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
 
         $array_of_currency_setting_jsons = [];
 
-        foreacH($this->getSettingsCurrencyDto() as $currency_settings ){
+        foreacH($this->getSettingsCurrencyDtos() as $currency_settings ){
             $array_of_currency_setting_jsons[] = $currency_settings->toArray();
         }
 

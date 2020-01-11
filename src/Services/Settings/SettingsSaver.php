@@ -4,6 +4,7 @@ namespace App\Services\Settings;
 
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
+use App\Controller\Page\SettingsFinancesController;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
@@ -40,11 +41,28 @@ class SettingsSaver {
         $this->settings_loader = $settings_loader;
     }
 
+    /**
+     * @param SettingsDashboardDTO $dto
+     */
     public function saveSettingsForDashboardFromDto(SettingsDashboardDTO $dto){
         $json = $dto->toJson();
 
         $setting = new Setting();
         $setting->setName(SettingsLoader::SETTING_NAME_DASHBOARD);
+        $setting->setValue($json);
+
+        $this->em->persist($setting);
+        $this->em->flush();
+    }
+
+    /**
+     * @param SettingsFinancesDTO $dto
+     */
+    public function saveSettingsForFinancesFromDto(SettingsFinancesDTO $dto){
+        $json = $dto->toJson();
+
+        $setting = new Setting();
+        $setting->setName(SettingsLoader::SETTING_NAME_FINANCES);
         $setting->setValue($json);
 
         $this->em->persist($setting);
@@ -73,7 +91,7 @@ class SettingsSaver {
 
         $dashboard_settings_json = $dto->toJson();
 
-        $setting->setName(SettingsController::KEY_DASHBOARD_SETTINGS);
+        $setting->setName(SettingsLoader::SETTING_NAME_DASHBOARD);
         $setting->setValue($dashboard_settings_json);
 
         $this->em->persist($setting);
@@ -97,13 +115,13 @@ class SettingsSaver {
             $dto->setSettingsCurrencyDtos($currencies_settings_dtos);
         }else{
             $setting = new Setting();
-            $dto     = SettingsDashboardController::buildDashboardSettingsDto($array_of_widgets_visibility_dto);
+            $dto     = SettingsFinancesController::buildFinancesSettingsDto($currencies_settings_dtos);
         }
 
-        $dashboard_settings_json = $dto->toJson();
+        $finances_settings_json = $dto->toJson();
 
-        $setting->setName(SettingsController::KEY_DASHBOARD_SETTINGS);
-        $setting->setValue($dashboard_settings_json);
+        $setting->setName(SettingsLoader::SETTING_NAME_FINANCES);
+        $setting->setValue($finances_settings_json);
 
         $this->em->persist($setting);
         $this->em->flush();
