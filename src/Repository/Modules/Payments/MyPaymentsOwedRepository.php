@@ -31,13 +31,14 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
             SELECT 
                 target      AS target,
                 SUM(amount) AS amount,
-                owed_by_me  AS owedByMe
+                owed_by_me  AS owedByMe,
+                currency    AS currency
             
             FROM my_payment_owed
             WHERE 1 
                 AND owed_by_me  = :owed_by_me
                 AND deleted     = 0
-            GROUP BY target;
+            GROUP BY target, currency;
         ";
 
         $binded_values = [

@@ -29,7 +29,7 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
     private $isDefault = false;
 
     /**
-     * @var int $multiplier
+     * @var float $multiplier
      */
     private $multiplier = 1;
 
@@ -76,16 +76,16 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getMultiplier(): int {
+    public function getMultiplier(): float {
         return $this->multiplier;
     }
 
     /**
-     * @param int $multiplier
+     * @param float $multiplier
      */
-    public function setMultiplier(int $multiplier): void {
+    public function setMultiplier(float $multiplier): void {
         $this->multiplier = $multiplier;
     }
 

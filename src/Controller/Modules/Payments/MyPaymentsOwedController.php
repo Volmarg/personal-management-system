@@ -2,9 +2,11 @@
 
 namespace App\Controller\Modules\Payments;
 
+use App\Controller\Page\SettingsController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use Doctrine\DBAL\DBALException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +46,7 @@ class MyPaymentsOwedController extends AbstractController
      * @param bool $ajax_render
      * @return Response
      * @throws DBALException
+     * @throws Exception
      */
     protected function renderTemplate($ajax_render = false) {
 
@@ -61,6 +64,10 @@ class MyPaymentsOwedController extends AbstractController
         $summary_owed_by_others = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(0);
         $summary_owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(1);
 
+        $setting                = $this->app->settings->settings_loader->getSettingsForFinances();
+        $settings_finances_dto  = SettingsController::buildFinancesSettingsDtoFromSetting($setting);
+        $currencies_dtos        = $settings_finances_dto->getSettingsCurrencyDtos();
+
         return $this->render('modules/my-payments/owed.html.twig', [
             'ajax_render'       => $ajax_render,
             'form'              => $form->createView(),
@@ -68,6 +75,7 @@ class MyPaymentsOwedController extends AbstractController
             'owed_by_others'    => $owed_by_others,
             'summary_owed_by_others' => $summary_owed_by_others,
             'summary_owed_by_me'     => $summary_owed_by_me,
+            'currencies_dtos'        => $currencies_dtos,
         ]);
     }
 
@@ -77,6 +85,7 @@ class MyPaymentsOwedController extends AbstractController
     protected function add(Request $request) {
         $form = $this->app->forms->moneyOwedForm();
         $form->handleRequest($request);
+        // bug: some error with submition for currency field - might be because extends choiceType
 
         if ($form->isSubmitted() && $form->isValid()) {
             $form_data = $form->getData();
@@ -91,7 +100,7 @@ class MyPaymentsOwedController extends AbstractController
      * @Route("/my-payments-owed/remove/", name="my-payments-owed-remove")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function remove(Request $request) {
 

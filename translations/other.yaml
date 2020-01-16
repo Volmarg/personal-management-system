@@ -58,6 +58,9 @@ settings:
           symbol: Symbol
           multiplier: Multiplier
           isDefault: Is default
+      messages:
+        couldNotFindCurrencyForGivenName: "Could not find currency for given name"
+        defaultCurrencyCanNotBeRemove: "Default currency cannot be removed"
 
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.

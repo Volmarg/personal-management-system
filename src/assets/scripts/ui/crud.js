@@ -453,7 +453,7 @@ export default (function () {
                     url: create_data.url,
                     type: method,
                     data: form.serialize(),
-                }).done((template) => {
+                }).done((data) => {
 
                     if (create_data.callback_before) {
                         create_data.callback(dataCallbackParams);
@@ -477,8 +477,16 @@ export default (function () {
                             ui.widgets.loader.hideLoader();
                         }).fail((data) => {
                             bootstrap_notifications.notify(data.responseText, 'danger');
-                        }).done((template) => {
-                            $('.twig-body-section').html(template);
+                        }).done((data) => {
+
+                            let twigBodySection = $('.twig-body-section');
+
+                            if( "object" === typeof data ){
+                                var template = data['template'];
+                                twigBodySection.html(template);
+                            }else {
+                                twigBodySection.html(data);
+                            }
 
                             if(create_data.callback_for_data_template_url){
                                 create_data.callback(dataCallbackParams);
@@ -489,12 +497,15 @@ export default (function () {
 
                     }else {
 
-                        // do not attempt to reload template if this is not a template
-                        if( "undefined" !== typeof template['code'] ){
-                            return;
+                        let twigBodySection = $('.twig-body-section');
+
+                        if( "object" === typeof data ){
+                            var template = data['template'];
+                            twigBodySection.html(template);
+                        }else {
+                            twigBodySection.html(data);
                         }
 
-                        $('.twig-body-section').html(template);
                         initializer.reinitialize();
                     }
 
@@ -619,12 +630,13 @@ export default (function () {
         },
         toggleDisabledClassForTableRow: function (tr_parent_element) {
             let color_pickers   = $(tr_parent_element).find('.color-picker');
+            let toggle_buttons  = $(tr_parent_element).find('.toggle-button');
             let option_pickers  = $(tr_parent_element).find('.option-picker');
             let date_pickers    = $(tr_parent_element).find('.date-picker');
             let checkbox        = $(tr_parent_element).find('.checkbox-disabled');
             let selectize       = $(tr_parent_element).find('.selectize-control');
             let dataPreview     = $(tr_parent_element).find('.data-preview');
-            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, dataPreview];
+            let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, dataPreview, toggle_buttons];
             let _this = this;
 
             $(elements_to_toggle).each((index, element_type) => {

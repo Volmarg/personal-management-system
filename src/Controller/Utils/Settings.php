@@ -3,6 +3,7 @@ namespace App\Controller\Utils;
 
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
+use App\Controller\Page\SettingsValidationController;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
 
@@ -28,16 +29,23 @@ class Settings {
      */
     public $settings_dashboard_controller;
 
+    /**
+     * @var SettingsValidationController $settingsValidationController
+     */
+    private $settingsValidationController;
+
     public function __construct(
-        SettingsSaver               $settings_saver,
-        SettingsLoader              $settings_loader,
-        SettingsController          $settings_controller,
-        SettingsDashboardController $settings_dashboard_controller
+        SettingsSaver                $settings_saver,
+        SettingsLoader               $settings_loader,
+        SettingsController           $settings_controller,
+        SettingsDashboardController  $settings_dashboard_controller,
+        SettingsValidationController $settingsValidationController
     ) {
         $this->settings_saver                   = $settings_saver;
         $this->settings_loader                  = $settings_loader;
         $this->settings_controller              = $settings_controller;
         $this->settings_dashboard_controller    = $settings_dashboard_controller;
+        $this->settingsValidationController     = $settingsValidationController;
     }
 
 }

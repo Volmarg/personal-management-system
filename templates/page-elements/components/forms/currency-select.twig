@@ -1,0 +1,16 @@
+{% if disabled is not defined %}
+        {% set disabled = '' %}
+{% else %}
+        {% set disabled = 'disabled' %}
+{% endif %}
+
+<select
+        class="form-control {{ disabled }}"
+        style="max-width: 65px;"
+>
+    {% for finance_currency_dto in getFinancesCurrenciesDtos() %}
+        <option value="{{ finance_currency_dto.getName() }}">
+            {{ finance_currency_dto.getSymbol() }}
+        </option>
+    {% endfor %}
+</select>

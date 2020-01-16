@@ -229,6 +229,9 @@ forms:
       name: "The name of currency"
       symbol: "Symbol that should be displayed for records"
       multiplier: "Currency multiplier ratio toward the default"
+    messages:
+      failure:
+        defaultCurrencyIsAlreadySet: "Default currency is already set"
   MyContactType:
     labels:
       name: Name
