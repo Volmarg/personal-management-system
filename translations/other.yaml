@@ -61,6 +61,10 @@ settings:
       messages:
         couldNotFindCurrencyForGivenName: "Could not find currency for given name"
         defaultCurrencyCanNotBeRemove: "Default currency cannot be removed"
+        couldNotFindSettingWithThisName: "Could not find setting with this name"
+        canNotUnsetTheTheDefaultPropertyForDefaultCurrency: "Can not unset the default property for default currency"
+        success: "Currency record has been successfully updated"
+
 
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.

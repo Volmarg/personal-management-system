@@ -15,15 +15,26 @@
 
         {% for currency_setting in currencies_settings %}
             <tr class="editable-parent save-parent trash-parent" data-type="settingsFinancesCurrencyTable">
-
+                <input type="hidden"
+                       name="before-update-state"
+                       class="before-update-state"
+                       value="{{ currency_setting.toJson() }}"
+                />
                 <td class="name">
                     {{ currency_setting.getName() }}
                 </td>
                 <td class="symbol">
                     {{ currency_setting.getSymbol() }}
                 </td>
-                <td class="multiplier">
-                    {{ currency_setting.getMultiplier() }}
+                <td>
+                    {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                        type     : "number",
+                        value    : currency_setting.getMultiplier(),
+                        disabled : true,
+                        min      : 0.1,
+                        step     : 0.1,
+                        class    : "multiplier"
+                    }%}
                 </td>
                 <td class="is-default">
                     {% include 'page-elements/components/forms/toggle-button.twig' with {

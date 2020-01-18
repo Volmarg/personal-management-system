@@ -2,6 +2,7 @@
 
 namespace App\Controller\Page;
 
+use App\Controller\Utils\AjaxResponse;
 use App\DTO\CallStatusDTO;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
@@ -74,7 +75,12 @@ class SettingsFinancesController extends AbstractController {
      * @throws ExceptionDuplicatedTranslationKey
      * @throws Exception
      */
-    public function updateFinancesCurrenciesSetting(Request $request){
+    public function updateFinancesCurrenciesSetting(Request $request): Response {
+
+        if( !$request->request->has(SettingsCurrencyDTO::KEY_NAME) ){
+            $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsCurrencyDTO::KEY_NAME;
+            throw new \Exception($message);
+        }
 
         if( !$request->request->has(SettingsCurrencyDTO::KEY_NAME) ){
             $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsCurrencyDTO::KEY_NAME;
@@ -96,26 +102,57 @@ class SettingsFinancesController extends AbstractController {
             throw new \Exception($message);
         }
 
-        $is_default = filter_var($request->request->get(SettingsCurrencyDTO::KEY_IS_DEFAULT), FILTER_VALIDATE_BOOLEAN);;
-        $name       = trim($request->request->get(SettingsCurrencyDTO::KEY_NAME));
-        $symbol     = trim($request->request->get(SettingsCurrencyDTO::KEY_SYMBOL));
-        $multiplier = (float) trim($request->request->get(SettingsCurrencyDTO::KEY_MULTIPLIER));
+        if( !$request->request->has(SettingsController::KEY_BEFORE_UPDATE_STATE) ){
+            $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsController::KEY_BEFORE_UPDATE_STATE;
+            throw new \Exception($message);
+        }
 
-        $currency_setting_dto = new SettingsCurrencyDTO();
-        $currency_setting_dto->setName($name);
-        $currency_setting_dto->setSymbol($symbol);
-        $currency_setting_dto->setMultiplier($multiplier);
-        $currency_setting_dto->setIsDefault($is_default);
+        $code    = 200;
+        $message = $this->translator->translate('settings.finances.type.messages.success');
 
-        $currencies_setting_dtos   = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
-        $currencies_setting_dtos[] = $currencies_setting_dtos;
+        $is_default          = filter_var($request->request->get(SettingsCurrencyDTO::KEY_IS_DEFAULT), FILTER_VALIDATE_BOOLEAN);;
+        $name                = trim($request->request->get(SettingsCurrencyDTO::KEY_NAME));
+        $symbol              = trim($request->request->get(SettingsCurrencyDTO::KEY_SYMBOL));
+        $multiplier          = (float) trim($request->request->get(SettingsCurrencyDTO::KEY_MULTIPLIER));
+        $before_update_state = trim($request->request->get(SettingsController::KEY_BEFORE_UPDATE_STATE));
 
-        $this->settings_saver->saveSettingsForFinancesCurrencies($currencies_setting_dtos);
+        $before_update_currency_setting_dto = SettingsCurrencyDTO::fromJson($before_update_state);
 
-        // todo: handle blocking / changing default val
-        // todo: check if values are not empty and multiplier != 0
+        $new_currency_setting_dto = new SettingsCurrencyDTO();
+        $new_currency_setting_dto->setName($name);
+        $new_currency_setting_dto->setSymbol($symbol);
+        $new_currency_setting_dto->setMultiplier($multiplier);
+        $new_currency_setting_dto->setIsDefault($is_default);
 
-        return $this->settings_view_controller->renderSettingsTemplate(false);
+        $currencies_settings_dtos       = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $array_index_of_updated_setting = null;
+
+        foreach( $currencies_settings_dtos as $index => $currency_setting_dto_from_db ){
+            if( $currency_setting_dto_from_db->getName() === $before_update_currency_setting_dto->getName() ){
+                $array_index_of_updated_setting = $index;
+                break;
+            }
+        }
+
+        if( is_null($array_index_of_updated_setting) ){
+            $code    = 500;
+            $message = $this->translator->translate("settings.finances.type.messages.couldNotFindSettingWithThisName");
+        }
+
+        if(
+                $before_update_currency_setting_dto->isDefault()
+            &&  !$new_currency_setting_dto->isDefault()
+        ){
+            $code    = 400;
+            $message = $this->translator->translate("settings.finances.type.messages.canNotUnsetTheTheDefaultPropertyForDefaultCurrency");
+        }
+
+        if( 200 === $code ){
+            $currencies_settings_dtos = $this->handleDefaultCurrencyChange($currencies_settings_dtos, $new_currency_setting_dto, $array_index_of_updated_setting);
+            $this->settings_saver->saveSettingsForFinancesCurrencies($currencies_settings_dtos);
+        }
+
+        return AjaxResponse::buildResponseForAjaxCall($code, $message);
     }
 
     /**
@@ -128,10 +165,10 @@ class SettingsFinancesController extends AbstractController {
      */
     public function removeFinancesCurrencySetting(Request $request, string $name){
 
-        $currencies_setting_dtos = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currencies_settings_dtos = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
         $currency_existed        = false;
 
-        foreach( $currencies_setting_dtos as $index => $currency_setting_dto ){
+        foreach( $currencies_settings_dtos as $index => $currency_setting_dto ){
 
             if( $currency_setting_dto->getName() === $name ){
 
@@ -140,7 +177,7 @@ class SettingsFinancesController extends AbstractController {
                     return new Response($message, 500);
                 }
 
-                unset($currencies_setting_dtos[$index]);
+                unset($currencies_settings_dtos[$index]);
                 $currency_existed = true;
                 break;
             }
@@ -152,7 +189,7 @@ class SettingsFinancesController extends AbstractController {
             return new Response($message, 500);
         }
 
-        $this->settings_saver->saveSettingsForFinancesCurrencies($currencies_setting_dtos);
+        $this->settings_saver->saveSettingsForFinancesCurrencies($currencies_settings_dtos);
 
         $rendered_view = $this->settings_view_controller->renderSettingsTemplate(true);
         return $rendered_view->getContent(); //todo: handle template
@@ -229,11 +266,20 @@ class SettingsFinancesController extends AbstractController {
 
     /**
      * This function enforce the update of all the currencies when default currency is changed
-     * @param SettingsCurrencyDTO $new_default_setting_currency_dto
-     * @throws Exception
+     * @param SettingsCurrencyDTO[]  $currencies_settings_dtos
+     * @param SettingsCurrencyDTO    $new_default_setting_currency_dto
+     * @param string                 $array_index_of_updated_setting
+     * @return SettingsCurrencyDTO[]
      */
-    public function handleDefaultCurrencyChange(SettingsCurrencyDTO $new_default_setting_currency_dto){
-        $setting_currencies_dtos = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
+    private function handleDefaultCurrencyChange(array $currencies_settings_dtos, SettingsCurrencyDTO $new_default_setting_currency_dto, string $array_index_of_updated_setting){
+
+        foreach( $currencies_settings_dtos as &$currency_setting_dto ){
+            $currency_setting_dto->setIsDefault(false);
+        }
+
+        $currencies_settings_dtos[$array_index_of_updated_setting] = $new_default_setting_currency_dto;
+
+        return $currencies_settings_dtos;
     }
 
     /**

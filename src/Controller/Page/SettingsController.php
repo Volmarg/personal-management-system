@@ -17,7 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsController extends AbstractController {
 
-    const TWIG_SETTINGS_TEMPLATE = 'page-elements/settings/layout.html.twig' ;
+    const TWIG_SETTINGS_TEMPLATE  = 'page-elements/settings/layout.html.twig' ;
+    const KEY_BEFORE_UPDATE_STATE = "before_update_state";
 
     /**
      * @var SettingsViewController $settings_view_controller

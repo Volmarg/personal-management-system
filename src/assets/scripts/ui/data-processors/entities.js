@@ -1477,15 +1477,18 @@ export default (function () {
                 let isDefaultInput  = $(tr_parent_element).find('.is-default').find('input');
                 let isDefault       = utils.domAttributes.isChecked(isDefaultInput);
 
+                let beforeUpdateState = $(tr_parent_element).find('.before-update-state').val();
+
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/api/settings-finances/update-currencies';
                 let ajax_data = {
-                    'name'        : name,
-                    'symbol'      : symbol,
-                    'multiplier'  : multiplier,
-                    'is_default'  : isDefault,
+                    'name'                : name,
+                    'symbol'              : symbol,
+                    'multiplier'          : multiplier,
+                    'is_default'          : isDefault,
+                    'before_update_state' : beforeUpdateState,
                 };
 
                 return {

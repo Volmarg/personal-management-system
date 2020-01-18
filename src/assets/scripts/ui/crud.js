@@ -684,17 +684,44 @@ export default (function () {
             $.ajax({
                 url: update_data.url,
                 method: 'POST',
-                data: update_data.data,
-                success: (data) => {
-                    bootstrap_notifications.notify(update_data.success_message, 'success');
-
-                    if (update_data.callback_after) {
-                        update_data.callback();
-                    }
-                },
+                data: update_data.data
             }).fail(() => {
                 bootstrap_notifications.notify(update_data.fail_message, 'danger')
-            }).always(() => {
+            }).always((data) => {
+                //todo: check code - if 200 - then success but only if no data[code], otherwise danger
+
+                try{
+                    var code    = data['code'];
+                    var message = data['message'];
+                } catch(Exception){
+                    throw({
+                        "message"   : "Could not handle ajax call",
+                        "data"      : data,
+                        "exception" : Exception
+                    })
+                }
+
+                let messageType = "success";
+
+                if(
+                        ( "undefined" !== typeof code )
+                    &&  ( 200 != code )
+                ){
+                    messageType = "danger";
+                }
+
+                if( "undefined" === typeof message ){
+                    bootstrap_notifications.notify(update_data.success_message, messageType);
+                } else {
+                    bootstrap_notifications.notify(message, messageType);
+                }
+
+
+
+                if (update_data.callback_after) {
+                    update_data.callback();
+                }
+
                 ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
             });
         },

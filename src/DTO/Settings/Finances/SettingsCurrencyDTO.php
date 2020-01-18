@@ -4,6 +4,7 @@ namespace App\DTO\Settings\Finances;
 
 use App\DTO\AbstractDTO;
 use App\DTO\dtoInterface;
+use App\Services\Exceptions\ExceptionValueNotAllowed;
 use Exception;
 
 class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
@@ -42,8 +43,14 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param string $name
+     * @throws ExceptionValueNotAllowed
      */
     public function setName(string $name): void {
+
+        if( empty($name) ){
+            throw new ExceptionValueNotAllowed(ExceptionValueNotAllowed::KEY_MODE_STRING_NOT_EMPTY);
+        }
+
         $this->name = $name;
     }
 
@@ -56,8 +63,14 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param string $symbol
+     * @throws ExceptionValueNotAllowed
      */
     public function setSymbol(string $symbol): void {
+
+        if( empty($symbol) ){
+            throw new ExceptionValueNotAllowed(ExceptionValueNotAllowed::KEY_MODE_STRING_NOT_EMPTY);
+        }
+
         $this->symbol = $symbol;
     }
 
@@ -84,8 +97,14 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param float $multiplier
+     * @throws ExceptionValueNotAllowed
      */
     public function setMultiplier(float $multiplier): void {
+
+        if( $multiplier <= 0 ){
+            throw new ExceptionValueNotAllowed(ExceptionValueNotAllowed::KEY_MODE_NUMERIC_NOT_HIGHER_THAN_0, $multiplier);
+        }
+
         $this->multiplier = $multiplier;
     }
 

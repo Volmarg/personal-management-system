@@ -11,6 +11,12 @@ class AjaxResponse extends AbstractController {
     const KEY_MESSAGE   = "message";
     const KEY_TEMPLATE  = "template";
 
+    /**
+     * @param int $code
+     * @param string $message
+     * @param string|null $template
+     * @return JsonResponse
+     */
     public static function buildResponseForAjaxCall(int $code, string $message, string $template = null): JsonResponse {
 
         $response_data = [
