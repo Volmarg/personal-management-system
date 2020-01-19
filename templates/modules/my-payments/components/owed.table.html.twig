@@ -32,7 +32,8 @@
             <td class="">
                 <div class="currency">
                     {% include 'page-elements/components/forms/currency-select.twig' with {
-                        "disabled": true
+                        "disabled": true,
+                        "currency": record.currency
                     }%}
                 </div>
             </td>

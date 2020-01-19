@@ -5,11 +5,21 @@
 {% endif %}
 
 <select
-        class="form-control {{ disabled }}"
+        class="form-control {{ disabled }} option-picker"
         style="max-width: 65px;"
 >
     {% for finance_currency_dto in getFinancesCurrenciesDtos() %}
-        <option value="{{ finance_currency_dto.getName() }}">
+
+        {% if
+                currency is defined
+            and currency == finance_currency_dto.getName()
+        %}
+            {% set selected = "selected" %}
+        {% else %}
+            {% set selected = "" %}
+        {% endif %}
+
+        <option value="{{ finance_currency_dto.getName() }}" {{ selected }}>
             {{ finance_currency_dto.getSymbol() }}
         </option>
     {% endfor %}
