@@ -15,6 +15,7 @@ use App\Services\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -126,6 +127,15 @@ class SettingsFinancesController extends AbstractController {
         foreach( $currencies_settings_dtos as $index => $currency_setting_dto_from_db ){
             if( $currency_setting_dto_from_db->getName() === $before_update_currency_setting_dto->getName() ){
                 $array_index_of_updated_setting = $index;
+            }
+
+            if(
+                    $currency_setting_dto_from_db->getName()        === $new_currency_setting_dto->getName()
+                &&  $before_update_currency_setting_dto->getName()  !== $new_currency_setting_dto->getName()
+            ){
+
+                $code    = 500;
+                $message = $this->translator->translate("settings.finances.type.messages.currencyWithThisNameAlreadyExist");
                 break;
             }
         }
@@ -163,6 +173,7 @@ class SettingsFinancesController extends AbstractController {
 
         $currencies_settings_dtos = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
         $currency_existed        = false;
+        $name                    = trim($name);
 
         foreach( $currencies_settings_dtos as $index => $currency_setting_dto ){
 
@@ -170,7 +181,7 @@ class SettingsFinancesController extends AbstractController {
 
                 if( $currency_setting_dto->isDefault() ){
                     $message = $this->translator->translate("settings.finances.type.messages.defaultCurrencyCanNotBeRemove");
-                    return new Response($message, 500);
+                    return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
                 }
 
                 unset($currencies_settings_dtos[$index]);
@@ -182,13 +193,13 @@ class SettingsFinancesController extends AbstractController {
 
         if( !$currency_existed ){
             $message = $this->translator->translate("settings.finances.type.messages.couldNotFindCurrencyForGivenName");
-            return new Response($message, 500);
+            return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
         }
 
         $this->settings_saver->saveFinancesSettingsForCurrenciesSettings($currencies_settings_dtos);
 
         $rendered_view = $this->settings_view_controller->renderSettingsTemplate(true);
-        return $rendered_view->getContent(); //todo: handle template
+        return $rendered_view;
     }
 
     /**
