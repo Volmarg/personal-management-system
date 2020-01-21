@@ -3,6 +3,7 @@ namespace App\Controller\Utils;
 
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
+use App\Controller\Page\SettingsFinancesController;
 use App\Controller\Page\SettingsValidationController;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
@@ -30,22 +31,29 @@ class Settings {
     public $settings_dashboard_controller;
 
     /**
-     * @var SettingsValidationController $settingsValidationController
+     * @var SettingsFinancesController $setting_finances_controller
      */
-    private $settingsValidationController;
+    public $setting_finances_controller;
+
+    /**
+     * @var SettingsValidationController $settings_validation_controller
+     */
+    private $settings_validation_controller;
 
     public function __construct(
         SettingsSaver                $settings_saver,
         SettingsLoader               $settings_loader,
         SettingsController           $settings_controller,
         SettingsDashboardController  $settings_dashboard_controller,
-        SettingsValidationController $settingsValidationController
+        SettingsFinancesController   $setting_finances_controller,
+        SettingsValidationController $settings_validation_controller
     ) {
         $this->settings_saver                   = $settings_saver;
         $this->settings_loader                  = $settings_loader;
         $this->settings_controller              = $settings_controller;
         $this->settings_dashboard_controller    = $settings_dashboard_controller;
-        $this->settingsValidationController     = $settingsValidationController;
+        $this->settings_validation_controller   = $settings_validation_controller;
+        $this->setting_finances_controller      = $setting_finances_controller;
     }
 
 }

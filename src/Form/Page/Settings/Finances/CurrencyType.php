@@ -4,7 +4,6 @@ namespace App\Form\Page\Settings\Finances;
 
 use App\Controller\Utils\Application;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
-use App\Entity\Modules\Payments\MyPaymentsOwed;
 use App\Form\Type\RoundcheckboxType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;

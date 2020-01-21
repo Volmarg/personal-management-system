@@ -22,8 +22,8 @@ class SettingsValidationController extends AbstractController {
     private $settings_loader;
 
     public function __construct(Translator $translator, SettingsLoader $settings_loader) {
-        $this->settings_loader     = $settings_loader;
-        $this->translator          = $translator;
+        $this->settings_loader = $settings_loader;
+        $this->translator      = $translator;
     }
 
     /**

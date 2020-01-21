@@ -688,7 +688,6 @@ export default (function () {
             }).fail(() => {
                 bootstrap_notifications.notify(update_data.fail_message, 'danger')
             }).always((data) => {
-                //todo: check code - if 200 - then success but only if no data[code], otherwise danger
 
                 try{
                     var code    = data['code'];

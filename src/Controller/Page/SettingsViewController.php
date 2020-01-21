@@ -99,17 +99,9 @@ class SettingsViewController extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    private function renderSettingsFinancesTemplate(bool $ajax_render = false):Response {
-        $settings_for_finances  = $this->settings_loader->getSettingsForFinances();
-        $are_settings_in_db     = !empty($settings_for_finances);
-        $currencies_settings    = [];
-        $currency_form          = $this->createForm(CurrencyType::class);
-
-        if( $are_settings_in_db ){
-            $setting_json           = $settings_for_finances->getValue();
-            $finances_settings_dto  = SettingsFinancesDTO::fromJson($setting_json);
-            $currencies_settings    = $finances_settings_dto->getSettingsCurrencyDtos();
-        }
+    private function renderSettingsFinancesTemplate(bool $ajax_render = false): Response {
+        $currencies_settings = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currency_form       = $this->createForm(CurrencyType::class);
 
         $data = [
             'ajax_render'         => $ajax_render,

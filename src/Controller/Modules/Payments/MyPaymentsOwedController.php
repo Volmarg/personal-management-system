@@ -64,9 +64,7 @@ class MyPaymentsOwedController extends AbstractController
         $summary_owed_by_others = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(0);
         $summary_owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(1);
 
-        $setting                = $this->app->settings->settings_loader->getSettingsForFinances();
-        $settings_finances_dto  = SettingsController::buildFinancesSettingsDtoFromSetting($setting);
-        $currencies_dtos        = $settings_finances_dto->getSettingsCurrencyDtos();
+        $currencies_dtos        = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/owed.html.twig', [
             'ajax_render'       => $ajax_render,
@@ -85,7 +83,6 @@ class MyPaymentsOwedController extends AbstractController
     protected function add(Request $request) {
         $form = $this->app->forms->moneyOwedForm();
         $form->handleRequest($request);
-        // bug: some error with submition for currency field - might be because extends choiceType
 
         if ($form->isSubmitted() && $form->isValid()) {
             $form_data = $form->getData();

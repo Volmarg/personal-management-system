@@ -2,7 +2,7 @@
 
 namespace App\Services\Settings;
 
-use App\Controller\Page\SettingsController;
+
 use App\Controller\Page\SettingsDashboardController;
 use App\Controller\Page\SettingsFinancesController;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
@@ -102,7 +102,7 @@ class SettingsSaver {
      * @param SettingsCurrencyDTO[] $currencies_settings_dtos
      * @throws \Exception
      */
-    public function saveSettingsForFinancesCurrencies(array $currencies_settings_dtos): void {
+    public function saveFinancesSettingsForCurrenciesSettings(array $currencies_settings_dtos): void {
 
         $setting = $this->settings_loader->getSettingsForFinances();
 
@@ -115,7 +115,7 @@ class SettingsSaver {
             $dto->setSettingsCurrencyDtos($currencies_settings_dtos);
         }else{
             $setting = new Setting();
-            $dto     = SettingsFinancesController::buildFinancesSettingsDto($currencies_settings_dtos);
+            $dto     = SettingsFinancesController::buildFinancesSettingsDtoFromCurrenciesSettingsDtos($currencies_settings_dtos);
         }
 
         $finances_settings_json = $dto->toJson();
