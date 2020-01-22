@@ -1469,6 +1469,66 @@ export default (function () {
             },
             entity_name: "Setting",
         },
+        'settingsFinancesCurrencyTable':{
+            makeUpdateData: function (tr_parent_element) {
+                let name            = $(tr_parent_element).find('.name').html();
+                let symbol          = $(tr_parent_element).find('.symbol').html();
+                let multiplier      = $(tr_parent_element).find('.multiplier').val();
+                let isDefaultInput  = $(tr_parent_element).find('.is-default').find('input');
+                let isDefault       = utils.domAttributes.isChecked(isDefaultInput);
+
+                let beforeUpdateState = $(tr_parent_element).find('.before-update-state').val();
+
+                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                let url = '/api/settings-finances/update-currencies';
+                let ajax_data = {
+                    'name'                : name,
+                    'symbol'              : symbol,
+                    'multiplier'          : multiplier,
+                    'is_default'          : isDefault,
+                    'before_update_state' : beforeUpdateState,
+                };
+
+                return {
+                    'url': url,
+                    'data': ajax_data,
+                    'success_message': success_message,
+                    'fail_message': fail_message,
+                };
+            },
+            makeRemoveData: function (parent_element) {
+                let name                = $(parent_element).find('.name').text();
+                let url                 = '/api/settings-finances/remove-currency/';
+                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                return {
+                    'url'                   : url + name,
+                    'data'                  : {},
+                    'success_message'       : success_message,
+                    'fail_message'          : fail_message,
+                    'is_dataTable'          : false,
+                    "use_ajax_fail_message" : true
+                };
+            },
+            entity_name: "Setting",
+        },
+        'settingsFinancesCurrencyForm':{
+            makeCreateData: function () {
+                let url                 = '/page-settings';
+                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                return {
+                    'url'               : url,
+                    'success_message'   : success_message,
+                    'fail_message'      : fail_message,
+                };
+            },
+            entity_name: "Setting",
+        },
     };
 
 }());

@@ -48,6 +48,25 @@ settings:
           labels:
             name: Name
             displayWidget: Display widget
+  finances:
+    label: Finances
+    type:
+      currencies:
+        label: Currencies
+        table:
+          name: Name
+          symbol: Symbol
+          multiplier: Multiplier
+          isDefault: Is default
+      messages:
+        couldNotFindCurrencyForGivenName: "Could not find currency for given name"
+        defaultCurrencyCanNotBeRemove: "Default currency cannot be removed"
+        couldNotFindSettingWithThisName: "Could not find setting with this name"
+        canNotUnsetTheTheDefaultPropertyForDefaultCurrency: "Can not unset the default property for default currency"
+        couldNotHandleAddingNewCurrencyBeingDefaultValue: "Could not handle adding new currency being default value"
+        currencyWithThisNameAlreadyExist: "Currency with this name already exist"
+        success: "Currency record has been successfully updated"
+
 
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.

@@ -158,6 +158,7 @@ payments:
       amount: Amount
       information: Information
       date: Date
+      currency: Currency
   monthlyPayments:
     headers:
       monthlyPayments: Monthly payments

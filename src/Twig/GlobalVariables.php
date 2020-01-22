@@ -9,7 +9,9 @@
 namespace App\Twig;
 
 use App\Controller\Utils\Application;
+use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\Entity\Modules\Schedules\MyScheduleType;
+use Exception;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -29,6 +31,7 @@ class GlobalVariables extends AbstractExtension {
             new TwigFunction('getMyNotesCategories', [$this, 'getMyNotesCategories']),
             new TwigFunction('getSchedulesTypes', [$this, 'getSchedulesTypes']),
             new TwigFunction('getSchedulesForNotifications', [$this, 'getSchedulesForNotifications']),
+            new TwigFunction('getFinancesCurrenciesDtos', [$this, 'getFinancesCurrenciesDtos']),
         ];
     }
 
@@ -68,5 +71,14 @@ class GlobalVariables extends AbstractExtension {
         ];
 
         return $data;
+    }
+
+    /**
+     * @throws Exception
+     * @return SettingsFinancesDTO[]
+     */
+    public function getFinancesCurrenciesDtos(): array {
+        $finances_currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        return $finances_currencies_dtos;
     }
 }

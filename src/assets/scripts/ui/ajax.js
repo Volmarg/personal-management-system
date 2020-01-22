@@ -125,7 +125,13 @@ export default (function () {
             }).always((data) => {
 
                 let twigBodySection = $('.twig-body-section');
-                twigBodySection.html(data);
+
+                if( "object" === typeof data ){
+                    var template = data['template'];
+                    twigBodySection.html(template);
+                }else {
+                    twigBodySection.html(data);
+                }
 
                 /**
                  * Despite this being called imagesLoaded it works fine with normal content as well

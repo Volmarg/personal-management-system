@@ -28,6 +28,7 @@ use App\Form\Modules\Notes\MyNotesCategoriesType;
 use App\Form\Modules\Notes\MyNotesType;
 use App\Form\Modules\Passwords\MyPasswordsGroupsType;
 use App\Form\Modules\Passwords\MyPasswordsType;
+use App\Form\Modules\Payments\CurrencyType;
 use App\Form\Modules\Payments\MyPaymentsBills;
 use App\Form\Modules\Payments\MyPaymentsBillsItems;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
@@ -180,6 +181,10 @@ class Forms extends AbstractController {
 
     public function userNicknameForm(array $params = []): FormInterface {
         return $this->createForm(UserNicknameType::class, null, $params);
+    }
+
+    public function currencyTypeForm(array $params = []): FormInterface {
+        return $this->createForm(CurrencyType::class, null, $params);
     }
 
     /**

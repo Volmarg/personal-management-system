@@ -7,6 +7,7 @@
         <td>{{ translate('payments.moneyOwed.table.amount') }}</td>
         <td>{{ translate('payments.moneyOwed.table.information') }}</td>
         <td>{{ translate('payments.moneyOwed.table.date') }}</td>
+        <td>{{ translate('payments.moneyOwed.table.currency') }}</td>
         <td>{{ translate('datatables.table.actions') }}</td>
     </tr>
     </thead>
@@ -28,6 +29,15 @@
                     </span>
             </td>
 
+            <td class="">
+                <div class="currency">
+                    {% include 'page-elements/components/forms/currency-select.twig' with {
+                        "disabled": true,
+                        "currency": record.currency
+                    }%}
+                </div>
+            </td>
+
             {% include 'modules/common/components/table-cells/actions.html.twig' with {
                 "trash": true,
                 "edit": true,
@@ -46,7 +56,23 @@
             <h5><u>{{ translate('other.summary') }}</u></h5>
             <ul style="list-style-type:none;margin:0; padding:0;">
                 {% for summary in summarries %}
-                    <li style="margin:0; padding:0;font-size:14px;"><b>{{ summary.target }}:</b> {{ summary.amount }} </li>
+                    <li style="margin:0; padding:0;font-size:14px;"><b>{{ summary.target }}:</b>
+                        {{ summary.amount }}
+
+                        {% set is_currency_present = false %}
+
+                        {% for currency_dto in currencies_dtos %}
+                            {% if currency_dto.getName() == summary.currency %}
+                                {% set is_currency_present = true %}
+                                {{ currency_dto.getSymbol() }}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if not is_currency_present %}
+                            {{ summary.currency }}
+                        {% endif %}
+
+                    </li>
                 {% endfor %}
             </ul>
         </div>

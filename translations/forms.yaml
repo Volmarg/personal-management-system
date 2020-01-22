@@ -117,6 +117,7 @@ forms:
       date: Date
       amount: Amount
       owedByMe: Owed by me
+      currency: Currency
     placeholders:
       target: Who owes the money
       information: Information about this borrow
@@ -218,6 +219,19 @@ forms:
     labels:
       name: Name
       value: Value
+  CurrencyType:
+    labels:
+      name: Name
+      symbol: Symbol
+      multiplier: Multiplier
+      isDefault: Is default
+    placeholders:
+      name: "The name of currency"
+      symbol: "Symbol that should be displayed for records"
+      multiplier: "Currency multiplier ratio toward the default"
+    messages:
+      failure:
+        defaultCurrencyIsAlreadySet: "Default currency is already set"
   MyContactType:
     labels:
       name: Name

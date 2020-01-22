@@ -23,3 +23,5 @@ exceptions:
     keyPriceNotFoundInProductsColumnsArray: "Key 'price' not found in products columns array"
   MyGoalsSettingsController:
     thisGoalTypeIsNotAllowed: "This goal type is not allowed"
+  dtoValidation:
+    unsupportedSetting: "Unsupported settings: "

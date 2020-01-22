@@ -17,11 +17,15 @@
     {% set attrs = "" %}
 {% endif %}
 
+{% if class is not defined %}
+    {% set class = "" %}
+{% endif %}
+
 <input
     autocomplete = 'off'
     value        = "{{ value }}"
     type         = "{{ type }}"
-    class        = "date-picker form-control {{ disabled }}"
+    class        = "date-picker form-control {{ disabled }} {{ class }}"
     style        = "max-width: 100px;"
 
     {% if min is defined %}

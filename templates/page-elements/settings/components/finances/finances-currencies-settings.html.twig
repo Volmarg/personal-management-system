@@ -1,0 +1,75 @@
+<div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+    <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('settings.finances.type.currencies.label') }} </h5>
+
+    <table id="settingsFinancesCurrencyTable" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+        <thead>
+        <tr>
+            <td>    {{ translate('settings.finances.type.currencies.table.name') }}         </td>
+            <td>    {{ translate('settings.finances.type.currencies.table.symbol') }}       </td>
+            <td>    {{ translate('settings.finances.type.currencies.table.multiplier') }}   </td>
+            <td>    {{ translate('settings.finances.type.currencies.table.isDefault') }}    </td>
+            <td>    {{ translate('datatables.table.actions') }}                             </td>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for currency_setting in currencies_settings %}
+            <tr class="editable-parent save-parent trash-parent" data-type="settingsFinancesCurrencyTable">
+                <input type="hidden"
+                       name="before-update-state"
+                       class="before-update-state"
+                       value="{{ currency_setting.toJson() }}"
+                />
+                <td class="name">
+                    {{ currency_setting.getName() }}
+                </td>
+                <td class="symbol">
+                    {{ currency_setting.getSymbol() }}
+                </td>
+                <td>
+                    {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                        type     : "number",
+                        value    : currency_setting.getMultiplier(),
+                        disabled : true,
+                        min      : 0.1,
+                        step     : 0.1,
+                        class    : "multiplier"
+                    }%}
+                </td>
+                <td class="is-default">
+                    {% include 'page-elements/components/forms/toggle-button.twig' with {
+                        "value"     : currency_setting.isDefault(),
+                        "yes_no"    : true,
+                        "classes"   : "disabled toggle-button"
+                    }%}
+                </td>
+
+                {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                    "trash": true,
+                    "edit": true,
+                    "save": true
+                } %}
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+{# Form #}
+<div class="row">
+    <div class="col-md-12">
+        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('job.holidays.headers.spend') }}</h4>
+            <div class="col-md-6 align-self-center add-record-form">
+                {{ form(currency_form, {'attr':{' data-entity':"settingsFinancesCurrencyForm"}})}}
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ form_start(currency_form) }}
+{{ form_end(currency_form) }}
+
