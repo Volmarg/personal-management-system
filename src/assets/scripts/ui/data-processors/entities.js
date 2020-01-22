@@ -335,6 +335,7 @@ export default (function () {
                 let target      = $(tr_parent_element).find('.target').html();
                 let amount      = $(tr_parent_element).find('.amount').html();
                 let information = $(tr_parent_element).find('.information').html();
+                let currency    = $(tr_parent_element).find('.currency').find("select").val();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -345,6 +346,7 @@ export default (function () {
                     'date'       : date,
                     'target'     : target,
                     'amount'     : amount,
+                    'currency'   : currency,
                     'information': information,
                 };
 
