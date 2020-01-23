@@ -4,10 +4,13 @@
         {% set disabled = 'disabled' %}
 {% endif %}
 
+{% set matchingCurrencyWasFound = false %}
+
 <select
         class="form-control {{ disabled }} option-picker"
         style="max-width: 65px;"
 >
+
     {% for finance_currency_dto in getFinancesCurrenciesDtos() %}
 
         {% if
@@ -15,6 +18,7 @@
             and currency == finance_currency_dto.getName()
         %}
             {% set selected = "selected" %}
+            {% set matchingCurrencyWasFound = true %}
         {% else %}
             {% set selected = "" %}
         {% endif %}
@@ -23,4 +27,8 @@
             {{ finance_currency_dto.getSymbol() }}
         </option>
     {% endfor %}
+
+    {% if not matchingCurrencyWasFound %}
+        <option value="" selected></option>
+    {% endif %}
 </select>
