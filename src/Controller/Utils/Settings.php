@@ -13,7 +13,7 @@ class Settings {
     /**
      * @var SettingsSaver $settings_saver
      */
-    private $settings_saver;
+    public $settings_saver;
 
     /**
      * @var SettingsLoader $settings_loader

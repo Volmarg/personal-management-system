@@ -30,6 +30,7 @@ class MyPaymentsOwedFixtures extends Fixture
             $info       = $data[PaymentsOwed::KEY_INFO];
             $date       = $data[PaymentsOwed::KEY_DATE];
             $owed_by_me = $data[PaymentsOwed::KEY_OWED_BY_ME];
+            $currency   = $data[PaymentsOwed::KEY_CURRENCY];
 
             $money_owed = new MyPaymentsOwed();
             $money_owed->setTarget($target);
@@ -37,6 +38,7 @@ class MyPaymentsOwedFixtures extends Fixture
             $money_owed->setInformation($info);
             $money_owed->setDate($date);
             $money_owed->setOwedByMe($owed_by_me);
+            $money_owed->setCurrency($currency);
 
             $manager->persist($money_owed);
         }

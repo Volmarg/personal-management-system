@@ -10,6 +10,7 @@ use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
