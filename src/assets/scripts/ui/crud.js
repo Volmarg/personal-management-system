@@ -346,7 +346,7 @@ export default (function () {
             });
         },
         attachContentCopyEventOnCopyIcon: function () {
-            let allCopyButtons = $('.fa-copy'); //todo: change selector for action...something
+            let allCopyButtons = $('.copy-record');
             let _this = this;
 
             if ($(allCopyButtons).length > 0) {
@@ -360,25 +360,43 @@ export default (function () {
 
                         let temporaryCopyDataInput = $("<input>");
                         $("body").append(temporaryCopyDataInput);
-                        /* Or use this to get directly content by html attributes
-                            let selectorOfTargetElement = $(clickedElement).attr('data-copy-from-selector');
-                            let targetElement = $(selectorOfTargetElement);
-                         */
-                        ui.widgets.loader.toggleLoader();
+                        ui.widgets.loader.showLoader();
                         $.ajax({
                             url: copy_data.url,
                             method: 'GET',
-                            success: (data) => {
-                                temporaryCopyDataInput.val(data).select();
-                                document.execCommand("copy");
-                                temporaryCopyDataInput.remove();
+                        }).always((data) => {
+                            ui.widgets.loader.hideLoader();
 
-                                bootstrap_notifications.notify(copy_data.success_message, 'success')
-                            },
-                        }).fail(() => {
-                            bootstrap_notifications.notify(update_data.fail_message, 'danger')
-                        }).always(() => {
-                            ui.widgets.loader.toggleLoader();
+                            try{
+                                var message  = data['message'];
+                                var password = data['password'];
+                            } catch(Exception){
+                                throw({
+                                    "message"   : "Could not handle ajax call",
+                                    "data"      : data,
+                                    "exception" : Exception
+                                })
+                            }
+
+                            if(
+                                    ""          !== message
+                                &&  "undefined" !== typeof  message
+                            ){
+                                bootstrap_notifications.showRedNotification(message);
+                                return;
+                            }
+
+                            if( "undefined" === typeof password ){
+                                bootstrap_notifications.showRedNotification(copy_data.fail_message);
+                                return;
+                            }
+
+                            temporaryCopyDataInput.val(password).select();
+                            document.execCommand("copy");
+                            temporaryCopyDataInput.remove();
+
+                            bootstrap_notifications.showGreenNotification(copy_data.success_message);
+
                         });
 
                     })

@@ -122,15 +122,15 @@ class MyPasswordsController extends AbstractController {
      * @Route("/my-passwords/get-password/{id}" ,name="my-passwords-get-password")
      * @param $id
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function getPasswordForId($id) {
         try {
             $encrypted_password = $this->app->repositories->myPasswordsRepository->getPasswordForId($id);
             $decrypted_password = $this->encryptor->decrypt($encrypted_password);
-            return new JsonResponse($decrypted_password, 200);
+            return AjaxResponse::buildResponseForAjaxCall(200, "", null, $decrypted_password);
         } catch (\Exception $e) {
-            return new JsonResponse($e->getMessage(), $e->getCode());
+            $exception_message = $e->getMessage();
+            return AjaxResponse::buildResponseForAjaxCall(500, $exception_message);
         }
     }
 
