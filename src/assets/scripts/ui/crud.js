@@ -164,38 +164,53 @@ export default (function () {
                 let url   = this.methods.removeEntity.url.replace(this.methods.removeEntity.params.repositoryName, repositoryName);
                 url       = url.replace(this.methods.removeEntity.params.id, entityId);
 
-                let message = this.messages.doYouWantToRemoveThisRecord();
+                let doYouWantToRemoveThisRecordMessage = this.messages.doYouWantToRemoveThisRecord();
 
                 bootbox.confirm({
-                    message:  message,
+                    message:  doYouWantToRemoveThisRecordMessage,
                     backdrop: true,
                     callback: function (result) {
                         if (result) {
-                            ui.widgets.loader.toggleLoader();
+                            ui.widgets.loader.showLoader();
 
                             $.ajax({
                                 url: url,
                                 method: _this.methods.removeEntity.method,
-                            }).fail((data) => {
-                                let message = _this.messages.couldNotRemoveEntityFromRepository(repositoryName);
-                                let type    = _this.messages.colors.red;
-                                bootstrap_notifications.notify(message, type)
-                            }).done((data) => {
-                                if( "function" === typeof afterRemovalCallback ){
+                            }).always((data) => {
+
+                                ui.widgets.loader.hideLoader();
+
+                                try{
+                                    var code    = data['code'];
+                                    var message = data['message'];
+                                } catch(Exception){
+                                    throw({
+                                        "message"   : "Could not handle ajax call",
+                                        "data"      : data,
+                                        "exception" : Exception
+                                    })
+                                }
+
+                                if( 200 != code ){
+                                    bootstrap_notifications.showRedNotification(message);
+                                    return;
+                                }else {
+
+                                    if( "undefined" === typeof message ){
+                                        message = _this.messages.entityHasBeenRemovedFromRepository();
+                                    }
+
+                                    bootstrap_notifications.showGreenNotification(message);
+                                }
+
+                                if( "function" === typeof afterRemovalCallback ) {
                                     afterRemovalCallback();
                                 }
 
-                                let message = _this.messages.entityHasBeenRemovedFromRepository();
-                                let type    = _this.messages.colors.green;
-                                bootstrap_notifications.notify(message, type)
-                            }).always((data) => {
-                                ui.widgets.loader.toggleLoader();
                             });
-
                         }
                     }
                 });
-
             },
             /**
              * Editing is based on modal
@@ -450,6 +465,7 @@ export default (function () {
          *      @see this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm()
          * @param reloadPage
          */
+        //todo: ajax refactor
         attachRecordAddViaAjaxOnSubmit: function (reloadPage = true) {
             let form  = $('.add-record-form form');
 
@@ -573,6 +589,7 @@ export default (function () {
                 event.preventDefault();
             });
         },
+        //todo: ajax refactor
         attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm: function () {
             $('.update-record-form form').submit(function (event) {
                 let form = $(event.target);

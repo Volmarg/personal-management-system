@@ -336,10 +336,11 @@ class Repositories extends AbstractController {
      * @param $id
      * This is general method for all common record soft delete called from front
      * @param array $findByParams
+     * @param Request|null $request
      * @return Response
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function deleteById(string $repository_name, $id, array $findByParams = []) {
+    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ) {
         try {
 
             $id         = $this->trimAndCheckId($id);
@@ -348,6 +349,11 @@ class Repositories extends AbstractController {
 
             if ($this->hasChildren($record, $repository)) {
                 $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
+
+                if( !empty($request) ){
+                    return AjaxResponse::buildResponseForAjaxCall(500, $message);
+                }
+
                 return new Response($message, 500);
             }
 
@@ -371,6 +377,11 @@ class Repositories extends AbstractController {
             if( $isConstraintViolation )
             {
                 $message = $this->translator->translate('db.foreignKeyViolation');
+
+                if( !empty($request) ){
+                    return AjaxResponse::buildResponseForAjaxCall(500, $message);
+                }
+
                 return new Response($message, 500);
             }
 
@@ -383,9 +394,19 @@ class Repositories extends AbstractController {
             $em->flush();
 
             $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
+
+            if( !empty($request) ){
+                return AjaxResponse::buildResponseForAjaxCall(200, $message);
+            }
+
             return new Response($message, 200);
         } catch (Exception | ExceptionRepository $er) {
             $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
+
+            if( !empty($request) ){
+                return AjaxResponse::buildResponseForAjaxCall(500, $message);
+            }
+
             return new Response($message, 500);
         }
     }
