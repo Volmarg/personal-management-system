@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Contacts;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
@@ -175,40 +176,22 @@ class MyContactsSettingsController extends AbstractController {
      */
     public function removeContactType(Request $request) {
 
-        $record_id  = $request->request->get('id');
-        $are_there_active_contacts_with_contact_type = $this->areThereActiveContactsWithContactType($record_id);
-
-        if( $are_there_active_contacts_with_contact_type ){
-            $message = $this->app->translator->translate('db.foreignKeyViolation');
-            $response_data = [
-                self::KEY_MESSAGE => $message,
-            ];
-            return new JsonResponse($response_data, 500);
-        }
-
-        $response = $this->app->repositories->deleteById(
+        $record_id = $request->request->get('id');
+        $response  = $this->app->repositories->deleteById(
             Repositories::MY_CONTACT_TYPE_REPOSITORY,
             $record_id
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderSettingsTemplate(true);
+            $rendered_template = $this->renderSettingsTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
-    }
 
-    /**
-     * This function checks if there are any contacts with deleted = 0 that still use this contact type
-     * Jsons are not cleared for removal - with this minimal data that there is, it's possible to revert the contact
-     * @param string $record_id
-     * @return bool
-     */
-    private function areThereActiveContactsWithContactType(string $record_id):bool {
-        $removed_record     = $this->app->repositories->myContactTypeRepository->find($record_id);
-        $contact_type_name  = $removed_record->getName();
-        $contacts           = $this->app->repositories->myContactRepository->findContactsWithContactTypeByContactTypeName($contact_type_name);
-
-        return !empty($contacts);
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

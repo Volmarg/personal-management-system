@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Schedules;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Schedules\MySchedule;
@@ -118,10 +119,15 @@ class MySchedulesController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

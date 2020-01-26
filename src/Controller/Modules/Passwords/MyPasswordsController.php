@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Passwords;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Passwords\MyPasswords;
@@ -9,6 +10,7 @@ use App\Form\Modules\Passwords\MyPasswordsType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
 
@@ -30,7 +32,7 @@ class MyPasswordsController extends AbstractController {
     /**
      * @Route("/my-passwords", name="my-passwords")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function display(Request $request) {
@@ -46,7 +48,7 @@ class MyPasswordsController extends AbstractController {
     /**
      * @Route("/my-passwords/remove/", name="my-passwords-remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function remove(Request $request) {
@@ -56,10 +58,15 @@ class MyPasswordsController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

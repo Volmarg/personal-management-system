@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Notes;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
@@ -139,11 +140,13 @@ class MyNotesController extends AbstractController {
             $request->request->get('id')
         );
 
-        if ($response->getStatusCode() == 200) {
-            return new Response('');
+        $message = $response->getContent();
 
+        if ($response->getStatusCode() == 200) {
+            return AjaxResponse::buildResponseForAjaxCall(200, $message);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

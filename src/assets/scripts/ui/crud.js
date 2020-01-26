@@ -260,10 +260,10 @@ export default (function () {
          */
         attachRemovingEventOnTrashIcon: function () {
             let _this        = this;
-            let removeButton = $('.fa-trash');
+            let removeButton = $('.remove-record');
 
             $(removeButton).off('click'); // to prevent double attachement on reinit
-            $(removeButton).click(function () { //todo: change selector for action...something
+            $(removeButton).click(function () {
                 let parent_wrapper    = $(this).closest(_this.elements["removed-element-class"]);
                 let param_entity_name = $(parent_wrapper).attr('data-type');
                 let remove_data       = dataProcessors.entities[param_entity_name].makeRemoveData(parent_wrapper);
@@ -279,44 +279,55 @@ export default (function () {
                     backdrop: true,
                     callback: function (result) {
                         if (result) {
-                            ui.widgets.loader.toggleLoader();
+                            ui.widgets.loader.showLoader();
                             $.ajax({
                                 url: remove_data.url,
                                 method: 'POST',
-                                data: remove_data.data,
-                                success: (template) => {
-                                    bootstrap_notifications.notify(remove_data.success_message, 'success');
-                                    let table_id = $(parent_wrapper).closest('tbody').closest('table').attr('id');
-                                    if (remove_data['is_dataTable']) {
-                                        _this.removeDataTableTableRow(table_id, parent_wrapper);
-                                        return;
-                                    }
-                                    _this.removeTableRow(parent_wrapper);
+                                data: remove_data.data
+                            }).always( (data) => {
 
-                                    if (remove_data.callback_after) {
-                                        remove_data.callback();
-                                    }
+                                ui.widgets.loader.hideLoader();
 
-                                    $('.twig-body-section').html(template);
-                                    initializer.reinitialize();
-                                },
-                            }).fail((data) => {
+                                // Refactor start
+                                let $twigBodySection = $('.twig-body-section');
 
-                                let message  = remove_data.fail_message;
-                                let response = data.responseJSON;
-
-                                if(
-                                        "object" === typeof response
-                                    &&  remove_data.use_ajax_fail_message
-                                    &&  "undefined" !== typeof response.message
-                                )
-                                {
-                                    message = response.message;
+                                try{
+                                    var code     = data['code'];
+                                    var message  = data['message'];
+                                    var template = data['template'];
+                                } catch(Exception){
+                                    throw({
+                                        "message"   : "Could not handle ajax call",
+                                        "data"      : data,
+                                        "exception" : Exception
+                                    })
                                 }
 
-                                bootstrap_notifications.notify(message, 'danger')
-                            }).always(() => {
-                                ui.widgets.loader.toggleLoader();
+                                if( "undefined" === typeof message ){
+                                    message = remove_data.success_message;
+                                }
+
+                                if (remove_data.callback_after) {
+                                    remove_data.callback();
+                                }
+
+                                if( 200 != code ) {
+                                    bootstrap_notifications.showRedNotification(message);
+                                    return;
+                                }
+
+                                if( "undefined" !== typeof template ){
+                                    $twigBodySection.html(template);
+                                    initializer.reinitialize();
+                                }else if ( remove_data['is_dataTable'] ) {
+                                    let table_id = $(parent_wrapper).closest('tbody').closest('table').attr('id');
+                                    _this.removeDataTableTableRow(table_id, parent_wrapper);
+                                }else{
+                                    _this.removeTableRow(parent_wrapper);
+                                }
+
+                                bootstrap_notifications.showGreenNotification(message);
+
                             });
                         }
                     }

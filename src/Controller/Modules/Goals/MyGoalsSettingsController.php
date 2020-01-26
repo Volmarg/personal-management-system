@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Goals;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,10 +68,16 @@ class MyGoalsSettingsController extends AbstractController {
             $id
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -88,9 +95,16 @@ class MyGoalsSettingsController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+            $message           = $this->app->translations->ajaxSuccessRecordHasBeenRemoved();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        $message = $this->app->translations->ajaxFailureRecordCouldNotBeenRemoved();
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -108,9 +122,16 @@ class MyGoalsSettingsController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+            $message           = $this->app->translations->ajaxSuccessRecordHasBeenRemoved();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        $message = $this->app->translations->ajaxFailureRecordCouldNotBeenRemoved();
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
 
