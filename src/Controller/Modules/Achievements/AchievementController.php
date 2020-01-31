@@ -6,6 +6,7 @@ use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Achievements\Achievement;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +43,9 @@ class AchievementController extends AbstractController {
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
-        return $this->renderTemplate(true);
+
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -86,6 +89,7 @@ class AchievementController extends AbstractController {
      * @Route("/achievement/update/",name="achievement-update")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
 

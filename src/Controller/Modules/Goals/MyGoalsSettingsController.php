@@ -234,18 +234,15 @@ class MyGoalsSettingsController extends AbstractController {
         }
 
         if( !is_null($form) ){
-            $response = $this->addRecord($form, $request);
-        }
-
-        if ( isset($response) && $response->getStatusCode() != 200) {
-            return $response;
+            $this->addRecord($form, $request);
         }
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
 }

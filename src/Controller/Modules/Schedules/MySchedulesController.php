@@ -50,7 +50,8 @@ class MySchedulesController extends AbstractController {
             return $this->renderTemplate($schedules_type, false);
         }
 
-        return $this->renderTemplate($schedules_type, true);
+        $template_content  = $this->renderTemplate($schedules_type, true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

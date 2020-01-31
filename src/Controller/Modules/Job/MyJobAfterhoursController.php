@@ -51,7 +51,8 @@ class MyJobAfterhoursController extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

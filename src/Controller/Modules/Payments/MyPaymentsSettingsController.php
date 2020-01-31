@@ -49,7 +49,7 @@ class MyPaymentsSettingsController extends AbstractController {
             case self::KEY_SETTING_NAME_TYPE:
 
                 $payments_types_form = $this->getPaymentTypeForm();
-                $response            = $this->addPaymentType($payments_types_form, $request);
+                $this->addPaymentType($payments_types_form, $request);
                 break;
 
             case self::KEY_SETTING_NAME_CURRENCY_MULTIPLIER:
@@ -60,16 +60,12 @@ class MyPaymentsSettingsController extends AbstractController {
 
         }
 
-        if (isset($response) && $response instanceof Response && $response->getStatusCode() != 200) {
-            return $response;
-        }
-
         if (!$request->isXmlHttpRequest()) {
             return $this->renderSettingsTemplate(false);
         }
 
-        return $this->renderSettingsTemplate(true);
-
+        $template_content  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

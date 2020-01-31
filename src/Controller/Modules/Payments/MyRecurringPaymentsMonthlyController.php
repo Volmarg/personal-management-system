@@ -40,7 +40,9 @@ class MyRecurringPaymentsMonthlyController extends AbstractController {
         if (!$request->isXmlHttpRequest()) {
             return $this->my_payments_settings_controller->renderSettingsTemplate(false);
         }
-        return $this->my_payments_settings_controller->renderSettingsTemplate(true);
+
+        $template_content  = $this->my_payments_settings_controller->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

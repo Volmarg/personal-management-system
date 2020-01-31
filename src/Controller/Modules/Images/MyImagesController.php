@@ -4,6 +4,7 @@ namespace App\Controller\Modules\Images;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Dialogs;
 use App\Controller\Utils\Env;
@@ -60,7 +61,9 @@ class MyImagesController extends AbstractController {
         if (!$request->isXmlHttpRequest()) {
             return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
         }
-        return $this->renderCategoryTemplate($encoded_subdirectory_path, true);
+
+        $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

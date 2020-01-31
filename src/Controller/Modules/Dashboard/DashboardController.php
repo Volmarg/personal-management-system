@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Dashboard;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\DTO\Settings\SettingsDashboardDTO;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,7 +35,9 @@ class DashboardController extends Controller {
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
-        return $this->renderTemplate(true);
+
+        $template_content  = $this->renderTemplate( true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

@@ -29,20 +29,17 @@ class MyPasswordsGroupsController extends AbstractController {
      * @Route("/my-passwords-settings", name="my-passwords-settings")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function display(Request $request) {
         $password_group_form = $this->app->forms->passwordGroupForm();
-        $response = $this->submitForm($password_group_form , $request);
+        $this->submitForm($password_group_form , $request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
-        if ($response->getStatusCode() != 200) {
-            return $response;
-        }
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

@@ -610,6 +610,7 @@ export default (function () {
                                 utils.domAttributes.unsetChecked(checkedCheckboxes);
                                 utils.domAttributes.setDisabled(massActionButtons);
                                 _this.reinitGallery();
+                                bootbox.hideAll();
                             }, 500);
 
                         }
@@ -653,6 +654,7 @@ export default (function () {
                     }
                     ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
                     _this.reinitGallery();
+                    bootbox.hideAll();
                 };
 
                 dialogs.ui.dataTransfer.buildDataTransferDialog(filePaths, 'My Files', callback);

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Goals;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,8 @@ class GoalsPaymentsController extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

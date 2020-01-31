@@ -16,7 +16,6 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -89,8 +88,9 @@ class MyFilesController extends AbstractController
         if (!$request->isXmlHttpRequest()) {
             return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
         }
-        return $this->renderCategoryTemplate($encoded_subdirectory_path, true);
 
+        $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Controller\User\Profile;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Entity\User;
 use App\Form\User\UserAvatarType;
@@ -10,6 +11,7 @@ use App\Form\User\UserPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
@@ -41,7 +43,7 @@ class SettingsController extends AbstractController {
     /**
      * @Route("/user/profile/settings", name="user_profile_settings")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function display(Request $request) {
 
@@ -49,7 +51,8 @@ class SettingsController extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

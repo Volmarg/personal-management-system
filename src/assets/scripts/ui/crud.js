@@ -465,7 +465,6 @@ export default (function () {
          *      @see this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm()
          * @param reloadPage
          */
-        //todo: ajax refactor
         attachRecordAddViaAjaxOnSubmit: function (reloadPage = true) {
             let form  = $('.add-record-form form');
 
@@ -479,8 +478,7 @@ export default (function () {
                 // with this there is a possibility to load different template than the one from url used in ajax
                 // normally the same page should be reloaded but this is helpful for widgets when we want to call
                 // action from one page but load template of other
-                let dataTemplateUrl      = $(submitButton).attr('data-template-url');
-                let dataMethod           = $(submitButton).attr('data-template-method');
+                let dataTemplateUrl = $(submitButton).attr('data-template-url');
 
                 let method      = form.attr('method');
                 let entity_name = form.attr('data-entity');
@@ -498,92 +496,78 @@ export default (function () {
                     url: create_data.url,
                     type: method,
                     data: form.serialize(),
-                }).done((data) => {
+                }).always((data) => {
 
                     if (create_data.callback_before) {
                         create_data.callback(dataCallbackParams);
+                    }
+
+                    try{
+                        var code     = data['code'];
+                        var message  = data['message'];
+                        var template = data['template'];
+                    } catch(Exception){
+                        throw({
+                            "message"   : "Could not handle ajax call",
+                            "data"      : data,
+                            "exception" : Exception
+                        })
                     }
 
                     /**
                      * This reloadPage must stay like that,
                      * Somewhere in code I call this function but i pass it as string so it's not getting detected
                      */
-
                     if (!reloadPage) {
+                        ui.widgets.loader.hideLoader();
+
+                        if( 200 != code ){
+                            bootstrap_notifications.showRedNotification(message);
+                        }else{
+                            bootstrap_notifications.showGreenNotification(message);
+                        }
+
+                        return;
+                    }
+
+                    if( 200 != code ){
+                        ui.widgets.loader.hideLoader();
+                        bootstrap_notifications.showRedNotification(message);
                         return;
                     }
 
                     if( "undefined" !== typeof dataTemplateUrl ){
-
-                        $.ajax({
-                            url: dataTemplateUrl,
-                            type: dataMethod,
-                        }).always(() => {
-                            ui.widgets.loader.hideLoader();
-                        }).fail((data) => {
-                            bootstrap_notifications.notify(data.responseText, 'danger');
-                        }).done((data) => {
-
-                            let twigBodySection = $('.twig-body-section');
-
-                            if( "object" === typeof data ){
-                                var template = data['template'];
-                                twigBodySection.html(template);
-                            }else {
-                                twigBodySection.html(data);
-                            }
-
-                            if(create_data.callback_for_data_template_url){
-                                create_data.callback(dataCallbackParams);
-                            }
-
-                            initializer.reinitialize();
-                        });
-
-                    }else {
-
-                        let twigBodySection = $('.twig-body-section');
-
-                        if( "object" === typeof data ){
-                            var template = data['template'];
-                            twigBodySection.html(template);
-                        }else {
-                            twigBodySection.html(data);
+                        let callback = () => {};
+                        if(create_data.callback_for_data_template_url){
+                            callback = () => {
+                                create_data.callback(dataCallbackParams)
+                            };
                         }
 
-                        initializer.reinitialize();
+                        ui.ajax.loadModuleContentByUrl(dataTemplateUrl, callback, true);
+                    }else{
+                        let twigBodySection = $('.twig-body-section');
+                        if( "undefined" !== template ){
+                            twigBodySection.html(template);
+                        }
+                    }
+
+                    if(
+                            "undefined" === typeof message
+                        ||  ""          === message
+                    ){
+                        message = create_data.success_message;
                     }
 
                     if (create_data.callback_after) {
                         create_data.callback(dataCallbackParams);
                     }
 
-                }).fail((data) => {
-                    bootstrap_notifications.notify(data.responseText, 'danger');
-                }).always((data) => {
-                    // hide loader only when there is no other ajax executed inside
-                    if( "undefined" === typeof dataTemplateUrl ){
-                        ui.widgets.loader.hideLoader();
-                    }
+                    initializer.reinitialize();
 
-                    // if there is code there also must be message so i dont check it
-                    let code                = data['code'];
-                    let message             = data['message'];
-                    let notification_type   = '';
+                    ui.widgets.loader.hideLoader();
 
-                    if( undefined === code ){
-                        bootstrap_notifications.notify(create_data.success_message, 'success');
-                        return;
-                    }
-
-                    if( code === 200 ){
-                        notification_type = 'success';
-                    }else{
-                        notification_type = 'danger';
-                    }
-
-                    bootstrap_notifications.notify(message, notification_type);
-
+                    bootstrap_notifications.showGreenNotification(message);
                 });
 
                 event.preventDefault();

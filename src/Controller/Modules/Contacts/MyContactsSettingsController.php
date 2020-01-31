@@ -36,26 +36,18 @@ class MyContactsSettingsController extends AbstractController {
      * @Route("/my-contacts-settings", name="my-contacts-settings")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function displaySettingsPage(Request $request) {
-        $response = $this->submitContactTypeForm($request);
-
-        if ($response->getStatusCode() != 200) {
-            return $response;
-        }
-
-        $response = $this->submitContactGroupForm($request);
-
-        if ($response->getStatusCode() != 200) {
-            return $response;
-        }
+        $this->submitContactTypeForm($request);
+        $this->submitContactGroupForm($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderSettingsTemplate(false);
         }
 
-
-        return $this->renderSettingsTemplate(true);
+        $template_content  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     public function renderSettingsTemplate($ajax_render = false) {
@@ -142,6 +134,7 @@ class MyContactsSettingsController extends AbstractController {
     /**
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     private function submitContactGroupForm(Request $request):Response {
         $form = $this->app->forms->contactGroupForm();
@@ -157,7 +150,7 @@ class MyContactsSettingsController extends AbstractController {
 
             if (!is_null($form_data) && $this->app->repositories->myContactGroupRepository->findBy([ 'name' => $name ] )) {
                 $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-                return new JsonResponse($record_with_this_name_exist, 409);
+                return new Response($record_with_this_name_exist, 409);
             }
 
             $this->app->em->persist($form_data);
@@ -165,7 +158,7 @@ class MyContactsSettingsController extends AbstractController {
         }
 
         $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message, 200);
+        return new Response($form_submitted_message, 200);
     }
 
     /**
