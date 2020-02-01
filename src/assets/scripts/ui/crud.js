@@ -352,10 +352,10 @@ export default (function () {
         },
         attachContentEditEventOnEditIcon: function () {
             let _this      = this;
-            let editButton = $('.fa-edit');
+            let editButton = $('.edit-record');
 
             $(editButton).off('click'); // to prevent double attachement on reinit
-            $(editButton).click(function () { //todo: change selector for action...something
+            $(editButton).click(function () {
                 let closest_parent = this.closest(_this.elements["edited-element-class"]);
                 _this.toggleContentEditable(closest_parent);
             });
@@ -422,10 +422,10 @@ export default (function () {
         },
         attachContentSaveEventOnSaveIcon: function () {
             let _this      = this;
-            let saveButton = $('.fa-save');
+            let saveButton = $('.save-record');
 
             $(saveButton).off('click'); // to prevent double attachement on reinit
-            $(saveButton).on('click', function () { //todo: change selector for action...something
+            $(saveButton).on('click', function () {
                 let closest_parent = this.closest(_this.elements["saved-element-class"]);
                 _this.ajaxUpdateDatabaseRecord(closest_parent);
             });
@@ -438,7 +438,7 @@ export default (function () {
                 $(input).addClass(this.classes["fontawesome-picker-input"] + index);
             });
 
-            $('.fa-smile').each((index, icon) => {
+            $('.action-fontawesome').each((index, icon) => {
 
                 if ($('.' + _this.classes["fontawesome-picker-preview"]).length === 0) {
                     let fontawesome_preview_div = $('<div></div>');
@@ -573,46 +573,42 @@ export default (function () {
                 event.preventDefault();
             });
         },
-        //todo: ajax refactor
         attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm: function () {
             $('.update-record-form form').submit(function (event) {
                 let form = $(event.target);
                 let formTarget = form.attr('data-form-target');
                 let updateData = dataProcessors.singleTargets[formTarget].makeUpdateData(form);
-                ui.widgets.loader.toggleLoader();
+                ui.widgets.loader.showLoader();
                 $.ajax({
                     url: updateData.url,
                     type: 'POST',
                     data: updateData.data, //In this case the data from target_action is being sent not form directly
-                }).done((data) => {
-
-                    if( undefined !== data['template'] ){
-                        $('.twig-body-section').html(data['template']);
-                        initializer.reinitialize();
-                    }
-
-                }).fail((data) => {
-                    bootstrap_notifications.notify(data.responseText, 'danger');
                 }).always((data) => {
 
-                    // if there is code there also must be message so i dont check it
-                    let code                = data['code'];
-                    let message             = data['message'];
-                    let notification_type   = '';
+                    ui.widgets.loader.hideLoader();
 
-                    if( undefined === code ){
+                    try{
+                        var code     = data['code'];
+                        var message  = data['message'];
+                        var template = data['template'];
+                    } catch(Exception){
+                        throw({
+                            "message"   : "Could not handle ajax call",
+                            "data"      : data,
+                            "exception" : Exception
+                        })
+                    }
+
+                    if( 200 === code ){
+                        bootstrap_notifications.showGreenNotification(message);
+                    }else{
+                        bootstrap_notifications.showRedNotification(message);
                         return;
                     }
 
-                    if( code === 200 ){
-                        notification_type = 'success';
-                    }else{
-                        notification_type = 'danger';
-                    }
+                    $('.twig-body-section').html(template);
+                    initializer.reinitialize();
 
-                    bootstrap_notifications.notify(message, notification_type);
-
-                    ui.widgets.loader.toggleLoader();
                 });
 
                 event.preventDefault();
@@ -640,7 +636,7 @@ export default (function () {
             bootstrap_notifications.notify(this.messages.entityEditEnd(dataProcessors.entities[param_entity_name].entity_name), 'success');
         },
         toggleActionIconsVisibillity: function (tr_parent_element, toggle_content_editable = null, is_content_editable) {
-            let save_icon = $(tr_parent_element).find('.fa-save');
+            let save_icon = $(tr_parent_element).find('.save-record');
             let fontawesome_icon = $(tr_parent_element).find('.action-fontawesome');
 
             let action_icons = [save_icon, fontawesome_icon];

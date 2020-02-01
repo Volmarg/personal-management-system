@@ -17,7 +17,7 @@
     {% endif %}
 
     {% if edit is defined and edit %}
-        <i class="far fa-edit"
+        <i class="far fa-edit edit-record"
            data-content-editable="false"
         {% if edit_attr is defined and edit_attr is not empty %}
             {{ edit_attr }}
@@ -34,7 +34,7 @@
     {% endif %}
 
     {% if save is defined and save %}
-        <i class="far fa-save d-none"
+        <i class="far fa-save save-record d-none"
            data-content-editable="false"
         {% if save_attr is defined and save_attr is not empty %}
             {{ save_attr }}

@@ -569,6 +569,7 @@ export default (function () {
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
             let _this           = this;
 
+            $(button).off('click');
             $(button).on('click', (event) => {
                 let isDisabled = utils.domAttributes.isDisabled(this);
 
@@ -628,6 +629,7 @@ export default (function () {
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
             let _this           = this;
 
+            $(button).off('click');
             $(button).on('click', (event) => {
                 let isDisabled = utils.domAttributes.isDisabled(this);
 
