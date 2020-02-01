@@ -4,16 +4,18 @@ namespace App\Controller\Modules\Files;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Entity\FilesTags;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FileDownloader;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,21 +81,23 @@ class MyFilesController extends AbstractController
      * @param string|null $encoded_subdirectory_path
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function displayFiles(? string $encoded_subdirectory_path, Request $request) {
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
         }
-        return $this->renderCategoryTemplate($encoded_subdirectory_path, true);
 
+        $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
      * @return array|RedirectResponse|Response
-     * @throws \App\Services\Exceptions\ExceptionDuplicatedTranslationKey
+     * @throws ExceptionDuplicatedTranslationKey
      */
     protected function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false) {
 
@@ -143,14 +147,14 @@ class MyFilesController extends AbstractController
      * @Route("download/file", name="download_file")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function download(Request $request)
     {
 
         if( !$request->request->has(static::KEY_FILE_FULL_PATH)){
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         $file_full_path = $request->request->get(static::KEY_FILE_FULL_PATH);
@@ -216,13 +220,17 @@ class MyFilesController extends AbstractController
      * @Route("/my-files/remove-file", name="my_files_remove_file", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function removeFileViaPost(Request $request) {
-        $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
-        $this->files_handler->removeFile($request);
+        $response = $this->files_handler->removeFile($request);
+        $message  = $response->getContent();
 
-        return $this->displayFiles($subdirectory, $request);
+        if ($response->getStatusCode() == 200) {
+            return AjaxResponse::buildResponseForAjaxCall(200, $message);
+        }
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -230,13 +238,13 @@ class MyFilesController extends AbstractController
      * @Route("/api/my-files/update", name="my_files_update", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function update(Request $request){
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);

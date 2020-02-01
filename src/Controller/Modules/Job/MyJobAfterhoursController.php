@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Job;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Job\MyJobAfterhours;
@@ -44,21 +45,23 @@ class MyJobAfterhoursController extends AbstractController {
      * @return Response
      */
     public function display(Request $request) {
-        $this->addFormDataToDB($this->getForm(), $request);
+        $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($this->getForm(), false);
+            return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate($this->getForm(), true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
-     * @param $form
      * @param bool $ajax_render
      * @return Response
      */
-    protected function renderTemplate($form, $ajax_render = false) {
+    protected function renderTemplate($ajax_render = false) {
+
+        $form                 = $this->getForm();
         $afterhours_form_view = $form->createView();
 
         $column_names       = $this->getDoctrine()->getManager()->getClassMetadata(MyJobAfterhours::class)->getColumnNames();
@@ -109,12 +112,12 @@ class MyJobAfterhoursController extends AbstractController {
     }
 
     /**
-     * @param $form
      * @param Request $request
      * @return void
      */
-    protected function addFormDataToDB(FormInterface $form, Request $request): void {
+    protected function addFormDataToDB(Request $request): void {
 
+        $form = $this->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -151,10 +154,16 @@ class MyJobAfterhoursController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($this->getForm(), true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     private function getForm() {

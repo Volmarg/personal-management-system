@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Job;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,7 +35,8 @@ class MyJobSettingsController extends AbstractController
             return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

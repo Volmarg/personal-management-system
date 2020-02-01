@@ -2,9 +2,12 @@
 
 namespace App\Controller\Modules\Job;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -31,24 +34,23 @@ class MyJobHolidaysController extends AbstractController
      */
     public function display(Request $request) {
 
-        $all_pools_years = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
-
-        $this->add($request, $all_pools_years);
+        $this->add($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false, $all_pools_years);
+            return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true, $all_pools_years);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
      * @param bool $ajax_render
-     * @param array $all_pools_years
      * @return Response
      */
-    private function renderTemplate($ajax_render, array $all_pools_years) {
+    private function renderTemplate($ajax_render) {
 
+        $all_pools_years                    = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
         $all_holidays_spent                 = $this->app->repositories->myJobHolidaysRepository->findBy(['deleted' => 0]);
         $job_holidays_summary               = $this->app->repositories->myJobHolidaysPoolRepository->getHolidaysSummaryGroupedByYears();
         $job_holidays_available_totally     = $this->app->repositories->myJobHolidaysPoolRepository->getAvailableDaysTotally();
@@ -70,10 +72,11 @@ class MyJobHolidaysController extends AbstractController
 
     /**
      * @param Request $request
-     * @param array $all_pools_years
      * @return void
      */
-    public function add(Request $request, array $all_pools_years): void {
+    public function add(Request $request): void {
+
+        $all_pools_years = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
 
         $form = $this->app->forms->jobHolidaysForm([
             static::KEY_CHOICES => $all_pools_years
@@ -91,7 +94,8 @@ class MyJobHolidaysController extends AbstractController
     /**
      * @Route("/my-job/holidays/update/",name="my-job-holidays-update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -110,18 +114,20 @@ class MyJobHolidaysController extends AbstractController
      */
     public function remove(Request $request) {
 
-        $all_pools_years = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
-
         $response = $this->app->repositories->deleteById(
             Repositories::MY_JOB_HOLIDAYS_REPOSITORY_NAME,
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true, $all_pools_years);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
-
-
 }

@@ -2,9 +2,11 @@
 
 namespace App\Controller\Modules\Passwords;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,27 +29,24 @@ class MyPasswordsGroupsController extends AbstractController {
      * @Route("/my-passwords-settings", name="my-passwords-settings")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
      */
     public function display(Request $request) {
         $password_group_form = $this->app->forms->passwordGroupForm();
-        $response = $this->submitForm($password_group_form , $request);
+        $this->submitForm($password_group_form , $request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
-        if ($response->getStatusCode() != 200) {
-            return $response;
-        }
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
      * @Route("/my-passwords-groups/remove", name="my-passwords-groups-remove")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function remove(Request $request) {
 
@@ -56,10 +55,15 @@ class MyPasswordsGroupsController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

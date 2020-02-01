@@ -123,7 +123,7 @@ export default (function () {
 
             // Handling removing images
             lightboxGallery.on('onAfterOpen.lg', function () {
-                let trashIcon = '<a class=\"lg-icon\" id="lightgallery_trash_button"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                let trashIcon = '<a class=\"lg-icon\" id="lightgallery_trash_button"><i class="fa fa-trash" remove-record aria-hidden="true"></i></a>';
                 $(_this.selectors.classes.upperToolbar).append(trashIcon);
 
                 let trashButton     = $(_this.selectors.ids.trashButton);
@@ -155,7 +155,7 @@ export default (function () {
             });
 
         },
-        callAjaxFileRemovalForImageLink: function(filePath, callback = null){
+        callAjaxFileRemovalForImageLink: function(filePath, callback = null, async = true){
             let _this           = this;
             let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
 
@@ -163,23 +163,38 @@ export default (function () {
                 "file_full_path":  escapedFilePath
             };
 
-            ui.widgets.loader.toggleLoader();
+            ui.widgets.loader.showLoader();
             $.ajax({
                 method: "POST",
                 url:     _this.apiUrls.fileRemoval,
                 data:    data,
-                success: (data) => {
-                    bootstrap_notifications.notify(data, 'success');
+                async:   async,
+            }).always((data) => {
 
-                    if( 'function' === typeof(callback) ){
-                        callback();
-                    }
+                ui.widgets.loader.hideLoader();
 
-                },
-            }).fail((data) => {
-                bootstrap_notifications.notify(data.responseText, 'danger')
-            }).always(() => {
-                ui.widgets.loader.toggleLoader();
+                try{
+                    var code     = data['code'];
+                    var message  = data['message'];
+                } catch(Exception){
+                    throw({
+                        "message"   : "Could not handle ajax call",
+                        "data"      : data,
+                        "exception" : Exception
+                    })
+                }
+
+                if( 200 != code ) {
+                    bootstrap_notifications.showRedNotification(message);
+                    return;
+                }
+
+                bootstrap_notifications.showGreenNotification(message);
+
+                if( 'function' === typeof(callback) ){
+                    callback();
+                }
+
             });
         },
         addPluginRenameFile(){
@@ -554,6 +569,7 @@ export default (function () {
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
             let _this           = this;
 
+            $(button).off('click');
             $(button).on('click', (event) => {
                 let isDisabled = utils.domAttributes.isDisabled(this);
 
@@ -561,7 +577,8 @@ export default (function () {
                     return false;
                 }
 
-                let checkedCheckboxes  = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
+                let massActionButtons = $(_this.selectors.classes.massActionButtons);
+                let checkedCheckboxes = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
 
                 bootbox.confirm({
                     message: _this.messages.imageRemovalConfirmation,
@@ -569,21 +586,33 @@ export default (function () {
                     callback: function (result) {
                         if (result) {
 
-                            $.each(checkedCheckboxes, (index, checkbox) => {
-                                utils.domAttributes.isCheckbox(checkbox);
+                            /**
+                             * Due to the ajax being done via async this loader MUST be called here
+                             * Also we need timeout because due to async = false the spinner will not be shown
+                             */
+                            ui.widgets.loader.showLoader();
 
-                                let imageWrapper = $(checkbox).closest('.shuffle-item');
-                                let filePath     = $(imageWrapper).attr('data-src');
+                            setTimeout( () => {
+                                $.each(checkedCheckboxes, (index, checkbox) => {
+                                    utils.domAttributes.isCheckbox(checkbox);
 
-                                let callback = function(){
-                                    // Rebuilding thumbnails etc
-                                    _this.removeImageWithMiniature(filePath);
-                                };
+                                    let imageWrapper = $(checkbox).closest('.shuffle-item');
+                                    let filePath     = $(imageWrapper).attr('data-src');
 
-                                _this.callAjaxFileRemovalForImageLink(filePath, callback);
-                            });
+                                    let callback = function(){
+                                        // Rebuilding thumbnails etc
+                                        _this.removeImageWithMiniature(filePath);
+                                    };
 
-                            _this.reinitGallery();
+                                    // in this case we MUST wait for ajax call being done before reinitializing gallery
+                                    _this.callAjaxFileRemovalForImageLink(filePath, callback, false);
+                                });
+
+                                utils.domAttributes.unsetChecked(checkedCheckboxes);
+                                utils.domAttributes.setDisabled(massActionButtons);
+                                _this.reinitGallery();
+                                bootbox.hideAll();
+                            }, 500);
 
                         }
                     }
@@ -600,6 +629,7 @@ export default (function () {
             let lightboxGallery = $(this.selectors.ids.lightboxGallery);
             let _this           = this;
 
+            $(button).off('click');
             $(button).on('click', (event) => {
                 let isDisabled = utils.domAttributes.isDisabled(this);
 
@@ -626,6 +656,7 @@ export default (function () {
                     }
                     ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
                     _this.reinitGallery();
+                    bootbox.hideAll();
                 };
 
                 dialogs.ui.dataTransfer.buildDataTransferDialog(filePaths, 'My Files', callback);

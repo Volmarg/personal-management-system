@@ -2,6 +2,7 @@
 
 namespace App\Form\Modules\Payments;
 
+use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Symfony\Component\Form\AbstractType;
@@ -24,7 +25,10 @@ class MyPaymentsTypesType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('name', HiddenType::class, [
-                'label' => $this->app->translator->translate('forms.MyPaymentsTypesType.labels.name')
+                'label' => $this->app->translator->translate('forms.MyPaymentsTypesType.labels.name'),
+                "attr" => [
+                    "value" => MyPaymentsSettingsController::KEY_SETTING_NAME_TYPE
+                ]
             ])
             ->add('value', null, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsTypesType.labels.value')

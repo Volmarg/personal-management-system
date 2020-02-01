@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Notes;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
@@ -32,19 +33,15 @@ class MyNotesController extends AbstractController {
      * @return Response
      */
     public function createNote(Request $request) {
-        $form       = $this->app->forms->noteTypeForm();
-        $form_view  = $form->createView();
-        $this->addToDB($form, $request);
-        $ajax_render = true;
+        $this->addToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            $ajax_render = false;
+            return $this->renderCreateNoteTemplate(false);
         }
 
-        return $this->render('modules/my-notes/new-note.html.twig', [
-                'ajax_render'   => $ajax_render,
-                'form'          => $form_view
-            ]);
+        $rendered_template = $this->renderCreateNoteTemplate(true);
+        $template_content  = $rendered_template->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -59,7 +56,9 @@ class MyNotesController extends AbstractController {
         if (!$request->isXmlHttpRequest()) {
             return $this->renderCategoryTemplate($category, $category_id, false);
         }
-        return $this->renderCategoryTemplate($category, $category_id, true);
+
+        $template_content  = $this->renderCategoryTemplate($category, $category_id, true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -97,6 +96,23 @@ class MyNotesController extends AbstractController {
         ]);
     }
 
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     */
+    private function renderCreateNoteTemplate(bool $ajax_render): Response {
+
+        $form       = $this->app->forms->noteTypeForm();
+        $form_view  = $form->createView();
+
+        $template_data = [
+            'ajax_render'   => $ajax_render,
+            'form'          => $form_view
+        ];
+
+        return $this->render('modules/my-notes/new-note.html.twig', $template_data);
+
+    }
 
     /**
      * @Route("/my-notes/category/{category}/note/{noteName}", name="my-notes-note")
@@ -139,19 +155,20 @@ class MyNotesController extends AbstractController {
             $request->request->get('id')
         );
 
-        if ($response->getStatusCode() == 200) {
-            return new Response('');
+        $message = $response->getContent();
 
+        if ($response->getStatusCode() == 200) {
+            return AjaxResponse::buildResponseForAjaxCall(200, $message);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
-     * @param FormInterface $form
      * @param Request $request
      */
-    private function addToDB(FormInterface $form, Request $request): void {
-
+    private function addToDB(Request $request): void {
+        $form = $this->app->forms->noteTypeForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

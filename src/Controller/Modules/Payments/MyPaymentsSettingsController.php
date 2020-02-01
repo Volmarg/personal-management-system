@@ -2,11 +2,13 @@
 
 namespace App\Controller\Modules\Payments;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Form\Modules\Payments\MyPaymentsSettingsCurrencyMultiplierType;
 use App\Form\Modules\Payments\MyPaymentsTypesType;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -18,6 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class MyPaymentsSettingsController extends AbstractController {
 
     const TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS = 'modules/my-payments/components/recurring-payments-settings.html.twig';
+
+    const KEY_SETTING_NAME_TYPE                = "type";
+    const KEY_SETTING_NAME_CURRENCY_MULTIPLIER = "currency_multiplier";
 
     private $em;
     /**
@@ -34,19 +39,20 @@ class MyPaymentsSettingsController extends AbstractController {
      * @Route("/my-payments-settings", name="my-payments-settings")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function display(Request $request) {
         $setting_type = $request->request->all();
         $setting_type = reset($setting_type)['name'];
 
         switch ($setting_type) {
-            case 'type':
+            case self::KEY_SETTING_NAME_TYPE:
 
                 $payments_types_form = $this->getPaymentTypeForm();
-                $response            = $this->addPaymentType($payments_types_form, $request);
+                $this->addPaymentType($payments_types_form, $request);
                 break;
 
-            case 'currency_multiplier':
+            case self::KEY_SETTING_NAME_CURRENCY_MULTIPLIER:
 
                 $this->getCurrencyMultiplierForm()->handleRequest($request);
                 $this->insertOrUpdateRecord($this->getCurrencyMultiplierForm(), $request);
@@ -54,16 +60,12 @@ class MyPaymentsSettingsController extends AbstractController {
 
         }
 
-        if (isset($response) && $response instanceof Response && $response->getStatusCode() != 200) {
-            return $response;
-        }
-
         if (!$request->isXmlHttpRequest()) {
             return $this->renderSettingsTemplate(false);
         }
 
-        return $this->renderSettingsTemplate(true);
-
+        $template_content  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -78,10 +80,15 @@ class MyPaymentsSettingsController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderSettingsTemplate(true);
+            $rendered_template = $this->renderSettingsTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -102,6 +109,7 @@ class MyPaymentsSettingsController extends AbstractController {
      * @param FormInterface $payments_types_form
      * @param Request $request
      * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
      */
     protected function addPaymentType(FormInterface $payments_types_form, Request $request) {
         $payments_types_form->handleRequest($request);

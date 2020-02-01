@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Schedules;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
@@ -31,16 +32,14 @@ class MySchedulesSettingsController extends AbstractController
      * @return Response
      */
     public function display(Request $request) {
-        $response = $this->addRecord($request);
+        $this->addRecord($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
-        if ($response->getStatusCode() != 200) {
-            return $response;
-        }
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -56,10 +55,15 @@ class MySchedulesSettingsController extends AbstractController
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

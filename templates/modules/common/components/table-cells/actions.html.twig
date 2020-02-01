@@ -7,7 +7,7 @@
 >
 
     {% if trash is defined and trash %}
-        <i class="fa fa-trash"
+        <i class="fa fa-trash remove-record"
            aria-hidden="true"
            data-content-editable="false"
         {% if trash_attr is defined and trash_attr is not empty %}
@@ -17,7 +17,7 @@
     {% endif %}
 
     {% if edit is defined and edit %}
-        <i class="far fa-edit"
+        <i class="far fa-edit edit-record"
            data-content-editable="false"
         {% if edit_attr is defined and edit_attr is not empty %}
             {{ edit_attr }}
@@ -26,7 +26,7 @@
     {% endif %}
 
      {% if copy is defined and copy %}
-        <i class="far far fa-copy"
+        <i class="far far fa-copy copy-record"
         {% if copy_attr is defined and copy_attr is not empty %}
                 {{ copy_attr }}
         {% endif %}
@@ -34,7 +34,7 @@
     {% endif %}
 
     {% if save is defined and save %}
-        <i class="far fa-save d-none"
+        <i class="far fa-save save-record d-none"
            data-content-editable="false"
         {% if save_attr is defined and save_attr is not empty %}
             {{ save_attr }}

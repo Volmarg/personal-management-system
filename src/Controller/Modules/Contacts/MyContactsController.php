@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Contacts;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Controller\Utils\Utils;
@@ -51,7 +52,8 @@ class MyContactsController extends AbstractController {
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate( false);
         }
-        return $this->renderTemplate( true);
+        $template_content  = $this->renderTemplate( true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     protected function renderTemplate($ajax_render = false) {
@@ -80,9 +82,16 @@ class MyContactsController extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+            $message           = $this->app->translations->ajaxSuccessRecordHasBeenRemoved();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        $message = $this->app->translations->ajaxFailureRecordCouldNotBeenRemoved();
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

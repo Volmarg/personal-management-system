@@ -1,3 +1,5 @@
+var bootbox = require('bootbox');
+
 /**
  * This file contains the data passed to the ajax calls for special single targets like forms
  */
@@ -77,6 +79,7 @@ export default (function () {
                         }
 
                         ui.ajax.singleMenuNodeReload(menuNodeModuleName);
+                        bootbox.hideAll();
                     },
                     'callback_before': true,
                 };

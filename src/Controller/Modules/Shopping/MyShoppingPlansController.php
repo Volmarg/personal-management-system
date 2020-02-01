@@ -2,10 +2,13 @@
 
 namespace App\Controller\Modules\Shopping;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
@@ -32,17 +35,19 @@ class MyShoppingPlansController extends AbstractController {
         $this->addFormDataToDB($shopping_plan_form, $request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($shopping_plan_form, false);
+            return $this->renderTemplate(false);
         }
-        return $this->renderTemplate($shopping_plan_form, true);
+
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
-     * @param $form
      * @param bool $ajax_render
      * @return Response
      */
-    protected function renderTemplate($form, $ajax_render = false) {
+    protected function renderTemplate($ajax_render = false) {
+        $form               = $this->app->forms->myShoppingPlanForm();
         $plans_form_view    = $form->createView();
         $columns_names      = $this->getDoctrine()->getManager()->getClassMetadata(MyShoppingPlans::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($columns_names);
@@ -74,7 +79,8 @@ class MyShoppingPlansController extends AbstractController {
     /**
      * @Route("/my-shopping/plans/update/",name="my-shopping-plans-update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\JsonResponse|Response
+     * @return JsonResponse|Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -98,11 +104,15 @@ class MyShoppingPlansController extends AbstractController {
             $id
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            $shopping_plan_form = $this->app->forms->myShoppingPlanForm();
-            return $this->renderTemplate($shopping_plan_form, true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
 }

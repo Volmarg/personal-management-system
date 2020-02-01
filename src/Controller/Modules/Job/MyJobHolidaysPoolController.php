@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Job;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -55,11 +56,17 @@ class MyJobHolidaysPoolController extends AbstractController
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
 
-            return $this->my_jobs_settings_controller->renderTemplate(true);
+            $rendered_template = $this->my_jobs_settings_controller->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
 

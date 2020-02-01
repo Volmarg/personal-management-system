@@ -3,6 +3,7 @@
 
 namespace App\Controller\Files;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Controller\Utils\Utils;
@@ -70,7 +71,8 @@ class FilesUploadSettingsController extends AbstractController {
             return $this->renderSettingsPage(false, $request);
         }
 
-        return $this->renderSettingsPage(true, $request);
+        $template_content  = $this->renderSettingsPage(true, $request)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

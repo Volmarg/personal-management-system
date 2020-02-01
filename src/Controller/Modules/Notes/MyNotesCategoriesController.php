@@ -2,10 +2,13 @@
 
 namespace App\Controller\Modules\Notes;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\Modules\Notes\MyNotes;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,27 +31,26 @@ class MyNotesCategoriesController extends AbstractController {
      * @Route("/my-notes/settings", name="my-notes-settings")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function display(Request $request) {
-        $form = $this->app->forms->noteCategoryForm();
-        $response = $this->submitForm($form, $request);
+        $this->submitForm($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($form, false);
+            return $this->renderTemplate(false);
         }
 
-        if ($response->getStatusCode() != 200) {
-            return $response;
-        }
-        return $this->renderTemplate($form, true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
      * @Route("/my-notes/settings/remove/", name="my-notes-settings-remove")
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function remove(Request $request) {
 
@@ -57,17 +59,22 @@ class MyNotesCategoriesController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            $form = $this->app->forms->noteCategoryForm();
-            return $this->renderTemplate($form, true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
      * @Route("/my-notes/settings/update/",name="my-notes-settings-update")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -78,13 +85,13 @@ class MyNotesCategoriesController extends AbstractController {
     }
 
     /**
-     * @param $form
      * @param bool $ajax_render
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    private function renderTemplate(FormInterface $form, $ajax_render = false) {
+    private function renderTemplate($ajax_render = false) {
 
+        $form         = $this->app->forms->noteCategoryForm();
         $column_names = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($column_names);
 
@@ -101,11 +108,12 @@ class MyNotesCategoriesController extends AbstractController {
     }
 
     /**
-     * @param FormInterface $form
      * @param Request $request
      * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
      */
-    private function submitForm(FormInterface $form, Request $request) {
+    private function submitForm(Request $request) {
+        $form = $this->app->forms->noteCategoryForm();
         $form->handleRequest($request);
         /**
          * @var MyNotesCategories $form_data

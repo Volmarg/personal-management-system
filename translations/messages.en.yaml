@@ -7,8 +7,10 @@ messages:
   ajax:
     success:
       recordHasBeenCreated: "Record has been created"
+      recordHasBeenRemoved: "Record has been removed"
     failure:
       duplicatedRecord: "Duplicated record"
       formValidationFailed: "Form validation failed"
       internalServerError: "Internal server error"
       undefinedError: "Undefined error"
+      couldNotRemoveRecord: "Could not remove record"

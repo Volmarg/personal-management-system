@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules\Payments;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
@@ -30,15 +31,22 @@ class MyPaymentsMonthlyController extends AbstractController {
      * @return Response
      */
     public function display(Request $request) {
-        $this->addFormDataToDB($this->getForm(), $request);
+        $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($this->getForm(), false);
+            return $this->renderTemplate(false);
         }
-        return $this->renderTemplate($this->getForm(), true);
+
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
-    protected function renderTemplate($form, $ajax_render = false) {
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     */
+    protected function renderTemplate($ajax_render = false) {
+        $form                       = $this->getForm();
         $monthly_form_view          = $form->createView();
 
         $columns_names              = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsMonthly::class)->getColumnNames();
@@ -62,13 +70,13 @@ class MyPaymentsMonthlyController extends AbstractController {
     }
 
     /**
-     * @param $payments_form
      * @param $request
      */
-    protected function addFormDataToDB($payments_form, $request) {
+    protected function addFormDataToDB($request) {
+        $payments_form = $this->getForm();
         $payments_form->handleRequest($request);
 
-        if ($payments_form->isSubmitted($request) && $payments_form->isValid()) {
+        if ($payments_form->isSubmitted() && $payments_form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($payments_form->getData());
             $em->flush();
@@ -89,10 +97,15 @@ class MyPaymentsMonthlyController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($this->getForm(), true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**

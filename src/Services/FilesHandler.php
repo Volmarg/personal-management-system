@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -66,7 +67,7 @@ class FilesHandler {
      * @Route("/upload/action/copy-folder-data", name="upload_copy_folder_data", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function copyFolderDataToAnotherFolderByPostRequest(Request $request) {
 
@@ -91,7 +92,7 @@ class FilesHandler {
      * @param string $current_directory_path_in_module_upload_dir
      * @param string $target_directory_path_in_module_upload_dir
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function copyFolderDataToAnotherFolder(
         ?string $current_upload_type,
@@ -179,7 +180,7 @@ class FilesHandler {
 
         try{
             Utils::copyFiles($current_subdirectory_path, $target_subdirectory_path, $this->file_tagger);
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $message = $this->application->translator->translate('logs.files.exceptionWasThrownWhileMovingDataBetweenFolders');
             $this->logger->info($message, [
                 'message' => $e->getMessage()
@@ -219,7 +220,7 @@ class FilesHandler {
         try{
             $this->copyFolderDataToAnotherFolderByPostRequest($request);
             $this->directories_handle->removeFolder($current_upload_module_dir, $current_directory_path_in_upload_type_dir);
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileCopyingAndRemovingDataViaPost');
             return new Response ($message);
         }
@@ -253,7 +254,7 @@ class FilesHandler {
             }
 
 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $log_message        = $this->application->translator->translate('logs.files.exceptionWasThrownWhileMovingDataBetweenFolders');
             $response_message   = $this->application->translator->translate('responses.files.thereWasAnErrorWhileCopyingData');
 
@@ -272,8 +273,8 @@ class FilesHandler {
 
     /**
      * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
+     * @return Response
+     * @throws Exception
      */
     public function removeFile(Request $request) {
 
@@ -284,7 +285,7 @@ class FilesHandler {
             $message = $this->application->translator->translate('responses.general.missingRequiredParameter');
             $message .= static::KEY_FILE_FULL_PATH . ', ' . static::KEY_FILE_FULL_PATH;
 
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         if( $request->request->has(static::KEY_FILE_FULL_PATH) ){
@@ -313,15 +314,15 @@ class FilesHandler {
 
                 $message = $this->application->translator->translate('responses.files.fileSuccessfullyRemoved');
 
-                return new JsonResponse($message, 200);
+                return new Response($message, 200);
             }else{
                 $message = $this->application->translator->translate('responses.files.fileDoesNotExist');
-                return new JsonResponse($message, 404);
+                return new Response($message, 404);
             }
 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileRemovingFile');
-            return new JsonResponse($message, 500);
+            return new Response($message, 500);
         }
 
     }
@@ -330,18 +331,18 @@ class FilesHandler {
      * @param Request $request
      * @param callable $callback
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function renameFileViaRequest(Request $request, callable $callback = null): JsonResponse {
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
             $message   = $this->application->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         if (!$request->request->has(static::KEY_FILE_NEW_NAME)) {
             $message   = $this->application->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_NEW_NAME;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         $curr_relative_filepath     = $request->request->get(static::KEY_FILE_FULL_PATH);
@@ -392,7 +393,7 @@ class FilesHandler {
                 return new JsonResponse($message, 500);
             }
 
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileRenamingFile');
             return new JsonResponse($message, 500);
         }
@@ -419,7 +420,7 @@ class FilesHandler {
 
             $message = $this->application->translator->translate('responses.files.fileHasBeenSuccesfullyMoved');
             return new JsonResponse($message, 200);
-        }catch(\Exception $e){
+        }catch(Exception $e){
             $log_message      = $this->application->translator->translate('logs.files.thereWasAnErrorWhileTryingToMoveSingleFile') . $e->getMessage();
             $response_message = $this->application->translator->translate('responses.files.couldNotMoveTheFile');
 

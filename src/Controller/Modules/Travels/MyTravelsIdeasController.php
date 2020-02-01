@@ -2,12 +2,15 @@
 
 namespace App\Controller\Modules\Travels;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Modules\Travels\MyTravelsIdeasType;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -31,18 +34,21 @@ class MyTravelsIdeasController extends AbstractController {
     /**
      * @Route("/my/travels/ideas", name="my-travels-ideas")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function display(Request $request) {
-        $this->addFormDataToDB($this->getForm(), $request);
+        $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($this->getForm(), false);
+            return $this->renderTemplate(false);
         }
-        return $this->renderTemplate($this->getForm(), true);
+
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
-    protected function renderTemplate($form, $ajax_render = false) {
+    protected function renderTemplate($ajax_render = false) {
+        $form      = $this->getForm();
         $form_view = $form->createView();
 
         $columns_names = $this->app->em->getClassMetadata(MyTravelsIdeas::class)->getColumnNames();
@@ -63,12 +69,12 @@ class MyTravelsIdeasController extends AbstractController {
     }
 
     /**
-     * @param $form Form
      * @param $request
      * @return void
      */
-    protected function addFormDataToDB($form, Request $request): void {
+    protected function addFormDataToDB(Request $request): void {
 
+        $form = $this->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -82,7 +88,8 @@ class MyTravelsIdeasController extends AbstractController {
     /**
      * @Route("/my-travels/ideas/update/",name="my-travels-ideas-update")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -96,7 +103,7 @@ class MyTravelsIdeasController extends AbstractController {
     /**
      * @Route("/my-travels/ideas/remove/",name="my-travels-ideas-remove")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function remove(Request $request) {
@@ -106,10 +113,15 @@ class MyTravelsIdeasController extends AbstractController {
             $id
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderTemplate($this->getForm(), true);
+            $rendered_template = $this->renderTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     private function getAllCategories(){

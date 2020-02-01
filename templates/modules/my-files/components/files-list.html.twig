@@ -49,8 +49,8 @@
             </td>
 
             <td contenteditable="false">
-                <i class="fa fa-trash" aria-hidden="true" data-content-editable="false"></i>
-                <i class="far fa-edit"                    data-content-editable="false"></i>
+                <i class="fa fa-trash remove-record" aria-hidden="true" data-content-editable="false"></i>
+                <i class="far fa-edit edit-record"                    data-content-editable="false"></i>
 
                 <form method="POST" action="{{ path('download_file') }}" class="file-download-form">
                     <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}" data-subdirectory="{{ subdirectory_path }}"/>
@@ -61,7 +61,7 @@
                 <a href="{{ path('download_file') }}">
 
                 </a>
-                <i class="far fa-save d-none"           data-content-editable="false"></i>
+                <i class="far fa-save save-record d-none"           data-content-editable="false"></i>
                 <i class="fas fa-random file-transfer"  data-content-editable="false"></i>
             </td>
         </tr>

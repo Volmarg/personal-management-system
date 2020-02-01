@@ -3,6 +3,7 @@
 
 namespace App\Controller\Files;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\DirectoriesHandler;
@@ -58,12 +59,16 @@ class FilesController extends AbstractController {
     /**
      * @Route("/files/action/remove-file", name="files_remove_file", methods="POST")
      * @param Request $request
-     * @return JsonResponse
+     * @return Response
      * @throws \Exception
      */
     public function removeFileViaPost(Request $request) {
         $response = $this->files_handler->removeFile($request);
-        return $response;
+
+        $code    = $response->getStatusCode();
+        $message = $response->getContent();
+
+        return AjaxResponse::buildResponseForAjaxCall($code, $message);
     }
 
     /**

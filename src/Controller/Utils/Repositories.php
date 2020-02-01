@@ -50,6 +50,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class Repositories extends AbstractController {
@@ -335,10 +336,11 @@ class Repositories extends AbstractController {
      * @param $id
      * This is general method for all common record soft delete called from front
      * @param array $findByParams
-     * @return JsonResponse
+     * @param Request|null $request
+     * @return Response
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function deleteById(string $repository_name, $id, array $findByParams = []) {
+    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ) {
         try {
 
             $id         = $this->trimAndCheckId($id);
@@ -346,10 +348,13 @@ class Repositories extends AbstractController {
             $record     = $repository->find($id);
 
             if ($this->hasChildren($record, $repository)) {
-                $response_data = [
-                    self::KEY_MESSAGE => $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove'),
-                ];
-                return new JsonResponse($response_data, 500);
+                $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
+
+                if( !empty($request) ){
+                    return AjaxResponse::buildResponseForAjaxCall(500, $message);
+                }
+
+                return new Response($message, 500);
             }
 
             #Info: this is used to detected constraint violation so it will prevent also soft delete
@@ -372,10 +377,12 @@ class Repositories extends AbstractController {
             if( $isConstraintViolation )
             {
                 $message = $this->translator->translate('db.foreignKeyViolation');
-                $response_data = [
-                    self::KEY_MESSAGE => $message,
-                ];
-                return new JsonResponse($response_data, 500);
+
+                if( !empty($request) ){
+                    return AjaxResponse::buildResponseForAjaxCall(500, $message);
+                }
+
+                return new Response($message, 500);
             }
 
             $record->setDeleted(1);
@@ -386,15 +393,21 @@ class Repositories extends AbstractController {
             $em->persist($record);
             $em->flush();
 
-            $response_data = [
-                self::KEY_MESSAGE => $this->translator->translate('responses.repositories.recordDeletedSuccessfully'),
-            ];
-            return new JsonResponse($response_data, 200);
+            $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
+
+            if( !empty($request) ){
+                return AjaxResponse::buildResponseForAjaxCall(200, $message);
+            }
+
+            return new Response($message, 200);
         } catch (Exception | ExceptionRepository $er) {
-            $response_data = [
-                self::KEY_MESSAGE => $this->translator->translate('responses.repositories.couldNotDeleteRecord'),
-            ];
-            return new JsonResponse($response_data, 500);
+            $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
+
+            if( !empty($request) ){
+                return AjaxResponse::buildResponseForAjaxCall(500, $message);
+            }
+
+            return new Response($message, 500);
         }
     }
 

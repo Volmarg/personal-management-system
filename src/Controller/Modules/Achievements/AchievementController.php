@@ -2,9 +2,11 @@
 
 namespace App\Controller\Modules\Achievements;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Achievements\Achievement;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,21 +38,22 @@ class AchievementController extends AbstractController {
      * @return Response
      */
     public function display(Request $request) {
-        $form = $this->app->forms->achievementForm(['enum_types' => $this->enum_types]);
-        $this->addFormDataToDB($form, $request);
+        $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($form, false);
+            return $this->renderTemplate(false);
         }
-        return $this->renderTemplate($form, true);
+
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
      * @param bool $ajax_render
-     * @param $achievement_form
      * @return Response
      */
-    protected function renderTemplate($achievement_form, $ajax_render = false) {
+    protected function renderTemplate($ajax_render = false) {
+        $achievement_form      = $this->app->forms->achievementForm(['enum_types' => $this->enum_types]);
         $achievement_form_view = $achievement_form->createView();
 
         $columns_names    = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
@@ -66,10 +69,13 @@ class AchievementController extends AbstractController {
     }
 
     /**
-     * @param FormInterface $achievement_form
      * @param Request $request
      */
-    protected function addFormDataToDB(FormInterface $achievement_form, Request $request) {
+    protected function addFormDataToDB(Request $request) {
+        /**
+         * @var FormInterface $achievement_form
+         */
+        $achievement_form = $this->app->forms->achievementForm(['enum_types' => $this->enum_types]);
         $achievement_form->handleRequest($request);
 
         if ($achievement_form->isSubmitted() && $achievement_form->isValid()) {
@@ -83,6 +89,7 @@ class AchievementController extends AbstractController {
      * @Route("/achievement/update/",name="achievement-update")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function update(Request $request) {
 
@@ -108,11 +115,16 @@ class AchievementController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            $form = $this->app->forms->achievementForm(['enum_types' => $this->enum_types]);
-            return $this->renderTemplate($form, true);
+            $rendered_template = $this->renderTemplate(true);
+
+            $template_content  = $rendered_template->getContent();
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
 }
