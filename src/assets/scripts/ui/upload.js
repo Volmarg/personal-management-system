@@ -101,6 +101,8 @@ export default (function () {
 
             this.handleFilesSelectOnChangeEvent();
             this.attachFilesInputResetEventToXButton();
+            this.attachEventsToFormSubmitButton();
+
             this.settings.addConfirmationBoxesToForms();
         },
         handleFilesSelectOnChangeEvent: function(){
@@ -231,6 +233,26 @@ export default (function () {
                             name="upload_table[` + prefix + id + `]" 
                             value="` + value + `" 
                             data-value="` + dataValue + `"/>`;
+        },
+        attachEventsToFormSubmitButton: function(){
+            let $submitButton = $(this.elements.submitButton);
+            let $form         = $submitButton.closest('form');
+            let _this         = this;
+
+            $submitButton.on('click', function(event) {
+                event.preventDefault();
+
+                let isFormValid = $form[0].checkValidity();
+
+                if( !isFormValid ){
+                    $form[0].reportValidity();
+                    return;
+                }
+
+                _this.vars.uploadTable.DataTable().destroy();
+                $form.submit();
+                _this.vars.uploadTable.DataTable();
+            })
         },
         cleaUploadTable: function(){
             this.vars.uploadDataTable.clear().draw();
