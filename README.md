@@ -51,7 +51,7 @@
 
 <h2>Preview</h2>
 
-<p align="center">Fully accessible demo can be found <a href="http://185.204.216.136:8000"><b>⇛Here⇚</b></a>.</p>
+<p align="center">Fully accessible demo can be found <a href="http://personal-management-system.pl/"><b>⇛Here⇚</b></a>.</p>
 <ul>
 	<li><b>Login:</b> admin</li>
 	<li><b>Password:</b> admin</li>
