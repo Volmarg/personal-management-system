@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Application;
+use App\Controller\Utils\Repositories;
+use App\Entity\Modules\Goals\MyGoals;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -172,6 +175,56 @@ class AppController extends Controller
                 $pageName
             )
         );
+    }
+
+    /**
+     * This originally came with symfonator
+     * @Route("test", name="test")
+     * @return Response
+     */
+    public function hasNotRemovedSoftDeletedRelatedEntities(EntityManagerInterface $em)
+    {
+
+        $record_id = 123;
+        $record    = $this->app->repositories->myGoalsRepository->find($record_id);
+
+
+        $class_name = get_class($record);
+
+        $class_meta = $em->getClassMetadata($class_name);
+        $related_entities_classes_data_arrays = $class_meta->getAssociationMappings();
+        $are_all_related_entities_removed     = true;
+
+        foreach( $related_entities_classes_data_arrays as $related_entity_class_data_array ){
+
+            $field_name    = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
+            $mapped_by     = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_MAPPED_BY];
+            $target_entity = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_TARGET_ENTITY];
+
+            dump($field_name);
+            dump($mapped_by);
+            dump($target_entity);
+
+            $get_method                              = "get" . ucfirst($field_name);
+            $related_entities_persistent_collections = $record->{$get_method}();
+            $related_entities                        = $related_entities_persistent_collections->getValues();
+
+            foreach( $related_entities as $related_entity ){
+                $delete_method_name = "getDeleted";
+
+                if( property_exists($related_entity, $delete_method_name) ){
+                    $is_deleted = $related_entity->$delete_method_name();
+
+                    if( !$is_deleted ){
+                        $are_all_related_entities_removed = false;
+                    }
+                }
+            }
+        }
+
+        dump($are_all_related_entities_removed);
+
+        die();
     }
 
 }

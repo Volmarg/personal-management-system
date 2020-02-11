@@ -24,7 +24,7 @@ class MyNotesCategories {
     private $icon;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Notes\MyNotes", mappedBy="setting")
+     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Notes\MyNotes", mappedBy="category")
      */
     private $note;
 
@@ -110,7 +110,7 @@ class MyNotesCategories {
     public function addNote(MyNotes $note): self {
         if (!$this->note->contains($note)) {
             $this->note[] = $note;
-            $note->setSetting($this);
+            $note->setCategory($this);
         }
 
         return $this;
@@ -120,8 +120,8 @@ class MyNotesCategories {
         if ($this->note->contains($note)) {
             $this->note->removeElement($note);
             // set the owning side to null (unless already changed)
-            if ($note->getSetting() === $this) {
-                $note->setSetting(null);
+            if ($note->getCategory() === $this) {
+                $note->setCategory(null);
             }
         }
 

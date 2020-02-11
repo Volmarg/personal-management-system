@@ -267,10 +267,16 @@ class MyContactsSettingsController extends AbstractController {
             $request->request->get('id')
         );
 
+        $message = $response->getContent();
+
         if ($response->getStatusCode() == 200) {
-            return $this->renderSettingsTemplate(true);
+            $rendered_template = $this->renderSettingsTemplate(true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
-        return $response;
+
+        return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
 
     /**
