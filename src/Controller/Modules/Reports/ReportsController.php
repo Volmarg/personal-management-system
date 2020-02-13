@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller\Modules\Reports;
 
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ReportsController extends AbstractController
 {
+
+    const TWIG_TEMPLATE_PAYMENT_SUMMARIES = "modules/my-reports/monthly-payments-summaries.twig";
 
     /**
      * @var Application $app
@@ -29,12 +32,23 @@ class ReportsController extends AbstractController
      */
     public function monthlyPaymentsSummaries(Request $request){
 
-        $ajax_render = true;
-
         if (!$request->isXmlHttpRequest()) {
-            $ajax_render = false;
+            $rendered_template = $this->renderTemplateMonthlyPaymentsSummaries(false);
+            return $rendered_template;
         }
 
+        $rendered_template = $this->renderTemplateMonthlyPaymentsSummaries(true);
+        $template_content  = $rendered_template->getContent();
+
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+    }
+
+    /**
+     * @param $ajax_render
+     * @return Response
+     * @throws DBALException
+     */
+    private function renderTemplateMonthlyPaymentsSummaries($ajax_render): Response {
         $data = $this->app->repositories->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
 
         $template_data = [
@@ -42,9 +56,8 @@ class ReportsController extends AbstractController
             'data'        => $data
         ];
 
-        $template = 'modules/my-reports/monthly-payments-summaries.twig';
-
-        return $this->render($template, $template_data);
+        $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENT_SUMMARIES, $template_data);
+        return $rendered_template;
     }
 
 }
