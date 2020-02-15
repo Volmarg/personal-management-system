@@ -209,8 +209,12 @@ reports:
     table:
       monthAndYear: Month and year
       money: Money
+  paymentsCharts:
+    information: >
+      <i>Charts based on data from payments modules</i>
   headers:
     monthlyPaymentsSummaries: Monthly payments summaries
+    paymentsCharts: Payments charts
 
 datatables:
   table:

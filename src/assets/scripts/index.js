@@ -47,4 +47,5 @@ import './fullcalendar/index.js';
 import './googleMaps/index.js';
 import './utils/index.js';
 import './my-goals/index.js';
+import './apexcharts/index.js';
 import './initializer/index.js';

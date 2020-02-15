@@ -70,5 +70,35 @@ class ReportsRepository{
         return $results;
     }
 
+    /**
+     * @return array
+     * @throws DBALException
+     */
+    public function fetchTotalPaymentsAmountForTypes(): array {
+
+        $connection = $this->em->getConnection();
+
+        $sql = "
+            SELECT 
+            ROUND(SUM(mpm.money), 2) AS amountForType,
+            mps.value                AS type
+            
+            FROM my_payment_monthly mpm
+            
+            JOIN my_payment_setting mps
+            ON mpm.type_id = mps.id
+            AND name       = 'type'
+            
+            WHERE 1
+            AND mpm.deleted = 0
+            
+            GROUP BY mpm.type_id
+        ";
+
+        $stmt    = $connection->executeQuery($sql);
+        $results = $stmt->fetchAll();
+
+        return $results;
+    }
 
 }

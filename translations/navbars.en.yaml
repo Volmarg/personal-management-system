@@ -62,6 +62,7 @@ sidebar:
     reports:
       label: Reports
       monthlyPaymentsSummaries: Monthly payments summaries
+      paymentsCharts: Payments charts
 topbar:
   search:
     placeholder: Search for files by tags...
