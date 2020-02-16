@@ -195,7 +195,7 @@ export default (function () {
                     }
                 },
                 markers: {
-                    size: 1
+                    size: 4
                 },
                 xaxis: {
                     title: {

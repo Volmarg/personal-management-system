@@ -115,24 +115,44 @@ class ReportsRepository{
         $connection = $this->em->getConnection();
 
         $sql = "
-        -- money spent in every category per month
+        -- issue: (2020-6 is domestic, 07 is not, 08 is again - chart will not render things after 07)
+        -- we must put 0 in this case when there are months in which no payment was made for give type
         SELECT 
-        ROUND(SUM(mpm.money),2)        AS amount,
-        mps.value                      AS type,
-        DATE_FORMAT(mpm.date, '%Y-%m') AS date
+        DISTINCT DATE_FORMAT(mpm_dates.date, '%Y-%m')            AS date,
+        mps.value                                                AS type,
+        IF( mpm_payments.amount IS NULL, 0, mpm_payments.amount) AS amount
         
-        FROM my_payment_monthly mpm
+        FROM my_payment_monthly mpm_dates
+
+        -- we need to join each date with every active type
+        CROSS JOIN my_payment_setting mps
+        ON name         = 'type'
+        AND mps.deleted = 0
+
+        -- cannot make proper sum of money due to cross join so must be a subselect
+        LEFT JOIN 
+        (
+            SELECT 
+            ROUND(SUM(mpm_payments.money))AS amount,
+            mpm_payments.type_id,
+            DATE_FORMAT(mpm_payments.date, '%Y-%m') AS date
+    
+            FROM my_payment_monthly mpm_dates
+    
+            JOIN my_payment_monthly mpm_payments
+            ON mpm_payments.id = mpm_dates.id
+    
+            GROUP BY mpm_payments.type_id,  DATE_FORMAT(mpm_dates.date, '%Y-%m')
         
-        JOIN my_payment_setting mps
-        ON mpm.type_id = mps.id
-        AND name       = 'type'
-        
+        ) AS mpm_payments
+        ON mpm_payments.date = DATE_FORMAT(mpm_dates.date, '%Y-%m')
+        AND mpm_payments.type_id = mps.id   
+
         WHERE 1
-        AND mpm.deleted = 0
+        AND mpm_dates.deleted = 0
         
-        GROUP BY mpm.type_id, DATE_FORMAT(mpm.date, '%Y-%m')
-        
-        ORDER BY mps.value, mpm.date ASC
+        GROUP BY mps.id, DATE_FORMAT(mpm_dates.date, '%Y-%m')
+        ORDER BY mpm_dates.date ASC
         ";
 
         $stmt    = $connection->executeQuery($sql);
