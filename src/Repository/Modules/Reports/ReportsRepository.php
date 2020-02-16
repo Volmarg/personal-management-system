@@ -27,46 +27,110 @@ class ReportsRepository{
         $connection = $this->em->getConnection();
 
         $sql = "
-            SELECT
-                DATE_FORMAT(mpm.date,'%Y-%m') AS yearAndMonth,
+            SELECT 
+            
+            dates.yearAndMonth,
+            IF(withoutBills.moneyWithoutBills IS NULL, 0, withoutBills.moneyWithoutBills) AS moneyWithoutBills,
+            IF(withBills.money IS NULL, 0, withBills.money) + IF(withoutBills.moneyWithoutBills IS NULL, 0, withoutBills.moneyWithoutBills)  AS money
+            
+            -- first get all the possible dates
+             FROM (
+                SELECT
+                DISTINCT DATE_FORMAT(mpm.date,'%Y-%m') AS yearAndMonth
+                FROM my_payment_monthly mpm
+                
+                WHERE 1
+                AND mpm.deleted = 0
+                
+                UNION 
+                
+                SELECT
+                DISTINCT DATE_FORMAT(mpbi.date,'%Y-%m') AS yearAndMonth
+                FROM my_payment_bill_item mpbi
+                
+                WHERE 1
+                AND mpbi.deleted = 0
+            
+            ) AS dates
+        
+            -- get money amount per month from payments
+            LEFT JOIN (
+                SELECT
+                DATE_FORMAT(mpmWithoutBill.date,'%Y-%m') AS yearAndMonth,
                 ROUND(
                     SUM(
-                        mpm.money
-                    ) +
+                        mpmWithoutBill.money
+                    ) 
+                ) AS moneyWithoutBills
+        
+                FROM my_payment_monthly mpmWithoutBill
+                
+                WHERE 1
+                AND mpmWithoutBill.deleted = 0
+                
+                GROUP BY DATE_FORMAT(mpmWithoutBill.date,'%Y-%m')
+            
+            ) AS withoutBills
+            ON withoutBills.yearAndMonth = dates.yearAndMonth
+        
+            -- get money amount from bills per month
+            LEFT JOIN (
+        
+                SELECT
+                payment_bills.yearAndMonth AS yearAndMonth,
                 IF(
-                    DATE_FORMAT(mpm.date,'%Y-%m') = yearAndMonth,
+                    datesAndAmount.yearAndMonth = payment_bills.yearAndMonth,
                     CASE
                         WHEN payment_bills.money IS NULL THEN 0
                     ELSE
-                        payment_bills.money
+                        MAX(payment_bills.money)
                     END,
                     0
-                ),
-                2) AS money,
-                ROUND(
-                    SUM(
-                        mpm.money
-                    ),
-                2) AS moneyWithoutBills
+                 ) AS money
+                
+                 FROM (
+                    SELECT
+                    DISTINCT DATE_FORMAT(mpm.date,'%Y-%m')  AS yearAndMonth,
+                    ROUND(SUM(mpm.money))                   AS amount
+                    FROM my_payment_monthly mpm
+                    
+                    WHERE 1
+                    AND mpm.deleted = 0
+                    
+                    GROUP BY DATE_FORMAT(mpm.date,'%Y-%m')
+                    
+                    UNION 
+                    
+                    SELECT
+                    DISTINCT DATE_FORMAT(mpbi.date,'%Y-%m') AS yearAndMonth,
+                    0 AS amount
+                    FROM my_payment_bill_item mpbi
+                    
+                    WHERE 1
+                    AND mpbi.deleted = 0
+                
+                ) AS datesAndAmount
+                            
+                RIGHT JOIN (
+                    SELECT
+                    DATE_FORMAT(mpbi.date,'%Y-%m') AS yearAndMonth,
+                    SUM(mpbi.amount)               AS money
+                
+                    FROM my_payment_bill_item mpbi
+                
+                    WHERE 1
+                    AND mpbi.deleted = 0
+                
+                    GROUP BY DATE_FORMAT(mpbi.date,'%Y-%m')
+                ) AS payment_bills
+                ON datesAndAmount.yearAndMonth = payment_bills.yearAndMonth
+                
+                GROUP BY payment_bills.yearAndMonth
+        
+            ) AS withBills
+            ON withBills.yearAndMonth = dates.yearAndMonth
             
-            FROM my_payment_monthly mpm
-            
-            LEFT JOIN (
-                SELECT
-                DATE_FORMAT(mpbi.date,'%Y-%m') AS yearAndMonth,
-                SUM(mpbi.amount) AS money
-            
-                FROM my_payment_bill_item mpbi
-            
-                GROUP BY (
-                    DATE_FORMAT(mpbi.date,'%Y-%m')
-                )
-            ) AS payment_bills
-            ON DATE_FORMAT(mpm.date,'%Y-%m') = payment_bills.yearAndMonth
-            
-            GROUP BY (
-                DATE_FORMAT(mpm.date,'%Y-%m')
-            )
+            ORDER BY dates.yearAndMonth ASC
         ";
 
         $stmt = $connection->executeQuery($sql);
