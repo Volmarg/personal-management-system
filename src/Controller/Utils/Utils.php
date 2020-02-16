@@ -147,5 +147,8 @@ class Utils extends AbstractController {
         return StringUtil::fqcnToBlockPrefix($class) ?: '';
     }
 
+    public static function randomHexColor() {
+        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+    }
 
 }

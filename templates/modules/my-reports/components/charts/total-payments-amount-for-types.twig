@@ -1,8 +1,11 @@
+<h4 class="c-grey-900 mB-20 text-center">{{ translate('charts.headers.totalPaymentsAmountForTypes') }}</h4>
+
 <section
         data-is-apex-chart="true"
         data-apex-chart-type="pie"
         data-apex-chart-labels="{{ chart_labels|json_encode }}"
         data-apex-chart-values="{{ chart_values|json_encode }}"
+        class="d-flex justify-content-center"
 >
 
 </section>

@@ -212,9 +212,29 @@ reports:
   paymentsCharts:
     information: >
       <i>Charts based on data from payments modules</i>
+  saviingsCharts:
+    information: >
+      <i>Charts based on data from incomes/payments modules <b>(Contains fake income - no such module by now)</b></i>
   headers:
     monthlyPaymentsSummaries: Monthly payments summaries
     paymentsCharts: Payments charts
+    saviingsCharts: Savings charts
+
+charts:
+  headers:
+    totalPaymentsAmountForTypes: Total payments percentage for types
+    paymentsForTypesEachMonth: Payments by types for each month
+    paymentsTotalAmountForEachMonth: Payments total amount for each month
+    savingsEachMonth: Saving each month
+  paymentsForTypesEachMonth:
+    axis:
+      titles:
+        y: Amount
+        x: Month-Year
+  paymentsTotalAmountForEachMonth:
+    types:
+      withBills: With bills
+      withoutBills: Without bills
 
 datatables:
   table:

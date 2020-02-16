@@ -12,14 +12,13 @@
     <main class='main-content bgc-grey-100' id="MyReportsMonthlyPaymentsSummariesModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
-
                 <div class="row">
                     <div class="col-md-12">
 
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('reports.headers.paymentsCharts') }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('reports.headers.saviingsCharts') }}</h4>
                             <p class="text-center">
-                                {{ translate('reports.paymentsCharts.information') | raw }}
+                                {{ translate('reports.saviingsCharts.information') | raw }}
                             </p>
                         </div>
 
@@ -28,31 +27,24 @@
 
                 <div class="row">
                     <div class="col-md-12">
+
                         <div class="row">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
-                                {{ rendered_chart_payment_for_type_each_month | raw }}
+                                {{ chart_savings_each_month|raw }}
                             </div>
                         </div>
+
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
-                                {{ rendered_chart_payment_total_for_each_month | raw }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-12">
                         <div class="row">
                             <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-6">
-                                {{ chart_total_payments_amount_for_types | raw }}
                             </div>
                         </div>
+
                     </div>
                 </div>
 

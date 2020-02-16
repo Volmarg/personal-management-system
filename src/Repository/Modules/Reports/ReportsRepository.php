@@ -42,7 +42,12 @@ class ReportsRepository{
                     END,
                     0
                 ),
-                2) AS money
+                2) AS money,
+                ROUND(
+                    SUM(
+                        mpm.money
+                    ),
+                2) AS moneyWithoutBills
             
             FROM my_payment_monthly mpm
             
@@ -93,6 +98,41 @@ class ReportsRepository{
             AND mpm.deleted = 0
             
             GROUP BY mpm.type_id
+        ";
+
+        $stmt    = $connection->executeQuery($sql);
+        $results = $stmt->fetchAll();
+
+        return $results;
+    }
+
+    /**
+     * @return array
+     * @throws DBALException
+     */
+    public function fetchPaymentsForTypesEachMonth(): array {
+
+        $connection = $this->em->getConnection();
+
+        $sql = "
+        -- money spent in every category per month
+        SELECT 
+        ROUND(SUM(mpm.money),2)        AS amount,
+        mps.value                      AS type,
+        DATE_FORMAT(mpm.date, '%Y-%m') AS date
+        
+        FROM my_payment_monthly mpm
+        
+        JOIN my_payment_setting mps
+        ON mpm.type_id = mps.id
+        AND name       = 'type'
+        
+        WHERE 1
+        AND mpm.deleted = 0
+        
+        GROUP BY mpm.type_id, DATE_FORMAT(mpm.date, '%Y-%m')
+        
+        ORDER BY mps.value, mpm.date ASC
         ";
 
         $stmt    = $connection->executeQuery($sql);

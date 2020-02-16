@@ -1,0 +1,16 @@
+<h4 class="c-grey-900 mB-20 text-center">{{ translate('charts.headers.paymentsForTypesEachMonth') }}</h4>
+
+<section
+        data-is-apex-chart="true"
+        data-apex-chart-type="line"
+        data-apex-chart-values="{{ chart_values|json_encode }}"
+        data-apex-chart-x-axis-values="{{ chart_x_axis_values|json_encode }}"
+        data-apex-chart-colors="{{ chart_colors|json_encode }}"
+        data-apex-chart-y-axis-title="{{ translate('charts.paymentsForTypesEachMonth.axis.titles.y') }}"
+        data-apex-chart-x-axis-title="{{ translate('charts.paymentsForTypesEachMonth.axis.titles.x') }}"
+        data-apex-chart-enable-value-labels="true"
+        data-apex-chart-offset-grid-left="40"
+        class="d-flex justify-content-center"
+>
+
+</section>

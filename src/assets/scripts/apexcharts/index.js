@@ -20,12 +20,19 @@ export default (function () {
                 dataApexChartName: "data-apex-chart-name",
                 dataApexChartType: "data-apex-chart-type",
                 dataApexChartLabels: "data-apex-chart-labels",
-                dataApexChartValues: "data-apex-chart-values"
+                dataApexChartValues: "data-apex-chart-values",
+                dataApexChartColors: "data-apex-chart-colors",
+                dataApexChartXAxisValues: "data-apex-chart-x-axis-values",
+                dataApexChartYAxisTitle: "data-apex-chart-y-axis-title",
+                dataApexChartXAxisTitle: "data-apex-chart-x-axis-title",
+                dataApexChartEnableValueLabels: "data-apex-chart-enable-value-labels",
+                dataApexChartOffsetGridLeft: "data-apex-chart-offset-grid-left",
             }
         },
         charts:{
             types:{
-                pie: "pie"
+                pie: "pie",
+                line: "line",
             }
         },
         init: function () {
@@ -43,8 +50,8 @@ export default (function () {
         },
         /**
          * Build options for given chart type if builder is created for given type
-         * @param $chartToHandle {object}
-         * @returns {object}
+         * @param $chartToHandle    {object}
+         * @returns                 {object}
          */
         buildOptionsForChartType: function($chartToHandle){
 
@@ -53,15 +60,39 @@ export default (function () {
 
             switch(chartType){
                 case this.charts.types.pie:
+                {
                     let chartLabelsJson = $chartToHandle.attr(this.selectors.attributes.dataApexChartLabels);
                     let chartValuesJson = $chartToHandle.attr(this.selectors.attributes.dataApexChartValues);
 
                     let chartLabelsArray = JSON.parse(chartLabelsJson);
                     let chartValuesArray = JSON.parse(chartValuesJson);
 
-                    chartValuesArray = this.normalizeChartValues(chartValuesArray);
-                    options          = this.buildOptionsForPieChart(chartLabelsArray, chartValuesArray);
+                    options = this.buildOptionsForPieChart(chartLabelsArray, chartValuesArray);
+                }
                     break;
+
+                case this.charts.types.line:
+                {
+                    let chartColorsJson      = $chartToHandle.attr(this.selectors.attributes.dataApexChartColors);
+                    let chartXAxisValuesJson = $chartToHandle.attr(this.selectors.attributes.dataApexChartXAxisValues);
+                    let chartDataSetsJson    = $chartToHandle.attr(this.selectors.attributes.dataApexChartValues);
+
+                    let yAxisTitle           = $chartToHandle.attr(this.selectors.attributes.dataApexChartYAxisTitle);
+                    let xAxisTitle           = $chartToHandle.attr(this.selectors.attributes.dataApexChartXAxisTitle);
+
+                    let enableValuesLabels   = ("true" === $chartToHandle.attr(this.selectors.attributes.dataApexChartEnableValueLabels));
+
+                    let dataApexChartOffsetGridLeft   = $chartToHandle.attr(this.selectors.attributes.dataApexChartOffsetGridLeft);
+                    dataApexChartOffsetGridLeft       = ("undefined" === typeof dataApexChartOffsetGridLeft ? 0 : parseInt(dataApexChartOffsetGridLeft));
+
+                    let chartColorsArray      = JSON.parse(chartColorsJson);
+                    let chartValuesArray      = JSON.parse(chartDataSetsJson);
+                    let chartXAxisValuesArray = JSON.parse(chartXAxisValuesJson);
+
+                    options = this.buildOptionsForLineChart(chartXAxisValuesArray, chartValuesArray, chartColorsArray, yAxisTitle, xAxisTitle, enableValuesLabels, dataApexChartOffsetGridLeft);
+                }
+                    break;
+
                 default:
                     throw({
                         "message"   : "Unsupported chart type for building options",
@@ -73,11 +104,14 @@ export default (function () {
         },
         /**
          * Build options needed to create pie type chart
-         * @param chartValuesArray
-         * @param chartLabelsArray
-         * @returns {object}
+         * @param chartValuesArray      {array}
+         * @param chartLabelsArray      {array}
+         * @returns                     {object}
          */
         buildOptionsForPieChart: function(chartLabelsArray, chartValuesArray) {
+
+            chartValuesArray = this.normalizeChartValues(chartValuesArray);
+
             let _this = this;
             let options = {
                 series: chartValuesArray,
@@ -102,9 +136,101 @@ export default (function () {
             return options;
         },
         /**
+         * Build options needed to create line type chart
+         * @param xAxisValuesArray          {   array}
+         * @param chartDataSetsArray            {array}
+         * @param chartColorsArray              {array}
+         * @param yAxisTitle                    {string}
+         * @param xAxisTitle                    {string}
+         * @param enableValuesLabels            {bool}
+         * @param dataApexChartOffsetGridLeft   {int}
+         * @returns                             {object}
+         */
+        buildOptionsForLineChart: function(xAxisValuesArray, chartDataSetsArray, chartColorsArray, yAxisTitle, xAxisTitle, enableValuesLabels, dataApexChartOffsetGridLeft){
+
+            let _this          = this;
+            let series         = [];
+            let maxValueInSets = 0;
+
+            $.each(chartDataSetsArray, function(dataSetName, dataSetValues){
+
+                dataSetValues = _this.normalizeChartValues(dataSetValues);
+
+                let seriesData = {
+                    name: dataSetName,
+                    data: dataSetValues
+                };
+
+                $.each(dataSetValues, function(index, value){
+                    if( value > maxValueInSets ){
+                        maxValueInSets = value;
+                    }
+                });
+
+                series.push(seriesData);
+            });
+
+            var options = {
+                chart: {
+                    height: 350,
+                    type: this.charts.types.line,
+                    stacked: false
+                },
+                grid: {
+                    padding: {
+                        left: dataApexChartOffsetGridLeft, // this is padding of entire chart zone from the axis Y
+                    }
+                },
+                dataLabels: {
+                    enabled: enableValuesLabels
+                },
+                colors: chartColorsArray,
+                series: series,
+                stroke: {
+                    width: [4, 4]
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: "20%"
+                    }
+                },
+                markers: {
+                    size: 1
+                },
+                xaxis: {
+                    title: {
+                        text: xAxisTitle
+                    },
+                    categories: xAxisValuesArray
+                },
+                yaxis: {
+                    title: {
+                        text: yAxisTitle
+                    },
+                    min: 0,
+                    max: Math.ceil((maxValueInSets + 1/3 * maxValueInSets))
+                },
+                tooltip: {
+                    shared: false,
+                    intersect: true,
+                    x: {
+                        show: false
+                    }
+                },
+                legend: {
+                    horizontalAlign: "center",
+                    offsetY: 0,
+                    offsetX: -5
+                }
+            };
+
+            return options;
+        },
+
+        /**
          * Values must be numeric but from front these always come as string so this function changes string numbers to floats
-         * @param chartValuesArray {array}
-         * @return {array}
+         * @param chartValuesArray  {array}
+         * @return                  {array}
          */
         normalizeChartValues: function(chartValuesArray){
             let normalizedValuesArray = [];
