@@ -52,4 +52,40 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
 
         return $results;
     }
+
+    /**
+     * Returns total summary how much I owed to someone or someone to me
+     * @return array
+     * @throws DBALException
+     */
+    public function fetchSummaryWhoOwesHowMuch(): array
+    {
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT 
+            target AS target,
+            ROUND (
+                SUM(
+                    IF(owed_by_me, -amount, amount)
+                ),2 
+            ) AS amount,
+            IF(
+                SUM(
+                    IF(owed_by_me, -amount, amount)
+                )<0, 1, 0
+            ) AS summaryOwedByMe,
+            currency AS currency
+            
+            FROM my_payment_owed
+            WHERE 1 
+            AND deleted = 0
+            GROUP BY target, currency;
+        ";
+
+        $stmt    = $connection->executeQuery($sql);
+        $results = $stmt->fetchAll();
+
+        return $results;
+    }
 }

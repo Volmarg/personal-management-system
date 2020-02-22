@@ -2,7 +2,6 @@
 
 namespace App\Controller\Modules\Payments;
 
-use App\Controller\Page\SettingsController;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
@@ -66,8 +65,23 @@ class MyPaymentsOwedController extends AbstractController
 
         $summary_owed_by_others = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(0);
         $summary_owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(1);
+        $summary_overall        = $this->app->repositories->myPaymentsOwedRepository->fetchSummaryWhoOwesHowMuch();
 
-        $currencies_dtos        = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $summary_overall_owed_by_me     = [];
+        $summary_overall_owed_by_others = [];
+
+        foreach( $summary_overall as $summary ){
+            $owed_by_me = $summary['summaryOwedByMe'];
+
+            if($owed_by_me){
+                $summary_overall_owed_by_me[] = $summary;
+                continue;
+            }
+
+            $summary_overall_owed_by_others[] = $summary;
+        }
+
+        $currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/owed.html.twig', [
             'ajax_render'       => $ajax_render,
@@ -77,6 +91,8 @@ class MyPaymentsOwedController extends AbstractController
             'summary_owed_by_others' => $summary_owed_by_others,
             'summary_owed_by_me'     => $summary_owed_by_me,
             'currencies_dtos'        => $currencies_dtos,
+            'summary_overall_owed_by_me'     => $summary_overall_owed_by_me,
+            'summary_overall_owed_by_others' => $summary_overall_owed_by_others,
         ]);
     }
 

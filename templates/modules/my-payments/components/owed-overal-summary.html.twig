@@ -1,0 +1,49 @@
+{% if summarries is not empty %}
+    <section class="summary-section d-flex justify-content-center">
+        <div class="">
+            <ul style="list-style-type:none;margin:0; padding:0;">
+                {% for summary in summarries %}
+                    <li style="margin:0; padding:0;font-size:14px;">
+                        <b>
+                            {% if  summary.summaryOwedByMe %}
+                                {{ translate('payments.moneyOwed.overallSummary.i') }}
+                            {% else %}
+                                {{ summary.target }}
+                            {% endif %}
+                        </b>
+
+                        {% if summary.summaryOwedByMe %}
+                            {{ translate('payments.moneyOwed.overallSummary.owe') }}
+                        {% else %}
+                            {{ translate('payments.moneyOwed.overallSummary.owesMe') }}
+                        {% endif %}
+
+                        {% set is_currency_present = false %}
+                        {% set currency_symbol     = '' %}
+
+                        {% for currency_dto in currencies_dtos %}
+                            {% if currency_dto.getName() == summary.currency %}
+                                {% set is_currency_present = true %}
+                                {% set currency_symbol = currency_dto.getSymbol() %}
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if not is_currency_present %}
+                            {% set currency_symbol = ' ' ~ summary.currency %}
+                        {% endif %}
+
+                        <b>{{ summary.amount | abs ~ currency_symbol }}</b>
+
+                        <i>
+                            {% if summary.summaryOwedByMe %}
+                                {{ translate('payments.moneyOwed.overallSummary.to') }}
+                                {{ summary.target }}
+                            {% endif %}
+                        </i>
+
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endif %}

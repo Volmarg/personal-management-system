@@ -35,6 +35,20 @@
                         </div>
                     </div>
                 </div>
+                {# Totall summary#}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('other.overallSummary') }}</h4>
+
+                            <h5 class="text-center"><u>{{ translate('payments.moneyOwed.headers.owedByMe') }}</u></h5>
+                            {% include 'modules/my-payments/components/owed-overal-summary.html.twig' with {"summarries": summary_overall_owed_by_me} %}
+
+                            <h5 class="text-center"><u>{{ translate('payments.moneyOwed.headers.owedByOthers') }}</u></h5>
+                            {% include 'modules/my-payments/components/owed-overal-summary.html.twig' with {"summarries": summary_overall_owed_by_others} %}
+                        </div>
+                    </div>
+                </div>
                 {# Form #}
                 <div class="row">
                     <div class="col-md-12">

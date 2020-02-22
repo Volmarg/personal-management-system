@@ -159,6 +159,11 @@ payments:
       information: Information
       date: Date
       currency: Currency
+    overallSummary:
+      i: I
+      owe: Owe
+      owesMe: Owes me
+      to: To
   monthlyPayments:
     headers:
       monthlyPayments: Monthly payments
@@ -300,3 +305,4 @@ upload:
 
 other:
   summary: Summary
+  overallSummary: Overall summary
