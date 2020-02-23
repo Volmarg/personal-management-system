@@ -42,6 +42,7 @@ sidebar:
       productsPrices: Products prices
       monthlyPayments: Monthly payments
       moneyOwed: Money owed
+      incomes: Incomes
       bills: Bills
       settings: Settings
     shopping:

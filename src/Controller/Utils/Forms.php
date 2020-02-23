@@ -31,6 +31,7 @@ use App\Form\Modules\Passwords\MyPasswordsType;
 use App\Form\Modules\Payments\CurrencyType;
 use App\Form\Modules\Payments\MyPaymentsBills;
 use App\Form\Modules\Payments\MyPaymentsBillsItems;
+use App\Form\Modules\Payments\MyPaymentsIncomeType;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
 use App\Form\Modules\Payments\MyRecurringPaymentsMonthlyType;
 use App\Form\Modules\Schedules\MyScheduleType;
@@ -77,6 +78,10 @@ class Forms extends AbstractController {
 
     public function moneyOwedForm(array $params = []): FormInterface {
         return $this->createForm(MyPaymentsOwedType::class, null, $params);
+    }
+
+    public function moneyIncomeForm(array $params = []): FormInterface {
+        return $this->createForm(MyPaymentsIncomeType::class, null, $params);
     }
 
     public function updateTagsForm(array $params = []): FormInterface {

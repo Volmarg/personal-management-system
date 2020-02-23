@@ -31,6 +31,7 @@ use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
 use App\Repository\Modules\Payments\MyPaymentsBillsRepository;
+use App\Repository\Modules\Payments\MyPaymentsIncomeRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
@@ -78,6 +79,7 @@ class Repositories extends AbstractController {
     const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME          = 'MyJobHolidaysPoolRepository';
     const MY_JOB_SETTINGS_REPOSITORY_NAME               = 'MyJobSettingsRepository';
     const MY_PAYMENTS_OWED_REPOSITORY_NAME              = 'MyPaymentsOwedRepository';
+    const MY_PAYMENTS_INCOME_REPOSITORY_NAME            = 'MyPaymentsIncomeRepository';
     const MY_PAYMENTS_BILLS_REPOSITORY_NAME             = 'MyPaymentsBillsRepository';
     const MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME       = 'MyPaymentsBillsItemsRepository';
     const FILE_TAGS_REPOSITORY                          = 'FilesTagsRepository';
@@ -269,6 +271,12 @@ class Repositories extends AbstractController {
      */
     public $myContactGroupRepository;
 
+    /**
+     * @var MyPaymentsIncomeRepository $myPaymentsIncomeRepository
+     */
+    public $myPaymentsIncomeRepository;
+
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -302,6 +310,7 @@ class Repositories extends AbstractController {
         MyContactTypeRepository             $myContactTypeRepository,
         MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
+        MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         EntityManagerInterface              $entity_manager
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -336,6 +345,7 @@ class Repositories extends AbstractController {
         $this->myContactTypeRepository              = $myContactTypeRepository;
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
+        $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->entity_manager                       = $entity_manager;
     }
 

@@ -123,6 +123,17 @@ forms:
       information: Information about this borrow
       date: yyyy-mm-dd
       amount: Amount of money owed
+  MyPaymentsIncomeType:
+    labels:
+      information: Information
+      date: Date
+      amount: Amount
+      currency: Currency
+    placeholders:
+      information: Short income summary
+      date: Date
+      amount: Amount
+      currency: Currency
   MyPaymentsProductsType:
     labels:
       name: Name

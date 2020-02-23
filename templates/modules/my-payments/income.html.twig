@@ -1,0 +1,39 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100' id="MyPaymentsIncomeModuleBody">
+        <div id='mainContent'>
+            <div class="container-fluid">
+                {# Table #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.incomes.headers.monthlyIncomes') }}</h4>
+                            {% include 'modules/my-payments/components/income/table.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+                {# Form #}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.incomes.headers.addRecord') }}</h4>
+                            <div class="col-md-6 align-self-center add-record-form">
+                                {{ form_start(form,{'attr':{' data-entity':"MyPaymentsIncome"}}) }}
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}

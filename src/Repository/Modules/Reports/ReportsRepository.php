@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ReportsRepository{
 
+    const KEY_WITH_BILLS = 'withBills';
+
     /**
      * @var EntityManagerInterface $em
      */

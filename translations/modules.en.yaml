@@ -164,6 +164,15 @@ payments:
       owe: Owe
       owesMe: Owes me
       to: To
+  incomes:
+    headers:
+      monthlyIncomes: Monthly incomes
+      addRecord: Add record
+    table:
+      amount: Amount
+      date: Date
+      currency: Currency
+      information: Information
   monthlyPayments:
     headers:
       monthlyPayments: Monthly payments
@@ -220,6 +229,7 @@ reports:
   saviingsCharts:
     information: >
       <i>Charts based on data from incomes/payments modules <b>(Contains fake income - no such module by now)</b></i>
+    group: Saved
   headers:
     monthlyPaymentsSummaries: Monthly payments summaries
     paymentsCharts: Payments charts

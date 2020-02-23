@@ -387,6 +387,63 @@ export default (function () {
             },
             entity_name: "Payment owed",
         },
+        "MyPaymentsIncome": {
+            makeUpdateData: function (tr_parent_element) {
+                let id          = $(tr_parent_element).find('.id').html();
+                let date        = $(tr_parent_element).find('.date input').val();
+                let amount      = $(tr_parent_element).find('.amount').html();
+                let information = $(tr_parent_element).find('.information').html();
+                let currency    = $(tr_parent_element).find('.currency').find("select").val();
+
+                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                let url = '/my-payments-income/update/';
+                let ajax_data = {
+                    'id'         : id,
+                    'date'       : date,
+                    'amount'     : amount,
+                    'currency'   : currency,
+                    'information': information,
+                };
+
+                return {
+                    'url': url,
+                    'data': ajax_data,
+                    'success_message': success_message,
+                    'fail_message': fail_message,
+                };
+            },
+            makeRemoveData: function (parent_element) {
+                let id              = $(parent_element).find('.id').html();
+                let url             = '/my-payments-income/remove/';
+                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                return {
+                    'url': url,
+                    'data': {
+                        'id': id
+                    },
+                    'success_message': success_message,
+                    'fail_message'   : fail_message,
+                    'is_dataTable'   : false, //temporary
+                };
+
+            },
+            makeCreateData: function () {
+                let url             = '/my-payments-income';
+                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                return {
+                    'url'            : url,
+                    'success_message': success_message,
+                    'fail_message'   : fail_message,
+                };
+            },
+            entity_name: "Payment income",
+        },
         "MyJobAfterhours": {
             makeUpdateData: function (tr_parent_element) {
                 let id          = $(tr_parent_element).find('.id').html();

@@ -5,7 +5,6 @@ use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Utils;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use DateTime;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -231,36 +230,43 @@ class ReportsController extends AbstractController
     /**
      * @return Response
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
      * @throws Exception
      */
     public function renderChartSavingsEachMonth(): Response {
 
         $payments_total_for_each_month = $this->app->repositories->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
+        $all_incomes                   = $this->app->repositories->myPaymentsIncomeRepository->findBy(["deleted" => 0]);
+        $custom_color                  = Utils::randomHexColor();
+        $group_name                    = $this->app->translator->translate("reports.saviingsCharts.group");
 
-        $chart_values        = [];
+        $chart_values        = [
+            $group_name => [] // required by front js lib - shown on amount box hover
+        ];
         $chart_x_axis_values = [];
-        $chart_colors        = [];
-
-        //todo rename
-        $type_with_bills     = $this->app->translator->translate("charts.paymentsTotalAmountForEachMonth.types.withBills");
-        $static_dummy_saving = 4210.98;
+        $chart_colors        = [$custom_color];
 
         foreach( $payments_total_for_each_month as $payment_total_for_each_month){
 
             $date   = $payment_total_for_each_month[self::KEY_YEAR_AND_MONTH];
-            $money  = round((float) $payment_total_for_each_month[self::KEY_MONEY] , 2);
-            $saving = $static_dummy_saving - $money;
+            $saving = 0;
 
-            $chart_x_axis_values[] = $date;
-            $chart_colors[]        = Utils::randomHexColor();
+            foreach( $all_incomes as $income ){
 
-            if( !array_key_exists($type_with_bills, $chart_values) ){
-                $chart_values[$type_with_bills] = [];
-                $chart_values[$type_with_bills] = [];
+                $income_date = $income->getDate()->format('Y-m');
+
+                if( $income_date === $date ){
+
+                    $money_spent  = round((float) $payment_total_for_each_month[self::KEY_MONEY] , 2);
+                    $income       = $income->getAmount();
+
+                    $saving       = $income - $money_spent;
+                    $saving       = ( $saving < 0 ? 0 : $saving );
+
+                }
             }
 
-            $chart_values[$type_with_bills][]    = ceil($saving);
+            $chart_x_axis_values[] = $date;
+            $chart_values[$group_name][] = ceil($saving);
         }
 
         usort($chart_x_axis_values, function ($a, $b) {

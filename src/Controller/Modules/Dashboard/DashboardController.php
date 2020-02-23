@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends Controller {
 
-    const CAR_SCHEDULE_DAYS_INTERVAL = 60;
+    const SCHEDULES_DEFAULT_DAYS_INTERVAL = 60;
 
     /**
      * @var Application
@@ -72,7 +72,7 @@ class DashboardController extends Controller {
     }
 
     private function getIncomingSchedules() {
-        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::CAR_SCHEDULE_DAYS_INTERVAL);
+        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::SCHEDULES_DEFAULT_DAYS_INTERVAL);
     }
 
     private function getGoalsForWidget(){
