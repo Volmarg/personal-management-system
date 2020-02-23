@@ -228,7 +228,7 @@ reports:
       <i>Charts based on data from payments modules</i>
   saviingsCharts:
     information: >
-      <i>Charts based on data from incomes/payments modules <b>(Contains fake income - no such module by now)</b></i>
+      <i>Charts based on data from incomes/payments modules</i>
     group: Saved
   headers:
     monthlyPaymentsSummaries: Monthly payments summaries

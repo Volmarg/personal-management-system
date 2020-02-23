@@ -269,14 +269,25 @@ class ReportsController extends AbstractController
             $chart_values[$group_name][] = ceil($saving);
         }
 
+        // second foreach is required as the one above eliminates the risk of having 3 inputs for same month
+        $monthly_saving_summary = 0;
+        $months_count           = count($chart_values[$group_name]);
+
+        foreach( $chart_values[$group_name] as $saving ){
+            $monthly_saving_summary += $saving;
+        }
+
+        $average_monthly_saving = ( empty($monthly_saving_summary) ? 0 : $monthly_saving_summary/$months_count );
+
         usort($chart_x_axis_values, function ($a, $b) {
             return strtotime($a) - strtotime($b);
         });
 
         $template_data = [
-            'chart_colors'        => $chart_colors,
-            'chart_values'        => $chart_values,
-            'chart_x_axis_values' => $chart_x_axis_values,
+            'chart_colors'           => $chart_colors,
+            'chart_values'           => $chart_values,
+            'chart_x_axis_values'    => $chart_x_axis_values,
+            'average_monthly_saving' => $average_monthly_saving,
         ];
 
         $rendered_template = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHART_AMOUNT_EACH_MONTH, $template_data);
