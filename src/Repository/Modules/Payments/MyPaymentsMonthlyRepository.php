@@ -4,6 +4,7 @@ namespace App\Repository\Modules\Payments;
 
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -13,6 +14,9 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyPaymentsMonthly[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
+
+    const KEY_COLUMN_NAME_DATE = "date";
+
     public function __construct(RegistryInterface $registry) {
         parent::__construct($registry, MyPaymentsMonthly::class);
     }
@@ -74,6 +78,34 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
         $results = $query->getResult();
 
         return $results;
+    }
+
+    /**
+     * This function will return dates in format Y-m so that incomes will be added for each month
+     * @throws DBALException
+     */
+    public function getUniqueDatesFromPayments(): array
+    {
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT
+            DATE_FORMAT(mpm.date, '%Y-%m')AS date
+            
+            FROM my_payment_monthly mpm
+            
+            
+            WHERE 1
+            AND mpm.deleted = 0
+            
+            GROUP BY DATE_FORMAT(mpm.date, '%Y-%m')
+        ";
+
+        $stmt    = $connection->executeQuery($sql);
+        $results = $stmt->fetchAll(0);
+        $dates   = array_column($results,self::KEY_COLUMN_NAME_DATE);
+
+        return $dates;
     }
 
 }

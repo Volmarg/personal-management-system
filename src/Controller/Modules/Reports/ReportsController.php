@@ -287,7 +287,7 @@ class ReportsController extends AbstractController
             'chart_colors'           => $chart_colors,
             'chart_values'           => $chart_values,
             'chart_x_axis_values'    => $chart_x_axis_values,
-            'average_monthly_saving' => $average_monthly_saving,
+            'average_monthly_saving' => round($average_monthly_saving, 2, PHP_ROUND_HALF_DOWN),
         ];
 
         $rendered_template = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHART_AMOUNT_EACH_MONTH, $template_data);
