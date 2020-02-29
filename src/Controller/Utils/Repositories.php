@@ -43,6 +43,7 @@ use App\Repository\Modules\Schedules\MyScheduleTypeRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\SettingRepository;
+use App\Repository\System\LockedResourceRepository;
 use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
@@ -91,6 +92,7 @@ class Repositories extends AbstractController {
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
     const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
+    const LOCKED_RESOURCE_REPOSITORY                    = "LockedResourceRepository";
 
     const KEY_PARAMETERS        = 'parameters';
     const KEY_ENTITY_ID         = 'entity_id';
@@ -276,6 +278,10 @@ class Repositories extends AbstractController {
      */
     public $myPaymentsIncomeRepository;
 
+    /**
+     * @var LockedResourceRepository $lockedResourceRepository
+     */
+    public $lockedResourceRepository;
 
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
@@ -311,6 +317,7 @@ class Repositories extends AbstractController {
         MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
+        LockedResourceRepository            $lockedResourceRepository,
         EntityManagerInterface              $entity_manager
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -346,6 +353,7 @@ class Repositories extends AbstractController {
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
+        $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->entity_manager                       = $entity_manager;
     }
 

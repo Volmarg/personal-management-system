@@ -25,3 +25,5 @@ exceptions:
     thisGoalTypeIsNotAllowed: "This goal type is not allowed"
   dtoValidation:
     unsupportedSetting: "Unsupported settings: "
+  security:
+    youAreNotAllowedToSeeThis: "You are not allowed to see this! Your attempt to access this resource was logged!"

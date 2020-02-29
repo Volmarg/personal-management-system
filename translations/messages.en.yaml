@@ -14,3 +14,7 @@ messages:
       internalServerError: "Internal server error"
       undefinedError: "Undefined error"
       couldNotRemoveRecord: "Could not remove record"
+  lock:
+    resourceHasBeenLocked: "Resource has been locked"
+    resourceHasBeenUnlocked: "Resource has been unlocked"
+    couldNotLockResource: "Could not lock resource"

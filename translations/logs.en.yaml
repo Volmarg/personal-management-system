@@ -34,3 +34,6 @@ logs:
     startedDownloading: "Started downloading data."
     finishedDownloading: 'Finished downloading data.'
     exceptionWasThrownWhileDownloadingFile: 'Exception was thrown while downloading file.'
+  security:
+    visitedPageWithUnallowedIp: "Visited page with unallowed ip"
+    visitedPageWithUnallowedMethod: "Visited page with unallowed method"
