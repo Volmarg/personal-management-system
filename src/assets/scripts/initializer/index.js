@@ -26,6 +26,7 @@ export default (function () {
             modules.myFiles.init();
             ui.search.init();
             apexcharts.init();
+            ui.lockedResource.init();
         },
         /**
          * Reinitialize is being called in alot of places when content is reloaded via js some logic is not allowed to

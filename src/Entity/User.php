@@ -7,6 +7,7 @@
 
 namespace App\Entity;
 
+use App\Controller\AppController;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -15,7 +16,12 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="app_user")
  */
 class User extends BaseUser {
+
     const PASSWORD_FIELD = 'password';
+    const ROLE_ADMIN     = "ROLE_ADMIN";
+
+    const ROLE_PERMISSION_SEE_LOCKED_RESOURCES = "ROLE_PERMISSION_SEE_LOCKED_RESOURCES";
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

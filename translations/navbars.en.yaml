@@ -71,4 +71,7 @@ topbar:
   user:
     profile: Profile
     settings: Settings
+    resources:
+      locked: Locked
+      unlocked: Unlocked
     logout: Logout

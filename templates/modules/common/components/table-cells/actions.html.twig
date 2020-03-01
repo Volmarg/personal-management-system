@@ -52,10 +52,8 @@
     {% endif %}
 
     {% if lock_record is defined and lock_record %}
-        <i class="fas fa-key action-lock-record
-                {% if lock_record_class is defined and lock_record_class is not empty %}
-                    {{ lock_record_class }}  {#todo: d-none#}
-                {% endif %}
+        <i class="fas fa-lock action-lock-record
+                {{ getClassForLockedResource(lock_record, lock_type, lock_target) }}
                 "
            data-content-editable="false"
            data-lock-resource-record     ="{{ lock_record }}"

@@ -3,10 +3,11 @@
 namespace App\Controller;
 
 use App\Controller\Modules\ModulesController;
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
-use App\Controller\Utils\Repositories;
-use App\Entity\Modules\Goals\MyGoals;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -178,53 +179,42 @@ class AppController extends Controller
     }
 
     /**
-     * This originally came with symfonator
-     * @Route("test", name="test")
-     * @return Response
+     * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="GET")
+     * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
      */
-    public function hasNotRemovedSoftDeletedRelatedEntities(EntityManagerInterface $em)
+    public function toggleResourcesLock(): Response
     {
+        /**
+         * @var User $user
+         */
+        $user = $this->getUser();
+        $code = 200;
 
-        $record_id = 123;
-        $record    = $this->app->repositories->myGoalsRepository->find($record_id);
+        try{
+            $user->addRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
 
-
-        $class_name = get_class($record);
-
-        $class_meta = $em->getClassMetadata($class_name);
-        $related_entities_classes_data_arrays = $class_meta->getAssociationMappings();
-        $are_all_related_entities_removed     = true;
-
-        foreach( $related_entities_classes_data_arrays as $related_entity_class_data_array ){
-
-            $field_name    = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
-            $mapped_by     = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_MAPPED_BY];
-            $target_entity = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_TARGET_ENTITY];
-
-            dump($field_name);
-            dump($mapped_by);
-            dump($target_entity);
-
-            $get_method                              = "get" . ucfirst($field_name);
-            $related_entities_persistent_collections = $record->{$get_method}();
-            $related_entities                        = $related_entities_persistent_collections->getValues();
-
-            foreach( $related_entities as $related_entity ){
-                $delete_method_name = "getDeleted";
-
-                if( property_exists($related_entity, $delete_method_name) ){
-                    $is_deleted = $related_entity->$delete_method_name();
-
-                    if( !$is_deleted ){
-                        $are_all_related_entities_removed = false;
-                    }
-                }
+            if( $this->isGranted(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ){
+                $user->removeRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+                $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
+            }else{
+                $user->addRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+                $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
             }
+
+            //todo: store roles in session - impossible to bypass the symfony protection logic without writing new authentication logic
+
+        } catch(Exception $e){
+            $code    = 500;
+            $message = $this->app->translator->translate("messages.lock.failedToToggleLockForWholeSystem");
+            $this->app->logger->info($message, [
+                "exceptionMessage"  => $e->getMessage(),
+                "exceptionCode"     => $e->getCode(),
+            ]);
         }
 
-        dump($are_all_related_entities_removed);
-
-        die();
+        $response = AjaxResponse::buildResponseForAjaxCall($code, $message);
+        return $response;
     }
 
 }

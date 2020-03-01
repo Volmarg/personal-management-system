@@ -3,6 +3,8 @@
 {# This must be done this way for controllers/etc - for unknown reason yaml defined globals are not working when trying to call constant() with them #}
 {% set modules_controller = 'App\\Controller\\Modules\\ModulesController::' %}
 {% set dialogs_controller = 'App\\Controller\\Utils\\Dialogs::' %}
+{% set user_entity        = 'App\\Entity\\User::' %}
+
 
 {% set currUrl = path(app.request.attributes.get('_route'),
     app.request.attributes.get('_route_params')) %}

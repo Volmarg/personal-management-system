@@ -28,6 +28,23 @@
                 <span>{{ translate('topbar.user.profile') }}</span>
             </a>
         </li>
+
+        <li role="separator" class="divider"></li>
+
+        <li>
+            <a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700" data-toggle-resources-lock-for-system="true">
+
+                {% set lock_class = is_granted( constant(user_entity ~ "ROLE_PERMISSION_SEE_LOCKED_RESOURCES") ) ? "text-success"                              : "text-danger" %}
+                {% set shown_text = is_granted( constant(user_entity ~ "ROLE_PERMISSION_SEE_LOCKED_RESOURCES") ) ? translate('topbar.user.resources.unlocked') : translate('topbar.user.resources.locked') %}
+
+                <i class="fas fa-lock mR-10 {{ lock_class }}"></i>
+                <span>{{ shown_text }}</span>
+
+            </a>
+        </li>
+
+        <li role="separator" class="divider"></li>
+
         <li>
             <a href="{{ path('page-settings') }}" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700 ajax-content-load">
                 <i class="fas fa-cog mR-10"></i>
