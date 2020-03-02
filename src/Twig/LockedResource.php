@@ -6,6 +6,7 @@ namespace App\Twig;
 
 use App\Controller\Utils\Application;
 use App\Entity\User;
+use App\Services\Session\UserRolesSessionService;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
@@ -23,9 +24,15 @@ class LockedResource extends AbstractExtension {
      */
     private $authorizationChecker;
 
-    public function __construct(Application $app, AuthorizationCheckerInterface $authorizationChecker, Security $security) { //todo
-        $this->authorizationChecker = $authorizationChecker;
-        $this->app                  = $app;
+    /**
+     * @var UserRolesSessionService $userRolesSessionService
+     */
+    private $userRolesSessionService;
+
+    public function __construct(Application $app, AuthorizationCheckerInterface $authorizationChecker, Security $security, UserRolesSessionService $userRolesSessionService) {
+        $this->userRolesSessionService = $userRolesSessionService;
+        $this->authorizationChecker    = $authorizationChecker;
+        $this->app                     = $app;
 
         if( ! empty($security->getUser()) ){
             dump($security->getUser()->getRoles());
@@ -82,7 +89,7 @@ class LockedResource extends AbstractExtension {
     public function isResourceVisible(string $record, string $type, string $target): bool
     {
         $is_resource_locked      = $this->isResourceLocked($record, $type, $target);
-        $can_see_locked_resource = $this->authorizationChecker->isGranted(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        $can_see_locked_resource = $this->userRolesSessionService->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
 
         if(
                 !$is_resource_locked

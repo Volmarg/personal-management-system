@@ -7,6 +7,7 @@ use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Entity\User;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -180,29 +181,26 @@ class AppController extends Controller
 
     /**
      * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="GET")
+     * @param UserRolesSessionService $rolesSessionService
      * @return JsonResponse
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function toggleResourcesLock(): Response
+    public function toggleResourcesLock(UserRolesSessionService $rolesSessionService): Response
     {
         /**
          * @var User $user
          */
-        $user = $this->getUser();
         $code = 200;
 
         try{
-            $user->addRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
 
-            if( $this->isGranted(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ){
-                $user->removeRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+            if( $rolesSessionService->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ){
+                $rolesSessionService->removeRolesFromSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
                 $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
             }else{
-                $user->addRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+                $rolesSessionService->addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
                 $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
             }
-
-            //todo: store roles in session - impossible to bypass the symfony protection logic without writing new authentication logic
 
         } catch(Exception $e){
             $code    = 500;
