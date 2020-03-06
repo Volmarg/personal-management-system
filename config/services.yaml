@@ -34,5 +34,10 @@ services:
         arguments:
             $security_logger: "@monolog.logger.security"
 
+    App\Command\Override\Fos\UserCreateCommand:
+        decorates: fos_user.command.create_user
+        bind:
+            $userManipulator: "@fos_user.util.user_manipulator"
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

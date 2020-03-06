@@ -33,10 +33,6 @@ class LockedResource extends AbstractExtension {
         $this->userRolesSessionService = $userRolesSessionService;
         $this->authorizationChecker    = $authorizationChecker;
         $this->app                     = $app;
-
-        if( ! empty($security->getUser()) ){
-            dump($security->getUser()->getRoles());
-        }
     }
 
     public function getFunctions() {
