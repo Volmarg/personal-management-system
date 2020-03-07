@@ -1,7 +1,9 @@
 <?php
 
 
-namespace App\DTO;
+namespace App\DTO\System;
+
+use App\DTO\AbstractDTO;
 
 /**
  * Class SecurityDTO

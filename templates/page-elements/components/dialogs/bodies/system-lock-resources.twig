@@ -1,0 +1,19 @@
+{% set file_upload_controller = 'App\\Controller\\Files\\FileUploadController::' %}
+{% set KEY_SUBDIRECTORY_NAME  = constant(file_upload_controller~"KEY_SUBDIRECTORY_NAME") %}
+{% set KEY_UPLOAD_MODULE_DIR  = constant(file_upload_controller~"KEY_UPLOAD_MODULE_DIR") %}
+{% set KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR = constant(file_upload_controller~"KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR") %}
+
+{% if menu_node_path is not defined %}
+    {% set menu_node_path = '' %}
+{% endif %}
+
+<main class="main-content bgc-grey-100" style="min-height: auto; padding: 10px;">
+    <div id="mainContent">
+        <div class="container-fluid">
+
+            {{ form_start(password_form) }}
+            {{ form_end(password_form) }}
+
+        </div>
+    </div>
+</main>

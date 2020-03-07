@@ -90,3 +90,6 @@ responses:
     nodeHasBeenRendered: "Menu has been rendered"
     menuNodeWithNameWasNotFound: "Menu node with given name was not found"
     thisModuleNameIsNotMappedToMenuNodePath: "This module name is not mapped to menu node path: "
+  lockResource:
+    invalidPassword: "Invalid password"
+    passwordIsMissing: "Password is missing"

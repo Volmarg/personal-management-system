@@ -23,7 +23,7 @@ export default (function () {
                     },
                     toggleLockedResourcesVisibility: {
                         url: "api/system/toggle-resources-lock",
-                        method: "GET"
+                        method: "POST"
                     }
                 },
             },
@@ -40,6 +40,9 @@ export default (function () {
             this.attachToggleRecordLockOnKeyIcon();
             this.attachEventsOnToggleResourcesLockForSystem();
         },
+        /**
+         * Adds click event on every lock record action icon
+         */
         attachToggleRecordLockOnKeyIcon: function () {
             let _this              = this;
             let lockResourceButton = $('.action-lock-record');
@@ -50,6 +53,10 @@ export default (function () {
                 _this.ajaxToggleLockRecord(closest_parent);
             });
         },
+        /**
+         * Sends request to toggle lock for single record
+         * @param tr_parent_element {object}
+         */
         ajaxToggleLockRecord: function (tr_parent_element) {
             let record = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-record');
             let type   = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-type');
@@ -101,43 +108,67 @@ export default (function () {
             });
 
         },
+        /**
+         * Sends the request to unlock the resources for whole system
+         * @param password {string}
+         */
+        ajaxToggleSystemLock: function(password){
+
+            let data = {
+                "systemLockPassword": password
+            };
+            ui.widgets.loader.showLoader();
+
+            $.ajax({
+                method: window.ui.lockedResource.general.methods.methods.toggleLockedResourcesVisibility.method,
+                url   : window.ui.lockedResource.general.methods.methods.toggleLockedResourcesVisibility.url,
+                data  : data,
+            }).always( function(data){
+                ui.widgets.loader.hideLoader();
+
+                try{
+                    var code    = data['code'];
+                    var message = data['message'];
+                } catch(Exception){
+                    throw({
+                        "message"   : "Could not handle ajax call",
+                        "data"      : data,
+                        "exception" : Exception
+                    })
+                }
+
+                if( 200 != code ){
+                    bootstrap_notifications.showRedNotification(message);
+                    return;
+                }else {
+
+                    if( "undefined" === typeof message ){
+                        message = window.ui.lockedResource.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                    }
+
+                    bootstrap_notifications.showGreenNotification(message);
+
+                    // no ajax reload for this as there is also menu to be changed etc.
+                    ui.widgets.loader.showLoader();
+                    window.location.reload();
+                }
+            })
+        },
+        /**
+         * Attaches event in the user menu Lock button
+         */
         attachEventsOnToggleResourcesLockForSystem: function (){
-            let $button = $("[" + window.ui.lockedResource.attributes.dataToggleResourcesLockForSystem + "= true]");
+            let $button    = $("[" + window.ui.lockedResource.attributes.dataToggleResourcesLockForSystem + "= true]");
+            let $i         = $button.find('i');
+            let isUnlocked = $i.hasClass("text-success");
 
-            utils.spi
             $button.on('click', function() {
-                $.ajax({
-                    method: window.ui.lockedResource.general.methods.methods.toggleLockedResourcesVisibility.method,
-                    url   : window.ui.lockedResource.general.methods.methods.toggleLockedResourcesVisibility.url,
-                }).always( function(data){
-                    try{
-                        var code    = data['code'];
-                        var message = data['message'];
-                    } catch(Exception){
-                        throw({
-                            "message"   : "Could not handle ajax call",
-                            "data"      : data,
-                            "exception" : Exception
-                        })
-                    }
+                if( isUnlocked ){
+                    ui.lockedResource.ajaxToggleSystemLock("");
+                    return;
+                }
 
-                    if( 200 != code ){
-                        bootstrap_notifications.showRedNotification(message);
-                        return;
-                    }else {
-
-                        if( "undefined" === typeof message ){
-                            message = window.ui.lockedResource.general.messages.ajaxCallHasBeenFinishedSuccessfully;
-                        }
-
-                        bootstrap_notifications.showGreenNotification(message);
-
-                        // no ajax reload for this as there is also menu to be changed etc.
-                        ui.widgets.loader.showLoader();
-                        window.location.reload();
-                    }
-                })
-
+                dialogs.ui.systemLock.buildSystemLockDialog();
             });
         }
     };

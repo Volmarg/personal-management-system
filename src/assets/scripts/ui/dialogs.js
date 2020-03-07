@@ -14,7 +14,8 @@ export default (function () {
         selectors: {
             ids: {
                 targetUploadModuleDirInput  : '#move_single_file_target_upload_module_dir',
-                targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path'
+                targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path',
+                systemLockPasswordInput     : '#system_lock_resources_password_systemLockPassword'
             },
             classes: {
                 fileTransferButton      : '.file-transfer',
@@ -35,12 +36,13 @@ export default (function () {
             doYouReallyWantToMoveSelectedFiles: "Do You really want to move selected files?"
         },
         methods: {
-            moveSingleFile                  : '/files/action/move-single-file',
-            moveMultipleFiles               : '/files/action/move-multiple-files',
-            updateTagsForMyImages           : '/api/my-images/update-tags',
-            getDataTransferDialogTemplate   : '/dialog/body/data-transfer',
-            getTagsUpdateDialogTemplate     : '/dialog/body/tags-update',
-            getNotePreviewDialogTemplate    : '/dialog/body/note-preview/%noteId%/%categoryId%',
+            moveSingleFile                    : '/files/action/move-single-file',
+            moveMultipleFiles                 : '/files/action/move-multiple-files',
+            updateTagsForMyImages             : '/api/my-images/update-tags',
+            getDataTransferDialogTemplate     : '/dialog/body/data-transfer',
+            getTagsUpdateDialogTemplate       : '/dialog/body/tags-update',
+            getNotePreviewDialogTemplate      : '/dialog/body/note-preview/%noteId%/%categoryId%',
+            systemLockResourcesDialogTemplate : '/dialog/body/system-lock-resources',
         },
         vars: {
             fileCurrentPath     : '',
@@ -425,6 +427,61 @@ export default (function () {
 
                 dialog.init( () => {
                     tinymce.custom.init();
+                });
+            },
+        },
+        systemLock:{
+            buildSystemLockDialog: function (callback = null) {
+                let _this = this;
+                let url   = dialogs.ui.methods.systemLockResourcesDialogTemplate;
+
+                ui.widgets.loader.toggleLoader();
+                $.ajax({
+                    method: "GET",
+                    url: url
+                }).always((data) => {
+                    ui.widgets.loader.toggleLoader();
+
+                    if( undefined !== data['template'] ){
+                        _this.callSystemLockDialog(data['template'], callback);
+                    } else if( undefined !== data['errorMessage'] ) {
+                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
+                    }else{
+                        let message = 'Something went wrong while trying to load dialog template.';
+                        bootstrap_notifications.notify(message, 'danger');
+                    }
+
+                })
+
+            },
+            callSystemLockDialog: function (template, callback = null) {
+
+                let dialog = bootbox.alert({
+                    size: "large",
+                    backdrop: true,
+                    closeButton: false,
+                    message: template,
+                    buttons: {
+                        ok: {
+                            label: 'Cancel',
+                            className: 'btn-primary dialog-ok-button',
+                            callback: () => {}
+                        },
+                    },
+                    callback: function () {
+                    }
+                });
+
+                dialog.init( () => {
+                    let $systemLockPasswordInput  = $(dialogs.ui.selectors.ids.systemLockPasswordInput);
+                    let $form                     = $systemLockPasswordInput.closest('form');
+                    let $systemLockPasswordSubmit = $form.find('button');
+
+                    $systemLockPasswordSubmit.on('click', function (event) {
+                        event.preventDefault();
+                        let password = $systemLockPasswordInput.val();
+                        ui.lockedResource.ajaxToggleSystemLock(password);
+                    })
                 });
             },
         }

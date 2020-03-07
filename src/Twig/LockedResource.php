@@ -40,6 +40,7 @@ class LockedResource extends AbstractExtension {
             new TwigFunction('getClassForLockedResource', [$this, 'getClassForLockedResource']),
             new TwigFunction('isResourceLocked', [$this, 'isResourceLocked']),
             new TwigFunction('isResourceVisible', [$this, 'isResourceVisible']),
+            new TwigFunction('isSystemLocked', [$this, 'isSystemLocked']),
         ];
     }
 
@@ -97,6 +98,14 @@ class LockedResource extends AbstractExtension {
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSystemLocked(): bool
+    {
+        return $this->userRolesSessionService->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
     }
 
 }

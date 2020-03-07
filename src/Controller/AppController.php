@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\SecurityController;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Entity\User;
@@ -22,10 +23,11 @@ class AppController extends Controller
 
     const KEY_MENU_NODE_MODULE_NAME = 'menu_node_module_name';
 
-    const KEY_MESSAGE   = 'message';
-    const KEY_CODE      = 'code';
-    const KEY_TPL       = 'tpl';
-    const KEY_CURR_URL  = 'currUrl';
+    const KEY_MESSAGE              = 'message';
+    const KEY_CODE                 = 'code';
+    const KEY_TPL                  = 'tpl';
+    const KEY_CURR_URL             = 'currUrl';
+    const KEY_SYSTEM_LOCK_PASSWORD = 'systemLockPassword';
 
     const MENU_NODE_MODULE_NAME_ACHIEVEMENTS  = ModulesController::MODULE_NAME_ACHIEVEMENTS;
     const MENU_NODE_MODULE_NAME_GOALS         = ModulesController::MODULE_NAME_GOALS;
@@ -180,16 +182,23 @@ class AppController extends Controller
     }
 
     /**
-     * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="GET")
+     * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
+     * @param Request $request
      * @param UserRolesSessionService $rolesSessionService
+     * @param SecurityController $securityController
      * @return JsonResponse
      * @throws ExceptionDuplicatedTranslationKey
+     * @throws Exception
      */
-    public function toggleResourcesLock(UserRolesSessionService $rolesSessionService): Response
+    public function toggleResourcesLock(Request $request, UserRolesSessionService $rolesSessionService, SecurityController $securityController): Response
     {
-        /**
-         * @var User $user
-         */
+
+        if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
+            $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            return $response;
+        }
+
         $code = 200;
 
         try{
@@ -198,6 +207,21 @@ class AppController extends Controller
                 $rolesSessionService->removeRolesFromSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
                 $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
             }else{
+
+                /**
+                 * @var User $user
+                 */
+                $user              = $this->getUser();
+                $user_password     = $user->getLockPassword();
+                $password          = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
+                $is_password_valid = $securityController->isPasswordValid($user, $user_password, $password);
+
+                if( !$is_password_valid ){
+                    $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
+                    $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+                    return $response;
+                }
+
                 $rolesSessionService->addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
                 $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
             }
