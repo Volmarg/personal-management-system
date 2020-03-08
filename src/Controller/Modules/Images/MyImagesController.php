@@ -4,14 +4,17 @@ namespace App\Controller\Modules\Images;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Dialogs;
 use App\Controller\Utils\Env;
 use App\Entity\FilesTags;
+use App\Entity\System\LockedResource;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +25,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MyImagesController extends AbstractController {
 
-    const TWIG_TEMPLATE_MY_IMAGES = 'modules/my-images/my-images.html.twig';
+    const TWIG_TEMPLATE_MY_IMAGES         = 'modules/my-images/my-images.html.twig';
+    const TWIG_TEMPLATE_MY_FILES_SETTINGS = 'modules/my-images/settings.html.twig';
+
     const KEY_FILE_NAME           = 'file_name';
     const KEY_FILE_FULL_PATH      = 'file_full_path';
     const MODULE_NAME             = 'My Images';
@@ -43,10 +48,17 @@ class MyImagesController extends AbstractController {
      */
     private $app;
 
-    public function __construct(FilesTagsController $files_tags_controller, Application $app) {
+    /**
+     * @var LockedResourceController $locked_resource_controller
+     */
+    private $locked_resource_controller;
+
+    public function __construct(FilesTagsController $files_tags_controller, Application $app, LockedResourceController $locked_resource_controller) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
-        $this->files_tags_controller = $files_tags_controller;
+
+        $this->files_tags_controller      = $files_tags_controller;
+        $this->locked_resource_controller = $locked_resource_controller;
 
         $this->app = $app;
     }
@@ -66,16 +78,56 @@ class MyImagesController extends AbstractController {
         return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
+
+    /**
+     * @Route("my-images/settings", name="modules_my_images_settings")
+     * @param Request $request
+     * @return Response
+     */
+    public function displaySettings(Request $request): Response
+    {
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderSettingsTemplate(false);
+        }
+
+        $template_content  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+    }
+
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     */
+    private function renderSettingsTemplate(bool $ajax_render = false): Response
+    {
+        $data = [
+            'ajax_render' => $ajax_render,
+        ];
+        return $this->render(static::TWIG_TEMPLATE_MY_FILES_SETTINGS, $data);
+    }
+
     /**
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
      * @return array|RedirectResponse|Response
+     * @throws ExceptionDuplicatedTranslationKey
+     * @throws Exception
      */
     private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false) {
 
         $module_upload_dir                      = Env::getImagesUploadDir();
         $decoded_subdirectory_path              = FilesHandler::trimFirstAndLastSlash(urldecode($encoded_subdirectory_path));
         $subdirectory_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $decoded_subdirectory_path);
+
+        $module_upload_dir_name = FilesHandler::getModuleUploadDirForUploadPath($module_upload_dir);
+        $module_name            = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$module_upload_dir_name];
+
+        if( $this->locked_resource_controller->isResourceLocked($subdirectory_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name) ){
+            $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+            $this->app->addDangerFlash($message);
+            return $this->redirect('/');
+        }
 
         if( !file_exists($subdirectory_path_in_module_upload_dir) ){
             $subdirectory_name = basename($decoded_subdirectory_path);
@@ -147,18 +199,18 @@ class MyImagesController extends AbstractController {
      * @Route("/api/my-images/update-tags", name="api_my_images_update_tags", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function update(Request $request){
 
         if (!$request->request->has(Dialogs::KEY_FILE_CURRENT_PATH)) {
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . Dialogs::KEY_FILE_CURRENT_PATH;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         if (!$request->request->has(FileTagger::KEY_TAGS)) {
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileTagger::KEY_TAGS;
-            throw new \Exception($message);
+            throw new Exception($message);
         }
 
         $file_current_path = $request->request->get(Dialogs::KEY_FILE_CURRENT_PATH);
@@ -168,7 +220,7 @@ class MyImagesController extends AbstractController {
         try{
             $this->files_tags_controller->updateTags($tags_string, $file_current_path);
             $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
-        } catch (\Exception $e){
+        } catch (Exception $e){
             $message = $this->app->translator->translate('exceptions.tagger.thereWasAnError');
         }
 

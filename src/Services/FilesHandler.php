@@ -36,6 +36,8 @@ class FilesHandler {
 
     const FILE_PATH_IS_EMPTY_EXCEPTION_MESSAGE = 'File path is empty';
 
+    const KEY_UPLOAD_DIR = "upload";
+
     /**
      * @var Application $application
      */
@@ -515,6 +517,44 @@ class FilesHandler {
         }
 
         return $file_path;
+    }
+
+    /**
+     * This function returns the full path excluding the base `upload/images/ or upload/files/`
+     * @param string $full_path
+     * @param string $upload_module_folder
+     * @return string
+     */
+    public static function getSubdirectoryPathFromUploadModuleUploadFullPath(string $full_path, string $upload_module_folder): string
+    {
+        $stripped_folder_path = FilesHandler::trimFirstAndLastSlash($full_path);
+
+        $regex_replace = "#upload[\/]?{$upload_module_folder}[\/]?#";
+        $folder        = preg_replace($regex_replace, "", $stripped_folder_path);
+
+        return $folder;
+    }
+
+    /**
+     * This function returns the target upload dir for module, example (files, images)
+     * @param string $path
+     * @return string
+     */
+    public static function getModuleUploadDirForUploadPath(string $path)
+    {
+        $path = FilesHandler::trimFirstAndLastSlash($path);
+
+        if( strstr($path, self::KEY_UPLOAD_DIR) ){
+            $path = str_replace(self::KEY_UPLOAD_DIR . DIRECTORY_SEPARATOR, "", $path);
+        }
+
+        preg_match("#^(.*)(\/)#", $path, $matches);
+
+        if( array_key_exists(1, $matches) ){
+           return $matches[1];
+        }
+
+        return $path;
     }
 
 }

@@ -68,4 +68,23 @@ class Application extends AbstractController {
         $this->translator       = new Translator();
     }
 
+    /**
+     * Adds green box message on front
+     * @param $message
+     */
+    public function addSuccessFlash($message)
+    {
+        $this->addFlash(Utils::FLASH_TYPE_SUCCESS, $message);
+    }
+
+    /**
+     * Adds red box message on front
+     * @param $message
+     */
+    public function addDangerFlash($message)
+    {
+        $this->addFlash(Utils::FLASH_TYPE_DANGER, $message);
+    }
+
+
 }

@@ -4,10 +4,12 @@ namespace App\Controller\Modules\Files;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Entity\FilesTags;
+use App\Entity\System\LockedResource;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FileDownloader;
 use App\Services\FilesHandler;
@@ -24,7 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class MyFilesController extends AbstractController
 {
 
-    const TWIG_TEMPLATE_MY_FILES = 'modules/my-files/my-files.html.twig';
+    const TWIG_TEMPLATE_MY_FILES          = 'modules/my-files/my-files.html.twig';
+    const TWIG_TEMPLATE_MY_FILES_SETTINGS = 'modules/my-files/settings.html.twig';
 
     const KEY_FILE_NAME          = 'file_name';
     const KEY_FILE_SIZE          = 'file_size';
@@ -64,16 +67,28 @@ class MyFilesController extends AbstractController
      */
     private $file_tagger;
 
-    public function __construct(FileDownloader $file_downloader, FilesHandler $files_handler, FilesTagsController $files_tags_controller, Application $app, FileTagger $file_tagger) {
+    /**
+     * @var LockedResourceController $locked_resource_controller
+     */
+    private $locked_resource_controller;
+
+    public function __construct(
+        FileDownloader           $file_downloader,
+        FilesHandler             $files_handler,
+        FilesTagsController      $files_tags_controller,
+        Application              $app,
+        FileTagger               $file_tagger,
+        LockedResourceController $locked_resource_controller
+    ) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
 
-        $this->file_downloader       = $file_downloader;
-        $this->files_handler         = $files_handler;
-        $this->files_tags_controller = $files_tags_controller;
-        $this->app                   = $app;
-        $this->file_tagger           = $file_tagger;
-
+        $this->file_downloader            = $file_downloader;
+        $this->files_handler              = $files_handler;
+        $this->files_tags_controller      = $files_tags_controller;
+        $this->app                        = $app;
+        $this->file_tagger                = $file_tagger;
+        $this->locked_resource_controller = $locked_resource_controller;
     }
 
     /**
@@ -94,17 +109,56 @@ class MyFilesController extends AbstractController
     }
 
     /**
+     * @Route("my-files/settings", name="modules_my_files_settings")
+     * @param Request $request
+     * @return Response
+     */
+    public function displaySettings(Request $request): Response
+    {
+
+        if (!$request->isXmlHttpRequest()) {
+            return $this->renderSettingsTemplate(false);
+        }
+
+        $template_content  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+    }
+
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     */
+    private function renderSettingsTemplate(bool $ajax_render = false): Response
+    {
+        $data = [
+            'ajax_render' => $ajax_render,
+        ];
+        return $this->render(static::TWIG_TEMPLATE_MY_FILES_SETTINGS, $data);
+    }
+
+    /**
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
-     * @return array|RedirectResponse|Response
+     * @return Response
      * @throws ExceptionDuplicatedTranslationKey
+     * @throws Exception
      */
-    protected function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false) {
+    protected function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false): Response
+    {
 
         $upload_dir                       = Env::getFilesUploadDir();
         $decoded_subdirectory_path        = urldecode($encoded_subdirectory_path);
         $subdirectory_path                = FilesHandler::trimFirstAndLastSlash($decoded_subdirectory_path);
         $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory_path);
+
+        $module_upload_dir_name = FilesHandler::getModuleUploadDirForUploadPath($upload_dir);
+        $module_name            = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$module_upload_dir_name];
+
+        if( $this->locked_resource_controller->isResourceLocked($subdir_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name) ){
+            $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+            $this->app->addDangerFlash($message);
+            return $this->redirect('/');
+        }
 
         if( !file_exists($subdir_path_in_module_upload_dir) ){
 
@@ -121,12 +175,16 @@ class MyFilesController extends AbstractController
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $search_dir             = (empty($subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
-        $files_count_in_tree    = FilesHandler::countFilesInTree($search_dir);
+        $search_dir          = (empty($subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
+        $files_count_in_tree = FilesHandler::countFilesInTree($search_dir);
 
-        # A bit dirty workaround
-        if ($files instanceof RedirectResponse) {
-            return $files;
+        # null only when DirectoryNotFoundException was thrown
+        if ( is_null($files) ) {
+            $message      = $this->app->translator->translate("responses.directories.subdirectoryDoesNotExistForThisModule");
+            $redirect_url = $this->generateUrl('modules_my_files');
+
+            $this->app->addDangerFlash($message);
+            return $this->redirect($redirect_url);
         }
 
         $is_main_dir = ( empty($subdirectory_path) );
@@ -175,20 +233,20 @@ class MyFilesController extends AbstractController
         return $file;
     }
 
-    private function getFilesFromSubdirectory(string $subdirectory) {
-        $upload_dir       = Env::getFilesUploadDir();
-        $all_files        = [];
-        $search_dir       = ( empty($subdirectory) ? $upload_dir : FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory));
+    /**
+     * @param string $subdirectory
+     * @return array|null
+     */
+    private function getFilesFromSubdirectory(string $subdirectory):? array
+    {
+        $upload_dir = Env::getFilesUploadDir();
+        $all_files  = [];
+        $search_dir = ( empty($subdirectory) ? $upload_dir : FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory));
 
         try{
             $this->finder->files()->in($search_dir);
-
         }catch(DirectoryNotFoundException $de){
-
-            $this->addFlash('danger', $de->getMessage());
-            $redirect_url = $this->generateUrl('modules_my_files');
-
-            return $this->redirect($redirect_url);
+            return null;
         }
 
         foreach ($this->finder as $index => $file) {
@@ -210,6 +268,9 @@ class MyFilesController extends AbstractController
         return $all_files;
     }
 
+    /**
+     * @return array|null
+     */
     private function getMainFolderFiles() {
         $all_files = $this->getFilesFromSubdirectory('');
 

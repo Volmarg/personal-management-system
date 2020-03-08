@@ -11,21 +11,14 @@ export default (function () {
         },
         general: {
             methods: {
-                methods: {
-                    lockResource:{
-                        url: "/api/lock-resource/toggle/{record}/{type}/{target}",
-                        method: "GET",
-                        params: {
-                            record : "{record}",
-                            type   : "{type}",
-                            target : "{target}"
-                        },
-                    },
-                    toggleLockedResourcesVisibility: {
-                        url: "api/system/toggle-resources-lock",
-                        method: "POST"
-                    }
+                lockResource:{
+                    url: "/api/lock-resource/toggle",
+                    method: "POST"
                 },
+                toggleLockedResourcesVisibility: {
+                    url: "/api/system/toggle-resources-lock",
+                    method: "POST"
+                }
             },
             messages: {
                 ajaxCallHasBeenFinishedSuccessfully: function(){
@@ -62,9 +55,11 @@ export default (function () {
             let type   = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-type');
             let target = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-target');
 
-            let url = ui.lockedResource.general.methods.removeEntity.lockResource.url.replace(ui.lockedResource.general.methods.removeEntity.lockResource.params.record, record);
-            url = url.replace(ui.lockedResource.general.methods.removeEntity.lockResource.params.type, type);
-            url = url.replace(ui.lockedResource.general.methods.removeEntity.lockResource.params.target, target);
+            let data = {
+                "record" : record,
+                "type"   : type,
+                "target" : target
+            };
 
             bootbox.confirm({
                 message: "Do you want to toggle lock for this resource",
@@ -73,8 +68,9 @@ export default (function () {
                     if (result) {
 
                         $.ajax({
-                            method: ui.lockedResource.general.methods.removeEntity.lockResource.method,
-                            url   : url
+                            method: ui.lockedResource.general.methods.lockResource.method,
+                            url   : ui.lockedResource.general.methods.lockResource.url,
+                            data  : data,
                         }).always(function(data){
 
                             try{
@@ -120,8 +116,8 @@ export default (function () {
             ui.widgets.loader.showLoader();
 
             $.ajax({
-                method: window.ui.lockedResource.general.methods.methods.toggleLockedResourcesVisibility.method,
-                url   : window.ui.lockedResource.general.methods.methods.toggleLockedResourcesVisibility.url,
+                method: window.ui.lockedResource.general.methods.toggleLockedResourcesVisibility.method,
+                url   : window.ui.lockedResource.general.methods.toggleLockedResourcesVisibility.url,
                 data  : data,
             }).always( function(data){
                 ui.widgets.loader.hideLoader();
@@ -162,6 +158,7 @@ export default (function () {
             let $i         = $button.find('i');
             let isUnlocked = $i.hasClass("text-success");
 
+            $button.off('click');
             $button.on('click', function() {
                 if( isUnlocked ){
                     ui.lockedResource.ajaxToggleSystemLock("");

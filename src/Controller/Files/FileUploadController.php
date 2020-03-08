@@ -56,6 +56,12 @@ class FileUploadController extends AbstractController {
         MyFilesController::MODULE_NAME  => self::MODULE_UPLOAD_DIR_FOR_FILES
     ];
 
+    const MODULE_UPLOAD_DIR_TO_MODULE_NAME = [
+       self::MODULE_UPLOAD_DIR_FOR_IMAGES => MyImagesController::MODULE_NAME,
+       self::MODULE_UPLOAD_DIR_FOR_FILES  => MyFilesController::MODULE_NAME,
+    ];
+
+
     /**
      * @var FileUploader $file_uploader
      */

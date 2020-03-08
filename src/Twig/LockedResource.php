@@ -4,6 +4,7 @@
 namespace App\Twig;
 
 
+use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Application;
 use App\Entity\User;
 use App\Services\Session\UserRolesSessionService;
@@ -29,10 +30,22 @@ class LockedResource extends AbstractExtension {
      */
     private $userRolesSessionService;
 
-    public function __construct(Application $app, AuthorizationCheckerInterface $authorizationChecker, Security $security, UserRolesSessionService $userRolesSessionService) {
-        $this->userRolesSessionService = $userRolesSessionService;
-        $this->authorizationChecker    = $authorizationChecker;
-        $this->app                     = $app;
+    /**
+     * @var LockedResourceController $lockedResourceController
+     */
+    private $lockedResourceController;
+
+    public function __construct(
+        Application                     $app,
+        AuthorizationCheckerInterface   $authorizationChecker,
+        Security                        $security,
+        UserRolesSessionService         $userRolesSessionService,
+        LockedResourceController        $lockedResourceController
+    ) {
+        $this->lockedResourceController = $lockedResourceController;
+        $this->userRolesSessionService  = $userRolesSessionService;
+        $this->authorizationChecker     = $authorizationChecker;
+        $this->app                      = $app;
     }
 
     public function getFunctions() {
@@ -69,12 +82,7 @@ class LockedResource extends AbstractExtension {
      */
     public function isResourceLocked(string $record, string $type, string $target): bool
     {
-        $locked_resource = $this->app->repositories->lockedResourceRepository->findOne($record, $type, $target);
-
-        if( empty($locked_resource) ){
-            return false;
-        }
-        return true;
+        return $this->lockedResourceController->isResourceLocked($record, $type, $target);
     }
 
     /**
@@ -85,19 +93,7 @@ class LockedResource extends AbstractExtension {
      */
     public function isResourceVisible(string $record, string $type, string $target): bool
     {
-        $is_resource_locked      = $this->isResourceLocked($record, $type, $target);
-        $can_see_locked_resource = $this->userRolesSessionService->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
-
-        if(
-                !$is_resource_locked
-            ||  (
-                    $is_resource_locked && $can_see_locked_resource
-                )
-        ){
-            return true;
-        }
-
-        return false;
+        return $this->lockedResourceController->isResourceVisible($record, $type, $target);
     }
 
     /**
@@ -105,7 +101,7 @@ class LockedResource extends AbstractExtension {
      */
     public function isSystemLocked(): bool
     {
-        return $this->userRolesSessionService->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        return $this->lockedResourceController->isSystemLocked();
     }
 
 }

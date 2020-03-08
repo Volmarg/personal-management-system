@@ -93,3 +93,4 @@ responses:
   lockResource:
     invalidPassword: "Invalid password"
     passwordIsMissing: "Password is missing"
+    youAreNotAllowedToSeeThisResource: "You are not allowed to see this resource"
