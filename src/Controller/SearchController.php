@@ -39,6 +39,7 @@ class SearchController extends AbstractController
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
         $tags_array   = explode(',', $tags_string);
 
+        //todo: add lock join
         $files_search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_FILES, true);
         $notes_search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_NOTES, true);
 

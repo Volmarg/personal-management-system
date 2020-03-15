@@ -419,6 +419,7 @@ class FilesHandler {
             unlink($current_file_location);
 
             $this->file_tagger->updateFilePath($current_file_location, $target_file_location);
+            $this->application->repositories->lockedResourceRepository->updatePath($current_file_location, $target_file_location);
 
             $message = $this->application->translator->translate('responses.files.fileHasBeenSuccesfullyMoved');
             return new JsonResponse($message, 200);

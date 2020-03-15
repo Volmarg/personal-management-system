@@ -38,7 +38,7 @@ class MyNotesType extends AbstractType {
             ])
             ->add('category', EntityType::class, [
                 'class' => MyNotesCategories::class,
-                'choices' => $this->app->repositories->myNotesCategoriesRepository->findBy(['deleted' => 0]),
+                'choices' => $this->app->repositories->myNotesCategoriesRepository->getNotDeletedAndNotLocked(),
                 'choice_label' => function (MyNotesCategories $note_category) {
                     return $note_category->getName();
                 },

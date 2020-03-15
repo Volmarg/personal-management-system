@@ -311,12 +311,13 @@ class MyFilesController extends AbstractController
         $subdirectory = $request->request->get(static::KEY_SUBDIRECTORY);
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
 
-        $update_file_path_for_tags = function ($curr_relative_filepath, $new_relative_file_path) use($tags_string) {
+        $update_file_path = function ($curr_relative_filepath, $new_relative_file_path) use($tags_string) {
             $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
             $this->files_tags_controller->updateTags($tags_string, $new_relative_file_path);
+            $this->app->repositories->lockedResourceRepository->updatePath($curr_relative_filepath, $new_relative_file_path);
         };
 
-        $this->files_handler->renameFileViaRequest($request, $update_file_path_for_tags);
+        $this->files_handler->renameFileViaRequest($request, $update_file_path);
         return $this->displayFiles($subdirectory, $request);
     }
 

@@ -81,15 +81,17 @@ class SettingsController extends AbstractController {
         $avatar   = $this->current_user->getAvatar();
         $nickname = $this->current_user->getNickname();
 
-        $avatarForm   = $this->app->forms->userAvatarForm(['avatar' => $avatar]);
-        $passwordForm = $this->app->forms->userPasswordForm();
-        $nicknameForm = $this->app->forms->userNicknameForm(['nickname' => $nickname]);
+        $avatarForm       = $this->app->forms->userAvatarForm(['avatar' => $avatar]);
+        $passwordForm     = $this->app->forms->userPasswordForm();
+        $nicknameForm     = $this->app->forms->userNicknameForm(['nickname' => $nickname]);
+        $lockPasswordForm = $this->app->forms->systemLockCreatePasswordForm();
 
         $data = [
-            'ajax_render'       => $ajax_render,
-            'avatar_form'       => $avatarForm->createView(),
-            'password_form'     => $passwordForm->createView(),
-            'nickname_form'     => $nicknameForm->createView()
+            'ajax_render'        => $ajax_render,
+            'avatar_form'        => $avatarForm->createView(),
+            'password_form'      => $passwordForm->createView(),
+            'nickname_form'      => $nicknameForm->createView(),
+            'lock_password_form' => $lockPasswordForm->createView(),
         ];
 
         return $this->render('page-elements/user/settings.html.twig', $data);

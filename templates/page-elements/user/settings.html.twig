@@ -34,6 +34,11 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-12 align-self-center update-record-form">
+{#                                {% if not isDemo() %}#}
+                                    {{ form(lock_password_form,{'attr':{' data-form-target':"UserLockPassword"}}) }}
+{#                                {% endif %}#}
+                            </div>
+                            <div class="col-md-12 align-self-center update-record-form">
                                 {{ form(nickname_form,{'attr':{' data-form-target':"UserNickname"}}) }}
                             </div>
                         </div>

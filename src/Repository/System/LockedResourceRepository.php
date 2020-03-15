@@ -44,29 +44,6 @@ class LockedResourceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param LockedResource $old_locked_resource
-     * @param LockedResource $new_locked_resource
-     * @return LockedResource
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function updateFolderPath(LockedResource $old_locked_resource, LockedResource $new_locked_resource): LockedResource
-    {
-        if(
-                ( LockedResource::TYPE_DIRECTORY === $old_locked_resource->getType() )
-            &&  ( LockedResource::TYPE_DIRECTORY === $new_locked_resource->getType() )
-        ){
-            $record = $new_locked_resource->getRecord();
-            $old_locked_resource->setRecord($record);
-
-            $this->_em->persist($old_locked_resource);
-            $this->_em->flush();
-        }
-
-        return $old_locked_resource;
-    }
-
-    /**
      * Gets the LockedResource for entity name and record id
      * @param string $record
      * @param string $type
@@ -123,4 +100,23 @@ class LockedResourceRepository extends ServiceEntityRepository
         return $record;
     }
 
+    /**
+     * @param string $old_path
+     * @param string $new_path
+     */
+    public function updatePath(string $old_path, string $new_path): void
+    {
+        $qb = $this->_em->createQueryBuilder();
+
+        $qb->update(LockedResource::class, 'lr')
+            ->set('lr.record', ':new_path')
+            ->where('lr.record = :old_path')
+            ->setParameters([
+               'new_path' => $new_path,
+               'old_path' => $old_path,
+            ]);
+
+        $query = $qb->getQuery();
+        $query->execute();
+    }
 }

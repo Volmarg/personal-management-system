@@ -74,4 +74,5 @@ topbar:
     resources:
       locked: Locked
       unlocked: Unlocked
+      setLockPassword: Set lock password
     logout: Logout

@@ -37,6 +37,7 @@ use App\Form\Modules\Schedules\MyScheduleTypeType;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
 use App\Form\Modules\Travels\MyTravelsIdeasType;
 use App\Form\Page\Settings\Finances\CurrencyType;
+use App\Form\System\SystemLockCreatePasswordType;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
@@ -194,6 +195,10 @@ class Forms extends AbstractController {
 
     public function systemLockResourcesPasswordForm(array $params = []): FormInterface {
         return $this->createForm(SystemLockResourcesPasswordType::class, null, $params);
+    }
+
+    public function systemLockCreatePasswordForm(array $params = []): FormInterface {
+        return $this->createForm(SystemLockCreatePasswordType::class, null, $params);
     }
 
     /**

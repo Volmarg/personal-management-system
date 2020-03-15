@@ -2,7 +2,9 @@
 
 namespace App\Repository\Modules\Notes;
 
+use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Notes\MyNotes;
+use App\Entity\System\LockedResource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -73,14 +75,27 @@ class MyNotesRepository extends ServiceEntityRepository {
           FROM my_note mn
           JOIN my_note_category mnc
             $categoriesWithNotes
-          WHERE mn.deleted = 0
+            
+            LEFT JOIN locked_resource lr
+            ON  lr.record = mnc.id
+            AND lr.target = :lock_target
+            AND lr.type   = :lock_type            
+            
+          WHERE mn.deleted  = 0
             AND mnc.deleted = 0
+            AND lr.id IS NULL            
+
           GROUP BY mnc.name
           ORDER BY -childrens_id DESC
         ";
 
+        $params = [
+            'lock_target' => ModulesController::MODULE_ENTITY_NOTES_CATEGORY,
+            'lock_type'   => LockedResource::TYPE_ENTITY
+        ];
+
         $statement = $this->connection->prepare($sql);
-        $statement->execute();
+        $statement->execute($params);
         $results = $statement->fetchAll();
 
         return (!empty($results) ? $results : []);
@@ -89,13 +104,25 @@ class MyNotesRepository extends ServiceEntityRepository {
     public function getNotesByCategory($category_id) {
 
         $sql = "
-            SELECT * 
-            FROM my_note
-            WHERE category_id = :category_id
-                AND deleted <> 1
+            SELECT mn.* 
+            FROM my_note mn
+            
+            LEFT JOIN locked_resource lr
+            ON  lr.record = :category_id
+            AND lr.target = :lock_target
+            AND lr.type   = :lock_type
+            
+            WHERE mn.category_id = :category_id
+            AND mn.deleted <> 1
+            AND lr.id IS NULL            
         ";
 
-        $bindedValues = ['category_id' => $category_id];
+        $bindedValues = [
+            'category_id' => $category_id,
+            'lock_target' => ModulesController::MODULE_ENTITY_NOTES_CATEGORY,
+            'lock_type'   => LockedResource::TYPE_ENTITY
+        ];
+
         $statement    = $this->connection->prepare($sql);
 
         $statement->execute($bindedValues);
@@ -111,9 +138,27 @@ class MyNotesRepository extends ServiceEntityRepository {
      */
     public function countNotesInCategoryByCategoryId(int $category_id) {
 
-        $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = ? AND deleted = 0";
+        $sql = "
+            SELECT COUNT(*) 
+            FROM my_note 
+            
+            LEFT JOIN locked_resource lr
+            ON  lr.record = :category_id
+            AND lr.target = :lock_target
+            AND lr.type   = :lock_type            
+            
+            WHERE category_id = :category_id
+            AND deleted = 0
+            AND lr.id IS NULL            
+            ";
 
-        $statement = $this->connection->executeQuery($sql, [$category_id]);
+        $params = [
+            'category_id' => $category_id,
+            'lock_target' => ModulesController::MODULE_ENTITY_NOTES_CATEGORY,
+            'lock_type'   => LockedResource::TYPE_ENTITY
+        ];
+
+        $statement = $this->connection->executeQuery($sql, $params);
         $results = $statement->fetchColumn();
 
         return $results;

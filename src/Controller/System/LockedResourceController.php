@@ -38,7 +38,6 @@ class LockedResourceController extends AbstractController {
     }
 
     /**
-     * // todo: change implementation in JS to POST
      * @Route("/api/lock-resource/toggle", name="api_lock_resource_toggle", methods="POST")
      * @param Request $request
      * @return JsonResponse

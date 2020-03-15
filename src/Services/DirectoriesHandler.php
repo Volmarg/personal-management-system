@@ -422,6 +422,7 @@ class DirectoriesHandler {
 
             # Info: rename is using for handling file moving
             rename($current_folder_path, $new_folder_path);
+            $this->application->repositories->lockedResourceRepository->updatePath($current_folder_path, $new_folder_path);
 
         }catch(\Exception $e){
             return new Response($e->getMessage(), $e->getCode());

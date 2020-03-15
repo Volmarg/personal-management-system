@@ -31,11 +31,23 @@
 
         <li role="separator" class="divider"></li>
 
-        <li>
-            <a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700" data-toggle-resources-lock-for-system="true">
+        {% set style = "" %}
+        {% set data  = 'data-toggle-resources-lock-for-system=true' %}
+        {% if not app.user.hasLockPassword() %}
+            {% set style = "width:180px;" %}
+            {% set data  = 'data-set-resources-lock-password-for-system=true' %}
+        {% endif %}
 
-                {% set lock_class = isSystemLocked() ? "text-success" : "text-danger" %}
-                {% set shown_text = isSystemLocked() ? translate('topbar.user.resources.unlocked') : translate('topbar.user.resources.locked') %}
+        <li style="{{ style }}">
+            <a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700" {{ data }}>
+
+                {% if app.user.hasLockPassword() %}
+                    {% set lock_class = isSystemLocked() ? "text-success" : "text-danger" %}
+                    {% set shown_text = isSystemLocked() ? translate('topbar.user.resources.unlocked') : translate('topbar.user.resources.locked') %}
+                {% else %}
+                    {% set shown_text = translate('topbar.user.resources.setLockPassword') %}
+                    {% set lock_class = "text-warning" %}
+                {% endif %}
 
                 <i class="fas fa-lock mR-10 {{ lock_class }}"></i>
                 <span>{{ shown_text }}</span>

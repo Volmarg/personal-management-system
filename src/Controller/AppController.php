@@ -239,4 +239,55 @@ class AppController extends Controller
         return $response;
     }
 
+    /**
+     * @Route("/api/system/system-lock-set-password", name="system-lock-create-password", methods="POST")
+     * @param Request            $request
+     * @param SecurityController $securityController
+     * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
+     */
+    public function systemLockCreatePassword(Request $request, SecurityController $securityController): Response
+    {
+        if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
+            $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            return $response;
+        }
+
+        $password = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
+
+        try{
+
+            /**
+             * @var User $user
+             */
+            $user            = $this->getUser();
+            $has_password    = $user->hasLockPassword();
+
+            $security_dto    = $securityController->hashPassword($password);
+            $hashed_password = $security_dto->getHashedPassword();
+
+            $user->setLockPassword($hashed_password);
+            $this->app->repositories->userRepository->saveUser($user);
+
+            if( $has_password ){
+                $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenCreated');
+            }else{
+                $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenUpdated');
+            }
+
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_OK, $message);
+        } catch(Exception $e){
+            $message = $this->app->translator->translate("responses.lockResource.failedToSetLockPassword");
+            $this->app->logger->info($message, [
+                "exceptionMessage"  => $e->getMessage(),
+                "exceptionCode"     => $e->getCode(),
+            ]);
+
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+        }
+
+        return $response;
+    }
+
 }

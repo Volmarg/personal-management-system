@@ -18,6 +18,10 @@ export default (function () {
                 toggleLockedResourcesVisibility: {
                     url: "/api/system/toggle-resources-lock",
                     method: "POST"
+                },
+                lockCreatePasswordType: {
+                    url: "/api/system/system-lock-set-password",
+                    method: "POST"
                 }
             },
             messages: {
@@ -27,11 +31,13 @@ export default (function () {
             }
         },
         attributes:{
-            dataToggleResourcesLockForSystem: 'data-toggle-resources-lock-for-system'
+            dataToggleResourcesLockForSystem : 'data-toggle-resources-lock-for-system',
+            dataSetResourcesLockForSystem    : 'data-set-resources-lock-password-for-system',
         },
         init: function (){
             this.attachToggleRecordLockOnKeyIcon();
             this.attachEventsOnToggleResourcesLockForSystem();
+            this.attachEventsOnLockCreatePasswordForSystem();
         },
         /**
          * Adds click event on every lock record action icon
@@ -165,9 +171,67 @@ export default (function () {
                     return;
                 }
 
-                dialogs.ui.systemLock.buildSystemLockDialog();
+                dialogs.ui.systemLock.buildSystemToggleLockDialog();
             });
-        }
+        },
+
+        //-------------------------------- || ---------------------\\
+
+        attachEventsOnLockCreatePasswordForSystem: function (){
+            let $button = $("[" + window.ui.lockedResource.attributes.dataSetResourcesLockForSystem + "= true]");
+
+            $button.off('click');
+            $button.on('click', function() {
+                dialogs.ui.systemLock.buildCreateLockPasswordForSystemDialog();
+            });
+        },
+        /**
+         * Sends the request to unlock the resources for whole system
+         * @param password {string}
+         */
+        ajaxCreateLockPasswordForSystem: function(password){
+
+            let data = {
+                "systemLockPassword": password
+            };
+            ui.widgets.loader.showLoader();
+
+            $.ajax({
+                method: window.ui.lockedResource.general.methods.lockCreatePasswordType.method,
+                url   : window.ui.lockedResource.general.methods.lockCreatePasswordType.url,
+                data  : data,
+            }).always( function(data){
+                ui.widgets.loader.hideLoader();
+
+                try{
+                    var code    = data['code'];
+                    var message = data['message'];
+                } catch(Exception){
+                    throw({
+                        "message"   : "Could not handle ajax call",
+                        "data"      : data,
+                        "exception" : Exception
+                    })
+                }
+
+                if( 200 != code ){
+                    bootstrap_notifications.showRedNotification(message);
+                    return;
+                }else {
+
+                    if( "undefined" === typeof message ){
+                        message = window.ui.lockedResource.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                    }
+
+                    bootstrap_notifications.showGreenNotification(message);
+
+                    // no ajax reload for this as there is also menu to be changed etc.
+                    ui.widgets.loader.showLoader();
+                    window.location.reload();
+                }
+            })
+        },
+
     };
 
 

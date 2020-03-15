@@ -120,4 +120,10 @@ class User extends BaseUser {
         $this->lockPassword = $lockPassword;
     }
 
+    public function hasLockPassword(){
+        if( empty($this->lockPassword) ){
+            return false;
+        }
+        return true;
+    }
 }
