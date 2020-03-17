@@ -1,29 +1,40 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: volmarg
- * Date: 16.05.19
- * Time: 20:34
- */
 
 namespace App\Twig;
 
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Utils\Application;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\Entity\Modules\Schedules\MyScheduleType;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use App\Entity\System\LockedResource;
 
 class GlobalVariables extends AbstractExtension {
 
     const KEY_SCHEDULES_COUNT = 'schedules_count';
     const KEY_SCHEDULES       = 'schedules';
 
+    const CATEGORY_ID  = "category_id";
+    const CHILDRENS_ID = "childrens_id";
+
+    /**
+     * @var Application $app
+     */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var MyNotesController $my_notes_controller
+     */
+    private $my_notes_controller;
+
+    public function __construct(Application $app, MyNotesController $my_notes_controller) {
         $this->app = $app;
+        $this->my_notes_controller = $my_notes_controller;
     }
 
     public function getFunctions() {
@@ -35,15 +46,28 @@ class GlobalVariables extends AbstractExtension {
         ];
     }
 
+    /**
+     * @param bool $all
+     * @return array
+     * @throws ExceptionDuplicatedTranslationKey
+     * @throws DBALException
+     */
     public function getMyNotesCategories($all = false) {
-        $results = $this->app->repositories->myNotesRepository->getCategories($all);
+        $results     = $this->app->repositories->myNotesRepository->getCategories($all);
         $new_results = [];
 
         foreach ($results as $key => $result) {
-            $new_results[$result['category_id']] = $result;
+            $category_id = $result[self::CATEGORY_ID];
 
-            if (!is_null($results[$key]['childrens_id'])) {
-                $new_results[$result['category_id']]['childrens_id'] = explode(',', $results[$key]['childrens_id']);
+            if( !$this->my_notes_controller->hasCategoryVisibleNotes($category_id)){
+                unset($results[$key]);
+                continue;
+            }
+
+            $new_results[$category_id] = $result;
+
+            if (!is_null($results[$key][self::CHILDRENS_ID])) {
+                $new_results[$category_id][self::CHILDRENS_ID] = explode(',', $results[$key][self::CHILDRENS_ID]);
             }
         }
 

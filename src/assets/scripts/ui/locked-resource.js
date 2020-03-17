@@ -32,14 +32,14 @@ export default (function () {
             dataSetResourcesLockForSystem    : 'data-set-resources-lock-password-for-system',
         },
         init: function (){
-            this.attachToggleRecordLockOnKeyIcon();
+            this.attachToggleRecordLockOnActionLockRecord();
             this.attachEventsOnToggleResourcesLockForSystem();
             this.attachEventsOnLockCreatePasswordForSystem();
         },
         /**
          * Adds click event on every lock record action icon
          */
-        attachToggleRecordLockOnKeyIcon: function () {
+        attachToggleRecordLockOnActionLockRecord: function () {
             let _this              = this;
             let lockResourceButton = $('.action-lock-record');
 
@@ -98,6 +98,7 @@ export default (function () {
 
                                 bootstrap_notifications.showGreenNotification(message);
                                 ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                                ui.ajax.singleMenuNodeReload();
                             }
 
                         });
@@ -106,6 +107,24 @@ export default (function () {
                 }
             });
 
+        },
+        /**
+         * Attaches event in the user menu Lock button
+         */
+        attachEventsOnToggleResourcesLockForSystem: function (){
+            let $button    = $("[" + window.ui.lockedResource.attributes.dataToggleResourcesLockForSystem + "= true]");
+            let $i         = $button.find('i');
+            let isUnlocked = $i.hasClass("text-success");
+
+            $button.off('click');
+            $button.on('click', function() {
+                if( isUnlocked ){
+                    ui.lockedResource.ajaxToggleSystemLock("");
+                    return;
+                }
+
+                dialogs.ui.systemLock.buildSystemToggleLockDialog();
+            });
         },
         /**
          * Sends the request to unlock the resources for whole system
@@ -154,27 +173,9 @@ export default (function () {
             })
         },
         /**
-         * Attaches event in the user menu Lock button
+         * Attaches event for creating the first time password for lock when user does not have any set
+         *  this is pretty much like needed due to the fact that there was no such option in old version of project
          */
-        attachEventsOnToggleResourcesLockForSystem: function (){
-            let $button    = $("[" + window.ui.lockedResource.attributes.dataToggleResourcesLockForSystem + "= true]");
-            let $i         = $button.find('i');
-            let isUnlocked = $i.hasClass("text-success");
-
-            $button.off('click');
-            $button.on('click', function() {
-                if( isUnlocked ){
-                    ui.lockedResource.ajaxToggleSystemLock("");
-                    return;
-                }
-
-                dialogs.ui.systemLock.buildSystemToggleLockDialog();
-            });
-        },
-
-        //todo: check duplicates, clean + remove spearator
-        //-------------------------------- || ---------------------\\
-
         attachEventsOnLockCreatePasswordForSystem: function (){
             let $button = $("[" + window.ui.lockedResource.attributes.dataSetResourcesLockForSystem + "= true]");
 
@@ -184,7 +185,7 @@ export default (function () {
             });
         },
         /**
-         * Sends the request to unlock the resources for whole system
+         * Sends the request to create first time password for lock system
          * @param password {string}
          */
         ajaxCreateLockPasswordForSystem: function(password){
@@ -229,7 +230,6 @@ export default (function () {
                 }
             })
         },
-
     };
 
 

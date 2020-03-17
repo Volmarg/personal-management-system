@@ -433,6 +433,10 @@ export default (function () {
             },
         },
         systemLock:{
+            /**
+             * Build dialog with confirmation about setting/removing lock for entire system
+             * @param callback {function}
+             */
             buildSystemToggleLockDialog: function (callback = null) {
                 let _this = this;
                 let url   = dialogs.ui.methods.systemLockResourcesDialogTemplate;
@@ -456,6 +460,11 @@ export default (function () {
                 })
 
             },
+            /**
+             * Call dialog with confirmation about setting/removing lock for entire system
+             * @param template {string}
+             * @param callback {function}
+             */
             callSystemToggleLockDialog: function (template, callback = null) {
 
                 let dialog = bootbox.alert({
@@ -486,12 +495,10 @@ export default (function () {
                     })
                 });
             },
-
-            // todo: check the duplicated code, cleanup - remove separator
-            // -------------------------- || ------------------------- //
-
-
-
+            /**
+             * Build dialog for creating first time lock password
+             * @param callback {function}
+             */
             buildCreateLockPasswordForSystemDialog: function (callback = null) {
                 let _this = this;
                 let url   = dialogs.ui.methods.createSystemLockPasswordDialogTemplate;
@@ -515,6 +522,11 @@ export default (function () {
                 })
 
             },
+            /**
+             * Calls dialog for creating first time lock password
+             * @param callback {function}
+             * @param template {string}
+             */
             callCreateLockPasswordForSystemDialog: function (template, callback = null) {
 
                 let dialog = bootbox.alert({

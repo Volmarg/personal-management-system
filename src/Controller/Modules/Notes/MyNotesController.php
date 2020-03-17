@@ -189,6 +189,29 @@ class MyNotesController extends AbstractController {
     }
 
     /**
+     * @param string $category_id
+     * @return bool
+     * @throws ExceptionDuplicatedTranslationKey
+     */
+    public function hasCategoryVisibleNotes(string $category_id)
+    {
+        $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($category_id);
+
+        foreach( $notes as $index => $note ){
+            $note_id = $note->getId();
+            if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false)         ){
+                unset($notes[$index]);
+            }
+        }
+
+        if (empty($notes)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param Request $request
      */
     private function addToDB(Request $request): void {
