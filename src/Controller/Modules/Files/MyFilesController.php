@@ -154,9 +154,7 @@ class MyFilesController extends AbstractController
         $module_upload_dir_name = FilesHandler::getModuleUploadDirForUploadPath($upload_dir);
         $module_name            = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$module_upload_dir_name];
 
-        if( $this->locked_resource_controller->isResourceLocked($subdir_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name) ){
-            $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
-            $this->app->addDangerFlash($message);
+        if( !$this->locked_resource_controller->isAllowedToSeeResource($subdir_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name)         ){
             return $this->redirect('/');
         }
 

@@ -184,13 +184,13 @@ class AppController extends Controller
     /**
      * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
      * @param Request $request
-     * @param UserRolesSessionService $rolesSessionService
-     * @param SecurityController $securityController
+     * @param UserRolesSessionService $role_session_service
+     * @param SecurityController $security_controller
      * @return JsonResponse
      * @throws ExceptionDuplicatedTranslationKey
      * @throws Exception
      */
-    public function toggleResourcesLock(Request $request, UserRolesSessionService $rolesSessionService, SecurityController $securityController): Response
+    public function toggleResourcesLock(Request $request, UserRolesSessionService $role_session_service, SecurityController $security_controller): Response
     {
 
         if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
@@ -203,8 +203,8 @@ class AppController extends Controller
 
         try{
 
-            if( $rolesSessionService->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ){
-                $rolesSessionService->removeRolesFromSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
+            if( $role_session_service->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ){
+                $role_session_service->removeRolesFromSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
                 $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
             }else{
 
@@ -214,7 +214,7 @@ class AppController extends Controller
                 $user              = $this->getUser();
                 $user_password     = $user->getLockPassword();
                 $password          = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
-                $is_password_valid = $securityController->isPasswordValid($user, $user_password, $password);
+                $is_password_valid = $security_controller->isPasswordValid($user, $user_password, $password);
 
                 if( !$is_password_valid ){
                     $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
@@ -222,7 +222,7 @@ class AppController extends Controller
                     return $response;
                 }
 
-                $rolesSessionService->addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
+                $role_session_service->addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
                 $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
             }
 
@@ -242,11 +242,11 @@ class AppController extends Controller
     /**
      * @Route("/api/system/system-lock-set-password", name="system-lock-create-password", methods="POST")
      * @param Request            $request
-     * @param SecurityController $securityController
+     * @param SecurityController $security_controller
      * @return JsonResponse
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function systemLockCreatePassword(Request $request, SecurityController $securityController): Response
+    public function systemLockCreatePassword(Request $request, SecurityController $security_controller): Response
     {
         if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
             $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
@@ -264,7 +264,7 @@ class AppController extends Controller
             $user            = $this->getUser();
             $has_password    = $user->hasLockPassword();
 
-            $security_dto    = $securityController->hashPassword($password);
+            $security_dto    = $security_controller->hashPassword($password);
             $hashed_password = $security_dto->getHashedPassword();
 
             $user->setLockPassword($hashed_password);

@@ -2,11 +2,8 @@
 
 namespace App\Repository\Modules\Notes;
 
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Notes\MyNotesCategories;
-use App\Entity\System\LockedResource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -58,32 +55,5 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
         return (!empty($results) ? $results : []);
     }
-
-    /**
-     * @return MyNotesCategories[]
-     */
-    public function getNotDeletedAndNotLocked(): array
-    {
-        // todo -> 2108
-        $queryBuilder = $this->_em->createQueryBuilder('mnc');
-
-        $queryBuilder->select('mnc')
-            ->from(MyNotesCategories::class, 'mnc')
-            ->leftJoin(LockedResource::class, 'lr', Join::WITH, $queryBuilder->expr()->andX(
-                $queryBuilder->expr()->eq('lr.record', 'mnc.id'),
-                $queryBuilder->expr()->eq('lr.target', ':lock_target'),
-                $queryBuilder->expr()->eq('lr.type', ':lock_type')
-            ))
-            ->where('mnc.deleted = 0')
-            ->andWhere('lr.id IS NULL')
-            ->setParameter('lock_target', ModulesController::MODULE_ENTITY_NOTES_CATEGORY)
-            ->setParameter('lock_type', LockedResource::TYPE_ENTITY);
-
-        $query   = $queryBuilder->getQuery();
-        $results = $query->execute();
-
-        return $results;
-    }
-
 
 }

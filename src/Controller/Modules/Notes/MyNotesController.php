@@ -2,17 +2,23 @@
 
 namespace App\Controller\Modules\Notes;
 
+use App\Controller\Modules\ModulesController;
+use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Entity\System\LockedResource;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use Doctrine\DBAL\DBALException;
+use Exception;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+//todo: add note lock check in controller
 class MyNotesController extends AbstractController {
 
     const KEY_CATEGORY_ID   = 'category_id';
@@ -23,8 +29,14 @@ class MyNotesController extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var LockedResourceController $locked_resource_controller
+     */
+    private $locked_resource_controller;
+
+    public function __construct(Application $app, LockedResourceController $locked_resource_controller) {
         $this->app = $app;
+        $this->locked_resource_controller = $locked_resource_controller;
     }
 
     /**
@@ -65,7 +77,8 @@ class MyNotesController extends AbstractController {
      * @param string $category
      * @param string $category_id
      * @param bool $ajax_render
-     * @return RedirectResponse|Response
+     * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     protected function renderCategoryTemplate(string $category, string $category_id, bool $ajax_render = false) {
 
@@ -74,6 +87,10 @@ class MyNotesController extends AbstractController {
          */
         $requested_category = $this->app->repositories->myNotesCategoriesRepository->find($category_id);
 
+        if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY)         ){
+            return $this->redirect('/');
+        }
+
         if (!$requested_category || $category != $requested_category->getName()) {
             $message = $this->app->translator->translate('notes.category.error.categoryWithThisNameOrIdExist');
             $this->addFlash('danger', $message);
@@ -81,6 +98,13 @@ class MyNotesController extends AbstractController {
         }
 
         $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($category_id);
+
+        foreach( $notes as $index => $note ){
+            $note_id = $note->getId();
+            if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false)         ){
+                unset($notes[$index]);
+            }
+        }
 
         if (empty($notes)) {
             $message = $this->app->translator->translate('notes.category.error.categoryIsEmpty');
@@ -146,7 +170,7 @@ class MyNotesController extends AbstractController {
      * @Route("/my-notes/delete-note/", name="my-notes-delete-note")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function deleteNote(Request $request): Response {
 

@@ -487,7 +487,7 @@ export default (function () {
                 });
             },
 
-
+            // todo: check the duplicated code, cleanup - remove separator
             // -------------------------- || ------------------------- //
 
 

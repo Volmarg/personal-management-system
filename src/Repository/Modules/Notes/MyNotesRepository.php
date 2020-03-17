@@ -2,11 +2,10 @@
 
 namespace App\Repository\Modules\Notes;
 
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Notes\MyNotes;
-use App\Entity\System\LockedResource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -25,7 +24,13 @@ class MyNotesRepository extends ServiceEntityRepository {
         $this->connection = $connection;
     }
 
-    public function getCategories($all = false) {
+    /**
+     * @param bool $all
+     * @return array
+     * @throws DBALException
+     */
+    public function getCategories($all = false): array
+    {
 
         $categoriesWithNotes = '';
 
@@ -75,87 +80,46 @@ class MyNotesRepository extends ServiceEntityRepository {
           FROM my_note mn
           JOIN my_note_category mnc
             $categoriesWithNotes
-            
-            LEFT JOIN locked_resource lr
-            ON  lr.record = mnc.id
-            AND lr.target = :lock_target
-            AND lr.type   = :lock_type            
-            
+
           WHERE mn.deleted  = 0
             AND mnc.deleted = 0
-            AND lr.id IS NULL            
 
           GROUP BY mnc.name
           ORDER BY -childrens_id DESC
         ";
 
-        $params = [
-            'lock_target' => ModulesController::MODULE_ENTITY_NOTES_CATEGORY,
-            'lock_type'   => LockedResource::TYPE_ENTITY
-        ];
-
         $statement = $this->connection->prepare($sql);
-        $statement->execute($params);
-        $results = $statement->fetchAll();
-
-        return (!empty($results) ? $results : []);
-    }
-
-    public function getNotesByCategory($category_id) {
-
-        $sql = "
-            SELECT mn.* 
-            FROM my_note mn
-            
-            LEFT JOIN locked_resource lr
-            ON  lr.record = :category_id
-            AND lr.target = :lock_target
-            AND lr.type   = :lock_type
-            
-            WHERE mn.category_id = :category_id
-            AND mn.deleted <> 1
-            AND lr.id IS NULL            
-        ";
-
-        $bindedValues = [
-            'category_id' => $category_id,
-            'lock_target' => ModulesController::MODULE_ENTITY_NOTES_CATEGORY,
-            'lock_type'   => LockedResource::TYPE_ENTITY
-        ];
-
-        $statement    = $this->connection->prepare($sql);
-
-        $statement->execute($bindedValues);
+        $statement->execute();
         $results = $statement->fetchAll();
 
         return (!empty($results) ? $results : []);
     }
 
     /**
+     * @param $category_id
+     * @return MyNotes[]
+     */
+    public function getNotesByCategory($category_id): array
+    {
+        $results = $this->findBy([
+            'category' => $category_id,
+            "deleted"  => 0
+        ]);
+
+        return $results;
+    }
+
+    /**
      * @param int $category_id
      * @return false|mixed
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function countNotesInCategoryByCategoryId(int $category_id) {
 
-        $sql = "
-            SELECT COUNT(*) 
-            FROM my_note 
-            
-            LEFT JOIN locked_resource lr
-            ON  lr.record = :category_id
-            AND lr.target = :lock_target
-            AND lr.type   = :lock_type            
-            
-            WHERE category_id = :category_id
-            AND deleted = 0
-            AND lr.id IS NULL            
-            ";
+        $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = :category_id AND deleted = 0";
 
         $params = [
             'category_id' => $category_id,
-            'lock_target' => ModulesController::MODULE_ENTITY_NOTES_CATEGORY,
-            'lock_type'   => LockedResource::TYPE_ENTITY
         ];
 
         $statement = $this->connection->executeQuery($sql, $params);

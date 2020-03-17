@@ -2,17 +2,17 @@
 
 namespace App\Controller\System;
 
+use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Entity\System\LockedResource;
 use App\Entity\User;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Session\UserRolesSessionService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -145,31 +145,35 @@ class LockedResourceController extends AbstractController {
      */
     public function isSystemLocked(): bool
     {
-        return $this->user_roles_session_service->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        return !$this->user_roles_session_service->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
     }
 
     /**
      * @param string $record
      * @param string $type
      * @param string $target
+     * @param bool $show_flash_message
      * @return bool
+     * @throws ExceptionDuplicatedTranslationKey
+     * @throws Exception
      */
-    public function isResourceVisible(string $record, string $type, string $target): bool
+    public function isAllowedToSeeResource(string $record, string $type, string $target, bool $show_flash_message = true): bool
     {
-        $is_resource_locked      = $this->isResourceLocked($record, $type, $target);
-        $can_see_locked_resource = $this->user_roles_session_service->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        $is_resource_locked = $this->isResourceLocked($record, $type, $target);
+        $is_system_locked   = $this->isSystemLocked();
 
         if(
-            !$is_resource_locked
-            ||  (
-                $is_resource_locked && $can_see_locked_resource
-            )
+                ( $is_resource_locked && !$is_system_locked )
+            ||  ( !$is_resource_locked )
         ){
             return true;
         }
 
+        if($show_flash_message){
+            $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+            $this->app->addDangerFlash($message);
+        }
         return false;
     }
-
 
 }

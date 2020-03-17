@@ -17,9 +17,9 @@
             {% set lock_type   = constant('App\\Entity\\System\\LockedResource::TYPE_ENTITY') %}
             {% set lock_target = constant('App\\Controller\\Modules\\ModulesController::MODULE_ENTITY_NOTES_CATEGORY') %}
 
-            {% if isResourceVisible(lock_record, lock_type, lock_target) %}
+            {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
 
-                <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyNotesCategories">
+                <tr class="trash-parent editable-parent save-parent" data-type="MyNotesCategories">
                 <td class="d-none id">{{ category.id }}</td>
                 <td class="name"> {{ category.name }}</td>
                 <td class="icon fontawesome-input"> {{ category.icon }}</td>

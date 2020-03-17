@@ -23,7 +23,7 @@
                                     {% set lock_type   = constant('App\\Entity\\System\\LockedResource::TYPE_ENTITY') %}
                                     {% set lock_target = constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_NOTES') %}
 
-                                    {% if isResourceVisible(lock_record, lock_type, lock_target) %}
+                                    {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
                                         <section class="single-note-details d-flex save-parent">
 
                                         <span class="fas fa-lock {{ getClassForLockedResource(lock_record, lock_type, lock_target) }} align-self-center action-lock-record"

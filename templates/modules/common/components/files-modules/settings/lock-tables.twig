@@ -15,7 +15,7 @@
     {% for folder_shown, folder in folders %}
         {% set lock_record = folder %}
 
-        {% if isResourceVisible(lock_record, lock_type, lock_target) %}
+        {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
             <tr class="save-parent" data-type="FilesModuleLockTable">
 
                 <td class="path">{{ folder_shown }}</td>

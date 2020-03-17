@@ -62,7 +62,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     {
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
-        $this->blockIp($ev);
+        //$this->blockIp($ev); #unlock for personal needs
     }
 
     public static function getSubscribedEvents() {

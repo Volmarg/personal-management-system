@@ -6,8 +6,8 @@ namespace App\Twig;
 
 use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Application;
-use App\Entity\User;
 use App\Services\Session\UserRolesSessionService;
+use Exception;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
@@ -52,7 +52,7 @@ class LockedResource extends AbstractExtension {
         return [
             new TwigFunction('getClassForLockedResource', [$this, 'getClassForLockedResource']),
             new TwigFunction('isResourceLocked', [$this, 'isResourceLocked']),
-            new TwigFunction('isResourceVisible', [$this, 'isResourceVisible']),
+            new TwigFunction('isAllowedToSeeResource', [$this, 'isAllowedToSeeResource']),
             new TwigFunction('isSystemLocked', [$this, 'isSystemLocked']),
         ];
     }
@@ -79,6 +79,7 @@ class LockedResource extends AbstractExtension {
      * @param string $type
      * @param string $target
      * @return bool
+     * @throws Exception
      */
     public function isResourceLocked(string $record, string $type, string $target): bool
     {
@@ -90,10 +91,11 @@ class LockedResource extends AbstractExtension {
      * @param string $type
      * @param string $target
      * @return bool
+     * @throws Exception
      */
-    public function isResourceVisible(string $record, string $type, string $target): bool
+    public function isAllowedToSeeResource(string $record, string $type, string $target): bool
     {
-        return $this->lockedResourceController->isResourceVisible($record, $type, $target);
+        return $this->lockedResourceController->isAllowedToSeeResource($record, $type, $target, false);
     }
 
     /**
