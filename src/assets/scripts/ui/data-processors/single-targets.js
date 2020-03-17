@@ -61,6 +61,23 @@ export default (function () {
             },
             form_target_action_name: "User password",
         },
+        'UserLockPassword':{
+            makeUpdateData: function (form) {
+                let systemLockPassword = $(form).find('[data-id="systemLockPassword"]').val();
+
+                let url = '/api/system/system-lock-set-password';
+
+                let ajax_data = {
+                    'systemLockPassword': systemLockPassword,
+                };
+
+                return {
+                    'url': url,
+                    'data': ajax_data
+                };
+            },
+            form_target_action_name: "User lock password",
+        },
         'CreateFolder': {
             makeCreateData: function () {
                 let url                 = '/files/actions/create-folder';

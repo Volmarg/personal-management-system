@@ -18,14 +18,30 @@
 
                             <section class="all-notes">
                                 {% for note in notes %}
-                                    <section class="single-note-details">
-                                        <button type="button" class="btn btn-primary note-button" data-toggle="modal"
-                                                data-target="#note{{ note.id }}">
-                                            {{ note.title }}
-                                        </button>
 
-                                        {% include 'modules/my-notes/components/note-edit-modal.html.twig' %}
-                                    </section>
+                                    {% set lock_record = note.id %}
+                                    {% set lock_type   = constant('App\\Entity\\System\\LockedResource::TYPE_ENTITY') %}
+                                    {% set lock_target = constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_NOTES') %}
+
+                                    {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
+                                        <section class="single-note-details d-flex save-parent">
+
+                                        <span class="fas fa-lock {{ getClassForLockedResource(lock_record, lock_type, lock_target) }} align-self-center action-lock-record"
+                                              data-lock-resource-record ="{{ lock_record }}"
+                                              data-lock-resource-type   ="{{ lock_type }}"
+                                              data-lock-resource-target ="{{ lock_target }}"
+                                        ></span>
+
+                                            <button type="button" class="btn btn-primary note-button" data-toggle="modal"
+                                                    data-target="#note{{ note.id }}">
+                                            <span>
+                                                {{ note.title }}
+                                            </span>
+                                            </button>
+
+                                            {% include 'modules/my-notes/components/note-edit-modal.html.twig' %}
+                                        </section>
+                                    {% endif %}
                                 {% endfor %}
                             </section>
 

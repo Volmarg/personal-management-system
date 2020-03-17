@@ -71,9 +71,9 @@ class MyPaymentsOwedController extends AbstractController
         $summary_overall_owed_by_others = [];
 
         foreach( $summary_overall as $summary ){
-            $owed_by_me = $summary['summaryOwedByMe'];
+            $is_summary_owed_by_me = $summary['summaryOwedByMe'];
 
-            if($owed_by_me){
+            if($is_summary_owed_by_me){
                 $summary_overall_owed_by_me[] = $summary;
                 continue;
             }

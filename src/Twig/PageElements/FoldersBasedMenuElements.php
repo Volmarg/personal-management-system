@@ -9,9 +9,14 @@
 namespace App\Twig\PageElements;
 
 use App\Controller\Files\FileUploadController;
+use App\Controller\System\LockedResourceController;
+use App\Controller\Utils\Utils as UtilsController;
+use App\Entity\System\LockedResource;
 use App\Services\DirectoriesHandler;
+use App\Services\FilesHandler;
 use App\Twig\Utils;
 use DirectoryIterator;
+use Exception;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
@@ -53,10 +58,17 @@ class FoldersBasedMenuElements extends AbstractExtension {
      */
     private $twig_utils;
 
-    public function __construct(UrlGeneratorInterface $url_generator, Utils $twig_utils) {
+    /**
+     * @var LockedResourceController $lock_resource_controller
+     */
+    private $locked_resource_controller;
+
+    public function __construct(UrlGeneratorInterface $url_generator, Utils $twig_utils, LockedResourceController $locked_resource_controller) {
         $this->finder           = new Finder();
         $this->url_generator    = $url_generator;
         $this->twig_utils       = $twig_utils;
+
+        $this->locked_resource_controller = $locked_resource_controller;
 
         $this->allow_referer_for_urls = [
           $this->url_generator->generate('render_menu_node_template'),
@@ -68,6 +80,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
         return [
             new TwigFunction('getUploadFolderSubdirectoriesTree', [$this, 'getUploadFolderSubdirectoriesTree']),
             new TwigFunction('buildMenuForUploadType', [$this, 'buildMenuForUploadType']),
+            new TwigFunction('getAllExistingUploadFolderSubdirectories', [$this, 'getAllExistingUploadFolderSubdirectories']),
         ];
     }
 
@@ -75,7 +88,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
     /**
      * @param $upload_module_dir
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getUploadFolderSubdirectoriesTree($upload_module_dir) {
 
@@ -87,10 +100,29 @@ class FoldersBasedMenuElements extends AbstractExtension {
     }
 
     /**
+     * @param string $upload_module_dir
+     * @return array
+     * @throws Exception
+     */
+    public function getAllExistingUploadFolderSubdirectories(string $upload_module_dir): array
+    {
+        $folder_tree   = $this->getUploadFolderSubdirectoriesTree($upload_module_dir);
+        $folders_array = UtilsController::arrayKeysMulti($folder_tree);
+        $folders       = [];
+
+        foreach($folders_array as  $folder){
+            $folder_shown           = FilesHandler::getSubdirectoryPathFromUploadModuleUploadFullPath($folder, $upload_module_dir);
+            $folders[$folder_shown] = $folder;
+        }
+
+        return $folders;
+    }
+
+    /**
      * Not doing this in twig because of nested arrays functions limitation
      * @param string $upload_module_dir
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildMenuForUploadType(string $upload_module_dir){
 
@@ -112,12 +144,13 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * @param string $list
      * @param string $folder_path
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     private function buildList(array $folder_tree, string $upload_module_dir, string $folder_path, string $list = '') {
 
         $upload_folder                      = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
         $folder_path_in_module_upload_dir   = str_replace($upload_folder . DIRECTORY_SEPARATOR, '', $folder_path);
+        $module_name                        = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$upload_module_dir];
         $folder_name                        = basename($folder_path);
 
         //urlencoded is needed since entire path is single param in controller, but then we need to unescape escaped spacebars
@@ -144,6 +177,12 @@ class FoldersBasedMenuElements extends AbstractExtension {
             $is_url        = true;
         }
 
+        //prevent rendering the given node if if any parent or the children itself is locked
+        if( $this->locked_resource_controller->isResourceLocked($folder_path, LockedResource::TYPE_DIRECTORY, $module_name) ){
+            return $list;
+        }
+
+
         $list  .= '<li class="' . $class . ' ' . $isOpen . ' folder-based-menu-element">'.$link.$dropdown_arrow;
 
         if( $is_url ) //prevent adding "open" class to menu elements which does not have any subtree
@@ -166,7 +205,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * @param string $upload_module_directory
      * @param string $encoded_subdirectory_path
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     private function buildPathForUploadModuleDir(string $encoded_subdirectory_path, string $upload_module_directory) {
 
@@ -178,7 +217,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
                 $path = $this->url_generator->generate('modules_my_images', ['encoded_subdirectory_path' => $encoded_subdirectory_path]);
                 break;
             default:
-                throw new \Exception("This upload directory is not supported: {$upload_module_directory}");
+                throw new Exception("This upload directory is not supported: {$upload_module_directory}");
         }
 
         return $path;

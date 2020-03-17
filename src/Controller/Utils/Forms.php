@@ -9,7 +9,6 @@
 namespace App\Controller\Utils;
 
 use App\Entity\Modules\Contacts\MyContact;
-use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
@@ -28,7 +27,6 @@ use App\Form\Modules\Notes\MyNotesCategoriesType;
 use App\Form\Modules\Notes\MyNotesType;
 use App\Form\Modules\Passwords\MyPasswordsGroupsType;
 use App\Form\Modules\Passwords\MyPasswordsType;
-use App\Form\Modules\Payments\CurrencyType;
 use App\Form\Modules\Payments\MyPaymentsBills;
 use App\Form\Modules\Payments\MyPaymentsBillsItems;
 use App\Form\Modules\Payments\MyPaymentsIncomeType;
@@ -38,6 +36,9 @@ use App\Form\Modules\Schedules\MyScheduleType;
 use App\Form\Modules\Schedules\MyScheduleTypeType;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
 use App\Form\Modules\Travels\MyTravelsIdeasType;
+use App\Form\Page\Settings\Finances\CurrencyType;
+use App\Form\System\SystemLockCreatePasswordType;
+use App\Form\System\SystemLockResourcesPasswordType;
 use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
 use App\Form\User\UserPasswordType;
@@ -190,6 +191,15 @@ class Forms extends AbstractController {
 
     public function currencyTypeForm(array $params = []): FormInterface {
         return $this->createForm(CurrencyType::class, null, $params);
+    }
+
+    // TODO: duplicated forms with duplicated dialogs? Investigate and clear
+    public function systemLockResourcesPasswordForm(array $params = []): FormInterface {
+        return $this->createForm(SystemLockResourcesPasswordType::class, null, $params);
+    }
+
+    public function systemLockCreatePasswordForm(array $params = []): FormInterface {
+        return $this->createForm(SystemLockCreatePasswordType::class, null, $params);
     }
 
     /**

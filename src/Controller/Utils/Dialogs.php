@@ -29,6 +29,8 @@ class Dialogs extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS              = 'page-elements/components/dialogs/bodies/update-tags.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER               = 'page-elements/components/dialogs/bodies/new-folder.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD                   = 'page-elements/components/dialogs/bodies/new-folder.twig';
+    const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES         = 'page-elements/components/dialogs/bodies/system-lock-resources.twig';
+    const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD   = 'page-elements/components/dialogs/bodies/system-lock-create-password.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
@@ -317,6 +319,49 @@ class Dialogs extends AbstractController
 
         return new JsonResponse($response_data);
 
+    }
+
+    /**
+     * @Route("/dialog/body/system-lock-resources", name="dialog_body_system_lock_resources", methods="GET")
+     * @return Response
+     */
+    public function buildSystemLockResourcesDialogBody() {
+
+        $password_form  = $this->app->forms->systemLockResourcesPasswordForm();
+
+        $template_data = [
+            'password_form'  => $password_form->createView(),
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+
+    }
+
+    /**
+     * @Route("/dialog/body/create-system-lock-password", name="dialog_body_create_system_lock_password", methods="GET")
+     * @return Response
+     */
+    public function buildCreateSystemLockPasswordDialogBody() {
+
+        $password_form  = $this->app->forms->systemLockCreatePasswordForm();
+
+        $template_data = [
+            'password_form'  => $password_form->createView(),
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
     }
 
     /**

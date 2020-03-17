@@ -48,4 +48,5 @@ import './googleMaps/index.js';
 import './utils/index.js';
 import './my-goals/index.js';
 import './apexcharts/index.js';
+import './ui/locked-resource.js';
 import './initializer/index.js';

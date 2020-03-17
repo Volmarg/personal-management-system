@@ -18,22 +18,34 @@ export default (function () {
         init: function(){
             this.attachModuleContentLoadingViaAjaxOnMenuLinks();
         },
+
         entireMenuReload: function(){
 
         },
-        singleMenuNodeReload: function(menuNodeModuleName, returnNotification = false) {
+        singleMenuNodeReload: function(menuNodeModuleName = null, returnNotification = false) {
 
-            let menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');
+            let $menuNode = null;
+
+            if(
+                    null === menuNodeModuleName
+                || "undefined" === typeof menuNodeModuleName
+            ){
+                let $currentActiveMenuLink = $('a.sidebar-link.active');
+                $menuNode                   = $currentActiveMenuLink.closest('.sidebar-menu-node-element');
+                menuNodeModuleName          = $menuNode.attr('data-menu-node-name');
+            }else{
+                $menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');
+            }
 
             if( "undefined" === typeof menuNodeModuleName ){
                 throw("Menu node name was not defined");
             }
 
-            if( 0 === menuNode.length ){
+            if( 0 === $menuNode.length ){
                 throw('Menu node with name: ' + menuNodeModuleName + ' - was not found');
             }
 
-            if( 1 < menuNode.length ){
+            if( 1 < $menuNode.length ){
                 throw('More than one menu nodes with name: ' + menuNodeModuleName + ' were found.');
             }
 
@@ -60,7 +72,7 @@ export default (function () {
                 }
 
                 if( '' !== tpl ){
-                    $(menuNode).replaceWith(tpl);
+                    $menuNode.replaceWith(tpl);
                     window.sidebar.links.init();
                     initializer.reinitialize();
                 }

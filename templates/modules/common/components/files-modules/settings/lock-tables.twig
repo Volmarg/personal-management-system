@@ -1,0 +1,34 @@
+{% set folders = getAllExistingUploadFolderSubdirectories(moduleType) %}
+
+<table id="FilesModuleLockTable" class="table table-striped table-bordered" cellspacing="0"
+       data-table="true" width="100%">
+    <thead>
+    <tr>
+        <td>Path</td>
+        <td style="width:50px;">Lock</td>
+    </tr>
+    </thead>
+    <tbody>
+
+    {% set lock_type = constant('App\\Entity\\System\\LockedResource::TYPE_DIRECTORY') %}
+
+    {% for folder_shown, folder in folders %}
+        {% set lock_record = folder %}
+
+        {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
+            <tr class="save-parent" data-type="FilesModuleLockTable">
+
+                <td class="path">{{ folder_shown }}</td>
+
+                {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                    "lock_record" : lock_record,
+                    "lock_type"   : lock_type,
+                    "lock_target" : lock_target,
+                } %}
+
+            </tr>
+        {% endif %}
+
+    {% endfor %}
+    </tbody>
+</table>

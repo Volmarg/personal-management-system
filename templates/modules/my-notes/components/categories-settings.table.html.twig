@@ -10,42 +10,55 @@
     </tr>
     </thead>
     <tbody>
-    {% for category in categories %}
-        <tr class="trash-parent car-single-data editable-parent save-parent" data-type="MyNotesCategories">
-            <td class="d-none id">{{ category.id }}</td>
-            <td class="name"> {{ category.name }}</td>
-            <td class="icon fontawesome-input"> {{ category.icon }}</td>
-            <td class="color">
-                <button class="jscolor {value:'{{ category.color }}'} btn btn-sm disabled color-picker"
-                        data-color="{{ category.color }}"></button>
-            </td>
 
-            <td class="parent-td">
-                <select class="form-control disabled parent option-picker">
-                    <option value=""></option>
-                    {% for category_on_list in categories  %}
+        {% for category in categories %}
 
-                        {% if category.id != category_on_list.id %}
+            {% set lock_record = category.id %}
+            {% set lock_type   = constant('App\\Entity\\System\\LockedResource::TYPE_ENTITY') %}
+            {% set lock_target = constant('App\\Controller\\Modules\\ModulesController::MODULE_ENTITY_NOTES_CATEGORY') %}
 
-                            <option value="{{ category_on_list.id }}"
-                                    {% if category.parent_id  == category_on_list.id %}selected{% endif %}>
-                                {{ category_on_list.name | capitalize }}
-                            </option>
+            {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
 
-                        {% endif %}
+                <tr class="trash-parent editable-parent save-parent" data-type="MyNotesCategories">
+                <td class="d-none id">{{ category.id }}</td>
+                <td class="name"> {{ category.name }}</td>
+                <td class="icon fontawesome-input"> {{ category.icon }}</td>
+                <td class="color">
+                    <button class="jscolor {value:'{{ category.color }}'} btn btn-sm disabled color-picker"
+                            data-color="{{ category.color }}"></button>
+                </td>
 
-                    {% endfor %}
-                </select>
-            </td>
+                <td class="parent-td">
+                    <select class="form-control disabled parent option-picker">
+                        <option value=""></option>
+                        {% for category_on_list in categories  %}
 
-            {% include 'modules/common/components/table-cells/actions.html.twig' with {
-                "trash": true,
-                "edit": true,
-                "save": true,
-                "fontawesome": true
-            } %}
+                            {% if category.id != category_on_list.id %}
 
-        </tr>
+                                <option value="{{ category_on_list.id }}"
+                                        {% if category.parent_id  == category_on_list.id %}selected{% endif %}>
+                                    {{ category_on_list.name | capitalize }}
+                                </option>
+
+                            {% endif %}
+
+                        {% endfor %}
+                    </select>
+                </td>
+
+                {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                    "trash"       : true,
+                    "edit"        : true,
+                    "save"        : true,
+                    "fontawesome" : true,
+                    "lock_record" : lock_record,
+                    "lock_type"   : lock_type,
+                    "lock_target" : lock_target,
+                } %}
+
+            </tr>
+
+        {% endif %}
     {% endfor %}
     </tbody>
 </table>

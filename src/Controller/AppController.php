@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\SecurityController;
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
-use App\Controller\Utils\Repositories;
-use App\Entity\Modules\Goals\MyGoals;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\User;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use App\Services\Session\UserRolesSessionService;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,10 +23,11 @@ class AppController extends Controller
 
     const KEY_MENU_NODE_MODULE_NAME = 'menu_node_module_name';
 
-    const KEY_MESSAGE   = 'message';
-    const KEY_CODE      = 'code';
-    const KEY_TPL       = 'tpl';
-    const KEY_CURR_URL  = 'currUrl';
+    const KEY_MESSAGE              = 'message';
+    const KEY_CODE                 = 'code';
+    const KEY_TPL                  = 'tpl';
+    const KEY_CURR_URL             = 'currUrl';
+    const KEY_SYSTEM_LOCK_PASSWORD = 'systemLockPassword';
 
     const MENU_NODE_MODULE_NAME_ACHIEVEMENTS  = ModulesController::MODULE_NAME_ACHIEVEMENTS;
     const MENU_NODE_MODULE_NAME_GOALS         = ModulesController::MODULE_NAME_GOALS;
@@ -178,53 +182,112 @@ class AppController extends Controller
     }
 
     /**
-     * This originally came with symfonator
-     * @Route("test", name="test")
-     * @return Response
+     * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
+     * @param Request $request
+     * @param UserRolesSessionService $role_session_service
+     * @param SecurityController $security_controller
+     * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
+     * @throws Exception
      */
-    public function hasNotRemovedSoftDeletedRelatedEntities(EntityManagerInterface $em)
+    public function toggleResourcesLock(Request $request, UserRolesSessionService $role_session_service, SecurityController $security_controller): Response
     {
 
-        $record_id = 123;
-        $record    = $this->app->repositories->myGoalsRepository->find($record_id);
-
-
-        $class_name = get_class($record);
-
-        $class_meta = $em->getClassMetadata($class_name);
-        $related_entities_classes_data_arrays = $class_meta->getAssociationMappings();
-        $are_all_related_entities_removed     = true;
-
-        foreach( $related_entities_classes_data_arrays as $related_entity_class_data_array ){
-
-            $field_name    = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
-            $mapped_by     = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_MAPPED_BY];
-            $target_entity = $related_entity_class_data_array[Repositories::KEY_CLASS_META_RELATED_ENTITY_TARGET_ENTITY];
-
-            dump($field_name);
-            dump($mapped_by);
-            dump($target_entity);
-
-            $get_method                              = "get" . ucfirst($field_name);
-            $related_entities_persistent_collections = $record->{$get_method}();
-            $related_entities                        = $related_entities_persistent_collections->getValues();
-
-            foreach( $related_entities as $related_entity ){
-                $delete_method_name = "getDeleted";
-
-                if( property_exists($related_entity, $delete_method_name) ){
-                    $is_deleted = $related_entity->$delete_method_name();
-
-                    if( !$is_deleted ){
-                        $are_all_related_entities_removed = false;
-                    }
-                }
-            }
+        if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
+            $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            return $response;
         }
 
-        dump($are_all_related_entities_removed);
+        $code = 200;
 
-        die();
+        try{
+
+            if( $role_session_service->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ){
+                $role_session_service->removeRolesFromSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
+                $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
+            }else{
+
+                /**
+                 * @var User $user
+                 */
+                $user              = $this->getUser();
+                $user_password     = $user->getLockPassword();
+                $password          = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
+                $is_password_valid = $security_controller->isPasswordValid($user, $user_password, $password);
+
+                if( !$is_password_valid ){
+                    $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
+                    $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+                    return $response;
+                }
+
+                $role_session_service->addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
+                $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
+            }
+
+        } catch(Exception $e){
+            $code    = 500;
+            $message = $this->app->translator->translate("messages.lock.failedToToggleLockForWholeSystem");
+            $this->app->logger->info($message, [
+                "exceptionMessage"  => $e->getMessage(),
+                "exceptionCode"     => $e->getCode(),
+            ]);
+        }
+
+        $response = AjaxResponse::buildResponseForAjaxCall($code, $message);
+        return $response;
+    }
+
+    /**
+     * @Route("/api/system/system-lock-set-password", name="system-lock-create-password", methods="POST")
+     * @param Request            $request
+     * @param SecurityController $security_controller
+     * @return JsonResponse
+     * @throws ExceptionDuplicatedTranslationKey
+     */
+    public function systemLockCreatePassword(Request $request, SecurityController $security_controller): Response
+    {
+        if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
+            $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            return $response;
+        }
+
+        $password = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
+
+        try{
+
+            /**
+             * @var User $user
+             */
+            $user            = $this->getUser();
+            $has_password    = $user->hasLockPassword();
+
+            $security_dto    = $security_controller->hashPassword($password);
+            $hashed_password = $security_dto->getHashedPassword();
+
+            $user->setLockPassword($hashed_password);
+            $this->app->repositories->userRepository->saveUser($user);
+
+            if( $has_password ){
+                $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenCreated');
+            }else{
+                $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenUpdated');
+            }
+
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_OK, $message);
+        } catch(Exception $e){
+            $message = $this->app->translator->translate("responses.lockResource.failedToSetLockPassword");
+            $this->app->logger->info($message, [
+                "exceptionMessage"  => $e->getMessage(),
+                "exceptionCode"     => $e->getCode(),
+            ]);
+
+            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+        }
+
+        return $response;
     }
 
 }

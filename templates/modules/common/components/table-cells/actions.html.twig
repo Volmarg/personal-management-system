@@ -50,4 +50,18 @@
         {% endif %}
         ></i>
     {% endif %}
+
+    {% if lock_record is defined and lock_record %}
+        <i class="fas fa-lock action-lock-record
+                {{ getClassForLockedResource(lock_record, lock_type, lock_target) }}
+                "
+           data-content-editable="false"
+           data-lock-resource-record     ="{{ lock_record }}"
+           data-lock-resource-type       ="{{ lock_type }}"
+           data-lock-resource-target     ="{{ lock_target }}"
+                {% if lock_record_attr is defined and lock_record_attr is not empty %}
+                    {{ lock_record_attr }}
+                {% endif %}
+        ></i>
+    {% endif %}
 </td>

@@ -28,6 +28,35 @@
                 <span>{{ translate('topbar.user.profile') }}</span>
             </a>
         </li>
+
+        <li role="separator" class="divider"></li>
+
+        {% set style = "" %}
+        {% set data  = 'data-toggle-resources-lock-for-system=true' %}
+        {% if not app.user.hasLockPassword() %}
+            {% set style = "width:180px;" %}
+            {% set data  = 'data-set-resources-lock-password-for-system=true' %}
+        {% endif %}
+
+        <li style="{{ style }}">
+            <a href="#" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700" {{ data }}>
+
+                {% if app.user.hasLockPassword() %}
+                    {% set lock_class = isSystemLocked() ? "text-danger" : "text-success" %}
+                    {% set shown_text = isSystemLocked() ? translate('topbar.user.resources.locked') : translate('topbar.user.resources.unlocked') %}
+                {% else %}
+                    {% set shown_text = translate('topbar.user.resources.setLockPassword') %}
+                    {% set lock_class = "text-warning" %}
+                {% endif %}
+
+                <i class="fas fa-lock mR-10 {{ lock_class }}"></i>
+                <span>{{ shown_text }}</span>
+
+            </a>
+        </li>
+
+        <li role="separator" class="divider"></li>
+
         <li>
             <a href="{{ path('page-settings') }}" class="d-b td-n pY-5 bgcH-grey-100 c-grey-700 ajax-content-load">
                 <i class="fas fa-cog mR-10"></i>

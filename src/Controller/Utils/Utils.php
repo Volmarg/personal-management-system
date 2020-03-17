@@ -11,6 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Utils extends AbstractController {
 
+    const FLASH_TYPE_SUCCESS = "success";
+    const FLASH_TYPE_DANGER  = "danger";
+
     /**
      * @param string $data
      * @return string
@@ -77,7 +80,7 @@ class Utils extends AbstractController {
      * @return string
      */
     public static function getFlashTypeForRequest(Response $response){
-        $flashType = ( $response->getStatusCode() === 200 ? 'success' : 'danger' );
+        $flashType = ( $response->getStatusCode() === 200 ? self::FLASH_TYPE_SUCCESS : self::FLASH_TYPE_DANGER );
         return $flashType;
     }
 
@@ -147,8 +150,29 @@ class Utils extends AbstractController {
         return StringUtil::fqcnToBlockPrefix($class) ?: '';
     }
 
+    /**
+     * @return string
+     */
     public static function randomHexColor() {
         return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * @param array $array
+     * @return array
+     */
+    public static function arrayKeysMulti(array $array): array
+    {
+        $keys = array();
+
+        foreach ($array as $key => $value) {
+            $keys[] = $key;
+
+            if (is_array($value)) {
+                $keys = array_merge($keys, self::arrayKeysMulti($value));
+            }
+        }
+
+        return $keys;
+    }
 }

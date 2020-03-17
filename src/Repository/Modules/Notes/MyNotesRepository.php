@@ -5,6 +5,7 @@ namespace App\Repository\Modules\Notes;
 use App\Entity\Modules\Notes\MyNotes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -23,7 +24,13 @@ class MyNotesRepository extends ServiceEntityRepository {
         $this->connection = $connection;
     }
 
-    public function getCategories($all = false) {
+    /**
+     * @param bool $all
+     * @return array
+     * @throws DBALException
+     */
+    public function getCategories($all = false): array
+    {
 
         $categoriesWithNotes = '';
 
@@ -73,8 +80,10 @@ class MyNotesRepository extends ServiceEntityRepository {
           FROM my_note mn
           JOIN my_note_category mnc
             $categoriesWithNotes
-          WHERE mn.deleted = 0
+
+          WHERE mn.deleted  = 0
             AND mnc.deleted = 0
+
           GROUP BY mnc.name
           ORDER BY -childrens_id DESC
         ";
@@ -86,34 +95,34 @@ class MyNotesRepository extends ServiceEntityRepository {
         return (!empty($results) ? $results : []);
     }
 
-    public function getNotesByCategory($category_id) {
+    /**
+     * @param $category_id
+     * @return MyNotes[]
+     */
+    public function getNotesByCategory($category_id): array
+    {
+        $results = $this->findBy([
+            'category' => $category_id,
+            "deleted"  => 0
+        ]);
 
-        $sql = "
-            SELECT * 
-            FROM my_note
-            WHERE category_id = :category_id
-                AND deleted <> 1
-        ";
-
-        $bindedValues = ['category_id' => $category_id];
-        $statement    = $this->connection->prepare($sql);
-
-        $statement->execute($bindedValues);
-        $results = $statement->fetchAll();
-
-        return (!empty($results) ? $results : []);
+        return $results;
     }
 
     /**
      * @param int $category_id
      * @return false|mixed
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function countNotesInCategoryByCategoryId(int $category_id) {
 
-        $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = ? AND deleted = 0";
+        $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = :category_id AND deleted = 0";
 
-        $statement = $this->connection->executeQuery($sql, [$category_id]);
+        $params = [
+            'category_id' => $category_id,
+        ];
+
+        $statement = $this->connection->executeQuery($sql, $params);
         $results = $statement->fetchColumn();
 
         return $results;
