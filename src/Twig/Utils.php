@@ -21,6 +21,7 @@ class Utils extends AbstractExtension {
             new TwigFunction('unset', [$this, '_unset']),
             new TwigFunction('keepMenuOpen', [$this, 'keepMenuOpen']),
             new TwigFunction('isDemo', [$this, 'isDemo']),
+            new TwigFunction('isMaintenance', [$this, 'isMaintenance']),
             new TwigFunction('jsonDecode', [$this, 'jsonDecode']),
             new TwigFunction('translate', [$this, 'translate']),
         ];
@@ -69,6 +70,11 @@ class Utils extends AbstractExtension {
     public function isDemo() {
         $is_demo = Env::isDemo();
         return $is_demo;
+    }
+
+    public function isMaintenance() {
+        $is_maintenance = Env::isMaintenance();
+        return $is_maintenance;
     }
 
     public function jsonDecode(string $json): array {

@@ -123,7 +123,16 @@
             <div class="header-container">
                 {% include 'page-elements/components/topbar.twig' %}
             </div>
+            <div>
+                {% if isMaintenance() %}
+                    {% include 'page-elements/components/maintenance-mode.twig' %}
+                {% endif %}
+            </div>
         </div>
+
+
+
+
         <section class="twig-body-section">
             {% block body %}{% endblock %}
         </section>

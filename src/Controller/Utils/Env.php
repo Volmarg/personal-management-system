@@ -75,4 +75,14 @@ class Env extends AbstractController {
         return $is_demo;
     }
 
+    public static function isMaintenance() {
+        try {
+            $is_demo = (bool)$_ENV['APP_MAINTENANCE'];
+        } catch (\Exception $e) {
+            $is_demo = false;
+        }
+        return $is_demo;
+    }
+
+
 }
