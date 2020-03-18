@@ -58,6 +58,7 @@ settings:
           symbol: Symbol
           multiplier: Multiplier
           isDefault: Is default
+        addCurrency: Add currency
       messages:
         couldNotFindCurrencyForGivenName: "Could not find currency for given name"
         defaultCurrencyCanNotBeRemove: "Default currency cannot be removed"

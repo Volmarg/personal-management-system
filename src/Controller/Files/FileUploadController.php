@@ -5,6 +5,7 @@ namespace App\Controller\Files;
 
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
+use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Controller\Utils\Env;
 use App\Controller\Utils\Utils;
@@ -102,7 +103,8 @@ class FileUploadController extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        return $this->renderTemplate(true);
+        $template_content  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
