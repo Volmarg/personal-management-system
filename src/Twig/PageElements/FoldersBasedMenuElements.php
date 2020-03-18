@@ -178,7 +178,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
         }
 
         //prevent rendering the given node if if any parent or the children itself is locked
-        if( $this->locked_resource_controller->isResourceLocked($folder_path, LockedResource::TYPE_DIRECTORY, $module_name) ){
+        if( !$this->locked_resource_controller->isAllowedToSeeResource($folder_path, LockedResource::TYPE_DIRECTORY, $module_name, false) ){
             return $list;
         }
 
