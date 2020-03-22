@@ -16,8 +16,11 @@ export default (function () {
             this.highlightCode();
         },
         highlightCode: function(){
-            let $codeElements = $('code[class^="language-"]');
-            $.each($codeElements, function(index, codeElement){
+            let $codeElements        = $('code[class^="language-"]');
+            let $tinyMceCodeElements = $('#tiny-mce-wrapper code');
+            let $allElements         = $.merge($codeElements, $tinyMceCodeElements);
+
+            $.each($allElements, function(index, codeElement){
                 Prism.highlightElement(codeElement);
             });
         }
