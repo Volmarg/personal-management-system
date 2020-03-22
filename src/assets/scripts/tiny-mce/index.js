@@ -58,6 +58,8 @@ export default (function () {
             this.MyNotes.attachEditEvent();
             this.MyNotes.attachSaveEvent();
             this.MyNotes.attachDeleteNoteEvent();
+
+            this.preventFocusHijack();
         },
         setDefaultTextAlignment: function () {
             $(document).ready(() => {
@@ -104,6 +106,22 @@ export default (function () {
                     tinymce.triggerSave();
                 });
             },
+        },
+        /**
+         * This fixes the problem where jquery/Bootstrap is stealing focus from TinyMCE textarea
+         * In this case for plugin:
+         * - codesample
+         */
+        preventFocusHijack: function(){
+            $(document).on('focusin', function(event) {
+
+                // this is handled for codesample plugin - without it textarea is unclickable
+                let $toxTextArea = $(event.target).closest(".tox-textarea");
+
+                if ( $toxTextArea.length ) {
+                    event.stopImmediatePropagation();
+                }
+            });
         },
         "MyNotes": {
             init: function (editButton) {
