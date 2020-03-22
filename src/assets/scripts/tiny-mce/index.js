@@ -5,7 +5,10 @@ import 'tinymce/plugins/table';
 import 'tinymce/plugins/image';
 import 'tinymce/plugins/preview';
 import 'tinymce/plugins/paste';
+import 'tinymce/plugins/codesample';
+
 import utils_custom from "../utils/utils_custom";
+import Prism from 'prismjs';
 
 var IconPicker = require('@furcan/iconpicker');
 
@@ -74,12 +77,21 @@ export default (function () {
         config: {
             menubar: false,
             mode: "specific_textareas",
-            plugins: ['lists', 'table', 'image', 'preview', 'paste'],
-            toolbar: 'bold italic | formatselect fontselect | forecolor colorpicker | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | image | preview',
+            plugins: ['lists', 'table', 'image', 'preview', 'paste', 'codesample'],
+            toolbar: 'bold italic | formatselect fontselect | forecolor colorpicker | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | image | codesample | preview',
             height: 400,
             forced_root_block: '',
             paste_data_images: true,
             image_uploadtab: true,
+            codesample_global_prismjs: true,
+            // codesample_languages - whenver You add anything in here, add also import for given language in `src/assets/scripts/prism/index.js:2`
+            codesample_languages: [
+                { text: 'HTML/XML', value: 'markup' },
+                { text: 'JavaScript', value: 'javascript' },
+                { text: 'CSS', value: 'css' },
+                { text: 'PHP', value: 'php' },
+                { text: 'BASH', value: 'bash' },
+            ],
             images_dataimg_filter: function(img) {
                 return img.hasAttribute('internal-blob');
             },
