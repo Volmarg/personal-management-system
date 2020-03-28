@@ -25,18 +25,18 @@ class MyNotesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param bool $all
+     * @param bool $only_categories_with_notes
      * @return array
      * @throws DBALException
      */
-    public function getCategories($all = false): array
+    public function getCategories(bool $only_categories_with_notes = false): array
     {
 
         $categoriesWithNotes = '';
 
         //add counting of notes so if category has 0 notes then disable it
 
-        if(!$all){
+        if( $only_categories_with_notes ){
             $categoriesWithNotes = "
                 -- get only categories with notes
                 ON mn.category_id = mnc.id
@@ -49,12 +49,8 @@ class MyNotesRepository extends ServiceEntityRepository {
                         (
                             SELECT DISTINCT mnc_.id
                             FROM my_note_category mnc_
-                            LEFT JOIN my_note mn_
-                              ON mnc_.id = mn_.category_id
                             WHERE mnc_.parent_id = mnc.id
-                              AND mnc_.parent_id IS NOT NULL
-                              AND mnc_.deleted = 0
-                              AND mn_.deleted  = 0
+                            AND mnc_.parent_id IS NOT NULL
                         )
                 ) IS NOT NULL
             ";
@@ -70,12 +66,8 @@ class MyNotesRepository extends ServiceEntityRepository {
              ( -- get children categories
                SELECT GROUP_CONCAT(DISTINCT mnc_.id)
                FROM my_note_category mnc_
-               LEFT JOIN my_note mn_
-               ON mnc_.id = mn_.category_id
                WHERE mnc_.parent_id = mnc.id
                AND mnc_.parent_id IS NOT NULL
-               AND mnc_.deleted = 0
-               AND mn_.deleted  = 0
               ) AS childrens_id
           FROM my_note mn
           JOIN my_note_category mnc
@@ -96,13 +88,13 @@ class MyNotesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param $category_id
+     * @param array $categories_ids
      * @return MyNotes[]
      */
-    public function getNotesByCategory($category_id): array
+    public function getNotesByCategory(array $categories_ids): array
     {
         $results = $this->findBy([
-            'category' => $category_id,
+            'category' => $categories_ids,
             "deleted"  => 0
         ]);
 

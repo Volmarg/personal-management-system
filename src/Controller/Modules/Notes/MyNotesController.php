@@ -10,15 +10,12 @@ use App\Controller\Utils\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\System\LockedResource;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use Doctrine\DBAL\DBALException;
 use Exception;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-//todo: add note lock check in controller
+
 class MyNotesController extends AbstractController {
 
     const KEY_CATEGORY_ID   = 'category_id';
@@ -97,7 +94,7 @@ class MyNotesController extends AbstractController {
             return $this->redirect($this->generateUrl('my-notes-create'));
         }
 
-        $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($category_id);
+        $notes = $this->app->repositories->myNotesRepository->getNotesByCategory([$category_id]);
 
         foreach( $notes as $index => $note ){
             $note_id = $note->getId();
@@ -193,22 +190,54 @@ class MyNotesController extends AbstractController {
      * @return bool
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function hasCategoryVisibleNotes(string $category_id)
+    public function hasCategoryFamilyVisibleNotes(string $category_id)
     {
-        $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($category_id);
 
-        foreach( $notes as $index => $note ){
-            $note_id = $note->getId();
-            if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false)         ){
-                unset($notes[$index]);
-            }
+        # 1. Some notes might just be empty, but if they have children then it cannot be hidden if some child has active note
+        $has_category_family_active_note = false;
+        $categories_ids = [$category_id];
+
+        while( !$has_category_family_active_note ){
+
+                $have_categories_notes = $this->app->repositories->myNotesCategoriesRepository->haveCategoriesNotes($categories_ids);
+
+                if( $have_categories_notes ){
+
+                    $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($categories_ids);
+
+                    # 2. Check lock and make sure that there are some notes visible
+                    foreach( $notes as $index => $note ){
+                        $note_id = $note->getId();
+                        if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false)         ){
+                            unset($notes[$index]);
+                        }
+                    }
+
+                    if( !empty($notes) ){
+                        $has_category_family_active_note = true;
+                        break;
+                    }
+
+                }
+
+                $have_categories_children = $this->app->repositories->myNotesCategoriesRepository->haveCategoriesChildren($categories_ids);
+
+                if( !$have_categories_children ){
+                    break;
+                }
+
+                $categories_ids = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesIdsForCategoriesIds($categories_ids);
+
+                if( empty($categories_ids) ){
+                    break;
+                }
         }
 
-        if (empty($notes)) {
-            return false;
+        if( $has_category_family_active_note ){
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /**

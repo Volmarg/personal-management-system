@@ -2,7 +2,6 @@
 
 namespace App\Twig;
 
-use App\Controller\Modules\ModulesController;
 use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Utils\Application;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
@@ -12,7 +11,6 @@ use Doctrine\DBAL\DBALException;
 use Exception;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
-use App\Entity\System\LockedResource;
 
 class GlobalVariables extends AbstractExtension {
 
@@ -47,19 +45,24 @@ class GlobalVariables extends AbstractExtension {
     }
 
     /**
-     * @param bool $all
+     * @param bool $filter
      * @return array
-     * @throws ExceptionDuplicatedTranslationKey
      * @throws DBALException
+     * @throws ExceptionDuplicatedTranslationKey
+     * todo: in future this could me moved to controller once i decide to split everything between actions
      */
-    public function getMyNotesCategories($all = false) {
-        $results     = $this->app->repositories->myNotesRepository->getCategories($all);
+    public function getMyNotesCategories($filter = false) {
+        $results     = $this->app->repositories->myNotesRepository->getCategories();
         $new_results = [];
 
-        foreach ($results as $key => $result) {
-            $category_id = $result[self::CATEGORY_ID];
+        if( !$filter ){
+            return $results;
+        }
 
-            if( !$this->my_notes_controller->hasCategoryVisibleNotes($category_id)){
+        foreach ($results as $key => $result) {
+                $category_id = $result[self::CATEGORY_ID];
+
+            if( !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id)){
                 unset($results[$key]);
                 continue;
             }

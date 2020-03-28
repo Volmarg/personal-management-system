@@ -2,8 +2,11 @@
 
 namespace App\Repository\Modules\Notes;
 
+use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -56,4 +59,88 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
         return (!empty($results) ? $results : []);
     }
 
+    /**
+     * @param array $categories_ids
+     * @return bool
+     */
+    public function haveCategoriesNotes(array $categories_ids): bool
+    {
+        $query_builder = $this->_em->createQueryBuilder();
+
+        $query_builder->select('mnc')
+            ->from(MyNotesCategories::class, "mnc")
+            ->join(MyNotes::class, 'mn', Join::WITH, "mn.category = mnc.id")
+            ->where("mnc.id IN(:categoriesIds)")
+            ->andWhere("mn.deleted = 0")
+            ->setParameter("categoriesIds", $categories_ids, Connection::PARAM_STR_ARRAY);
+
+        $query   = $query_builder->getQuery();
+        $results = $query->execute();
+
+        return !empty($results);
+    }
+
+    /**
+     * @param array $categories_ids
+     * @return bool
+     */
+    public function haveCategoriesChildren(array $categories_ids): bool
+    {
+        $query_builder = $this->_em->createQueryBuilder();
+
+        $query_builder->select('mnc_child')
+            ->from(MyNotesCategories::class, "mnc")
+            ->join(MyNotesCategories::class, 'mnc_child', Join::WITH, "mnc_child.parent_id = mnc.id")
+            ->where("mnc.id IN (:categoriesIds)")
+            ->andWhere("mnc_child.deleted = 0")
+            ->setParameter("categoriesIds", $categories_ids);
+
+        $query   = $query_builder->getQuery();
+        $results = $query->execute();
+
+        return !empty($results);
+    }
+
+    /**
+     * @param array $categories_ids
+     * @return MyNotesCategories[]
+     */
+    public function getChildrenCategoriesForCategoriesIds(array $categories_ids): array
+    {
+        $query_builder = $this->_em->createQueryBuilder();
+
+        $query_builder->select("mnc_child")
+            ->from(MyNotesCategories::class, "mnc")
+            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent = mnc.id")
+            ->where("mnc.id IN (:categoriesIds)")
+            ->andWhere("mnc_child.deleted = 0")
+            ->setParameter("categoriesIds", $categories_ids);
+
+        $query   = $query_builder->getQuery();
+        $results = $query->execute();
+
+        return $results;
+    }
+
+    /**
+     * @param array $categories_ids
+     * @return array
+     */
+    public function getChildrenCategoriesIdsForCategoriesIds(array $categories_ids): array
+    {
+        $query_builder = $this->_em->createQueryBuilder();
+
+        $query_builder->select("mnc_child.id")
+            ->from(MyNotesCategories::class, "mnc")
+            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent_id = mnc.id")
+            ->where("mnc.id IN (:categoriesIds)")
+            ->andWhere("mnc_child.deleted = 0")
+            ->setParameter("categoriesIds", $categories_ids);
+
+        $query   = $query_builder->getQuery();
+        $results = $query->execute();
+        $ids     = array_column($results, 'id');
+
+        return $ids;
+    }
 }

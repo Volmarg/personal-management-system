@@ -13,7 +13,7 @@
 
     <select class="form-control d-none note-modal-categories-list note-category"
             style="max-width:100px; float:left;">
-        {% set categories = getMyNotesCategories(true) %}
+        {% set categories = getMyNotesCategories() %}
         {% for category_on_list in categories %}
             <option value="{{ category_on_list.category_id }}"
                     {% if category_id  == category_on_list.category_id %}selected{% endif %}>

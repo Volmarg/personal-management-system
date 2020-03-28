@@ -28,7 +28,7 @@
             </a>
         </li>
 
-        {% set categories = getMyNotesCategories() %}
+        {% set categories = getMyNotesCategories(true) %}
         {% include 'page-elements/components/sidebar/menu-nodes/notes-categories.twig' with {
             'elements': categories,
             'path_name': 'my-notes-category'
