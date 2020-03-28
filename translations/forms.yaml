@@ -270,8 +270,3 @@ forms:
       password: "Password"
     placeholders:
       password: "Enter lock password"
-  systemLockCreatePasswordType:
-    labels:
-      password: "Lock password"
-    placeholders:
-      password: "Enter lock password"

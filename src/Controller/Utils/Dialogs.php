@@ -5,6 +5,7 @@ namespace App\Controller\Utils;
 use App\Controller\Files\FileUploadController;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
+use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\DirectoriesHandler;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;
@@ -327,7 +328,9 @@ class Dialogs extends AbstractController
      */
     public function buildSystemLockResourcesDialogBody() {
 
-        $password_form  = $this->app->forms->systemLockResourcesPasswordForm();
+        $password_form  = $this->app->forms->systemLockResourcesPasswordForm([
+            SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => false
+        ]);
 
         $template_data = [
             'password_form'  => $password_form->createView(),
@@ -349,7 +352,9 @@ class Dialogs extends AbstractController
      */
     public function buildCreateSystemLockPasswordDialogBody() {
 
-        $password_form  = $this->app->forms->systemLockCreatePasswordForm();
+        $password_form  = $this->app->forms->systemLockResourcesPasswordForm([
+            SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => true
+        ]);
 
         $template_data = [
             'password_form'  => $password_form->createView(),

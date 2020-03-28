@@ -14,6 +14,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class SystemLockResourcesPasswordType extends AbstractType
 {
 
+    const RESOLVER_OPTION_IS_CREATE_PASSWORD = "isCreatePassword";
+
     /**
      * @var Application
      */
@@ -29,13 +31,33 @@ class SystemLockResourcesPasswordType extends AbstractType
      * @throws ExceptionDuplicatedTranslationKey
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
+
+        $is_create_password = $options[self::RESOLVER_OPTION_IS_CREATE_PASSWORD];
+
+        switch( $is_create_password ){
+            case true:
+                {
+                    $builder->add(AppController::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class,[
+                        'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
+                        'attr'  => [
+                            "placeholder" => $this->app->translator->translate("forms.systemLockPassword.placeholders.password"),
+                            "data-id"     => 'systemLockPassword',
+                        ]
+                    ]);
+                }
+                break;
+            default:
+                {
+                    $builder->add(AppController::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class, [
+                        'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
+                        'attr'  => [
+                            "placeholder" => $this->app->translator->translate("forms.systemLockPassword.placeholders.password"),
+                        ]
+                    ]);
+                }
+        }
+
         $builder
-            ->add(AppController::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class, [
-                'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
-                'attr'  => [
-                    "placeholder" => $this->app->translator->translate("forms.systemLockPassword.placeholders.password")
-                ]
-            ])
             ->add('submit', SubmitType::class);
 
     }
@@ -45,5 +67,7 @@ class SystemLockResourcesPasswordType extends AbstractType
         $resolver->setDefaults([
             // Configure your form options here
         ]);
+
+        $resolver->setRequired(self::RESOLVER_OPTION_IS_CREATE_PASSWORD);
     }
 }

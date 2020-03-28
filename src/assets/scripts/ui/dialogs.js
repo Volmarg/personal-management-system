@@ -13,10 +13,9 @@ export default (function () {
 
         selectors: {
             ids: {
-                targetUploadModuleDirInput    : '#move_single_file_target_upload_module_dir',
-                targetSubdirectoryTypeInput   : '#move_single_file_target_subdirectory_path',
-                systemLockPasswordInput       : '#system_lock_resources_password_systemLockPassword',
-                systemLockCreatePasswordInput : '#system_lock_create_password_systemLockPassword',
+                targetUploadModuleDirInput  : '#move_single_file_target_upload_module_dir',
+                targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path',
+                systemLockPasswordInput     : '#system_lock_resources_password_systemLockPassword'
             },
             classes: {
                 fileTransferButton      : '.file-transfer',
@@ -488,6 +487,10 @@ export default (function () {
                     let $form                     = $systemLockPasswordInput.closest('form');
                     let $systemLockPasswordSubmit = $form.find('button');
 
+                    setTimeout( () => {
+                        $systemLockPasswordInput[0].focus();
+                    }, 500);
+
                     $systemLockPasswordSubmit.on('click', function (event) {
                         event.preventDefault();
                         let password = $systemLockPasswordInput.val();
@@ -546,9 +549,13 @@ export default (function () {
                 });
 
                 dialog.init( () => {
-                    let $systemLockCreatePasswordInput  = $(dialogs.ui.selectors.ids.systemLockCreatePasswordInput);
+                    let $systemLockCreatePasswordInput  = $(dialogs.ui.selectors.ids.systemLockPasswordInput);
                     let $form                           = $systemLockCreatePasswordInput.closest('form');
                     let $systemLockCreatePasswordSubmit = $form.find('button');
+
+                    setTimeout( () => {
+                        $systemLockCreatePasswordInput[0].focus();
+                    }, 500);
 
                     $systemLockCreatePasswordSubmit.on('click', function (event) {
                         event.preventDefault();

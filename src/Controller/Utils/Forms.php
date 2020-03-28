@@ -193,13 +193,8 @@ class Forms extends AbstractController {
         return $this->createForm(CurrencyType::class, null, $params);
     }
 
-    // TODO: duplicated forms with duplicated dialogs? Investigate and clear
     public function systemLockResourcesPasswordForm(array $params = []): FormInterface {
         return $this->createForm(SystemLockResourcesPasswordType::class, null, $params);
-    }
-
-    public function systemLockCreatePasswordForm(array $params = []): FormInterface {
-        return $this->createForm(SystemLockCreatePasswordType::class, null, $params);
     }
 
     /**

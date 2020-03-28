@@ -5,12 +5,9 @@ namespace App\Controller\User\Profile;
 use App\Controller\Utils\AjaxResponse;
 use App\Controller\Utils\Application;
 use App\Entity\User;
-use App\Form\User\UserAvatarType;
-use App\Form\User\UserNicknameType;
-use App\Form\User\UserPasswordType;
+use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -84,7 +81,9 @@ class SettingsController extends AbstractController {
         $avatar_form        = $this->app->forms->userAvatarForm(['avatar' => $avatar]);
         $password_form      = $this->app->forms->userPasswordForm();
         $nickname_form      = $this->app->forms->userNicknameForm(['nickname' => $nickname]);
-        $lock_password_form = $this->app->forms->systemLockCreatePasswordForm();
+        $lock_password_form = $this->app->forms->systemLockResourcesPasswordForm([
+            SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => true
+        ]);
 
         $data = [
             'ajax_render'        => $ajax_render,
