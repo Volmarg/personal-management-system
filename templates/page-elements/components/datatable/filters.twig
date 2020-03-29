@@ -1,0 +1,33 @@
+<table data-filter-target-table-selector="{{ targetTableSelector }}" data-is-filter-for-table="true">
+    <tr>
+        {% for filterData in filtersData %}
+            <td>
+                {% if
+                    (
+                        filterData is not empty
+                    and filterData.isDataObject is defined
+                    and filterData.isDataObject
+                    )
+                %}
+                    <label class="text-center d-flex justify-content-center">{{ filterData.key | capitalize }}</label>
+                    <select class="form-control" data-target-column="{{ filterData.key | capitalize }}">
+
+                        {% if addEmptyOption is defined and addEmptyOption %}
+                            <option value=""></option>
+                        {% endif %}
+
+                        {% for data in filterData.data %}
+
+                            {% set value = attribute(data, filterData.key) %}
+                            <option value="{{ value }}">
+                                {{ value }}
+                            </option>
+
+                        {% endfor %}
+                    </select>
+                {% endif %}
+            </td>
+
+        {% endfor %}
+    </tr>
+</table>

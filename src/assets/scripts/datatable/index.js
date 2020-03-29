@@ -1,3 +1,13 @@
+/**
+ * Known problems
+ *  if by any chance calling this : $targetTable.DataTable();
+ *  - will duplicated the table or it's part
+ *  - will do nothing
+ *  then make sure that:
+ *  - your table has id (must be)
+ *  - that for more than 1 tables each table has unique id (must be)
+ */
+
 import * as $ from 'jquery';
 import 'datatables';
 import 'datatables.net-select';
@@ -28,7 +38,10 @@ export default (function () {
                 checkboxCell                    : ".select-checkbox"
             },
             attributes: {
-                targetTable: "data-target-table-selector"
+                targetTable               : "data-target-table-selector",
+                isFilterForTable          : "data-is-filter-for-table",
+                filterTargetTableSelector : "data-filter-target-table-selector",
+                filterTargetColumn        : "data-target-column",
             }
         },
         destroy: function (table_id) {
@@ -37,6 +50,9 @@ export default (function () {
         api: {
           removeFiles: '/my-files/remove-file'
         },
+        /**
+         * Initialize datatable based on DOM attributes
+         */
         init: function () {
             let _this = this;
             $(document).ready(() => {
@@ -57,6 +73,8 @@ export default (function () {
                     {
                         $(table).DataTable(config);
 
+                        _this.attachFilterDependencyForTable();
+
                         if( isSelectable ){
                             _this.initSelectOptions(table);
                         }
@@ -65,6 +83,10 @@ export default (function () {
                 });
             })
         },
+        /**
+         * Reinitialize existing datatable instance
+         * @param table_id {string}
+         */
         reinit: function (table_id) {
             let config = {};
             let table  = $('#' + table_id);
@@ -76,9 +98,11 @@ export default (function () {
 
             $(table).DataTable(config);
         },
+        /**
+         * Attach all sort of events for special buttons etc. when rows in table are selectable/with checkboxes
+         * @param table
+         */
         initSelectOptions: function(table){
-            // TODO: check how this behaves for 2 tables like Payments Products
-
             let massActionButtonsSection = $(this.selectors.classes.massActionButtonsSection);
             let massActionButtons        = $(massActionButtonsSection).find('button');
             // Buttons MUST be there for this options logic
@@ -99,9 +123,6 @@ export default (function () {
             if( 0 !==  $(massActionTransferFilesButton).length ){
                 this.attachFilesTransferEventOnTransferFileButton(massActionTransferFilesButton);
             }
-
-        },
-        initSelectOptionRemoveRows: function(){
 
         },
         /**
@@ -204,6 +225,10 @@ export default (function () {
                 dialogs.ui.dataTransfer.buildDataTransferDialog(pathsOfFilesToTransfer, 'My Files', callback);
             });
         },
+        /**
+         * Handle checkbox logic for clicking checkbox in checkbox cell
+         * @param table {object}
+         */
         attachSelectingCheckboxForCheckboxCell: function(table){
 
             let allSelectCells = $(table).find(this.selectors.classes.checkboxCell);
@@ -222,6 +247,11 @@ export default (function () {
             });
 
         },
+        /**
+         * Handle mass action buttons disabled/enabled for selected checkboxes
+         * @param table
+         * @param massActionButtons
+         */
         attachEnablingAndDisablingMassActionButtonsToCheckboxCells: function(table, massActionButtons){
             let dataTable = $(table).DataTable();
 
@@ -242,6 +272,46 @@ export default (function () {
 
             });
 
+        },
+        /**
+         * Makes the special filters above table work and filter the data in datatable
+         */
+        attachFilterDependencyForTable: function(){
+
+            let $allFiltersTable    = $("[" + datatable.selectors.attributes.isFilterForTable + "=true]");
+            let $allFiltersSelects  = $allFiltersTable.find('select');
+
+            $.each( $allFiltersSelects, function( index, select ){
+                let $select = $(select);
+
+                let targetTableSelector = $select.closest('table').attr(datatable.selectors.attributes.filterTargetTableSelector);
+                let $targetTable        = $(targetTableSelector);
+
+                $select.on( 'change', function () {
+                    let $selectedOption = $select.find(':selected');
+                    let optionValue     = $selectedOption.val();
+                    let targetColumn    = $select.attr(datatable.selectors.attributes.filterTargetColumn);
+
+                    let $dataTable = $targetTable.DataTable();
+
+                    // Apply the search
+                    $dataTable.columns().every(function(value, index) {
+                        // need to fix problem that table is initialized twice
+
+                        let column = $dataTable.column(index);
+                        let header = $dataTable.columns(0).header()[0].textContent;
+
+                        if (
+                                targetColumn === header
+                            &&  column !== optionValue
+                        ) {
+                            column.search(optionValue)
+                                  .draw();
+                        }
+                    });
+
+                } );
+            });
         }
     };
 

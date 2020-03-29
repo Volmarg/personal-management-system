@@ -1,0 +1,15 @@
+<input type="text"
+    class="form-control disabled"
+    style="max-width: 65px;"
+
+    {% for finance_currency_dto in getFinancesCurrenciesDtos() %}
+
+        {% if
+                currency is defined
+            and currency == finance_currency_dto.getName()
+        %}
+
+        value="{{ finance_currency_dto.getSymbol() }}"
+        {% endif %}
+    {% endfor %}
+/>

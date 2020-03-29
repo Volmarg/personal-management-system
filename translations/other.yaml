@@ -68,6 +68,8 @@ settings:
         currencyWithThisNameAlreadyExist: "Currency with this name already exist"
         success: "Currency record has been successfully updated"
 
+datatables:
+  filterByColumnValue: "Filter by column value"
 
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.

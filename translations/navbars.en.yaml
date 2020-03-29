@@ -65,6 +65,7 @@ sidebar:
       monthlyPaymentsSummaries: Monthly payments summaries
       paymentsCharts: Payments charts
       savingsCharts: Savings charts
+      historicalMoneyOwed: Historical money owed
 topbar:
   search:
     placeholder: Search for files by tags...

@@ -17,9 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReportsController extends AbstractController
 {
 
-    const TWIG_TEMPLATE_PAYMENT_SUMMARIES = "modules/my-reports/monthly-payments-summaries.twig";
-    const TWIG_TEMPLATE_PAYMENTS_CHARTS   = "modules/my-reports/payments-charts.twig";
-    const TWIG_TEMPLATE_SAVINGS_CHARTS    = "modules/my-reports/savings-charts.twig";
+    const TWIG_TEMPLATE_PAYMENT_SUMMARIES     = "modules/my-reports/monthly-payments-summaries.twig";
+    const TWIG_TEMPLATE_PAYMENTS_CHARTS       = "modules/my-reports/payments-charts.twig";
+    const TWIG_TEMPLATE_SAVINGS_CHARTS        = "modules/my-reports/savings-charts.twig";
+    const TWIG_TEMPLATE_HISTORICAL_MONEY_OWED = "modules/my-reports/historical-money-owed.twig";
 
     const TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_FOR_TYPES  = "modules/my-reports/components/charts/total-payments-amount-for-types.twig";
     const TWIG_TEMPLATE_PAYMENTS_CHART_EACH_TYPE_EACH_MONTH    = "modules/my-reports/components/charts/payments-for-types-each-month.twig";
@@ -129,6 +130,44 @@ class ReportsController extends AbstractController
         ];
 
         $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_FOR_TYPES, $template_data);
+        return $rendered_template;
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/reports/historical-money-owed", name="reports-historical-money-owed", methods="GET")
+     * @return JsonResponse|Response
+     * @throws DBALException
+     * @throws ExceptionDuplicatedTranslationKey
+     */
+    public function historicalMoneyOWed(Request $request) {
+
+        if (!$request->isXmlHttpRequest()) {
+            $rendered_template = $this->renderTemplateHistoricalMoneyOwed(false);
+            return $rendered_template;
+        }
+
+        $rendered_template = $this->renderTemplateHistoricalMoneyOwed(true);
+        $template_content  = $rendered_template->getContent();
+
+        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+    }
+
+    /**
+     * @param bool $ajax_render
+     * @return Response
+     */
+    private function renderTemplateHistoricalMoneyOwed(bool $ajax_render): Response {
+        $historical_money_owed_by_me     = $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy(true);
+        $historical_money_owed_by_others = $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy(false);
+
+        $template_data = [
+            'ajax_render'                     => $ajax_render,
+            'historical_money_owed_by_me'     => $historical_money_owed_by_me,
+            'historical_money_owed_by_others' => $historical_money_owed_by_others,
+        ];
+
+        $rendered_template = $this->render(self::TWIG_TEMPLATE_HISTORICAL_MONEY_OWED, $template_data);
         return $rendered_template;
     }
 

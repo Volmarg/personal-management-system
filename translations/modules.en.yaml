@@ -230,10 +230,18 @@ reports:
     information: >
       <i>Charts based on data from incomes/payments modules</i>
     group: Saved
+  historicalMoneyOwed:
+    information: >
+      <i>Historical records of owed money by others and by me</i>
   headers:
     monthlyPaymentsSummaries: Monthly payments summaries
     paymentsCharts: Payments charts
     saviingsCharts: Savings charts
+    historicalMoneyOwed:
+      main: Historical money owed
+      owedByMe: Owed by me
+      owedByOthers: Owed by others
+
 
 charts:
   headers:

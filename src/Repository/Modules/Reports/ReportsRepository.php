@@ -2,6 +2,7 @@
 
 namespace App\Repository\Modules\Reports;
 
+use App\Entity\Modules\Payments\MyPaymentsOwed;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -223,6 +224,29 @@ class ReportsRepository{
 
         $stmt    = $connection->executeQuery($sql);
         $results = $stmt->fetchAll();
+
+        return $results;
+    }
+
+    /**
+     * @param bool $is_owed_by_me
+     * @return array
+     */
+    public function fetchHistoricalMoneyOwedBy(bool $is_owed_by_me = false): array
+    {
+        $query_builder = $this->em->createQueryBuilder();
+        $query_builder->select('mpo')
+            ->from(MyPaymentsOwed::class, 'mpo')
+            ->where('mpo.deleted = 1');
+
+            if( $is_owed_by_me ){
+                $query_builder->andWhere('mpo.owedByMe = 1');
+            }else{
+                $query_builder->andWhere('mpo.owedByMe = 0');
+            }
+
+        $query   = $query_builder->getQuery();
+        $results = $query->execute();
 
         return $results;
     }

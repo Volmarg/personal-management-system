@@ -1,0 +1,46 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100' id="MyReportsMonthlyPaymentsSummariesModuleBody">
+        <div id='mainContent'>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('reports.headers.historicalMoneyOwed.main') }}</h4>
+                            <p class="text-center">
+                                {{ translate('reports.historicalMoneyOwed.information') | raw }}
+                            </p>
+
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
+                                <h4 class="c-grey-900 mB-20 text-center">{{ translate('reports.headers.historicalMoneyOwed.owedByMe') | raw }}</h4>
+                                {% include 'modules/my-reports/components/historical-money-owed-table.html.twig' with {
+                                    data: historical_money_owed_by_me,
+                                    tableId: "historicalMoneyOwedByMe"
+                                }%}
+                            </div>
+
+                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
+                                <h4 class="c-grey-900 mB-20 text-center">{{ translate('reports.headers.historicalMoneyOwed.owedByOthers') | raw }}</h4>
+                                {% include 'modules/my-reports/components/historical-money-owed-table.html.twig' with {
+                                    data: historical_money_owed_by_others,
+                                    tableId: "historicalMoneyOwedByOthers"
+                                }%}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+{% endblock body %}
