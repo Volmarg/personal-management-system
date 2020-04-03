@@ -47,12 +47,12 @@ class GlobalVariables extends AbstractExtension {
     /**
      * @param bool $filter
      * @return array
-     * @throws DBALException
      * @throws ExceptionDuplicatedTranslationKey
+     * @throws DBALException
      * todo: in future this could me moved to controller once i decide to split everything between actions
      */
     public function getMyNotesCategories($filter = false) {
-        $results     = $this->app->repositories->myNotesRepository->getCategories();
+        $results     = $this->app->repositories->myNotesCategoriesRepository->getCategories();
         $new_results = [];
 
         if( !$filter ){

@@ -6,6 +6,7 @@ use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -22,7 +23,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
     /**
      * @return array|false|mixed
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function findActiveCategories($only_category = false) {
         $connection = $this->_em->getConnection();
@@ -143,4 +144,78 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
         return $ids;
     }
+
+    /**
+     * @param bool $only_categories_with_notes
+     * @return array
+     * @throws DBALException
+     */
+    public function getCategories(bool $only_categories_with_notes = false): array
+    {
+        $connection = $this->_em->getConnection();
+
+        $categoriesWithNotes = '';
+
+        //add counting of notes so if category has 0 notes then disable it
+
+        if( $only_categories_with_notes ){
+            $categoriesWithNotes = "
+                -- get only categories with notes
+                ON mn.category_id = mnc.id
+                -- now additionally check if there are some categories with children that have active notes (need for menu)
+                OR 
+                (
+                    SELECT GROUP_CONCAT(note.id) AS noteId
+                    FROM my_note AS note
+                    WHERE note.category_id IN 
+                        (
+                            SELECT DISTINCT mnc_.id
+                            FROM my_note_category mnc_
+                            WHERE mnc_.parent_id = mnc.id
+                            AND mnc_.parent_id IS NOT NULL
+                        )
+                ) IS NOT NULL
+            ";
+        }
+
+        $sql = "
+          SELECT 
+            mnc.name AS category,
+            mnc.icon AS icon,
+            mnc.color AS color,
+            mnc.id AS category_id,
+            mnc.parent_id AS parent_id,
+             ( -- get children categories
+               SELECT GROUP_CONCAT(DISTINCT mnc_.id)
+               FROM my_note_category mnc_
+               WHERE mnc_.parent_id = mnc.id
+               AND mnc_.parent_id IS NOT NULL
+              ) AS childrens_id
+          FROM my_note mn
+          JOIN my_note_category mnc
+            $categoriesWithNotes
+
+          WHERE mn.deleted  = 0
+            AND mnc.deleted = 0
+
+          GROUP BY mnc.name
+          ORDER BY -childrens_id DESC
+        ";
+
+        $statement = $connection->prepare($sql);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        return (!empty($results) ? $results : []);
+    }
+
+    /**
+     * @return MyNotesCategories[]
+     */
+    public function findAllNotDeleted(): array
+    {
+        $entities = $this->findBy([MyNotesCategories::KEY_DELETED => 0]);
+        return $entities;
+    }
+
 }

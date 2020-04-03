@@ -270,3 +270,10 @@ forms:
       password: "Password"
     placeholders:
       password: "Enter lock password"
+
+Types:
+  indentChoice:
+    errors:
+      choiceIsNotInstanceOfIndentChoiceTypeDTO: "Choice is not instance of IndentChoiceTypeDTO"
+      choicesIsNotArray: "Choices is not array"
+      choicesAreMissing: "Choices are missing"

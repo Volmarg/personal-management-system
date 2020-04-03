@@ -1,0 +1,21 @@
+{% block indentchoice_widget %}
+    {% set indent = '&nbsp;' %}
+
+    <select {{ block('widget_attributes') }} autocomplete="off" class="form-control" >
+
+        {% for choice in choices %}
+            <option value="{{ choice.getValue() }}">
+
+                {% if choice.getDepthLevel() > 0 %}
+                    {% for x in range(1, choice.getDepthLevel() )  %}
+                        {{ indent|raw }}
+                    {% endfor %}
+                {% endif %}
+
+                {{ choice.getKey() }}
+            </option>
+        {% endfor %}
+
+    </select>
+
+{% endblock %}

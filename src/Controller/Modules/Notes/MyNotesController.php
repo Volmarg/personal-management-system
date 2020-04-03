@@ -248,8 +248,10 @@ class MyNotesController extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($form->getData());
+            $em        = $this->getDoctrine()->getManager();
+            $form_data = $form->getData();
+
+            $em->persist($form_data);
             $em->flush();
         }
     }

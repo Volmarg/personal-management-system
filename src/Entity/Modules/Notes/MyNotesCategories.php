@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="my_note_category")
  */
 class MyNotesCategories {
+
+    const KEY_DELETED = "deleted";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
