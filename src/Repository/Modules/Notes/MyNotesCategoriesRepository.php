@@ -199,7 +199,6 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
             AND mnc.deleted = 0
 
           GROUP BY mnc.name
-          ORDER BY -childrens_id DESC
         ";
 
         $statement = $connection->prepare($sql);

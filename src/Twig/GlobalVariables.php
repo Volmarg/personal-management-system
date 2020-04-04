@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Utils\Application;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
@@ -30,17 +31,21 @@ class GlobalVariables extends AbstractExtension {
      */
     private $my_notes_controller;
 
-    public function __construct(Application $app, MyNotesController $my_notes_controller) {
-        $this->app = $app;
-        $this->my_notes_controller = $my_notes_controller;
+    private $my_notes_categories_controller;
+
+    public function __construct(Application $app, MyNotesController $my_notes_controller, MyNotesCategoriesController $my_notes_categories_controller) {
+        $this->app                            = $app;
+        $this->my_notes_controller            = $my_notes_controller;
+        $this->my_notes_categories_controller = $my_notes_categories_controller;
     }
 
     public function getFunctions() {
         return [
-            new TwigFunction('getMyNotesCategories', [$this, 'getMyNotesCategories']),
-            new TwigFunction('getSchedulesTypes', [$this, 'getSchedulesTypes']),
+            new TwigFunction('getMyNotesCategories',         [$this, 'getMyNotesCategories']),
+            new TwigFunction('getSchedulesTypes',            [$this, 'getSchedulesTypes']),
             new TwigFunction('getSchedulesForNotifications', [$this, 'getSchedulesForNotifications']),
-            new TwigFunction('getFinancesCurrenciesDtos', [$this, 'getFinancesCurrenciesDtos']),
+            new TwigFunction('getFinancesCurrenciesDtos',    [$this, 'getFinancesCurrenciesDtos']),
+            new TwigFunction('buildCategoriesDepths',        [$this, 'buildCategoriesDepths']),
         ];
     }
 
@@ -75,6 +80,14 @@ class GlobalVariables extends AbstractExtension {
         }
 
         return $new_results;
+    }
+
+    /**
+     * @return array
+     */
+    public function buildCategoriesDepths(): array {
+        $depths = $this->my_notes_categories_controller->buildCategoriesDepths();
+        return $depths;
     }
 
     /**
