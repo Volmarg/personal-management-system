@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class MyNotesCategories {
 
     const KEY_DELETED = "deleted";
+    const KEY_NAME    = "name";
 
     /**
      * @ORM\Id()

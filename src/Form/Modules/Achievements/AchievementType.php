@@ -4,7 +4,7 @@ namespace App\Form\Modules\Achievements;
 
 use App\Controller\Utils\Application;
 use App\Entity\Modules\Achievements\Achievement;
-use App\Services\Translator;
+use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -12,6 +12,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AchievementType extends AbstractType {
+
+    const KEY_OPTION_ENUM_TYPES = "enum_types";
+
+    const KEY_NAME        = "Name";
+    const KEY_DESCRIPTION = "Description";
+    const KEY_TYPE        = "Type";
+    const KEY_SUBMIT      = "submit";
 
     /**
      * @var Application
@@ -22,20 +29,25 @@ class AchievementType extends AbstractType {
         $this->app = $app;
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @throws ExceptionDuplicatedTranslationKey
+     */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
-            ->add('Name', null, [
+            ->add(self::KEY_NAME, null, [
                 'label' => $this->app->translator->translate('forms.AchievementType.labels.name')
             ])
-            ->add('Description', null, [
+            ->add(self::KEY_DESCRIPTION, null, [
                 'label' => $this->app->translator->translate('forms.AchievementType.labels.description')
             ])
-            ->add('Type', ChoiceType::class, [
-                'choices' => $options['enum_types'],
+            ->add(self::KEY_TYPE, ChoiceType::class, [
+                'choices' => $options[self::KEY_OPTION_ENUM_TYPES],
                 'label'   => $this->app->translator->translate('forms.AchievementType.labels.type')
             ])
-            ->add('submit', SubmitType::class, [
+            ->add(self::KEY_SUBMIT, SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')
             ]);
     }
@@ -44,6 +56,6 @@ class AchievementType extends AbstractType {
         $resolver->setDefaults([
             'data_class' => Achievement::class,
         ]);
-        $resolver->setRequired('enum_types');
+        $resolver->setRequired(self::KEY_OPTION_ENUM_TYPES);
     }
 }

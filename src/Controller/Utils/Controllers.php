@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Controller\Utils;
+
+
+use App\Controller\Files\FilesTagsController;
+use App\Controller\Modules\Achievements\AchievementController;
+use App\Controller\Modules\Contacts\MyContactsController;
+use App\Controller\Modules\Contacts\MyContactsSettingsController;
+use App\Controller\Modules\Files\MyFilesController;
+use App\Controller\Modules\Images\MyImagesController;
+use App\Controller\Modules\Notes\MyNotesCategoriesController;
+use App\Controller\Modules\Notes\MyNotesController;
+use App\Controller\Modules\Reports\ReportsController;
+use App\Controller\System\LockedResourceController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+
+/**
+ * This class is not allowed in Application() as it will crash due to circular reference as App is used in controllers also
+ * Class Controllers
+ * @package App\Controller\Utils
+ */
+class Controllers extends AbstractController {
+
+    /**
+     * @var AchievementController|null $achievement_controller
+     */
+    private $achievement_controller = null;
+
+    /**
+     * @var ReportsController $reports_controllers
+     */
+    private $reports_controllers;
+
+    /**
+     * @var MyNotesController $my_notes_controller
+     */
+    private $my_notes_controller;
+
+    /**
+     * @var MyNotesCategoriesController $my_notes_categories_controller
+     */
+    private $my_notes_categories_controller;
+
+    /**
+     * @var LockedResourceController $locked_resource_controller
+     */
+    private $locked_resource_controller;
+
+    /**
+     * @var MyContactsController $my_contact_controller
+     */
+    private $my_contact_controller;
+
+    /**
+     * @var MyContactsSettingsController $my_contact_settings_controller
+     */
+    private $my_contact_settings_controller;
+
+    /**
+     * @var MyImagesController $my_images_controller
+     */
+    private $my_images_controller;
+
+    /**
+     * @var MyFilesController $my_files_controller
+     */
+    private $my_files_controller;
+
+    /**
+     * @var FilesTagsController $files_tags_controller
+     */
+    private $files_tags_controller;
+
+    /**
+     * @return MyImagesController
+     */
+    public function getMyImagesController(): MyImagesController {
+        return $this->my_images_controller;
+    }
+
+    /**
+     * @return MyContactsController
+     */
+    public function getMyContactController(): MyContactsController {
+        return $this->my_contact_controller;
+    }
+
+    /**
+     * @return MyContactsSettingsController
+     */
+    public function getMyContactSettingsController(): MyContactsSettingsController {
+        return $this->my_contact_settings_controller;
+    }
+
+    /**
+     * @return AchievementController|null
+     */
+    public function getAchievementController(): ?AchievementController {
+        return $this->achievement_controller;
+    }
+
+    /**
+     * @return MyNotesController
+     */
+    public function getMyNotesController(): MyNotesController {
+        return $this->my_notes_controller;
+    }
+
+    /**
+     * @return MyNotesCategoriesController
+     */
+    public function getMyNotesCategoriesController(): MyNotesCategoriesController {
+        return $this->my_notes_categories_controller;
+    }
+
+    /**
+     * @return ReportsController
+     */
+    public function getReportsControllers(): ReportsController {
+        return $this->reports_controllers;
+    }
+
+    /**
+     * @return LockedResourceController
+     */
+    public function getLockedResourceController(): LockedResourceController {
+        return $this->locked_resource_controller;
+    }
+
+    /**
+     * @return MyFilesController
+     */
+    public function getMyFilesController(): MyFilesController {
+        return $this->my_files_controller;
+    }
+
+    /**
+     * @return FilesTagsController
+     */
+    public function getFilesTagsController(): FilesTagsController {
+        return $this->files_tags_controller;
+    }
+
+    public function __construct(
+        AchievementController        $achievement_controller,
+        ReportsController            $reports_controller,
+        MyNotesController            $my_notes_controller,
+        MyNotesCategoriesController  $my_notes_categories_controller,
+        LockedResourceController     $locked_resource_controller,
+        MyContactsSettingsController $my_contact_settings_controller,
+        MyContactsController         $my_contact_controller,
+        MyImagesController           $my_images_controller,
+        MyFilesController            $my_files_controller,
+        FilesTagsController          $files_tags_controller
+    ) {
+        $this->achievement_controller         = $achievement_controller;
+        $this->reports_controllers            = $reports_controller;
+        $this->my_notes_controller            = $my_notes_controller;
+        $this->my_notes_categories_controller = $my_notes_categories_controller;
+        $this->locked_resource_controller     = $locked_resource_controller;
+        $this->my_contact_settings_controller = $my_contact_settings_controller;
+        $this->my_contact_controller          = $my_contact_controller;
+        $this->my_images_controller           = $my_images_controller;
+        $this->my_files_controller            = $my_files_controller;
+        $this->files_tags_controller          = $files_tags_controller;
+    }
+
+}
