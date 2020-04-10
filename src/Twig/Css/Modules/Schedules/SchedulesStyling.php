@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Twig\Css;
+namespace App\Twig\Css\Modules\Schedules;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

@@ -17,7 +17,7 @@
                 {% if isAllowedToSeeResource(lock_record, lock_type, lock_target) %}
                     {% if category in elements and category.parent_id is null %} {# recheck must be here as twig caches original array #}
 
-                        {% if isCategoryActive(category.category_id, moduleToCheckActiveCategory ) == false %}
+                        {% if isNotesCategoryActive(category.category_id, moduleToCheckActiveCategory ) == false %}
                             {% set disabled = ' disabled' %}
                         {% else %}
                             {% set disabled = '' %}
@@ -52,7 +52,7 @@
                             </ul>
                             </li>
 
-                            {% set elements = unsetChildren(elements, category.childrens_id) %}
+                            {% set elements = unsetKeys(elements, category.childrens_id) %}
 
                         {% endif %}
 

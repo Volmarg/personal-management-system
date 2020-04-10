@@ -14,7 +14,7 @@ use App\Controller\Utils\Utils as UtilsController;
 use App\Entity\System\LockedResource;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;
-use App\Twig\Utils;
+use App\Twig\Css\Navigation;
 use DirectoryIterator;
 use Exception;
 use Symfony\Component\Finder\Finder;
@@ -39,9 +39,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * The request uri for that case is the ajax url uri, but the call for quick create comes from upload based module.
      * @var array
      */
-    private $allow_referer_for_urls = [
-
-    ];
+    private $allow_referer_for_urls = [];
 
     /**
      * @var Finder $finder
@@ -54,19 +52,19 @@ class FoldersBasedMenuElements extends AbstractExtension {
     private $url_generator;
 
     /**
-     * @var Utils $twig_utils
+     * @var Navigation $navigation
      */
-    private $twig_utils;
+    private $navigation;
 
     /**
      * @var LockedResourceController $lock_resource_controller
      */
     private $locked_resource_controller;
 
-    public function __construct(UrlGeneratorInterface $url_generator, Utils $twig_utils, LockedResourceController $locked_resource_controller) {
+    public function __construct(UrlGeneratorInterface $url_generator, Navigation $navigation, LockedResourceController $locked_resource_controller) {
         $this->finder           = new Finder();
         $this->url_generator    = $url_generator;
-        $this->twig_utils       = $twig_utils;
+        $this->navigation       = $navigation;
 
         $this->locked_resource_controller = $locked_resource_controller;
 
@@ -169,7 +167,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
         $dropdown_arrow = '';
         $class          = '';
         $is_url         = false;
-        $isOpen         = $this->twig_utils->keepMenuOpen($uri, '',  $href);
+        $isOpen         = $this->navigation->keepMenuOpen($uri, '',  $href);
 
         if( !empty($folder_tree) ){
             $dropdown_arrow = static::DROPDOWN_ARROW_HTML;

@@ -13,7 +13,7 @@
         {% set href = '#' %}
     {% endif %}
 
-    {% if isCategoryActive(elements[child_id].category_id, type) == false %}
+    {% if isNotesCategoryActive(elements[child_id].category_id, type) == false %}
         {% set disabled = ' disabled' %}
     {% else %}
         {% set disabled = '' %}

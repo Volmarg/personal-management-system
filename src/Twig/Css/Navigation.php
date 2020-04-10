@@ -1,35 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: volmarg
- * Date: 16.05.19
- * Time: 20:34
- */
 
-namespace App\Twig;
 
-use App\Controller\Core\Env;
-use App\Services\Translator;
+namespace App\Twig\Css;
+
+
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class Utils extends AbstractExtension {
-
+class Navigation extends AbstractExtension{
 
     public function getFunctions() {
         return [
-            new TwigFunction('unset', [$this, '_unset']),
             new TwigFunction('keepMenuOpen', [$this, 'keepMenuOpen']),
-            new TwigFunction('isDemo', [$this, 'isDemo']),
-            new TwigFunction('isMaintenance', [$this, 'isMaintenance']),
-            new TwigFunction('jsonDecode', [$this, 'jsonDecode']),
-            new TwigFunction('translate', [$this, 'translate']),
         ];
-    }
-
-    public function _unset($array, $key) {
-        unset($array[$key]);
-        return $array;
     }
 
     /**
@@ -65,25 +48,5 @@ class Utils extends AbstractExtension {
         }
 
         return;
-    }
-
-    public function isDemo() {
-        $is_demo = Env::isDemo();
-        return $is_demo;
-    }
-
-    public function isMaintenance() {
-        $is_maintenance = Env::isMaintenance();
-        return $is_maintenance;
-    }
-
-    public function jsonDecode(string $json): array {
-        $arr = json_decode($json, true);
-        return $arr;
-    }
-
-    public function translate(string $key){
-        $translation = (new Translator())->translate($key);
-        return $translation;
     }
 }

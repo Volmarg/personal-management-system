@@ -6,7 +6,7 @@
  * Time: 20:30
  */
 
-namespace App\Twig;
+namespace App\Twig\Core;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

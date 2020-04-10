@@ -1,6 +1,6 @@
-{% set global_variables_twig_class  = '\\App\\Twig\\GlobalVariables::' %}
-{% set KEY_SCHEDULES_COUNT          = constant(global_variables_twig_class ~ 'KEY_SCHEDULES_COUNT') %}
-{% set KEY_SCHEDULES                = constant(global_variables_twig_class ~ 'KEY_SCHEDULES') %}
+{% set notifications_twig_class     = '\\App\\Twig\\Core\\::Notifications' %}
+{% set KEY_SCHEDULES_COUNT          = constant(notifications_twig_class ~ 'KEY_SCHEDULES_COUNT') %}
+{% set KEY_SCHEDULES                = constant(notifications_twig_class ~ 'KEY_SCHEDULES') %}
 
 {% set my_schedule_repository_class = '\\App\\Repository\\Modules\\Schedules\\MyScheduleRepository::' %}
 {% set KEY_NAME          = constant(my_schedule_repository_class ~ 'KEY_NAME') %}

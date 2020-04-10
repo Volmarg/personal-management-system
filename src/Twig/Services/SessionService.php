@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Twig;
+namespace App\Twig\Services;
 
 use App\Controller\Core\Application;
 use App\Services\Session\UserRolesSessionService;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Twig;
+namespace App\Twig\System;
 
 
 use App\Controller\System\LockedResourceController;
@@ -38,7 +38,6 @@ class LockedResource extends AbstractExtension {
     public function __construct(
         Application                     $app,
         AuthorizationCheckerInterface   $authorizationChecker,
-        Security                        $security,
         UserRolesSessionService         $userRolesSessionService,
         LockedResourceController        $lockedResourceController
     ) {

@@ -13,8 +13,8 @@
 
     <select class="form-control d-none note-modal-categories-list note-category"
             style="max-width:100px; float:left;">
-        {% set categories        = getMyNotesCategories() %}
-        {% set categories_depths = buildCategoriesDepths() %}
+        {% set categories        = getAccessibleNotesCategories() %}
+        {% set categories_depths = buildNotesCategoriesDepths() %}
 
         {% for category_on_list in categories %}
         {% set depth =  categories_depths[category_on_list.category_id] %}
