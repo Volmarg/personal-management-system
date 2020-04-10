@@ -9,9 +9,16 @@ use App\Controller\Modules\Contacts\MyContactsController;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
+use App\Controller\Modules\Job\MyJobAfterhoursController;
+use App\Controller\Modules\Job\MyJobSettingsController;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
+use App\Controller\Modules\Passwords\MyPasswordsController;
+use App\Controller\Modules\Payments\MyPaymentsBillsController;
+use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Modules\Reports\ReportsController;
+use App\Controller\Modules\Schedules\MySchedulesController;
+use App\Controller\Modules\Travels\MyTravelsIdeasController;
 use App\Controller\System\LockedResourceController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -71,6 +78,41 @@ class Controllers extends AbstractController {
      * @var FilesTagsController $files_tags_controller
      */
     private $files_tags_controller;
+
+    /**
+     * @var MyJobAfterhoursController $my_job_afterhours_controller
+     */
+    private $my_job_afterhours_controller;
+
+    /**
+     * @var MyJobSettingsController $my_job_settings_controller
+     */
+    private $my_job_settings_controller;
+
+    /**
+     * @var MyPasswordsController $my_passwords_controller
+     */
+    private $my_passwords_controller;
+
+    /**
+     * @var MySchedulesController $my_schedules_controller
+     */
+    private $my_schedules_controller;
+
+    /**
+     * @var MyTravelsIdeasController $my_travels_ideas_controller
+     */
+    private $my_travels_ideas_controller;
+
+    /**
+     * @var MyPaymentsBillsController $my_payments_bills_controller
+     */
+    private $my_payments_bills_controller;
+
+    /**
+     * @var MyPaymentsSettingsController $my_payments_settings_controller;
+     */
+    private $my_payments_settings_controller;
 
     /**
      * @return MyImagesController
@@ -142,6 +184,55 @@ class Controllers extends AbstractController {
         return $this->files_tags_controller;
     }
 
+    /**
+     * @return MyJobAfterhoursController
+     */
+    public function getMyJobAfterhoursController(): MyJobAfterhoursController {
+        return $this->my_job_afterhours_controller;
+    }
+
+    /**
+     * @return MyJobSettingsController
+     */
+    public function getMyJobSettingsController(): MyJobSettingsController {
+        return $this->my_job_settings_controller;
+    }
+
+    /**
+     * @return MyPasswordsController
+     */
+    public function getMyPasswordsController(): MyPasswordsController {
+        return $this->my_passwords_controller;
+    }
+
+    /**
+     * @return MySchedulesController
+     */
+    public function getMySchedulesController(): MySchedulesController {
+        return $this->my_schedules_controller;
+    }
+
+    /**
+     * @return MyTravelsIdeasController
+     */
+    public function getMyTravelsIdeasController(): MyTravelsIdeasController {
+        return $this->my_travels_ideas_controller;
+    }
+
+    /**
+     * @return MyPaymentsBillsController
+     */
+    public function getMyPaymentsBillsController(): MyPaymentsBillsController {
+        return $this->my_payments_bills_controller;
+    }
+
+    /**
+     * @return MyPaymentsSettingsController
+     */
+    public function getMyPaymentsSettingsController(): MyPaymentsSettingsController {
+        return $this->my_payments_settings_controller;
+    }
+
     public function __construct(
         AchievementController        $achievement_controller,
         ReportsController            $reports_controller,
@@ -152,18 +243,32 @@ class Controllers extends AbstractController {
         MyContactsController         $my_contact_controller,
         MyImagesController           $my_images_controller,
         MyFilesController            $my_files_controller,
-        FilesTagsController          $files_tags_controller
+        FilesTagsController          $files_tags_controller,
+        MyJobAfterhoursController    $my_job_afterhours_controller,
+        MyJobSettingsController      $my_job_settings_controller,
+        MyPasswordsController        $my_passwords_controller,
+        MySchedulesController        $my_schedules_controller,
+        MyTravelsIdeasController     $my_travels_ideas_controller,
+        MyPaymentsBillsController    $my_payments_bills_controller,
+        MyPaymentsSettingsController $my_payments_settings_controller
     ) {
-        $this->achievement_controller         = $achievement_controller;
-        $this->reports_controllers            = $reports_controller;
-        $this->my_notes_controller            = $my_notes_controller;
-        $this->my_notes_categories_controller = $my_notes_categories_controller;
-        $this->locked_resource_controller     = $locked_resource_controller;
-        $this->my_contact_settings_controller = $my_contact_settings_controller;
-        $this->my_contact_controller          = $my_contact_controller;
-        $this->my_images_controller           = $my_images_controller;
-        $this->my_files_controller            = $my_files_controller;
-        $this->files_tags_controller          = $files_tags_controller;
+        $this->achievement_controller          = $achievement_controller;
+        $this->reports_controllers             = $reports_controller;
+        $this->my_notes_controller             = $my_notes_controller;
+        $this->my_notes_categories_controller  = $my_notes_categories_controller;
+        $this->locked_resource_controller      = $locked_resource_controller;
+        $this->my_contact_settings_controller  = $my_contact_settings_controller;
+        $this->my_contact_controller           = $my_contact_controller;
+        $this->my_images_controller            = $my_images_controller;
+        $this->my_files_controller             = $my_files_controller;
+        $this->files_tags_controller           = $files_tags_controller;
+        $this->my_job_afterhours_controller    = $my_job_afterhours_controller;
+        $this->my_job_settings_controller      = $my_job_settings_controller;
+        $this->my_passwords_controller         = $my_passwords_controller;
+        $this->my_schedules_controller         = $my_schedules_controller;
+        $this->my_travels_ideas_controller     = $my_travels_ideas_controller;
+        $this->my_payments_bills_controller    = $my_payments_bills_controller;
+        $this->my_payments_settings_controller = $my_payments_settings_controller;
     }
 
 }

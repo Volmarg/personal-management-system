@@ -31,6 +31,9 @@ use App\Form\Modules\Payments\MyPaymentsBills;
 use App\Form\Modules\Payments\MyPaymentsBillsItems;
 use App\Form\Modules\Payments\MyPaymentsIncomeType;
 use App\Form\Modules\Payments\MyPaymentsOwedType;
+use App\Form\Modules\Payments\MyPaymentsProductsType;
+use App\Form\Modules\Payments\MyPaymentsSettingsCurrencyMultiplierType;
+use App\Form\Modules\Payments\MyPaymentsTypesType;
 use App\Form\Modules\Payments\MyRecurringPaymentsMonthlyType;
 use App\Form\Modules\Schedules\MyScheduleType;
 use App\Form\Modules\Schedules\MyScheduleTypeType;
@@ -195,6 +198,18 @@ class Forms extends AbstractController {
 
     public function systemLockResourcesPasswordForm(array $params = []): FormInterface {
         return $this->createForm(SystemLockResourcesPasswordType::class, null, $params);
+    }
+
+    public function paymentsProductsForm(array $params = []): FormInterface {
+        return $this->createForm(MyPaymentsProductsType::class, null, $params);
+    }
+
+    public function paymentsTypesForm(array $params = []): FormInterface {
+        return $this->createForm(MyPaymentsTypesType::class, null, $params);
+    }
+
+    public function currencyMultiplierForm(array $params = []): FormInterface {
+        return $this->createForm(MyPaymentsSettingsCurrencyMultiplierType::class, null, $params);
     }
 
     /**
