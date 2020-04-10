@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
 use App\Services\Translator;
 use Symfony\Component\Form\AbstractType;

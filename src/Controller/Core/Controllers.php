@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Utils;
+namespace App\Controller\Core;
 
 
 use App\Controller\Files\FilesTagsController;

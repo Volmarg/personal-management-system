@@ -2,8 +2,8 @@
 
 namespace App\Controller\User\Profile;
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\Entity\User;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;

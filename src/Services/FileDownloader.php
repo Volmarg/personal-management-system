@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Env;
+use App\Controller\Core\Application;
+use App\Controller\Core\Env;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;

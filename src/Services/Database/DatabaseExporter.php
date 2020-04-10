@@ -2,8 +2,8 @@
 
 namespace App\Services\Database;
 
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Env;
+use App\Controller\Core\Application;
+use App\Controller\Core\Env;
 use App\DTO\DatabaseCredentialsDTO;
 use Monolog\Logger;
 

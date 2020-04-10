@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Payments;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\Entity\Modules\Payments\MyPaymentsIncome;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;

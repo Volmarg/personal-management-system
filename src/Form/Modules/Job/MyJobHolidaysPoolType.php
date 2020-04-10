@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Job;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;

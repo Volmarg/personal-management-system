@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Notes;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Form\Type\FontawesomepickerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

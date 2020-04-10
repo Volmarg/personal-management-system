@@ -8,7 +8,7 @@
 
 namespace App\Twig;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

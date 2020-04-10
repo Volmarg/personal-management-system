@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\FilesTags;
 use Symfony\Component\HttpFoundation\Response;
 

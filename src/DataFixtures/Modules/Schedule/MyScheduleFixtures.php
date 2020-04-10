@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures\Modules\Schedule;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Schedules;
 use App\Entity\Modules\Schedules\MySchedule;

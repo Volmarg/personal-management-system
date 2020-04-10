@@ -2,7 +2,7 @@
 
 namespace App\Services\Files;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;

@@ -5,11 +5,11 @@ namespace App\Action\Modules\Contacts;
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\Images\MyImagesController;
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Controllers;
-use App\Controller\Utils\Dialogs;
-use App\Controller\Utils\Env;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
+use App\Action\Core\DialogsAction;
+use App\Controller\Core\Env;
 use App\Entity\System\LockedResource;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;
@@ -155,8 +155,8 @@ class MyImagesAction extends AbstractController {
      */
     public function update(Request $request){
 
-        if (!$request->request->has(Dialogs::KEY_FILE_CURRENT_PATH)) {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . Dialogs::KEY_FILE_CURRENT_PATH;
+        if (!$request->request->has(DialogsAction::KEY_FILE_CURRENT_PATH)) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . DialogsAction::KEY_FILE_CURRENT_PATH;
             throw new Exception($message);
         }
 
@@ -165,7 +165,7 @@ class MyImagesAction extends AbstractController {
             throw new Exception($message);
         }
 
-        $file_current_path = $request->request->get(Dialogs::KEY_FILE_CURRENT_PATH);
+        $file_current_path = $request->request->get(DialogsAction::KEY_FILE_CURRENT_PATH);
         $tags_string       = $request->request->get(FileTagger::KEY_TAGS);
 
 

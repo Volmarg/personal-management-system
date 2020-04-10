@@ -2,9 +2,9 @@
 
 namespace App\Action\Reports;
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Controllers;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Utils\Utils;
 use App\Repository\AbstractRepository;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;

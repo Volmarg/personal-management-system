@@ -1,5 +1,5 @@
 <?php
-namespace App\Controller\Utils;
+namespace App\Controller\Core;
 
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;

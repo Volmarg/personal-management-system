@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Payments;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsBills as MyPaymentsBillsEntity;
 use App\Entity\Modules\Payments\MyPaymentsBillsItems as MyPaymentsBillsItemsEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

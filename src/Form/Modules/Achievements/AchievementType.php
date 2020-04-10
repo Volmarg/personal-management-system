@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Achievements;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;

@@ -4,7 +4,7 @@
 namespace App\Controller\Files;
 
 use App\Controller\Modules\Files\MyFilesController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 

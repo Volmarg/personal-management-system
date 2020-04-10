@@ -8,7 +8,7 @@
 
 namespace App\Twig;
 
-use App\Controller\Utils\Env;
+use App\Controller\Core\Env;
 use App\Services\Translator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

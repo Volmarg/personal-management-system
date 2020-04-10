@@ -3,7 +3,7 @@
 namespace App\Form\Modules\Payments;
 
 use App\Action\Payments\MyPaymentsSettingsAction;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;

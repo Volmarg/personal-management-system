@@ -4,10 +4,10 @@
 namespace App\Action\Payments;
 
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Controllers;
-use App\Controller\Utils\Repositories;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
+use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;

@@ -2,8 +2,8 @@
 
 namespace App\Controller\Modules\Images;
 
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Env;
+use App\Controller\Core\Application;
+use App\Controller\Core\Env;
 use App\Entity\FilesTags;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

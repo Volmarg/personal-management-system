@@ -2,7 +2,7 @@
 
 namespace App\Controller\Modules\Dashboard;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class DashboardController extends Controller {

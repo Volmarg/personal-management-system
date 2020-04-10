@@ -2,8 +2,8 @@
 
 namespace App\Action\Modules\Dashboard;
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\DTO\Settings\SettingsDashboardDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

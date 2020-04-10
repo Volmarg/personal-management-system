@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Controller\Utils;
+namespace App\Action\Core;
 
+use App\Controller\Core\Application;
 use App\Controller\Files\FileUploadController;
-use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\DirectoriesHandler;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
-use stdClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class Dialogs
  * @package App\Controller\Utils
  */
-class Dialogs extends AbstractController
+class DialogsAction extends AbstractController
 {
     const TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD = 'page-elements/components/dialogs/bodies/edit-create-contact-card.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER           = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';

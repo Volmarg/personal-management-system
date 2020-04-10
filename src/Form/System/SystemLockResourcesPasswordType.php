@@ -3,7 +3,7 @@
 namespace App\Form\System;
 
 use App\Controller\AppController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;

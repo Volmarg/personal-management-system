@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Controller;
 
+namespace App\Action\System;
+
+
+use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
-use App\Controller\Utils\Application;
 use App\Entity\System\LockedResource;
 use App\Repository\FilesSearchRepository;
 use App\Services\FilesHandler;
 use App\Services\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 
-class SearchController extends AbstractController
-{
-
+class SearchAction extends AbstractController {
     /**
      * @var Application $app
      */
@@ -58,7 +56,7 @@ class SearchController extends AbstractController
 
             if(
                 (
-                        $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_FILES)
+                    $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_FILES)
                     ||  $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_IMAGES)
                 )
                 &&  $this->locked_resource_controller->isSystemLocked()
@@ -73,10 +71,10 @@ class SearchController extends AbstractController
             $category_id = $note_search_result['categoryId'];
 
             if(
-            (
+                (
                     $this->locked_resource_controller->isResourceLocked($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES)
-                ||  $this->locked_resource_controller->isResourceLocked($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY)
-            )
+                    ||  $this->locked_resource_controller->isResourceLocked($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY)
+                )
                 &&  $this->locked_resource_controller->isSystemLocked()
             ){
                 unset($notes_search_results[$index]);

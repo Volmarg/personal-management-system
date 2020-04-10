@@ -3,8 +3,8 @@
 
 namespace App\Controller\Files;
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\DirectoriesHandler;
 use App\Services\FilesHandler;

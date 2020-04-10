@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Controller\Utils;
+namespace App\Controller\Core;
 
 use App\DTO\DatabaseCredentialsDTO;
-use mysql_xdevapi\Exception;
+use \Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 
 class Env extends AbstractController {
 
@@ -37,6 +36,7 @@ class Env extends AbstractController {
 
     /**
      * @return DatabaseCredentialsDTO
+     * @throws Exception
      */
     public static function getDatabaseCredentials(){
         $regex        = '/^mysql:\/\/(.*):(.*)@(.*):(.*)\/(.*)/';

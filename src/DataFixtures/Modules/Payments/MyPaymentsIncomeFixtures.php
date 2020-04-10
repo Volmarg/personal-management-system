@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsIncome;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;

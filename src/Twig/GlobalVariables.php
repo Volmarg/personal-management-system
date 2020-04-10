@@ -4,7 +4,7 @@ namespace App\Twig;
 
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\Entity\Modules\Schedules\MyScheduleType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;

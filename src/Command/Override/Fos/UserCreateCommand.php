@@ -3,7 +3,7 @@
 namespace App\Command\Override\Fos;
 
 use App\Controller\System\SecurityController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\User;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;

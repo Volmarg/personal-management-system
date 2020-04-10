@@ -4,9 +4,9 @@
 namespace App\Action\Goals;
 
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Repositories;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
+use App\Controller\Core\Repositories;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -102,12 +102,12 @@ class GoalsSettingsAction extends AbstractController {
         if ($response->getStatusCode() == 200) {
             $rendered_template = $this->renderTemplate(true);
             $template_content  = $rendered_template->getContent();
-            $message           = $this->app->translations->ajaxSuccessRecordHasBeenRemoved();
+            $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
 
-        $message = $this->app->translations->ajaxFailureRecordCouldNotBeenRemoved();
+        $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
 
         return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }
@@ -129,12 +129,12 @@ class GoalsSettingsAction extends AbstractController {
         if ($response->getStatusCode() == 200) {
             $rendered_template = $this->renderTemplate(true);
             $template_content  = $rendered_template->getContent();
-            $message           = $this->app->translations->ajaxSuccessRecordHasBeenRemoved();
+            $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
 
-        $message = $this->app->translations->ajaxFailureRecordCouldNotBeenRemoved();
+        $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
 
         return AjaxResponse::buildResponseForAjaxCall(500, $message);
     }

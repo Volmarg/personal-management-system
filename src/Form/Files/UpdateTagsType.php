@@ -2,7 +2,7 @@
 
 namespace App\Form\Files;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Services\FileTagger;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

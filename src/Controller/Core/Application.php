@@ -6,9 +6,11 @@
  * Time: 20:59
  */
 
-namespace App\Controller\Utils;
+namespace App\Controller\Core;
 
 
+use App\Controller\Core\Settings;
+use App\Controller\Utils\Utils;
 use App\Services\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -47,7 +49,6 @@ class Application extends AbstractController {
     public $settings;
 
     /**
-     * @var Translations $translations
      */
     public $translations;
 
@@ -56,11 +57,9 @@ class Application extends AbstractController {
         Forms                   $forms,
         EntityManagerInterface  $em,
         LoggerInterface         $logger,
-        Settings                $settings,
-        Translations            $translations
+        Settings                $settings
     ) {
         $this->repositories     = $repositories;
-        $this->translations     = $translations;
         $this->settings         = $settings;
         $this->logger           = $logger;
         $this->forms            = $forms;

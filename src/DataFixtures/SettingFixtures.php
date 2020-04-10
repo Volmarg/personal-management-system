@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\DataFixtures\Providers\SettingProvider;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;

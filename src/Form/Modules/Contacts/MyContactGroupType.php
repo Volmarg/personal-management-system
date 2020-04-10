@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Contacts;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Form\Type\FontawesomepickerType;
 use App\Form\Type\JscolorpickerType;

@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Passwords;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Passwords\MyPasswords;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

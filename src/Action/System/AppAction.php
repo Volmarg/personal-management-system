@@ -1,23 +1,24 @@
 <?php
 
-namespace App\Controller;
 
+namespace App\Action\System;
+
+
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
 use App\Entity\User;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-class AppController extends Controller
-{
+class AppAction extends AbstractController {
     const TWIG_MENU_NODE_PATH = 'page-elements/components/sidebar/menu-nodes/';
     const TWIG_EXT            = DOT.'twig';
 
@@ -114,6 +115,7 @@ class AppController extends Controller
      * @Route("/actions/render-menu-node-template", name="render_menu_node_template")
      * @param Request $request
      * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
      */
     public function renderMenuNodeTemplate(Request $request) {
 

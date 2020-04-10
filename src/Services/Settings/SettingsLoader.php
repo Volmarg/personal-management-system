@@ -2,7 +2,7 @@
 
 namespace App\Services\Settings;
 
-use App\Controller\Utils\Repositories;
+use App\Controller\Core\Repositories;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\Entity\Setting;

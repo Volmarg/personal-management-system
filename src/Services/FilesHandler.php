@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
 use Exception;
 use Psr\Log\LoggerInterface;

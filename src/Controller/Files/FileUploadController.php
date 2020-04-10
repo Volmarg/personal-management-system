@@ -5,9 +5,9 @@ namespace App\Controller\Files;
 
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Env;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
+use App\Controller\Core\Env;
 use App\Controller\Utils\Utils;
 use App\Form\UploadFormType;
 use App\Services\DirectoriesHandler;

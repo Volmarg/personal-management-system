@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Payments;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

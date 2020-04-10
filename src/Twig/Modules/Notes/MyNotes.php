@@ -3,7 +3,7 @@
 namespace App\Twig\Modules\Notes;
 
 use App\Controller\Modules\Notes\MyNotesController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

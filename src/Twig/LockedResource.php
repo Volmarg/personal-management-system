@@ -5,7 +5,7 @@ namespace App\Twig;
 
 
 use App\Controller\System\LockedResourceController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;

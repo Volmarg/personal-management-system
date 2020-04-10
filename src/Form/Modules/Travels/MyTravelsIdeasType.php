@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Travels;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;

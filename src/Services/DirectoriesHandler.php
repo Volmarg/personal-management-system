@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Env;
+use App\Controller\Core\Application;
+use App\Controller\Core\Env;
 use App\Controller\Utils\Utils;
 use DirectoryIterator;
 use Psr\Log\LoggerInterface;

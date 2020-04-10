@@ -1,13 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: volmarg
- * Date: 29.05.19
- * Time: 21:05
- */
+namespace App\Controller\Core;
 
-namespace App\Controller\Utils;
-
+use App\Action\Core\FormsAction;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
@@ -40,33 +34,14 @@ use App\Form\Modules\Schedules\MyScheduleTypeType;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
 use App\Form\Modules\Travels\MyTravelsIdeasType;
 use App\Form\Page\Settings\Finances\CurrencyType;
-use App\Form\System\SystemLockCreatePasswordType;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
 use App\Form\User\UserPasswordType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use App\Services\Translator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 
 class Forms extends AbstractController {
-
-    const TWIG_RENDERED_FORM_TEMPLATE = 'page-elements/components/forms/rendered-form.twig';
-
-    const KEY_FORM_NAMESPACE = 'form_namespace';
-
-    /**
-     * @var Translator $translator
-     */
-    private $translator;
-
-    public function __construct(Translator $translator) {
-        $this->translator = $translator;
-    }
 
     public function moveSingleFileForm(array $params = []): FormInterface {
         return $this->createForm(MoveSingleFileType::class, null, $params);
@@ -213,45 +188,6 @@ class Forms extends AbstractController {
     }
 
     /**
-     * This function is used on frontend to fetch the form
-     * @param Request $request
-     * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
-     * @Route("/api/get-form-view-by-class-name", name="get_form_view_by_class_name", methods="POST")
-     */
-    public function getFormViewByClassName(Request $request):JsonResponse {
-
-        if( !$request->request->has(self::KEY_FORM_NAMESPACE) ){
-            $message = $this->translator->translate('responses.general.missingRequiredParameter') . self::KEY_FORM_NAMESPACE;
-
-            $data = [
-                'error' => $message,
-            ];
-            return new JsonResponse($data);
-        }
-
-        $form_namespace = $request->request->get(self::KEY_FORM_NAMESPACE);
-
-        try{
-            $form       = $this->createForm($form_namespace)->createView();
-            $form_view  = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form] )->getContent();
-
-            $data = [
-                'form_view' => $form_view,
-            ];
-
-        }catch(\Exception $e){
-            $message = $this->translator->translate('forms.general.error.couldNotLoadFormForGivenNamespace');
-
-            $data = [
-                'error' => $message,
-            ];
-        }
-
-        return new JsonResponse($data);
-    }
-
-    /**
      * @param string $form_namespace
      * @param array $options
      * @return string
@@ -265,7 +201,7 @@ class Forms extends AbstractController {
             $form->setData($form_data);
         }
 
-        $form_render = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form_view])->getContent();
+        $form_render = $this->render(FormsAction::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form_view])->getContent();
         //todo: better regex
         $form_content = preg_replace('#<(.*)form(.*)>#U','', $form_render,1);
         $form_content = str_replace('</form>','', $form_content);

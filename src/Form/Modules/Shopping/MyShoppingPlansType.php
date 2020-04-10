@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Shopping;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

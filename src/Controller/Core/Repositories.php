@@ -6,12 +6,11 @@
  * Time: 21:02
  */
 
-namespace App\Controller\Utils;
+namespace App\Controller\Core;
 
 
+use App\Controller\Core\AjaxResponse;
 use App\Entity\Modules\Contacts\MyContact;
-use App\Entity\Modules\Goals\MyGoals;
-use App\Entity\Modules\Notes\MyNotes;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
@@ -48,7 +47,6 @@ use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Translator;
-use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Exception;
@@ -56,7 +54,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class Repositories extends AbstractController {
 
@@ -93,10 +90,6 @@ class Repositories extends AbstractController {
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
     const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
     const LOCKED_RESOURCE_REPOSITORY                    = "LockedResourceRepository";
-
-    const KEY_PARAMETERS        = 'parameters';
-    const KEY_ENTITY_ID         = 'entity_id';
-    const KEY_REPOSITORY_NAME   = 'repository_name';
 
     const PASSWORD_FIELD        = 'password';
 
@@ -358,7 +351,6 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @Route("/api/repository/remove/entity/{repository_name}/{id}", name="api_repository_remove_entity")
      * @param string $repository_name
      * @param $id
      * This is general method for all common record soft delete called from front
@@ -367,7 +359,7 @@ class Repositories extends AbstractController {
      * @return Response
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ) {
+    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response {
         try {
 
             $id         = $this->trimAndCheckId($id);
@@ -490,41 +482,9 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @Route("/api/repository/update/entity", name="api_repository_update_entity")
-     * @param Request $request
-     * @return JsonResponse
-     * @throws Exception
+     * @param array $entity_data
+     * @return object|null
      */
-    public function updateByRequest(Request $request){
-
-        if( !$request->request->has(self::KEY_PARAMETERS) ){
-            $message = $this->translator->translate('missingRequiredParameter') . self::KEY_PARAMETERS;
-            return new JsonResponse($message, 500);
-        }
-
-        if( !$request->request->has(self::KEY_ENTITY_ID) ){
-            $message = $this->translator->translate('missingRequiredParameter') . self::KEY_ENTITY_ID;
-            return new JsonResponse($message, 500);
-        }
-
-        if( !$request->request->has(self::KEY_REPOSITORY_NAME) ){
-            $message = $this->translator->translate('missingRequiredParameter') . self::KEY_REPOSITORY_NAME;
-            return new JsonResponse($message, 500);
-        }
-
-        $parameters      = $request->request->get(self::KEY_PARAMETERS);
-        $id              = $request->request->get(self::KEY_ENTITY_ID);
-        $repository_name = $request->request->get(self::KEY_REPOSITORY_NAME);
-
-        $id         = $this->trimAndCheckId($id);
-        $repository = $this->{lcfirst($repository_name)};
-        $entity     = $repository->find($id);
-
-        $response = $this->update($parameters, $entity);
-
-        return $response;
-    }
-
     private function getEntity(array $entity_data) {
         $entity = null;
 
@@ -610,6 +570,9 @@ class Repositories extends AbstractController {
         return false;
     }
 
+    /**
+     * @param array $columns_names
+     */
     public static function removeHelperColumnsFromView(array &$columns_names) {
         $columns_to_remove = ['deleted', 'delete'];
 
@@ -621,6 +584,25 @@ class Repositories extends AbstractController {
             }
 
         }
+    }
+
+    /**
+     * This function trims id and rechecks if it's int
+     * The problem is that js keeps getting all the whitespaces and new lines in to many places....
+     *
+     * @param $id
+     * @return string
+     * @throws Exception
+     */
+    public function trimAndCheckId($id){
+        $id = (int) trim($id);
+
+        if (!is_numeric($id)) {
+            $message = $this->translator->translate('responses.repositories.inorrectId') . $id;
+            throw new Exception($message);
+        }
+
+        return $id;
     }
 
     /**
@@ -643,28 +625,10 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * This function trims id and rechecks if it's int
-     * The problem is that js keeps getting all the whitespaces and new lines in to many places....
-     *
-     * @param $id
-     * @return string
-     * @throws Exception
-     */
-    private function trimAndCheckId($id){
-        $id = (int) trim($id);
-
-        if (!is_numeric($id)) {
-            $message = $this->translator->translate('responses.repositories.inorrectId') . $id;
-            throw new Exception($message);
-        }
-
-        return $id;
-    }
-
-    /**
      * This function changes the record before soft delete
      * @param string $repository_name
      * @param $record
+     * @return MyContact
      */
     private function changeRecordData(string $repository_name, $record) {
 
@@ -680,9 +644,4 @@ class Repositories extends AbstractController {
         return $record;
     }
 
-    private function findEager($id, $record){
-
-
-
-    }
 }

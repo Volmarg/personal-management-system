@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Job;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;

@@ -2,7 +2,7 @@
 
 namespace App\Controller\Modules\Contacts;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
 use App\Entity\Modules\Contacts\MyContactType;
 use Exception;

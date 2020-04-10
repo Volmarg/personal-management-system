@@ -2,7 +2,7 @@
 
 namespace App\Twig;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Services\Session\UserRolesSessionService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

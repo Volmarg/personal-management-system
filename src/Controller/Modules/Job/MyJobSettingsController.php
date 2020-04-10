@@ -2,7 +2,7 @@
 
 namespace App\Controller\Modules\Job;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyJobSettingsController extends AbstractController

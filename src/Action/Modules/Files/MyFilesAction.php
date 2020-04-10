@@ -3,10 +3,10 @@ namespace App\Action\Modules\Files;
 
 use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\Files\MyFilesController;
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
-use App\Controller\Utils\Controllers;
-use App\Controller\Utils\Env;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
+use App\Controller\Core\Env;
 use App\Entity\System\LockedResource;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\FileDownloader;

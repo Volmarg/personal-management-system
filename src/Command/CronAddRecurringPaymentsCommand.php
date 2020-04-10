@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use Symfony\Component\Console\Command\Command;

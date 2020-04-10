@@ -4,8 +4,8 @@
 namespace App\Action\Modules\Job;
 
 
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

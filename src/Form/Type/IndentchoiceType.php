@@ -2,7 +2,7 @@
 
 namespace App\Form\Type;
 
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\DTO\FormTypes\IndentChoiceTypeDTO;
 use Exception;
 use Symfony\Component\Form\AbstractType;

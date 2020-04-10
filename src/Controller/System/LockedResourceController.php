@@ -3,8 +3,8 @@
 namespace App\Controller\System;
 
 use App\Controller\Modules\ModulesController;
-use App\Controller\Utils\AjaxResponse;
-use App\Controller\Utils\Application;
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\Entity\System\LockedResource;
 use App\Entity\User;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;

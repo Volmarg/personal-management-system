@@ -3,7 +3,7 @@
 namespace App\Form\Modules\Notes;
 
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\DTO\FormTypes\IndentChoiceTypeDTO;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Form\Type\IndentchoiceType;

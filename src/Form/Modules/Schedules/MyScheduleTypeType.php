@@ -3,7 +3,7 @@
 namespace App\Form\Modules\Schedules;
 
 use App\Controller\Modules\ModulesController;
-use App\Controller\Utils\Application;
+use App\Controller\Core\Application;
 use App\Form\Type\FontawesomepickerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;

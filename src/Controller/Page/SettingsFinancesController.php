@@ -2,7 +2,7 @@
 
 namespace App\Controller\Page;
 
-use App\Controller\Utils\AjaxResponse;
+use App\Controller\Core\AjaxResponse;
 use App\DTO\CallStatusDTO;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
