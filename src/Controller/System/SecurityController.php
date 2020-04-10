@@ -65,7 +65,6 @@ class SecurityController {
     }
 
     /**
-     * @Route("/api/system/validate-password", name="system_validate_password")
      * @param User $user
      * @param string $user_password
      * @param string $used_password

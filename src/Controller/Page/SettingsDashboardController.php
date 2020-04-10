@@ -9,11 +9,8 @@ use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
 use App\Services\Translator;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsDashboardController extends AbstractController {
 
@@ -29,8 +26,6 @@ class SettingsDashboardController extends AbstractController {
         self::DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS,
         self::DASHBOARD_WIDGET_NAME_CAR_SCHEDULES,
     ];
-
-    const KEY_ALL_ROWS_DATA = 'all_rows_data';
 
     /**
      * @var Translator $translator
@@ -114,57 +109,10 @@ class SettingsDashboardController extends AbstractController {
     }
 
     /**
-     * Handles updating settings of dashboard - widgets visibility
-     * In this case it's not single row update but entire setting string
-     * So the data passed in is not single row but all rows in table
-     * It's important to understand that import is done for whole setting name record
-     * @Route("/api/settings-dashboard/update-widgets-visibility", name="settings_dashboard_update_widgets_visibility", methods="POST")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
-    public function updateWidgetsVisibility(Request $request){
-
-        if (!$request->request->has(self::KEY_ALL_ROWS_DATA)) {
-            $message = $this->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ALL_ROWS_DATA;
-            throw new \Exception($message);
-        }
-
-        $all_rows_data                      = $request->request->get(self::KEY_ALL_ROWS_DATA);
-        $widgets_visibilities_settings_dtos = [];
-
-        foreach($all_rows_data as $row_data){
-
-            if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE, $row_data)){
-                $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE;
-                throw new \Exception($message);
-            }
-
-            if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_NAME, $row_data)){
-                $message = $this->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_NAME;
-                throw new \Exception($message);
-            }
-
-            $is_visible = filter_var($row_data[SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE], FILTER_VALIDATE_BOOLEAN);;
-            $name       = trim($row_data[SettingsWidgetVisibilityDTO::KEY_NAME]);
-
-            $widgets_visibility_settings_dto = new SettingsWidgetVisibilityDTO();
-            $widgets_visibility_settings_dto->setName($name);
-            $widgets_visibility_settings_dto->setIsVisible($is_visible);
-
-            $widgets_visibilities_settings_dtos[] = $widgets_visibility_settings_dto;
-        }
-
-        $this->settings_saver->saveSettingsForDashboardWidgetsVisibility($widgets_visibilities_settings_dtos);
-
-        return $this->settings_view_controller->renderSettingsTemplate(false);
-    }
-
-    /**
      * This function will build dashboard settings dto based on supplied data, if some is missing then default values will be used
      * @param array|null $array_of_widgets_visibility_dto
      * @return SettingsDashboardDTO
-     * @throws \Exception
+     * @throws Exception
      */
     public static function buildDashboardSettingsDto(?array $array_of_widgets_visibility_dto = null): SettingsDashboardDTO{
 

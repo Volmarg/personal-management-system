@@ -19,7 +19,13 @@ use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Modules\Reports\ReportsController;
 use App\Controller\Modules\Schedules\MySchedulesController;
 use App\Controller\Modules\Travels\MyTravelsIdeasController;
+use App\Controller\Page\SettingsController;
+use App\Controller\Page\SettingsDashboardController;
+use App\Controller\Page\SettingsFinancesController;
+use App\Controller\Page\SettingsValidationController;
+use App\Controller\Page\SettingsViewController;
 use App\Controller\System\LockedResourceController;
+use App\Controller\System\SecurityController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -113,6 +119,39 @@ class Controllers extends AbstractController {
      * @var MyPaymentsSettingsController $my_payments_settings_controller;
      */
     private $my_payments_settings_controller;
+
+    /**
+     * @var SecurityController $security_controller;
+     */
+    private $security_controller;
+
+    /**
+     * @var SettingsController $settings_controller
+     */
+    private $settings_controller;
+
+    /**
+     * @var SettingsDashboardController $settings_dashboard_controller
+     */
+    private $settings_dashboard_controller;
+
+    /**
+     * @var SettingsFinancesController $settings_finances_controller
+     */
+    private $settings_finances_controller;
+
+    /**
+     * @var SettingsValidationController $settings_validation_controller
+     */
+    private $settings_validation_controller;
+
+    /**
+     * @var SettingsViewController $settings_view_controller
+     */
+    private $settings_view_controller;
+
+
+
 
     /**
      * @return MyImagesController
@@ -233,6 +272,48 @@ class Controllers extends AbstractController {
         return $this->my_payments_settings_controller;
     }
 
+    /**
+     * @return SecurityController
+     */
+    public function getSecurityController(): SecurityController {
+        return $this->security_controller;
+    }
+
+    /**
+     * @return SettingsController
+     */
+    public function getSettingsController(): SettingsController {
+        return $this->settings_controller;
+    }
+
+    /**
+     * @return SettingsDashboardController
+     */
+    public function getSettingsDashboardController(): SettingsDashboardController {
+        return $this->settings_dashboard_controller;
+    }
+
+    /**
+     * @return SettingsFinancesController
+     */
+    public function getSettingsFinancesController(): SettingsFinancesController {
+        return $this->settings_finances_controller;
+    }
+
+    /**
+     * @return SettingsValidationController
+     */
+    public function getSettingsValidationController(): SettingsValidationController {
+        return $this->settings_validation_controller;
+    }
+
+    /**
+     * @return SettingsViewController
+     */
+    public function getSettingsViewController(): SettingsViewController {
+        return $this->settings_view_controller;
+    }
+
     public function __construct(
         AchievementController        $achievement_controller,
         ReportsController            $reports_controller,
@@ -250,7 +331,13 @@ class Controllers extends AbstractController {
         MySchedulesController        $my_schedules_controller,
         MyTravelsIdeasController     $my_travels_ideas_controller,
         MyPaymentsBillsController    $my_payments_bills_controller,
-        MyPaymentsSettingsController $my_payments_settings_controller
+        MyPaymentsSettingsController $my_payments_settings_controller,
+        SecurityController           $security_controller,
+        SettingsController           $settings_controller,
+        SettingsDashboardController  $settings_dashboard_controller,
+        SettingsFinancesController   $settings_finances_controller,
+        SettingsValidationController $settings_validation_controller,
+        SettingsViewController       $settings_view_controller
     ) {
         $this->achievement_controller          = $achievement_controller;
         $this->reports_controllers             = $reports_controller;
@@ -269,6 +356,12 @@ class Controllers extends AbstractController {
         $this->my_travels_ideas_controller     = $my_travels_ideas_controller;
         $this->my_payments_bills_controller    = $my_payments_bills_controller;
         $this->my_payments_settings_controller = $my_payments_settings_controller;
+        $this->security_controller             = $security_controller;
+        $this->settings_controller             = $settings_controller;
+        $this->settings_finances_controller    = $settings_finances_controller;
+        $this->settings_dashboard_controller   = $settings_dashboard_controller;
+        $this->settings_validation_controller  = $settings_validation_controller;
+        $this->settings_view_controller        = $settings_view_controller;
     }
 
 }

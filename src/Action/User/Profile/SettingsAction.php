@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Controller\User\Profile;
+
+namespace App\Action\User\Profile;
+
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
@@ -14,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 
-class SettingsController extends AbstractController {
+class SettingsAction extends AbstractController {
 
     /**
      * @var Application
@@ -74,7 +76,7 @@ class SettingsController extends AbstractController {
         return AjaxResponse::buildResponseForAjaxCall($code, $message, $template);
     }
 
-    protected function renderTemplate($ajax_render = false) {
+    private function renderTemplate($ajax_render = false) {
         $avatar   = $this->current_user->getAvatar();
         $nickname = $this->current_user->getNickname();
 
