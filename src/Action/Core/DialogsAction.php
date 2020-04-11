@@ -2,6 +2,7 @@
 
 namespace App\Action\Core;
 
+use App\Action\Files\FileUploadAction;
 use App\Controller\Core\Application;
 use App\Controller\Files\FileUploadController;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
@@ -56,11 +57,23 @@ class DialogsAction extends AbstractController
      */
     private $file_upload_controller;
 
-    public function __construct(Application $app, FileTagger $file_tagger, DirectoriesHandler $directories_handler, FileUploadController $file_upload_controller) {
-        $this->app                      = $app;
-        $this->file_tagger              = $file_tagger;
-        $this->directories_handler      = $directories_handler;
-        $this->file_upload_controller   = $file_upload_controller;
+    /**
+     * @var FileUploadAction $file_upload_action
+     */
+    private $file_upload_action;
+
+    public function __construct(
+        Application          $app,
+        FileTagger           $file_tagger,
+        DirectoriesHandler   $directories_handler,
+        FileUploadController $file_upload_controller,
+        FileUploadAction     $file_upload_action
+    ) {
+        $this->app                    = $app;
+        $this->file_tagger            = $file_tagger;
+        $this->directories_handler    = $directories_handler;
+        $this->file_upload_controller = $file_upload_controller;
+        $this->file_upload_action     = $file_upload_action;
     }
 
     /**
@@ -238,7 +251,7 @@ class DialogsAction extends AbstractController
     public function buildUploadDialogBody(Request $request) {
         $template = 'page-elements/components/dialogs/bodies/upload.twig';
 
-        $rendered_template = $this->file_upload_controller->renderTemplate(false, $template);
+        $rendered_template = $this->file_upload_action->renderTemplate(false, $template);
 
         return $rendered_template;
     }

@@ -35,6 +35,7 @@ use App\Form\Modules\Shopping\MyShoppingPlansType;
 use App\Form\Modules\Travels\MyTravelsIdeasType;
 use App\Form\Page\Settings\Finances\CurrencyType;
 use App\Form\System\SystemLockResourcesPasswordType;
+use App\Form\UploadFormType;
 use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
 use App\Form\User\UserPasswordType;
@@ -185,6 +186,10 @@ class Forms extends AbstractController {
 
     public function currencyMultiplierForm(array $params = []): FormInterface {
         return $this->createForm(MyPaymentsSettingsCurrencyMultiplierType::class, null, $params);
+    }
+
+    public function uploadForm(array $params = []): FormInterface {
+        return $this->createForm(UploadFormType::class, null, $params);
     }
 
     /**

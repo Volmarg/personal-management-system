@@ -4,6 +4,7 @@ namespace App\Controller\Core;
 
 
 use App\Controller\Files\FilesTagsController;
+use App\Controller\Files\FilesUploadSettingsController;
 use App\Controller\Modules\Achievements\AchievementController;
 use App\Controller\Modules\Contacts\MyContactsController;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
@@ -149,6 +150,11 @@ class Controllers extends AbstractController {
      * @var SettingsViewController $settings_view_controller
      */
     private $settings_view_controller;
+
+    /**
+     * @var FilesUploadSettingsController $files_upload_settings_controller
+     */
+    private $files_upload_settings_controller;
 
     /**
      * @return MyImagesController
@@ -311,54 +317,63 @@ class Controllers extends AbstractController {
         return $this->settings_view_controller;
     }
 
+    /**
+     * @return FilesUploadSettingsController
+     */
+    public function getFilesUploadSettingsController(): FilesUploadSettingsController {
+        return $this->files_upload_settings_controller;
+    }
+
     public function __construct(
-        AchievementController        $achievement_controller,
-        ReportsController            $reports_controller,
-        MyNotesController            $my_notes_controller,
-        MyNotesCategoriesController  $my_notes_categories_controller,
-        LockedResourceController     $locked_resource_controller,
-        MyContactsSettingsController $my_contact_settings_controller,
-        MyContactsController         $my_contact_controller,
-        MyImagesController           $my_images_controller,
-        MyFilesController            $my_files_controller,
-        FilesTagsController          $files_tags_controller,
-        MyJobAfterhoursController    $my_job_afterhours_controller,
-        MyJobSettingsController      $my_job_settings_controller,
-        MyPasswordsController        $my_passwords_controller,
-        MySchedulesController        $my_schedules_controller,
-        MyTravelsIdeasController     $my_travels_ideas_controller,
-        MyPaymentsBillsController    $my_payments_bills_controller,
-        MyPaymentsSettingsController $my_payments_settings_controller,
-        SecurityController           $security_controller,
-        SettingsController           $settings_controller,
-        SettingsDashboardController  $settings_dashboard_controller,
-        SettingsFinancesController   $settings_finances_controller,
-        SettingsValidationController $settings_validation_controller,
-        SettingsViewController       $settings_view_controller
+        AchievementController         $achievement_controller,
+        ReportsController             $reports_controller,
+        MyNotesController             $my_notes_controller,
+        MyNotesCategoriesController   $my_notes_categories_controller,
+        LockedResourceController      $locked_resource_controller,
+        MyContactsSettingsController  $my_contact_settings_controller,
+        MyContactsController          $my_contact_controller,
+        MyImagesController            $my_images_controller,
+        MyFilesController             $my_files_controller,
+        FilesTagsController           $files_tags_controller,
+        MyJobAfterhoursController     $my_job_afterhours_controller,
+        MyJobSettingsController       $my_job_settings_controller,
+        MyPasswordsController         $my_passwords_controller,
+        MySchedulesController         $my_schedules_controller,
+        MyTravelsIdeasController      $my_travels_ideas_controller,
+        MyPaymentsBillsController     $my_payments_bills_controller,
+        MyPaymentsSettingsController  $my_payments_settings_controller,
+        SecurityController            $security_controller,
+        SettingsController            $settings_controller,
+        SettingsDashboardController   $settings_dashboard_controller,
+        SettingsFinancesController    $settings_finances_controller,
+        SettingsValidationController  $settings_validation_controller,
+        SettingsViewController        $settings_view_controller,
+        FilesUploadSettingsController $files_upload_settings_controller
     ) {
-        $this->achievement_controller          = $achievement_controller;
-        $this->reports_controllers             = $reports_controller;
-        $this->my_notes_controller             = $my_notes_controller;
-        $this->my_notes_categories_controller  = $my_notes_categories_controller;
-        $this->locked_resource_controller      = $locked_resource_controller;
-        $this->my_contact_settings_controller  = $my_contact_settings_controller;
-        $this->my_contact_controller           = $my_contact_controller;
-        $this->my_images_controller            = $my_images_controller;
-        $this->my_files_controller             = $my_files_controller;
-        $this->files_tags_controller           = $files_tags_controller;
-        $this->my_job_afterhours_controller    = $my_job_afterhours_controller;
-        $this->my_job_settings_controller      = $my_job_settings_controller;
-        $this->my_passwords_controller         = $my_passwords_controller;
-        $this->my_schedules_controller         = $my_schedules_controller;
-        $this->my_travels_ideas_controller     = $my_travels_ideas_controller;
-        $this->my_payments_bills_controller    = $my_payments_bills_controller;
-        $this->my_payments_settings_controller = $my_payments_settings_controller;
-        $this->security_controller             = $security_controller;
-        $this->settings_controller             = $settings_controller;
-        $this->settings_finances_controller    = $settings_finances_controller;
-        $this->settings_dashboard_controller   = $settings_dashboard_controller;
-        $this->settings_validation_controller  = $settings_validation_controller;
-        $this->settings_view_controller        = $settings_view_controller;
+        $this->achievement_controller           = $achievement_controller;
+        $this->reports_controllers              = $reports_controller;
+        $this->my_notes_controller              = $my_notes_controller;
+        $this->my_notes_categories_controller   = $my_notes_categories_controller;
+        $this->locked_resource_controller       = $locked_resource_controller;
+        $this->my_contact_settings_controller   = $my_contact_settings_controller;
+        $this->my_contact_controller            = $my_contact_controller;
+        $this->my_images_controller             = $my_images_controller;
+        $this->my_files_controller              = $my_files_controller;
+        $this->files_tags_controller            = $files_tags_controller;
+        $this->my_job_afterhours_controller     = $my_job_afterhours_controller;
+        $this->my_job_settings_controller       = $my_job_settings_controller;
+        $this->my_passwords_controller          = $my_passwords_controller;
+        $this->my_schedules_controller          = $my_schedules_controller;
+        $this->my_travels_ideas_controller      = $my_travels_ideas_controller;
+        $this->my_payments_bills_controller     = $my_payments_bills_controller;
+        $this->my_payments_settings_controller  = $my_payments_settings_controller;
+        $this->security_controller              = $security_controller;
+        $this->settings_controller              = $settings_controller;
+        $this->settings_finances_controller     = $settings_finances_controller;
+        $this->settings_dashboard_controller    = $settings_dashboard_controller;
+        $this->settings_validation_controller   = $settings_validation_controller;
+        $this->settings_view_controller         = $settings_view_controller;
+        $this->files_upload_settings_controller = $files_upload_settings_controller;
     }
 
 }
