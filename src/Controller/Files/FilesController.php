@@ -6,9 +6,9 @@ namespace App\Controller\Files;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Form\Files\UploadSubdirectoryCreateType;
-use App\Services\DirectoriesHandler;
-use App\Services\FilesHandler;
-use App\Services\FileTagger;
+use App\Services\Files\DirectoriesHandler;
+use App\Services\Files\FilesHandler;
+use App\Services\Files\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -39,12 +39,12 @@ class FilesController extends AbstractController {
     private $files_handler;
 
     /**
-     * @var DirectoriesHandler $directories_handler
+     * @var \App\Services\Files\DirectoriesHandler $directories_handler
      */
     private $directories_handler;
 
     /**
-     * @var FileTagger $file_tagger
+     * @var \App\Services\Files\FileTagger $file_tagger
      */
     private $file_tagger;
 
@@ -54,40 +54,6 @@ class FilesController extends AbstractController {
         $this->files_handler         = $files_handler;
         $this->directories_handler   = $directories_handler;
     }
-
-
-    /**
-     * @Route("/files/action/remove-file", name="files_remove_file", methods="POST")
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
-    public function removeFileViaPost(Request $request) {
-        $response = $this->files_handler->removeFile($request);
-
-        $code    = $response->getStatusCode();
-        $message = $response->getContent();
-
-        return AjaxResponse::buildResponseForAjaxCall($code, $message);
-    }
-
-    /**
-     * @Route("/files/action/rename-file", name="files_rename_file", methods="POST")
-     * @param Request $request
-     * @return JsonResponse
-     * @throws \Exception
-     */
-    public function renameFileViaPost(Request $request) {
-
-        $update_file_path = function ($curr_relative_filepath, $new_relative_file_path) {
-            $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
-            $this->app->repositories->lockedResourceRepository->updatePath($curr_relative_filepath, $new_relative_file_path);
-        };
-
-        $response = $this->files_handler->renameFileViaRequest($request, $update_file_path);
-        return $response;
-    }
-
 
     /**
      * @Route("/files/action/move-multiple-files", name="move_multiple_multiple", methods="POST")

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Files;
 
 use App\Controller\Core\Application;
 use App\Entity\FilesTags;

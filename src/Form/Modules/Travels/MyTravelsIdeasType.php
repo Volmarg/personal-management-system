@@ -6,7 +6,7 @@ use App\Controller\Core\Application;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Events\DatalistLogicOverride;
 use App\Form\Type\DatalistType;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

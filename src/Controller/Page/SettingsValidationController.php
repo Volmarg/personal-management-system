@@ -5,14 +5,14 @@ namespace App\Controller\Page;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\SettingValidationDTO;
 use App\Services\Settings\SettingsLoader;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SettingsValidationController extends AbstractController {
 
     /**
-     * @var Translator $translator
+     * @var \App\Services\Core\Translator $translator
      */
     private $translator;
 

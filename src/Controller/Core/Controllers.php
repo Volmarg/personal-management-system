@@ -150,9 +150,6 @@ class Controllers extends AbstractController {
      */
     private $settings_view_controller;
 
-
-
-
     /**
      * @return MyImagesController
      */

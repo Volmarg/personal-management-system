@@ -3,7 +3,7 @@
 namespace App\DTO;
 
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 
 class CallStatusDTO extends AbstractDTO {
 

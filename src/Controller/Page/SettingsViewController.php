@@ -3,7 +3,7 @@
 namespace App\Controller\Page;
 
 use App\Services\Settings\SettingsLoader;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class SettingsViewController extends AbstractController {
 
     /**
-     * @var Translator
+     * @var \App\Services\Core\Translator
      */
     private $translator;
 

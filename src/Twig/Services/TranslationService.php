@@ -4,7 +4,7 @@ namespace App\Twig\Services;
 
 
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -22,7 +22,7 @@ class TranslationService extends AbstractExtension{
      * @throws ExceptionDuplicatedTranslationKey
      */
     public function translate(string $key){
-        $translation = (new Translator())->translate($key);
+        $translation = (new \App\Services\Core\Translator())->translate($key);
         return $translation;
     }
 

@@ -3,7 +3,7 @@
 namespace App\Form\Files;
 
 use App\Controller\Core\Application;
-use App\Services\FileTagger;
+use App\Services\Files\FileTagger;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

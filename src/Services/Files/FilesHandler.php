@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Files;
 
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;

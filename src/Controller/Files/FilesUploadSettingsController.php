@@ -11,8 +11,9 @@ use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Form\Files\UploadSubdirectoryRemoveType;
 use App\Form\Files\UploadSubdirectoryRenameType;
-use App\Services\DirectoriesHandler;
-use App\Services\FilesHandler;
+use App\Services\Files\DirectoriesHandler;
+use App\Services\Files\FilesHandler;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\Finder\Finder;
@@ -42,7 +43,7 @@ class FilesUploadSettingsController extends AbstractController {
     private $directories_handler;
 
     /**
-     * @var FilesHandler $files_handler
+     * @var \App\Services\Files\FilesHandler $files_handler
      */
     private $files_handler;
 
@@ -63,7 +64,7 @@ class FilesUploadSettingsController extends AbstractController {
      * @Route("upload/settings", name="upload_settings")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function displaySettings(Request $request) {
 
@@ -79,7 +80,7 @@ class FilesUploadSettingsController extends AbstractController {
      * @param bool $ajax_render
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     private function renderSettingsPage(bool $ajax_render, Request $request){
 
@@ -108,7 +109,7 @@ class FilesUploadSettingsController extends AbstractController {
      * @param string $current_directory_path_in_module_upload_dir
      * @param string $new_name
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function renameSubdirectory(?string $upload_type, ?string $current_directory_path_in_module_upload_dir, ?string $new_name){
         $response = $this->directories_handler->renameSubdirectory($upload_type, $current_directory_path_in_module_upload_dir, $new_name);
@@ -118,7 +119,7 @@ class FilesUploadSettingsController extends AbstractController {
     /**
      * @param FormInterface $rename_form
      * @param FormInterface $copy_data_form
-     * @throws \Exception
+     * @throws Exception
      */
     private function handleForms(FormInterface $rename_form, FormInterface $copy_data_form){
 

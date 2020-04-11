@@ -5,7 +5,7 @@ namespace App\Controller\Modules\Images;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Entity\FilesTags;
-use App\Services\FileTagger;
+use App\Services\Files\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 

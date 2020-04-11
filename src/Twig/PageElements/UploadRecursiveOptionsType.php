@@ -3,7 +3,7 @@
 namespace App\Twig\PageElements;
 
 use App\Controller\Files\FileUploadController;
-use App\Services\DirectoriesHandler;
+use App\Services\Files\DirectoriesHandler;
 use DirectoryIterator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;

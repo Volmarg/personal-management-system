@@ -5,7 +5,7 @@ namespace App\Form\Modules\Goals;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Goals\MyGoals;
 use App\Form\Type\RoundcheckboxType;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;

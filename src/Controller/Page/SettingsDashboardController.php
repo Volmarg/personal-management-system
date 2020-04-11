@@ -8,7 +8,7 @@ use App\DTO\Settings\SettingsDashboardDTO;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -28,7 +28,7 @@ class SettingsDashboardController extends AbstractController {
     ];
 
     /**
-     * @var Translator $translator
+     * @var \App\Services\Core\Translator $translator
      */
     private $translator;
 

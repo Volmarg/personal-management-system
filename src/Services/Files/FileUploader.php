@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Files;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
+use App\Services\Exceptions;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;

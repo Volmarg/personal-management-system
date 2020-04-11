@@ -11,7 +11,7 @@ namespace App\Controller\Core;
 
 use App\Controller\Core\Settings;
 use App\Controller\Utils\Utils;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +34,7 @@ class Application extends AbstractController {
     public $em;
 
     /**
-     * @var Translator $translator
+     * @var \App\Services\Core\Translator $translator
      */
     public $translator;
 

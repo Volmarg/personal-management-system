@@ -8,7 +8,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use App\Services\FilesHandler;
+use App\Services\Files\FilesHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

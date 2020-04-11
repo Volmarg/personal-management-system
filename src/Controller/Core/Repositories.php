@@ -46,7 +46,7 @@ use App\Repository\System\LockedResourceRepository;
 use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\PersistentCollection;
 use Exception;
@@ -107,7 +107,7 @@ class Repositories extends AbstractController {
     private $entity_manager;
 
     /**
-     * @var Translator $translator
+     * @var \App\Services\Core\Translator $translator
      */
     private $translator;
 

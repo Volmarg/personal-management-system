@@ -3,7 +3,7 @@
 namespace App\Action\Core;
 
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +16,7 @@ class FormsAction extends AbstractController {
     const KEY_FORM_NAMESPACE = 'form_namespace';
 
     /**
-     * @var Translator $translator
+     * @var \App\Services\Core\Translator $translator
      */
     private $translator;
 

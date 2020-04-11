@@ -6,7 +6,7 @@ namespace App\Action\Core;
 
 use App\Controller\Core\Application;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;

@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Files;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Utils\Utils;
+use App\Services\Exceptions;
+use App\Services\Files\FilesHandler;
+use App\Services\Files\FileTagger;
 use DirectoryIterator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;

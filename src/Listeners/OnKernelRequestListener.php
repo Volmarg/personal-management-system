@@ -4,8 +4,8 @@ namespace App\Listeners;
 
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\SecurityException;
-use App\Services\Logger;
-use App\Services\Translator;
+use App\Services\Core\Logger;
+use App\Services\Core\Translator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -44,7 +44,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private $security_logger;
 
     /**
-     * @var Translator $translator
+     * @var \App\Services\Core\Translator $translator
      */
     private $translator;
 

@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
-use App\Services\Translator;
+use App\Services\Core\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
