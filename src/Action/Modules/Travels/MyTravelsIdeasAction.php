@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Travels;
+namespace App\Action\Modules\Travels;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;

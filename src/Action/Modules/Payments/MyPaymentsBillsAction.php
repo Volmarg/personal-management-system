@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Payments;
+namespace App\Action\Modules\Payments;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;

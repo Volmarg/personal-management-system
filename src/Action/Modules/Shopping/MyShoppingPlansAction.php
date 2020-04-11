@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Shopping;
+namespace App\Action\Modules\Shopping;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;

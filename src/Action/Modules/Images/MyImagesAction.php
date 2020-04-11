@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Modules\Contacts;
+namespace App\Action\Modules\Images;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;

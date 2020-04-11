@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Action\Goals;
+namespace App\Action\Modules\Goals;
 
 
 use App\Controller\Core\AjaxResponse;

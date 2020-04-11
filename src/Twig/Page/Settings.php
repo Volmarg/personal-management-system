@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Twig\System;
+namespace App\Twig\Page;
 
 
 use App\Controller\Core\Application;

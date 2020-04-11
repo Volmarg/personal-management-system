@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Twig\Modules\Schedules;
+
 use App\Controller\Core\Application;
 use App\Entity\Modules\Schedules\MyScheduleType;
 use Twig\Extension\AbstractExtension;

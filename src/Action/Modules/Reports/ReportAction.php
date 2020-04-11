@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Reports;
+namespace App\Action\Modules\Reports;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Passwords;
+namespace App\Action\Modules\Passwords;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;

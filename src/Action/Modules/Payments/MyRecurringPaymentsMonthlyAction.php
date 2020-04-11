@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Action\Payments;
+namespace App\Action\Modules\Payments;
 
 
 use App\Controller\Modules\Payments\MyPaymentsSettingsController;

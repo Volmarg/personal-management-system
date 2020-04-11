@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Action\Schedules;
+namespace App\Action\Modules\Schedules;
 
 
 use App\Controller\Core\AjaxResponse;

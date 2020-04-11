@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Twig\Modules\Payments;
+
 use App\Controller\Core\Application;
 use App\Controller\Modules\Notes\MyNotesController;
 use Twig\Extension\AbstractExtension;
