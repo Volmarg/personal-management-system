@@ -105,14 +105,16 @@ class MyFilesAction extends AbstractController {
      * @return Response
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function displayFiles(? string $encoded_subdirectory_path, Request $request) {
+    public function displayFiles(? string $encoded_subdirectory_path, Request $request): Response
+    {
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
         }
 
         $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        $message           = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+        return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
     }
 
     /**
