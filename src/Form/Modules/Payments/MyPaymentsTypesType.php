@@ -2,7 +2,7 @@
 
 namespace App\Form\Modules\Payments;
 
-use App\Action\Payments\MyPaymentsSettingsAction;
+use App\Action\Modules\Payments\MyPaymentsSettingsAction;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Symfony\Component\Form\AbstractType;

@@ -38,6 +38,7 @@ class MyNotes extends AbstractExtension {
             new TwigFunction('getAccessibleNotesCategories',    [$this, 'getAccessibleNotesCategories']),
             new TwigFunction('hasCategoryFamilyVisibleNotes',   [$this, 'hasCategoryFamilyVisibleNotes']),
             new TwigFunction('isNotesCategoryActive',           [$this, 'isNotesCategoryActive']),
+            new TwigFunction('buildNotesCategoriesDepths',      [$this, 'buildNotesCategoriesDepths']),
         ];
     }
 

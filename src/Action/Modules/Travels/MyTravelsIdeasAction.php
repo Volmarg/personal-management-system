@@ -8,6 +8,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +61,7 @@ class MyTravelsIdeasAction extends AbstractController {
         Repositories::removeHelperColumnsFromView($columns_names);
 
         $all_ideas  = $this->app->repositories->myTravelsIdeasRepository->findBy(['deleted' => 0]);
-        $categories = $this->getAllCategories();
+        $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories();
 
         $data = [
             'form_view'     => $form_view,
@@ -109,7 +110,7 @@ class MyTravelsIdeasAction extends AbstractController {
      * @Route("/my-travels/ideas/remove/",name="my-travels-ideas-remove")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function remove(Request $request) {
         $id         = trim($request->request->get('id'));

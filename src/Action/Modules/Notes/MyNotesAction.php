@@ -93,7 +93,8 @@ class MyNotesAction extends AbstractController {
     public function update(Request $request): Response {
 
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myNotesRepository->find(AbstractRepository::FIELD_ID);
+        $id         = $parameters[AbstractRepository::FIELD_ID];
+        $entity     = $this->app->repositories->myNotesRepository->find($id);
 
         $response   = $this->app->repositories->update($parameters, $entity);
 

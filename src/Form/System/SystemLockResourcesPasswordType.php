@@ -2,7 +2,7 @@
 
 namespace App\Form\System;
 
-use App\Controller\AppController;
+use App\Action\System\AppAction;
 use App\Controller\Core\Application;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;
@@ -37,7 +37,7 @@ class SystemLockResourcesPasswordType extends AbstractType
         switch( $is_create_password ){
             case true:
                 {
-                    $builder->add(AppController::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class,[
+                    $builder->add(AppAction::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class,[
                         'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
                         'attr'  => [
                             "placeholder" => $this->app->translator->translate("forms.systemLockPassword.placeholders.password"),
@@ -48,7 +48,7 @@ class SystemLockResourcesPasswordType extends AbstractType
                 break;
             default:
                 {
-                    $builder->add(AppController::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class, [
+                    $builder->add(AppAction::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class, [
                         'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
                         'attr'  => [
                             "placeholder" => $this->app->translator->translate("forms.systemLockPassword.placeholders.password"),
