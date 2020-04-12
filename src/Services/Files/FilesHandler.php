@@ -279,6 +279,7 @@ class FilesHandler {
      * @throws Exception
      */
     public function removeFile(Request $request) {
+        $is_single_file_remove = true;
 
         if (
                 !$request->request->has(static::KEY_FILE_FULL_PATH)
@@ -294,7 +295,8 @@ class FilesHandler {
             $filepath = $request->request->get(static::KEY_FILE_FULL_PATH);
 
         }elseif($request->request->has(static::KEY_FILES_FULL_PATHS)){
-            $filepaths = $request->request->get(static::KEY_FILES_FULL_PATHS);
+            $is_single_file_remove = false;
+            $filepaths             = $request->request->get(static::KEY_FILES_FULL_PATHS);
 
             // Call Yourself for each filepath, this will fall into single filepath call
             foreach($filepaths as $filepath){
@@ -308,18 +310,23 @@ class FilesHandler {
 
         try{
 
-            if( file_exists($filepath) ) {
-                unlink($filepath);
+            if( $is_single_file_remove ){
+                if( file_exists($filepath) ) {
+                    unlink($filepath);
 
-                $this->file_tagger->prepare([], $filepath);
-                $this->file_tagger->updateTags();
+                    $this->file_tagger->prepare([], $filepath);
+                    $this->file_tagger->updateTags();
 
-                $message = $this->application->translator->translate('responses.files.fileSuccessfullyRemoved');
+                    $message = $this->application->translator->translate('responses.files.fileSuccessfullyRemoved');
 
-                return new Response($message, 200);
+                    return new Response($message, 200);
+                }else{
+                    $message = $this->application->translator->translate('responses.files.fileDoesNotExist');
+                    return new Response($message, 404);
+                }
             }else{
-                $message = $this->application->translator->translate('responses.files.fileDoesNotExist');
-                return new Response($message, 404);
+                $message = $this->application->translator->translate('responses.files.fileSuccessfullyRemoved');
+                return new Response($message, 200);
             }
 
         }catch(Exception $e){

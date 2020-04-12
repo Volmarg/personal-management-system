@@ -2,7 +2,7 @@ responses:
   files:
     filePathIsAnEmptyString: "File path is an empty string"
     filePathIsIncorrectFileDoesNotExist:  "File provided in filepath is incorrect - such file does not exist"
-    fileSuccessfullyRemoved: "File has been successfully removed"
+    fileSuccessfullyRemoved: "Files has been successfully removed"
     fileDoesNotExist: 'File does not exist.'
     thereWasAnErrorWhileRemovingFile: 'There was an error while removing the file.'
     thereWasAnErrorWhileRenamingFile: 'There was an error while renaming the file.'

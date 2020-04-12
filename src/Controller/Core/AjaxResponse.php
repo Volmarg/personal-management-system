@@ -12,6 +12,9 @@ class AjaxResponse extends AbstractController {
     const KEY_TEMPLATE  = "template";
     const KEY_PASSWORD  = "password";
 
+    const XML_HTTP_HEADER_KEY   = "X-Requested-With";
+    const XML_HTTP_HEADER_VALUE = "XMLHttpRequest";
+
     /**
      * @param int $code
      * @param string $message

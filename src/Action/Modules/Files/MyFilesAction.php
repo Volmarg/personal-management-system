@@ -175,11 +175,15 @@ class MyFilesAction extends AbstractController {
         $response = $this->files_handler->removeFile($request);
         $message  = $response->getContent();
 
+        $subdirectory     = $request->request->get(MyFilesController::KEY_SUBDIRECTORY);
+        $template_content = $this->renderCategoryTemplate($subdirectory, true)->getContent();
+
+        //todo: do the same with transfer
         if ($response->getStatusCode() == 200) {
-            return AjaxResponse::buildResponseForAjaxCall(200, $message);
+            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildResponseForAjaxCall(500, $message, $template_content);
     }
 
     /**

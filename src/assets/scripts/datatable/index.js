@@ -166,20 +166,45 @@ export default (function () {
                     callback: function (result) {
                         if (result) {
                             ui.widgets.loader.showLoader();
+
                             $.ajax({
                                 url: url,
                                 method: "POST",
                                 data: data,
-                                success: (template) => {
-                                    bootstrap_notifications.notify("Files have been removed", 'success');
+                            }).always((data) => {
 
-                                    $('.twig-body-section').html(template);
-                                    initializer.reinitialize();
-                                },
-                            }).fail(() => {
-                                bootstrap_notifications.notify("There was an error while trying to remove the files", 'danger')
-                            }).always(() => {
                                 ui.widgets.loader.hideLoader();
+
+                                let $twigBodySection = $('.twig-body-section');
+
+                                try{
+                                    var code     = data['code'];
+                                    var message  = data['message'];
+                                    var template = data['template'];
+                                } catch(Exception){
+                                    throw({
+                                        "message"   : "Could not handle ajax call",
+                                        "data"      : data,
+                                        "exception" : Exception
+                                    })
+                                }
+
+                                if( 200 != code ){
+                                    bootstrap_notifications.showRedNotification(message);
+                                    return;
+                                }else {
+
+                                    if( "undefined" === typeof message ){
+                                        message = _this.messages.entityHasBeenRemovedFromRepository();
+                                    }
+
+                                    if( "undefined" !== typeof template ){
+                                        $twigBodySection.html(template);
+                                        initializer.reinitialize();
+                                    }
+
+                                    bootstrap_notifications.showGreenNotification(message);
+                                }
                             });
                         }
                     }
