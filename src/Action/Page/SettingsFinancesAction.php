@@ -109,7 +109,7 @@ class SettingsFinancesAction extends AbstractController {
             }
 
             if(
-                $currency_setting_dto_from_db->getName()        === $new_currency_setting_dto->getName()
+                    $currency_setting_dto_from_db->getName()        === $new_currency_setting_dto->getName()
                 &&  $before_update_currency_setting_dto->getName()  !== $new_currency_setting_dto->getName()
             ){
 
@@ -125,7 +125,7 @@ class SettingsFinancesAction extends AbstractController {
         }
 
         if(
-            $before_update_currency_setting_dto->isDefault()
+                $before_update_currency_setting_dto->isDefault()
             &&  !$new_currency_setting_dto->isDefault()
         ){
             $code    = 400;
@@ -133,7 +133,12 @@ class SettingsFinancesAction extends AbstractController {
         }
 
         if( 200 === $code ){
-            $currencies_settings_dtos = $this->controllers->getSettingsFinancesController()->handleDefaultCurrencyChange($currencies_settings_dtos, $new_currency_setting_dto, $array_index_of_updated_setting);
+
+            if( $new_currency_setting_dto->isDefault() ){
+                $currencies_settings_dtos = $this->controllers->getSettingsFinancesController()->handleDefaultCurrencyChange($currencies_settings_dtos, $new_currency_setting_dto, $array_index_of_updated_setting);
+            }
+
+            $currencies_settings_dtos = $this->controllers->getSettingsFinancesController()->handleCurrencyUpdate($currencies_settings_dtos, $new_currency_setting_dto, $array_index_of_updated_setting);
             $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currencies_settings_dtos);
         }
 

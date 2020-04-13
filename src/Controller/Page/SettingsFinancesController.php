@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class SettingsFinancesController extends AbstractController {
 
     /**
-     * @var \App\Services\Core\Translator $translator
+     * @var Translator $translator
      */
     private $translator;
 
@@ -85,6 +85,18 @@ class SettingsFinancesController extends AbstractController {
 
         $currencies_settings_dtos[$array_index_of_updated_setting] = $new_default_setting_currency_dto;
 
+        return $currencies_settings_dtos;
+    }
+
+    /**
+     * This function enforce the update of all the currencies when default currency is changed
+     * @param SettingsCurrencyDTO[]  $currencies_settings_dtos
+     * @param SettingsCurrencyDTO    $new_setting_currency_dto
+     * @param string                 $array_index_of_updated_setting
+     * @return SettingsCurrencyDTO[]
+     */
+    public function handleCurrencyUpdate(array $currencies_settings_dtos, SettingsCurrencyDTO $new_setting_currency_dto, string $array_index_of_updated_setting){
+        $currencies_settings_dtos[$array_index_of_updated_setting] = $new_setting_currency_dto;
         return $currencies_settings_dtos;
     }
 
