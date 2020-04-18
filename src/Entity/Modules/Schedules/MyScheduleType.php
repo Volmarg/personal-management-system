@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyScheduleType
 {
+    const FIELD_NAME = "deleted";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

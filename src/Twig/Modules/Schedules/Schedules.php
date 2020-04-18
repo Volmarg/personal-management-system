@@ -20,15 +20,15 @@ class Schedules extends AbstractExtension {
 
     public function getFunctions() {
         return [
-            new TwigFunction('getSchedulesTypes', [$this, 'getSchedulesTypes']),
+            new TwigFunction('getNotDeletedSchedulesTypes', [$this, 'getNotDeletedSchedulesTypes']),
         ];
     }
 
     /**
      * @return MyScheduleType[]
      */
-    public function getSchedulesTypes():array {
-        return $this->app->repositories->myScheduleTypeRepository->getAllTypes();
+    public function getNotDeletedSchedulesTypes():array {
+        return $this->app->repositories->myScheduleTypeRepository->getAllNonDeletedTypes();
     }
 
 }

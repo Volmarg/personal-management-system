@@ -20,8 +20,8 @@ class MyScheduleTypeRepository extends ServiceEntityRepository {
     /**
      * @return MyScheduleType[]
      */
-    public function getAllTypes(): array {
-        return $this->findAll();
+    public function getAllNonDeletedTypes(): array {
+        return $this->findBy([MyScheduleType::FIELD_NAME => 0]);
     }
 
 }

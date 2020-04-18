@@ -89,7 +89,7 @@ class MyNotesType extends AbstractType {
     private function buildChoices(): array
     {
         $choices = [];
-        $notes_categories  = $this->app->repositories->myNotesCategoriesRepository->findAll();
+        $notes_categories  = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
         $categories_depths = $this->my_notes_categories_controller->buildCategoriesDepths();
 
         foreach( $notes_categories as $category ){

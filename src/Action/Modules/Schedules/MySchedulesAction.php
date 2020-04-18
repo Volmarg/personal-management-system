@@ -117,15 +117,16 @@ class MySchedulesAction extends AbstractController {
      */
     public function removeScheduleById(Request $request): Response {
 
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_SCHEDULE_REPOSITORY,
-            $request->request->get('id')
-        );
+        $id             = $request->request->get('id');
+        $schedule       = $this->app->repositories->myScheduleRepository->find($id);
+        $schedules_type = $schedule->getScheduleType()->getName();
+
+        $response = $this->app->repositories->deleteById(Repositories::MY_SCHEDULE_REPOSITORY, $id);
 
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate($schedules_type, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

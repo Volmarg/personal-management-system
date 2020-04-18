@@ -11,7 +11,7 @@
 
     <ul class="dropdown-menu">
 
-        {% for scheduleType in getSchedulesTypes() %}
+        {% for scheduleType in getNotDeletedSchedulesTypes() %}
             <li>
                 <a class="sidebar-link" href="{{ path('my_schedules', {'schedules_type': scheduleType.name}) }}"><i class="{{ scheduleType.icon }}"></i> {{ scheduleType.name | capitalize }}</a>
             </li>

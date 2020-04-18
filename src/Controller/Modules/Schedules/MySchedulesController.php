@@ -19,7 +19,7 @@ class MySchedulesController extends AbstractController {
 
     public function __construct(Application $app) {
         $this->app = $app;
-        $this->all_schedules_types = $app->repositories->myScheduleTypeRepository->getAllTypes();
+        $this->all_schedules_types = $app->repositories->myScheduleTypeRepository->getAllNonDeletedTypes();
     }
 
     /**
