@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('assets/app.css') }}"/>
 
     {% block staticStyleSheets %}
-        <link rel="stylesheet" href="/assets_/static-libs/furcan-iconpicker/iconpicker-1.0.0.css"/>
+        <link rel="stylesheet" href="{{ asset('assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.css') }}"/>
     {% endblock %}
 
     {% block stylesheets %}
@@ -73,6 +73,7 @@
     {% endblock %}
 
     {% block headjavascript %}
+        <script defer src="{{ asset('assets_/static-libs/fontawesome/5.11.3/js/all.min.js') }}"></script>
     {% endblock %}
 
     {% block twigToJavascript %}
@@ -164,7 +165,7 @@
 
 {% block staticJavascriptsLibs %}
     {# Info: due to the fact that webpack initiliazies JQ($) all scripts before can't use it (pure js only) #}
-    <script src="/assets_/static-libs/furcan-iconpicker/iconpicker-1.0.0.js"></script>
+    <script src="{{ asset('assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.js') }}"></script>
     <script src="/assets_/static-libs/jscolor/jscolor.js"></script>
 {% endblock %}
 

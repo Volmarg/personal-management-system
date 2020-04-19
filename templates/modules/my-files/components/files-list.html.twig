@@ -48,21 +48,32 @@
                 <input class="{{ KEY_TAGS }}" type="text" data-value="{{ file.tags }}"/>
             </td>
 
+            {# this special case of actions must remain like this #}
             <td contenteditable="false">
-                <i class="fa fa-trash remove-record" aria-hidden="true" data-content-editable="false"></i>
-                <i class="far fa-edit edit-record"                    data-content-editable="false"></i>
+                <span  aria-hidden="true" data-content-editable="false">
+                    <i class="fa fa-trash remove-record"></i>
+                </span>
+                <span data-content-editable="false">
+                    <i class="far fa-edit edit-record"></i>
+                </span>
 
                 <form method="POST" action="{{ path('download_file') }}" class="file-download-form">
                     <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}" data-subdirectory="{{ subdirectory_path }}"/>
                     <button class="file-download ">
-                        <i class="fa fa-download" aria-hidden="true"></i>
+                        <span aria-hidden="true">
+                            <i class="fa fa-download"></i>
+                        </span>
                     </button>
                 </form>
                 <a href="{{ path('download_file') }}">
 
                 </a>
-                <i class="far fa-save save-record d-none"           data-content-editable="false"></i>
-                <i class="fas fa-random file-transfer"  data-content-editable="false"></i>
+                <span data-content-editable="false">
+                    <i class="far fa-save save-record d-none"></i>
+                </span>
+                <span data-content-editable="false">
+                    <i class="fas fa-random file-transfer"></i>
+                </span>
             </td>
         </tr>
     {% endfor %}

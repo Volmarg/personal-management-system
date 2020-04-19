@@ -3,7 +3,6 @@
 namespace App\DataFixtures\Modules\Schedule;
 
 use App\Controller\Core\Application;
-use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Schedules;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Schedules\MyScheduleType;

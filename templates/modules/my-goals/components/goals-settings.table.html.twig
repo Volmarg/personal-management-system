@@ -40,12 +40,11 @@
                         "classes": "disabled displayOnDashboard checkbox-disabled"
                     } %}
                 </td>
-                {# Todo: make template from it #}
-                <td contenteditable="false" data-content-editable="false">
-                    <i class="fa fa-trash remove-record" aria-hidden="true"></i>
-                    <i class="far fa-edit edit-record"></i>
-                    <i class="far fa-save save-record d-none"></i>
-                </td>
+                {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                    "trash": true,
+                    "edit": true,
+                    "save": true
+                } %}
             </tr>
 
         {% endfor %}

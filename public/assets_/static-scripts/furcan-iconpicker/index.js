@@ -11,7 +11,7 @@ furcanIconPicker = {
         let icon_picker = document.querySelector(this.identifiers["iconpicker-button"]);
         if (icon_picker !== undefined && icon_picker !== false && icon_picker !== null) {
             IconPicker.Init({
-                jsonUrl: '/assets_/static-libs/furcan-iconpicker/iconpicker-1.0.0.json',
+                jsonUrl: '/assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.json',
                 searchPlaceholder: 'Search Icon',
                 showAllButton: 'Show All',
                 cancelButton: 'Cancel',

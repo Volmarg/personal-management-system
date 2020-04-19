@@ -53,13 +53,11 @@
                 </td>
 
             {% endfor %}
-            <td contenteditable="false" class="align-self-center action-buttons" style="border: none;">
-                <section class="action-buttons-section">
-                    <i class="fa fa-trash remove-record" aria-hidden="true"></i>
-                    <i class="far fa-edit edit-record"></i>
-                    <i class="far fa-save save-record d-none"></i>
-                </section>
-            </td>
+            {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                "trash": true,
+                "edit": true,
+                "save": true
+            } %}
         </tr>
         </tbody>
     </table>
