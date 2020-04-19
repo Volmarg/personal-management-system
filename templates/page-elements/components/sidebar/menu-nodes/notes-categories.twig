@@ -38,7 +38,10 @@
                             </li>
                         {% endif %}
                         {# Subcategory #}
-                        {% if category.childrens_id is not null %}
+                        {% if
+                                category.childrens_id is not null
+                            and category.childrens_id is not empty
+                        %}
                             <a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
                                 <span class="arrow"><i class="ti-angle-right fa-sm"></i></span>
                             </a>

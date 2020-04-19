@@ -13,7 +13,7 @@
 
     <select class="form-control d-none note-modal-categories-list note-category"
             style="max-width:100px; float:left;">
-        {% set categories        = getAccessibleNotesCategories() %}
+        {% set categories        = getAllNotesCategories() %}
         {% set categories_depths = buildNotesCategoriesDepths() %}
 
         {% for category_on_list in categories %}

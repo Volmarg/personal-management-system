@@ -63,23 +63,19 @@ class MyNotesCategoriesController extends AbstractController {
 
     /**
      * Returns the categories that are visible, have notes, are not deleted or have family tree inside with same rules
-     * @param bool $filter
      * @return array
      * @throws DBALException
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function getAccessibleCategories(bool $filter = false): array
+    public function getAccessibleCategories(): array
     {
         $all_categories        = $this->app->repositories->myNotesCategoriesRepository->getCategories();
         $accessible_categories = [];
 
-        if( !$filter ){
-            return $all_categories;
-        }
-
         foreach ($all_categories as $key => $result) {
             $category_id = $result[self::CATEGORY_ID];
 
+            // check if this category is accessible
             if( !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id)){
                 unset($all_categories[$key]);
                 continue;
@@ -90,9 +86,37 @@ class MyNotesCategoriesController extends AbstractController {
             if (!is_null($all_categories[$key][self::CHILDRENS_ID])) {
                 $accessible_categories[$category_id][self::CHILDRENS_ID] = explode(',', $all_categories[$key][self::CHILDRENS_ID]);
             }
+
+            // check if children categories are accessible
+            if( !array_key_exists(self::CHILDRENS_ID, $accessible_categories[$category_id]) ) {
+                continue;
+            }
+
+            $children_ids = $accessible_categories[$category_id][self::CHILDRENS_ID];
+
+            if( is_null($children_ids) ){
+                continue;
+            }
+
+            foreach( $children_ids as $index => $child_id ){
+                $is_child_accessible = $this->my_notes_controller->hasCategoryFamilyVisibleNotes($child_id);
+
+                if( !$is_child_accessible ){
+                    unset($accessible_categories[$category_id][self::CHILDRENS_ID][$index]);
+                }
+            }
         }
 
         return $accessible_categories;
+    }
+
+    /**
+     * @return array
+     * @throws DBALException
+     */
+    public function getAllNotesCategories(){
+        $all_categories = $this->app->repositories->myNotesCategoriesRepository->getCategories();
+        return $all_categories;
     }
 
 }

@@ -39,6 +39,7 @@ class MyNotes extends AbstractExtension {
             new TwigFunction('hasCategoryFamilyVisibleNotes',   [$this, 'hasCategoryFamilyVisibleNotes']),
             new TwigFunction('isNotesCategoryActive',           [$this, 'isNotesCategoryActive']),
             new TwigFunction('buildNotesCategoriesDepths',      [$this, 'buildNotesCategoriesDepths']),
+            new TwigFunction('getAllNotesCategories',      [$this, 'getAllNotesCategories']),
         ];
     }
 
@@ -70,14 +71,22 @@ class MyNotes extends AbstractExtension {
     }
 
     /**
-     * @param bool $filter
      * @return array
      * @throws ExceptionDuplicatedTranslationKey
      * @throws DBALException
      */
-    public function getAccessibleNotesCategories($filter = false) {
-        $accessible_categories = $this->my_notes_categories_controller->getAccessibleCategories($filter);
+    public function getAccessibleNotesCategories() {
+        $accessible_categories = $this->my_notes_categories_controller->getAccessibleCategories();
         return $accessible_categories;
+    }
+
+    /**
+     * @return array
+     * @throws DBALException
+     */
+    public function getAllNotesCategories(){
+        $all_categories = $this->my_notes_categories_controller->getAllNotesCategories();
+        return $all_categories;
     }
 
     /**
