@@ -27,13 +27,13 @@ class NotesCategories{
 
     const CATEGORY_APPLICATIONS = [
         self::KEY_NAME        => 'Applications',
-        self::KEY_ICON        => 'far fa-product-hunt',
+        self::KEY_ICON        => 'fab fa-product-hunt',
         self::KEY_PARENT_NAME => '',
     ];
 
     const CATEGORY_KEYS = [
         self::KEY_NAME        => 'Keys',
-        self::KEY_ICON        => 'far fa-key',
+        self::KEY_ICON        => 'fas fa-key',
         self::KEY_PARENT_NAME => 'Applications',
     ];
 
@@ -63,13 +63,13 @@ class NotesCategories{
 
     const CATEGORY_CAR = [
         self::KEY_NAME        => 'Car',
-        self::KEY_ICON        => 'far fa-car',
+        self::KEY_ICON        => 'fas fa-car',
         self::KEY_PARENT_NAME => '',
     ];
 
     const CATEGORY_DIET = [
         self::KEY_NAME        => 'Diet',
-        self::KEY_ICON        => 'far fa-coffee',
+        self::KEY_ICON        => 'fas fa-coffee',
         self::KEY_PARENT_NAME => '',
     ];
 
