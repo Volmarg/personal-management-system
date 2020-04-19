@@ -175,4 +175,16 @@ class Utils extends AbstractController {
 
         return $keys;
     }
+
+    /**
+     * @param array $array
+     * @return string
+     */
+    public static function escapedDoubleQuoteJsonEncode(array $array): string
+    {
+        $json              = \GuzzleHttp\json_encode($array);
+        $single_quote_json = str_replace('"','\"' , $json);
+
+        return $single_quote_json;
+    }
 }

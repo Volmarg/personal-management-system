@@ -89,14 +89,30 @@ export default (function () {
                     'success_message'   : success_message,
                     'fail_message'      : fail_message,
                     'callback': function (dataCallbackParams) {
-                        let menuNodeModuleName = dataCallbackParams.menuNodeModuleName;
 
-                        if( "undefined" == typeof menuNodeModuleName){
-                            throw ("menuNodeModuleName param is missing in CreateFolder::makeCreateData");
+                        if(
+                                null !== dataCallbackParams
+                            &&  "undefined" !== typeof dataCallbackParams
+                        ){
+                            let menuNodeModuleName           = dataCallbackParams.menuNodeModuleName;
+                            let menuNodeModulesNamesToReload = dataCallbackParams.menuNodeModulesNamesToReload;
+
+                            if( "undefined" !== typeof menuNodeModuleName){
+                                ui.ajax.singleMenuNodeReload(menuNodeModuleName);
+                            }else if( "undefined" !== menuNodeModulesNamesToReload ){
+                                let arrayOfMenuNodeModuleNames = JSON.parse(menuNodeModulesNamesToReload);
+                                $.each(arrayOfMenuNodeModuleNames, function(index, menuNodeModuleName){
+                                    ui.ajax.singleMenuNodeReload(menuNodeModuleName);
+                                })
+                            }
                         }
 
-                        ui.ajax.singleMenuNodeReload(menuNodeModuleName);
                         bootbox.hideAll();
+
+                        if( "undefined" !== typeof TWIG_REQUEST_URI ) {
+                            ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                        }
+
                     },
                     'callback_before': true,
                 };

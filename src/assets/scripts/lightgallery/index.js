@@ -96,7 +96,10 @@ export default (function () {
             let massActionRemoveButton   = $(this.selectors.classes.massActionRemoveButton);
             let massActionTransferButton = $(this.selectors.classes.massActionTransferButton);
 
-            if( TWIG_ROUTE !== this.vars.moduleRoute ){
+            if(
+                    "undefined" === typeof TWIG_ROUTE
+                ||  TWIG_ROUTE  !== this.vars.moduleRoute
+            ){
                 return;
             }
 

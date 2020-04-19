@@ -8,6 +8,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Utils;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Services\Files\DirectoriesHandler;
@@ -89,11 +90,17 @@ class FilesUploadSettingsAction extends AbstractController {
 
         $this->handleForms($rename_form, $copy_data_form);
 
+        $menu_node_modules_names_to_reload = [
+            ModulesController::MODULE_NAME_IMAGES,
+            ModulesController::MODULE_NAME_FILES,
+        ];
+
         $data = [
-            'ajax_render'           => $ajax_render,
-            'rename_form'           => $rename_form->createView(),
-            'copy_data_form'        => $copy_data_form->createView(),
-            'create_subdir_form'    => $create_subdir_form->createView()
+            'ajax_render'                       => $ajax_render,
+            'rename_form'                       => $rename_form->createView(),
+            'copy_data_form'                    => $copy_data_form->createView(),
+            'create_subdir_form'                => $create_subdir_form->createView(),
+            "menu_node_modules_names_to_reload" => Utils::escapedDoubleQuoteJsonEncode($menu_node_modules_names_to_reload),
         ];
 
         return $this->render(static::TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS, $data);
