@@ -60,7 +60,7 @@ class LockedResourceController extends AbstractController {
                     if( !array_key_exists(2, $matches) ){
                         return false;
                     }
-                    $replace = DIRECTORY_SEPARATOR . $matches[2];
+                    $replace = DIRECTORY_SEPARATOR . preg_quote($matches[2]);
                     $record  = preg_replace("#{$replace}#", "", $record);
 
                 }
