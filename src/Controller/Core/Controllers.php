@@ -10,6 +10,7 @@ use App\Controller\Modules\Contacts\MyContactsController;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
+use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\Job\MyJobAfterhoursController;
 use App\Controller\Modules\Job\MyJobSettingsController;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
@@ -155,6 +156,18 @@ class Controllers extends AbstractController {
      * @var FilesUploadSettingsController $files_upload_settings_controller
      */
     private $files_upload_settings_controller;
+
+    /**
+     * @var MyIssuesController $my_issues_controller
+     */
+    private $my_issues_controller;
+
+    /**
+     * @return MyIssuesController
+     */
+    public function getMyIssuesController(): MyIssuesController {
+        return $this->my_issues_controller;
+    }
 
     /**
      * @return MyImagesController
@@ -348,7 +361,8 @@ class Controllers extends AbstractController {
         SettingsFinancesController    $settings_finances_controller,
         SettingsValidationController  $settings_validation_controller,
         SettingsViewController        $settings_view_controller,
-        FilesUploadSettingsController $files_upload_settings_controller
+        FilesUploadSettingsController $files_upload_settings_controller,
+        MyIssuesController            $my_issues_controller
     ) {
         $this->achievement_controller           = $achievement_controller;
         $this->reports_controllers              = $reports_controller;
@@ -374,6 +388,7 @@ class Controllers extends AbstractController {
         $this->settings_validation_controller   = $settings_validation_controller;
         $this->settings_view_controller         = $settings_view_controller;
         $this->files_upload_settings_controller = $files_upload_settings_controller;
+        $this->my_issues_controller             = $my_issues_controller;
     }
 
 }

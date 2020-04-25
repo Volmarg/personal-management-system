@@ -2,7 +2,8 @@
 
 namespace App\Entity\Modules\Issues;
 
-use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,30 +23,6 @@ class MyIssue {
     private $id;
 
     /**
-     * @var string $type
-     * @ORM\Column(type="string", length=255)
-     */
-    private $type;
-
-    /**
-     * @var string $information
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $information;
-
-    /**
-     * @var null|string $icon
-     * @ORM\Column(type="text", length=255, nullable=true)
-     */
-    private $icon;
-
-    /**
-     * @var DateTime $date
-     * @ORM\Column(type="datetime")
-     */
-    private $date;
-
-    /**
      * @var bool $deleted
      * @ORM\Column(type="boolean")
      */
@@ -58,6 +35,28 @@ class MyIssue {
     private $resolved = 0;
 
     /**
+     * @var string $name
+     * @ORM\Column(type="string")
+     */
+    private $name;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueContact", mappedBy="myIssue")
+     */
+    private $issueContact;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueProgress", mappedBy="myIssue")
+     */
+    private $issueProgress;
+
+    public function __construct()
+    {
+        $this->issueContact = new ArrayCollection();
+        $this->issueProgress = new ArrayCollection();
+    }
+
+    /**
      * @return int
      */
     public function getId(): int {
@@ -67,59 +66,16 @@ class MyIssue {
     /**
      * @return string
      */
-    public function getType(): string {
-        return $this->type;
+    public function getName(): string {
+        return $this->name;
     }
 
     /**
-     * @param string $type
+     * @param string $name
      */
-    public function setType(string $type): void {
-        $this->type = $type;
+    public function setName(string $name): void {
+        $this->name = $name;
     }
-
-    /**
-     * @return string
-     */
-    public function getInformation(): string {
-        return $this->information;
-    }
-
-    /**
-     * @param string $information
-     */
-    public function setInformation(string $information): void {
-        $this->information = $information;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIcon(): ?string {
-        return $this->icon;
-    }
-
-    /**
-     * @param string|null $icon
-     */
-    public function setIcon(?string $icon): void {
-        $this->icon = $icon;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDate(): DateTime {
-        return $this->date;
-    }
-
-    /**
-     * @param DateTime $date
-     */
-    public function setDate(DateTime $date): void {
-        $this->date = $date;
-    }
-
     /**
      * @return bool
      */
@@ -146,6 +102,68 @@ class MyIssue {
      */
     public function setResolved(bool $resolved): void {
         $this->resolved = $resolved;
+    }
+
+    /**
+     * @return Collection|MyIssueContact[]
+     */
+    public function getIssueContact(): Collection
+    {
+        return $this->issueContact;
+    }
+
+    public function addIssueContact(MyIssueContact $issueContact): self
+    {
+        if (!$this->issueContact->contains($issueContact)) {
+            $this->issueContact[] = $issueContact;
+            $issueContact->setMyIssue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIssueContact(MyIssueContact $issueContact): self
+    {
+        if ($this->issueContact->contains($issueContact)) {
+            $this->issueContact->removeElement($issueContact);
+            // set the owning side to null (unless already changed)
+            if ($issueContact->getMyIssue() === $this) {
+                $issueContact->setMyIssue(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|MyIssueProgress[]
+     */
+    public function getIssueProgress(): Collection
+    {
+        return $this->issueProgress;
+    }
+
+    public function addIssueProgress(MyIssueProgress $issueProgress): self
+    {
+        if (!$this->issueProgress->contains($issueProgress)) {
+            $this->issueProgress[] = $issueProgress;
+            $issueProgress->setMyIssue($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIssueProgress(MyIssueProgress $issueProgress): self
+    {
+        if ($this->issueProgress->contains($issueProgress)) {
+            $this->issueProgress->removeElement($issueProgress);
+            // set the owning side to null (unless already changed)
+            if ($issueProgress->getMyIssue() === $this) {
+                $issueProgress->setMyIssue(null);
+            }
+        }
+
+        return $this;
     }
 
 }

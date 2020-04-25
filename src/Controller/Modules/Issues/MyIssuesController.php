@@ -3,6 +3,7 @@
 namespace App\Controller\Modules\Issues;
 
 use App\Controller\Core\Application;
+use App\DTO\Modules\Issues\IssueCardDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyIssuesController extends AbstractController {
@@ -15,6 +16,16 @@ class MyIssuesController extends AbstractController {
     public function __construct(Application $app) {
 
         $this->app = $app;
+    }
+
+    /**
+     * @param array $issues
+     * @return IssueCardDTO[]
+     */
+    public function buildIssuesCardsDtosFromIssues(array $issues): array
+    {
+
+        return [];
     }
 
 }

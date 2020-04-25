@@ -1,0 +1,75 @@
+<div class="contact-area">
+
+    {% if contact.getGroup() is not null %}
+        <section style="margin-top: 10px; background-color: white; opacity: .5;"
+                 data-toggle-popover="true"
+                 data-html="true"                               {# popover attr #}
+                 data-trigger="hover"                           {# popover attr #}
+                 data-content="                                 {# popover attr #}
+                 <p style='display: flex;'>
+                    <span style='font-weight: bold; '>
+                        <span style='word-break: break-all;'>{{ contact.getGroup().getName() }}</span>
+                    </span>
+                </p>
+                "
+                 class="round-wrapper contact-group-circle">
+            <div class="fontawesome-centered">
+                <i class="{{ contact.getGroup().getIcon() }} fontawesome-holder" style="color: #{{ contact.getGroup().getColor() }};"></i>
+            </div>
+        </section>
+    {% endif %}
+
+
+    {# todo: Use constants from repositories.php #}
+    <section class="contact-card-actions">
+        <div class="action"
+             data-entity-id="{{ contact.getId() }}"
+             data-repository-name="MyContactRepository"
+             data-entity-modal-edit-action="true">
+            <i class="far fa-pen-square"></i>
+        </div>
+        <div class="action"
+             data-entity-id="{{ contact.getId() }}"
+             data-repository-name="MyContactRepository"
+             data-entity-removal-action="true">
+            <i class="far fa-times-circle"></i>
+        </div>
+    </section>
+
+    <div class="contact contact-card-border contact-card-no-padding" style="width: 100%;">
+        <main>
+            <section>
+                <div class="content" style="padding-bottom: 20px; background-color: #{{ contact.getNameBackgroundColor() }};">
+                    <img src="{{ contact.getImagePath() }}" alt="Profile Image" style="width: 60px; height: 60px;">
+                    <aside style="padding-top:10px;">
+                        <h1 style="font-size:18px;">{{ contact.getName() }}</h1>
+                    </aside>
+                </div>
+
+                <div class="title active" style="background-color: #{{ contact.getDescriptionBackgroundColor() }};">
+                    <p style="text-transform: none; font-size: 12px;">{{ contact.getDescription() }}</p>
+                </div>
+            </section>
+
+        </main>
+
+        <nav class="active contact-cards-contacts-wrapper">
+
+            {% for contact_type in contact.getContacts().getContactTypeDtos() %}
+
+                <a href="#" >
+                    <div class="icon" style="width: 35px; height: 35px;">
+                        <img src="{{ contact_type.getIconPath()  }}" style="width:100%;"/>
+                    </div>
+
+                    <div class="content">
+                        <h1>{{ contact_type.getName() | capitalize }}</h1>
+                        <span>{{ contact_type.getDetails() }}</span>
+                    </div>
+                </a>
+
+            {% endfor %}
+
+        </nav>
+    </div>
+</div>

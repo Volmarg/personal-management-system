@@ -18,9 +18,9 @@
 
                             {# content here #}
 
-                            {% for issue in all_ongoing_issues %}
+                            {% for issueCardDto in issues_cards_dtos %}
 
-                                {{ dump(issue) }}
+                                {{ dump(issueCardDto) }}
 
                             {% endfor %}
 

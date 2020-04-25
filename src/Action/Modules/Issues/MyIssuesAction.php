@@ -51,13 +51,15 @@ class MyIssuesAction extends AbstractController
      * @param bool $ajax_render
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate($ajax_render = false)
+    {
 
         $all_ongoing_issues = $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved();
+        $issues_cards_dtos  = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($all_ongoing_issues);
 
         $data = [
-            'ajax_render'        => $ajax_render,
-            'all_ongoing_issues' => $all_ongoing_issues
+            'ajax_render'       => $ajax_render,
+            'issues_cards_dtos' => $issues_cards_dtos
         ];
 
         return $this->render(self::TWIG_TEMPLATE_PENDING_ISSUES, $data);
