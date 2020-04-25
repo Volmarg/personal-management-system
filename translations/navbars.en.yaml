@@ -66,6 +66,9 @@ sidebar:
       paymentsCharts: Payments charts
       savingsCharts: Savings charts
       historicalMoneyOwed: Historical money owed
+    issues:
+      label: Issues
+      ongoing: Ongoing
 topbar:
   search:
     placeholder: Search for files by tags...

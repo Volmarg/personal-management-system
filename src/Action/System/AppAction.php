@@ -42,6 +42,7 @@ class AppAction extends AbstractController {
     const MENU_NODE_MODULE_NAME_MY_SHOPPING   = ModulesController::MODULE_NAME_SHOPPING;
     const MENU_NODE_MODULE_NAME_MY_TRAVELS    = ModulesController::MODULE_NAME_TRAVELS;
     const MENU_NODE_MODULE_NAME_NOTES         = ModulesController::MODULE_NAME_NOTES;
+    const MENU_NODE_MODULE_NAME_MY_ISSUES     = ModulesController::MODULE_NAME_ISSUES;
     const MENU_NODE_MODULE_NAME_REPORTS       = ModulesController::MENU_NODE_MODULE_NAME_REPORTS;
 
     /**
@@ -60,6 +61,7 @@ class AppAction extends AbstractController {
     const MENU_NODE_NAME_MY_TRAVELS   = 'my-travels';
     const MENU_NODE_NAME_NOTES        = 'notes';
     const MENU_NODE_NAME_REPORTS      = 'my-reports';
+    const MENU_NODE_NAME_MY_ISSUES    = 'my-issues';
 
     const MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES = [
         self::MENU_NODE_MODULE_NAME_ACHIEVEMENTS  => 'MENU_NODE_MODULE_NAME_ACHIEVEMENTS',
@@ -75,6 +77,7 @@ class AppAction extends AbstractController {
         self::MENU_NODE_MODULE_NAME_MY_TRAVELS    => 'MENU_NODE_MODULE_NAME_MY_TRAVELS',
         self::MENU_NODE_MODULE_NAME_NOTES         => 'MENU_NODE_MODULE_NAME_NOTES',
         self::MENU_NODE_MODULE_NAME_REPORTS       => 'MENU_NODE_MODULE_NAME_REPORTS',
+        self::MENU_NODE_NAME_MY_ISSUES            => 'MENU_NODE_NAME_MY_ISSUES',
     ];
 
     const MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP = [
@@ -91,6 +94,7 @@ class AppAction extends AbstractController {
         self::MENU_NODE_MODULE_NAME_MY_TRAVELS    => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_TRAVELS   . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_NOTES         => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_NOTES        . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_REPORTS       => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_REPORTS      . self::TWIG_EXT,
+        self::MENU_NODE_NAME_MY_ISSUES            => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_ISSUES    . self::TWIG_EXT,
     ];
 
     /**

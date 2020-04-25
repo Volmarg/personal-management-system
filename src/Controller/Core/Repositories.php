@@ -20,6 +20,7 @@ use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Goals\MyGoalsRepository;
 use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
+use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
@@ -93,6 +94,7 @@ class Repositories extends AbstractController {
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
     const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
     const LOCKED_RESOURCE_REPOSITORY                    = "LockedResourceRepository";
+    const MY_ISSUES_REPOSITORY                          = "MyIssueRepository";
 
     const PASSWORD_FIELD        = 'password';
 
@@ -284,6 +286,11 @@ class Repositories extends AbstractController {
      */
     public $lockedResourceRepository;
 
+    /**
+     * @var MyIssueRepository $myIssueRepository
+     */
+    public $myIssueRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -319,6 +326,7 @@ class Repositories extends AbstractController {
         MyContactRepository                 $myContactRepository,
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         LockedResourceRepository            $lockedResourceRepository,
+        MyIssueRepository                   $myIssueRepository,
         EntityManagerInterface              $entity_manager
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -355,6 +363,7 @@ class Repositories extends AbstractController {
         $this->myContactRepository                  = $myContactRepository;
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
+        $this->myIssueRepository                    = $myIssueRepository;
         $this->entity_manager                       = $entity_manager;
     }
 

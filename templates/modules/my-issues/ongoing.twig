@@ -1,0 +1,40 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bdrs-3 p-20 mB-20 d-flex flex-wrap justify-content-around">
+
+                            {# content here #}
+
+                            {% for issue in all_ongoing_issues %}
+
+                                {{ dump(issue) }}
+
+                            {% endfor %}
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widgets-wrapper">
+                {# todo: handle create via quick create only #}
+            </div>
+
+        </div>
+    </main>
+
+{% endblock body %}

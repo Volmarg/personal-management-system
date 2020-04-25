@@ -19,6 +19,7 @@ class ModulesController extends AbstractController {
     const MODULE_NAME_PAYMENTS                  = "My Payments";
     const MODULE_NAME_SHOPPING                  = "My Shopping";
     const MODULE_NAME_TRAVELS                   = "My Travels";
+    const MODULE_NAME_ISSUES                    = "My Issues";
     const MENU_NODE_MODULE_NAME_REPORTS         = "My Reports";
 
     const MODULE_ENTITY_NOTES_CATEGORY          = "My Notes Categories";
