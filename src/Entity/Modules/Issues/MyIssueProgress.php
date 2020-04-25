@@ -28,12 +28,6 @@ class MyIssueProgress {
     private $information;
 
     /**
-     * @var null|string $icon
-     * @ORM\Column(type="text", length=255, nullable=true)
-     */
-    private $icon;
-
-    /**
      * @var DateTime $date
      * @ORM\Column(type="datetime")
      */
@@ -69,20 +63,6 @@ class MyIssueProgress {
      */
     public function setInformation(string $information): void {
         $this->information = $information;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getIcon(): ?string {
-        return $this->icon;
-    }
-
-    /**
-     * @param string|null $icon
-     */
-    public function setIcon(?string $icon): void {
-        $this->icon = $icon;
     }
 
     /**

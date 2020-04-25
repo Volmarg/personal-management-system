@@ -20,6 +20,8 @@
 
                             {% for issueCardDto in issues_cards_dtos %}
 
+                                {% include 'modules/my-issues/components/my-issue-card.twig' with { issueCardDto: issueCardDto } %}
+
                                 {{ dump(issueCardDto) }}
 
                             {% endfor %}
