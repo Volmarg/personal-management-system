@@ -207,7 +207,7 @@ export default (function () {
 
             // Handling editing name
             lightboxGallery.on('onAfterOpen.lg', function (event) {
-                let pencilIcon = '<a class=\"lg-icon\" id="lightgallery_pencil_button"><i class="fas fa-pencil"></i></a>';
+                let pencilIcon = '<a class=\"lg-icon\" id="lightgallery_pencil_button"><i class="fas fa-pencil-alt"></i></a>';
                 let saveIcon   = '<a class=\"lg-icon d-none\" id="lightgallery_save_button"><i class="far fa-save"></i></a>';
 
                 $(_this.selectors.classes.upperToolbar).append(saveIcon);
