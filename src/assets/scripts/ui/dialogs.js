@@ -1,5 +1,8 @@
 /**
  * This file handles calling dialogs
+ *  Keep in mind that some actions are handled explicitly here due to:
+ *  - special logic that must be handled for given call,
+ *  - some function were created before building more automatic mechanism with html data attr. utilization
  */
 var bootbox = require('bootbox');
 
@@ -26,6 +29,14 @@ export default (function () {
                 updateTagsInputWithTags: 'form[name^="update_tags"] input.tags'
             }
         },
+        data: {
+            requestMethod     : "data-dialog-call-request-method",
+            requestUrl        : "data-dialog-call-request-url",
+            getParameters     : "data-dialog-call-request-get-parameters",
+            postParameters    : "data-dialog-call-request-post-parameters",
+            callDialogOnClick : "data-call-dialog-on-click",
+            callback          : "data-call-dialog-callback"
+        },
         placeholders: {
             fileName            : "%fileName%",
             targetUploadType    : "%currentUploadType%",
@@ -51,6 +62,93 @@ export default (function () {
             tags                : ''
         },
         general: {
+            init: function(){
+                this.attachCallDialogOnClickEvent();
+            },
+            attachCallDialogOnClickEvent: function(){
+                let elements = $("[" + dialogs.ui.data.callDialogOnClick + "=true]");
+                let _this    = this;
+
+                elements.on('click', function(event){
+                    let $clickedElement = $(event.currentTarget);
+
+                    let requestMethod  = $clickedElement.attr(dialogs.ui.data.requestMethod);
+                    let requestUrl     = $clickedElement.attr(dialogs.ui.data.requestUrl);
+                    let getParameters  = $clickedElement.attr(dialogs.ui.data.getParameters);
+                    let postParameters = $clickedElement.attr(dialogs.ui.data.postParameters);
+                    let callback       = $clickedElement.attr(dialogs.ui.data.callback);
+
+                    let usedParameters = null;
+                    let url            = null;
+                    let data           = null;
+
+                    switch( requestMethod ){
+                        case "POST":
+                        {
+                            if(
+                                    ""          === postParameters
+                                ||  "undefined" === typeof postParameters
+                            ){
+                                throw{
+                                    "message": "Post parameters are missing for dialog call"
+                                }
+                            }
+
+                            usedParameters = postParameters;
+                            url            = requestUrl;
+                            data           = JSON.parse(postParameters);
+                        }
+                        break;
+
+                        case "GET":
+                        {
+                            usedParameters = getParameters;
+                            data           = null;
+
+                            let getJsonParams  = JSON.parse(getParameters);
+                            let urlParams      = new URLSearchParams(getJsonParams).toString();;
+                            url                = url + '?' + urlParams;
+                        }
+                        break;
+                        default:
+                            throw {
+                                "message" : "Unsupported method",
+                                "method"  : requestMethod
+                            }
+                    }
+
+                    ui.widgets.loader.toggleLoader();
+                    $.ajax({
+                        method : requestMethod,
+                        url    : url,
+                        data   : data
+                    }).always((data) => {
+                        ui.widgets.loader.toggleLoader();
+
+                        try{
+                            var template     = data['template'];
+                            var errorMessage = data['errorMessage'];
+
+                        }catch(Exception){
+                            throw{
+                                "message"   : "Unable to extract data from ajax response",
+                                "exception" : Exception,
+                            }
+                        }
+
+                        if( undefined !== template ){
+                            _this.callDialog(template, callback);
+                        } else if(undefined !== errorMessage) {
+                            bootstrap_notifications.notify(errorMessage, 'danger');
+                        }else{
+                            let message = 'Something went wrong while trying to load dialog template.';
+                            bootstrap_notifications.notify(message, 'danger');
+                        }
+
+                    })
+
+                });
+            },
             /**
              * Attaches dialog calling logic for given selector and reads data from it to build dialog
              * @param selector {string}
