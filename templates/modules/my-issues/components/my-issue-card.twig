@@ -39,22 +39,42 @@
                     <div class="issue-card-actions d-flex justify-content-between" style="margin-top: -4px;">
 
                         <div class="issue-card-actions-left">
-                            <span class="action"
+                            <span class="action pointer mr-1"
                                   data-entity-id="{{ issueCardDto.getIssue().getId() }}"
-                                  data-repository-name="{#todo#}"
+                                  data-repository-name="MyIssueRepository"
                                   data-entity-modal-edit-action="true">
                                 <i class="fas fa-edit fa-lg"></i>
                             </span>
-                            <span class="action"
+                            <span class="action pointer"
                                       data-entity-id="{{ issueCardDto.issue().getId() }}"
-                                      data-repository-name="{#todo#}"
+                                      data-repository-name="MyIssueRepository"
                                       data-entity-removal-action="true">
                                 <i class="far fa-times-circle fa-lg"></i>
                             </span>
                         </div>
 
+                        <div class="issue-card-actions-center issue-elements-actions">
+                            <span class="action pointer mr-1"
+                                      data-repository-name="{#todo#}"
+                                      data-entity-add-element-action="true">
+                                <i class="far fa-plus-square fa-lg"></i>
+                            </span>
+
+                            <span class="action pointer mr-1"
+                                  data-repository-name="{#todo#}"
+                                  data-entity-edit-elements-action="true">
+                                <i class="fas fa-pen-square fa-lg"></i>
+                            </span>
+
+                            <span class="action pointer mr-1"
+                                  data-repository-name="{#todo#}"
+                                  data-entity-remove-element-action="true">
+                                <i class="far fa-minus-square fa-lg"></i>
+                            </span>
+                        </div>
+
                         <div class="issue-card-actions-right">
-                                <span class="action"
+                            <span class="action pointer"
                                       data-entity-id="{{ issueCardDto.issue().getId() }}"
                                       data-repository-name="{#todo#}"
                                       data-entity-detials-action="true">
