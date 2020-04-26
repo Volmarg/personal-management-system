@@ -1,42 +1,70 @@
 <div class="contact-area">
 
-
-    {# todo: Use constants from repositories.php #}
-    <section class="contact-card-actions">
-        <div class="action"
-             data-entity-id="{{ issueCardDto.getIssue().getId() }}"
-             data-repository-name="MyContactRepository"
-             data-entity-modal-edit-action="true">
-            <i class="far fa-pen-square"></i>
-        </div>
-        <div class="action"
-             data-entity-id="{{ issueCardDto.issue().getId() }}"
-             data-repository-name="MyContactRepository"
-             data-entity-removal-action="true">
-            <i class="far fa-times-circle"></i>
-        </div>
-    </section>
-
     <div class="contact contact-card-border contact-card-no-padding" style="width: 100%;">
         <main>
-            <section>
-                <div class="content" style="padding-bottom: 20px; ">
-                    <aside style="padding-top:10px;">
-                        <h1 style="font-size:18px;">test</h1>
-                    </aside>
+            <div>
+                <div class="content bgc-white bd bdrs-3 p-10" style="padding-bottom: 20px; color: rgb(114, 119, 122) !important;">
+                    <h1 style="font-size:18px;" class="text-center">
+                        {{ issueCardDto.getIssue().getName() }}
+                    </h1>
+                    <p class="text-center p-0 m-0">
+                        {{ issueCardDto.getIssue().getInformation() }}
+                    </p>
                 </div>
 
-                <div class="title active">
-                    <p style="text-transform: none; font-size: 12px;">TEST</p>
-                </div>
-            </section>
+                <div class="title active bgc-white bd bdrs-3 p-10">
+                    <ul style="list-style-type: none;" class="p-0">
+                        {% if issueCardDto.getIssueLastContact() is not null %}
+                            <li class="justify-content-center d-flex"><b>{{ translate('issues.card.lastContactDate') }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastContact() | date("Y-m-d H:i:s") }}</span></li>
+                        {% endif %}
+                        {% if issueCardDto.getIssueContactsByIcon() is not empty %}
+                            <li class="justify-content-center d-flex">
+                                {% for icon, issueContacts in issueCardDto.getIssueContactsByIcon() %}
+                                    <b><i class="fa-sm {{ icon }}"></i></b>: {{ issueContacts | length }}
+                                    {% if not loop.last %}
+                                        |&nbsp;
+                                    {% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endif %}
 
+                        {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
+                            <li class="justify-content-center d-flex">
+                                <b><i class="fas fa-play-circle"></i></b>: {{ issueCardDto.getIssue().getIssueProgress() | length  }}
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    <hr class="spaceless-hr">
+                    <div class="issue-card-actions d-flex justify-content-between" style="margin-top: -4px;">
+
+                        <div class="issue-card-actions-left">
+                            <span class="action"
+                                  data-entity-id="{{ issueCardDto.getIssue().getId() }}"
+                                  data-repository-name="{#todo#}"
+                                  data-entity-modal-edit-action="true">
+                                <i class="fas fa-edit fa-lg"></i>
+                            </span>
+                            <span class="action"
+                                      data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                      data-repository-name="{#todo#}"
+                                      data-entity-removal-action="true">
+                                <i class="far fa-times-circle fa-lg"></i>
+                            </span>
+                        </div>
+
+                        <div class="issue-card-actions-right">
+                                <span class="action"
+                                      data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                      data-repository-name="{#todo#}"
+                                      data-entity-detials-action="true">
+                                <i class="fas fa-eye fa-lg"></i>
+                            </span>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </main>
-
-        <nav class="active contact-cards-contacts-wrapper">
-
-
-
-        </nav>
     </div>
 </div>

@@ -3,6 +3,7 @@
 namespace App\DTO\Modules\Issues;
 
 use App\Entity\Modules\Issues\MyIssue;
+use DateTime;
 
 class IssueCardDTO {
 
@@ -12,9 +13,9 @@ class IssueCardDTO {
     private $issue;
 
     /**
-     * @var array $issue_contacts_count_by_icon
+     * @var array $issue_contacts_by_icon
      */
-    private $issue_contacts_count_by_icon = [];
+    private $issue_contacts_by_icon = [];
 
     /**
      * @var int $issue_contacts_count
@@ -27,9 +28,9 @@ class IssueCardDTO {
     private $issue_progress_count = 0;
 
     /**
-     * @var array $issue_last_contact
+     * @var DateTime $issue_last_contact
      */
-    private $issue_last_contact = [];
+    private $issue_last_contact = null;
 
     /**
      * @return MyIssue
@@ -48,15 +49,15 @@ class IssueCardDTO {
     /**
      * @return array
      */
-    public function getIssueContactsCountByIcon(): array {
-        return $this->issue_contacts_count_by_icon;
+    public function getIssueContactsByIcon(): array {
+        return $this->issue_contacts_by_icon;
     }
 
     /**
-     * @param array $issue_contacts_count_by_icon
+     * @param array $issue_contacts_by_icon
      */
-    public function setIssueContactsCountByIcon(array $issue_contacts_count_by_icon): void {
-        $this->issue_contacts_count_by_icon = $issue_contacts_count_by_icon;
+    public function setIssueContactsByIcon(array $issue_contacts_by_icon): void {
+        $this->issue_contacts_by_icon = $issue_contacts_by_icon;
     }
 
     /**
@@ -88,16 +89,16 @@ class IssueCardDTO {
     }
 
     /**
-     * @return array
+     * @return null|DateTime
      */
-    public function getIssueLastContact(): array {
+    public function getIssueLastContact():? DateTime {
         return $this->issue_last_contact;
     }
 
     /**
-     * @param array $issue_last_contact
+     * @param null|DateTime $issue_last_contact
      */
-    public function setIssueLastContact(array $issue_last_contact): void {
+    public function setIssueLastContact(?DateTime $issue_last_contact): void {
         $this->issue_last_contact = $issue_last_contact;
     }
 

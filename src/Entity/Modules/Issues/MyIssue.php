@@ -41,6 +41,12 @@ class MyIssue {
     private $name;
 
     /**
+     * @var string $information
+     * @ORM\Column(type="string")
+     */
+    private $information;
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueContact", mappedBy="myIssue")
      */
     private $issueContact;
@@ -54,6 +60,20 @@ class MyIssue {
     {
         $this->issueContact = new ArrayCollection();
         $this->issueProgress = new ArrayCollection();
+    }
+
+    /**
+     * @return string
+     */
+    public function getInformation(): string {
+        return $this->information;
+    }
+
+    /**
+     * @param string $information
+     */
+    public function setInformation(string $information): void {
+        $this->information = $information;
     }
 
     /**

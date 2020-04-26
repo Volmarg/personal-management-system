@@ -321,6 +321,10 @@ upload:
     fileExtension: File extension
     tags: Tags
 
+issues:
+  card:
+    lastContactDate: "Last contact date: "
+
 other:
   summary: Summary
   overallSummary: Overall summary

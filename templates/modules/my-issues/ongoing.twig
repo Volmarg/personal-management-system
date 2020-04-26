@@ -16,16 +16,9 @@
                     <div class="col-md-12">
                         <div class="bdrs-3 p-20 mB-20 d-flex flex-wrap justify-content-around">
 
-                            {# content here #}
-
                             {% for issueCardDto in issues_cards_dtos %}
-
                                 {% include 'modules/my-issues/components/my-issue-card.twig' with { issueCardDto: issueCardDto } %}
-
-                                {{ dump(issueCardDto) }}
-
                             {% endfor %}
-
 
                         </div>
                     </div>
