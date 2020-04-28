@@ -77,7 +77,17 @@
                             <span class="action pointer"
                                       data-entity-id="{{ issueCardDto.issue().getId() }}"
                                       data-repository-name="{#todo#}"
-                                      data-entity-detials-action="true">
+                                      data-entity-detials-action="true"
+                                      data-dialog-call-request-url="{{ path('dialog_body_preview_issue_details') }}"
+                                      data-dialog-call-request-method="POST"
+                                      data-dialog-call-request-post-parameters='{"entityId": "{{ issueCardDto.issue().getId() }}"}'
+                                      data-call-dialog-on-click="true"
+                                      data-call-dialog-callback="
+                                            datatable.init();
+                                            ui.crud.init();
+                                            ui.widgets.applyAccordion();
+                                      "
+                            >
                                 <i class="fas fa-eye fa-lg"></i>
                             </span>
                         </div>

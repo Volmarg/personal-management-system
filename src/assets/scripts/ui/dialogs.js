@@ -76,7 +76,8 @@ export default (function () {
                     let requestUrl     = $clickedElement.attr(dialogs.ui.data.requestUrl);
                     let getParameters  = $clickedElement.attr(dialogs.ui.data.getParameters);
                     let postParameters = $clickedElement.attr(dialogs.ui.data.postParameters);
-                    let callback       = $clickedElement.attr(dialogs.ui.data.callback);
+                    let callbackString = $clickedElement.attr(dialogs.ui.data.callback);
+                    let callback       = new Function(callbackString);
 
                     let usedParameters = null;
                     let url            = null;
@@ -106,7 +107,7 @@ export default (function () {
                             data           = null;
 
                             let getJsonParams  = JSON.parse(getParameters);
-                            let urlParams      = new URLSearchParams(getJsonParams).toString();;
+                            let urlParams      = new URLSearchParams(getJsonParams).toString();
                             url                = url + '?' + urlParams;
                         }
                         break;

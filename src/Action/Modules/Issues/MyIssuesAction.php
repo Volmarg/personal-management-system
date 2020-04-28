@@ -50,6 +50,7 @@ class MyIssuesAction extends AbstractController
     /**
      * @param bool $ajax_render
      * @return Response
+     * @throws Exception
      */
     private function renderTemplate($ajax_render = false)
     {

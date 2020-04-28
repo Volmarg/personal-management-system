@@ -28,6 +28,7 @@ export default (function () {
             apexcharts.init();
             ui.lockedResource.init();
             prismjs.init();
+            dialogs.ui.general.init();
         },
         /**
          * Reinitialize is being called in alot of places when content is reloaded via js some logic is not allowed to

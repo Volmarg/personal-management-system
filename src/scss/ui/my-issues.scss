@@ -1,0 +1,10 @@
+/* Initial values */
+
+#MyIssuesPreview div.accordin-section section {
+  > div {
+    height: 200px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+  height: auto !important;
+}

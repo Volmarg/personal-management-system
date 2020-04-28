@@ -4,6 +4,7 @@ namespace App\Action\Core;
 
 use App\Action\Files\FileUploadAction;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Form\System\SystemLockResourcesPasswordType;
@@ -11,6 +12,7 @@ use App\Services\Files\DirectoriesHandler;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,6 +21,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
+ * Todo:
+ *  at some point JsonResponse should be replaced with AjaxResponse (my class)
+ *  - consider adding new key in class if not yet present `success` or `error`
+ *  same ajax calls for dialog should be adjusted on front for more future flexibility
  * This class is only responsible for building dialogs data in response for example on Ajax call
  * Class Dialogs
  * @package App\Controller\Utils
@@ -32,6 +38,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD                   = 'page-elements/components/dialogs/bodies/new-folder.twig';
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES         = 'page-elements/components/dialogs/bodies/system-lock-resources.twig';
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD   = 'page-elements/components/dialogs/bodies/system-lock-create-password.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS    = 'page-elements/components/dialogs/bodies/preview-issue-details.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
@@ -53,34 +60,34 @@ class DialogsAction extends AbstractController
     private $directories_handler;
 
     /**
-     * @var FileUploadController $file_upload_controller
-     */
-    private $file_upload_controller;
-
-    /**
      * @var FileUploadAction $file_upload_action
      */
     private $file_upload_action;
+
+    /**
+     * @var Controllers $controllers
+     */
+    private $controllers;
 
     public function __construct(
         Application          $app,
         FileTagger           $file_tagger,
         DirectoriesHandler   $directories_handler,
-        FileUploadController $file_upload_controller,
-        FileUploadAction     $file_upload_action
+        FileUploadAction     $file_upload_action,
+        Controllers          $controllers
     ) {
-        $this->app                    = $app;
-        $this->file_tagger            = $file_tagger;
-        $this->directories_handler    = $directories_handler;
-        $this->file_upload_controller = $file_upload_controller;
-        $this->file_upload_action     = $file_upload_action;
+        $this->app                 = $app;
+        $this->file_tagger         = $file_tagger;
+        $this->controllers         = $controllers;
+        $this->directories_handler = $directories_handler;
+        $this->file_upload_action  = $file_upload_action;
     }
 
     /**
      * @Route("/dialog/body/data-transfer", name="dialog_body_data_transfer", methods="POST")
      * @param Request $request
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildDataTransferDialogBody(Request $request) {
 
@@ -124,7 +131,7 @@ class DialogsAction extends AbstractController
                 if( !$file->isFile() ){
                     return new JsonResponse($response_data);
                 }
-            }catch(\Exception $e) {
+            }catch(Exception $e) {
                 return new JsonResponse($response_data);
             }
 
@@ -156,7 +163,7 @@ class DialogsAction extends AbstractController
      * @Route("/dialog/body/tags-update", name="dialog_body_tags_update", methods="POST")
      * @param Request $request
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildTagsUpdateDialogBody(Request $request) {
 
@@ -214,7 +221,7 @@ class DialogsAction extends AbstractController
      * @Route("/dialog/body/create-folder", name="dialog_body_create_folder", methods="POST")
      * @param Request $request
      * @return JsonResponse
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildCreateNewFolderDialogBody(Request $request) {
         if( !$request->request->has(static::KEY_MODULE_NAME) ){
@@ -246,7 +253,7 @@ class DialogsAction extends AbstractController
      * @Route("/dialog/body/upload", name="dialog_body_upload", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildUploadDialogBody(Request $request) {
         $template = 'page-elements/components/dialogs/bodies/upload.twig';
@@ -386,7 +393,7 @@ class DialogsAction extends AbstractController
      * @param Request $request
      * @return Response
      * @throws ExceptionDuplicatedTranslationKey
-     * @throws \Exception
+     * @throws Exception
      */
     public function buildEditContactCardDialogBody(Request $request) {
 
@@ -402,9 +409,9 @@ class DialogsAction extends AbstractController
         $forms_renders  = [];
 
         if( is_null($contact) ){
-            $message = $this->app->translator->translate("No entity was found for id: {$entity_id}"); //todo
+            $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
             return new JsonResponse([
-                'errorMessage' => $message
+                'errorMessage' => $message . $entity_id
             ]);
         }
 
@@ -436,5 +443,45 @@ class DialogsAction extends AbstractController
         return new JsonResponse($response_data);
     }
 
+    /**
+     * @Route("/dialog/body/preview-issue-details", name="dialog_body_preview_issue_details", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws ExceptionDuplicatedTranslationKey
+     * @throws Exception
+     */
+    public function buildPreviewIssueDetailsDialogBody(Request $request) {
+
+        if( !$request->request->has(self::KEY_ENTITY_ID) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $entity_id = $request->request->get(self::KEY_ENTITY_ID);
+        $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+
+        if( is_null($issue) ){
+            $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
+            return new JsonResponse([
+                'errorMessage' => $message . $entity_id
+            ]);
+        }
+
+        $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+
+        $template_data = [
+            'issueCardDto' => reset($issue_card_dto),
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+    }
 
 }
