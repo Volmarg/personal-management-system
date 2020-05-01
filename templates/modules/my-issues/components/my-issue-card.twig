@@ -39,44 +39,46 @@
                     <div class="issue-card-actions d-flex justify-content-between" style="margin-top: -4px;">
 
                         <div class="issue-card-actions-left">
-                            <span class="action pointer mr-1"
-                                  data-entity-id="{{ issueCardDto.getIssue().getId() }}"
-                                  data-repository-name="MyIssueRepository"
-                                  data-entity-modal-edit-action="true">
-                                <i class="fas fa-edit fa-lg"></i>
-                            </span>
                             <span class="action pointer"
                                       data-entity-id="{{ issueCardDto.issue().getId() }}"
                                       data-repository-name="MyIssueRepository"
-                                      data-entity-removal-action="true">
+                                      data-entity-removal-action="true"
+                                      data-toggle-popover="true"                     {# popover attr #}
+                                      data-html="true"                               {# popover attr #}
+                                      data-trigger="hover"                           {# popover attr #}
+                                      data-content="                                 {# popover attr #}
+                                        {{ translate('issues.card.popovers.removeRecord') }}
+                                      "
+                                      >
                                 <i class="far fa-times-circle fa-lg"></i>
                             </span>
                         </div>
 
                         <div class="issue-card-actions-center issue-elements-actions">
                             <span class="action pointer mr-1"
-                                      data-repository-name="{#todo#}"
-                                      data-entity-add-element-action="true">
-                                <i class="far fa-plus-square fa-lg"></i>
+                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                  data-entity-toggle-boolval="true"
+                                  data-entity-toggle-success-message="{{ translate('issues.card.ajaxCallMessages.dashboardVisibilityHasBeenToggled') }}"
+                                  data-entity-repository-name="MyIssueRepository"
+                                  data-entity-field-name="showOnDashboard"
+                                  data-toggle-popover="true"                     {# popover attr #}
+                                  data-html="true"                               {# popover attr #}
+                                  data-trigger="hover"                           {# popover attr #}
+                                  data-content="                                 {# popover attr #}
+                                    {{ translate('issues.card.popovers.toggleDashboardVisibility') }}
+                                  "
+                                >
+                                <i class="fas fa-home fa-lg"></i>
+                            </span>
+                            <span>
+                                <i class="fas fa-dot-circle fa-sm {{ issueCardDto.issue().isShowOnDashboard() ? 'text-success' : "text-danger" }}">{#todo: logic + css#}</i>
                             </span>
 
-                            <span class="action pointer mr-1"
-                                  data-repository-name="{#todo#}"
-                                  data-entity-edit-elements-action="true">
-                                <i class="fas fa-pen-square fa-lg"></i>
-                            </span>
-
-                            <span class="action pointer mr-1"
-                                  data-repository-name="{#todo#}"
-                                  data-entity-remove-element-action="true">
-                                <i class="far fa-minus-square fa-lg"></i>
-                            </span>
                         </div>
 
                         <div class="issue-card-actions-right">
                             <span class="action pointer"
                                       data-entity-id="{{ issueCardDto.issue().getId() }}"
-                                      data-repository-name="{#todo#}"
                                       data-entity-detials-action="true"
                                       data-dialog-call-request-url="{{ path('dialog_body_preview_issue_details') }}"
                                       data-dialog-call-request-method="POST"
@@ -86,6 +88,12 @@
                                             datatable.init();
                                             ui.crud.init();
                                             ui.widgets.applyAccordion();
+                                      "
+                                      data-toggle-popover="true"                     {# popover attr #}
+                                      data-html="true"                               {# popover attr #}
+                                      data-trigger="hover"                           {# popover attr #}
+                                      data-content="                                 {# popover attr #}
+                                        {{ translate('issues.card.popovers.previewAndEdit') }}
                                       "
                             >
                                 <i class="fas fa-eye fa-lg"></i>

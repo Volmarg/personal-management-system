@@ -56,10 +56,30 @@ class MyIssue {
      */
     private $issueProgress;
 
+    /**
+     * @var bool $showOnDashboard
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $showOnDashboard = true;
+
     public function __construct()
     {
         $this->issueContact = new ArrayCollection();
         $this->issueProgress = new ArrayCollection();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowOnDashboard(): bool {
+        return $this->showOnDashboard;
+    }
+
+    /**
+     * @param bool $showOnDashboard
+     */
+    public function setShowOnDashboard(bool $showOnDashboard): void {
+        $this->showOnDashboard = $showOnDashboard;
     }
 
     /**

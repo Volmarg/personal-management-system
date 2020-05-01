@@ -328,6 +328,12 @@ issues:
       headers:
         contacts: "Contacts"
         progress: "Progress"
+    popovers:
+      toggleDashboardVisibility: "Toggle dashboard visibility"
+      previewAndEdit: "Preview and edit"
+      removeRecord: "Remove record"
+    ajaxCallMessages:
+      dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"
 
 other:
   summary: Summary

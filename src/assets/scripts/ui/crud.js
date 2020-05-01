@@ -21,6 +21,13 @@ export default (function () {
             'fontawesome-picker'        : 'fontawesome-picker',
             'entity-remove-action'      : '.entity-remove-action'
         },
+        data: {
+            entityToggleBoolval                 : "data-entity-toggle-boolval",
+            entityToggleBoolvalSuccessMessage   : "data-entity-toggle-success-message",
+            entityId                            : "data-entity-id",
+            entityRepositoryName                : "data-entity-repository-name",
+            entityFieldName                     : "data-entity-field-name",
+        },
         messages: {
             entityUpdateSuccess: function (entity_name) {
                 return entity_name + " record has been succesfully updated";
@@ -105,6 +112,34 @@ export default (function () {
                     MyContactRepository: {
                         // special submission button goes here - like sending all data at once stripping forms etc
                     }
+                },
+                toggleBoolval: {
+                    url     : "/api/repository/toggle-boolval",
+                    method  : "GET",
+                    /**
+                     *
+                     * @param paramEntityId         {string}
+                     * @param paramRepositoryName   {string}
+                     * @param paramFieldName        {string}
+                     * @returns {string}
+                     */
+                    buildUrl: function(paramEntityId, paramRepositoryName, paramFieldName){
+                        if(
+                                "" === paramEntityId
+                            ||  "" === paramRepositoryName
+                            ||  "" === paramFieldName
+                        ){
+                            throw{
+                              "message": "At least one of the params required to build url for boolval toggle is missing",
+                                paramEntityId       : paramEntityId,
+                                paramRepositoryName : paramRepositoryName,
+                                paramFieldName      : paramFieldName
+                            };
+                        }
+
+                        let url = this.url + '/' + paramEntityId + '/' + paramRepositoryName + '/' + paramFieldName;
+                        return url;
+                    }
                 }
             },
             messages: {
@@ -124,7 +159,57 @@ export default (function () {
             },
             init: function(){
                 this.attachEntityRemovalEvent(this.selectors.classes.entityRemoveAction);
+                this.attachToggleBoolvalEvent();
                 this.attachEntityEditModalCallEvent(this.selectors.classes.entityCallEditModalAction);
+            },
+            /**
+             * Will call logic for handling inverting boolval in entity via ajax
+             */
+            attachToggleBoolvalEvent: function(){
+                let _this        = this;
+                let $allElements = $("[" + ui.crud.data.entityToggleBoolval + "=true]");
+
+                $allElements.on('click', function(event){
+                    let $clickedElement = $(event.currentTarget);
+
+                    let repositoryName = $clickedElement.attr(ui.crud.data.entityRepositoryName);
+                    let successMessage = $clickedElement.attr(ui.crud.data.entityToggleBoolvalSuccessMessage);
+                    let fieldName      = $clickedElement.attr(ui.crud.data.entityFieldName);
+                    let entityId       = $clickedElement.attr(ui.crud.data.entityId);
+
+                    ui.widgets.loader.showLoader();
+
+                    $.ajax({
+                        url    : _this.methods.toggleBoolval.buildUrl(entityId, repositoryName, fieldName),
+                        method : _this.methods.toggleBoolval.method
+                    }).always(function(data){
+                        ui.widgets.loader.hideLoader();
+
+                        try{
+                            var code    = data['code'];
+                            var message = data['message'];
+                        } catch(Exception){
+                            throw({
+                                "message"   : "Could not handle ajax call",
+                                "data"      : data,
+                                "exception" : Exception
+                            })
+                        }
+
+                        if( 200 != code ) {
+                            bootstrap_notifications.showRedNotification(message);
+                            return;
+                        }
+
+                        if( "undefined" !== typeof successMessage ){
+                            bootstrap_notifications.showGreenNotification(successMessage);
+                        }else{
+                            bootstrap_notifications.showGreenNotification(message);
+                        }
+
+                        ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                    });
+                });
             },
             /**
              * Removal is based on one click with aproval box

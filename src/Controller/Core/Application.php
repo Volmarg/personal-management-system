@@ -15,6 +15,7 @@ use App\Services\Core\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
 class Application extends AbstractController {
 
@@ -85,5 +86,26 @@ class Application extends AbstractController {
         $this->addFlash(Utils::FLASH_TYPE_DANGER, $message);
     }
 
+    /**
+     * @param string $camel_string
+     * @return string
+     */
+    public function camelCaseToSnakeCaseConverter(string $camel_string)
+    {
+        $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
+        $snake_string                  = $camel_case_to_snake_converter->normalize($camel_string);
+        return $snake_string;
+    }
+
+    /**
+     * @param string $snake_case
+     * @return string
+     */
+    public function snakeCaseToCamelCaseConverter(string $snake_case)
+    {
+        $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
+        $camel_string                  = $camel_case_to_snake_converter->denormalize($snake_case);
+        return $camel_string;
+    }
 
 }

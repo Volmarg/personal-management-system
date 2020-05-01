@@ -111,6 +111,8 @@ class Repositories extends AbstractController {
     const ENTITY_GET_DELETED_METHOD_NAME = "getDeleted";
     const ENTITY_IS_DELETED_METHOD_NAME  = "isDeleted";
 
+    const DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN = "boolean";
+
     /**
      * @var EntityManagerInterface $entity_manager
      */
@@ -703,7 +705,7 @@ class Repositories extends AbstractController {
      * @param $class
      * @return bool
      */
-    private function isEntityClass(string $class): bool
+    public function isEntityClass(string $class): bool
     {
         $is_entity_class = !$this->entity_manager->getMetadataFactory()->isTransient($class);
         return $is_entity_class;
@@ -713,7 +715,7 @@ class Repositories extends AbstractController {
      * @param string $table_name
      * @return array
      */
-    private function getColumnsNamesForTableName(string $table_name): array
+    public function getColumnsNamesForTableName(string $table_name): array
     {
         $schema_manager = $this->entity_manager->getConnection()->getSchemaManager();
         $columns        = $schema_manager->listTableColumns($table_name);
