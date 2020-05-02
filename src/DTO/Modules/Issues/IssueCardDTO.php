@@ -33,6 +33,11 @@ class IssueCardDTO {
     private $issue_last_contact = null;
 
     /**
+     * @var DateTime $issue_last_progress
+     */
+    private $issue_last_progress = null;
+
+    /**
      * @return MyIssue
      */
     public function getIssue(): MyIssue {
@@ -100,6 +105,20 @@ class IssueCardDTO {
      */
     public function setIssueLastContact(?DateTime $issue_last_contact): void {
         $this->issue_last_contact = $issue_last_contact;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getIssueLastProgress(): DateTime {
+        return $this->issue_last_progress;
+    }
+
+    /**
+     * @param DateTime $issue_last_progress
+     */
+    public function setIssueLastProgress(DateTime $issue_last_progress): void {
+        $this->issue_last_progress = $issue_last_progress;
     }
 
 }

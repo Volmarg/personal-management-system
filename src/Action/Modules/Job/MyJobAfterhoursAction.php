@@ -107,7 +107,6 @@ class MyJobAfterhoursAction extends AbstractController {
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return $response;
-
     }
 
     /**

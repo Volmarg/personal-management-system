@@ -145,10 +145,20 @@ class MyIssue {
     }
 
     /**
+     * @param bool $include_deleted
      * @return Collection|MyIssueContact[]
      */
-    public function getIssueContact(): Collection
+    public function getIssueContact(bool $include_deleted = false): Collection
     {
+        foreach($this->issueContact as $index => $issue_contact ){
+            if(
+                    !$include_deleted
+                &&  $issue_contact->isDeleted()
+            ){
+                unset($this->issueContact[$index]);
+            }
+        }
+
         return $this->issueContact;
     }
 
@@ -176,10 +186,20 @@ class MyIssue {
     }
 
     /**
+     * @param bool $include_deleted
      * @return Collection|MyIssueProgress[]
      */
-    public function getIssueProgress(): Collection
+    public function getIssueProgress(bool $include_deleted = false): Collection
     {
+        foreach($this->issueProgress as $index => $issue_progress ){
+            if(
+                    !$include_deleted
+                &&  $issue_progress->isDeleted()
+            ){
+                unset($this->issueProgress[$index]);
+            }
+        }
+
         return $this->issueProgress;
     }
 

@@ -34,27 +34,28 @@
                                     <tbody>
 
                                     {% for issueContact in issueCardDto.getIssue().getIssueContact() %}
-                                        <tr class="trash-parent editable-parent save-parent" data-type="MyIssueContact">
+                                        {% set date_timestamp = date( issueContact.getDate() | date('m/d/yyyy') ).timestamp %}
 
+                                        <tr class="trash-parent editable-parent save-parent" data-type="MyIssueContact">
+}
                                             <td class="d-none id">{{ issueContact.getId() }}</td>
-                                            <td class="icon-preview" data-order="{# todo #}"><i class="{{ issueContact.getIcon() }}" style="margin-left:6px;"></i></td>
-                                            <td class="icon" data-order="{# todo #}">{{ issueContact.getIcon() }}</td>
-                                            <td class="date" data-order="{# todo #}">
-{#                                                {% include 'page-elements/components/forms/input-standard-value.twig' with {#}
-{#                                                    type     : "number",#}
-{#                                                    value    : holidays_spent.daysSpent,#}
-{#                                                    disabled : true,#}
-{#                                                    min      : 1,#}
-{#                                                    max      : holidays_spent.daysSpent + days_left,#}
-{#                                                    attrs    : "data-validate-form-element=true"#}
-{#                                                }%}#}
+                                            <td class="icon-preview text-center" data-order="{{ issueContact.getIcon() }}"><i class="fontawesome-preview {{ issueContact.getIcon() }}" style="margin-left:6px;"></i></td>
+                                            <td class="icon fontawesome-input" data-order="{{ issueContact.getIcon() }}">{{ issueContact.getIcon() }}</td>
+                                            <td data-order="{{ date_timestamp }}">
+                                                <span class="date">
+                                                    {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                                        "value"     : issueContact.getDate()|date('Y-m-d') ,
+                                                        "disabled"  : true
+                                                    } %}
+                                                </span>
                                             </td>
                                             <td class="information">{{ issueContact.getInformation() }}</td>
 
                                             {% include 'modules/common/components/table-cells/actions.html.twig' with {
-                                                "trash": true,
-                                                "edit": true,
-                                                "save": true
+                                                "trash"       : true,
+                                                "edit"        : true,
+                                                "save"        : true,
+                                                "fontawesome" : true
                                             } %}
 
                                         </tr>

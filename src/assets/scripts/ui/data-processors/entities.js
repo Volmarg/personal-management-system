@@ -2,6 +2,7 @@
  * @info: This class contains the methods and representations used to:
  *  - handle formView fetching from backed
  */
+var bootbox = require('bootbox');
 
 export default (function () {
 
@@ -1469,6 +1470,57 @@ export default (function () {
                 };
             },
             entity_name: "Bill"
+        },
+        "MyIssueContact": {
+            makeUpdateData: function (tr_parent_element) {
+                let id              = $(tr_parent_element).find('.id').html();
+                let date            = $(tr_parent_element).find('.date input').val();
+                let information     = $(tr_parent_element).find('.information').html();
+                let icon            = $(tr_parent_element).find('.icon').html();
+
+                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                let url = '/my-issues-contacts/update';
+                let ajax_data = {
+                    'id'            : id,
+                    'date'          : date,
+                    'icon'          : icon,
+                    'information'   : information
+                };
+
+                return {
+                    'url'             : url,
+                    'data'            : ajax_data,
+                    'success_message' : success_message,
+                    'fail_message'    : fail_message,
+                    'callback'          : function () {
+                        bootbox.hideAll();
+                    },
+                    'callback_after': true,
+                };
+            },
+            makeRemoveData: function (parent_element) {
+                let id                  = $(parent_element).find('.id').html();
+                let url                 = '/my-issues-contacts/remove';
+                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+
+                return {
+                    'url'               : url,
+                    'data'              : {
+                        'id'            : id
+                    },
+                    'success_message'   : success_message,
+                    'fail_message'      : fail_message,
+                    'is_dataTable'      : false,
+                    'callback'          : function () {
+                        bootbox.hideAll();
+                    },
+                    'callback_after': true,
+                };
+            },
+            entity_name: "Issue contact"
         },
         'settingsDashboardWidgetsVisibility':{
             /**

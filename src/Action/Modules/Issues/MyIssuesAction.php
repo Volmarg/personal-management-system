@@ -52,7 +52,7 @@ class MyIssuesAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    private function renderTemplate($ajax_render = false)
+    public function renderTemplate($ajax_render = false)
     {
 
         $all_ongoing_issues = $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved();

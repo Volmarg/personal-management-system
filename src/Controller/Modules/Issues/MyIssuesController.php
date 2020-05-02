@@ -25,10 +25,11 @@ class MyIssuesController extends AbstractController {
 
     /**
      * @param MyIssue[] $issues
+     * @param bool $include_deleted
      * @return IssueCardDTO[]
      * @throws Exception
      */
-    public function buildIssuesCardsDtosFromIssues(array $issues): array
+    public function buildIssuesCardsDtosFromIssues(array $issues, bool $include_deleted = false): array
     {
         $issues_cards_dtos = [];
 
@@ -44,6 +45,14 @@ class MyIssuesController extends AbstractController {
             $issue_contacts_grouped_by_icon = [];
 
             foreach($issue_contacts as $issue_contact){
+
+                if(
+                        !$include_deleted
+                    &&  $issue_contact->isDeleted()
+                )
+                {
+                    continue;
+                }
 
                 $icon = $issue_contact->getIcon();
                 if( !array_key_exists($icon, $issue_contacts_grouped_by_icon) ){
@@ -61,7 +70,8 @@ class MyIssuesController extends AbstractController {
             $issue_card_dto->setIssueContactsCount($issue_contacts_count);
             $issue_card_dto->setIssueProgressCount($issue_progresses_count);
             $issue_card_dto->setIssueContactsByIcon($issue_contacts_grouped_by_icon);
-            $issue_card_dto->setIssueLastContact(new DateTime());
+            $issue_card_dto->setIssueLastContact(new DateTime()); //todo
+            $issue_card_dto->setIssueLastProgress(new DateTime()); //todo
 
             $issues_cards_dtos[] = $issue_card_dto;
         }

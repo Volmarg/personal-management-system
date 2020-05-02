@@ -86,7 +86,8 @@ var IconPicker = {
                     var ipButton = ipButtons[i];
                     ipButton.addEventListener('click', function() {
                         var jsonUrl = ipNewOptions.jsonUrl;
-                        var inputElement = this.dataset.iconpickerInput;
+                        var inputElement   = this.dataset.iconpickerInput;
+                        var previewElement = this.dataset.iconpickerPreview;
                         var showAllButton = ipNewOptions.showAllButton;
                         if (!showAllButton || (showAllButton && showAllButton.length < 1)) {
                             showAllButton = ipDefaultOptions.showAllButton;
@@ -126,7 +127,7 @@ var IconPicker = {
                         }
                         // check the callback off
 
-                        getIconListXmlHttpRequest(jsonUrl, showAllButton, cancelButton, searchPlaceholder, borderRadius, inputElement, theCallback);
+                        getIconListXmlHttpRequest(jsonUrl, showAllButton, cancelButton, searchPlaceholder, borderRadius, inputElement, theCallback, previewElement);
 
                     });
                     // IconPicker: Button Listeners -> Send XMLHttpRequest off
@@ -149,7 +150,7 @@ var IconPicker = {
 
 
         // IconPicker: Get Library from JSON and AppendTo Body on
-        var getIconListXmlHttpRequest = function(jsonUrl, buttonShowAll, buttonCancel, searchPlaceholder, borderRadius, inputElement, theCallback) {
+        var getIconListXmlHttpRequest = function(jsonUrl, buttonShowAll, buttonCancel, searchPlaceholder, borderRadius, inputElement, theCallback, previewElement) {
 
             // if chrome browser
             if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
@@ -173,7 +174,7 @@ var IconPicker = {
                     if (this.readyState === 4) {
                         if (this.status === 200) { // success
                             var data = this.responseText;
-                            appendIconListToBody(data, buttonShowAll, buttonCancel, searchPlaceholder, borderRadius, inputElement, theCallback);
+                            appendIconListToBody(data, buttonShowAll, buttonCancel, searchPlaceholder, borderRadius, inputElement, theCallback, previewElement);
                         } else {
                             ipConsoleError('XMLHttpRequest Failed.');
                         }
@@ -185,7 +186,7 @@ var IconPicker = {
 
 
         // IconPicker: Append Library to Body on
-        var appendIconListToBody = function(data, buttonShowAll, buttonCancel, searchPlaceholder, borderRadius, inputElement, theCallback) {
+        var appendIconListToBody = function(data, buttonShowAll, buttonCancel, searchPlaceholder, borderRadius, inputElement, theCallback, previewElement) {
 
             // data
             var jsonData = JSON.parse(data);
@@ -372,7 +373,8 @@ var IconPicker = {
             // each icon click listener on
             function eachIconEventListener(firstOrSearch) {
 
-                var inputElm = document.querySelectorAll(inputElement);
+                var inputElm   = document.querySelectorAll(inputElement);
+                var previewElem = document.querySelectorAll(previewElement);
 
                 // define icons on
                 var eachIconElm;
@@ -393,23 +395,32 @@ var IconPicker = {
                 };
 
                 var callback = function(mutationsList, observer) {
-                    attachClickEventForEachIcon(eachIconElm, inputElm);
+                    attachClickEventForEachIcon(eachIconElm, inputElm, previewElem);
                 };
 
                 var observer = new MutationObserver(callback);
                 observer.observe(wrapElem, config);
 
-                attachClickEventForEachIcon(eachIconElm, inputElm);
+                attachClickEventForEachIcon(eachIconElm, inputElm, previewElem);
 
                 // add listeners each off
 
             }
 
-            function attachClickEventForEachIcon(eachIconElm, inputElm) {
+            function attachClickEventForEachIcon(eachIconElm, inputElm, previewElem) {
+
+                window.disableFontawesomeLooping = false;
 
                 for (var i = 0; i < eachIconElm.length; i++) {
                     var singleIconElm = eachIconElm[i];
+
+                    let lastPreviewElement = null;
                     singleIconElm.addEventListener('click', function(e) {
+
+                        if( window.disableFontawesomeLooping ){
+                            return;
+                        }
+
                         e.preventDefault();
                         var iconClassName = this.dataset.class;
                         for (var i = 0; i < inputElm.length; i++) {
@@ -419,6 +430,40 @@ var IconPicker = {
                             } else {
                                 inputElm[i].innerHTML = iconClassName;
                             }
+
+                            if( null === lastPreviewElement ){
+
+                                if( "undefined" !== previewElem[i] ){
+                                    if( "i" !== previewElem[i].tagName ){
+                                        let parent = previewElem[i].parentElement;
+
+                                        previewElem[i].parentNode.removeChild(previewElem[i]);
+
+                                        lastPreviewElement = document.createElement("i");
+                                        lastPreviewElement.className = iconClassName;
+                                        parent.appendChild(lastPreviewElement);
+
+                                        window.disableFontawesomeLooping = true;
+                                    }else{
+                                        previewElem[i].className = iconClassName;
+                                        window.disableFontawesomeLooping = true;
+                                    }
+                                }
+
+                            }else{
+                                // is always <i> here
+                                // we still need to remove the element because fontawesome js needs to rebuild it
+                                let parent = lastPreviewElement.parentElement;
+
+                                lastPreviewElement.parentNode.removeChild(lastPreviewElement);
+
+                                lastPreviewElement = document.createElement("i");
+                                lastPreviewElement.className = iconClassName;
+                                parent.appendChild(lastPreviewElement);
+
+                                window.disableFontawesomeLooping = true;
+                            }
+
                             let element = document.getElementById('macroIconPreview');
                             if( null !== element ){
                                 element.innerHTML = "<i class='" + iconClassName + " fa-2x m-2'></i>";

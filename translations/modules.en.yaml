@@ -324,6 +324,7 @@ upload:
 issues:
   card:
     lastContactDate: "Last contact date: "
+    lastProgressDate: "Last progress date: "
     preview:
       headers:
         contacts: "Contacts"

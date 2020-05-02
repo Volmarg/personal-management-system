@@ -523,6 +523,11 @@ export default (function () {
                 $(input).addClass(this.classes["fontawesome-picker-input"] + index);
             });
 
+            $('.' + this.classes["fontawesome-picker-preview"]).each((index, input) => {
+                $(input).removeClass(this.classes["fontawesome-picker-preview"]);
+                $(input).addClass(this.classes["fontawesome-picker-preview"] + index);
+            });
+
             $('.action-fontawesome').each((index, icon) => {
 
                 if ($('.' + _this.classes["fontawesome-picker-preview"]).length === 0) {
@@ -532,11 +537,11 @@ export default (function () {
                 }
 
                 $(icon).addClass('fontawesome-picker' + index);
-                $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"]);
+                $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);
                 $(icon).attr('data-iconpicker-input', '.' + _this.classes["fontawesome-picker-input"] + index);
 
                 IconPicker.Init({
-                    jsonUrl: '/assets_/static-libs/furcan-iconpicker/iconpicker-1.0.0.json',
+                    jsonUrl: '/assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.json',
                     searchPlaceholder: 'Search Icon',
                     showAllButton: 'Show All',
                     cancelButton: 'Cancel',

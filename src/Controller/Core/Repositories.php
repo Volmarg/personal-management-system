@@ -20,6 +20,7 @@ use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Goals\MyGoalsRepository;
 use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
+use App\Repository\Modules\Issues\MyIssueContactRepository;
 use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
@@ -51,6 +52,7 @@ use App\Services\Core\Translator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\PersistentCollection;
 use Exception;
 use ReflectionClass;
@@ -95,6 +97,7 @@ class Repositories extends AbstractController {
     const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
     const LOCKED_RESOURCE_REPOSITORY                    = "LockedResourceRepository";
     const MY_ISSUES_REPOSITORY                          = "MyIssueRepository";
+    const MY_ISSUES_CONTACT_REPOSITORY                  = "MyIssueContactRepository";
 
     const PASSWORD_FIELD        = 'password';
 
@@ -111,7 +114,8 @@ class Repositories extends AbstractController {
     const ENTITY_GET_DELETED_METHOD_NAME = "getDeleted";
     const ENTITY_IS_DELETED_METHOD_NAME  = "isDeleted";
 
-    const DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN = "boolean";
+    const DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN  = "boolean";
+    const DOCTRINE_FIELD_MAPPING_TYPE_DATETIME = "datetime";
 
     /**
      * @var EntityManagerInterface $entity_manager
@@ -293,6 +297,11 @@ class Repositories extends AbstractController {
      */
     public $myIssueRepository;
 
+    /**
+     * @var MyIssueContactRepository $myIssueContactRepository
+     */
+    public $myIssueContactRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -329,6 +338,7 @@ class Repositories extends AbstractController {
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         LockedResourceRepository            $lockedResourceRepository,
         MyIssueRepository                   $myIssueRepository,
+        MyIssueContactRepository            $myIssueContactRepository,
         EntityManagerInterface              $entity_manager
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -366,6 +376,7 @@ class Repositories extends AbstractController {
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myIssueRepository                    = $myIssueRepository;
+        $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->entity_manager                       = $entity_manager;
     }
 
@@ -439,6 +450,8 @@ class Repositories extends AbstractController {
      * 'id': $(noteCategoryId).val(),
      * },
      * @throws ExceptionDuplicatedTranslationKey
+     * @throws MappingException
+     * @throws Exception
      */
     public function update(array $parameters, $entity, array $findByParams = []) {
 
@@ -473,17 +486,30 @@ class Repositories extends AbstractController {
                         $value = $this->getEntity($value);
                     }
                 }
+                $record_class_name  = get_class($entity);
+                $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
+                $field_mapping      = $class_meta->getFieldMapping($parameter);
+                $field_type         = $field_mapping['type'];
 
-                $methodName     = 'set' . ucfirst($parameter);
-                $hasRelation    = strstr($methodName, '_id');
-                $methodName     = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
+                $methodName  = 'set' . ucfirst($parameter);
+                $hasRelation = strstr($methodName, '_id');
+                $methodName  = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
 
-                $value          = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
+                $value       = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
 
-                if (is_object($value)) {
-                    $entity->$methodName($value);
-                    continue;
+                // we need to check type of field in which we insert value and ew. adjust it
+                switch( $field_type ){
+                    case self::DOCTRINE_FIELD_MAPPING_TYPE_DATETIME:
+                        {
+                            $value = new \DateTime($value);
+                        }
+                    break;
+
+                    default:
+                        // nothing
                 }
+
+
                 $entity->$methodName($value);
 
             }
