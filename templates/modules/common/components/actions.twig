@@ -1,0 +1,125 @@
+{% if trash is defined and trash %}
+    <span
+            class="{% if remove_without_entity_handler is not defined %} remove-record {% endif %}"
+            aria-hidden="true"
+            data-content-editable="false"
+            data-toggle-popover="true"                                {# popover attr #}
+            data-html="true"                                          {# popover attr #}
+            data-trigger="hover"                                      {# popover attr #}
+            data-content="{{ translate('actions.popover.remove') }}"  {# popover attr #}
+            data-placement="top"                                      {# popover attr #}
+
+    {% if trash_attr is defined and trash_attr is not empty %}
+        {{ trash_attr | raw}}
+    {% endif %}
+    >
+        <i class="fa fa-trash"></i>
+    </span>
+
+{% endif %}
+
+{% if edit is defined and edit %}
+    <span
+            class="edit-record"
+            data-content-editable="false"
+            data-toggle-popover="true"                                {# popover attr #}
+            data-html="true"                                          {# popover attr #}
+            data-trigger="hover"                                      {# popover attr #}
+            data-content="{{ translate('actions.popover.edit') }}"    {# popover attr #}
+            data-placement="top"                                      {# popover attr #}
+        {% if edit_attr is defined and edit_attr is not empty %}
+            {{ edit_attr }}
+        {% endif %}
+    >
+        <i class="far fa-edit"></i>
+    </span>
+{% endif %}
+
+{% if editWithTinyMce is defined and editWithTinyMce %}
+    <span
+            class="edit-record-with-tiny-mce transform-to-tiny-mce"
+            data-tiny-mce-selector="{{ tinyMceSelector }}"
+            data-tiny-mce-instance-selector="{% if tinyMceInstanceSelector is defined  %}{{ tinyMceInstanceSelector }}{% endif %}"
+            data-content-editable="false"
+            data-toggle-popover="true"                                          {# popover attr #}
+            data-html="true"                                                    {# popover attr #}
+            data-trigger="hover"                                                {# popover attr #}
+            data-content="{{ translate('actions.popover.editWithTinyMce') }}"   {# popover attr #}
+            data-placement="top"                                                {# popover attr #}
+            {% if editWithTinyMce_attr is defined and editWithTinyMce_attr is not empty %}
+                {{ editWithTinyMce_attr }}
+            {% endif %}
+    >
+        <i class="fab fa-monero"></i>
+    </span>
+{% endif %}
+
+ {% if copy is defined and copy %}
+     <span
+         class="copy-record"
+         data-toggle-popover="true"                                {# popover attr #}
+         data-html="true"                                          {# popover attr #}
+         data-trigger="hover"                                      {# popover attr #}
+         data-content="{{ translate('actions.popover.copy') }}"    {# popover attr #}
+         data-placement="top"                                      {# popover attr #}
+         {% if copy_attr is defined and copy_attr is not empty %}
+        {{ copy_attr }}
+    {% endif %}
+ >
+    <i class="far far fa-copy"></i>
+ </span>
+ {% endif %}
+
+{% if save is defined and save %}
+    <span
+        class="save-record d-none"
+        data-content-editable="false"
+        data-toggle-popover="true"                                {# popover attr #}
+        data-html="true"                                          {# popover attr #}
+        data-trigger="hover"                                      {# popover attr #}
+        data-content="{{ translate('actions.popover.save') }}"    {# popover attr #}
+        data-placement="top"                                      {# popover attr #}
+        {% if save_attr is defined and save_attr is not empty %}
+        {{ save_attr }}
+    {% endif %}
+    >
+    <i class="far fa-save"></i>
+    </span>
+{% endif %}
+
+{% if fontawesome is defined and fontawesome %}
+    <span
+        class="action-fontawesome d-none"
+        data-content-editable="false"
+        data-toggle-popover="true"                                      {# popover attr #}
+        data-html="true"                                                {# popover attr #}
+        data-trigger="hover"                                            {# popover attr #}
+        data-content="{{ translate('actions.popover.fontawesome') }}"   {# popover attr #}
+        data-placement="top"                                            {# popover attr #}
+        {% if fontawesome_attr is defined and fontawesome_attr is not empty %}
+        {{ fontawesome_attr }}
+    {% endif %}
+    >
+    <i class="far fa-smile"></i>
+    </span>
+{% endif %}
+
+{% if lock_record is defined and lock_record %}
+    <span
+        class="action-lock-record {{ getClassForLockedResource(lock_record, lock_type, lock_target) }}"
+        data-content-editable="false"
+        data-lock-resource-record     ="{{ lock_record }}"
+        data-lock-resource-type       ="{{ lock_type }}"
+        data-lock-resource-target     ="{{ lock_target }}"
+        data-toggle-popover="true"                                      {# popover attr #}
+        data-html="true"                                                {# popover attr #}
+        data-trigger="hover"                                            {# popover attr #}
+        data-content="{{ translate('actions.popover.lockRecord') }}"    {# popover attr #}
+        data-placement="top"                                            {# popover attr #}
+        {% if lock_record_attr is defined and lock_record_attr is not empty %}
+        {{ lock_record_attr }}
+    {% endif %}
+    >
+    <i class="fas fa-lock"></i>
+    </span>
+{% endif %}

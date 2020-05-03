@@ -1,0 +1,19 @@
+{% if headerClasses is not defined %}
+    {% set headerClasses =  'c-grey-900 mB-10' %}
+{% endif %}
+
+{% if headerText is not defined %}
+    {% set headerText =  '' %}
+{% endif %}
+
+<h3 class="{{ headerClasses }}">
+    <span class="d-flex justify-content-between">
+        <span>
+            {{ headerText }}
+        </span>
+        <span data-is-accordion-action="true">
+            {% include 'modules/common/components/actions.twig' %}
+        </span>
+    </span>
+</h3>
+

@@ -1,3 +1,5 @@
+import tinymce from "tinymce";
+
 var bootbox = require('bootbox');
 import * as selectize from "selectize";
 
@@ -27,6 +29,9 @@ export default (function () {
             entityId                            : "data-entity-id",
             entityRepositoryName                : "data-entity-repository-name",
             entityFieldName                     : "data-entity-field-name",
+            baseParentElementSelector           : "data-base-parent-element-selector",
+            tinymceElementSelector              : "data-tiny-mce-selector",
+            tinymceElementInstanceSelector      : "data-tiny-mce-instance-selector", // must be id name without `#`
         },
         messages: {
             entityUpdateSuccess: function (entity_name) {
@@ -161,6 +166,7 @@ export default (function () {
                 this.attachEntityRemovalEvent(this.selectors.classes.entityRemoveAction);
                 this.attachToggleBoolvalEvent();
                 this.attachEntityEditModalCallEvent(this.selectors.classes.entityCallEditModalAction);
+                this.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
             },
             /**
              * Will call logic for handling inverting boolval in entity via ajax
@@ -226,6 +232,7 @@ export default (function () {
 
                 let afterRemovalCallback = function(){
                     ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+                    bootbox.hideAll();
                 } ;
 
                 $(element).on('click', function() {
@@ -317,6 +324,34 @@ export default (function () {
 
                     _this.callModalForEntity(entityId, repositoryName);
                 })
+            },
+            /**
+             * Will attach logic to element so that when pressed turns the target element into tinymce
+             */
+            attachEventOnButtonToTransformTargetSelectorToTinyMceInstance: function(){
+                let $allActionButtons = $('.transform-to-tiny-mce');
+
+                $.each($allActionButtons, function(index, button){
+                    let $button = $(button);
+
+                    $button.off('click'); //prevent stacking
+                    $button.on('click', function(){
+
+                        let tinyMceSelector         = $button.attr(ui.crud.data.tinymceElementSelector);
+                        let tinyMceInstanceSelector = $button.attr(ui.crud.data.tinymceElementInstanceSelector);
+                        let tinyMceInstance         = tinymce.get(tinyMceInstanceSelector);
+
+                        // prevent reinitializing and make it removable when closing edit
+                        if( tinyMceInstance === null ){
+                            let config      = tinymce.custom.config;
+                            config.selector = tinyMceSelector;
+                            tinymce.init(config);
+                        }else{
+                            tinymce.remove(tinyMceSelector);
+                        }
+
+                    });
+                });
             },
             /**
              * Uses the modal building logic for calling box with prefilled data
