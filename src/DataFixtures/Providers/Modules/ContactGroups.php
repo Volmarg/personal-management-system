@@ -16,27 +16,27 @@ class ContactGroups {
     const ALL_CONTACT_GROUPS = [
         [
             self::KEY_NAME  => 'Medic',
-            self::KEY_ICON  => 'far fa-medkit',
+            self::KEY_ICON  => 'fas fa-medkit',
             self::KEY_COLOR => '399e05',
         ],
         [
             self::KEY_NAME  => 'Work',
-            self::KEY_ICON  => 'far fa-suitcase',
+            self::KEY_ICON  => 'fas fa-suitcase',
             self::KEY_COLOR => 'be5e05',
         ],
         [
             self::KEY_NAME  => 'Service',
-            self::KEY_ICON  => 'far fa-cog',
+            self::KEY_ICON  => 'fas fa-cog',
             self::KEY_COLOR => '3f3b3b',
         ],
         [
             self::KEY_NAME  => 'Family',
-            self::KEY_ICON  => 'far fa-home',
+            self::KEY_ICON  => 'fas fa-home',
             self::KEY_COLOR => '276ad7',
         ],
         [
             self::KEY_NAME  => 'Friend',
-            self::KEY_ICON  => 'far fa-male',
+            self::KEY_ICON  => 'fas fa-male',
             self::KEY_COLOR => 'cd2ecc',
         ],
         [
@@ -46,7 +46,7 @@ class ContactGroups {
         ],
         [
             self::KEY_NAME  => 'Game fellow',
-            self::KEY_ICON  => 'far fa-gamepad',
+            self::KEY_ICON  => 'fas fa-gamepad',
             self::KEY_COLOR => 'f23e4e',
         ],
         [
