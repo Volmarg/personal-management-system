@@ -7,6 +7,8 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
+use App\Form\Modules\Issues\MyIssueContactType;
+use App\Form\Modules\Issues\MyIssueProgressType;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
@@ -471,9 +473,13 @@ class DialogsAction extends AbstractController
         }
 
         $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+        $progress_form  = $this->app->forms->issueProgressForm([MyIssueProgressType::OPTION_ENTITY_ID => $entity_id])->createView();
+        $contact_form   = $this->app->forms->issueContactForm([MyIssueContactType::OPTION_ENTITY_ID   => $entity_id])->createView();
 
         $template_data = [
             'issueCardDto' => reset($issue_card_dto),
+            'progressForm' => $progress_form,
+            'contactForm'  => $contact_form,
         ];
 
         $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS, $template_data);

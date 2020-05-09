@@ -15,6 +15,8 @@ use App\Form\Modules\Contacts\MyContactTypeType;
 use App\Form\Modules\Goals\MyGoalsPaymentsType;
 use App\Form\Modules\Goals\MyGoalsType;
 use App\Form\Modules\Goals\MySubgoalsType;
+use App\Form\Modules\Issues\MyIssueContactType;
+use App\Form\Modules\Issues\MyIssueProgressType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
 use App\Form\Modules\Notes\MyNotesCategoriesType;
@@ -195,6 +197,14 @@ class Forms extends AbstractController {
 
     public function issueForm(array $params = []): FormInterface {
         return $this->createForm(MyIssueType::class, null, $params);
+    }
+
+    public function issueProgressForm(array $params = []): FormInterface {
+        return $this->createForm(MyIssueProgressType::class, null, $params);
+    }
+
+    public function issueContactForm(array $params = []): FormInterface {
+        return $this->createForm(MyIssueContactType::class, null, $params);
     }
 
     /**

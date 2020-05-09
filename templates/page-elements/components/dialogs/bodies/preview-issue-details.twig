@@ -11,99 +11,119 @@
                     </div>
 
                     {# Contact #}
-                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                    {% if issueCardDto.getIssue().getIssueContact() is not empty %}
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
 
-                        <section class="p-20">
+                            <section class="p-20">
 
-                            <h5 class="text-center" style="font-size: 16px;"> {{ translate('issues.card.preview.headers.contacts') }} </h5>
+                                <h5 class="text-center" style="font-size: 16px;"> {{ translate('issues.card.preview.headers.contacts') }} </h5>
 
-                            {% if issueCardDto.getIssueContactsByIcon() is not empty %}
+                                    <table id="MyIssueContact" class="table table-striped table-bordered" cellspacing="0"
+                                           data-table="true" width="100%">
+                                        <thead>
+                                        <tr>
+                                            <td class="d-none">id</td>
+                                            <td></td>
+                                            <td>{{ translate('issues.contactsTable.icon') }}</td>
+                                            <td>{{ translate('issues.contactsTable.date') }}</td>
+                                            <td>{{ translate('issues.contactsTable.information') }}</td>
+                                            <td>{{ translate('issues.contactsTable.actions') }}</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
 
-                                <table id="MyIssueContact" class="table table-striped table-bordered" cellspacing="0"
-                                       data-table="true" width="100%">
-                                    <thead>
-                                    <tr>
-                                        <td class="d-none">id</td>
-                                        <td></td>
-                                        <td>{{ translate('issues.contactsTable.icon') }}</td>
-                                        <td>{{ translate('issues.contactsTable.date') }}</td>
-                                        <td>{{ translate('issues.contactsTable.information') }}</td>
-                                        <td>{{ translate('issues.contactsTable.actions') }}</td>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
+                                        {% for issueContact in issueCardDto.getIssue().getIssueContact() %}
+                                            {% set date_timestamp = date( issueContact.getDate() | date('m/d/yyyy') ).timestamp %}
 
-                                    {% for issueContact in issueCardDto.getIssue().getIssueContact() %}
-                                        {% set date_timestamp = date( issueContact.getDate() | date('m/d/yyyy') ).timestamp %}
+                                            <tr class="trash-parent editable-parent save-parent" data-type="MyIssueContact">
 
-                                        <tr class="trash-parent editable-parent save-parent" data-type="MyIssueContact">
-
-                                            <td class="d-none id">{{ issueContact.getId() }}</td>
-                                            <td class="icon-preview text-center" data-order="{{ issueContact.getIcon() }}"><i class="fontawesome-preview {{ issueContact.getIcon() }}" style="margin-left:6px;"></i></td>
-                                            <td class="icon fontawesome-input" data-order="{{ issueContact.getIcon() }}">{{ issueContact.getIcon() }}</td>
-                                            <td data-order="{{ date_timestamp }}">
+                                                <td class="d-none id">{{ issueContact.getId() }}</td>
+                                                <td class="icon-preview text-center" data-order="{{ issueContact.getIcon() }}"><i class="fontawesome-preview {{ issueContact.getIcon() }}" style="margin-left:6px;"></i></td>
+                                                <td class="icon fontawesome-input" data-order="{{ issueContact.getIcon() }}">{{ issueContact.getIcon() }}</td>
+                                                <td data-order="{{ date_timestamp }}">
                                                 <span class="date">
                                                     {% include 'page-elements/components/forms/input-datepicker.twig' with {
                                                         "value"     : issueContact.getDate()|date('Y-m-d') ,
                                                         "disabled"  : true
                                                     } %}
                                                 </span>
-                                            </td>
-                                            <td class="information">{{ issueContact.getInformation() }}</td>
+                                                </td>
+                                                <td class="information">{{ issueContact.getInformation() }}</td>
 
-                                            {% include 'modules/common/components/table-cells/actions.html.twig' with {
-                                                "trash"       : true,
-                                                "edit"        : true,
-                                                "save"        : true,
-                                                "fontawesome" : true
-                                            } %}
+                                                {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                                                    "trash"       : true,
+                                                    "edit"        : true,
+                                                    "save"        : true,
+                                                    "fontawesome" : true
+                                                } %}
 
-                                        </tr>
-                                    {% endfor %}
+                                            </tr>
+                                        {% endfor %}
 
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
 
-                            {% endif %}
+                            </section>
+                        </div>
+                    {% endif %}
+
+                    {# Contact Form #}
+                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                        <section class="p-20 add-record-form">
+
+                            <h5 class="text-center" style="font-size: 16px;"> {{ translate('dialogs.addIssueContact.header') }} </h5>
+                            {{ form_start(contactForm, {'attr': {"data-entity": "MyIssueContact"}}) }}
+                            {{ form_end(contactForm) }}
                         </section>
                     </div>
 
                     {# Progress #}
-                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                        <section class="p-20">
+                    {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                            <section class="p-20">
 
-                            <h5 class="text-center" style="font-size: 16px;"> {{ translate('issues.card.preview.headers.progress') }} </h5>
+                                <h5 class="text-center" style="font-size: 16px;"> {{ translate('issues.card.preview.headers.progress') }} </h5>
 
-                            <div id="accordion">
-                                {% for issueProgress in issueCardDto.getIssue().getIssueProgress() %}
-                                    <div class="accordin-section save-parent" data-type="MyIssueProgress">
+                                <div id="accordion">
+                                    {% for issueProgress in issueCardDto.getIssue().getIssueProgress() %}
+                                        <div class="accordin-section save-parent" data-type="MyIssueProgress">
 
-                                        {% include 'modules/common/components/accordion/actions.twig' with {
-                                            headerText                    : issueProgress.getDate() | date("Y-m-d H:i:s"),
-                                            trash                         : true,
-                                            save                          : true,
-                                            editWithTinyMce               : true,
-                                            tinyMceSelector               : "#tiny-mce-selector-for-issue-progress-accordion" ~ loop.index0,
-                                            tinyMceInstanceSelector       : "tiny-mce-selector-for-issue-progress-accordion" ~ loop.index0,
-                                            remove_without_entity_handler : true,
-                                            trash_attr                    : '
+                                            {% include 'modules/common/components/accordion/actions.twig' with {
+                                                headerText                    : issueProgress.getDate() | date("Y-m-d H:i:s"),
+                                                trash                         : true,
+                                                save                          : true,
+                                                editWithTinyMce               : true,
+                                                tinyMceSelector               : "#tiny-mce-selector-for-issue-progress-accordion" ~ loop.index0,
+                                                tinyMceInstanceSelector       : "tiny-mce-selector-for-issue-progress-accordion" ~ loop.index0,
+                                                remove_without_entity_handler : true,
+                                                trash_attr                    : '
                                                 data-entity-id="' ~ issueProgress.getId()  ~ '"
                                                 data-repository-name="MyIssueProgressRepository"
                                                 data-entity-removal-action="true"'
-                                        }%}
+                                            }%}
 
-                                        <section class="justify-content-around">
-                                            <span class="id d-none">{{ issueProgress.getId() }}</span>
-                                            <div data-id="tiny-mce-wrapper" data-highlight-prism-code="true" id="tiny-mce-selector-for-issue-progress-accordion{{ loop.index0 }}">
-                                                {{ issueProgress.getInformation() | raw }}
-                                            </div>
-                                        </section>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                                            <section class="justify-content-around">
+                                                <span class="id d-none">{{ issueProgress.getId() }}</span>
+                                                <div data-id="tiny-mce-wrapper" data-highlight-prism-code="true" id="tiny-mce-selector-for-issue-progress-accordion{{ loop.index0 }}">
+                                                    {{ issueProgress.getInformation() | raw }}
+                                                </div>
+                                            </section>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        </div>
+                    {% endif %}
+
+                    {# Progress Form #}
+                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                        <section class="p-20 add-record-form">
+
+                            <h5 class="text-center" style="font-size: 16px;"> {{ translate('dialogs.addIssueProgress.header') }} </h5>
+                            {{ form_start(progressForm, {'attr': {"data-entity": "MyIssueProgress"}}) }}
+                            {{ form_end(progressForm) }}
                         </section>
                     </div>
-
                 </div>
             </div>
         </div>

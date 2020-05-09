@@ -5,11 +5,13 @@
 {% endif %}
 
     {% extends template %}
-
+{# todo: rename to pending? same with menu entry #}
 {% block body %}
 
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
+
+            {% include 'page-elements/components/work-in-progress.twig' %}
 
             <div class="container-fluid">
                 <div class="row">

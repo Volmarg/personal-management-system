@@ -25,9 +25,10 @@ class MyIssueRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param int|null $order_by_field_entity_id
      * @return MyIssue[]
      */
-    public function findAllNotDeletedAndNotResolved(): array
+    public function findAllNotDeletedAndNotResolved(int $order_by_field_entity_id = null): array
     {
         $alias         = self::MY_ISSUE_TABLE_ALIAS;
         $query_builder = $this->_em->createQueryBuilder();
@@ -40,6 +41,24 @@ class MyIssueRepository extends ServiceEntityRepository
 
         $query   = $query_builder->getQuery();
         $results = $query->execute();
+
+        if( !empty($order_by_field_entity_id) ){
+            $new_results = [];
+
+            /**
+             * Query builder does not support order by FIELD
+             * @var MyIssue $entity
+             */
+            foreach( $results as $entity ){
+                if( $order_by_field_entity_id === $entity->getId() ){
+                    array_unshift($new_results, $entity);
+                }else{
+                    $new_results[] = $entity;
+                }
+            }
+
+            return $new_results;
+        }
 
         return $results;
     }

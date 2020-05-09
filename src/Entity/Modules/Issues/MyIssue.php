@@ -48,11 +48,13 @@ class MyIssue {
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueContact", mappedBy="myIssue")
+     * @ORM\OrderBy({"date" = "DESC"})
      */
     private $issueContact;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueProgress", mappedBy="myIssue")
+     * @ORM\OrderBy({"date" = "DESC"})
      */
     private $issueProgress;
 
@@ -168,7 +170,7 @@ class MyIssue {
     {
         if (!$this->issueContact->contains($issueContact)) {
             $this->issueContact[] = $issueContact;
-            $issueContact->setMyIssue($this);
+            $issueContact->setIssue($this);
         }
 
         return $this;
@@ -179,8 +181,8 @@ class MyIssue {
         if ($this->issueContact->contains($issueContact)) {
             $this->issueContact->removeElement($issueContact);
             // set the owning side to null (unless already changed)
-            if ($issueContact->getMyIssue() === $this) {
-                $issueContact->setMyIssue(null);
+            if ($issueContact->getIssue() === $this) {
+                $issueContact->setIssue(null);
             }
         }
 
@@ -209,7 +211,7 @@ class MyIssue {
     {
         if (!$this->issueProgress->contains($issueProgress)) {
             $this->issueProgress[] = $issueProgress;
-            $issueProgress->setMyIssue($this);
+            $issueProgress->setIssue($this);
         }
 
         return $this;
@@ -220,8 +222,8 @@ class MyIssue {
         if ($this->issueProgress->contains($issueProgress)) {
             $this->issueProgress->removeElement($issueProgress);
             // set the owning side to null (unless already changed)
-            if ($issueProgress->getMyIssue() === $this) {
-                $issueProgress->setMyIssue(null);
+            if ($issueProgress->getIssue() === $this) {
+                $issueProgress->setIssue(null);
             }
         }
 

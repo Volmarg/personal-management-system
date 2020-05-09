@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class MyIssuesAction extends AbstractController
 {
 
-    const TWIG_TEMPLATE_PENDING_ISSUES = 'modules/my-issues/ongoing.twig';
+    const TWIG_TEMPLATE_PENDING_ISSUES = 'modules/my-issues/pending.twig';
 
     /**
      * @var Application $app
@@ -42,6 +42,8 @@ class MyIssuesAction extends AbstractController
      */
     public function displayPendingIssues(Request $request) {
         $this->handleIssueForm($request);
+        $this->handleIssueContactForm($request);
+        $this->handleIssueProgressForm($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate( false);
@@ -84,6 +86,38 @@ class MyIssuesAction extends AbstractController
             $this->app->repositories->myIssueRepository->saveIssue($issue);
         }
 
+    }
+
+    /**
+     * @param Request $request
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleIssueProgressForm(Request $request): void
+    {
+        $form = $this->app->forms->issueProgressForm();
+        $form->handleRequest($request);
+
+        if( $form->isSubmitted() && $form->isValid() ){
+            $issue = $form->getData();
+            $this->app->repositories->myIssueProgressRepository->saveIssueProgress($issue);
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleIssueContactForm(Request $request): void
+    {
+        $form = $this->app->forms->issueContactForm();
+        $form->handleRequest($request);
+
+        if( $form->isSubmitted() && $form->isValid() ){
+            $issue = $form->getData();
+            $this->app->repositories->myIssueContactRepository->saveIssueContact($issue);
+        }
     }
 
 }

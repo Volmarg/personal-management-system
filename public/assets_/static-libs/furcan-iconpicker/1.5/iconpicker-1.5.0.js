@@ -433,7 +433,7 @@ var IconPicker = {
 
                             if( null === lastPreviewElement ){
 
-                                if( "undefined" !== previewElem[i] ){
+                                if( "undefined" !== typeof previewElem[i] ){
                                     if( "i" !== previewElem[i].tagName ){
                                         let parent = previewElem[i].parentElement;
 

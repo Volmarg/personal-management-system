@@ -1474,6 +1474,21 @@ export default (function () {
             entity_name: "Bill"
         },
         "MyIssueContact": {
+            makeCreateData: function () {
+                let url                 = '/my-issues/pending';
+                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                return {
+                    'url'               : url,
+                    'success_message'   : success_message,
+                    'fail_message'      : fail_message,
+                    "callback"          : function(){
+                        bootbox.hideAll();
+                    },
+                    'callback_after'    : true,
+                };
+            },
             makeUpdateData: function ($baseElement) {
                 let id              = $($baseElement).find('.id').html();
                 let date            = $($baseElement).find('.date input').val();
@@ -1525,6 +1540,21 @@ export default (function () {
             entity_name: "Issue contact"
         },
         "MyIssueProgress": {
+            makeCreateData: function () {
+                let url                 = '/my-issues/pending';
+                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                return {
+                    'url'               : url,
+                    'success_message'   : success_message,
+                    'fail_message'      : fail_message,
+                    "callback"          : function(){
+                        bootbox.hideAll();
+                    },
+                    'callback_after'    : true,
+                };
+            },
             makeUpdateData: function ($baseElement) {
                 let $tinymceWrapper         = $($baseElement).find('[data-id="tiny-mce-wrapper"]');
                 let tinymceInstanceSelector = $tinymceWrapper.attr('id');
@@ -1567,7 +1597,8 @@ export default (function () {
                     'fail_message'      : fail_message,
                     "callback"          : function(){
                         bootbox.hideAll();
-                    }
+                    },
+                    'callback_after'    : true,
                 };
             },
             entity_name: "Issue",

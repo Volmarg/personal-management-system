@@ -31,7 +31,9 @@ class MyIssuesController extends AbstractController {
      */
     public function buildIssuesCardsDtosFromIssues(array $issues, bool $include_deleted = false): array
     {
-        $issues_cards_dtos = [];
+        $issues_cards_dtos    = [];
+        $latest_contact_date  = null;
+        $latest_progress_date = null;
 
         foreach( $issues as $issue ){
 
@@ -44,6 +46,8 @@ class MyIssuesController extends AbstractController {
 
             $issue_contacts_grouped_by_icon = [];
 
+            $is_latest_contact_date_used = false;
+            $latest_contact_date         = null;
             foreach($issue_contacts as $issue_contact){
 
                 if(
@@ -54,12 +58,22 @@ class MyIssuesController extends AbstractController {
                     continue;
                 }
 
+                if( !$is_latest_contact_date_used ){
+                    $latest_contact_date = $issue_contact->getDate();
+                }
+                $is_latest_contact_date_used = true;
+
                 $icon = $issue_contact->getIcon();
                 if( !array_key_exists($icon, $issue_contacts_grouped_by_icon) ){
                     $issue_contacts_grouped_by_icon[$icon] = [$issue_contact];
                 }else{
                     $issue_contacts_grouped_by_icon[$icon][] = $issue_contact;
                 }
+            }
+
+            if( !empty($issue_progresses) ){
+                $latest_progress      = $issue_progresses[0];
+                $latest_progress_date = $latest_progress->getDate();
             }
 
             $issue_contacts_count   = count($issue_contacts);
@@ -70,8 +84,8 @@ class MyIssuesController extends AbstractController {
             $issue_card_dto->setIssueContactsCount($issue_contacts_count);
             $issue_card_dto->setIssueProgressCount($issue_progresses_count);
             $issue_card_dto->setIssueContactsByIcon($issue_contacts_grouped_by_icon);
-            $issue_card_dto->setIssueLastContact(new DateTime()); //todo
-            $issue_card_dto->setIssueLastProgress(new DateTime()); //todo
+            $issue_card_dto->setIssueLastContact($latest_contact_date);
+            $issue_card_dto->setIssueLastProgress($latest_progress_date);
 
             $issues_cards_dtos[] = $issue_card_dto;
         }

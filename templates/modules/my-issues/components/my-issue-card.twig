@@ -26,9 +26,11 @@
                         </li>
                     {% endif %}
 
-                    {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
+                    {% if issueCardDto.getIssue().getIssueContact() is not empty %}
                         <hr class="spaceless-hr">
+                    {% endif %}
 
+                    {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
                         <li class="justify-content-center d-flex"><b>{{ translate('issues.card.lastProgressDate') }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastProgress() | date("Y-m-d H:i:s") }}</span></li>
                         <li class="justify-content-center d-flex">
                             <b><i class="fas fa-play-circle"></i></b>: {{ issueCardDto.getIssue().getIssueProgress() | length  }}
@@ -36,7 +38,10 @@
                     {% endif %}
                 </ul>
 
-                <hr class="spaceless-hr">
+                {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
+                    <hr class="spaceless-hr">
+                {% endif %}
+
                 <div class="issue-card-actions d-flex justify-content-between">
 
                     <div class="issue-card-actions-left">

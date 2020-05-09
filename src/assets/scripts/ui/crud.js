@@ -552,11 +552,11 @@ export default (function () {
 
             $('.action-fontawesome').each((index, icon) => {
 
-                if ($('.' + _this.classes["fontawesome-picker-preview"]).length === 0) {
-                    let fontawesome_preview_div = $('<div></div>');
-                    $(fontawesome_preview_div).addClass(_this.classes["fontawesome-picker-preview"]).addClass(_this.classes.hidden);
-                    $('body').append(fontawesome_preview_div);
-                }
+                // if ($('.' + _this.classes["fontawesome-picker-preview"]).length === 0) {
+                //     let fontawesome_preview_div = $('<div></div>');
+                //     $(fontawesome_preview_div).addClass(_this.classes["fontawesome-picker-preview"]).addClass(_this.classes.hidden);
+                //     $('body').append(fontawesome_preview_div);
+                // }
 
                 $(icon).addClass('fontawesome-picker' + index);
                 $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);

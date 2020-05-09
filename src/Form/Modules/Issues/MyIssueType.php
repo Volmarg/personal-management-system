@@ -26,14 +26,14 @@ class MyIssueType extends AbstractType {
     public function __construct(Application $app) {
         $this->app = $app;
     }
-// TODO: add resolved mechanism
 
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      * @throws ExceptionDuplicatedTranslationKey
      */
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
 
         $builder
             ->add(self::FIELD_NAME, TextType::class, [

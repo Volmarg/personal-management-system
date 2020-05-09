@@ -11,4 +11,15 @@
         <input id="{{ id }}Preview" autocomplete="off" class="form-control"
                type="hidden">
     </section>
+
+    <script>
+        // case 1 - picker is used in modals
+        if( "undefined" !== typeof furcanIconPicker ){
+            furcanIconPicker.init();
+        }else{ // case 2 - standard page view
+            document.addEventListener("DOMContentLoaded", function(){
+                furcanIconPicker.init();
+            });
+        }
+    </script>
 {% endblock %}

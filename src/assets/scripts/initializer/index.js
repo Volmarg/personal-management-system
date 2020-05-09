@@ -39,9 +39,6 @@ export default (function () {
             ui.ajax.init();
         },
         initStatic: function () {
-            if ("undefined" !== typeof furcanIconPicker) {
-                furcanIconPicker.init();
-            }
             if ("undefined" !== typeof jscolorCustom) {
                 jscolorCustom.init();
             }

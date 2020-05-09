@@ -96,7 +96,7 @@ class IssueCardDTO {
     /**
      * @return null|DateTime
      */
-    public function getIssueLastContact():? DateTime {
+    public function getIssueLastContact(): ?DateTime {
         return $this->issue_last_contact;
     }
 
@@ -110,14 +110,14 @@ class IssueCardDTO {
     /**
      * @return DateTime
      */
-    public function getIssueLastProgress(): DateTime {
+    public function getIssueLastProgress(): ?DateTime {
         return $this->issue_last_progress;
     }
 
     /**
      * @param DateTime $issue_last_progress
      */
-    public function setIssueLastProgress(DateTime $issue_last_progress): void {
+    public function setIssueLastProgress(?DateTime $issue_last_progress): void {
         $this->issue_last_progress = $issue_last_progress;
     }
 

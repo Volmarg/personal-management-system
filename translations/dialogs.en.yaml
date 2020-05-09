@@ -5,3 +5,7 @@ dialogs:
     header: Edit contact card
   addIssue:
     header: Add issue
+  addIssueProgress:
+    header: Add issue progress
+  addIssueContact:
+    header: Add issue contact

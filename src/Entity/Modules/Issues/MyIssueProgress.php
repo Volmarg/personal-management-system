@@ -54,28 +54,28 @@ class MyIssueProgress {
     /**
      * @return string
      */
-    public function getInformation(): string {
+    public function getInformation(): ?string {
         return $this->information;
     }
 
     /**
      * @param string $information
      */
-    public function setInformation(string $information): void {
+    public function setInformation(?string $information): void {
         $this->information = $information;
     }
 
     /**
      * @return DateTime
      */
-    public function getDate(): DateTime {
+    public function getDate(): ?DateTime {
         return $this->date;
     }
 
     /**
      * @param DateTime $date
      */
-    public function setDate(DateTime $date): void {
+    public function setDate(?DateTime $date): void {
         $this->date = $date;
     }
 
@@ -93,12 +93,12 @@ class MyIssueProgress {
         $this->deleted = $deleted;
     }
 
-    public function getMyIssue(): ?MyIssue
+    public function getIssue(): ?MyIssue
     {
         return $this->myIssue;
     }
 
-    public function setMyIssue(?MyIssue $myIssue): self
+    public function setIssue(?MyIssue $myIssue): self
     {
         $this->myIssue = $myIssue;
 

@@ -68,7 +68,7 @@ sidebar:
       historicalMoneyOwed: Historical money owed
     issues:
       label: Issues
-      ongoing: Ongoing
+      pending: Pending
 topbar:
   search:
     placeholder: Search for files by tags...

@@ -275,6 +275,18 @@ forms:
     dashboard: Show on dashboard
     name: Name
     information: Information
+  MyIssueTypeProgress:
+    icon: Icon
+    date: Date
+    name: Name
+    issue: Issue
+    information: Information
+  MyIssueContactType:
+    icon: Icon
+    date: Date
+    name: Name
+    issue: Issue
+    information: Information
 
 Types:
   indentChoice:
