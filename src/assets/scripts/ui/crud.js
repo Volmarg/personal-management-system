@@ -182,6 +182,7 @@ export default (function () {
                 let _this        = this;
                 let $allElements = $("[" + ui.crud.data.entityToggleBoolval + "=true]");
 
+                $allElements.off('click');
                 $allElements.on('click', function(event){
                     let $clickedElement = $(event.currentTarget);
 
@@ -552,6 +553,7 @@ export default (function () {
 
             $('.action-fontawesome').each((index, icon) => {
 
+                // todo: remove - left only case of furcan preview issue - old fix
                 // if ($('.' + _this.classes["fontawesome-picker-preview"]).length === 0) {
                 //     let fontawesome_preview_div = $('<div></div>');
                 //     $(fontawesome_preview_div).addClass(_this.classes["fontawesome-picker-preview"]).addClass(_this.classes.hidden);
