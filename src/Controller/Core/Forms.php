@@ -29,6 +29,7 @@ use App\Form\Modules\Payments\MyPaymentsProductsType;
 use App\Form\Modules\Payments\MyPaymentsSettingsCurrencyMultiplierType;
 use App\Form\Modules\Payments\MyPaymentsTypesType;
 use App\Form\Modules\Payments\MyRecurringPaymentsMonthlyType;
+use App\Form\Modules\Issues\MyIssueType;
 use App\Form\Modules\Schedules\MyScheduleType;
 use App\Form\Modules\Schedules\MyScheduleTypeType;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
@@ -190,6 +191,10 @@ class Forms extends AbstractController {
 
     public function uploadForm(array $params = []): FormInterface {
         return $this->createForm(UploadFormType::class, null, $params);
+    }
+
+    public function issueForm(array $params = []): FormInterface {
+        return $this->createForm(MyIssueType::class, null, $params);
     }
 
     /**

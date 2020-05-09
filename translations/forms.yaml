@@ -270,6 +270,11 @@ forms:
       password: "Password"
     placeholders:
       password: "Enter lock password"
+  MyIssueType:
+    resolved: Resolved
+    dashboard: Show on dashboard
+    name: Name
+    information: Information
 
 Types:
   indentChoice:

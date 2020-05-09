@@ -1,4 +1,46 @@
-<div class="circle-plus {{ widgetName }}-widget call-widget-modal" data-settings='{{ settings | json_encode | raw }}' data-widget="true">
+
+
+{# Mechanism working with widets logic defined explicitly on js - without any global logic #}
+{% if widgetName is not defined %}
+    {% set widgetName = "" %}
+{% endif %}
+
+{# Mechanism for global logic for calling modal via attr #}
+
+{% if dialogCallUrl is not defined %}
+    {% set dialogCallUrl = "" %}
+{% endif %}
+
+{% if dialogCallRequestMethod is not defined %}
+    {% set dialogCallRequestMethod = "" %}
+{% endif %}
+
+{% if dialogCallRequestPostParameters is not defined %}
+    {% set dialogCallRequestPostParameters = "{}" %}
+{% endif %}
+
+{% if dialogCallRequestGetParameters is not defined %}
+    {% set dialogCallRequestGetParameters = "{}" %}
+{% endif %}
+
+{% if dialogJsCallback is not defined %}
+    {% set dialogJsCallback = "" %}
+{% endif %}
+
+<div
+        class="circle-plus {{ widgetName }}-widget  {% if widgetName != "" %} call-widget-modal {% endif %}"
+        {% if widgetName != "" %}
+            data-settings='{{ settings | json_encode | raw }}'
+            data-widget="true"
+        {% else %}
+            data-dialog-call-request-url="{{ dialogCallUrl }}"
+            data-dialog-call-request-method="{{ dialogCallRequestMethod }}"
+            data-dialog-call-request-post-parameters='{{ dialogCallRequestPostParameters }}'
+            data-call-dialog-on-click="true"
+            data-call-dialog-callback="{{ dialogJsCallback }}"
+            data-dialog-call-request-get-parameters="{{ dialogCallRequestGetParameters }}"
+        {% endif %}
+>
     <div class="circle">
         <div class="horizontal"></div>
         <div class="vertical"></div>

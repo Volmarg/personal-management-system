@@ -26,13 +26,13 @@ class MyIssue {
      * @var bool $deleted
      * @ORM\Column(type="boolean")
      */
-    private $deleted = 0;
+    private $deleted = false;
 
     /**
      * @var bool $resolved
      * @ORM\Column(type="boolean")
      */
-    private $resolved = 0;
+    private $resolved = false;
 
     /**
      * @var string $name
@@ -84,8 +84,9 @@ class MyIssue {
 
     /**
      * @return string
+     * Info: despite the fact that we do not allow null in DB we must allow it here because form data mapper has bug (CORE)
      */
-    public function getInformation(): string {
+    public function getInformation(): ?string {
         return $this->information;
     }
 
@@ -105,8 +106,9 @@ class MyIssue {
 
     /**
      * @return string
+     * Info: despite the fact that we do not allow null in DB we must allow it here because form data mapper has bug (CORE)
      */
-    public function getName(): string {
+    public function getName(): ?string {
         return $this->name;
     }
 

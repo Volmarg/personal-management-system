@@ -5,6 +5,8 @@ namespace App\Action\Modules\Issues;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,11 +41,12 @@ class MyIssuesAction extends AbstractController
      * @throws Exception
      */
     public function displayPendingIssues(Request $request) {
+        $this->handleIssueForm($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate( false);
         }
-        $template_content  = $this->renderTemplate( true)->getContent();
+        $template_content = $this->renderTemplate( true)->getContent();
         return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
@@ -64,6 +67,23 @@ class MyIssuesAction extends AbstractController
         ];
 
         return $this->render(self::TWIG_TEMPLATE_PENDING_ISSUES, $data);
+    }
+
+    /**
+     * @param Request $request
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function handleIssueForm(Request $request): void
+    {
+        $form = $this->app->forms->issueForm();
+        $form->handleRequest($request);
+
+        if( $form->isSubmitted() && $form->isValid() ){
+            $issue = $form->getData();
+            $this->app->repositories->myIssueRepository->saveIssue($issue);
+        }
+
     }
 
 }

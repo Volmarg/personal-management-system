@@ -3,3 +3,5 @@ dialogs:
     header: Create contact card
   editContactCard:
     header: Edit contact card
+  addIssue:
+    header: Add issue

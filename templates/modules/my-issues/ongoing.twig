@@ -26,7 +26,13 @@
             </div>
 
             <div class="widgets-wrapper">
-                {# todo: handle create via quick create only #}
+                {% include 'page-elements/components/widgets/plus-icon.twig' with {
+                    dialogCallUrl                   : path('dialog_body_create_issue'),
+                    dialogCallRequestMethod         : "POST",
+                    dialogJsCallback                : "
+                        ui.crud.attachRecordAddViaAjaxOnSubmit();
+                    ",
+                } %}
             </div>
 
         </div>

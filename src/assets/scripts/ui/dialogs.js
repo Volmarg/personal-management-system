@@ -108,7 +108,7 @@ export default (function () {
 
                             let getJsonParams  = JSON.parse(getParameters);
                             let urlParams      = new URLSearchParams(getJsonParams).toString();
-                            url                = url + '?' + urlParams;
+                            url                = requestUrl + '?' + urlParams;
                         }
                         break;
                         default:

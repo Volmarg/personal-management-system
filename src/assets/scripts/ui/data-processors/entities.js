@@ -1555,6 +1555,23 @@ export default (function () {
             },
             entity_name: "Issue progress"
         },
+        "MyIssue" : {
+            makeCreateData: function () {
+                let url                 = '/my-issues/pending';
+                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+
+                return {
+                    'url'               : url,
+                    'success_message'   : success_message,
+                    'fail_message'      : fail_message,
+                    "callback"          : function(){
+                        bootbox.hideAll();
+                    }
+                };
+            },
+            entity_name: "Issue",
+        },
         'settingsDashboardWidgetsVisibility':{
             /**
              * data from all records must be sent at once

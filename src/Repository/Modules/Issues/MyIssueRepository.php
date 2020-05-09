@@ -4,6 +4,8 @@ namespace App\Repository\Modules\Issues;
 
 use App\Entity\Modules\Issues\MyIssue;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -59,6 +61,17 @@ class MyIssueRepository extends ServiceEntityRepository
         $results = $query->execute();
 
         return $results;
+    }
+
+    /**
+     * @param MyIssue $issue
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveIssue(MyIssue $issue)
+    {
+        $this->_em->persist($issue);
+        $this->_em->flush($issue);
     }
 
     /**

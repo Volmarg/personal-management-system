@@ -39,6 +39,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES         = 'page-elements/components/dialogs/bodies/system-lock-resources.twig';
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD   = 'page-elements/components/dialogs/bodies/system-lock-create-password.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS    = 'page-elements/components/dialogs/bodies/preview-issue-details.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE             = 'page-elements/components/dialogs/bodies/create-issue.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
@@ -483,5 +484,27 @@ class DialogsAction extends AbstractController
 
         return new JsonResponse($response_data);
     }
+
+    /**
+     * @Route("/dialog/body/create-issue", name="dialog_body_create_issue", methods="POST")
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function buildCreateIssueDialogBody(Request $request) {
+
+        $template_data = [
+            'issueForm' => $this->app->forms->issueForm()->createView(),
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
 
 }
