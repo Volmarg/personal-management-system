@@ -21,6 +21,7 @@ use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Goals\MyGoalsRepository;
 use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
 use App\Repository\Modules\Issues\MyIssueContactRepository;
+use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
@@ -98,6 +99,7 @@ class Repositories extends AbstractController {
     const LOCKED_RESOURCE_REPOSITORY                    = "LockedResourceRepository";
     const MY_ISSUES_REPOSITORY                          = "MyIssueRepository";
     const MY_ISSUES_CONTACT_REPOSITORY                  = "MyIssueContactRepository";
+    const MY_ISSUES_PROGRESS_REPOSITORY                 = "MyIssueProgressRepository";
 
     const PASSWORD_FIELD        = 'password';
 
@@ -302,6 +304,11 @@ class Repositories extends AbstractController {
      */
     public $myIssueContactRepository;
 
+    /**
+     * @var MyIssueProgressRepository $myIssueProgressRepository
+     */
+    public $myIssueProgressRepository;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -339,6 +346,7 @@ class Repositories extends AbstractController {
         LockedResourceRepository            $lockedResourceRepository,
         MyIssueRepository                   $myIssueRepository,
         MyIssueContactRepository            $myIssueContactRepository,
+        MyIssueProgressRepository           $myIssueProgressRepository,
         EntityManagerInterface              $entity_manager
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -377,6 +385,7 @@ class Repositories extends AbstractController {
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myIssueRepository                    = $myIssueRepository;
         $this->myIssueContactRepository             = $myIssueContactRepository;
+        $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->entity_manager                       = $entity_manager;
     }
 

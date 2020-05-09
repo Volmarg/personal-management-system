@@ -2,6 +2,8 @@
  * @info: This class contains the methods and representations used to:
  *  - handle formView fetching from backed
  */
+import * as tinymce from "tinymce";
+
 var bootbox = require('bootbox');
 
 export default (function () {
@@ -12,12 +14,12 @@ export default (function () {
 
     dataProcessors.entities = {
         "MySchedules": {
-            makeUpdateData: function (tr_parent_element) {
-                let id              = $(tr_parent_element).find('.id').html();
-                let name            = $(tr_parent_element).find('.name').html();
-                let scheduleType    = $(tr_parent_element).find('.type :selected');
-                let date            = $(tr_parent_element).find('.date input').val();
-                let information     = $(tr_parent_element).find('.information').html();
+            makeUpdateData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
+                let name            = $($baseElement).find('.name').html();
+                let scheduleType    = $($baseElement).find('.type :selected');
+                let date            = $($baseElement).find('.date input').val();
+                let information     = $($baseElement).find('.information').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -42,8 +44,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-schedule/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -75,10 +77,10 @@ export default (function () {
             entity_name: "Schedule",
         },
         "MySchedulesTypes": {
-            makeUpdateData: function (tr_parent_element) {
-                let id   = $(tr_parent_element).find('.id').html();
-                let name = $(tr_parent_element).find('.name').html();
-                let icon = $(tr_parent_element).find('.icon').html();
+            makeUpdateData: function ($baseElement) {
+                let id   = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
+                let icon = $($baseElement).find('.icon').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -101,9 +103,9 @@ export default (function () {
                     'callback_after': true,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id              = $(parent_element).find('.id').html();
-                let name            = $(parent_element).find('.name').html();
+            makeRemoveData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
+                let name            = $($baseElement).find('.name').html();
                 let url             = '/my-schedule-settings/schedule-type/remove';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -148,14 +150,14 @@ export default (function () {
             entity_name: "Schedule type",
         },
         "MyPaymentsProduct": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let name = $(tr_parent_element).find('.name').html();
-                let price = $(tr_parent_element).find('.price input').val();
-                let market = $(tr_parent_element).find('.market').html();
-                let products = $(tr_parent_element).find('.products').html();
-                let information = $(tr_parent_element).find('.information').html();
-                let rejected = $(tr_parent_element).find('.rejected input').prop("checked");
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
+                let price = $($baseElement).find('.price input').val();
+                let market = $($baseElement).find('.market').html();
+                let products = $($baseElement).find('.products').html();
+                let information = $($baseElement).find('.information').html();
+                let rejected = $($baseElement).find('.rejected input').prop("checked");
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -177,8 +179,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-payments-products/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -208,12 +210,12 @@ export default (function () {
             entity_name: "Payment product",
         },
         "MyPaymentsMonthly": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let date = $(tr_parent_element).find('.date input').val();
-                let money = $(tr_parent_element).find('.money').html();
-                let description = $(tr_parent_element).find('.description').html();
-                let paymentType = $(tr_parent_element).find('.type :selected');
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let date = $($baseElement).find('.date input').val();
+                let money = $($baseElement).find('.money').html();
+                let description = $($baseElement).find('.description').html();
+                let paymentType = $($baseElement).find('.type :selected');
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -238,8 +240,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-payments-monthly/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -269,12 +271,12 @@ export default (function () {
             entity_name: "Payment monthly",
         },
         "MyRecurringPaymentsMonthly": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let date        = $(tr_parent_element).find('.date input').val();
-                let money       = $(tr_parent_element).find('.money').html();
-                let description = $(tr_parent_element).find('.description').html();
-                let paymentType = $(tr_parent_element).find('.type :selected');
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let date        = $($baseElement).find('.date input').val();
+                let money       = $($baseElement).find('.money').html();
+                let description = $($baseElement).find('.description').html();
+                let paymentType = $($baseElement).find('.type :selected');
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -299,8 +301,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-recurring-payments-monthly/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -330,13 +332,13 @@ export default (function () {
             entity_name: "Recurring payment monthly",
         },
         "MyPaymentsOwed": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let date        = $(tr_parent_element).find('.date input').val();
-                let target      = $(tr_parent_element).find('.target').html();
-                let amount      = $(tr_parent_element).find('.amount').html();
-                let information = $(tr_parent_element).find('.information').html();
-                let currency    = $(tr_parent_element).find('.currency').find("select").val();
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let date        = $($baseElement).find('.date input').val();
+                let target      = $($baseElement).find('.target').html();
+                let amount      = $($baseElement).find('.amount').html();
+                let information = $($baseElement).find('.information').html();
+                let currency    = $($baseElement).find('.currency').find("select").val();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -358,8 +360,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id              = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
                 let url             = '/my-payments-owed/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -389,12 +391,12 @@ export default (function () {
             entity_name: "Payment owed",
         },
         "MyPaymentsIncome": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let date        = $(tr_parent_element).find('.date input').val();
-                let amount      = $(tr_parent_element).find('.amount').html();
-                let information = $(tr_parent_element).find('.information').html();
-                let currency    = $(tr_parent_element).find('.currency').find("select").val();
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let date        = $($baseElement).find('.date input').val();
+                let amount      = $($baseElement).find('.amount').html();
+                let information = $($baseElement).find('.information').html();
+                let currency    = $($baseElement).find('.currency').find("select").val();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -415,8 +417,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id              = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
                 let url             = '/my-payments-income/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -446,13 +448,13 @@ export default (function () {
             entity_name: "Payment income",
         },
         "MyJobAfterhours": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let date        = $(tr_parent_element).find('.date input').val();
-                let minutes     = $(tr_parent_element).find('.minutes input').val();
-                let description = $(tr_parent_element).find('.description').html();
-                let type        = $(tr_parent_element).find('.type').html();
-                let goal        = $(tr_parent_element).find('.goal').html();
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let date        = $($baseElement).find('.date input').val();
+                let minutes     = $($baseElement).find('.minutes input').val();
+                let description = $($baseElement).find('.description').html();
+                let type        = $($baseElement).find('.type').html();
+                let goal        = $($baseElement).find('.goal').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -473,8 +475,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-job/afterhours/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -504,11 +506,11 @@ export default (function () {
             entity_name: "Job afterhour",
         },
         "MyJobHolidays": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let year        = $(tr_parent_element).find('.year').html();
-                let daysSpent   = $(tr_parent_element).find('.daysSpent').find("input").val();
-                let information = $(tr_parent_element).find('.information').html();
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let year        = $($baseElement).find('.year').html();
+                let daysSpent   = $($baseElement).find('.daysSpent').find("input").val();
+                let information = $($baseElement).find('.information').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -527,8 +529,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id              = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
                 let url             = '/my-job/holidays/remove/';
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
@@ -558,11 +560,11 @@ export default (function () {
             entity_name: "Job holiday",
         },
         "MyJobHolidaysPool": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let year        = $(tr_parent_element).find('.year input').val();
-                let daysLeft    = $(tr_parent_element).find('.daysLeft input').val();
-                let companyName = $(tr_parent_element).find('.companyName').html();
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let year        = $($baseElement).find('.year input').val();
+                let daysLeft    = $($baseElement).find('.daysLeft input').val();
+                let companyName = $($baseElement).find('.companyName').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -581,8 +583,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id              = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
                 let url             = '/my-job/holidays-pool/remove/';
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
@@ -612,11 +614,11 @@ export default (function () {
             entity_name: "Job holiday pool",
         },
         "MyShoppingPlans": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let information = $(tr_parent_element).find('.information').html();
-                let example = $(tr_parent_element).find('.example').html();
-                let name = $(tr_parent_element).find('.name').html();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let information = $($baseElement).find('.information').html();
+                let example = $($baseElement).find('.example').html();
+                let name = $($baseElement).find('.name').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -636,8 +638,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-shopping/plans/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -667,13 +669,13 @@ export default (function () {
             entity_name: "My shopping plan",
         },
         "MyTravelsIdeas": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let location = $(tr_parent_element).find('.location span').html();
-                let country = $(tr_parent_element).find('.country span').html();
-                let image = $(tr_parent_element).find('.image img').attr('src');
-                let map = $(tr_parent_element).find('.map a').attr('href');
-                let category = $(tr_parent_element).find('.category i').html();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let location = $($baseElement).find('.location span').html();
+                let country = $($baseElement).find('.country span').html();
+                let image = $($baseElement).find('.image img').attr('src');
+                let map = $($baseElement).find('.map a').attr('href');
+                let category = $($baseElement).find('.category i').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -695,8 +697,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-travels/ideas/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -726,11 +728,11 @@ export default (function () {
             entity_name: "My travel idea",
         },
         "Achievements": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let type = $(tr_parent_element).find('.type').html();
-                let description = $(tr_parent_element).find('.description').html();
-                let name = $(tr_parent_element).find('.name').html();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let type = $($baseElement).find('.type').html();
+                let description = $($baseElement).find('.description').html();
+                let name = $($baseElement).find('.name').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -750,8 +752,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/achievement/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -781,12 +783,12 @@ export default (function () {
             entity_name: "achievement",
         },
         "MyNotesCategories": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let name = $(tr_parent_element).find('.name').html();
-                let icon = $(tr_parent_element).find('.icon').html();
-                let color = $(tr_parent_element).find('.color').text();
-                let parent = $(tr_parent_element).find('.parent').find(':selected').val();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
+                let icon = $($baseElement).find('.icon').html();
+                let color = $($baseElement).find('.color').text();
+                let parent = $($baseElement).find('.parent').find(':selected').val();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -807,8 +809,8 @@ export default (function () {
                     'fail_message': fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-notes/settings/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -861,9 +863,9 @@ export default (function () {
              * @info Important! At this moment settings panel has only option to add currency and types
              * while currency will be rarely changed if changed at all, I've prepared this to work only with types
              */
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let value = $(tr_parent_element).find('.value').html();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let value = $($baseElement).find('.value').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -881,10 +883,10 @@ export default (function () {
                     'fail_message': fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-payments-settings/remove/';
-                let value = $(parent_element).find('.value').html();
+                let value = $($baseElement).find('.value').html();
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
                 let message = 'You are about to remove type named <b>' + value + ' </b>. There might be payment connected with it. Are You 100% sure? This might break something...';
@@ -915,10 +917,10 @@ export default (function () {
             entity_name: "Payment setting",
         },
         "MyContactType": {
-            makeUpdateData: function (tr_parent_element) {
-                let id          = $(tr_parent_element).find('.id').html();
-                let name        = $(tr_parent_element).find('.name').html();
-                let imagePath   = $(tr_parent_element).find('.image_path').html();
+            makeUpdateData: function ($baseElement) {
+                let id          = $($baseElement).find('.id').html();
+                let name        = $($baseElement).find('.name').html();
+                let imagePath   = $($baseElement).find('.image_path').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -937,9 +939,9 @@ export default (function () {
                     'fail_message': fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id   = $(parent_element).find('.id').html();
-                let name = $(parent_element).find('.name').html();
+            makeRemoveData: function ($baseElement) {
+                let id   = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
                 let url  = '/my-contacts-types/remove';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -971,11 +973,11 @@ export default (function () {
             entity_name: "Contact type",
         },
         "MyContactGroup": {
-            makeUpdateData: function (tr_parent_element) {
-                let id     = $(tr_parent_element).find('.id').html();
-                let name   = $(tr_parent_element).find('.name').html();
-                let icon   = $(tr_parent_element).find('.icon').html();
-                let color  = $(tr_parent_element).find('.color').text();
+            makeUpdateData: function ($baseElement) {
+                let id     = $($baseElement).find('.id').html();
+                let name   = $($baseElement).find('.name').html();
+                let icon   = $($baseElement).find('.icon').html();
+                let color  = $($baseElement).find('.color').text();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -995,9 +997,9 @@ export default (function () {
                     'fail_message': fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id   = $(parent_element).find('.id').html();
-                let name = $(parent_element).find('.name').html();
+            makeRemoveData: function ($baseElement) {
+                let id   = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
                 let url  = '/my-contacts-groups/remove';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1029,13 +1031,13 @@ export default (function () {
             entity_name: "Contact group",
         },
         "MyPasswords": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html().trim();
-                let login = $(tr_parent_element).find('.login').html().trim();
-                let password = $(tr_parent_element).find('.password').html().trim();
-                let url = $(tr_parent_element).find('.url').html().trim();
-                let description = $(tr_parent_element).find('.description').html().trim();
-                let groupId = $(tr_parent_element).find('.group :selected').val().trim();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html().trim();
+                let login = $($baseElement).find('.login').html().trim();
+                let password = $($baseElement).find('.password').html().trim();
+                let url = $($baseElement).find('.url').html().trim();
+                let description = $($baseElement).find('.description').html().trim();
+                let groupId = $($baseElement).find('.group :selected').val().trim();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1065,8 +1067,8 @@ export default (function () {
                     }
                 }
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/my-passwords/remove/';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1093,9 +1095,9 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeCopyData: function (parent_element) {
+            makeCopyData: function ($baseElement) {
                 let url = '/my-passwords/get-password/';
-                let id = $(parent_element).find('.id').html();
+                let id = $($baseElement).find('.id').html();
 
                 return {
                     'url': url + id,
@@ -1106,9 +1108,9 @@ export default (function () {
             entity_name: "Password",
         },
         "MyPasswordsGroups": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let name = $(tr_parent_element).find('.name').html();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1126,9 +1128,9 @@ export default (function () {
                     'fail_message': fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id              = $(parent_element).find('.id').html();
-                let name            = $(parent_element).find('.name').html();
+            makeRemoveData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
+                let name            = $($baseElement).find('.name').html();
                 let url             = '/my-passwords-groups/remove';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1159,11 +1161,11 @@ export default (function () {
             entity_name: "Password group",
         },
         "MyGoals": {
-            makeUpdateData: function (tr_parent_element) {
-                let id                          = $(tr_parent_element).find('.id').html();
-                let name                        = $(tr_parent_element).find('.name').html();
-                let description                 = $(tr_parent_element).find('.description').html();
-                let displayOnDashboardCheckbox  = $(tr_parent_element).find('.displayOnDashboard');
+            makeUpdateData: function ($baseElement) {
+                let id                          = $($baseElement).find('.id').html();
+                let name                        = $($baseElement).find('.name').html();
+                let description                 = $($baseElement).find('.description').html();
+                let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
                 let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
 
                 let success_message     = ui.crud.messages.entityUpdateSuccess(this.entity_name);
@@ -1184,9 +1186,9 @@ export default (function () {
                     'fail_message'       : fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
-                let name = $(parent_element).find('.name').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
                 let url = '/admin/goals/settings/remove';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1217,10 +1219,10 @@ export default (function () {
             entity_name: "Goal",
         },
         "MySubgoals": {
-            makeUpdateData: function (tr_parent_element) {
-                let id = $(tr_parent_element).find('.id').html();
-                let name = $(tr_parent_element).find('.name').html();
-                let goalId = $(tr_parent_element).find('.goal :selected').val().trim();
+            makeUpdateData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
+                let name = $($baseElement).find('.name').html();
+                let goalId = $($baseElement).find('.goal :selected').val().trim();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1243,8 +1245,8 @@ export default (function () {
                     'fail_message': fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id = $($baseElement).find('.id').html();
                 let url = '/admin/subgoals/settings/remove';
                 let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1273,14 +1275,14 @@ export default (function () {
             entity_name: "Subgoal",
         },
         "MyGoalsPayments": {
-            makeUpdateData: function (tr_parent_element) {
-                let id                          = $(tr_parent_element).find('.id').html();
-                let name                        = $(tr_parent_element).find('.name').html();
-                let deadline                    = $(tr_parent_element).find('.deadline input').val();
-                let collectionStartDate         = $(tr_parent_element).find('.collectionStartDate input').val();
-                let moneyGoal                   = $(tr_parent_element).find('.moneyGoal').html();
-                let moneyCollected              = $(tr_parent_element).find('.moneyCollected').html();
-                let displayOnDashboardCheckbox  = $(tr_parent_element).find('.displayOnDashboard');
+            makeUpdateData: function ($baseElement) {
+                let id                          = $($baseElement).find('.id').html();
+                let name                        = $($baseElement).find('.name').html();
+                let deadline                    = $($baseElement).find('.deadline input').val();
+                let collectionStartDate         = $($baseElement).find('.collectionStartDate input').val();
+                let moneyGoal                   = $($baseElement).find('.moneyGoal').html();
+                let moneyCollected              = $($baseElement).find('.moneyCollected').html();
+                let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
                 let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
 
                 let success_message             = ui.crud.messages.entityUpdateSuccess(this.entity_name);
@@ -1304,8 +1306,8 @@ export default (function () {
                     'fail_message'              : fail_message
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id                  = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id                  = $($baseElement).find('.id').html();
                 let url                 = '/admin/goals/payments/settings/remove';
                 let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1334,12 +1336,12 @@ export default (function () {
             entity_name: "Goal payment",
         },
         "MyFiles": {
-            makeUpdateData: function (tr_parent_element) {
-                let subdirectory        = $(tr_parent_element).find('input[name^="file_full_path"]').attr('data-subdirectory');
-                let file_full_path      = $(tr_parent_element).find('input[name^="file_full_path"]').val();
-                let file_new_name       = $(tr_parent_element).find('.file_name').text();
+            makeUpdateData: function ($baseElement) {
+                let subdirectory        = $($baseElement).find('input[name^="file_full_path"]').attr('data-subdirectory');
+                let file_full_path      = $($baseElement).find('input[name^="file_full_path"]').val();
+                let file_new_name       = $($baseElement).find('.file_name').text();
 
-                let selectizeSelect     = $(tr_parent_element).find('.tags');
+                let selectizeSelect     = $($baseElement).find('.tags');
                 let tags                = $(selectizeSelect)[0].selectize.getValue();
 
                 let url                 = '/api/my-files/update';
@@ -1362,9 +1364,9 @@ export default (function () {
                     'update_template'           : true
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let subdirectory        = $(parent_element).find('input[name^="file_full_path"]').attr('data-subdirectory');
-                let file_full_path      = $(parent_element).find('input[name^="file_full_path"]').val();
+            makeRemoveData: function ($baseElement) {
+                let subdirectory        = $($baseElement).find('input[name^="file_full_path"]').attr('data-subdirectory');
+                let file_full_path      = $($baseElement).find('input[name^="file_full_path"]').val();
                 let url                 = '/my-files/remove-file';
 
                 let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
@@ -1384,10 +1386,10 @@ export default (function () {
             entity_name: "File"
         },
         "MyPaymentsBillsItems": {
-            makeUpdateData: function (tr_parent_element) {
-                let id      = $(tr_parent_element).find('.id').html();
-                let amount  = $(tr_parent_element).find('.amount').html();
-                let name    = $(tr_parent_element).find('.name').html();
+            makeUpdateData: function ($baseElement) {
+                let id      = $($baseElement).find('.id').html();
+                let amount  = $($baseElement).find('.amount').html();
+                let name    = $($baseElement).find('.name').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1406,8 +1408,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id                  = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id                  = $($baseElement).find('.id').html();
                 let url                 = '/my-payments-bills/remove-bill-item/';
                 let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1425,13 +1427,13 @@ export default (function () {
             entity_name: "Bill item"
         },
         "MyPaymentsBills": {
-            makeUpdateData: function (tr_parent_element) {
-                let id              = $(tr_parent_element).find('.id').html();
-                let name            = $(tr_parent_element).find('.name').html();
-                let information     = $(tr_parent_element).find('.information').html();
-                let startDate       = $(tr_parent_element).find('.startDate').val();
-                let endDate         = $(tr_parent_element).find('.endDate').val();
-                let plannedAmount   = $(tr_parent_element).find('.plannedAmount').html();
+            makeUpdateData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
+                let name            = $($baseElement).find('.name').html();
+                let information     = $($baseElement).find('.information').html();
+                let startDate       = $($baseElement).find('.startDate').val();
+                let endDate         = $($baseElement).find('.endDate').val();
+                let plannedAmount   = $($baseElement).find('.plannedAmount').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1453,8 +1455,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id                  = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id                  = $($baseElement).find('.id').html();
                 let url                 = '/my-payments-bills/remove-bill/';
                 let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1472,11 +1474,11 @@ export default (function () {
             entity_name: "Bill"
         },
         "MyIssueContact": {
-            makeUpdateData: function (tr_parent_element) {
-                let id              = $(tr_parent_element).find('.id').html();
-                let date            = $(tr_parent_element).find('.date input').val();
-                let information     = $(tr_parent_element).find('.information').html();
-                let icon            = $(tr_parent_element).find('.icon').html();
+            makeUpdateData: function ($baseElement) {
+                let id              = $($baseElement).find('.id').html();
+                let date            = $($baseElement).find('.date input').val();
+                let information     = $($baseElement).find('.information').html();
+                let icon            = $($baseElement).find('.icon').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1500,8 +1502,8 @@ export default (function () {
                     'callback_after': true,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let id                  = $(parent_element).find('.id').html();
+            makeRemoveData: function ($baseElement) {
+                let id                  = $($baseElement).find('.id').html();
                 let url                 = '/my-issues-contacts/remove';
                 let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
@@ -1522,15 +1524,46 @@ export default (function () {
             },
             entity_name: "Issue contact"
         },
+        "MyIssueProgress": {
+            makeUpdateData: function ($baseElement) {
+                let $tinymceWrapper         = $($baseElement).find('[data-id="tiny-mce-wrapper"]');
+                let tinymceInstanceSelector = $tinymceWrapper.attr('id');
+                let tinymceContent          = tinymce.custom.getTextContentForTinymceIdSelector(tinymceInstanceSelector);
+
+                let id              = $($baseElement).find('.id').text();
+                let information     = tinymceContent;
+
+                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                let url = '/my-issues-progress/update';
+                let ajax_data = {
+                    'id'          : id,
+                    'information' : information
+                };
+
+                return {
+                    'url'             : url,
+                    'data'            : ajax_data,
+                    'success_message' : success_message,
+                    'fail_message'    : fail_message,
+                    'callback'          : function () {
+                        bootbox.hideAll();
+                    },
+                    'callback_after': true,
+                };
+            },
+            entity_name: "Issue progress"
+        },
         'settingsDashboardWidgetsVisibility':{
             /**
              * data from all records must be sent at once
-             * @param tr_parent_element {object}
+             * @param $baseElement {object}
              */
-            makeUpdateData: function (tr_parent_element) {
+            makeUpdateData: function ($baseElement) {
 
-                let table               = $(tr_parent_element).closest('tbody');
-                let modifiedSettingName = $(tr_parent_element).find('.widget-name').text();
+                let table               = $($baseElement).closest('tbody');
+                let modifiedSettingName = $($baseElement).find('.widget-name').text();
 
                 let allRows       = $(table).find('tr');
                 let allRowsData   = [];
@@ -1581,14 +1614,14 @@ export default (function () {
             entity_name: "Setting",
         },
         'settingsFinancesCurrencyTable':{
-            makeUpdateData: function (tr_parent_element) {
-                let name            = $(tr_parent_element).find('.name').html();
-                let symbol          = $(tr_parent_element).find('.symbol').html();
-                let multiplier      = $(tr_parent_element).find('.multiplier').val();
-                let isDefaultInput  = $(tr_parent_element).find('.is-default').find('input');
+            makeUpdateData: function ($baseElement) {
+                let name            = $($baseElement).find('.name').html();
+                let symbol          = $($baseElement).find('.symbol').html();
+                let multiplier      = $($baseElement).find('.multiplier').val();
+                let isDefaultInput  = $($baseElement).find('.is-default').find('input');
                 let isDefault       = utils.domAttributes.isChecked(isDefaultInput);
 
-                let beforeUpdateState = $(tr_parent_element).find('.before-update-state').val();
+                let beforeUpdateState = $($baseElement).find('.before-update-state').val();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
                 let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
@@ -1609,8 +1642,8 @@ export default (function () {
                     'fail_message': fail_message,
                 };
             },
-            makeRemoveData: function (parent_element) {
-                let name                = $(parent_element).find('.name').text();
+            makeRemoveData: function ($baseElement) {
+                let name                = $($baseElement).find('.name').text();
                 let url                 = '/api/settings-finances/remove-currency/';
                 let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
                 let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);

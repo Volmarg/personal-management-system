@@ -89,6 +89,11 @@
                                         datatable.init();
                                         ui.crud.init();
                                         ui.widgets.applyAccordion();
+                                        ui.widgets.popover.init();
+
+                                        ui.crud.attachEventOnButtonForEditingViaTinyMce();
+                                        ui.crud.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
+                                        prismjs.init();
                                   "
                                   data-toggle-popover="true"                     {# popover attr #}
                                   data-html="true"                               {# popover attr #}

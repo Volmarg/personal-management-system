@@ -61,6 +61,9 @@ export default (function () {
 
             this.preventFocusHijack();
         },
+        /**
+         * Fix Problem with misbehaving text-alignment
+         */
         setDefaultTextAlignment: function () {
             $(document).ready(() => {
                 let iframe_body = $('iframe').contents().find("body");
@@ -72,6 +75,24 @@ export default (function () {
                         .attr("data-mce-style", "text-align: left");
                 });
             });
+        },
+        /**
+         * Gets content of the tinymce editor body (html)
+         * @param tinyMceInstanceSelector {string}
+         * @returns {string}
+         */
+        getTextContentForTinymceIdSelector: function(tinyMceInstanceSelector){
+            let tinymceInstance = tinymce.get(tinyMceInstanceSelector);
+
+            if( tinymceInstance === null ){
+                throw{
+                    "message"  : "This is not a tinymce instance",
+                    "selector" : tinyMceInstanceSelector
+                }
+            }
+
+            let tinymceContent  = tinymceInstance.getContent();
+            return tinymceContent;
         },
         changeClearFormattingButtonLogic: function () {
 

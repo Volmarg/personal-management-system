@@ -12,13 +12,19 @@ import 'prismjs/themes/prism.css';
 export default (function () {
     window.prismjs = {};
     prismjs = {
+        data:{
+            highlightPrismCode: "data-highlight-prism-code"
+        },
         init: function(){
             this.highlightCode();
         },
         highlightCode: function(){
-            let $codeElements        = $('code[class^="language-"]');
-            let $tinyMceCodeElements = $('#tiny-mce-wrapper code');
-            let $allElements         = $.merge($codeElements, $tinyMceCodeElements);
+            let $codeElements               = $('code[class^="language-"]');
+            let $tinyMceCodeElements        = $('#tiny-mce-wrapper code');
+            let $prismHighlightedCodeElements = $('[' + this.data.highlightPrismCode + '=true] pre');
+
+            let $allElements = $.merge($codeElements, $tinyMceCodeElements);
+            $allElements     = $.merge($allElements, $prismHighlightedCodeElements);
 
             $.each($allElements, function(index, codeElement){
                 Prism.highlightElement(codeElement);

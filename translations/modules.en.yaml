@@ -335,7 +335,22 @@ issues:
       removeRecord: "Remove record"
     ajaxCallMessages:
       dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"
+  contactsTable:
+    icon: Icon
+    date: Date
+    information: Information
+    actions: Actions
 
 other:
   summary: Summary
   overallSummary: Overall summary
+
+actions:
+  popover:
+    edit: Edit
+    editWithTinyMce: Edit with TinyMCE
+    remove: Remove
+    fontawesome: Pick fontawesome icon
+    copy: Copy
+    save: Save
+    lockRecord: Lock record

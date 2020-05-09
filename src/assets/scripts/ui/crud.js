@@ -21,7 +21,9 @@ export default (function () {
             'fontawesome-picker-preview': 'fontawesome-preview',
             'fontawesome-picker-input'  : 'fontawesome-input',
             'fontawesome-picker'        : 'fontawesome-picker',
-            'entity-remove-action'      : '.entity-remove-action'
+            'entity-remove-action'      : '.entity-remove-action',
+            'accordion'                 : '.ui-accordion',
+            'accordionContent'          : '.ui-accordion-content',
         },
         data: {
             entityToggleBoolval                 : "data-entity-toggle-boolval",
@@ -77,6 +79,12 @@ export default (function () {
             this.attachFontawesomePickEventOnEmojiIcon();
             this.attachRecordAddViaAjaxOnSubmit();
             this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm();
+
+
+            // the order is very important as in one event we block propagation to prevent accordion closing
+            this.attachEventOnButtonForEditingViaTinyMce();
+            this.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
+
             this.general.init();
         },
         general: {
@@ -166,7 +174,6 @@ export default (function () {
                 this.attachEntityRemovalEvent(this.selectors.classes.entityRemoveAction);
                 this.attachToggleBoolvalEvent();
                 this.attachEntityEditModalCallEvent(this.selectors.classes.entityCallEditModalAction);
-                this.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
             },
             /**
              * Will call logic for handling inverting boolval in entity via ajax
@@ -235,12 +242,20 @@ export default (function () {
                     bootbox.hideAll();
                 } ;
 
-                $(element).on('click', function() {
+                $(element).on('click', function(event) {
                     let clickedElement  = $(this);
                     let entityId        = $(clickedElement).attr('data-entity-id');
                     let repositoryName  = $(clickedElement).attr('data-repository-name'); // consts from Repositories class
 
+                    let $accordionContent     = clickedElement.closest(ui.crud.classes.accordion).find(ui.crud.classes.accordionContent);
+                    let isActionForAccordion  = ( 0 !== $accordionContent.length );
+
                     _this.removeEntityById(entityId, repositoryName, afterRemovalCallback);
+
+                    // used to keep accordion open or closed when clicking on action
+                    if( isActionForAccordion ){
+                        event.stopPropagation();
+                    }
 
                 })
             },
@@ -324,34 +339,6 @@ export default (function () {
 
                     _this.callModalForEntity(entityId, repositoryName);
                 })
-            },
-            /**
-             * Will attach logic to element so that when pressed turns the target element into tinymce
-             */
-            attachEventOnButtonToTransformTargetSelectorToTinyMceInstance: function(){
-                let $allActionButtons = $('.transform-to-tiny-mce');
-
-                $.each($allActionButtons, function(index, button){
-                    let $button = $(button);
-
-                    $button.off('click'); //prevent stacking
-                    $button.on('click', function(){
-
-                        let tinyMceSelector         = $button.attr(ui.crud.data.tinymceElementSelector);
-                        let tinyMceInstanceSelector = $button.attr(ui.crud.data.tinymceElementInstanceSelector);
-                        let tinyMceInstance         = tinymce.get(tinyMceInstanceSelector);
-
-                        // prevent reinitializing and make it removable when closing edit
-                        if( tinyMceInstance === null ){
-                            let config      = tinymce.custom.config;
-                            config.selector = tinyMceSelector;
-                            tinymce.init(config);
-                        }else{
-                            tinymce.remove(tinyMceSelector);
-                        }
-
-                    });
-                });
             },
             /**
              * Uses the modal building logic for calling box with prefilled data
@@ -546,8 +533,8 @@ export default (function () {
 
             $(saveButton).off('click'); // to prevent double attachement on reinit
             $(saveButton).on('click', function () {
-                let closest_parent = this.closest(_this.elements["saved-element-class"]);
-                _this.ajaxUpdateDatabaseRecord(closest_parent);
+                let closestParent = this.closest(_this.elements["saved-element-class"]);
+                _this.ajaxUpdateDatabaseRecord(closestParent);
             });
         },
         attachFontawesomePickEventOnEmojiIcon: function () {
@@ -739,35 +726,35 @@ export default (function () {
                 event.preventDefault();
             });
         },
-        toggleContentEditable: function (tr_closest_parent) {
-            let is_content_editable = utils.domAttributes.isContentEditable(tr_closest_parent, 'td');
-            let param_entity_name   = $(tr_closest_parent).attr('data-type');
+        toggleContentEditable: function (baseElement) {
+            let isContentEditable = utils.domAttributes.isContentEditable(baseElement, 'td');
+            let paramEntityName   = $(baseElement).attr('data-type');
 
-            if (!is_content_editable) {
-                utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.set,  'td', 'input, select, button, img');
-                $(tr_closest_parent).addClass(this.classes["table-active"]);
-                this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
-                this.toggleDisabledClassForTableRow(tr_closest_parent);
+            if (!isContentEditable) {
+                utils.domAttributes.contentEditable(baseElement, utils.domAttributes.actions.set,  'td', 'input, select, button, img');
+                $(baseElement).addClass(this.classes["table-active"]);
+                this.toggleActionIconsVisibillity(baseElement, null, isContentEditable);
+                this.toggleDisabledClassForTableRow(baseElement);
 
-                bootstrap_notifications.notify(this.messages.entityEditStart(dataProcessors.entities[param_entity_name].entity_name), 'warning');
+                bootstrap_notifications.notify(this.messages.entityEditStart(dataProcessors.entities[paramEntityName].entity_name), 'warning');
                 return;
             }
 
-            this.toggleActionIconsVisibillity(tr_closest_parent, null, is_content_editable);
-            this.toggleDisabledClassForTableRow(tr_closest_parent);
+            this.toggleActionIconsVisibillity(baseElement, null, isContentEditable);
+            this.toggleDisabledClassForTableRow(baseElement);
 
-            utils.domAttributes.contentEditable(tr_closest_parent, utils.domAttributes.actions.unset,'td', 'input, select, button, img');
-            $(tr_closest_parent).removeClass(this.classes["table-active"]);
-            bootstrap_notifications.notify(this.messages.entityEditEnd(dataProcessors.entities[param_entity_name].entity_name), 'success');
+            utils.domAttributes.contentEditable(baseElement, utils.domAttributes.actions.unset,'td', 'input, select, button, img');
+            $(baseElement).removeClass(this.classes["table-active"]);
+            bootstrap_notifications.notify(this.messages.entityEditEnd(dataProcessors.entities[paramEntityName].entity_name), 'success');
         },
-        toggleActionIconsVisibillity: function (tr_parent_element, toggle_content_editable = null, is_content_editable) {
-            let save_icon = $(tr_parent_element).find('.save-record');
-            let fontawesome_icon = $(tr_parent_element).find('.action-fontawesome');
+        toggleActionIconsVisibillity: function ($element, toggleContentEditable = null, isContentEditable) {
+            let saveIcon        = $($element).find('.save-record');
+            let fontawesomeIcon = $($element).find('.action-fontawesome');
 
-            let action_icons = [save_icon, fontawesome_icon];
+            let actionIcons = [saveIcon, fontawesomeIcon];
 
-            $(action_icons).each((index, icon) => {
-                if ($(icon).length !== 0 && $(icon).hasClass(this.classes["hidden"]) && !is_content_editable) {
+            $(actionIcons).each((index, icon) => {
+                if ($(icon).length !== 0 && $(icon).hasClass(this.classes["hidden"]) && !isContentEditable) {
                     $(icon).removeClass(this.classes["hidden"]);
                     return;
                 }
@@ -775,8 +762,8 @@ export default (function () {
                 $(icon).addClass(this.classes["hidden"]);
             });
 
-            if (toggle_content_editable === true) {
-                this.toggleContentEditable(tr_parent_element);
+            if (toggleContentEditable === true) {
+                this.toggleContentEditable($element);
             }
         },
         toggleDisabledClassForTableRow: function (tr_parent_element) {
@@ -807,37 +794,37 @@ export default (function () {
             })
 
         },
-        ajaxUpdateDatabaseRecord: function (tr_parent_element) {
-            let param_entity_name = $(tr_parent_element).attr('data-type');
-            let update_data = dataProcessors.entities[param_entity_name].makeUpdateData(tr_parent_element);
+        ajaxUpdateDatabaseRecord: function (baseElement) {
+            let paramEntityName = $(baseElement).attr('data-type');
+            let updateData = dataProcessors.entities[paramEntityName].makeUpdateData(baseElement);
             let _this = this;
 
-            if (update_data.edit !== undefined && update_data.edit !== null && update_data.edit.invokeAlert === true) {
+            if (updateData.edit !== undefined && updateData.edit !== null && updateData.edit.invokeAlert === true) {
 
                 bootbox.confirm({
-                    message: update_data.edit.alertMessage,
+                    message: updateData.edit.alertMessage,
                     backdrop: true,
                     callback: function (result) {
                         if (result) {
-                            _this.makeAjaxRecordUpdateCall(update_data);
-                            _this.toggleActionIconsVisibillity(tr_parent_element, true);
+                            _this.makeAjaxRecordUpdateCall(updateData);
+                            _this.toggleActionIconsVisibillity(baseElement, true);
                         }
                     }
                 });
 
             } else {
-                _this.makeAjaxRecordUpdateCall(update_data);
+                _this.makeAjaxRecordUpdateCall(updateData);
             }
 
         },
-        makeAjaxRecordUpdateCall: function (update_data) {
+        makeAjaxRecordUpdateCall: function (updateData) {
             ui.widgets.loader.showLoader();
             $.ajax({
-                url: update_data.url,
+                url: updateData.url,
                 method: 'POST',
-                data: update_data.data
+                data: updateData.data
             }).fail(() => {
-                bootstrap_notifications.notify(update_data.fail_message, 'danger')
+                bootstrap_notifications.notify(updateData.fail_message, 'danger')
             }).always((data) => {
 
                 try{
@@ -861,15 +848,15 @@ export default (function () {
                 }
 
                 if( "undefined" === typeof message ){
-                    bootstrap_notifications.notify(update_data.success_message, messageType);
+                    bootstrap_notifications.notify(updateData.success_message, messageType);
                 } else {
                     bootstrap_notifications.notify(message, messageType);
                 }
 
 
 
-                if (update_data.callback_after) {
-                    update_data.callback();
+                if (updateData.callback_after) {
+                    updateData.callback();
                 }
 
                 ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
@@ -882,7 +869,57 @@ export default (function () {
         },
         removeTableRow: function (tr_parent_element) {
             tr_parent_element.remove();
-        }
+        },
+        /**
+         * Will attach logic to element so that when pressed turns the target element into tinymce
+         * @param preventFurtherEventPropagation {boolean}
+         */
+        attachEventOnButtonToTransformTargetSelectorToTinyMceInstance: function(preventFurtherEventPropagation = true){
+            let $allButtons = $('.transform-to-tiny-mce');
+
+            $.each($allButtons, function(index, button){
+                let $button = $(button);
+
+                $button.on('click', function(event){
+
+                    let tinyMceSelector         = $button.attr(ui.crud.data.tinymceElementSelector);
+                    let tinyMceInstanceSelector = $button.attr(ui.crud.data.tinymceElementInstanceSelector);
+                    let tinyMceInstance         = tinymce.get(tinyMceInstanceSelector);
+
+                    // prevent reinitializing and make it removable when closing edit
+                    if( tinyMceInstance === null ){
+                        let config      = tinymce.custom.config;
+                        config.selector = tinyMceSelector;
+                        tinymce.init(config);
+                    }else{
+                        tinymce.remove(tinyMceSelector);
+                        prismjs.highlightCode();
+                    }
+
+                    // used for example to suppress propagating accordion open/close
+                    if( preventFurtherEventPropagation ){
+                        event.stopPropagation();
+                    }
+                });
+            });
+        },
+        /**
+         * Attaches the logic after clicking on button for editing with tinymce
+         */
+        attachEventOnButtonForEditingViaTinyMce: function(){
+            let $allActionButtons = $('.edit-record-with-tiny-mce');
+
+            $.each($allActionButtons, function(index, button){
+                let $button    = $(button);
+                let $accordion = $button.closest(ui.crud.classes.accordion);
+
+                $button.off('click'); // prevent stacking - also keep in mind that might remove other events attached before
+                $button.on('click', function(event){
+                    ui.crud.toggleActionIconsVisibillity($accordion);
+                });
+            });
+
+        },
     };
 
 }());
