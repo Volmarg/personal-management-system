@@ -1,5 +1,3 @@
-{% trans_default_domain 'FOSUserBundle' %}
-
 {% block fos_user_content %}
 
     <div class="peers ai-s fxw-nw h-100vh">
@@ -25,12 +23,12 @@
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
                     <div class="form-group">
                         <label class="text-normal text-dark">{{ 'login.labels.username' | trans }}</label>
-                        <input type="text" class="form-control" placeholder="{{ 'security.login.username'|trans }}"
+                        <input type="text" class="form-control" placeholder="{{ 'login.placeholders.username'|trans }}"
                                id="username" name="_username" value="{{ last_username }}" required="required">
                     </div>
                     <div class="form-group">
                         <label class="text-normal text-dark">{{ 'login.labels.password' | trans }}</label>
-                        <input type="password" class="form-control" placeholder="{{ 'security.login.password'|trans }}"
+                        <input type="password" class="form-control" placeholder="{{ 'login.placeholders.password'|trans }}"
                                id="password" name="_password" required="required">
                     </div>
                     <div class="form-group">
@@ -45,7 +43,7 @@
                             </div>
                             <div class="peer">
                                 <button class="btn btn-primary" id="_submit"
-                                        name="_submit">{{ 'security.login.submit'|trans }}</button>
+                                            name="_submit">{{ 'login.submit'|trans }}</button>
                             </div>
                         </div>
                     </div>

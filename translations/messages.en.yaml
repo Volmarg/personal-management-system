@@ -859,7 +859,11 @@ login:
     username: 'Username:'
     password: 'Password:'
     remember: 'Remember Me'
+  placeholders:
+    username: 'Username'
+    password: 'Password'
   pageTitle: Sign In
+  submit: Login
 
 codePages:
   error:
