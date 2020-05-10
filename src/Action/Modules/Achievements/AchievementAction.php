@@ -9,7 +9,6 @@ use App\Controller\Core\Repositories;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Form\Modules\Achievements\AchievementType;
 use App\Repository\AbstractRepository;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -67,7 +66,7 @@ class AchievementAction extends AbstractController {
      * @Route("/achievement/update/",name="achievement-update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * #todo: check if this works correct in case of edit and update
      */
     public function update(Request $request) {

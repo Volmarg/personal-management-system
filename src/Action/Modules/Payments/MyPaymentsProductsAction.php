@@ -8,7 +8,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +32,7 @@ class MyPaymentsProductsAction extends AbstractController {
      * @Route("/my-payments-products", name="my-payments-products")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function display(Request $request) {
         $this->addFormDataToDB($request);
@@ -73,7 +72,7 @@ class MyPaymentsProductsAction extends AbstractController {
      * @Route("my-payments-products/update/",name="my-payments-products-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function updateDataInDB(Request $request) {
         $parameters = $request->request->all();
@@ -87,7 +86,7 @@ class MyPaymentsProductsAction extends AbstractController {
      * Todo: check later why is this done this strange way....
      * @param $column_names
      * @return array
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function reorderPriceColumn($column_names) {
         $price_key = array_search(static::PRICE_COLUMN_NAME, $column_names);
@@ -106,7 +105,7 @@ class MyPaymentsProductsAction extends AbstractController {
     /**
      * @param bool $ajax_render
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function renderTemplate($ajax_render = false) {
         $form               = $this->app->forms->paymentsProductsForm();

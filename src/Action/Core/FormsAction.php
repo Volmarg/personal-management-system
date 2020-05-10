@@ -2,7 +2,6 @@
 
 namespace App\Action\Core;
 
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Core\Translator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,7 +27,7 @@ class FormsAction extends AbstractController {
      * This function is used on frontend to fetch the form
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * @Route("/api/get-form-view-by-class-name", name="get_form_view_by_class_name", methods="POST")
      */
     public function getFormViewByClassName(Request $request):JsonResponse {

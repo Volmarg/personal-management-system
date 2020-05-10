@@ -5,7 +5,6 @@ namespace App\Controller\System;
 use App\Controller\Core\Application;
 use App\Entity\System\LockedResource;
 use App\Entity\User;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -88,7 +87,7 @@ class LockedResourceController extends AbstractController {
      * @param string $target
      * @param bool $show_flash_message
      * @return bool
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * @throws Exception
      */
     public function isAllowedToSeeResource(string $record, string $type, string $target, bool $show_flash_message = true): bool

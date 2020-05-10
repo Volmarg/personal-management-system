@@ -3,7 +3,7 @@
                 <span class="icon-holder" style="color:rgb(178,34,34);">
                  <i class="fas fa-bullseye fa-sm"></i>
                 </span>
-        <span class="title">{{ translate('sidebar.menu.goals.label') }}</span>
+        <span class="title">{{ 'sidebar.menu.goals.label' | trans }}</span>
         <span class="arrow">
                     <i class="ti-angle-right fa-sm"></i>
                   </span>
@@ -11,13 +11,13 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('goals_list') }}">{{ translate('sidebar.menu.goals.list') }}</a>
+            <a class="sidebar-link" href="{{ path('goals_list') }}">{{ 'sidebar.menu.goals.list' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('goals_payments_list') }}">{{ translate('sidebar.menu.goals.payments') }}</a>
+            <a class="sidebar-link" href="{{ path('goals_payments_list') }}">{{ 'sidebar.menu.goals.payments' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('goals_settings') }}">{{ translate('sidebar.menu.goals.settings') }}</a>
+            <a class="sidebar-link" href="{{ path('goals_settings') }}">{{ 'sidebar.menu.goals.settings' | trans }}</a>
         </li>
     </ul>
 </li>

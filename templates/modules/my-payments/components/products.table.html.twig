@@ -6,8 +6,8 @@
         {% for column in column_names %}
             <td class="{{ hideIdColumn(column) }}">{{ column|capitalize }}</td>
         {% endfor %}
-        <td>{{ translate('payments.productsPrices.table.homeCurrency') }}</td>
-        <td>{{ translate('datatables.table.actions') }}</td>
+        <td>{{ 'payments.productsPrices.table.homeCurrency' | trans }}</td>
+        <td>{{ 'datatables.table.actions' | trans }}</td>
     </tr>
     </thead>
     <tbody>

@@ -2,13 +2,13 @@
        data-table="true" width="100%">
     <thead>
     <tr>
-        <td class="d-none">{{ translate('datatables.table.id') }}</td>
-        <td>{{ translate('payments.moneyOwed.table.target') }}</td>
-        <td>{{ translate('payments.moneyOwed.table.amount') }}</td>
-        <td>{{ translate('payments.moneyOwed.table.information') }}</td>
-        <td>{{ translate('payments.moneyOwed.table.date') }}</td>
-        <td>{{ translate('payments.moneyOwed.table.currency') }}</td>
-        <td>{{ translate('datatables.table.actions') }}</td>
+        <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
+        <td>{{ 'payments.moneyOwed.table.target' | trans }}</td>
+        <td>{{ 'payments.moneyOwed.table.amount' | trans }}</td>
+        <td>{{ 'payments.moneyOwed.table.information' | trans }}</td>
+        <td>{{ 'payments.moneyOwed.table.date' | trans }}</td>
+        <td>{{ 'payments.moneyOwed.table.currency' | trans }}</td>
+        <td>{{ 'datatables.table.actions' | trans }}</td>
     </tr>
     </thead>
     <tbody>
@@ -53,7 +53,7 @@
 {% if summarries is not empty  %}
     <section class="summary-section d-flex justify-content-center">
         <div class="">
-            <h5><u>{{ translate('other.summary') }}</u></h5>
+            <h5><u>{{ 'other.summary' | trans }}</u></h5>
             <ul style="list-style-type:none;margin:0; padding:0;">
                 {% for summary in summarries %}
                     <li style="margin:0; padding:0;font-size:14px;"><b>{{ summary.target }}:</b>

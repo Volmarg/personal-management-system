@@ -13,7 +13,7 @@ services:
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
     app.twig_extension:
-        class: \Twig_Extensions_Extension_Date
+        class: Twig_Extensions_Extension_Date
         public: false
         tags:
         - { name: twig.extension }
@@ -33,6 +33,16 @@ services:
     App\Services\Core\Logger:
         arguments:
             $security_logger: "@monolog.logger.security"
+            $debug_logger: "@monolog.logger.debug"
+        public: true
+
+    services_core_logger:
+        alias: App\Services\Core\Logger
+        public: true
+
+    App\Services\Core\Translator:
+        calls:
+            - [setTranslator, ['@translator']]
 
     App\Command\Override\Fos\UserCreateCommand:
         decorates: fos_user.command.create_user

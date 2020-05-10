@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,7 +78,7 @@ class MyShoppingPlansAction extends AbstractController {
      * @Route("/my-shopping/plans/update/",name="my-shopping-plans-update")
      * @param Request $request
      * @return JsonResponse|Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

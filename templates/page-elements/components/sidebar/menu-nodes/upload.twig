@@ -5,7 +5,7 @@
             <i class="fas fa-upload fa-sm"></i>
         </span>
 
-        <span class="title">{{ translate('sidebar.menu.upload.label') }}</span>
+        <span class="title">{{ 'sidebar.menu.upload.label' | trans }}</span>
         <span class="arrow">
               <i class="ti-angle-right fa-sm"></i>
         </span>
@@ -15,12 +15,12 @@
 
         <li>
             <a class="sidebar-link" href="{{ path('upload') }}">
-                {{ translate('sidebar.menu.upload.add') }}
+                {{ 'sidebar.menu.upload.add' | trans }}
             </a>
         </li>
         <li>
             <a class="sidebar-link" href="{{ path('upload_settings') }}">
-                {{ translate('sidebar.menu.upload.manage') }}
+                {{ 'sidebar.menu.upload.manage' | trans }}
             </a>
         </li>
 

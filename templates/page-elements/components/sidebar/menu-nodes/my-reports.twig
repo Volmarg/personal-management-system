@@ -3,7 +3,7 @@
                 <span class="icon-holder" style="color:blue;">
                     <i class="far fa-list-alt fa-sm"></i>
                 </span>
-                <span class="title">{{  translate('sidebar.menu.reports.label') }}</span>
+                <span class="title">{{  'sidebar.menu.reports.label' | trans }}</span>
                 <span class="arrow">
                     <i class="ti-angle-right fa-sm"></i>
                 </span>
@@ -12,22 +12,22 @@
     <ul class="dropdown-menu">
         <li>
             <a class="sidebar-link" href="{{ path('reports-monthly-payments-summaries') }}">
-                {{  translate('sidebar.menu.reports.monthlyPaymentsSummaries') }}
+                {{  'sidebar.menu.reports.monthlyPaymentsSummaries' | trans }}
             </a>
         </li>
         <li>
             <a class="sidebar-link" href="{{ path('reports-historical-money-owed') }}">
-                {{  translate('sidebar.menu.reports.historicalMoneyOwed') }}
+                {{  'sidebar.menu.reports.historicalMoneyOwed' | trans }}
             </a>
         </li>
         <li>
             <a class="sidebar-link" href="{{ path('reports-payments-charts') }}">
-                {{  translate('sidebar.menu.reports.paymentsCharts') }}
+                {{  'sidebar.menu.reports.paymentsCharts' | trans }}
             </a>
         </li>
         <li>
             <a class="sidebar-link" href="{{ path('reports-savings-charts') }}">
-                {{  translate('sidebar.menu.reports.savingsCharts') }}
+                {{  'sidebar.menu.reports.savingsCharts' | trans }}
             </a>
         </li>
     </ul>

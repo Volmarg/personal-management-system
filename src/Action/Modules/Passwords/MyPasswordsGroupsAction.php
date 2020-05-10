@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,7 +28,7 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @Route("/my-passwords-settings", name="my-passwords-settings")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function display(Request $request) {
         $password_group_form = $this->app->forms->passwordGroupForm();
@@ -47,7 +46,7 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @Route("/my-passwords-groups/remove", name="my-passwords-groups-remove")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function remove(Request $request) {
 
@@ -71,7 +70,7 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @Route("/my-passwords-groups/update",name="my-passwords-groups-update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -100,7 +99,7 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @param FormInterface $form
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function submitForm(FormInterface $form, Request $request) {
         $form->handleRequest($request);

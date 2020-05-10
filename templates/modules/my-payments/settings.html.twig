@@ -16,8 +16,8 @@
                     <div class="col-md-12">
 
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.settings.headers.changeAddSetting') }}</h4>
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.settings.headers.currencyMultiplier') }}</h5>
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ 'payments.settings.headers.changeAddSetting' | trans }}</h4>
+                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'payments.settings.headers.currencyMultiplier' | trans }}</h5>
                             <div class="col-md-6 align-self-center add-record-form">
                                 {{ form_start(currency_multiplier_form, {'attr':{'data-entity':"MyPaymentsSettings"}}) }}
                                 {{ form_end(currency_multiplier_form) }}
@@ -26,7 +26,7 @@
 
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
 
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.settings.headers.paymentsTypes') }}</h5>
+                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'payments.settings.headers.paymentsTypes' | trans }}</h5>
 
                             {% include('modules/my-payments/components/types-settings.table.html.twig') %}
 

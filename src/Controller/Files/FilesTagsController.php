@@ -5,7 +5,6 @@ namespace App\Controller\Files;
 
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Core\Application;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\FileTagger;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +33,7 @@ class FilesTagsController extends AbstractController {
      * @param string $tags_string
      * @param string $file_full_path
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function updateTags(string $tags_string, string $file_full_path): Response {
 

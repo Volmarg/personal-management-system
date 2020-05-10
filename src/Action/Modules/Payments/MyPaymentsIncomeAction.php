@@ -7,7 +7,6 @@ namespace App\Action\Modules\Payments;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -72,7 +71,7 @@ class MyPaymentsIncomeAction extends AbstractController {
      * @Route("my-payments-income/update/" ,name="my-payments-income-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters     = $request->request->all();

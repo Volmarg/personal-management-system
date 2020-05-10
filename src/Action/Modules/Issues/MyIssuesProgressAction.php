@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,7 +60,7 @@ class MyIssuesProgressAction extends AbstractController
      * @Route("/my-issues-progress/remove", name="my_issues_progress_remove")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     public function remove(Request $request): Response

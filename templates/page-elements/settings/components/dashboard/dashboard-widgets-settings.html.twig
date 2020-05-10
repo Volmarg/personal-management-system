@@ -3,14 +3,14 @@
 {% set KEY_IS_VISIBLE   = constant(settings_widget_visibility_dto ~ 'KEY_IS_VISIBLE' ) %}
 
 <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-    <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('settings.dashboard.widgets.visibility.label') }} </h5>
+    <h5 class="c-grey-900 mB-20 align-self-center">{{ 'settings.dashboard.widgets.visibility.label' | trans }} </h5>
 
     <table id="settingsDashboardWidgetsVisibility" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
         <thead>
         <tr>
             <td class="d-none"></td>
-            <td>    {{ translate('settings.dashboard.widgets.visibility.table.labels.name') }}              </td>
-            <td>    {{ translate('settings.dashboard.widgets.visibility.table.labels.displayWidget') }}     </td>
+            <td>    {{ 'settings.dashboard.widgets.visibility.table.labels.name' | trans }}              </td>
+            <td>    {{ 'settings.dashboard.widgets.visibility.table.labels.displayWidget' | trans }}     </td>
         </tr>
         </thead>
         <tbody>

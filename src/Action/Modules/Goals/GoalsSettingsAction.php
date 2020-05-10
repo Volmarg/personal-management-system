@@ -7,7 +7,6 @@ namespace App\Action\Modules\Goals;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -224,7 +223,7 @@ class GoalsSettingsAction extends AbstractController {
      * @param FormInterface $form
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function addRecord(FormInterface $form, Request $request) {
         $form->handleRequest($request);

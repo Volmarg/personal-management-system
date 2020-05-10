@@ -7,9 +7,6 @@ use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Utils\Utils;
-use App\Services\Exceptions;
-use App\Services\Files\FilesHandler;
-use App\Services\Files\FileTagger;
 use DirectoryIterator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
@@ -366,7 +363,6 @@ class DirectoriesHandler {
      * @param string $current_folder_path
      * @param string $parent_folder_path
      * @return Response
-     * @throws Exceptions\ExceptionDuplicatedTranslationKey
      * @throws \Exception
      */
     public function moveDirectory(string $current_folder_path, string $parent_folder_path): Response{

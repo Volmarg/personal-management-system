@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.moneyOwed.headers.owedByOthers') }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.moneyOwed.headers.owedByOthers' | trans }}</h4>
                             {% include 'modules/my-payments/components/owed.table.html.twig' with {
                                 'records'   : owed_by_others,
                                 'summarries': summary_owed_by_others
@@ -27,7 +27,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('payments.moneyOwed.headers.owedByMe') }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.moneyOwed.headers.owedByMe' | trans }}</h4>
                             {% include 'modules/my-payments/components/owed.table.html.twig' with {
                                 'records'   : owed_by_me,
                                 'summarries': summary_owed_by_me
@@ -39,12 +39,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('other.overallSummary') }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'other.overallSummary' | trans }}</h4>
 
-                            <h5 class="text-center"><u>{{ translate('payments.moneyOwed.headers.owedByMe') }}</u></h5>
+                            <h5 class="text-center"><u>{{ 'payments.moneyOwed.headers.owedByMe' | trans }}</u></h5>
                             {% include 'modules/my-payments/components/owed-overal-summary.html.twig' with {"summarries": summary_overall_owed_by_me} %}
 
-                            <h5 class="text-center"><u>{{ translate('payments.moneyOwed.headers.owedByOthers') }}</u></h5>
+                            <h5 class="text-center"><u>{{ 'payments.moneyOwed.headers.owedByOthers' | trans }}</u></h5>
                             {% include 'modules/my-payments/components/owed-overal-summary.html.twig' with {"summarries": summary_overall_owed_by_others} %}
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.moneyOwed.headers.addRecord') }}</h4>
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ 'payments.moneyOwed.headers.addRecord' | trans }}</h4>
                             <div class="col-md-6 align-self-center add-record-form">
                                 {{ form_start(form,{'attr':{' data-entity':"MyPaymentsOwed"}}) }}
                                 {{ form_end(form) }}

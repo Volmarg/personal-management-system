@@ -4,17 +4,9 @@ namespace App\Controller\Modules\Notes;
 
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
-use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
-use App\Controller\Core\Repositories;
-use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\System\LockedResource;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
-use Exception;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class MyNotesController extends AbstractController {
 
@@ -39,7 +31,7 @@ class MyNotesController extends AbstractController {
     /**
      * @param string $category_id
      * @return bool
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function hasCategoryFamilyVisibleNotes(string $category_id)
     {

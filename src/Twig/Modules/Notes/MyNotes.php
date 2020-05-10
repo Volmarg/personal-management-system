@@ -5,7 +5,6 @@ namespace App\Twig\Modules\Notes;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Core\Application;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\DBAL\DBALException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -46,7 +45,7 @@ class MyNotes extends AbstractExtension {
     /**
      * @param string $category_id
      * @return bool
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function hasCategoryFamilyVisibleNotes(string $category_id) {
         $hasCategoryFamilyVisibleNotes = $this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id);
@@ -72,7 +71,7 @@ class MyNotes extends AbstractExtension {
 
     /**
      * @return array
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws DBALException
      */
     public function getAccessibleNotesCategories() {

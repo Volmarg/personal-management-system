@@ -3,7 +3,6 @@
 namespace App\Controller\Modules\Notes;
 
 use App\Controller\Core\Application;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -65,7 +64,7 @@ class MyNotesCategoriesController extends AbstractController {
      * Returns the categories that are visible, have notes, are not deleted or have family tree inside with same rules
      * @return array
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function getAccessibleCategories(): array
     {

@@ -3,7 +3,7 @@
                 <span class="icon-holder">
                     <i class="fas fa-desktop fa-sm"></i>
                 </span>
-        <span class="title">{{ translate('sidebar.menu.job.label') }}</span>
+        <span class="title">{{ 'sidebar.menu.job.label' | trans }}</span>
         <span class="arrow">
                     <i class="ti-angle-right fa-sm"></i>
                   </span>
@@ -11,13 +11,13 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-job-afterhours') }}">{{ translate('sidebar.menu.job.afterhours') }}</a>
+            <a class="sidebar-link" href="{{ path('my-job-afterhours') }}">{{ 'sidebar.menu.job.afterhours' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-job-holidays') }}">{{ translate('sidebar.menu.job.holidays') }}</a>
+            <a class="sidebar-link" href="{{ path('my-job-holidays') }}">{{ 'sidebar.menu.job.holidays' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-job-settings') }}">{{ translate('sidebar.menu.job.settings') }}</a>
+            <a class="sidebar-link" href="{{ path('my-job-settings') }}">{{ 'sidebar.menu.job.settings' | trans }}</a>
         </li>
     </ul>
 </li>

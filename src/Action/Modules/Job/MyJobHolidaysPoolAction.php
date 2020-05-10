@@ -8,7 +8,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,7 +42,7 @@ class MyJobHolidaysPoolAction extends AbstractController {
      * @Route("/my-job/holidays-pool/update/",name="my-job-holidays-pool-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

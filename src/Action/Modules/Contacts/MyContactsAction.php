@@ -11,7 +11,6 @@ use App\DTO\Modules\Contacts\ContactTypeDTO;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -87,7 +86,7 @@ class MyContactsAction extends AbstractController
      * @Route("my-contacts/update" ,name="my-contacts-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

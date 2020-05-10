@@ -16,9 +16,9 @@
                         <h4 class="c-grey-900 mB-20 text-center">
 
                             {% if editContactCard is defined and editContactCard %}
-                                {{ translate('dialogs.editContactCard.header') }}
+                                {{ 'dialogs.editContactCard.header' | trans }}
                             {% else %}
-                                {{ translate('dialogs.createContactCard.header') }}
+                                {{ 'dialogs.createContactCard.header' | trans }}
                             {% endif %}
 
                         </h4>
@@ -116,7 +116,7 @@
                                 style="font-size:13px;"
                                 data-target-selector=".contacts-types-wrapper-for-widget"
                                 data-form-name="contactTypeDto">
-                            {{ translate('forms.MyContactType.labels.addType') }}
+                            {{ 'forms.MyContactType.labels.addType' | trans }}
                         </button>
 
                     </div>

@@ -6,16 +6,16 @@
                     <li style="margin:0; padding:0;font-size:14px;">
                         <b>
                             {% if  summary.summaryOwedByMe %}
-                                {{ translate('payments.moneyOwed.overallSummary.i') }}
+                                {{ 'payments.moneyOwed.overallSummary.i' | trans }}
                             {% else %}
                                 {{ summary.target }}
                             {% endif %}
                         </b>
 
                         {% if summary.summaryOwedByMe %}
-                            {{ translate('payments.moneyOwed.overallSummary.owe') }}
+                            {{ 'payments.moneyOwed.overallSummary.owe' | trans }}
                         {% else %}
-                            {{ translate('payments.moneyOwed.overallSummary.owesMe') }}
+                            {{ 'payments.moneyOwed.overallSummary.owesMe' | trans }}
                         {% endif %}
 
                         {% set is_currency_present = false %}
@@ -36,7 +36,7 @@
 
                         <i>
                             {% if summary.summaryOwedByMe %}
-                                {{ translate('payments.moneyOwed.overallSummary.to') }}
+                                {{ 'payments.moneyOwed.overallSummary.to' | trans }}
                                 {{ summary.target }}
                             {% endif %}
                         </i>

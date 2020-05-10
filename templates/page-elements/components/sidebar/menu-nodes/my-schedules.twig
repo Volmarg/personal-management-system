@@ -3,7 +3,7 @@
                 <span class="icon-holder" style="color:black;">
                     <i class="far fa-calendar-alt fa-sm"></i>
                 </span>
-        <span class="title">{{ translate('sidebar.menu.schedules.label') }}</span>
+        <span class="title">{{ 'sidebar.menu.schedules.label' | trans }}</span>
         <span class="arrow">
                     <i class="ti-angle-right fa-sm"></i>
                   </span>
@@ -17,7 +17,7 @@
             </li>
         {% endfor %}
         <li>
-            <a class="sidebar-link" href="{{ path('my_schedules_settings') }}">{{ translate('sidebar.menu.schedules.settings') }}</a>
+            <a class="sidebar-link" href="{{ path('my_schedules_settings') }}">{{ 'sidebar.menu.schedules.settings' | trans }}</a>
         </li>
     </ul>
     </a>

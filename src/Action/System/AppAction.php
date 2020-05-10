@@ -9,7 +9,6 @@ use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
 use App\Entity\User;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -119,7 +118,7 @@ class AppAction extends AbstractController {
      * @Route("/actions/render-menu-node-template", name="render_menu_node_template")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function renderMenuNodeTemplate(Request $request) {
 
@@ -193,7 +192,7 @@ class AppAction extends AbstractController {
      * @param UserRolesSessionService $role_session_service
      * @param SecurityController $security_controller
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     public function toggleResourcesLock(Request $request, UserRolesSessionService $role_session_service, SecurityController $security_controller): Response
@@ -250,7 +249,7 @@ class AppAction extends AbstractController {
      * @param Request            $request
      * @param SecurityController $security_controller
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function systemLockCreatePassword(Request $request, SecurityController $security_controller): Response
     {

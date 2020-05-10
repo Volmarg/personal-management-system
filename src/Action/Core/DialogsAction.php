@@ -11,7 +11,6 @@ use App\Form\Modules\Issues\MyIssueContactType;
 use App\Form\Modules\Issues\MyIssueProgressType;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\Files\DirectoriesHandler;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
 use Exception;
@@ -291,7 +290,7 @@ class DialogsAction extends AbstractController
      * @param string $note_id
      * @param string $category_id
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      */
     public function buildPreviewNoteDialogBody(Request $request, string $note_id, string $category_id) {
 
@@ -395,7 +394,7 @@ class DialogsAction extends AbstractController
      * @Route("/dialog/body/edit-contact-card", name="dialog_body_edit_contact_card", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * @throws Exception
      */
     public function buildEditContactCardDialogBody(Request $request) {
@@ -450,7 +449,7 @@ class DialogsAction extends AbstractController
      * @Route("/dialog/body/preview-issue-details", name="dialog_body_preview_issue_details", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * @throws Exception
      */
     public function buildPreviewIssueDetailsDialogBody(Request $request) {

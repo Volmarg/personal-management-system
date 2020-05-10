@@ -7,7 +7,6 @@ namespace App\Action\Modules\Schedules;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +31,7 @@ class MySchedulesSettingsAction extends AbstractController {
      * @Route("/my-schedules-settings", name="my_schedules_settings")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function display(Request $request) {
         $this->addRecord($request);
@@ -73,7 +72,7 @@ class MySchedulesSettingsAction extends AbstractController {
      * @Route("/my-schedule-settings/schedule-type/update",name="my_schedule_settings_schedule_update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -104,7 +103,7 @@ class MySchedulesSettingsAction extends AbstractController {
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function addRecord(Request $request) {
         $form=$this->app->forms->scheduleTypeForm();

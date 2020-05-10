@@ -80,7 +80,7 @@ class FileUploader extends AbstractController {
      * @param string $extension
      * @param string $tags
      * @return Response
-     * @throws Exceptions\ExceptionDuplicatedTranslationKey
+     * @throws \Exception
      */
     public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '', string $filename = '', string $extension = '', string $tags = '') {
 

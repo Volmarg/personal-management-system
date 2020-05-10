@@ -31,3 +31,1032 @@ messages:
     noSuchMethodExistsForGivenClass: "No such method exists for given class: "
     noSuchGetterAndIsserAvailableForClass: "No getter and isser available for class: "
     boolValueHasBeenToggled: "Bool value has been toggled"
+
+buttons:
+  close: Close
+  edit: Edit
+  delete: Deleted
+  saveChanges: Save changes
+  submit: Submit
+  toggle:
+    yes: Yes
+    no: No
+    on: On
+    off: Off
+lightgallery:
+  headers:
+    images: Images
+  labels:
+    tags: Tags
+    search: Search
+
+dashboard:
+  widgets:
+    incoming-schedules:
+      label: Schedules
+    my-goals-payments:
+      label: Goals payments
+    my-goals:
+      label: Goals progress
+
+dialogs:
+  createContactCard:
+    header: Create contact card
+  editContactCard:
+    header: Edit contact card
+  addIssue:
+    header: Add issue
+  addIssueProgress:
+    header: Add issue progress
+  addIssueContact:
+    header: Add issue contact
+
+exceptions:
+  general:
+    missingRequiredParameter: 'Missing request parameter named: '
+  files:
+    subdirectoryLocationMissingInRequest: "Subdirectory location is missing in request."
+    cannotRemoveMainFolder: "Cannot remove main folder!"
+  upload:
+    uploadDirNotSupported: "This upload dir is not associated with any module."
+    thisUploadTypeIsNotAllowed: 'This upload type is not allowed: '
+    foundMoreThanOneDirWithName: "Found more than one upload folder named: "
+  repositories:
+    recordHasChildrenCannotRemove: 'The record which You try to remove, is a parent of other record! Please remove children first!'
+    inorrectId: "Incorrect id! Expected numeric value, received: "
+  tagger:
+    taggerNotPreapared: "File tagger has not been prepared - did You call 'prepare()' method?"
+    moreThanOneFileTagsRecordsFoundForPath: "More than one FileTags records were found for given path: "
+    thereWasAnError: "There was an error while updating the tags."
+  directories:
+    thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
+  download:
+    theFileYouTryToDownloadDoesNotExist: "The file that You are trying to download, does not exist: "
+  MyPaymentsProductsController:
+    keyPriceNotFoundInProductsColumnsArray: "Key 'price' not found in products columns array"
+  MyGoalsSettingsController:
+    thisGoalTypeIsNotAllowed: "This goal type is not allowed"
+  dtoValidation:
+    unsupportedSetting: "Unsupported settings: "
+  security:
+    youAreNotAllowedToSeeThis: "You are not allowed to see this! Your attempt to access this resource was logged!"
+
+flash:
+  download:
+    fileDoesNotExist:  'Requested file does not exist!'
+  filesController:
+    folderDoesNotExist: "Folder does not exist: "
+
+forms:
+  MyGoalsPaymentsType:
+    collectionStartDate: Collection start date
+    displayOnDashboard: Display on dashboard
+    deadline: Deadline
+    name: Name
+    moneyGoal: Money goal
+    moneyCollected: Money collected
+  MyGoalsType:
+    displayOnDashboard: Display on dashboard
+    name: Name
+    description: Description
+  MySubgoalsType:
+    name: Name
+    myGoal: My goal
+  MyNotesCategoriesType:
+    parentId: Parent
+    name: Name
+    icon: Icon
+    color: Color
+  MyNotesType:
+    labels:
+      title: Title
+      body: Body
+      category: Category
+  MyContactsType:
+    phone: Phone Number
+    email: Email
+    other: Contact
+    archived: Contact
+    type: Type
+    description: Description
+    group: Group
+  MyCarSchedule:
+    scheduleType: Schedule type
+    name: Name
+    date: Date
+    information: Information
+  MyCarScheduleType:
+    labels:
+      name: Name
+  MyScheduleType:
+    scheduleType: Schedule type
+    name: Name
+    date: Date
+    information: Information
+  MyScheduleTypeType:
+    labels:
+      name: Name
+      icon: Icon
+  MyTravelsIdeasType:
+    placeholders:
+      category:
+        exists: Either pick category from list or type name of new one
+        first: Add Your first category
+      image: Link to image
+      map: Link to google maps
+    labels:
+      location: Location
+      country: Country
+      image: Image
+      map: Map
+      category: Category
+  MyJobHolidaysType:
+    placeholders:
+      daysSpent: Amount of days that You want to spend
+      information: Goal/Reason of spending holidays
+    labels:
+      year: Year
+      daysSpent: Days
+      information: Information
+  MyJobHolidaysPoolType:
+    placeholders:
+      year: Add year
+      daysLeft: Amount of days that You have for this year
+      companyName: Provide company name
+    labels:
+      year: Year
+      daysLeft: Days left
+      companyName: Company name
+  MyContactTypeType:
+    labels:
+      name: Name
+      imagePath: Image path
+  MyContactGroupType:
+    labels:
+      name: Name
+      icon: Icon
+      color: Color
+  MyPasswordsGroupsType:
+    labels:
+      name: Name
+  MyPasswordsType:
+    labels:
+      login: Login
+      password: Password
+      url: Url
+      description: Description
+      group: Group
+      submit: Submit
+  MyPaymentsMonthlyType:
+    labels:
+      date: Date
+      money: Money
+      description: Description
+      type: Type
+  MyRecurringPaymentMonthlyType:
+    labels:
+      date: Date
+      money: Money
+      description: Description
+      type: Type
+  MyPaymentsOwedType:
+    labels:
+      target: Target
+      information: Information
+      date: Date
+      amount: Amount
+      owedByMe: Owed by me
+      currency: Currency
+    placeholders:
+      target: Who owes the money
+      information: Information about this borrow
+      date: yyyy-mm-dd
+      amount: Amount of money owed
+  MyPaymentsIncomeType:
+    labels:
+      information: Information
+      date: Date
+      amount: Amount
+      currency: Currency
+    placeholders:
+      information: Short income summary
+      date: Date
+      amount: Amount
+      currency: Currency
+  MyPaymentsProductsType:
+    labels:
+      name: Name
+      price: Price
+      market: Market
+      products: Products
+      information: Information
+      rejected: Rejected
+  MyPaymentsSettingsCurrencyMultiplierType:
+    labels:
+      name: Name
+      value: Currency multiplier
+  MyPaymentsTypesType:
+    labels:
+      name: Name
+      value: Type name
+  UserAvatarType:
+    labels:
+      avatar: Avatar url
+    placeholders:
+      avatar: Internal or external url to some image
+  UserNicknameType:
+    labels:
+      nickname: Nickname
+    placeholder:
+      nickname: This will be displayed on page but login will not change.
+  UserPasswordType:
+    labels:
+      password: Password
+  AchievementType:
+    labels:
+      name: Name
+      description: Description
+      type: Type
+  MyJobAfterhoursType:
+    labels:
+      date: Date
+      description: Description
+      minutes: Minutes
+      goal: Goal
+      type: Type
+  MyShoppingPlansType:
+    labels:
+      name: Name
+      information: Informatipn
+      example: Example
+  MoveSingleFileType:
+    labels:
+      targetUploadModuleDir: Target module
+      targetUploadSubdirectoryInModuleDir: Target folder
+  UpdateTagsType:
+    labels:
+      tags: Tags
+  UploadSubdirectoryCopyDataType:
+    labels:
+      currentUploadModuleDir: Upload module
+      currentSubdirectoryInModuleUploadDir: Target folder
+      targetUploadModuleDir: Upload module
+      targetSubdirectoryInModuleUploadDir: Target folder
+      moveInsteadOfCopying: Move instead of copying
+  UploadSubdirectoryCreateType:
+    labels:
+      uploadModuleDir: Upload module
+      subdirectoryName: Folder name
+      subdirectoryInModuleUploadDir: Parent folder
+    placeholders:
+      subdirectoryName: Enter name of the new folder
+  UploadSubdirectoryRenameType:
+    labels:
+      uploadModuleDir: Upload module
+      subdirectoryNewName: Folder new name
+      subdirectoryInModuleUploadDir: Target folder
+    placeholders:
+      subdirectoryNewName: Enter new name for selected folder
+  UploadFormType:
+    labels:
+      subdirectory: Subdirectory
+      file: File
+      uploadModuleDir: Upload module
+  MyPaymentsBills:
+    labels:
+      startDate: Start date
+      endDate: End date
+      name: Name
+      information: Information
+      plannedAmount: Planned Amount
+  MyPaymentsBillsItems:
+    labels:
+      amount: Amount
+      name: Name
+      bill: Bill
+      date: Date
+  SettingsDashboardType:
+    labels:
+      name: Name
+      value: Value
+  CurrencyType:
+    labels:
+      name: Name
+      symbol: Symbol
+      multiplier: Multiplier
+      isDefault: Is default
+    placeholders:
+      name: "The name of currency"
+      symbol: "Symbol that should be displayed for records"
+      multiplier: "Currency multiplier ratio toward the default"
+    messages:
+      failure:
+        defaultCurrencyIsAlreadySet: "Default currency is already set"
+  MyContactType:
+    labels:
+      name: Name
+      description: Description
+      image_path: Image path
+      name_background_color: Name background color
+      description_background_color: Description background color
+      contacts: Contacts
+      addType: Add type
+      group: Group
+  MyContactTypeDtoType:
+    labels:
+      name: Name
+      type: Type
+  #files/images/dialogs
+  general:
+    submit: Submit
+    save: Save
+    add: Add
+    errors:
+      couldNotLoadFormForGivenNamespace: Could not load form for given namespace
+    success: Form was submitted successfully
+  systemLockPassword:
+    labels:
+      password: "Password"
+    placeholders:
+      password: "Enter lock password"
+  MyIssueType:
+    resolved: Resolved
+    dashboard: Show on dashboard
+    name: Name
+    information: Information
+  MyIssueTypeProgress:
+    icon: Icon
+    date: Date
+    name: Name
+    issue: Issue
+    information: Information
+  MyIssueContactType:
+    icon: Icon
+    date: Date
+    name: Name
+    issue: Issue
+    information: Information
+
+Types:
+  indentChoice:
+    errors:
+      choiceIsNotInstanceOfIndentChoiceTypeDTO: "Choice is not instance of IndentChoiceTypeDTO"
+      choicesIsNotArray: "Choices is not array"
+      choicesAreMissing: "Choices are missing"
+
+logs:
+  upload:
+    startedUploadingToSubdirectory: "Started uploading files to subdirectory: "
+    triedToUploadForUnknownUploadType: "Performed upload action for not supported upload type: "
+    finishedUploading: 'Finished uploading data.'
+  directories:
+    removedFolderDoesNotExist: "Removed folder does not exist."
+    folderRemovalHasBeenBlockedThereAreFilesInside: 'Folder removal has been blocked - there are still files in tree.'
+    couldNotRemoveFolder: 'Could not remove folder: '
+    finishedRemovingFolder: 'Finished removing folder.'
+    startedRemovingFolder: 'Started removing folder'
+    startedRenamingFolder: "Started renaming folder"
+    finishedRenamingFolder: "Finished renaming folder"
+    startedCreatingSubdirectory: 'Started creating subdirectory.'
+    finishedCreatingSubdirectory: 'Finished creating subdirectory.'
+    subdirectoryNameWillNotChange: 'Subdirectory name will not change - renaming aborted.'
+    subdirectoryNewNameIsEmptyString: 'Subdirectory new name is an empty string - renaming aborted.'
+    subdirectoryCurrentNameIsEmptyString: 'Subdirectory current name is an empty string - renaming aborted.'
+    missingUploadModuleType: 'Upload type has not been provided - renaming aborted.'
+    thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
+    renamedTargetDirectoryDoesNotExist: "Target directory for which user tried to change name does not exist"
+    subdirectoryWithThisNameDoesNotExist: "Subdirectory with this name does not exist!"
+    renamingSubdirectoryWithThisNameAlreadyExist: 'Subdirectory with this name already exists.'
+    thereWasAnErrorWhileCreatingFolder: 'Exception was thrown while creating folder.'
+    createFoldedThisNameAlreadyExist: 'Subdirectory with this name already exists.'
+  files:
+    thereWasAnErrorWhileTryingToMoveSingleFile: "There was an error while trying to move single file: "
+    startedCopyingDataBetweenFoldersViaPost: 'Started copying data between folders via Post Request.'
+    currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.'
+    targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.'
+    exceptionWasThrownWhileMovingDataBetweenFolders: 'Exception was thrown while moving data between folders'
+    finishedCopyingData: 'Finished copying data.'
+  download:
+    startedDownloading: "Started downloading data."
+    finishedDownloading: 'Finished downloading data.'
+    exceptionWasThrownWhileDownloadingFile: 'Exception was thrown while downloading file.'
+  security:
+    visitedPageWithUnallowedIp: "Visited page with unallowed ip"
+    visitedPageWithUnallowedMethod: "Visited page with unallowed method"
+
+user:
+  headers:
+    profileSettings: User profile settings
+    changeSettings: Change settings
+    avatarPreview: Your avatar preview
+  texts:
+    passwordDisabledForDemo: Password changing has been disabled for demo
+
+goals:
+  list:
+    headers:
+      todolist: Todo list
+  payments:
+    timeElapsed: time elapsed
+    daysLeft: days left
+    days: days
+    paymentStartsIn: Payment starts in
+  settings:
+    headers:
+      addGoal: Add goal
+      addSubgoal: Add subgoal
+      addPaymentGoal: Add payment goal
+    goalsSection:
+      table:
+        name: Name
+        description: Description
+        displayOnDashboard: Display on Dashboard
+    subGoalsSection:
+      table:
+        name: Name
+        goal: Goal
+    goalsPaymentsSection:
+      table:
+        name: Name
+        collectionStartDate: Collection start date
+        deadline: Deadline
+        moneyGoal: Money goal
+        moneyCollected: Money collected
+        displayOnDashboard: Display on dashboard
+
+notes:
+  create:
+    headers:
+      newNote: Add new note
+  category:
+    table:
+      category: Category
+      icon: Icon
+      color: Color
+      parent: Parent
+    error:
+      categoryWithThisNameOrIdExist: Category with this name or id does not exist!
+      categoryIsEmpty: The category which You've just tried to enter is empty, therefore You were redirected
+  settings:
+    headers:
+      settings:
+        label: My notes settings
+      categories:
+        label: Categories
+        editCategory: Edit categories
+        addCategory: Add category
+
+contact:
+  headers:
+    addRemove: Add/Remove contact
+  tables:
+    contact: Contact
+    description: Description
+    group: Group
+    type: Type
+  settings:
+    headers:
+      changeAddContactType: Change/Add contact type
+      changeAddContactGroup: Change/Add contact group
+    table:
+      name: Name
+      imagePath: Image path
+      preview: Preview
+      icon: Icon
+      color: Color
+
+passwords:
+  headers:
+    addRemoveCredentials: Add/Remove credentials
+  table:
+    login: Login
+    password: Password
+    url: Url
+    description: Description
+    group: Group
+  settings:
+    headers:
+      changeAddCredentialsGroup: Change/Add credentials group
+    table:
+      name: Name
+  hiddenPassword: '*****'
+
+achievements:
+  headers:
+    label: Achievements
+    addAchievement: Add achievements
+
+car:
+  settings:
+    headers:
+      changeAddCarScheduleType: Change/Add car schedule type
+  headers:
+    schedules: Schedules
+    addSchedule: Add schedule
+  legend:
+    label: Legend
+    over30: In 30 - 60 days
+    over14: In 14 -30 days
+    14: In 14 days
+  table:
+    scheduleType: Schedule type
+
+schedules:
+  settings:
+    headers:
+      changeAddScheduleType: Change/Add schedule type
+    table:
+      name: Name
+      icon: Icon
+  headers:
+    schedules: Schedules
+    addSchedule: Add schedule
+  legend:
+    label: Legend
+    over30: In 30 - 60 days
+    over14: In 14 -30 days
+    14: In 14 days
+  table:
+    scheduleType: Schedule type
+    information: Information
+    date: Date
+    name: Name
+
+travels:
+  headers:
+    ideasForTraveling: Ideas for traveling
+    addIdea: Add idea
+
+payments:
+  productsPrices:
+    headers:
+      productPrices: Products prices
+      addProduct: Add product
+    table:
+      homeCurrency: Home currency
+  moneyOwed:
+    headers:
+      owedByOthers: Money owed by others
+      owedByMe: Money owed by me
+      addRecord: Add record
+    table:
+      target: Target
+      amount: Amount
+      information: Information
+      date: Date
+      currency: Currency
+    overallSummary:
+      i: I
+      owe: Owe
+      owesMe: Owes me
+      to: To
+  incomes:
+    headers:
+      monthlyIncomes: Monthly incomes
+      addRecord: Add record
+    table:
+      amount: Amount
+      date: Date
+      currency: Currency
+      information: Information
+  monthlyPayments:
+    headers:
+      monthlyPayments: Monthly payments
+      addPayment: Add payment
+    summary: 'Monthly payments summary:'
+    table:
+      type: Type
+  bills:
+    headers:
+      billsSummaries: Bills summaries
+      bills: Bills
+    forms:
+      bills: Add bill
+    table:
+      startDate: Start date
+      endDate: End date
+      name: Name
+      information: Information
+      plannedAmount: Planned amount
+  bills_items:
+    forms:
+      bills_items: Add bill item
+    table:
+      amount: Amount
+      name: Name
+      bill: Bill
+      date: Date
+  settings:
+    headers:
+      changeAddSetting: Change/Add settings
+      currencyMultiplier: Currency multiplier
+      paymentsTypes: Payments types
+      recurringPayments: Recurring payments
+    types:
+      table:
+        name: Name
+    recurring:
+      table:
+        date: Date
+        money: Money
+        description: Description
+        type: Type
+
+reports:
+  monthlyPaymentsSummaries:
+    information: >
+      <i>This report contains summary of payments from "<b>Monthly Payments</b>" and "<b>Bills</b>" for each month.</i>
+    table:
+      monthAndYear: Month and year
+      money: Money
+  paymentsCharts:
+    information: >
+      <i>Charts based on data from payments modules</i>
+  saviingsCharts:
+    information: >
+      <i>Charts based on data from incomes/payments modules</i>
+    group: Saved
+  historicalMoneyOwed:
+    information: >
+      <i>Historical records of owed money by others and by me</i>
+  headers:
+    monthlyPaymentsSummaries: Monthly payments summaries
+    paymentsCharts: Payments charts
+    saviingsCharts: Savings charts
+    historicalMoneyOwed:
+      main: Historical money owed
+      owedByMe: Owed by me
+      owedByOthers: Owed by others
+
+
+charts:
+  headers:
+    totalPaymentsAmountForTypes: Total payments percentage for types
+    paymentsForTypesEachMonth: Payments by types for each month
+    paymentsTotalAmountForEachMonth: Payments total amount for each month
+    savingsEachMonth: Saving each month
+  paymentsForTypesEachMonth:
+    axis:
+      titles:
+        y: Amount
+        x: Month-Year
+  paymentsTotalAmountForEachMonth:
+    types:
+      withBills: With bills
+      withoutBills: Without bills
+
+shopping:
+  headers:
+    plannedShoppingItems: Planned shopping items
+    addPlannedItem: Add planned item
+
+job:
+  afterhours:
+    headers:
+      allAfterhours: All afterhours
+      spentAfterhours: Spent afterhours
+      remainingAfterhours: Remaining afterhours
+      addSpendAfterhours: Add/Spend afterhours
+  holidays:
+    headers:
+      summary: Holidays summary
+      spent: Holidays spent
+      spend: Spend holidays
+
+files:
+  label: Files
+  table:
+    name: Name
+    extension: Extension
+    size: Size (mb)
+    tags: Tags
+  massActions:
+    remove: Remove files
+    transferFiles: Transfer files
+
+issues:
+  card:
+    lastContactDate: "Last contact date: "
+    lastProgressDate: "Last progress date: "
+    preview:
+      headers:
+        contacts: "Contacts"
+        progress: "Progress"
+    popovers:
+      toggleDashboardVisibility: "Toggle dashboard visibility"
+      previewAndEdit: "Preview and edit"
+      removeRecord: "Remove record"
+    ajaxCallMessages:
+      dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"
+  contactsTable:
+    icon: Icon
+    date: Date
+    information: Information
+    actions: Actions
+
+other:
+  summary: Summary
+  overallSummary: Overall summary
+
+actions:
+  popover:
+    edit: Edit
+    editWithTinyMce: Edit with TinyMCE
+    remove: Remove
+    fontawesome: Pick fontawesome icon
+    copy: Copy
+    save: Save
+    lockRecord: Lock record
+
+sidebar:
+  menu:
+    dashboard:
+      label: Dashboard
+    achievements:
+      label: Achievements
+    goals:
+      label: Goals
+      list: List
+      payments: Payments
+      settings: Settings
+    car:
+      label: Car
+      schedules: Schedules
+      settings: Settings
+    schedules:
+      label: Schedules
+      submodule:
+        car:
+          label: Car
+      settings: Settings
+    contacts:
+      label: Contacts
+      settings: Settings
+    files:
+      label: Files
+      mainDir: Main folder
+    images:
+      label: Images
+      mainDir: Main folder
+    job:
+      label: Job
+      afterhours: Afterhours
+      holidays: Holidays
+      settings: Settings
+    passwords:
+      label: Passwords
+      passwords: Passwords
+      settings: Settings
+    payments:
+      label: Payments
+      productsPrices: Products prices
+      monthlyPayments: Monthly payments
+      moneyOwed: Money owed
+      incomes: Incomes
+      bills: Bills
+      settings: Settings
+    shopping:
+      label: Shopping
+      plans: Plans
+    travels:
+      label: Travels
+      ideas: Ideas
+    notes:
+      label: Notes
+      new: Create new
+      settings: Settings
+      categories: Categories
+    upload:
+      label: Upload
+      add: Add
+      manage: Manage
+    reports:
+      label: Reports
+      monthlyPaymentsSummaries: Monthly payments summaries
+      paymentsCharts: Payments charts
+      savingsCharts: Savings charts
+      historicalMoneyOwed: Historical money owed
+    issues:
+      label: Issues
+      pending: Pending
+topbar:
+  search:
+    placeholder: Search for files by tags...
+  user:
+    profile: Profile
+    settings: Settings
+    resources:
+      locked: Locked
+      unlocked: Unlocked
+      setLockPassword: Set lock password
+    logout: Logout
+
+login:
+  header:
+    pageName: Personal Management System
+    login: Login
+  labels:
+    username: 'Username:'
+    password: 'Password:'
+    remember: 'Remember Me'
+  pageTitle: Sign In
+
+codePages:
+  error:
+    h1: Oops
+    h3: Page Error
+    text: We track these errors automatically, but if the problem persists feel free to contact us.
+    button: Go back
+  error403:
+    h1: 403
+    h3: Access Denied
+    text: Full authentication is required to access this resource.
+    button: Go back
+    title: Access Denied
+  error404:
+    h1: 404
+    h3: Oops Page Not Found
+    text: The page you are looking for does not exist or has been moved.
+    button: Go back
+    title: 404 - page not found
+  error500:
+    h1: 500
+    h3: Internal server error
+    text: Something goes wrong with our servers, please try again later.
+    button: Go back
+    title: 500 - internal server error
+
+upload:
+  errors:
+    thereWasAnErrorWhileUploadingFiles: There was an error while uploading files
+  settings:
+    copyFolderData:
+      label: Copy folder data
+      from: From
+      to: To
+    renameFolder:
+      label: Rename folder
+    createFolder:
+      label: Create folder for module
+  headers:
+    uploadFiles: Upload files
+  demoText: >
+    For security reason (Demo instance) - some file types upload has been disabled.<br/>
+    You won't be informed about wrong file upload - that file will just be skipped.<br/>
+    All uploaded data will be removed couple of times a day.
+  securityTexts:
+    currentFileSize: "Selected files size:"
+    maxUploadSize: "Max upload size:"
+    currentUploadedFilesCount: "Selected files count:"
+    maxAllowedFilesUploadCount: "Max allowed files count:"
+  mb: Mb
+  uploadTable:
+    fileName: File name
+    fileExtension: File extension
+    tags: Tags
+
+settings:
+  label: Settings
+  dashboard:
+    label: Dashboard
+    widgets:
+      visibility:
+        label: Widgets visibility
+        table:
+          labels:
+            name: Name
+            displayWidget: Display widget
+  finances:
+    label: Finances
+    type:
+      currencies:
+        label: Currencies
+        table:
+          name: Name
+          symbol: Symbol
+          multiplier: Multiplier
+          isDefault: Is default
+        addCurrency: Add currency
+      messages:
+        couldNotFindCurrencyForGivenName: "Could not find currency for given name"
+        defaultCurrencyCanNotBeRemove: "Default currency cannot be removed"
+        couldNotFindSettingWithThisName: "Could not find setting with this name"
+        canNotUnsetTheTheDefaultPropertyForDefaultCurrency: "Can not unset the default property for default currency"
+        couldNotHandleAddingNewCurrencyBeingDefaultValue: "Could not handle adding new currency being default value"
+        currencyWithThisNameAlreadyExist: "Currency with this name already exist"
+        success: "Currency record has been successfully updated"
+
+datatables:
+  filterByColumnValue: "Filter by column value"
+  table:
+    idHash: '#'
+    id: Id
+    actions: Actions
+
+db:
+  foreignKeyViolation: This record cannot be removed - it's connected with existing records.
+  recordWithThisNameExist: Record with this name already exists!
+
+page:
+  title: Personal Management System (PMS)
+  footerCopyright: Copyright © 2019 Built by
+
+responses:
+  files:
+    filePathIsAnEmptyString: "File path is an empty string"
+    filePathIsIncorrectFileDoesNotExist:  "File provided in filepath is incorrect - such file does not exist"
+    fileSuccessfullyRemoved: "Files has been successfully removed"
+    fileDoesNotExist: 'File does not exist.'
+    thereWasAnErrorWhileRemovingFile: 'There was an error while removing the file.'
+    thereWasAnErrorWhileRenamingFile: 'There was an error while renaming the file.'
+    filenameRemainsTheSame: 'File name remains the same.'
+    filenameCannotBeEmpty: 'File name cannot be empty!'
+    fileSuccessfullyRename: 'File has been successfully renamed.'
+    fileWithThisNameAlreadyExist: 'File with this name already exist.'
+    fileYouTryingToMoveDoesNotExist: 'The file You trying to move does not exist.'
+    fileWithThisNameAlreadyExistInTargetDirectory: 'File with this name already exists in target directory.'
+    fileHasBeenSuccesfullyMoved: "File has been successfully moved"
+    filesHasBeenSuccesfullyMoved: "Files has been successfully moved"
+    couldNotMoveTheFile: "Could not move the file."
+    couldNotMoveSomeFiles: "Could not move some files."
+    couldNotTheFiles: "Could not move the files."
+    thereWasAnErrorWhileTryingToMoveFile: "There was an error while trying to move file"
+    #
+    currentUploadTypeIsMissingInRequest: "Current upload type is missing in request."
+    targetUploadTypeIsMissingInRequest: "Target upload type is missing in request."
+    currentSubdirectoryPathIsMissingInRequest: "Current subdirectory path in module upload dir is missing in request."
+    targetSubdirectoryPathIsMissingInRequest: "Target subdirectory path in module upload dir is missing in request."
+    cannotCopyDataToTheSameFolderForGivenModule: "Cannot copy data to the same folder for given module."
+    currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.'
+    targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.'
+    thereWasAnErrorWhileMovingDataBetweenFolders: 'There was an error while moving files from one folder to another.'
+    finishedCopyingData: 'Data has been successfully copied to new directory'
+    subdirectoryCurrentPathInModuleUploadDirIsMissingInRequest: "Subdirectory current path in module upload dir is missing in request."
+    thereWasAnErrorWhileCopyingAndRemovingDataViaPost: 'Then was an error while copying and removing data.'
+    thereWasAnErrorWhileCopyingData: 'Then was an error while copying data.'
+    dataHasBeenSuccesfulyCopiedAndRemoved: 'Data has been successfully copied and removed afterward.'
+  directories:
+    cannotRemoveMainFolder: 'Cannot remove main folder!'
+    youNeedToSelectUploadType: 'You need to select upload type!'
+    subdirectoryDoesNotExistForThisModule: 'This subdirectory does not exist for selected module.'
+    errorWhileRemovingSubdirectory: 'There was and error when trying to remove subdirectory!'
+    subdirectoryHasBeenRemove: 'Subdirectory has been successfully removed.'
+    subdirectoryNameWillNotChange: "You are trying to change folder name to the same that there already is - action aborted."
+    subdirectoryNewNameIsEmptyString: 'New name is an empty string - action aborted'
+    subdirectoryCurrentNameIsEmptyString: 'Current name is an empty string - action aborted'
+    missingUploadModuleType: 'Upload type is an empty string - action aborted'
+    thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
+    folderNameHasBeenSuccessfullyChanged: 'Folder name has been successfully changed'
+    renamedTargetDirectoryDoesNotExist: "Target directory for which You try to change name does not exist"
+    subdirectoryWithThisNameDoesNotExist: "Subdirectory with this name does not exist!"
+    renamingSubdirectoryWithThisNameAlreadyExist: "Cannot change subdirectory name! Subdirectory with this name already exist."
+    thereWasAnErrorWhileCreatingFolder: 'There was an error while trying to create new folder for given module'
+    createFoldedThisNameAlreadyExist: 'Subdirectory with this name for selected upload typ already exists.'
+    subdirectoryForModuleSuccessfullyCreated: 'Subdirectory for selected module has been successfully created'
+    directoryWithThisNameAlreadyExistInTargetFolder: 'Directory with this name already exist in target folder'
+    theDirectoryYouTryToMoveDoesNotExist: "The directory that You try to move does not exist"
+    directoryHasBeenSuccessfullyMoved: "Directory has been successfully moved"
+    cannotMoveModuleMainUploadDir: "Cannot move module main upload dir"
+    currentDirectoryPathIsTheSameAsNewPath: "Current directory path is the same as new path"
+    cannotMoveFolderInsideItsOwnSubfolder: "Cannot move folder inside its own subfolder"
+    #
+  tags:
+    errorWhileTryingToUpdateTagsViaApi: "There was an error while trying to update tags via api call"
+  upload:
+    noFilesWereUploaded: 'No files were uploaded'
+    tryingToUploadMoreFilesThanAllowedTo: "You are trying to upload more files than You are allowed to!"
+    moduleNameIsIncorrect: "Module name is incorrect."
+    invalidFileHasBeenSkipped: 'File is invalid, and has been skipped'
+    finishedUploading: 'File upload has been successfully finished'
+  general:
+    missingRequiredParameter: 'Missing request parameter named: '
+    missingFormInput: 'Missing form input named: '
+    arrayInResponseIsMissingParameterNamed: "Array in response in missing parameter named: "
+    invalidParameterValue: "Invalid Parameter Value"
+  repositories:
+    recordDeletedSuccessfully: 'Record was deleted successfully'
+    couldNotDeleteRecord: 'Record could not been deleted'
+    recordUpdateSuccess: 'Record has been updated'
+    recordUpdateFail: 'Record could not been updated'
+    repositoryWithGivenClassNameDoesNotExist: "Repository with given class name does not exist"
+  password:
+    changeHasBeenCanceled: 'Password change has been canceled due to the field validations!'
+  tagger:
+    allTagsHaveBeenRemoved: "All tags have been removed."
+    noTagsToAdd: "There were no new tags to add"
+    tagsHaveBeenCreated: "Tags have been created successfully."
+    noTagsToRemove: "There were no tags to remove"
+    tagsUpdated: "Tags have been updated successfully"
+  notes:
+    couldNotFindNoteForId: "Could not find note for id: "
+  menu:
+    nodeHasBeenRendered: "Menu has been rendered"
+    menuNodeWithNameWasNotFound: "Menu node with given name was not found"
+    thisModuleNameIsNotMappedToMenuNodePath: "This module name is not mapped to menu node path: "
+  lockResource:
+    invalidPassword: "Invalid password"
+    passwordIsMissing: "Password is missing"
+    youAreNotAllowedToSeeThisResource: "You are not allowed to see this resource"
+    passwordHasBeenCreated: "Password has been created"
+    passwordHasBeenUpdated: "Password has been updated"
+    failedToSetLockPassword: "Failed to set lock password"

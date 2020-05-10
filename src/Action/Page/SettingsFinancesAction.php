@@ -9,7 +9,6 @@ use App\Controller\Page\SettingsController;
 use App\DTO\CallStatusDTO;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\Form\Page\Settings\Finances\CurrencyType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,7 +47,7 @@ class SettingsFinancesAction extends AbstractController {
      * @Route("/api/settings-finances/update-currencies", name="settings_finances_update_currencies", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     public function updateFinancesCurrenciesSetting(Request $request): Response {

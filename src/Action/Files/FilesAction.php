@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Files\FileUploadController;
 use App\Form\Files\UploadSubdirectoryCreateType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
@@ -277,7 +276,7 @@ class FilesAction extends AbstractController {
      * @Route("/files/actions/create-folder", name="action_create_subdirectory", methods="POST")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws \Exception
      */
     public function createSubdirectoryByPostRequest(Request $request){

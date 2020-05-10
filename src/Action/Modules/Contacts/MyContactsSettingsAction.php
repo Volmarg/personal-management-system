@@ -7,7 +7,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Contacts\MyContactType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\FilesHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -69,7 +68,7 @@ class MyContactsSettingsAction extends AbstractController
      * @Route("/my-contacts-groups/update",name="my-contacts-groups-update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function updateContactGroup(Request $request) {
         $parameters = $request->request->all();
@@ -109,7 +108,7 @@ class MyContactsSettingsAction extends AbstractController
      * @Route("/my-contacts-types/update",name="my-contacts-types-update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     public function updateContactType(Request $request) {
@@ -138,7 +137,7 @@ class MyContactsSettingsAction extends AbstractController
      * @Route("/my-contacts-settings", name="my-contacts-settings")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function displaySettingsPage(Request $request) {
         $this->submitContactTypeForm($request);
@@ -207,7 +206,7 @@ class MyContactsSettingsAction extends AbstractController
     /**
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function submitContactTypeForm(Request $request):Response {
         $form = $this->app->forms->contactTypeForm();
@@ -241,7 +240,7 @@ class MyContactsSettingsAction extends AbstractController
     /**
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function submitContactGroupForm(Request $request):Response {
         $form = $this->app->forms->contactGroupForm();

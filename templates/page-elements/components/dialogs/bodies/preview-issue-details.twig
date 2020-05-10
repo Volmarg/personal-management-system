@@ -16,7 +16,7 @@
 
                             <section class="p-20">
 
-                                <h5 class="text-center" style="font-size: 16px;"> {{ translate('issues.card.preview.headers.contacts') }} </h5>
+                                <h5 class="text-center" style="font-size: 16px;"> {{ 'issues.card.preview.headers.contacts' | trans }} </h5>
 
                                     <table id="MyIssueContact" class="table table-striped table-bordered" cellspacing="0"
                                            data-table="true" width="100%">
@@ -24,10 +24,10 @@
                                         <tr>
                                             <td class="d-none">id</td>
                                             <td></td>
-                                            <td>{{ translate('issues.contactsTable.icon') }}</td>
-                                            <td>{{ translate('issues.contactsTable.date') }}</td>
-                                            <td>{{ translate('issues.contactsTable.information') }}</td>
-                                            <td>{{ translate('issues.contactsTable.actions') }}</td>
+                                            <td>{{ 'issues.contactsTable.icon' | trans }}</td>
+                                            <td>{{ 'issues.contactsTable.date' | trans }}</td>
+                                            <td>{{ 'issues.contactsTable.information' | trans }}</td>
+                                            <td>{{ 'issues.contactsTable.actions' | trans }}</td>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -71,7 +71,7 @@
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
                         <section class="p-20 add-record-form">
 
-                            <h5 class="text-center" style="font-size: 16px;"> {{ translate('dialogs.addIssueContact.header') }} </h5>
+                            <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueContact.header' | trans }} </h5>
                             {{ form_start(contactForm, {'attr': {"data-entity": "MyIssueContact"}}) }}
                             {{ form_end(contactForm) }}
                         </section>
@@ -82,7 +82,7 @@
                         <div class="bgc-white bd bdrs-3 p-10 mB-20">
                             <section class="p-20">
 
-                                <h5 class="text-center" style="font-size: 16px;"> {{ translate('issues.card.preview.headers.progress') }} </h5>
+                                <h5 class="text-center" style="font-size: 16px;"> {{ 'issues.card.preview.headers.progress' | trans }} </h5>
 
                                 <div id="accordion">
                                     {% for issueProgress in issueCardDto.getIssue().getIssueProgress() %}
@@ -119,7 +119,7 @@
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
                         <section class="p-20 add-record-form">
 
-                            <h5 class="text-center" style="font-size: 16px;"> {{ translate('dialogs.addIssueProgress.header') }} </h5>
+                            <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueProgress.header' | trans }} </h5>
                             {{ form_start(progressForm, {'attr': {"data-entity": "MyIssueProgress"}}) }}
                             {{ form_end(progressForm) }}
                         </section>

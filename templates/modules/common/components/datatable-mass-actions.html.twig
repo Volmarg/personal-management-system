@@ -3,13 +3,13 @@
 
                 {% if remove_files is defined and remove_files %}
                         <button class="btn btn-sm btn-primary datatable-remove-files disabled" data-target-table-selector="{{ data_target_table_selector }}">
-                                {{ translate('files.massActions.remove') }}
+                                {{ 'files.massActions.remove' | trans }}
                         </button>
                 {% endif %}
 
                 {% if copy_files is defined and copy_files %}
                         <button class="btn btn-sm btn-primary datatable-transfer-files disabled" data-target-table-selector="{{ data_target_table_selector }}">
-                            {{ translate('files.massActions.transferFiles') }}
+                            {{ 'files.massActions.transferFiles' | trans }}
                         </button>
                 {% endif %}
 

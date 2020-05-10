@@ -1,0 +1,33 @@
+messages:
+  SettingValidationDTO:
+    success: "Validation has been passed"
+    failure:
+      duplicatedValue: "Duplicated value has been found for given key: "
+      exceptionWaThrown: "Exception was thrown with message"
+  ajax:
+    success:
+      recordHasBeenCreated: "Record has been created"
+      recordHasBeenRemoved: "Record has been removed"
+    failure:
+      duplicatedRecord: "Duplicated record"
+      formValidationFailed: "Form validation failed"
+      internalServerError: "Internal server error"
+      undefinedError: "Undefined error"
+      couldNotRemoveRecord: "Could not remove record"
+  lock:
+    resourceHasBeenLocked: "Resource has been locked"
+    resourceHasBeenUnlocked: "Resource has been unlocked"
+    couldNotLockResource: "Could not lock resource"
+    wholeSystemWasLocked: "Whole system was locked"
+    wholeSystemHasBeenUnlocked: "Whole system has been unlocked"
+    failedToToggleLockForWholeSystem: "Failed to toggle lock for whole system"
+  general:
+    noEntityWasFoundForId: "No entity was found for id: "
+    noSuchRepositoryWasFound: "No such repository was found: "
+    givenClassIsNotEntity: "Given class is not a entity: "
+    noColumnWithThisNameWasFoundInGivenTable: "No column with this name was found in given table: "
+    thisFieldIsNotBoolean: "This field is not boolean: "
+    internalServerError: "Internal server error"
+    noSuchMethodExistsForGivenClass: "No such method exists for given class: "
+    noSuchGetterAndIsserAvailableForClass: "No getter and isser available for class: "
+    boolValueHasBeenToggled: "Bool value has been toggled"

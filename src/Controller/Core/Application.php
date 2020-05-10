@@ -11,11 +11,13 @@ namespace App\Controller\Core;
 
 use App\Controller\Core\Settings;
 use App\Controller\Utils\Utils;
+use App\Services\Core\Logger;
 use App\Services\Core\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class Application extends AbstractController {
 
@@ -45,6 +47,11 @@ class Application extends AbstractController {
     public $logger;
 
     /**
+     * @var Logger $custom_loggers
+     */
+    public $custom_loggers;
+
+    /**
      * @var Settings
      */
     public $settings;
@@ -58,14 +65,17 @@ class Application extends AbstractController {
         Forms                   $forms,
         EntityManagerInterface  $em,
         LoggerInterface         $logger,
-        Settings                $settings
+        Settings                $settings,
+        Logger                  $custom_loggers,
+        TranslatorInterface     $translator
     ) {
+        $this->custom_loggers   = $custom_loggers;
         $this->repositories     = $repositories;
         $this->settings         = $settings;
         $this->logger           = $logger;
         $this->forms            = $forms;
         $this->em               = $em;
-        $this->translator       = new Translator();
+        $this->translator       = new Translator($translator);
     }
 
     /**

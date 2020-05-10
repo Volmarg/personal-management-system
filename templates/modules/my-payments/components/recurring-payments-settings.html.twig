@@ -6,17 +6,17 @@
 {% set KEY_SUBMIT        = constant(my_recurring_payments_class ~ 'KEY_SUBMIT' ) %}
 
 <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-    <h5 class="c-grey-900 mB-20 align-self-center">{{ translate('payments.settings.headers.recurringPayments') }}</h5>
+    <h5 class="c-grey-900 mB-20 align-self-center">{{ 'payments.settings.headers.recurringPayments' | trans }}</h5>
 
     <table id="MyRecurringPaymentsMonthly" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
         <thead>
         <tr>
-            <td class="d-none">{{ translate('datatables.table.id') }}</td>
-            <td>{{ translate('payments.settings.recurring.table.date') }}</td>
-            <td>{{ translate('payments.settings.recurring.table.money') }}</td>
-            <td>{{ translate('payments.settings.recurring.table.description') }}</td>
-            <td>{{ translate('payments.settings.recurring.table.type') }}</td>
-            <td>{{ translate('datatables.table.actions') }}</td>
+            <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
+            <td>{{ 'payments.settings.recurring.table.date' | trans }}</td>
+            <td>{{ 'payments.settings.recurring.table.money' | trans }}</td>
+            <td>{{ 'payments.settings.recurring.table.description' | trans }}</td>
+            <td>{{ 'payments.settings.recurring.table.type' | trans }}</td>
+            <td>{{ 'datatables.table.actions' | trans }}</td>
         </tr>
         </thead>
         <tbody>

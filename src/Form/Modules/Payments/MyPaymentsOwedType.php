@@ -6,7 +6,6 @@ use App\Controller\Core\Application;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\Entity\Modules\Payments\MyPaymentsOwed;
 use App\Form\Type\RoundcheckboxType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -32,7 +31,7 @@ class MyPaymentsOwedType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)

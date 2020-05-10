@@ -13,12 +13,12 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                        <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('upload.headers.uploadFiles') }}</h4>
+                        <h4 class="c-grey-900 mB-20 align-self-center">{{ 'upload.headers.uploadFiles' | trans }}</h4>
 
                         {% if isDemo() %}
                             <p class="text-center">
                                 <i>
-                                    {{ translate('upload.demoText') | raw }}
+                                    {{ 'upload.demoText' | trans | raw }}
                                 </i>
                             </p>
                         {% endif %}
@@ -67,26 +67,26 @@
                                 {# Stats #}
 
                                 <p id="currentFileSizeWrapper" class="text-success align-self-center m-0">
-                                    {{ translate('upload.securityTexts.currentFileSize') }}
+                                    {{ 'upload.securityTexts.currentFileSize' | trans }}
                                     <span class="selected-files-size">0</span>
-                                    {{ translate('upload.mb') }}
+                                    {{ 'upload.mb' | trans }}
                                 </p>
 
                                 <p id="maxUploadSizeWrapper" data-max-upload-size="{{ max_upload_size_mb }}" class="align-self-center m-0">
-                                    {{ translate('upload.securityTexts.maxUploadSize') }}
+                                    {{ 'upload.securityTexts.maxUploadSize' | trans }}
                                     {{ max_upload_size_mb }}
-                                    {{ translate('upload.mb') }}
+                                    {{ 'upload.mb' | trans }}
                                 </p>
 
                                 <p id="currentUploadedFilesCount" class="text-success align-self-center m-0">
-                                    {{ translate('upload.securityTexts.currentUploadedFilesCount') }}
+                                    {{ 'upload.securityTexts.currentUploadedFilesCount' | trans }}
                                     <span class="selected-files-count">0</span>
                                 </p>
 
                                 <p id="maxAllowedFilesUploadCount"
                                        data-max-allowed-files-count="{{ max_allowed_files_count }}"
                                        class="text-success align-self-center m-0">
-                                    {{ translate('upload.securityTexts.maxAllowedFilesUploadCount') }}
+                                    {{ 'upload.securityTexts.maxAllowedFilesUploadCount' | trans }}
                                     {{ max_allowed_files_count }}
                                 </p>
 

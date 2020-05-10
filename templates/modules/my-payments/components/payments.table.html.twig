@@ -13,8 +13,8 @@
                     {{ column|capitalize }}
                 </td>
             {% endfor %}
-            <td>{{ translate('payments.monthlyPayments.table.type') }}</td>
-            <td>{{ translate('datatables.table.actions') }}</td>
+            <td>{{ 'payments.monthlyPayments.table.type' | trans }}</td>
+            <td>{{ 'datatables.table.actions' | trans }}</td>
         </tr>
         </thead>
         <tbody>
@@ -92,7 +92,7 @@
             </ul>
             <hr style="border-color: lightgray;"/>
             <b>
-                <span>{{ translate('payments.monthlyPayments.summary') }}</span>
+                <span>{{ 'payments.monthlyPayments.summary' | trans }}</span>
             </b>
             <span class="text-primary amount">{{ summary_payment }}</span>
         </div>

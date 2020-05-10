@@ -9,7 +9,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Form\Modules\Payments\MyPaymentsMonthlyType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -116,7 +115,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
      * @Route("my-payments-monthly/update/" ,name="my-payments-monthly-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters     = $request->request->all();

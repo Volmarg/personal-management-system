@@ -4,7 +4,6 @@ namespace App\Form\Modules\Achievements;
 
 use App\Controller\Core\Application;
 use App\Entity\Modules\Achievements\Achievement;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -32,7 +31,7 @@ class AchievementType extends AbstractType {
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 

@@ -9,7 +9,6 @@
 namespace App\Controller\Core;
 
 
-use App\Controller\Core\AjaxResponse;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
@@ -47,16 +46,12 @@ use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\SettingRepository;
 use App\Repository\System\LockedResourceRepository;
 use App\Repository\UserRepository;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Core\Translator;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\MappingException;
-use Doctrine\ORM\PersistentCollection;
 use Exception;
-use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -396,7 +391,7 @@ class Repositories extends AbstractController {
      * @param array $findByParams
      * @param Request|null $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      */
     public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response {
         try {
@@ -458,7 +453,7 @@ class Repositories extends AbstractController {
      * 'namespace': 'App\\Entity\\MyNotesCategories',
      * 'id': $(noteCategoryId).val(),
      * },
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * @throws MappingException
      * @throws Exception
      */

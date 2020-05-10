@@ -8,7 +8,6 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -40,7 +39,7 @@ class MyNotesCategoriesAction extends AbstractController {
      * @param Request $request
      * @return Response
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function display(Request $request) {
         $this->submitForm($request);
@@ -58,7 +57,7 @@ class MyNotesCategoriesAction extends AbstractController {
      * @param Request $request
      * @return Response
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function remove(Request $request) {
 
@@ -80,7 +79,7 @@ class MyNotesCategoriesAction extends AbstractController {
      * @Route("/my-notes/settings/update/",name="my-notes-settings-update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -118,7 +117,7 @@ class MyNotesCategoriesAction extends AbstractController {
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function submitForm(Request $request) {
         $form = $this->app->forms->noteCategoryForm();

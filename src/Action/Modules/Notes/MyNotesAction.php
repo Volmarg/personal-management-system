@@ -10,7 +10,6 @@ use App\Controller\Core\Repositories;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\System\LockedResource;
 use App\Repository\AbstractRepository;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -59,7 +58,7 @@ class MyNotesAction extends AbstractController {
      * @param $category
      * @param $category_id
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function openCategory(Request $request, $category, $category_id) {
 
@@ -88,7 +87,7 @@ class MyNotesAction extends AbstractController {
      * @Route("/my-notes/update/", name="my-notes-update")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request): Response {
 
@@ -126,7 +125,7 @@ class MyNotesAction extends AbstractController {
      * @param string $category_id
      * @param bool $ajax_render
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function renderCategoryTemplate(string $category, string $category_id, bool $ajax_render = false) {
 

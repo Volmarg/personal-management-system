@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Passwords\MyPasswords;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -79,7 +78,7 @@ class MyPasswordsAction extends AbstractController {
      * @Route("my-passwords/update/" ,name="my-passwords-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

@@ -16,7 +16,7 @@ class ContactGroups {
     const ALL_CONTACT_GROUPS = [
         [
             self::KEY_NAME  => 'Medic',
-            self::KEY_ICON  => 'fas fa-medkit',
+            self::KEY_ICON  => 'fas fa-briefcase-medical',
             self::KEY_COLOR => '399e05',
         ],
         [

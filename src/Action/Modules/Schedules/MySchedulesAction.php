@@ -8,7 +8,6 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Form\Modules\Schedules\MyScheduleType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -99,7 +98,7 @@ class MySchedulesAction extends AbstractController {
      * @Route("/my-schedule/update/",name="my-schedule-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

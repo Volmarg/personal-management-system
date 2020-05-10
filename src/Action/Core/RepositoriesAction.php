@@ -7,7 +7,6 @@ namespace App\Action\Core;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Core\Translator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Mapping\Entity;
@@ -50,7 +49,7 @@ class RepositoriesAction extends AbstractController {
      * @param array $findByParams
      * @param Request|null $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      */
     public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response
     {
@@ -114,7 +113,7 @@ class RepositoriesAction extends AbstractController {
      * @param string $field_name
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     *
      * @throws MappingException
      * @throws Exception
      */

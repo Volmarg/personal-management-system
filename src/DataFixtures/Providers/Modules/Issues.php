@@ -42,7 +42,7 @@ class Issues {
         ],
         [
             self::KEY_ISSUE_ID    => 2,
-            self::KEY_INFORMATION => "They've sent me a brief in which they say that they will do all they can do find my package - and that's just it",
+            self::KEY_INFORMATION => "They've sent me a letter in which they say that they will do all they can do find my package - and that's just it",
             self::KEY_DATE        => "2020-02-06 16:00:00",
         ],
         [

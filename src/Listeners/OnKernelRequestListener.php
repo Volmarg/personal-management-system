@@ -2,7 +2,6 @@
 
 namespace App\Listeners;
 
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
 use App\Services\Core\Translator;
@@ -56,7 +55,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     /**
      * @param RequestEvent $ev
      * @throws SecurityException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function onRequest(RequestEvent $ev)
     {
@@ -100,7 +99,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     /**
      * @param RequestEvent $event
      * @throws SecurityException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function blockRequestTypes(RequestEvent $event): void
     {
@@ -126,7 +125,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     /**
      * @param RequestEvent $event
      * @throws SecurityException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function blockIp(RequestEvent $event): void
     {

@@ -5,7 +5,6 @@ namespace App\Form\Modules\Issues;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Form\Type\RoundcheckboxType;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +29,7 @@ class MyIssueType extends AbstractType {
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

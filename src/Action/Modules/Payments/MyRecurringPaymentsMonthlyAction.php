@@ -4,12 +4,10 @@
 namespace App\Action\Modules\Payments;
 
 
-use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -84,7 +82,7 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      * @Route("/my-recurring-payments-monthly/update/" ,name="my-recurring-payments-monthly-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

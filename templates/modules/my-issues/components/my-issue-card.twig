@@ -13,7 +13,7 @@
             <div class="title active bgc-white bd bdrs-3 p-10">
                 <ul style="list-style-type: none;" class="p-0">
                     {% if issueCardDto.getIssueLastContact() is not null %}
-                        <li class="justify-content-center d-flex"><b>{{ translate('issues.card.lastContactDate') }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastContact() | date("Y-m-d H:i:s") }}</span></li>
+                        <li class="justify-content-center d-flex"><b>{{ 'issues.card.lastContactDate' | trans }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastContact() | date("Y-m-d H:i:s") }}</span></li>
                     {% endif %}
                     {% if issueCardDto.getIssueContactsByIcon() is not empty %}
                         <li class="justify-content-center d-flex">
@@ -31,7 +31,7 @@
                     {% endif %}
 
                     {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
-                        <li class="justify-content-center d-flex"><b>{{ translate('issues.card.lastProgressDate') }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastProgress() | date("Y-m-d H:i:s") }}</span></li>
+                        <li class="justify-content-center d-flex"><b>{{ 'issues.card.lastProgressDate' | trans }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastProgress() | date("Y-m-d H:i:s") }}</span></li>
                         <li class="justify-content-center d-flex">
                             <b><i class="fas fa-play-circle"></i></b>: {{ issueCardDto.getIssue().getIssueProgress() | length  }}
                         </li>
@@ -53,7 +53,7 @@
                                   data-html="true"                               {# popover attr #}
                                   data-trigger="hover"                           {# popover attr #}
                                   data-content="                                 {# popover attr #}
-                                    {{ translate('issues.card.popovers.removeRecord') }}
+                                    {{ 'issues.card.popovers.removeRecord' | trans }}
                                   "
                                   >
                             <i class="far fa-times-circle fa-lg"></i>
@@ -64,14 +64,14 @@
                         <span class="action pointer mr-1"
                               data-entity-id="{{ issueCardDto.issue().getId() }}"
                               data-entity-toggle-boolval="true"
-                              data-entity-toggle-success-message="{{ translate('issues.card.ajaxCallMessages.dashboardVisibilityHasBeenToggled') }}"
+                              data-entity-toggle-success-message="{{ 'issues.card.ajaxCallMessages.dashboardVisibilityHasBeenToggled' | trans }}"
                               data-entity-repository-name="MyIssueRepository"
                               data-entity-field-name="showOnDashboard"
                               data-toggle-popover="true"                     {# popover attr #}
                               data-html="true"                               {# popover attr #}
                               data-trigger="hover"                           {# popover attr #}
                               data-content="                                 {# popover attr #}
-                                {{ translate('issues.card.popovers.toggleDashboardVisibility') }}
+                                {{ 'issues.card.popovers.toggleDashboardVisibility' | trans }}
                               "
                             >
                             <i class="fas fa-home fa-lg"></i>
@@ -104,7 +104,7 @@
                                   data-html="true"                               {# popover attr #}
                                   data-trigger="hover"                           {# popover attr #}
                                   data-content="                                 {# popover attr #}
-                                    {{ translate('issues.card.popovers.previewAndEdit') }}
+                                    {{ 'issues.card.popovers.previewAndEdit' | trans }}
                                   "
                         >
                             <i class="fas fa-eye fa-lg"></i>

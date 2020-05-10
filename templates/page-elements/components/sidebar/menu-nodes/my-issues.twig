@@ -3,7 +3,7 @@
                 <span class="icon-holder" style="color: red;">
                 <i class="fas fa-history fa-sm"></i>
                 </span>
-        <span class="title">{{ translate('sidebar.menu.issues.label') }}</span>
+        <span class="title">{{ 'sidebar.menu.issues.label' | trans }}</span>
         <span class="arrow">
                     <i class="ti-angle-right fa-sm"></i>
                   </span>
@@ -11,7 +11,7 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-issues-pending') }}">{{ translate('sidebar.menu.issues.pending') }}</a>
+            <a class="sidebar-link" href="{{ path('my-issues-pending') }}">{{ 'sidebar.menu.issues.pending' | trans }}</a>
         </li>
     </ul>
 </li>

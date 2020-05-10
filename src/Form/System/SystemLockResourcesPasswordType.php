@@ -4,7 +4,6 @@ namespace App\Form\System;
 
 use App\Action\System\AppAction;
 use App\Controller\Core\Application;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -28,7 +27,7 @@ class SystemLockResourcesPasswordType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 

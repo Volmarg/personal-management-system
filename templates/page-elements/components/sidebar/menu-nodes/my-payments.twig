@@ -3,7 +3,7 @@
                 <span class="icon-holder" style="color: rgb(133,187,101)">
                 <i class="fas fa-dollar-sign fa-sm"></i>
                 </span>
-        <span class="title">{{ translate('sidebar.menu.payments.label') }}</span>
+        <span class="title">{{ 'sidebar.menu.payments.label' | trans }}</span>
         <span class="arrow">
                     <i class="ti-angle-right fa-sm"></i>
                   </span>
@@ -11,22 +11,22 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-payments-products') }}">{{ translate('sidebar.menu.payments.productsPrices') }}</a>
+            <a class="sidebar-link" href="{{ path('my-payments-products') }}">{{ 'sidebar.menu.payments.productsPrices' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-payments-monthly') }}">{{ translate('sidebar.menu.payments.monthlyPayments') }}</a>
+            <a class="sidebar-link" href="{{ path('my-payments-monthly') }}">{{ 'sidebar.menu.payments.monthlyPayments' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-payments-owed') }}">{{ translate('sidebar.menu.payments.moneyOwed') }}</a>
+            <a class="sidebar-link" href="{{ path('my-payments-owed') }}">{{ 'sidebar.menu.payments.moneyOwed' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-payments-income') }}">{{ translate('sidebar.menu.payments.incomes') }}</a>
+            <a class="sidebar-link" href="{{ path('my-payments-income') }}">{{ 'sidebar.menu.payments.incomes' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-payments-bills') }}">{{ translate('sidebar.menu.payments.bills') }}</a>
+            <a class="sidebar-link" href="{{ path('my-payments-bills') }}">{{ 'sidebar.menu.payments.bills' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-payments-settings') }}">{{ translate('sidebar.menu.payments.settings') }}</a>
+            <a class="sidebar-link" href="{{ path('my-payments-settings') }}">{{ 'sidebar.menu.payments.settings' | trans }}</a>
         </li>
     </ul>
 </li>

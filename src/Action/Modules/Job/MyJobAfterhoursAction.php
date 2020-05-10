@@ -9,7 +9,6 @@ use App\Controller\Core\Repositories;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Form\Modules\Job\MyJobAfterhoursType;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -99,7 +98,7 @@ class MyJobAfterhoursAction extends AbstractController {
      * @Route("/my-job/afterhours/update/",name="my-job-afterhours-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function update(Request $request) {
         $parameters = $request->request->all();

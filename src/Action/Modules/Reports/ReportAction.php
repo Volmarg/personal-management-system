@@ -7,7 +7,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Utils\Utils;
 use App\Repository\AbstractRepository;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -80,7 +79,7 @@ class ReportAction extends AbstractController {
      * @Route("/reports/payments_charts", name="reports-payments-charts", methods="GET")
      * @return JsonResponse|Response
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function paymentsCharts(Request $request) {
 
@@ -223,7 +222,7 @@ class ReportAction extends AbstractController {
     /**
      * @return Response
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function renderChartPaymentsTotalAmountForEachMonth(): Response {
 
@@ -361,7 +360,7 @@ class ReportAction extends AbstractController {
      * @param bool $ajax_render
      * @return Response
      * @throws DBALException
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     private function renderTemplatePaymentsCharts(bool $ajax_render): Response {
         $rendered_chart_total_payments_amount_for_types = $this->renderChartTotalPaymentsAmountForTypes();

@@ -6,7 +6,7 @@
             data-toggle-popover="true"                                {# popover attr #}
             data-html="true"                                          {# popover attr #}
             data-trigger="hover"                                      {# popover attr #}
-            data-content="{{ translate('actions.popover.remove') }}"  {# popover attr #}
+            data-content="{{ 'actions.popover.remove' | trans }}"  {# popover attr #}
             data-placement="top"                                      {# popover attr #}
 
     {% if trash_attr is defined and trash_attr is not empty %}
@@ -25,7 +25,7 @@
             data-toggle-popover="true"                                {# popover attr #}
             data-html="true"                                          {# popover attr #}
             data-trigger="hover"                                      {# popover attr #}
-            data-content="{{ translate('actions.popover.edit') }}"    {# popover attr #}
+            data-content="{{ 'actions.popover.edit' | trans }}"    {# popover attr #}
             data-placement="top"                                      {# popover attr #}
         {% if edit_attr is defined and edit_attr is not empty %}
             {{ edit_attr }}
@@ -44,7 +44,7 @@
             data-toggle-popover="true"                                          {# popover attr #}
             data-html="true"                                                    {# popover attr #}
             data-trigger="hover"                                                {# popover attr #}
-            data-content="{{ translate('actions.popover.editWithTinyMce') }}"   {# popover attr #}
+            data-content="{{ 'actions.popover.editWithTinyMce' | trans }}"   {# popover attr #}
             data-placement="top"                                                {# popover attr #}
             {% if editWithTinyMce_attr is defined and editWithTinyMce_attr is not empty %}
                 {{ editWithTinyMce_attr }}
@@ -60,7 +60,7 @@
          data-toggle-popover="true"                                {# popover attr #}
          data-html="true"                                          {# popover attr #}
          data-trigger="hover"                                      {# popover attr #}
-         data-content="{{ translate('actions.popover.copy') }}"    {# popover attr #}
+         data-content="{{ 'actions.popover.copy' | trans }}"    {# popover attr #}
          data-placement="top"                                      {# popover attr #}
          {% if copy_attr is defined and copy_attr is not empty %}
         {{ copy_attr }}
@@ -77,7 +77,7 @@
         data-toggle-popover="true"                                {# popover attr #}
         data-html="true"                                          {# popover attr #}
         data-trigger="hover"                                      {# popover attr #}
-        data-content="{{ translate('actions.popover.save') }}"    {# popover attr #}
+        data-content="{{ 'actions.popover.save' | trans }}"    {# popover attr #}
         data-placement="top"                                      {# popover attr #}
         {% if save_attr is defined and save_attr is not empty %}
         {{ save_attr }}
@@ -94,7 +94,7 @@
         data-toggle-popover="true"                                      {# popover attr #}
         data-html="true"                                                {# popover attr #}
         data-trigger="hover"                                            {# popover attr #}
-        data-content="{{ translate('actions.popover.fontawesome') }}"   {# popover attr #}
+        data-content="{{ 'actions.popover.fontawesome' | trans }}"   {# popover attr #}
         data-placement="top"                                            {# popover attr #}
         {% if fontawesome_attr is defined and fontawesome_attr is not empty %}
         {{ fontawesome_attr }}
@@ -114,7 +114,7 @@
         data-toggle-popover="true"                                      {# popover attr #}
         data-html="true"                                                {# popover attr #}
         data-trigger="hover"                                            {# popover attr #}
-        data-content="{{ translate('actions.popover.lockRecord') }}"    {# popover attr #}
+        data-content="{{ 'actions.popover.lockRecord' | trans }}"    {# popover attr #}
         data-placement="top"                                            {# popover attr #}
         {% if lock_record_attr is defined and lock_record_attr is not empty %}
         {{ lock_record_attr }}

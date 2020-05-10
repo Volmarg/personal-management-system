@@ -8,7 +8,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Env;
 use App\Entity\System\LockedResource;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\FileDownloader;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
@@ -103,7 +102,7 @@ class MyFilesAction extends AbstractController {
      * @param string|null $encoded_subdirectory_path
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function displayFiles(? string $encoded_subdirectory_path, Request $request): Response
     {
@@ -202,7 +201,7 @@ class MyFilesAction extends AbstractController {
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false): Response

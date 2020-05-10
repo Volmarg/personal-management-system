@@ -9,7 +9,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -43,7 +42,7 @@ class MyPaymentsSettingsAction extends AbstractController {
      * @Route("/my-payments-settings", name="my-payments-settings")
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function display(Request $request) {
         $setting_type = $request->request->all();
@@ -110,7 +109,7 @@ class MyPaymentsSettingsAction extends AbstractController {
     /**
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function addPaymentType(Request $request) {
         $payments_types_form = $this->app->forms->paymentsTypesForm();

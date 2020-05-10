@@ -5,7 +5,6 @@ namespace App\Controller\Page;
 use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
 use App\Services\Core\Translator;
@@ -58,7 +57,7 @@ class SettingsDashboardController extends AbstractController {
      * Returns array of widgets names with their translations
      * @param Translator $translator
      * @return array
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public static function getDashboardWidgetsNames(Translator $translator):array {
 

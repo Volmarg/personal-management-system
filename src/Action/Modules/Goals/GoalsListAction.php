@@ -4,7 +4,6 @@ namespace App\Action\Modules\Goals;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +26,7 @@ class GoalsListAction extends AbstractController {
      * @Route("/admin/subgoals/update/",name="my-goals-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function updateSubgoal(Request $request) {
         $parameters = $request->request->all();

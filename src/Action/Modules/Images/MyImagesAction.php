@@ -11,7 +11,6 @@ use App\Controller\Core\Controllers;
 use App\Action\Core\DialogsAction;
 use App\Controller\Core\Env;
 use App\Entity\System\LockedResource;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
 use Exception;
@@ -55,7 +54,7 @@ class MyImagesAction extends AbstractController {
      * @param string|null $encoded_subdirectory_path
      * @param Request $request
      * @return Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function displayImages(? string $encoded_subdirectory_path, Request $request) {
         if (!$request->isXmlHttpRequest()) {
@@ -98,7 +97,7 @@ class MyImagesAction extends AbstractController {
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
      * @return array|RedirectResponse|Response
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      * @throws Exception
      */
     private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false) {

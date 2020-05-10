@@ -15,7 +15,7 @@
                 <div class="row MyTravelIdeas">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ translate('travels.headers.ideasForTraveling') }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'travels.headers.ideasForTraveling' | trans }}</h4>
                             <div id="accordion">
                                 {% for category in categories %}
                                     <div class="accordin-section">
@@ -35,7 +35,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">{{ translate('travels.headers.addIdea') }}</h4>
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ 'travels.headers.addIdea' | trans }}</h4>
                             <div class="col-md-6 align-self-center add-record-form">
                                 {{ form_start(form_view,{'attr':{'class':'MyTravelsIdeas', 'data-entity':"MyTravelsIdeas"}}) }}
                                 {{ form_end(form_view) }}

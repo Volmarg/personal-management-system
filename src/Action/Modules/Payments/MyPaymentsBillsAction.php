@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -133,7 +132,7 @@ class MyPaymentsBillsAction extends AbstractController {
      * @Route("/my-payments-bills/update-bill/" ,name="my-payments-bills-update-bill")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function updateBill(Request $request) {
         $parameters     = $request->request->all();
@@ -147,7 +146,7 @@ class MyPaymentsBillsAction extends AbstractController {
      * @Route("/my-payments-bills/update-bill-item/" ,name="my-payments-bills-update-bill-item")
      * @param Request $request
      * @return JsonResponse
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function updateBillItem(Request $request) {
         $parameters     = $request->request->all();

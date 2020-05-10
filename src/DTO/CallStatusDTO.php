@@ -2,7 +2,6 @@
 
 namespace App\DTO;
 
-use App\Services\Exceptions\ExceptionDuplicatedTranslationKey;
 use App\Services\Core\Translator;
 
 class CallStatusDTO extends AbstractDTO {
@@ -33,7 +32,7 @@ class CallStatusDTO extends AbstractDTO {
 
     /**
      * @return string
-     * @throws ExceptionDuplicatedTranslationKey
+     * 
      */
     public function getMessage(): string {
 
