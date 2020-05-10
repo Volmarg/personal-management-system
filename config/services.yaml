@@ -33,7 +33,6 @@ services:
     App\Services\Core\Logger:
         arguments:
             $security_logger: "@monolog.logger.security"
-            $debug_logger: "@monolog.logger.debug"
         public: true
 
     services_core_logger:
