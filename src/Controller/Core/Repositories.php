@@ -97,6 +97,7 @@ class Repositories extends AbstractController {
     const MY_ISSUES_PROGRESS_REPOSITORY                 = "MyIssueProgressRepository";
 
     const PASSWORD_FIELD        = 'password';
+    const FIELD_TYPE_ENTITY     = 'entity';
 
     const KEY_MESSAGE           = "message";
 
@@ -492,16 +493,31 @@ class Repositories extends AbstractController {
                 }
                 $record_class_name  = get_class($entity);
                 $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
-                $field_mapping      = $class_meta->getFieldMapping($parameter);
-                $field_type         = $field_mapping['type'];
 
-                $methodName  = 'set' . ucfirst($parameter);
+                $ucFirstParameter = ucfirst($parameter);
+
+                // this is needed to detect the type of field as doctrine sometimes want objects for it's internal mapping
+                if( $class_meta->hasField($parameter) ){
+                    $field_mapping = $class_meta->getFieldMapping($parameter);
+                    $field_type    = $field_mapping['type'];
+                }elseif( $class_meta->hasField($ucFirstParameter) ){
+                    $field_mapping = $class_meta->getFieldMapping($ucFirstParameter);
+                    $field_type    = $field_mapping['type'];
+                }elseif( $class_meta->hasAssociation($parameter )){
+                    $field_type = self::FIELD_TYPE_ENTITY;
+                }elseif( $class_meta->hasAssociation($ucFirstParameter) ){
+                    $field_type = self::FIELD_TYPE_ENTITY;
+                }else{
+                    throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
+                }
+
+                $methodName  = 'set' . $ucFirstParameter;
                 $hasRelation = strstr($methodName, '_id');
                 $methodName  = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
 
                 $value       = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
 
-                // we need to check type of field in which we insert value and ew. adjust it
+                // we need to check some type of field in which we insert value and ew. adjust it
                 switch( $field_type ){
                     case self::DOCTRINE_FIELD_MAPPING_TYPE_DATETIME:
                         {
@@ -513,9 +529,7 @@ class Repositories extends AbstractController {
                         // nothing
                 }
 
-
                 $entity->$methodName($value);
-
             }
 
             $em = $this->getDoctrine()->getManager();
