@@ -33,10 +33,6 @@ codePages:
     button: Go back
     title: 500 - internal server error
 
-upload:
-  errors:
-    thereWasAnErrorWhileUploadingFiles: There was an error while uploading files
-
 settings:
   label: Settings
   dashboard:
@@ -67,9 +63,6 @@ settings:
         couldNotHandleAddingNewCurrencyBeingDefaultValue: "Could not handle adding new currency being default value"
         currencyWithThisNameAlreadyExist: "Currency with this name already exist"
         success: "Currency record has been successfully updated"
-
-datatables:
-  filterByColumnValue: "Filter by column value"
 
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.

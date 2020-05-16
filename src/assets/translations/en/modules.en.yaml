@@ -264,6 +264,7 @@ datatables:
     idHash: '#'
     id: Id
     actions: Actions
+  filterByColumnValue: "Filter by column value"
 
 shopping:
   headers:
@@ -320,6 +321,8 @@ upload:
     fileName: File name
     fileExtension: File extension
     tags: Tags
+  errors:
+    thereWasAnErrorWhileUploadingFiles: There was an error while uploading files
 
 issues:
   card:
