@@ -37,6 +37,14 @@ export default (function () {
          */
         oneTimeInit: function () {
             ui.ajax.init();
+
+            $(window).on('beforeunload', function(){
+                ui.widgets.loader.showLoader();
+            });
+
+            $(window).on('load', function(){
+                ui.widgets.loader.hideLoader();
+            });
         },
         initStatic: function () {
             if ("undefined" !== typeof jscolorCustom) {

@@ -108,7 +108,7 @@ export default (function () {
                 if ( !skip && "" == href ){
                     skip = true;
                 }
-0
+
                 if( !skip ){
 
                     $(element).on('click', (event) => {
@@ -132,7 +132,10 @@ export default (function () {
          */
         loadModuleContentByUrl: function (url, callbackAfter = undefined, showMessages = false){
 
-            ui.widgets.loader.showLoader();
+            // fix for case when this call comes as second and somehow the previous call for hideLoader instantly hides also this one
+            setTimeout(function(){
+                ui.widgets.loader.showLoader();
+            }, 200);
 
             $.ajax({
                 url: url,
