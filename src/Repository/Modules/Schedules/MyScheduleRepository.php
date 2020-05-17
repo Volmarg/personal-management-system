@@ -24,9 +24,21 @@ class MyScheduleRepository extends ServiceEntityRepository {
         parent::__construct($registry, MySchedule::class);
     }
 
-    public function getIncomingSchedulesInDays(int $days){
+    public function getIncomingSchedulesInDays(int $days, bool $include_past = true){
 
         $connection = $this->getEntityManager()->getConnection();
+
+        if( $include_past ){
+            $records_interval_sql = "
+                mch.date < NOW() + INTERVAL :days DAY
+            ";
+        }else{
+            $records_interval_sql = "
+                AND DATEDIFF (mch.date, NOW()) > 0
+                mch.date BETWEEN NOW() AND NOW() + INTERVAL :days DAY
+            ";
+        }
+
         $sql = "
             SELECT 
                 mch.name                    AS :name,
@@ -41,8 +53,7 @@ class MyScheduleRepository extends ServiceEntityRepository {
             ON mcht.id = mch.schedule_type_id
             
             WHERE 
-            mch.date BETWEEN NOW() AND NOW() + INTERVAL :days DAY
-            AND DATEDIFF (mch.date, NOW()) > 0
+            $records_interval_sql
             AND mch.deleted  = 0
             AND mcht.deleted = 0
         ";

@@ -17,8 +17,10 @@
                                 <label for="inputCall1" class=" peers peer-greed js-sb ai-c">
                                         <span class="peer peer-greed">
                                             <i class="{{ schedule.icon }} {{ icon_classes }}"></i>
-                                            {{ schedule.name }}
-                                            ({{ schedule.date }})
+                                            <span class="{{ schedule.daysDiff < 0 ? 'text-danger' : ''}}">
+                                                {{ schedule.name }}
+                                                ({{ schedule.date }})
+                                            </span>
                                         </span>
                                         <span class="peer">
                                             <span class="badge badge-pill fl-r {{ badge_classes }} lh-0 p-10">
