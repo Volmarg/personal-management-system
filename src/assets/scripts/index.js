@@ -50,4 +50,5 @@ import './my-goals/index.js';
 import './apexcharts/index.js';
 import './ui/locked-resource.js';
 import './prism/index.js';
+import './bootbox/index.js';
 import './initializer/index.js';

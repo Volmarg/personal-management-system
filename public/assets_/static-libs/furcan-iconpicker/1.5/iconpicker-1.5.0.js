@@ -55,6 +55,7 @@ var IconPicker = {
     // init
     Init: function(ipUserOptions) {
         ipNewOptions = extendIconPicker(true, ipDefaultOptions, ipUserOptions);
+        bootbox_extension.removeTabindexFromActiveModals();
     },
 
     // run
@@ -274,6 +275,7 @@ var IconPicker = {
                 ipElement.classList.remove('animate');
                 setTimeout(function() {
                     let isElementInDom = ( null !== ipElement.parentNode );
+                    bootbox_extension.restoreTabindexForActiveModals();
                     //prevent handling removal if element is already gof out of daoml
                     if( isElementInDom ){
                         docBody.removeChild(ipElement);

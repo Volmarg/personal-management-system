@@ -1,5 +1,11 @@
 {% block fontawesomepicker_widget %}
-    <section class="row">
+    {# Fix bug where fontawesome has small icon near the input after selecting some from list #}
+    <style>
+        .fontawesome-picker-widget i, .fontawesome-picker-widget svg {
+            display:none;
+        }
+    </style>
+    <section class="row fontawesome-picker-widget">
         <input type="button" id="{{ id }}Button" autocomplete="off"
                class="form-control btn-primary btn col-sm-4"
                data-iconpicker="true"
