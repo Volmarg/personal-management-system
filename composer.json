@@ -33,7 +33,7 @@
         "symfony/dotenv": "^4.0",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^4.0",
-        "symfony/http-foundation": "^4.0",
+        "symfony/http-foundation": "v4.4.7",
         "symfony/lts": "^4@dev",
         "symfony/orm-pack": "^1.0",
         "symfony/routing": "^4.0",
