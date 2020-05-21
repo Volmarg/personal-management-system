@@ -972,6 +972,31 @@ export default (function () {
             },
             entity_name: "Contact type",
         },
+        "MyContact": {
+            /**
+             * This case cannot be handled like usual forms like above as items can be added via js
+             * @param $baseElement {object}
+             */
+            makeUpdateData: function ($baseElement) {
+                let $form              = $($baseElement).find('form');
+                let serializedFormData = $form.serialize();
+
+                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+
+                let url = '/my-contacts/update';
+                let ajax_data = {
+                    'my_contact': serializedFormData
+                };
+
+                return {
+                    'url': url,
+                    'data': ajax_data,
+                    'success_message': success_message,
+                    'fail_message': fail_message
+                };
+            },
+        },
         "MyContactGroup": {
             makeUpdateData: function ($baseElement) {
                 let id     = $($baseElement).find('.id').html();

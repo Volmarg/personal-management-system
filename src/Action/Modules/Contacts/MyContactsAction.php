@@ -46,9 +46,6 @@ class MyContactsAction extends AbstractController
      * @throws Exception
      */
     public function display(Request $request) {
-
-        $this->handleForms($request);
-
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate( false);
         }
@@ -83,17 +80,32 @@ class MyContactsAction extends AbstractController
     }
 
     /**
+     * This is special case where we have to manipulate data from ajax as form can have additional fields
+     * thus there is this one method to handle both action as the logic is the same
      * @Route("my-contacts/update" ,name="my-contacts-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws DBALException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
     public function update(Request $request) {
-        $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myContactRepository->find($parameters['id']);
-        $response   = $this->app->repositories->update($parameters, $entity);
+        $contact_form_data = [];
 
-        return $response;
+        // transform js serialized form back to array
+        $contact_form_prefix          = Utils::formClassToFormPrefix(MyContactType::class);
+        $contact_form_serialized_data = $request->request->get($contact_form_prefix);
+
+        parse_str($contact_form_serialized_data, $contact_form_data);
+
+        // and replace it for form handling
+        $request->request->set($contact_form_prefix, $contact_form_data);
+
+        $this->handleForms($request);
+        $template_content = $this->renderTemplate( true)->getContent();
+        $message          = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+
+        return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
     }
 
     /**
@@ -105,17 +117,24 @@ class MyContactsAction extends AbstractController
      */
     private function handleForms(Request $request){
 
-        $contact_type_form_prefix   = Utils::formClassToFormPrefix(MyContactType::class);
-        $my_contact_type_form       = $request->request->get($contact_type_form_prefix);
-        $forms                      = $request->request->all();
-        $filtered_types_forms       = Utils::filterRequestForms([$contact_type_form_prefix], $forms);
+        $contact_form_prefix   = Utils::formClassToFormPrefix(MyContactType::class);
+        $all_request_params    = $request->request->all();
+
+        if( empty($all_request_params) ){
+            return;
+        }
+
+        $forms             = $all_request_params[$contact_form_prefix];
+        $contact_form_data = $forms[$contact_form_prefix];
+
+        $filtered_types_forms = Utils::filterRequestForms([$contact_form_prefix], $forms);
 
         // build request for processing the main form
         $request = new Request();
-        $request->request->set($contact_type_form_prefix, $my_contact_type_form);
+        $request->request->set($contact_form_prefix, $contact_form_data);
 
         $contact_form = $this->app->forms->contactForm()->handleRequest($request);
-        $contact_form->submit($my_contact_type_form);
+        $contact_form->submit($contact_form_data);
 
         if( $contact_form->isSubmitted() && $contact_form->isValid() ){
 

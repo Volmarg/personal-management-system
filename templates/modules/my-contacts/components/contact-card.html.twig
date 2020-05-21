@@ -38,7 +38,7 @@
         <main>
             <section>
                 <div class="content" style="padding-bottom: 20px; background-color: #{{ contact.getNameBackgroundColor() }};">
-                    <img src="{{ contact.getImagePath() }}" alt="Profile Image" style="width: 60px; height: 60px;">
+                    <img src="{{ ( contact.getImagePath() is empty or contact.getImagePath() is null ? avatar_placeholder_image_pat : contact.getImagePath() ) }}" alt="Profile Image" style="width: 60px; height: 60px;">
                     <aside style="padding-top:10px;">
                         <h1 style="font-size:18px;">{{ contact.getName() }}</h1>
                     </aside>
@@ -55,14 +55,14 @@
 
             {% for contact_type in contact.getContacts().getContactTypeDtos() %}
 
-                <a href="#" >
+                <a>
                     <div class="icon" style="width: 35px; height: 35px;">
                         <img src="{{ contact_type.getIconPath()  }}" style="width:100%;"/>
                     </div>
 
                     <div class="content">
-                        <h1>{{ contact_type.getName() | capitalize }}</h1>
-                        <span>{{ contact_type.getDetails() }}</span>
+                        <h1 style="cursor:text;">{{ contact_type.getName() | capitalize }}</h1>
+                        <span style="cursor:text;">{{ contact_type.getDetails() }}</span>
                     </div>
                 </a>
 

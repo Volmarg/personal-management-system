@@ -22,7 +22,7 @@
                             {% endif %}
 
                         </h4>
-                        <section id="tiny-mce-wrapper" class="p-20 add-record-form">
+                        <section id="tiny-mce-wrapper" class="p-20 add-record-form save-parent" data-type="MyContact">
                             {{ form_start(contact_form,{'attr':{' data-entity':"MyContact"}}) }}
 
 
@@ -103,7 +103,7 @@
 
                             </section>
 
-                            <div class="row mT-10 d-flex flex-row flex-nowrap justify-content-end">
+                            <div class="row mT-10 d-flex flex-row flex-nowrap justify-content-end save-record">
                                 <div>
                                     {{ form_widget(contact_form[KEY_SUBMIT]) }}
                                 </div>

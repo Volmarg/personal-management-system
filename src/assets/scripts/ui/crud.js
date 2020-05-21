@@ -111,6 +111,7 @@ export default (function () {
                             events.general.attachFormViewAppendEvent();
                             events.general.attachRemoveParentEvent();
                             jscolorCustom.init();
+                            ui.crud.attachContentSaveEventOnSaveIcon();
                         }
                     },
                     /**
@@ -533,7 +534,9 @@ export default (function () {
             let saveButton = $('.save-record');
 
             $(saveButton).off('click'); // to prevent double attachement on reinit
-            $(saveButton).on('click', function () {
+            $(saveButton).on('click', function (event) {
+                event.preventDefault();
+
                 let closestParent = this.closest(_this.elements["saved-element-class"]);
                 _this.ajaxUpdateDatabaseRecord(closestParent);
             });

@@ -47,7 +47,8 @@ class MyContactType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_DESCRIPTION)
             ])
             ->add(self::KEY_IMAGE_PATH, TextType::class, [
-                'label' => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_IMAGE_PATH)
+                'label'    => $this->app->translator->translate('forms.MyContactType.labels.' . self::KEY_IMAGE_PATH),
+                'required' => false,
             ])
             ->add(self::KEY_GROUP,EntityType::class, [
                 'class'         => MyContactGroup::class,

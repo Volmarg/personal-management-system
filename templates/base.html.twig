@@ -1,6 +1,7 @@
 {% set currUrl = path(app.request.attributes.get('_route'),
     app.request.attributes.get('_route_params')) %}
 {% set getAttrs = app.request.attributes.get('_route_params') %}
+{% set avatar_placeholder_image_pat = asset('assets/images/avatar_placeholder.jpg') %}
 
 <!DOCTYPE html>
 <html>
