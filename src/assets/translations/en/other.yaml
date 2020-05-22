@@ -6,6 +6,10 @@ login:
     username: 'Username:'
     password: 'Password:'
     remember: 'Remember Me'
+  placeholders:
+    username: 'Username'
+    password: 'Password'
+  submit: "Login"
   pageTitle: Sign In
 
 codePages:

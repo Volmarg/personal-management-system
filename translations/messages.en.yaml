@@ -189,6 +189,8 @@ logs:
 login:
     header: { pageName: 'Personal Management System', login: Login }
     labels: { username: 'Username:', password: 'Password:', remember: 'Remember Me' }
+    placeholders: { username: Username, password: Password }
+    submit: Login
     pageTitle: 'Sign In'
 codePages:
     error: { h1: Oops, h3: 'Page Error', text: 'We track these errors automatically, but if the problem persists feel free to contact us.', button: 'Go back' }
