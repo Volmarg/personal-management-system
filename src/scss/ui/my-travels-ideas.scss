@@ -20,6 +20,22 @@
 }
 
 #MyTravelsIdeas {
+
+  .actions {
+    position: absolute;
+    top: 0;
+    right: -30px;
+    display: flex;
+    flex-direction: column-reverse;
+
+    cursor: pointer;
+    color: #72777a;
+  }
+
+  .actions span {
+    align-self: center;
+  }
+
   .country span {
     display: none;
     opacity: 0;

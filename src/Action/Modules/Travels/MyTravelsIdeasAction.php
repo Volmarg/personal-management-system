@@ -37,7 +37,7 @@ class MyTravelsIdeasAction extends AbstractController {
     }
 
     /**
-     * @Route("/my/travels/ideas", name="my-travels-ideas")
+     * @Route("/my-travels/ideas", name="my-travels-ideas")
      * @param Request $request
      * @return Response
      */

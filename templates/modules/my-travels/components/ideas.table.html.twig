@@ -37,11 +37,12 @@
                     {% if column == 'map' %}
                         <b><a href="{{ idea.map | trim }}">
                                 <span class="icon-holder" style="color:black;">
-                                    <i class="far fa-globe"></i>
+                                    <i class="fas fa-globe-americas"></i>
                                </span>
                             </a></b>
                     {% elseif column == 'image' %}
-                        <img src="{{ idea.image | trim }}" style="border:0;{{ content_width }} {{ td_center }}"/>
+{#                        <img src="{{ idea.image | trim }}" style="border:0;{{ content_width }} {{ td_center }}"/>#}
+                        <img src="https://i.pinimg.com/originals/4d/82/41/4d8241acd63e8eae98934784a57b576d.jpg" style="border:0;{{ content_width }} {{ td_center }}"/>
                     {% elseif column == 'category' %}
                         <i>{{ idea.category | trim }}</i>
                     {% elseif column != 'id' %}
@@ -55,8 +56,11 @@
             {% endfor %}
             {% include 'modules/common/components/table-cells/actions.html.twig' with {
                 "trash": true,
+                "trash_icon" : "fas fa-times-circle fa-sm",
                 "edit": true,
-                "save": true
+                "edit_icon": "fas fa-pen-square fa-sm",
+                "save": true,
+                "tableClasses": "actions"
             } %}
         </tr>
         </tbody>

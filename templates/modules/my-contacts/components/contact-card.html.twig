@@ -21,12 +21,22 @@
 
     <section class="contact-card-actions">
         <div class="action"
+             data-toggle-popover="true"                                {# popover attr #}
+             data-html="true"                                          {# popover attr #}
+             data-trigger="hover"                                      {# popover attr #}
+             data-content="{{ 'actions.popover.edit' | trans }}"       {# popover attr #}
+             data-placement="top"                                      {# popover attr #}
              data-entity-id="{{ contact.getId() }}"
              data-repository-name="MyContactRepository"
              data-entity-modal-edit-action="true">
             <i class="fas fa-pen-square fa-sm"></i>
         </div>
         <div class="action"
+             data-toggle-popover="true"                                {# popover attr #}
+             data-html="true"                                          {# popover attr #}
+             data-trigger="hover"                                      {# popover attr #}
+             data-content="{{ 'actions.popover.remove' | trans }}"     {# popover attr #}
+             data-placement="top"                                      {# popover attr #}
              data-entity-id="{{ contact.getId() }}"
              data-repository-name="MyContactRepository"
              data-entity-removal-action="true">
