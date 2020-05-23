@@ -66,7 +66,7 @@ class MyPasswordsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -88,7 +88,12 @@ class MyPasswordsAction extends AbstractController {
         return $response;
     }
 
-    protected function renderTemplate($ajax_render = false) {
+    /**
+     * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
+     * @return Response
+     */
+    protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $password_form  = $this->app->forms->myPasswordForm();
         $form_view      = $password_form->createView();
@@ -96,10 +101,11 @@ class MyPasswordsAction extends AbstractController {
         $groups         = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
 
         return $this->render('modules/my-passwords/my-passwords.html.twig', [
-            'form'          => $form_view,
-            'ajax_render'   => $ajax_render,
-            'passwords'     => $passwords,
-            'groups'        => $groups
+            'form'                           => $form_view,
+            'ajax_render'                    => $ajax_render,
+            'passwords'                      => $passwords,
+            'groups'                         => $groups,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ]);
 
     }

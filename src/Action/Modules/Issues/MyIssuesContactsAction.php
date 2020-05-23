@@ -70,7 +70,7 @@ class MyIssuesContactsAction extends AbstractController
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->my_issues_action->renderTemplate(true);
+            $rendered_template = $this->my_issues_action->renderTemplate(true, true);
 
             $template_content  = $rendered_template->getContent();
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

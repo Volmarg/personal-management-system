@@ -75,7 +75,7 @@ class GoalsSettingsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -99,7 +99,7 @@ class GoalsSettingsAction extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
             $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
@@ -126,7 +126,7 @@ class GoalsSettingsAction extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
             $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
@@ -195,9 +195,10 @@ class GoalsSettingsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $goals_form             = $this->app->forms->goalForm();
         $subgoals_form          = $this->app->forms->subgoalForm();
         $goals_payments_form    = $this->app->forms->goalPaymentForm();
@@ -214,6 +215,7 @@ class GoalsSettingsAction extends AbstractController {
             'all_goals'             => $all_goals,
             'all_subgoals'          => $all_subgoals,
             'all_goals_payments'    => $all_goals_payments,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-goals/settings.html.twig', $data);

@@ -74,7 +74,7 @@ class MyJobHolidaysAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -106,9 +106,10 @@ class MyJobHolidaysAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $all_pools_years                    = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
         $all_holidays_spent                 = $this->app->repositories->myJobHolidaysRepository->findBy(['deleted' => 0]);
@@ -124,7 +125,8 @@ class MyJobHolidaysAction extends AbstractController {
             'all_holidays_spent'                => $all_holidays_spent,
             'job_holidays_form'                 => $job_holidays_form->createView(),
             'job_holidays_summary'              => $job_holidays_summary,
-            'job_holidays_available_totally'    => $job_holidays_available_totally
+            'job_holidays_available_totally'    => $job_holidays_available_totally,
+            'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-job/holidays.html.twig', $twig_data);

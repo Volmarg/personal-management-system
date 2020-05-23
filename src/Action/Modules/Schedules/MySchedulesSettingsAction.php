@@ -84,18 +84,20 @@ class MySchedulesSettingsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate($ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form   = $this->app->forms->scheduleTypeForm();
         $types  = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
 
         return $this->render(self::TWIG_TEMPLATE,
             [
-                'ajax_render'   => $ajax_render,
-                'types'         => $types,
-                'form'          => $form->createView()
+                'ajax_render'                    => $ajax_render,
+                'types'                          => $types,
+                'form'                           => $form->createView(),
+                'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
             ]
         );
     }

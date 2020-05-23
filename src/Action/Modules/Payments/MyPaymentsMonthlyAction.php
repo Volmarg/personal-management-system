@@ -46,9 +46,10 @@ class MyPaymentsMonthlyAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    protected function renderTemplate($ajax_render = false) {
+    protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $form                       = $this->getForm();
         $monthly_form_view          = $form->createView();
 
@@ -62,13 +63,14 @@ class MyPaymentsMonthlyAction extends AbstractController {
 
 
         return $this->render('modules/my-payments/monthly.html.twig', [
-            'form'                      => $monthly_form_view,
-            'all_payments'              => $all_payments,
-            'columns_names'             => $columns_names,
-            'dates_groups'              => $dates_groups,
-            'ajax_render'               => $ajax_render,
-            'payments_by_type_and_date' => $payments_by_type_and_date,
-            'payments_types'            => $payments_types
+            'form'                           => $monthly_form_view,
+            'all_payments'                   => $all_payments,
+            'columns_names'                  => $columns_names,
+            'dates_groups'                   => $dates_groups,
+            'ajax_render'                    => $ajax_render,
+            'payments_by_type_and_date'      => $payments_by_type_and_date,
+            'payments_types'                 => $payments_types,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
         ]);
     }
 
@@ -103,7 +105,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

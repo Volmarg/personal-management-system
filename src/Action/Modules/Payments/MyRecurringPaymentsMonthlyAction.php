@@ -70,7 +70,7 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->my_payments_settings_action->renderSettingsTemplate(true);
+            $rendered_template = $this->my_payments_settings_action->renderSettingsTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

@@ -59,7 +59,7 @@ class MyPaymentsIncomeAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -84,19 +84,21 @@ class MyPaymentsIncomeAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      * @throws Exception
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form            = $this->app->forms->moneyIncomeForm();
         $currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/income.html.twig', [
-            "records"         => $this->app->repositories->myPaymentsIncomeRepository->findBy(['deleted' => 0]),
-            'ajax_render'     => $ajax_render,
-            'form'            => $form->createView(),
-            'currencies_dtos' => $currencies_dtos,
+            "records"                        => $this->app->repositories->myPaymentsIncomeRepository->findBy(['deleted' => 0]),
+            'ajax_render'                    => $ajax_render,
+            'form'                           => $form->createView(),
+            'currencies_dtos'                => $currencies_dtos,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ]);
     }
 

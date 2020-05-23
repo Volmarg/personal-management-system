@@ -61,7 +61,7 @@ class MyPaymentsOwedAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -85,11 +85,11 @@ class MyPaymentsOwedAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      * @throws DBALException
-     * @throws Exception
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form           = $this->app->forms->moneyOwedForm();
         $owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->findBy([
@@ -132,6 +132,7 @@ class MyPaymentsOwedAction extends AbstractController {
             'currencies_dtos'        => $currencies_dtos,
             'summary_overall_owed_by_me'     => $summary_overall_owed_by_me,
             'summary_overall_owed_by_others' => $summary_overall_owed_by_others,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ]);
     }
 

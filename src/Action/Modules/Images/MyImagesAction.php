@@ -96,11 +96,12 @@ class MyImagesAction extends AbstractController {
     /**
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return array|RedirectResponse|Response
-     * 
+     *
      * @throws Exception
      */
-    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false) {
+    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $module_upload_dir                      = Env::getImagesUploadDir();
         $decoded_subdirectory_path              = FilesHandler::trimFirstAndLastSlash(urldecode($encoded_subdirectory_path));
@@ -133,12 +134,13 @@ class MyImagesAction extends AbstractController {
         $is_main_dir = ( empty($decoded_subdirectory_path) );
 
         $data = [
-            'ajax_render'           => $ajax_render,
-            'all_images'            => $all_images,
-            'subdirectory_path'     => $decoded_subdirectory_path,
-            'files_count_in_tree'   => $files_count_in_tree,
-            'upload_module_dir'     => MyImagesController::TARGET_UPLOAD_DIR,
-            'is_main_dir'           => $is_main_dir
+            'ajax_render'                    => $ajax_render,
+            'all_images'                     => $all_images,
+            'subdirectory_path'              => $decoded_subdirectory_path,
+            'files_count_in_tree'            => $files_count_in_tree,
+            'upload_module_dir'              => MyImagesController::TARGET_UPLOAD_DIR,
+            'is_main_dir'                    => $is_main_dir,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_IMAGES, $data);

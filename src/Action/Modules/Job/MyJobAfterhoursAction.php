@@ -58,15 +58,16 @@ class MyJobAfterhoursAction extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
+        $template_content  = $this->renderTemplate(true, false)->getContent();
         return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form                 = $this->getForm();
         $afterhours_form_view = $form->createView();
@@ -88,6 +89,7 @@ class MyJobAfterhoursAction extends AbstractController {
             'afterhours_made'                   => $afterhours_made,
             'remaining_time_to_spend_per_goal'  => $remaining_time_to_spend_per_goal,
             'ajax_render'                       => $ajax_render,
+            'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-job/afterhours.html.twig', $twig_data);
@@ -124,7 +126,7 @@ class MyJobAfterhoursAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

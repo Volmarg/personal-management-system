@@ -73,17 +73,19 @@ class GoalsListAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $all_goals      = $this->app->repositories->myGoalsRepository->findBy(['deleted' => 0]);
         $all_subgoals   = $this->app->repositories->myGoalsSubgoalsRepository->findBy(['deleted' => 0]);
 
         $data = [
-            'all_goals'     => $all_goals,
-            'all_subgoals'  => $all_subgoals,
-            'ajax_render'   => $ajax_render,
+            'all_goals'                      => $all_goals,
+            'all_subgoals'                   => $all_subgoals,
+            'ajax_render'                    => $ajax_render,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-goals/list.html.twig',$data);

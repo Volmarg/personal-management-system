@@ -60,7 +60,7 @@ class MyPaymentsProductsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -104,10 +104,10 @@ class MyPaymentsProductsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
-     * 
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $form               = $this->app->forms->paymentsProductsForm();
         $products_form_view = $form->createView();
 
@@ -119,7 +119,7 @@ class MyPaymentsProductsAction extends AbstractController {
         $currency_multiplier    = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
 
         return $this->render('modules/my-payments/products.html.twig',
-            compact('column_names', 'products_all_data', 'products_form_view', 'currency_multiplier', 'ajax_render')
+            compact('column_names', 'products_all_data', 'products_form_view', 'currency_multiplier', 'ajax_render', 'skip_rewriting_twig_vars_to_js')
         );
     }
 

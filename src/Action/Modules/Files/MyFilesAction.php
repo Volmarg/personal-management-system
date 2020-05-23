@@ -175,7 +175,7 @@ class MyFilesAction extends AbstractController {
         $message  = $response->getContent();
 
         $subdirectory     = $request->request->get(MyFilesController::KEY_SUBDIRECTORY);
-        $template_content = $this->renderCategoryTemplate($subdirectory, true)->getContent();
+        $template_content = $this->renderCategoryTemplate($subdirectory, true, true)->getContent();
 
         //todo: do the same with transfer
         if ($response->getStatusCode() == 200) {
@@ -200,11 +200,12 @@ class MyFilesAction extends AbstractController {
     /**
      * @param string|null $encoded_subdirectory_path
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
-     * 
+     *
      * @throws Exception
      */
-    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false): Response
+    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false): Response
     {
 
         $upload_dir                       = Env::getFilesUploadDir();
@@ -254,7 +255,8 @@ class MyFilesAction extends AbstractController {
             'subdirectory_path'     => $subdirectory_path,
             'files_count_in_tree'   => $files_count_in_tree,
             'upload_module_dir'     => MyFilesController::TARGET_UPLOAD_DIR,
-            'is_main_dir'           => $is_main_dir
+            'is_main_dir'           => $is_main_dir,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);

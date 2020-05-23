@@ -67,7 +67,7 @@ class MyNotesCategoriesAction extends AbstractController {
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -93,10 +93,11 @@ class MyNotesCategoriesAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      * @throws DBALException
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form         = $this->app->forms->noteCategoryForm();
         $column_names = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
@@ -106,10 +107,11 @@ class MyNotesCategoriesAction extends AbstractController {
 
         return $this->render('modules/my-notes/settings.html.twig',
             [
-                'ajax_render'   => $ajax_render,
-                'categories'    => $categories,
-                'column_names'  => $column_names,
-                'form'          => $form->createView()
+                'ajax_render'                    => $ajax_render,
+                'categories'                     => $categories,
+                'column_names'                   => $column_names,
+                'form'                           => $form->createView(),
+                'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
             ]
         );
     }

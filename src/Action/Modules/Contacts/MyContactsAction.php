@@ -67,7 +67,7 @@ class MyContactsAction extends AbstractController
         );
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
             $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
@@ -196,15 +196,17 @@ class MyContactsAction extends AbstractController
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return mixed
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $contacts = $this->app->repositories->myContactRepository->findAllNotDeleted();
 
         $data = [
-            self::KEY_AJAX_RENDER   => $ajax_render,
-            self::KEY_CONTACTS      => $contacts
+            self::KEY_AJAX_RENDER            => $ajax_render,
+            self::KEY_CONTACTS               => $contacts,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);

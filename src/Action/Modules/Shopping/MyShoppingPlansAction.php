@@ -42,9 +42,10 @@ class MyShoppingPlansAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    protected function renderTemplate($ajax_render = false) {
+    protected function renderTemplate($ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $form               = $this->app->forms->myShoppingPlanForm();
         $plans_form_view    = $form->createView();
         $columns_names      = $this->getDoctrine()->getManager()->getClassMetadata(MyShoppingPlans::class)->getColumnNames();
@@ -53,10 +54,11 @@ class MyShoppingPlansAction extends AbstractController {
         $all_plans = $this->app->repositories->myShoppingPlansRepository->findBy(['deleted' => 0]);
 
         return $this->render('modules/my-shopping/plans.html.twig', [
-            'plans_form_view' => $plans_form_view,
-            'columns_names'   => $columns_names,
-            'all_plans'       => $all_plans,
-            'ajax_render'     => $ajax_render,
+            'plans_form_view'                => $plans_form_view,
+            'columns_names'                  => $columns_names,
+            'all_plans'                      => $all_plans,
+            'ajax_render'                    => $ajax_render,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ]);
     }
 

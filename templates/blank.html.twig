@@ -12,10 +12,24 @@
 {% set avatar_placeholder_image_pat = asset('assets/images/avatar_placeholder.jpg') %}
 
 {% block twigToJavascript %}
+    {#
+        This is required in case when we call some actions like /remove via ajax and we dont want to rewrtie variables
+        which are later used to reload page content via ajax.
+    #}
+    {% if
+            skip_rewriting_twig_vars_to_js is not defined
+        or  skip_rewriting_twig_vars_to_js is empty
+        or  skip_rewriting_twig_vars_to_js == false
+    %}
+        {% set skipRewriteTwigVars = false %}
+    {% else %}
+        {% set skipRewriteTwigVars = true %}
+    {% endif %}
+
     <script>
-        var TWIG_GET_ATTRS = '{{ getAttrs | json_encode | raw }}';
-        var TWIG_ROUTE     = '{{ app.request.attributes.get('_route') }}';
-        var TWIG_REQUEST_URI    = '{{ app.request.requestUri }}';
+        var TWIG_GET_ATTRS   = '{{ getAttrs | json_encode | raw }}';
+        var TWIG_ROUTE       = '{{ app.request.attributes.get('_route') }}';
+        var TWIG_REQUEST_URI = ' {% if skipRewriteTwigVars %}  ' + TWIG_REQUEST_URI + '  {% else %} {{ app.request.requestUri }} {% endif %}';
     </script>
 {% endblock %}
 

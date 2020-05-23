@@ -52,7 +52,7 @@ class MyTravelsIdeasAction extends AbstractController {
         return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
     }
 
-    protected function renderTemplate($ajax_render = false) {
+    protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $form      = $this->getForm();
         $form_view = $form->createView();
 
@@ -67,7 +67,8 @@ class MyTravelsIdeasAction extends AbstractController {
             'columns_names' => $columns_names,
             'all_ideas'     => $all_ideas,
             'ajax_render'   => $ajax_render,
-            'categories'    => $categories
+            'categories'    => $categories,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-travels/ideas.html.twig', $data);
@@ -121,7 +122,7 @@ class MyTravelsIdeasAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
+            $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

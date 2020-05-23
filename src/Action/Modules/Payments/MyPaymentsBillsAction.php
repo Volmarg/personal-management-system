@@ -158,9 +158,10 @@ class MyPaymentsBillsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $bills_form         = $this->app->forms->paymentsBillsForm();
         $bills_items_form   = $this->app->forms->paymentsBillsItemsForm();
@@ -171,12 +172,13 @@ class MyPaymentsBillsAction extends AbstractController {
         $bills_amounts_summaries = $this->controllers->getMyPaymentsBillsController()->buildAmountSummaries($bills, $bills_items);
 
         $data = [
-            'bills_form'                => $bills_form->createView(),
-            'bills_items_form'          => $bills_items_form->createView(),
-            'bills_amounts_summaries'   => $bills_amounts_summaries,
-            'ajax_render'               => $ajax_render,
-            'bills'                     => $bills,
-            'bills_items'               => $bills_items,
+            'bills_form'                     => $bills_form->createView(),
+            'bills_items_form'               => $bills_items_form->createView(),
+            'bills_amounts_summaries'        => $bills_amounts_summaries,
+            'ajax_render'                    => $ajax_render,
+            'bills'                          => $bills,
+            'bills_items'                    => $bills_items,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         $template = 'modules/my-payments/bills.html.twig';

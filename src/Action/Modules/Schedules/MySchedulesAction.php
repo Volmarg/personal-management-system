@@ -58,9 +58,10 @@ class MySchedulesAction extends AbstractController {
     /**
      * @param string $schedules_type
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    protected function renderTemplate(string $schedules_type, $ajax_render = false) {
+    protected function renderTemplate(string $schedules_type, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form = $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
 
@@ -68,10 +69,11 @@ class MySchedulesAction extends AbstractController {
         $schedules_types = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
 
         $data = [
-            'form'            => $form->createView(),
-            'ajax_render'     => $ajax_render,
-            'schedules'       => $schedules,
-            'schedules_types' => $schedules_types
+            'form'                           => $form->createView(),
+            'ajax_render'                    => $ajax_render,
+            'schedules'                      => $schedules,
+            'schedules_types'                => $schedules_types,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);
@@ -125,7 +127,7 @@ class MySchedulesAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate($schedules_type, true);
+            $rendered_template = $this->renderTemplate($schedules_type, true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);

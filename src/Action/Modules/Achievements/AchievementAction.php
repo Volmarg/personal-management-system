@@ -94,7 +94,7 @@ class AchievementAction extends AbstractController {
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderAchievementPageTemplate(true);
+            $rendered_template = $this->renderAchievementPageTemplate(true, true);
 
             $template_content  = $rendered_template->getContent();
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -105,9 +105,10 @@ class AchievementAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderAchievementPageTemplate($ajax_render = false) {
+    private function renderAchievementPageTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $achievement_form      = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $this->enum_types]);
         $achievement_form_view = $achievement_form->createView();
 
@@ -119,7 +120,8 @@ class AchievementAction extends AbstractController {
             'achievement_form'  => $achievement_form_view,
             'columns_names'     => $columns_names,
             'all_achievements'  => $all_achievements,
-            'achievement_types' => $this->enum_types
+            'achievement_types' => $this->enum_types,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ]);
     }
 

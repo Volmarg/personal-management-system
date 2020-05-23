@@ -40,15 +40,17 @@ class GoalsPaymentsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    private function renderTemplate($ajax_render = false) {
+    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $all_payments       = $this->app->repositories->myGoalsPaymentsRepository->findBy(['deleted' => 0]);
 
         $data = [
-            'all_payments'  => $all_payments,
-            'ajax_render'   => $ajax_render,
+            'all_payments'                   => $all_payments,
+            'ajax_render'                    => $ajax_render,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-goals/payments.html.twig', $data);

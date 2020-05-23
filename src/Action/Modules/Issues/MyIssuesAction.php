@@ -54,18 +54,20 @@ class MyIssuesAction extends AbstractController
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      * @throws Exception
      */
-    public function renderTemplate($ajax_render = false)
+    public function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false)
     {
 
         $all_ongoing_issues = $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved();
         $issues_cards_dtos  = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($all_ongoing_issues);
 
         $data = [
-            'ajax_render'       => $ajax_render,
-            'issues_cards_dtos' => $issues_cards_dtos
+            'ajax_render'                    => $ajax_render,
+            'issues_cards_dtos'              => $issues_cards_dtos,
+            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
         ];
 
         return $this->render(self::TWIG_TEMPLATE_PENDING_ISSUES, $data);

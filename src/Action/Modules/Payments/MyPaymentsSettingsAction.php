@@ -84,7 +84,7 @@ class MyPaymentsSettingsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderSettingsTemplate(true);
+            $rendered_template = $this->renderSettingsTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
             return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
@@ -138,9 +138,10 @@ class MyPaymentsSettingsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
      */
-    public function renderSettingsTemplate($ajax_render = false) {
+    public function renderSettingsTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $recurring_payments_template_view = $this->renderRecurringPaymentTemplate();
         $payments_types                   = $this->app->repositories->myPaymentsSettingsRepository->getAllPaymentsTypes();
 
@@ -149,7 +150,8 @@ class MyPaymentsSettingsAction extends AbstractController {
             'currency_multiplier_form'          => $this->app->forms->currencyMultiplierForm()->createView(),
             'payments_types_form'               => $this->app->forms->paymentsTypesForm()->createView(),
             'payments_types'                    => $payments_types,
-            'ajax_render'                       => $ajax_render
+            'ajax_render'                       => $ajax_render,
+            'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js,
         ]);
     }
 
