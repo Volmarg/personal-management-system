@@ -40,7 +40,6 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
             $parent_id
           FROM my_note_category mnc
           WHERE mnc.deleted <> 1
-          GROUP BY mnc.name;
         ";
 
         $statement = $connection->prepare($sql);
@@ -215,6 +214,42 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
     {
         $entities = $this->findBy([MyNotesCategories::KEY_DELETED => 0]);
         return $entities;
+    }
+
+    /**
+     * Returns categories inside given parentId
+     * @param string $name
+     * @param string $category_id
+     * @return MyNotesCategories[]
+     */
+    public function getNotDeletedCategoriesForParentIdAndName(string $name, ?string $category_id): array
+    {
+        $query_builder = $this->_em->createQueryBuilder();
+        $query_builder->select("mnc")
+            ->from(MyNotesCategories::class, "mnc")
+            ->where("mnc.deleted = 0");
+
+        if( is_null($category_id) ){
+            $query_builder
+                ->andWhere("mnc.name = :name")
+                ->andWhere("mnc.parent_id IS NULL")
+                ->setParameters([
+                    "name" => $name,
+                ]);
+        }else{
+            $query_builder
+                ->andWhere("mnc.name      = :name")
+                ->andWhere("mnc.parent_id = :categoryId")
+                ->setParameters([
+                    "name"       => $name,
+                    "categoryId" => $category_id,
+                ]);
+        }
+
+        $query   = $query_builder->getQuery();
+        $results = $query->execute();
+
+        return $results;
     }
 
 }

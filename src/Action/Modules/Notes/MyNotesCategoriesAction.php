@@ -9,6 +9,7 @@ use App\Controller\Core\Repositories;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\Mapping\MappingException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,14 +43,16 @@ class MyNotesCategoriesAction extends AbstractController {
      * 
      */
     public function display(Request $request) {
-        $this->submitForm($request);
+        $json_response = $this->submitForm($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
+        $message           = $json_response->getContent();
+        $code              = $json_response->getStatusCode();
         $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildResponseForAjaxCall($code, $message, $template_content);
     }
 
     /**
@@ -79,7 +82,7 @@ class MyNotesCategoriesAction extends AbstractController {
      * @Route("/my-notes/settings/update/",name="my-notes-settings-update")
      * @param Request $request
      * @return Response
-     * 
+     * @throws MappingException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
@@ -88,7 +91,10 @@ class MyNotesCategoriesAction extends AbstractController {
         $entity     = $this->app->repositories->myNotesCategoriesRepository->find($id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        $message    = $response->getContent();
+        $code       = $response->getStatusCode();
+
+        return AjaxResponse::buildResponseForAjaxCall($code, $message);
     }
 
     /**
@@ -129,18 +135,27 @@ class MyNotesCategoriesAction extends AbstractController {
          */
         $form_data = $form->getData();
 
-        if (!is_null($form_data) && $this->app->repositories->myNotesCategoriesRepository->findBy([MyNotesCategories::KEY_NAME => $form_data->getName()])) {
-            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new JsonResponse($record_with_this_name_exist, 409);
+        if( $form_data instanceof MyNotesCategories ){
+            $parent_id = $form_data->getParentId();
+            $name      = $form_data->getName();
+
+            $category_has_child_with_this_name = $this->controllers->getMyNotesCategoriesController()->hasCategoryChildWithThisName($name, $parent_id);
+
+            if ($category_has_child_with_this_name) {
+                $message = $this->app->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
+                return new JsonResponse($message, Response::HTTP_CONFLICT);
+            }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->app->em->persist($form_data);
             $this->app->em->flush();
+
+            $form_submitted_message = $this->app->translator->translate('messages.ajax.success.recordHasBeenCreated');
+            return new JsonResponse($form_submitted_message,Response::HTTP_OK);
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message,200);
+        return new JsonResponse("",Response::HTTP_OK);
     }
 
 }

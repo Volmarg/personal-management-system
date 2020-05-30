@@ -10,6 +10,7 @@ namespace App\Controller\Core;
 
 
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
@@ -97,6 +98,8 @@ class Repositories extends AbstractController {
     const MY_ISSUES_PROGRESS_REPOSITORY                 = "MyIssueProgressRepository";
 
     const PASSWORD_FIELD        = 'password';
+    const PARENT_ID_FIELD       = 'parent_id';
+    const NAME_FIELD            = 'name';
     const FIELD_TYPE_ENTITY     = 'entity';
 
     const KEY_MESSAGE           = "message";
@@ -121,7 +124,7 @@ class Repositories extends AbstractController {
     private $entity_manager;
 
     /**
-     * @var \App\Services\Core\Translator $translator
+     * @var Translator $translator
      */
     private $translator;
 
@@ -479,11 +482,11 @@ class Repositories extends AbstractController {
                     $value = false;
                 }
 
-                $isParameterValid = $this->isParameterValid($parameter, $value);
+                $is_parameter_valid = $this->isParameterValid($parameter, $value, $entity);
 
-                if (!$isParameterValid) {
-                    $message = $this->translator->translate('responses.general.invalidParameterValue');
-                    return new JsonResponse($message, 500);
+                if (!$is_parameter_valid) {
+                    $json_response = $this->decideResponseForInvalidUpdateParameter($parameter, $value, $entity);
+                    return $json_response;
                 }
 
                 if (is_array($value)) {
@@ -710,19 +713,114 @@ class Repositories extends AbstractController {
      * This function validates given fields by set of rules
      * @param string $parameter
      * @param $value
+     * @param null $entity
      * @return bool
      */
-    private function isParameterValid(string $parameter, $value):bool
+    private function isParameterValid(string $parameter, $value, $entity = null): bool
     {
         switch( $parameter ){
             case static::PASSWORD_FIELD:
-                $isValid = !empty($value);
-                break;
+            {
+                $is_not_empty = !empty($value);
+                return $is_not_empty;
+            }
+            break;
+
+            case static::PARENT_ID_FIELD:
+            {
+                /**
+                 * this is case where we try to move category to other parent but there is already category with this name
+                 */
+                if( $entity instanceof MyNotesCategories ){
+                    $name = $entity->getName();
+
+                    // Trigger name check only if category is moved to other parent
+                    if( $value == $entity->getParentId() ){
+                        return true;
+                    }
+
+                    $found_corresponding_notes_categories    = $this->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($name, $value);
+                    $category_with_this_name_exist_in_parent = !empty($found_corresponding_notes_categories);
+
+                    if ($category_with_this_name_exist_in_parent) {
+                        return false;
+                    }
+                }
+            }
+            break;
+
+            case static::NAME_FIELD:
+                {
+                    /**
+                     * this is case where we got some child but we change it's name to already existing category
+                     */
+                    if( $entity instanceof MyNotesCategories ){
+                        $name      = $entity->getName();
+                        $parent_id = $entity->getParentId();
+
+                        // Trigger name check only if name has changed, icon could change for example
+                        if( $value == $name ){
+                            return true;
+                        }
+
+                        $found_corresponding_notes_categories    = $this->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($value, $parent_id);
+                        $category_with_this_name_exist_in_parent = !empty($found_corresponding_notes_categories);
+
+                        if ($category_with_this_name_exist_in_parent) {
+                            return false;
+                        }
+                    }
+                }
+
             default:
-                $isValid = true;
+                return true;
         }
 
-        return $isValid;
+        return true;
+    }
+
+    /**
+     * @param string $parameter
+     * @param $value
+     * @param $entity
+     * @return JsonResponse
+     */
+    private function decideResponseForInvalidUpdateParameter(string $parameter, $value, $entity = null): JsonResponse
+    {
+        $default_message = $this->translator->translate('responses.general.invalidParameterValue');
+        $default_code    = 400;
+
+        if( $entity instanceof MyNotesCategories ){
+
+            switch( $parameter ){
+                /**
+                 * this is case where parent is changed but we got such category name already in parent
+                 */
+                case self::PARENT_ID_FIELD:
+                {
+                    if( $value != $entity->getParentId() ){
+                        $message = $this->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
+                        return new JsonResponse($message, 400);
+                    }
+                }
+                break;
+
+                /**
+                 * this is case where name in parent changed but there is already category with this name
+                 */
+                case self::NAME_FIELD:
+                    {
+                        if( $value != $entity->getName() ){
+                            $message = $this->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
+                            return new JsonResponse($message, 400);
+                        }
+                    }
+                    break;
+
+            }
+        }
+
+        return new JsonResponse($default_message, $default_code);
     }
 
     /**

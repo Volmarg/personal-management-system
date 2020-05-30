@@ -51,6 +51,7 @@ notes:
     error:
       categoryWithThisNameOrIdExist: Category with this name or id does not exist!
       categoryIsEmpty: The category which You've just tried to enter is empty, therefore You were redirected
+      categoryWithThisNameAlreadyExistsInThisParent: "Category with this name already exists in this parent"
   settings:
     headers:
       settings:

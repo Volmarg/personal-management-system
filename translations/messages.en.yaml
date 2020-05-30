@@ -7,7 +7,7 @@ goals:
     settings: { headers: { addGoal: 'Add goal', addSubgoal: 'Add subgoal', addPaymentGoal: 'Add payment goal' }, goalsSection: { table: { name: Name, description: Description, displayOnDashboard: 'Display on Dashboard' } }, subGoalsSection: { table: { name: Name, goal: Goal } }, goalsPaymentsSection: { table: { name: Name, collectionStartDate: 'Collection start date', deadline: Deadline, moneyGoal: 'Money goal', moneyCollected: 'Money collected', displayOnDashboard: 'Display on dashboard' } } }
 notes:
     create: { headers: { newNote: 'Add new note' } }
-    category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected' } }
+    category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected', categoryWithThisNameAlreadyExistsInThisParent: 'Category with this name already exists in this parent' } }
     settings: { headers: { settings: { label: 'My notes settings' }, categories: { label: Categories, editCategory: 'Edit categories', addCategory: 'Add category' } } }
 contact:
     headers: { addRemove: 'Add/Remove contact' }
@@ -186,6 +186,7 @@ logs:
     files: { thereWasAnErrorWhileTryingToMoveSingleFile: 'There was an error while trying to move single file: ', startedCopyingDataBetweenFoldersViaPost: 'Started copying data between folders via Post Request.', currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.', targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.', exceptionWasThrownWhileMovingDataBetweenFolders: 'Exception was thrown while moving data between folders', finishedCopyingData: 'Finished copying data.' }
     download: { startedDownloading: 'Started downloading data.', finishedDownloading: 'Finished downloading data.', exceptionWasThrownWhileDownloadingFile: 'Exception was thrown while downloading file.' }
     security: { visitedPageWithUnallowedIp: 'Visited page with unallowed ip', visitedPageWithUnallowedMethod: 'Visited page with unallowed method' }
+    notes: { parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: 'Parent child hierarchy - category has children but it is missing in categories depths' }
 login:
     header: { pageName: 'Personal Management System', login: Login }
     labels: { username: 'Username:', password: 'Password:', remember: 'Remember Me' }

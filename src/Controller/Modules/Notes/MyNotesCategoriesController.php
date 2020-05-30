@@ -119,6 +119,19 @@ class MyNotesCategoriesController extends AbstractController {
     }
 
     /**
+     * @param string $name
+     * @param string $category_id
+     * @return bool
+     */
+    public function hasCategoryChildWithThisName(string $name, ?string $category_id): bool
+    {
+        $found_corresponding_notes_categories    = $this->app->repositories->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($name, $category_id);
+        $category_with_this_name_exist_in_parent = !empty($found_corresponding_notes_categories);
+
+        return $category_with_this_name_exist_in_parent;
+    }
+
+    /**
      * Recursive call must be used here as category can have children and these children can also have children and so on.
      * @param MyNotesCategories $category
      * @param int $depth
