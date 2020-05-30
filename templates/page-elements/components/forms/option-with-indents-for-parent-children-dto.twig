@@ -1,0 +1,18 @@
+<option value="{{ parentChildrenDto.getId() }}" {% if selectedId is defined and parentChildrenDto.getId() == selectedId %}selected{% endif %}>
+    {% set indent = '&nbsp;' %}
+
+    {% if parentChildrenDto.getDepth() > 0 %}
+        {% for x in range(1, parentChildrenDto.getDepth() )  %}
+            {{ indent|raw }}
+        {% endfor %}
+    {% endif %}
+
+    {{ parentChildrenDto.getName() }}
+</option>
+
+{# handle nested children #}
+{% if parentChildrenDto.getChildren() is not empty %}
+    {% for parentChildrenDto in parentChildrenDto.getChildren() %}
+        {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": parentChildrenDto} %}
+    {% endfor %}
+{% endif %}

@@ -22,44 +22,6 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @return array|false|mixed
-     * @throws DBALException
-     */
-    public function findActiveCategories($only_category = false) {
-        $connection = $this->_em->getConnection();
-        $icon       = (!$only_category ? ", mnc.icon AS icon"           : "");
-        $color      = (!$only_category ? ", mnc.color AS color"         : "");
-        $parent_id  = (!$only_category ? ", mnc.parent_id AS parent_id" : "");
-
-        $sql = "
-          SELECT 
-            mnc.id AS id,
-            mnc.name AS name 
-            $icon
-            $color
-            $parent_id
-          FROM my_note_category mnc
-          WHERE mnc.deleted <> 1
-        ";
-
-        $statement = $connection->prepare($sql);
-        $statement->execute();
-
-        if ($icon) {
-            $results = $statement->fetchAll();
-        } else {
-            $records = $statement->fetchAll();
-
-            foreach ($records as $record) {
-                $results[$record['name']] = $record['id'];
-            }
-
-        }
-
-        return (!empty($results) ? $results : []);
-    }
-
-    /**
      * @param array $categories_ids
      * @return bool
      */

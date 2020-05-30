@@ -2,7 +2,7 @@
     <select {{ block('widget_attributes') }} autocomplete="off" class="form-control" >
 
         {% for choice in choices %}
-            {% include 'core/form-types/indentchoice/options-generator.twig' with {"choice": choice} %}
+            {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": choice} %}
         {% endfor %}
 
     </select>

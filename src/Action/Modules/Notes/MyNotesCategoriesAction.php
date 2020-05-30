@@ -101,7 +101,6 @@ class MyNotesCategoriesAction extends AbstractController {
      * @param bool $ajax_render
      * @param bool $skip_rewriting_twig_vars_to_js
      * @return Response
-     * @throws DBALException
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
@@ -109,12 +108,14 @@ class MyNotesCategoriesAction extends AbstractController {
         $column_names = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($column_names);
 
-        $categories = $this->app->repositories->myNotesCategoriesRepository->findActiveCategories();
+        $categories            = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
+        $parents_children_dtos = $this->controllers->getMyNotesCategoriesController()->buildParentsChildrenCategoriesHierarchy();
 
         return $this->render('modules/my-notes/settings.html.twig',
             [
                 'ajax_render'                    => $ajax_render,
                 'categories'                     => $categories,
+                'parents_children_dtos'          => $parents_children_dtos,
                 'column_names'                   => $column_names,
                 'form'                           => $form->createView(),
                 'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,

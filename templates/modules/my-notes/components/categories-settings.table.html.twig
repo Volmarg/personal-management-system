@@ -31,17 +31,8 @@
                 <td class="parent-td">
                     <select class="form-control disabled parent option-picker">
                         <option value=""></option>
-                        {% for category_on_list in categories  %}
-
-                            {% if category.id != category_on_list.id %}
-
-                                <option value="{{ category_on_list.id }}"
-                                        {% if category.parent_id  == category_on_list.id %}selected{% endif %}>
-                                    {{ category_on_list.name | capitalize }}
-                                </option>
-
-                            {% endif %}
-
+                        {% for parent_children_dto in parents_children_dtos %}
+                            {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": parent_children_dto, "selectedId": category.getParentId()} %}
                         {% endfor %}
                     </select>
                 </td>

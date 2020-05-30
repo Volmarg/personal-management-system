@@ -16,7 +16,7 @@
         {% set parents_children_dtos = buildParentsChildrenCategoriesHierarchy() %}
 
         {% for parent_children_dto in parents_children_dtos %}
-            {% include 'core/form-types/indentchoice/options-generator.twig' with {"choice": parent_children_dto, "selectedId": category_id} %}
+            {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": parent_children_dto, "selectedId": category_id} %}
         {% endfor %}
     </select>
 
