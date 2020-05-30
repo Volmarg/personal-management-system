@@ -13,23 +13,10 @@
 
     <select class="form-control d-none note-modal-categories-list note-category"
             style="max-width:100px; float:left;">
-        {% set categories        = getAllNotesCategories() %}
-        {% set categories_depths = buildNotesCategoriesDepths() %}
+        {% set parents_children_dtos = buildParentsChildrenCategoriesHierarchy() %}
 
-        {% for category_on_list in categories %}
-        {% set depth =  categories_depths[category_on_list.category_id] %}
-
-            <option value="{{ category_on_list.category_id }}"
-                {% if category_id  == category_on_list.category_id %}selected{% endif %}>
-
-                {% for i in range(0, depth) %}
-                    {% if depth > 0 %}
-                        &nbsp;
-                    {% endif %}
-                {% endfor %}
-
-                {{ category_on_list.category | capitalize }}
-            </option>
+        {% for parent_children_dto in parents_children_dtos %}
+            {% include 'core/form-types/indentchoice/options-generator.twig' with {"choice": parent_children_dto, "selectedId": category_id} %}
         {% endfor %}
     </select>
 

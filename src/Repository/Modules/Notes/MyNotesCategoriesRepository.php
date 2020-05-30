@@ -112,7 +112,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
         $query_builder->select("mnc_child")
             ->from(MyNotesCategories::class, "mnc")
-            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent = mnc.id")
+            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent_id = mnc.id")
             ->where("mnc.id IN (:categoriesIds)")
             ->andWhere("mnc_child.deleted = 0")
             ->setParameter("categoriesIds", $categories_ids);
@@ -125,7 +125,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
     /**
      * @param array $categories_ids
-     * @return array
+     * @return string[]
      */
     public function getChildrenCategoriesIdsForCategoriesIds(array $categories_ids): array
     {

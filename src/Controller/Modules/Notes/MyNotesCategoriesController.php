@@ -3,6 +3,9 @@
 namespace App\Controller\Modules\Notes;
 
 use App\Controller\Core\Application;
+use App\Controller\Modules\ModulesController;
+use App\DTO\ParentChildDTO;
+use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -27,37 +30,34 @@ class MyNotesCategoriesController extends AbstractController {
     }
 
     /**
-     * Build array where key is categoryId and value is depth level
-     * @return array
+     * This function returns array of relations between categories (parent/child)
+     * @return ParentChildDTO[]
      */
-    public function buildCategoriesDepths(): array
+    public function buildParentsChildrenCategoriesHierarchy(): array
     {
-        $notes_categories  = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
-        $categories_depths = [];
+        $categories_depths      = $this->buildCategoriesDepths();
+        $parents_children_dtos  = [];
+        $skipped_categories_ids = [];
 
-        foreach( $notes_categories as $category ){
-            $depth       = 0;
-            $category_id = $category->getId();
+        foreach( $categories_depths as $category_id => $depth ){
 
-            $has_parent                 = !empty($category->getParentId());
-            $currently_checked_category = $category;
-            while( $has_parent ){
-                $parent_id = $currently_checked_category->getParentId();
+            $category     = $this->app->repositories->myNotesCategoriesRepository->find($category_id);
+            $category_id  = $category->getId();
 
-                if( empty($parent_id) ){
-                    break;
-                }
+            $child_categories_ids = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesIdsForCategoriesIds([$category_id]);
+            $parent_child_dto     = $this->buildParentChildDtoForHierarchy($category, $depth);
 
-                $parent_category            = $this->app->repositories->myNotesCategoriesRepository->find($parent_id);
-                $currently_checked_category = $parent_category;
+            //if we have a children then we already added it to parent so we don't want it as separated being
+            $skipped_categories_ids = array_merge($skipped_categories_ids, $child_categories_ids);
 
-                $depth++;
+            if( in_array($category_id, $skipped_categories_ids) ){
+                continue;
             }
 
-            $categories_depths[$category_id] = $depth;
+            $parents_children_dtos[] = $parent_child_dto;
         }
 
-        return $categories_depths;
+        return $parents_children_dtos;
     }
 
     /**
@@ -116,6 +116,71 @@ class MyNotesCategoriesController extends AbstractController {
     public function getAllNotesCategories(){
         $all_categories = $this->app->repositories->myNotesCategoriesRepository->getCategories();
         return $all_categories;
+    }
+
+    /**
+     * Recursive call must be used here as category can have children and these children can also have children and so on.
+     * @param MyNotesCategories $category
+     * @param int $depth
+     * @return ParentChildDTO
+     */
+    private function buildParentChildDtoForHierarchy(MyNotesCategories $category, int $depth): ParentChildDTO
+    {
+        $parent_child_dtos = [];
+
+        $category_id   = $category->getId();
+        $category_name = $category->getName();
+
+        $child_categories = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesForCategoriesIds([$category_id]);
+
+        foreach($child_categories as $child_category){
+            $child_depth         = $depth +1;
+            $parent_child_dto    = $this->buildParentChildDtoForHierarchy($child_category, $child_depth);
+            $parent_child_dtos[] = $parent_child_dto;
+        }
+
+        $parent_child_dto = new ParentChildDTO();
+        $parent_child_dto->setType(ModulesController::MODULE_ENTITY_NOTES_CATEGORY);
+        $parent_child_dto->setId($category_id);
+        $parent_child_dto->setName($category_name);
+        $parent_child_dto->setDepth($depth);
+        $parent_child_dto->setChildren($parent_child_dtos);
+
+        return $parent_child_dto;
+    }
+
+    /**
+     * Build array where key is categoryId and value is depth level
+     * @return array
+     */
+    private function buildCategoriesDepths(): array
+    {
+        $notes_categories  = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
+        $categories_depths = [];
+
+        foreach( $notes_categories as $category ){
+            $depth       = 0;
+            $category_id = $category->getId();
+
+            $has_parent                 = !empty($category->getParentId());
+            $currently_checked_category = $category;
+            while( $has_parent ){
+                $parent_id = $currently_checked_category->getParentId();
+
+                if( empty($parent_id) ){
+                    break;
+                }
+
+                $parent_category            = $this->app->repositories->myNotesCategoriesRepository->find($parent_id);
+                $currently_checked_category = $parent_category;
+
+                $depth++;
+            }
+
+            $categories_depths[$category_id] = $depth;
+        }
+
+        return $categories_depths;
     }
 
 }

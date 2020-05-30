@@ -5,6 +5,7 @@ namespace App\Twig\Modules\Notes;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Core\Application;
+use App\DTO\ParentChildDTO;
 use Doctrine\DBAL\DBALException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -34,11 +35,11 @@ class MyNotes extends AbstractExtension {
 
     public function getFunctions() {
         return [
-            new TwigFunction('getAccessibleNotesCategories',    [$this, 'getAccessibleNotesCategories']),
-            new TwigFunction('hasCategoryFamilyVisibleNotes',   [$this, 'hasCategoryFamilyVisibleNotes']),
-            new TwigFunction('isNotesCategoryActive',           [$this, 'isNotesCategoryActive']),
-            new TwigFunction('buildNotesCategoriesDepths',      [$this, 'buildNotesCategoriesDepths']),
-            new TwigFunction('getAllNotesCategories',      [$this, 'getAllNotesCategories']),
+            new TwigFunction('getAccessibleNotesCategories',            [$this, 'getAccessibleNotesCategories']),
+            new TwigFunction('hasCategoryFamilyVisibleNotes',           [$this, 'hasCategoryFamilyVisibleNotes']),
+            new TwigFunction('isNotesCategoryActive',                   [$this, 'isNotesCategoryActive']),
+            new TwigFunction('buildParentsChildrenCategoriesHierarchy', [$this, 'buildParentsChildrenCategoriesHierarchy']),
+            new TwigFunction('getAllNotesCategories',                   [$this, 'getAllNotesCategories']),
         ];
     }
 
@@ -89,11 +90,11 @@ class MyNotes extends AbstractExtension {
     }
 
     /**
-     * @return array
+     * @return ParentChildDTO[]
      */
-    public function buildNotesCategoriesDepths(): array {
-        $depths = $this->my_notes_categories_controller->buildCategoriesDepths();
-        return $depths;
+    public function buildParentsChildrenCategoriesHierarchy(): array {
+        $parents_children_dtos = $this->my_notes_categories_controller->buildParentsChildrenCategoriesHierarchy();
+        return $parents_children_dtos;
     }
 
 }

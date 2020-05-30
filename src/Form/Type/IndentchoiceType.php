@@ -3,7 +3,7 @@
 namespace App\Form\Type;
 
 use App\Controller\Core\Application;
-use App\DTO\FormTypes\IndentChoiceTypeDTO;
+use App\DTO\ParentChildDTO;
 use Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -67,8 +67,8 @@ class IndentchoiceType extends AbstractType {
             $message         = $this->app->translator->translate('Types.indentChoice.errors.choicesIsNotArray');
         }
 
-        foreacH( $choices as $choice ){
-            if( !($choice instanceof IndentChoiceTypeDTO) ){
+        foreach( $choices as $choice ){
+            if( !($choice instanceof ParentChildDTO) ){
                 $areChoicesValid = false;
                 $message         = $this->app->translator->translate('Types.indentChoice.errors.choiceIsNotInstanceOfIndentChoiceTypeDTO');
                 continue;

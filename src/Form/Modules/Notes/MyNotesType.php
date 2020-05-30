@@ -4,7 +4,7 @@ namespace App\Form\Modules\Notes;
 
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Core\Application;
-use App\DTO\FormTypes\IndentChoiceTypeDTO;
+use App\DTO\ParentChildDTO;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Form\Type\IndentchoiceType;
 use Symfony\Component\Form\AbstractType;
@@ -84,28 +84,12 @@ class MyNotesType extends AbstractType {
     }
 
     /**
-     * @return IndentChoiceTypeDTO[]
+     * @return ParentChildDTO[]
      */
     private function buildChoices(): array
     {
-        $choices = [];
-        $notes_categories  = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
-        $categories_depths = $this->my_notes_categories_controller->buildCategoriesDepths();
-
-        foreach( $notes_categories as $category ){
-            $id    = $category->getId();
-            $name  = $category->getName();
-            $depth = $categories_depths[$id];
-
-            $indent_choice_type_dto = new IndentChoiceTypeDTO();
-            $indent_choice_type_dto->setDepthLevel($depth);
-            $indent_choice_type_dto->setValue($id);
-            $indent_choice_type_dto->setKey($name);
-
-            $choices[] = $indent_choice_type_dto;
-        }
-
-        return $choices;
+        $parents_children_dtos = $this->my_notes_categories_controller->buildParentsChildrenCategoriesHierarchy();
+        return $parents_children_dtos;
     }
 
 }

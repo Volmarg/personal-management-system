@@ -37,3 +37,5 @@ logs:
   security:
     visitedPageWithUnallowedIp: "Visited page with unallowed ip"
     visitedPageWithUnallowedMethod: "Visited page with unallowed method"
+  notes:
+    parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: "Parent child hierarchy - category has children but it is missing in categories depths"
