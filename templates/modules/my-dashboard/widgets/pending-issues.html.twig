@@ -1,0 +1,24 @@
+<div class="masonry-item col-md-6">
+    <div class="bd bgc-white p-20">
+        <div class="layers">
+            <div class="layer w-100 mB-10">
+                <h6 class="lh-1">{{  ('dashboard.widgets.' ~ widget_name ~ '.label')  | trans }}</h6>
+            </div>
+            <div class="layer w-100 p-20">
+                <div class="row">
+                    <section class="d-flex justify-content-between flex-wrap" style="width: 100%;">
+                        {% for issue_card_dto in issues_cards_dtos %}
+                            <div>
+                                {% include 'modules/my-issues/components/my-issue-card.twig' with {
+                                    "issueCardDto": issue_card_dto,
+                                    "isCompact"   : true,
+                                    "isReadOnly"  : true
+                                } %}
+                            </div>
+                        {% endfor %}
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

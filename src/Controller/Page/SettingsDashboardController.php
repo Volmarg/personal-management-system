@@ -16,14 +16,16 @@ class SettingsDashboardController extends AbstractController {
     const TWIG_DASHBOARD_SETTINGS_TEMPLATE = 'page-elements/settings/components/dashboard-settings.html.twig' ;
 
     #Info: this must be equivalent to the template name modules/my-dashboard-widgets
-    const DASHBOARD_WIDGET_NAME_GOALS_PROGRESS = 'my-goals';
-    const DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS = 'my-goals-payments';
-    const DASHBOARD_WIDGET_NAME_CAR_SCHEDULES  = 'incoming-schedules';
+    const DASHBOARD_WIDGET_NAME_GOALS_PROGRESS      = 'my-goals';
+    const DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS      = 'my-goals-payments';
+    const DASHBOARD_WIDGET_NAME_INCOMING_SCHEDULES  = 'incoming-schedules';
+    const DASHBOARD_WIDGET_NAME_PENDING_ISSUES      = 'pending-issues';
 
     const ALL_DASHBOARD_WIDGETS_NAMES = [
         self::DASHBOARD_WIDGET_NAME_GOALS_PROGRESS,
         self::DASHBOARD_WIDGET_NAME_GOALS_PAYMENTS,
-        self::DASHBOARD_WIDGET_NAME_CAR_SCHEDULES,
+        self::DASHBOARD_WIDGET_NAME_INCOMING_SCHEDULES,
+        self::DASHBOARD_WIDGET_NAME_PENDING_ISSUES,
     ];
 
     /**

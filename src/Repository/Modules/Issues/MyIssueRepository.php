@@ -94,6 +94,18 @@ class MyIssueRepository extends ServiceEntityRepository
     }
 
     /**
+     * @return MyIssue[]
+     */
+    public function getPendingIssuesForDashboard(): array
+    {
+        $results = $this->findBy([
+            'showOnDashboard' => 1,
+            'deleted'         => 0
+        ]);
+        return $results;
+    }
+
+    /**
      * @param QueryBuilder $query_builder
      * @param string $tableAlias
      * @param bool $isAnd

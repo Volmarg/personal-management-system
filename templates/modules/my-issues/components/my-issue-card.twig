@@ -1,8 +1,31 @@
-<div class="issue-wrapper">
-    <main>
+<div
+    class="issue-wrapper"
+    style="
+            border-color: rgba(51, 181, 229, 0.3457) !important;
+            border-style: solid;
+            border-width: 1px;
+        {% if isCompact is defined and isCompact %}
+            width: 280px;
+        {% endif %}
+            "
+>
+    <section>
         <div>
-            <div class="content bgc-white bd bdrs-3 p-10" style="padding-bottom: 20px; color: rgb(114, 119, 122) !important;">
-                <h1 style="font-size:18px;" class="text-center">
+            {# todo: move to css #}
+            <div class="content bgc-white bd p-10" style="
+                padding-bottom: 20px;
+                color: white !important;
+                background-color: #33b5e5!important;
+                height: 35px;
+            ">
+                <h1 style="font-size:18px; margin: 0; margin-top: -5px;"
+                    class="text-center"
+                    data-toggle-popover="true"                                      {# popover attr #}
+                    data-html="true"                                                {# popover attr #}
+                    data-trigger="hover"                                            {# popover attr #}
+                    data-content="{{  issueCardDto.getIssue().getInformation() }}"  {# popover attr #}
+                    data-placement="top"                                            {# popover attr #}
+                >
                     {{ issueCardDto.getIssue().getName() }}
                 </h1>
                 <p class="text-center p-0 m-0">
@@ -13,7 +36,19 @@
             <div class="title active bgc-white bd bdrs-3 p-10">
                 <ul style="list-style-type: none;" class="p-0">
                     {% if issueCardDto.getIssueLastContact() is not null %}
-                        <li class="justify-content-center d-flex"><b>{{ 'issues.card.lastContactDate' | trans }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastContact() | date("Y-m-d H:i:s") }}</span></li>
+                        {% if isCompact is defined and isCompact %}
+                            <li class="justify-content-center d-flex">
+                                <b>{{ 'issues.card.lastContactDate' | trans }}</b>
+                            </li>
+                            <li class="justify-content-center d-flex">
+                                <span>{{ issueCardDto.getIssueLastContact() | date("Y-m-d H:i:s") }}</span>
+                            </li>
+                        {% else %}
+                            <li class="justify-content-center d-flex">
+                                <b>{{ 'issues.card.lastContactDate' | trans }}</b>&nbsp;
+                                <span>{{ issueCardDto.getIssueLastContact() | date("Y-m-d H:i:s") }}</span>
+                            </li>
+                        {% endif %}
                     {% endif %}
                     {% if issueCardDto.getIssueContactsByIcon() is not empty %}
                         <li class="justify-content-center d-flex">
@@ -31,36 +66,51 @@
                     {% endif %}
 
                     {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
-                        <li class="justify-content-center d-flex"><b>{{ 'issues.card.lastProgressDate' | trans }}</b>&nbsp;<span>{{ issueCardDto.getIssueLastProgress() | date("Y-m-d H:i:s") }}</span></li>
+                        {% if isCompact is defined and isCompact %}
+                            <li class="justify-content-center d-flex">
+                                <b>{{ 'issues.card.lastProgressDate' | trans }}</b>&nbsp;
+                            </li>
+                            <li class="justify-content-center d-flex">
+                                <span>{{ issueCardDto.getIssueLastProgress() | date("Y-m-d H:i:s") }}</span>
+                            </li>
+                        {% else %}
+                            <li class="justify-content-center d-flex">
+                                <b>{{ 'issues.card.lastProgressDate' | trans }}</b>&nbsp;
+                                <span>{{ issueCardDto.getIssueLastProgress() | date("Y-m-d H:i:s") }}</span>
+                            </li>
+                        {% endif %}
                         <li class="justify-content-center d-flex">
                             <b><i class="fas fa-play-circle"></i></b>: {{ issueCardDto.getIssue().getIssueProgress() | length  }}
                         </li>
                     {% endif %}
                 </ul>
 
-                {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
-                    <hr class="spaceless-hr">
-                {% endif %}
+                {% if isReadOnly is defined and isReadOnly %}
+                    {# no action #}
+                {% else %}
+                    {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
+                        <hr class="spaceless-hr">
+                    {% endif %}
 
-                <div class="issue-card-actions d-flex justify-content-between">
+                    <div class="issue-card-actions d-flex justify-content-between">
 
-                    <div class="issue-card-actions-left">
+                        <div class="issue-card-actions-left">
                         <span class="action pointer"
-                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
-                                  data-repository-name="MyIssueRepository"
-                                  data-entity-removal-action="true"
-                                  data-toggle-popover="true"                     {# popover attr #}
+                              data-entity-id="{{ issueCardDto.issue().getId() }}"
+                              data-repository-name="MyIssueRepository"
+                              data-entity-removal-action="true"
+                              data-toggle-popover="true"                     {# popover attr #}
                                   data-html="true"                               {# popover attr #}
                                   data-trigger="hover"                           {# popover attr #}
                                   data-content="                                 {# popover attr #}
                                     {{ 'issues.card.popovers.removeRecord' | trans }}
                                   "
-                                  >
+                        >
                             <i class="far fa-times-circle fa-lg"></i>
                         </span>
-                    </div>
+                        </div>
 
-                    <div class="issue-card-actions-center issue-elements-actions">
+                        <div class="issue-card-actions-center issue-elements-actions">
                         <span class="action pointer mr-1"
                               data-entity-id="{{ issueCardDto.issue().getId() }}"
                               data-entity-toggle-boolval="true"
@@ -73,24 +123,24 @@
                               data-content="                                 {# popover attr #}
                                 {{ 'issues.card.popovers.toggleDashboardVisibility' | trans }}
                               "
-                            >
+                        >
                             <i class="fas fa-home fa-lg"></i>
                         </span>
-                        <span>
+                            <span>
                             <i class="fas fa-dot-circle fa-sm {{ issueCardDto.issue().isShowOnDashboard() ? 'text-success' : "text-danger" }}">{#todo: logic + css#}</i>
                         </span>
 
-                    </div>
+                        </div>
 
-                    <div class="issue-card-actions-right">
+                        <div class="issue-card-actions-right">
                         <span class="action pointer"
-                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
-                                  data-entity-detials-action="true"
-                                  data-dialog-call-request-url="{{ path('dialog_body_preview_issue_details') }}"
-                                  data-dialog-call-request-method="POST"
-                                  data-dialog-call-request-post-parameters='{"entityId": "{{ issueCardDto.issue().getId() }}"}'
-                                  data-call-dialog-on-click="true"
-                                  data-call-dialog-callback="
+                              data-entity-id="{{ issueCardDto.issue().getId() }}"
+                              data-entity-detials-action="true"
+                              data-dialog-call-request-url="{{ path('dialog_body_preview_issue_details') }}"
+                              data-dialog-call-request-method="POST"
+                              data-dialog-call-request-post-parameters='{"entityId": "{{ issueCardDto.issue().getId() }}"}'
+                              data-call-dialog-on-click="true"
+                              data-call-dialog-callback="
                                         datatable.init();
                                         ui.crud.init();
                                         ui.widgets.applyAccordion();
@@ -100,7 +150,7 @@
                                         ui.crud.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
                                         prismjs.init();
                                   "
-                                  data-toggle-popover="true"                     {# popover attr #}
+                              data-toggle-popover="true"                     {# popover attr #}
                                   data-html="true"                               {# popover attr #}
                                   data-trigger="hover"                           {# popover attr #}
                                   data-content="                                 {# popover attr #}
@@ -109,10 +159,12 @@
                         >
                             <i class="fas fa-eye fa-lg"></i>
                         </span>
-                    </div>
+                        </div>
 
-                </div>
+                    </div>
+                {% endif %}
+
             </div>
         </div>
-    </main>
+    </section>
 </div>

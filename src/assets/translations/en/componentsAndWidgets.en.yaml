@@ -13,3 +13,5 @@ dashboard:
       label: Goals payments
     my-goals:
       label: Goals progress
+    pending-issues:
+      label: Pending issues

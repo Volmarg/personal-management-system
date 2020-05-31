@@ -4,7 +4,9 @@ namespace App\Action\Modules\Dashboard;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\DTO\Settings\SettingsDashboardDTO;
+use App\Entity\Modules\Issues\MyIssue;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,9 +21,14 @@ class DashboardAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var Controllers $controllers
+     */
+    private $controllers;
 
-        $this->app = $app;
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -60,11 +67,15 @@ class DashboardAction extends AbstractController {
         $goals          = $this->getGoalsForWidget();
         $goals_payments = $this->getGoalsPayments();
 
+        $pending_issues    = $this->getPendingIssues();
+        $issues_cards_dtos = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($pending_issues);
+
         $data = [
             'dashboard_widgets_visibility_dtos'  => $dashboard_widgets_visibility_dtos,
             'schedules'                          => $schedules,
             'goals'                              => $goals,
             'goals_payments'                     => $goals_payments,
+            'issues_cards_dtos'                  => $issues_cards_dtos,
             'ajax_render'                        => $ajax_render,
         ];
 
@@ -81,6 +92,14 @@ class DashboardAction extends AbstractController {
 
     private function getGoalsPayments(){
         return $this->app->repositories->myGoalsPaymentsRepository->getGoalsPayments();
+    }
+
+    /**
+     * @return MyIssue[]
+     */
+    private function getPendingIssues(): array
+    {
+        return $this->app->repositories->myIssueRepository->getPendingIssuesForDashboard();
     }
 
 }

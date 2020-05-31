@@ -94,7 +94,7 @@ lightgallery:
     headers: { images: Images }
     labels: { tags: Tags, search: Search }
 dashboard:
-    widgets: { incoming-schedules: { label: Schedules }, my-goals-payments: { label: 'Goals payments' }, my-goals: { label: 'Goals progress' } }
+    widgets: { incoming-schedules: { label: Schedules }, my-goals-payments: { label: 'Goals payments' }, my-goals: { label: 'Goals progress' }, pending-issues: { label: 'Pending issues' } }
 sidebar:
     menu: { dashboard: { label: Dashboard }, achievements: { label: Achievements }, goals: { label: Goals, list: List, payments: Payments, settings: Settings }, car: { label: Car, schedules: Schedules, settings: Settings }, schedules: { label: Schedules, submodule: { car: { label: Car } }, settings: Settings }, contacts: { label: Contacts, settings: Settings }, files: { label: Files, mainDir: 'Main folder' }, images: { label: Images, mainDir: 'Main folder' }, job: { label: Job, afterhours: Afterhours, holidays: Holidays, settings: Settings }, passwords: { label: Passwords, passwords: Passwords, settings: Settings }, payments: { label: Payments, productsPrices: 'Products prices', monthlyPayments: 'Monthly payments', moneyOwed: 'Money owed', incomes: Incomes, bills: Bills, settings: Settings }, shopping: { label: Shopping, plans: Plans }, travels: { label: Travels, ideas: Ideas }, notes: { label: Notes, new: 'Create new', settings: Settings, categories: Categories }, upload: { label: Upload, add: Add, manage: Manage }, reports: { label: Reports, monthlyPaymentsSummaries: 'Monthly payments summaries', paymentsCharts: 'Payments charts', savingsCharts: 'Savings charts', historicalMoneyOwed: 'Historical money owed' }, issues: { label: Issues, pending: Pending } }
 topbar:
