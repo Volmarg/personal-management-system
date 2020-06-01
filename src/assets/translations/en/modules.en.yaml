@@ -336,6 +336,7 @@ issues:
     popovers:
       toggleDashboardVisibility: "Toggle dashboard visibility"
       previewAndEdit: "Preview and edit"
+      addRecords: "Add records"
       removeRecord: "Remove record"
     ajaxCallMessages:
       dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"

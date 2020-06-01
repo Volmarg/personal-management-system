@@ -42,7 +42,7 @@ class MyIssue {
 
     /**
      * @var string $information
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     private $information;
 

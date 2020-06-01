@@ -69,6 +69,7 @@
     "depcheck": "^0.9.1",
     "easy-pie-chart": "^2.1.7",
     "element-ready": "^4.1.1",
+    "flatpickr": "^4.6.3",
     "fontawesome-iconpicker": "^3.2.0",
     "fullcalendar": "^3.6.2",
     "imagesloaded": "^4.1.4",

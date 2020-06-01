@@ -40,6 +40,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES         = 'page-elements/components/dialogs/bodies/system-lock-resources.twig';
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD   = 'page-elements/components/dialogs/bodies/system-lock-create-password.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS    = 'page-elements/components/dialogs/bodies/preview-issue-details.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA           = 'page-elements/components/dialogs/bodies/add-issue-data.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE             = 'page-elements/components/dialogs/bodies/create-issue.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
@@ -472,6 +473,47 @@ class DialogsAction extends AbstractController
         }
 
         $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+
+        $template_data = [
+            'issueCardDto' => reset($issue_card_dto),
+        ];
+
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS, $template_data);
+
+        $response_data = [
+            'template' => $rendered_view->getContent()
+        ];
+
+        return new JsonResponse($response_data);
+    }
+
+    /**
+     * @Route("/dialog/body/add-issue-data", name="dialog_body_add_issue_data", methods="POST")
+     * @param Request $request
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function buildAddIssueDataDialogBody(Request $request) {
+
+        if( !$request->request->has(self::KEY_ENTITY_ID) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+            return new JsonResponse([
+                'errorMessage' => $message
+            ]);
+        }
+
+        $entity_id = $request->request->get(self::KEY_ENTITY_ID);
+        $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+
+        if( is_null($issue) ){
+            $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
+            return new JsonResponse([
+                'errorMessage' => $message . $entity_id
+            ]);
+        }
+
+        $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
         $progress_form  = $this->app->forms->issueProgressForm([MyIssueProgressType::OPTION_ENTITY_ID => $entity_id])->createView();
         $contact_form   = $this->app->forms->issueContactForm([MyIssueContactType::OPTION_ENTITY_ID   => $entity_id])->createView();
 
@@ -481,7 +523,7 @@ class DialogsAction extends AbstractController
             'contactForm'  => $contact_form,
         ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS, $template_data);
+        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA, $template_data);
 
         $response_data = [
             'template' => $rendered_view->getContent()

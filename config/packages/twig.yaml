@@ -10,6 +10,7 @@ twig:
         'core/form-types/roundcheckbox/fields.html.twig',
         'core/form-types/jscolorpicker/jscolorpicker.html.twig',
         'core/form-types/jsondto/fields.html.twig',
+        'core/form-types/datetimepicker/fields.html.twig',
         'core/form-types/indentchoice/fields.html.twig']
     globals:
         id_column: 'id'

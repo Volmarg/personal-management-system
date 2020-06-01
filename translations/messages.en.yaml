@@ -71,7 +71,7 @@ upload:
     uploadTable: { fileName: 'File name', fileExtension: 'File extension', tags: Tags }
     errors: { thereWasAnErrorWhileUploadingFiles: 'There was an error while uploading files' }
 issues:
-    card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { headers: { contacts: Contacts, progress: Progress } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
+    card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { headers: { contacts: Contacts, progress: Progress } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     contactsTable: { icon: Icon, date: Date, information: Information, actions: Actions }
 other:
     summary: Summary

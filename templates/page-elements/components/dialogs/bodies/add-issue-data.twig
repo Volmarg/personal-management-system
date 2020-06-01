@@ -1,0 +1,37 @@
+<main class='main-content bgc-grey-100' id="MyIssuesPreview" style="padding-top: 20px ;">
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+
+                    {# Main headers #}
+                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                        <h4 class="c-grey-900 mB-20 text-center">{{ issueCardDto.getIssue().getName() }}</h4>
+                        <h5 class="text-center" style="font-size: 16px;">{{ issueCardDto.getIssue().getInformation() }}</h5>
+                    </div>
+
+                    {# Contact Form #}
+                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                        <section class="p-20 add-record-form">
+
+                            <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueContact.header' | trans }} </h5>
+                            {{ form_start(contactForm, {'attr': {"data-entity": "MyIssueContact"}}) }}
+                            {{ form_end(contactForm) }}
+                        </section>
+                    </div>
+
+                    {# Progress Form #}
+                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                        <section class="p-20 add-record-form">
+
+                            <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueProgress.header' | trans }} </h5>
+                            {{ form_start(progressForm, {'attr': {"data-entity": "MyIssueProgress"}}) }}
+                            {{ form_end(progressForm) }}
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

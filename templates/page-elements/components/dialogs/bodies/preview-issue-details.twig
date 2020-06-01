@@ -1,4 +1,4 @@
-<main class='main-content bgc-grey-100' id="MyIssuesPreview">
+<main class='main-content bgc-grey-100' id="MyIssuesPreview" style="padding-top: 20px ;">
     <div id='mainContent'>
         <div class="container-fluid">
             <div class="row">
@@ -42,7 +42,8 @@
                                                 <td class="icon fontawesome-input" data-order="{{ issueContact.getIcon() }}">{{ issueContact.getIcon() }}</td>
                                                 <td data-order="{{ date_timestamp }}">
                                                 <span class="date">
-                                                    {% include 'page-elements/components/forms/input-datepicker.twig' with {
+
+                                                    {% include 'page-elements/components/forms/datetime-picker.twig' with {
                                                         "value"     : issueContact.getDate()|date('Y-m-d') ,
                                                         "disabled"  : true
                                                     } %}
@@ -66,16 +67,6 @@
                             </section>
                         </div>
                     {% endif %}
-
-                    {# Contact Form #}
-                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                        <section class="p-20 add-record-form">
-
-                            <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueContact.header' | trans }} </h5>
-                            {{ form_start(contactForm, {'attr': {"data-entity": "MyIssueContact"}}) }}
-                            {{ form_end(contactForm) }}
-                        </section>
-                    </div>
 
                     {# Progress #}
                     {% if issueCardDto.getIssue().getIssueProgress() is not empty %}
@@ -115,15 +106,6 @@
                         </div>
                     {% endif %}
 
-                    {# Progress Form #}
-                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                        <section class="p-20 add-record-form">
-
-                            <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueProgress.header' | trans }} </h5>
-                            {{ form_start(progressForm, {'attr': {"data-entity": "MyIssueProgress"}}) }}
-                            {{ form_end(progressForm) }}
-                        </section>
-                    </div>
                 </div>
             </div>
         </div>

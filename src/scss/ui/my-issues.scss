@@ -6,10 +6,28 @@
     margin-top: 15px;
     margin-bottom: 15px;
   }
+
   height: auto !important;
 }
 
 .issue-wrapper {
   width: 380px;
   margin-top: 10px;
+  border-color: rgba(51, 181, 229, 0.3457) !important;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.issue-wrapper .content {
+  padding-bottom: 20px;
+  color: white !important;
+  background-color: #33b5e5 !important;
+  height: 35px;
+}
+
+
+.issue-wrapper .content h1 {
+  font-size: 18px;
+  margin: 0;
+  margin-top: -5px;
 }

@@ -29,6 +29,7 @@ export default (function () {
             ui.lockedResource.init();
             prismjs.init();
             dialogs.ui.general.init();
+            datetimepicker.init();
         },
         /**
          * Reinitialize is being called in alot of places when content is reloaded via js some logic is not allowed to

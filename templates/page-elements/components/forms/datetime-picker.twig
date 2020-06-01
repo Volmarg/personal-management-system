@@ -1,0 +1,17 @@
+{% if value is not defined %}
+    {% set value = '' %}
+{% endif %}
+
+{% if disabled is not defined %}
+    {% set disabled = '' %}
+{% else %}
+    {% set disabled = 'disabled' %}
+{% endif %}
+
+<input type="text"
+       data-input
+       data-is-datetime-picker="true"
+       value="{{ value }}"
+       style="background-color: white;"
+       class="date-picker form-control {{ disabled }}"
+>

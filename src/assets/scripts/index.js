@@ -42,6 +42,7 @@ import './vectorMaps/index.js';
 import './chat/index.js';
 import './datatable/index.js';
 import './datepicker/index.js';
+import './datetimepicker/index.js';
 import './email/index.js';
 import './fullcalendar/index.js';
 import './googleMaps/index.js';

@@ -1,25 +1,15 @@
 <div
     class="issue-wrapper"
     style="
-            border-color: rgba(51, 181, 229, 0.3457) !important;
-            border-style: solid;
-            border-width: 1px;
-        {% if isCompact is defined and isCompact %}
-            width: 280px;
-        {% endif %}
-            "
+    {% if isCompact is defined and isCompact %}
+        width: 260px; /*fits 3 boxes in widget for 1080px*/
+    {% endif %}
+        "
 >
     <section>
         <div>
-            {# todo: move to css #}
-            <div class="content bgc-white bd p-10" style="
-                padding-bottom: 20px;
-                color: white !important;
-                background-color: #33b5e5!important;
-                height: 35px;
-            ">
-                <h1 style="font-size:18px; margin: 0; margin-top: -5px;"
-                    class="text-center"
+            <div class="content bgc-white bd p-10">
+                <h1 class="text-center"
                     data-toggle-popover="true"                                      {# popover attr #}
                     data-html="true"                                                {# popover attr #}
                     data-trigger="hover"                                            {# popover attr #}
@@ -95,70 +85,98 @@
                     <div class="issue-card-actions d-flex justify-content-between">
 
                         <div class="issue-card-actions-left">
-                        <span class="action pointer"
-                              data-entity-id="{{ issueCardDto.issue().getId() }}"
-                              data-repository-name="MyIssueRepository"
-                              data-entity-removal-action="true"
-                              data-toggle-popover="true"                     {# popover attr #}
-                                  data-html="true"                               {# popover attr #}
-                                  data-trigger="hover"                           {# popover attr #}
-                                  data-content="                                 {# popover attr #}
-                                    {{ 'issues.card.popovers.removeRecord' | trans }}
-                                  "
-                        >
-                            <i class="far fa-times-circle fa-lg"></i>
-                        </span>
+                            <span class="action pointer"
+                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                  data-repository-name="MyIssueRepository"
+                                  data-entity-removal-action="true"
+                                  data-toggle-popover="true"                         {# popover attr #}
+                                      data-html="true"                               {# popover attr #}
+                                      data-trigger="hover"                           {# popover attr #}
+                                      data-content="                                 {# popover attr #}
+                                        {{ 'issues.card.popovers.removeRecord' | trans }}
+                                      "
+                            >
+                                <i class="far fa-times-circle fa-lg"></i>
+                            </span>
                         </div>
 
                         <div class="issue-card-actions-center issue-elements-actions">
-                        <span class="action pointer mr-1"
-                              data-entity-id="{{ issueCardDto.issue().getId() }}"
-                              data-entity-toggle-boolval="true"
-                              data-entity-toggle-success-message="{{ 'issues.card.ajaxCallMessages.dashboardVisibilityHasBeenToggled' | trans }}"
-                              data-entity-repository-name="MyIssueRepository"
-                              data-entity-field-name="showOnDashboard"
-                              data-toggle-popover="true"                     {# popover attr #}
-                              data-html="true"                               {# popover attr #}
-                              data-trigger="hover"                           {# popover attr #}
-                              data-content="                                 {# popover attr #}
-                                {{ 'issues.card.popovers.toggleDashboardVisibility' | trans }}
-                              "
-                        >
-                            <i class="fas fa-home fa-lg"></i>
-                        </span>
-                            <span>
-                            <i class="fas fa-dot-circle fa-sm {{ issueCardDto.issue().isShowOnDashboard() ? 'text-success' : "text-danger" }}">{#todo: logic + css#}</i>
-                        </span>
-
-                        </div>
-
-                        <div class="issue-card-actions-right">
-                        <span class="action pointer"
-                              data-entity-id="{{ issueCardDto.issue().getId() }}"
-                              data-entity-detials-action="true"
-                              data-dialog-call-request-url="{{ path('dialog_body_preview_issue_details') }}"
-                              data-dialog-call-request-method="POST"
-                              data-dialog-call-request-post-parameters='{"entityId": "{{ issueCardDto.issue().getId() }}"}'
-                              data-call-dialog-on-click="true"
-                              data-call-dialog-callback="
-                                        datatable.init();
-                                        ui.crud.init();
-                                        ui.widgets.applyAccordion();
-                                        ui.widgets.popover.init();
-
-                                        ui.crud.attachEventOnButtonForEditingViaTinyMce();
-                                        ui.crud.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
-                                        prismjs.init();
-                                  "
-                              data-toggle-popover="true"                     {# popover attr #}
+                            <span class="action pointer mr-1"
+                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                  data-entity-toggle-boolval="true"
+                                  data-entity-toggle-success-message="{{ 'issues.card.ajaxCallMessages.dashboardVisibilityHasBeenToggled' | trans }}"
+                                  data-entity-repository-name="MyIssueRepository"
+                                  data-entity-field-name="showOnDashboard"
+                                  data-toggle-popover="true"                     {# popover attr #}
                                   data-html="true"                               {# popover attr #}
                                   data-trigger="hover"                           {# popover attr #}
                                   data-content="                                 {# popover attr #}
-                                    {{ 'issues.card.popovers.previewAndEdit' | trans }}
+                                    {{ 'issues.card.popovers.toggleDashboardVisibility' | trans }}
                                   "
-                        >
-                            <i class="fas fa-eye fa-lg"></i>
-                        </span>
+                            >
+                                <i class="fas fa-home fa-lg"></i>
+                            </span>
+                                <span>
+                                <i class="fas fa-dot-circle fa-sm {{ issueCardDto.issue().isShowOnDashboard() ? 'text-success' : "text-danger" }}">{</i>
+                            </span>
+                        </div>
+
+                        <div class="issue-card-actions-right">
+                            <span class="action pointer"
+                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                  data-entity-detials-action="true"
+                                  data-dialog-call-request-url="{{ path('dialog_body_add_issue_data') }}"
+                                  data-dialog-call-request-method="POST"
+                                  data-dialog-call-request-post-parameters='{"entityId": "{{ issueCardDto.issue().getId() }}"}'
+                                  data-call-dialog-on-click="true"
+                                  data-call-dialog-callback="
+                                            datatable.init();
+                                            ui.crud.init();
+                                            ui.widgets.applyAccordion();
+                                            ui.widgets.popover.init();
+
+                                            ui.crud.attachEventOnButtonForEditingViaTinyMce();
+                                            ui.crud.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
+                                            prismjs.init();
+                                            datetimepicker.init();
+                                      "
+                                  data-toggle-popover="true"                         {# popover attr #}
+                                      data-html="true"                               {# popover attr #}
+                                      data-trigger="hover"                           {# popover attr #}
+                                      data-content="                                 {# popover attr #}
+                                        {{ 'issues.card.popovers.addRecords' | trans }}
+                                      "
+                            >
+                                <i class="fas fa-plus-circle fa-lg"></i>
+                            </span>
+
+                            <span class="action pointer"
+                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                  data-entity-detials-action="true"
+                                  data-dialog-call-request-url="{{ path('dialog_body_preview_issue_details') }}"
+                                  data-dialog-call-request-method="POST"
+                                  data-dialog-call-request-post-parameters='{"entityId": "{{ issueCardDto.issue().getId() }}"}'
+                                  data-call-dialog-on-click="true"
+                                  data-call-dialog-callback="
+                                            datatable.init();
+                                            ui.crud.init();
+                                            ui.widgets.applyAccordion();
+                                            ui.widgets.popover.init();
+
+                                            ui.crud.attachEventOnButtonForEditingViaTinyMce();
+                                            ui.crud.attachEventOnButtonToTransformTargetSelectorToTinyMceInstance();
+                                            prismjs.init();
+                                            datetimepicker.init();
+                                      "
+                                  data-toggle-popover="true"                         {# popover attr #}
+                                      data-html="true"                               {# popover attr #}
+                                      data-trigger="hover"                           {# popover attr #}
+                                      data-content="                                 {# popover attr #}
+                                        {{ 'issues.card.popovers.previewAndEdit' | trans }}
+                                      "
+                            >
+                                <i class="fas fa-eye fa-lg"></i>
+                            </span>
                         </div>
 
                     </div>

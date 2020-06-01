@@ -5,10 +5,10 @@ namespace App\Form\Modules\Issues;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
+use App\Form\Type\DatetimepickerType;
 use App\Form\Type\FontawesomepickerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -55,16 +55,11 @@ class MyIssueContactType extends AbstractType {
                 },
                 'required'      => true,
             ])
-            ->add(self::FIELD_DATE, DateType::class, [
-                'label'    => $this->app->translator->translate('forms.MyIssueTypeProgress.date'),
-                'attr' => [
-                    'data-provide'              => "datepicker",
-                    'data-date-format'          => "yyyy-mm-dd",
-                    'data-date-today-highlight' => true,
-                    'autocomplete'              => 'off',
+            ->add(self::FIELD_DATE, DatetimepickerType::class, [
+                'label' => $this->app->translator->translate('forms.MyIssueTypeProgress.date'),
+                'attr'  => [
+                    'autocomplete' => 'off',
                 ],
-                'widget'    => 'single_text',
-                'format'    => 'y-M-d',
                 'required'  => true,
             ])
             ->add(self::FIELD_ICON, FontawesomepickerType::class, [
