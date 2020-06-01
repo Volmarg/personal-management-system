@@ -1,3 +1,10 @@
+{% set issueProgressContactFormClass = 'App\\Form\\Modules\\Issues\\MyIssueContactType::' %}
+
+{%  set FIELD_DATE        = constant(issueProgressContactFormClass ~ 'FIELD_DATE') %}
+{%  set FIELD_ICON        = constant(issueProgressContactFormClass ~ 'FIELD_ICON') %}
+{%  set FIELD_ISSUE       = constant(issueProgressContactFormClass ~ 'FIELD_ISSUE') %}
+{%  set FIELD_INFORMATION = constant(issueProgressContactFormClass ~ 'FIELD_INFORMATION') %}
+
 <main class='main-content bgc-grey-100' id="MyIssuesPreview" style="padding-top: 20px ;">
     <div id='mainContent'>
         <div class="container-fluid">
@@ -15,8 +22,52 @@
                         <section class="p-20 add-record-form">
 
                             <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueContact.header' | trans }} </h5>
-                            {{ form_start(contactForm, {'attr': {"data-entity": "MyIssueContact"}}) }}
-                            {{ form_end(contactForm) }}
+
+                            <div class="col-md-12">
+                                {{ form_start(contactForm, {'attr': {"data-entity": "MyIssueContact"}}) }}
+
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            {{ form_label(contactForm[FIELD_INFORMATION]) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(contactForm[FIELD_INFORMATION]) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-sm-2">
+                                            {{ form_label(contactForm[FIELD_ISSUE]) }}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{ form_widget(contactForm[FIELD_ISSUE]) }}
+                                        </div>
+
+                                        <div class="col-sm-2">
+                                            {{ form_label(contactForm[FIELD_DATE]) }}
+                                        </div>
+                                        <div class="col-sm-4">
+                                            {{ form_widget(contactForm[FIELD_DATE]) }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style="margin-top: 10px;">
+                                        <div class="col-sm-2">
+                                            {{ form_label(contactForm[FIELD_ICON]) }}
+                                        </div>
+                                        <div class="col-sm-10">
+                                            {{ form_widget(contactForm[FIELD_ICON]) }}
+                                        </div>
+
+                                    </div>
+
+                                <div class="d-flex justify-content-center" style="margin-top: 10px;">
+                                    {{ form_widget(contactForm['submit']) }}
+                                </div>
+
+                                {{ form_end(contactForm) }}
+                            </div>
+
                         </section>
                     </div>
 
@@ -25,10 +76,43 @@
                         <section class="p-20 add-record-form">
 
                             <h5 class="text-center" style="font-size: 16px;"> {{ 'dialogs.addIssueProgress.header' | trans }} </h5>
-                            {{ form_start(progressForm, {'attr': {"data-entity": "MyIssueProgress"}}) }}
-                            {{ form_end(progressForm) }}
-                        </section>
 
+                            <div class="col-md-12">
+                                {{ form_start(progressForm, {'attr': {"data-entity": "MyIssueProgress"}}) }}
+
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        {{ form_label(progressForm[FIELD_INFORMATION]) }}
+                                    </div>
+                                    <div class="col-sm-10">
+                                        {{ form_widget(progressForm[FIELD_INFORMATION]) }}
+                                    </div>
+                                </div>
+
+                                <div class="row" style="margin-top: 10px;">
+                                    <div class="col-sm-2">
+                                        {{ form_label(progressForm[FIELD_ISSUE]) }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        {{ form_widget(progressForm[FIELD_ISSUE]) }}
+                                    </div>
+
+                                    <div class="col-sm-2">
+                                        {{ form_label(progressForm[FIELD_DATE]) }}
+                                    </div>
+                                    <div class="col-sm-4">
+                                        {{ form_widget(progressForm[FIELD_DATE]) }}
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center" style="margin-top: 10px;">
+                                    {{ form_widget(progressForm['submit']) }}
+                                </div>
+
+                                {{ form_end(progressForm) }}
+
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>

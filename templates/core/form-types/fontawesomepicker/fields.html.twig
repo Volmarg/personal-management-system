@@ -5,7 +5,7 @@
             display:none;
         }
     </style>
-    <section class="row fontawesome-picker-widget">
+    <section class="row fontawesome-picker-widget" style="margin-left: -4px;">
         <input type="button" id="{{ id }}Button" autocomplete="off"
                class="form-control btn-primary btn col-sm-4"
                data-iconpicker="true"
@@ -13,7 +13,8 @@
                data-iconpicker-preview="#{{ id }}Preview"
                value=" Pick icon"/>
 
-        <input id="{{ id }}Input" {{ block('widget_attributes') }} autocomplete="off" class="form-control col-sm-6">
+        <input id="{{ id }}Input" {{ block('widget_attributes') }} autocomplete="off" class="form-control col-sm-6"
+               style="margin-top: 6px; margin-bottom: 6px; padding-top: 0px; padding-bottom: 0px;">
         <input id="{{ id }}Preview" autocomplete="off" class="form-control"
                type="hidden">
     </section>
