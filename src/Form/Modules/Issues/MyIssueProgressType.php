@@ -8,7 +8,7 @@ use App\Entity\Modules\Issues\MyIssueProgress;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -41,7 +41,10 @@ class MyIssueProgressType extends AbstractType {
         $entity_id = $options[self::OPTION_ENTITY_ID];
 
         $builder
-            ->add(self::FIELD_INFORMATION, TextType::class, [
+            ->add(self::FIELD_INFORMATION, TextareaType::class, [
+                'attr' => [
+                    'class' => 'tiny-mce',
+                ],
                 'label' => $this->app->translator->translate('forms.MyIssueTypeProgress.information'),
             ])
             ->add(self::FIELD_ISSUE, EntityType::class, [
