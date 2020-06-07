@@ -6,8 +6,8 @@
     {% endif %}
         "
 >
-    <section>
-        <div>
+    <section class="h-100p " style="overflow: hidden; min-height: 128px;">
+        <div class="h-100p " style="overflow: hidden;">
             <div class="content bgc-white bd p-10">
                 <h1 class="text-center"
                     data-toggle-popover="true"                                      {# popover attr #}
@@ -23,7 +23,7 @@
                 </p>
             </div>
 
-            <div class="title active bgc-white bd bdrs-3 p-10">
+            <div class="title active bgc-white bd bdrs-3 p-10 h-100p">
                 <ul style="list-style-type: none;" class="p-0">
                     {% if issueCardDto.getIssueLastContact() is not null %}
                         {% if isCompact is defined and isCompact %}

@@ -11,12 +11,10 @@
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
 
-            {% include 'page-elements/components/work-in-progress.twig' %}
-
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="bdrs-3 p-20 mB-20 d-flex flex-wrap justify-content-between">
+                        <div class="bdrs-3 p-20 mB-20 d-flex flex-wrap justify-content-around">
 
                             {% for issueCardDto in issues_cards_dtos %}
                                 {% include 'modules/my-issues/components/my-issue-card.twig' with { issueCardDto: issueCardDto } %}

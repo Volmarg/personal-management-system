@@ -48,33 +48,17 @@
                 <input class="{{ KEY_TAGS }}" type="text" data-value="{{ file.tags }}"/>
             </td>
 
-            {# this special case of actions must remain like this #}
-            <td contenteditable="false">
-                <span  aria-hidden="true" data-content-editable="false">
-                    <i class="fa fa-trash remove-record"></i>
-                </span>
-                <span data-content-editable="false">
-                    <i class="far fa-edit edit-record"></i>
-                </span>
+            {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                "trash"    : true,
+                "edit"     : true,
+                "save"     : true,
+                "download" : true,
+                "download_action"            : path('download_file'),
+                "download_file_path"         : file[KEY_FILE_FULL_PATH],
+                "download_file_input_name"   : KEY_FILE_FULL_PATH,
+                "download_file_subdirectory" : subdirectory_path
+            }%}
 
-                <form method="POST" action="{{ path('download_file') }}" class="file-download-form">
-                    <input type="hidden" value="{{ file[KEY_FILE_FULL_PATH] }}" name="{{ KEY_FILE_FULL_PATH }}" data-subdirectory="{{ subdirectory_path }}"/>
-                    <button class="file-download ">
-                        <span aria-hidden="true">
-                            <i class="fa fa-download"></i>
-                        </span>
-                    </button>
-                </form>
-                <a href="{{ path('download_file') }}">
-
-                </a>
-                <span data-content-editable="false">
-                    <i class="far fa-save save-record d-none"></i>
-                </span>
-                <span data-content-editable="false">
-                    <i class="fas fa-random file-transfer"></i>
-                </span>
-            </td>
         </tr>
     {% endfor %}
 

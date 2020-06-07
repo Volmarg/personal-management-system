@@ -24,7 +24,7 @@
                                         <tr>
                                             <td class="d-none">id</td>
                                             <td></td>
-                                            <td>{{ 'issues.contactsTable.icon' | trans }}</td>
+                                            <td class="d-none">{{ 'issues.contactsTable.icon' | trans }}</td>
                                             <td>{{ 'issues.contactsTable.date' | trans }}</td>
                                             <td>{{ 'issues.contactsTable.information' | trans }}</td>
                                             <td>{{ 'issues.contactsTable.actions' | trans }}</td>
@@ -39,7 +39,7 @@
 
                                                 <td class="d-none id">{{ issueContact.getId() }}</td>
                                                 <td class="icon-preview text-center" data-order="{{ issueContact.getIcon() }}"><i class="fontawesome-preview {{ issueContact.getIcon() }}" style="margin-left:6px;"></i></td>
-                                                <td class="icon fontawesome-input" data-order="{{ issueContact.getIcon() }}">{{ issueContact.getIcon() }}</td>
+                                                <td class="icon fontawesome-input d-none" data-order="{{ issueContact.getIcon() }}">{{ issueContact.getIcon() }}</td>
                                                 <td data-order="{{ date_timestamp }}">
                                                 <span class="date">
 

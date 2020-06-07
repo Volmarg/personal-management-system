@@ -46,6 +46,18 @@ export default (function () {
             $(window).on('load', function(){
                 ui.widgets.loader.hideLoader();
             });
+
+            let denyUnloadForSelectors = ['.file-download'];
+
+            $.each(denyUnloadForSelectors, function(index, selector) {
+                let $element = $(selector);
+                $element.on('click', function(){
+                    setTimeout(function(){
+                        ui.widgets.loader.hideLoader();
+                        }, 1000);
+                })
+            });
+
         },
         initStatic: function () {
             if ("undefined" !== typeof jscolorCustom) {
