@@ -364,11 +364,16 @@ export default (function () {
                 }
 
             },
+            /**
+             * Timeout is needed as in some cases when the project is being run in better environment the hide is kinda being executed to fast
+             */
             hideLoader: () => {
-                let loader = $(ui.widgets.elements.loader);
+                setTimeout(function(){
+                    let loader = $(ui.widgets.elements.loader);
 
-                loader.removeAttr('style');
-                loader.addClass('fadeOut');
+                    loader.removeAttr('style');
+                    loader.addClass('fadeOut');
+                }, 200)
             }
         }
 
