@@ -244,7 +244,7 @@ var IconPicker = {
             if (winHeight + 20 <= ipHeight) {
                 totalTopPos = liveScrollTop;
             }
-            ipElement.style.top = totalTopPos + 'px';
+            //ipElement.style.top = totalTopPos + 'px';
             // modal element position top css off
 
             // add css animation class to modal

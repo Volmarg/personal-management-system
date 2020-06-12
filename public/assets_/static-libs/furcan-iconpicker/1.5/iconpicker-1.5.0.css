@@ -7,13 +7,13 @@
 */
 div#IconPickerModal {
     display: none;
-    position: absolute;
+    position: fixed;
     z-index: 999999;
     width: 95%;
     max-width: 1440px;
     left: 0;
     right: 0;
-    top: 100px;
+    top: 40px;
     margin: auto;
 }
 
