@@ -9,7 +9,6 @@ export default (function () {
     datetimepicker = {
         data: {
             isDateTimePicker: "data-is-datetime-picker"
-            // todo: add more attrs via data
         },
         init: function () {
             this.applyDateTimePicker();
@@ -18,10 +17,24 @@ export default (function () {
             let $dateTimePickerElementsToInitialize = $('[' + this.data.isDateTimePicker + '=true]');
 
             $.each($dateTimePickerElementsToInitialize, function (index, element) {
+
+                let $element     = $(element);
+                let $parentModal = $element.closest('.modal');
+
+                let onOpenFunction = function(){};
+
+                if( $parentModal.length === 1  ){
+                    onOpenFunction = function (selectedDates, dateStr, instance) {
+                        let $calendarElement = $(instance.calendarContainer);
+                        $calendarElement.detach().appendTo($parentModal);
+                    }
+                }
+
                 flatpickr(element, {
                     enableTime: true,
                     dateFormat: "Y-m-d H:i",
                     time_24hr : true,
+                    onOpen: onOpenFunction
                 });
             });
         }
