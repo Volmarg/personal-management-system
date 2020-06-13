@@ -2,13 +2,15 @@
 
 namespace App\Entity\Modules\Notes;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Notes\MyNotesRepository")
  * @ORM\Table(name="my_note")
  */
-class MyNotes {
+class MyNotes implements SoftDeletableEntityInterface
+{
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -61,7 +63,7 @@ class MyNotes {
         return $this;
     }
 
-    public function getDeleted(): ?bool {
+    public function isDeleted(): ?bool {
         return $this->deleted;
     }
 

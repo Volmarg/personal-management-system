@@ -2,13 +2,15 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class MyRecurringPaymentMonthly {
+class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface
+{
 
     /**
      * @ORM\Id()
@@ -107,7 +109,7 @@ class MyRecurringPaymentMonthly {
         return $this;
     }
 
-    public function getDeleted(): ?bool {
+    public function isDeleted(): ?bool {
         return $this->deleted;
     }
 

@@ -3,6 +3,8 @@
 namespace App\Repository\Modules\Issues;
 
 use App\Entity\Modules\Issues\MyIssue;
+use App\Entity\Modules\Issues\MyIssueContact;
+use App\Entity\Modules\Issues\MyIssueProgress;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -90,7 +92,29 @@ class MyIssueRepository extends ServiceEntityRepository
     public function saveIssue(MyIssue $issue)
     {
         $this->_em->persist($issue);
-        $this->_em->flush($issue);
+        $this->_em->flush();
+    }
+
+    /**
+     * @param MyIssueContact $myIssueContact
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveIssueContact(MyIssueContact $myIssueContact): void
+    {
+        $this->_em->persist($myIssueContact);
+        $this->_em->flush();
+    }
+
+    /**
+     * @param MyIssueProgress $myIssueProgress
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveIssueProgress(MyIssueProgress $myIssueProgress): void
+    {
+        $this->_em->persist($myIssueProgress);
+        $this->_em->flush();
     }
 
     /**

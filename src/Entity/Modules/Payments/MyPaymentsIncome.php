@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Exception;
@@ -10,7 +11,7 @@ use Exception;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsIncomeRepository")
  * @ORM\Table(name="my_payment_income")
  */
-class MyPaymentsIncome
+class MyPaymentsIncome implements SoftDeletableEntityInterface
 {
     /**
      * @ORM\Id()
@@ -49,7 +50,7 @@ class MyPaymentsIncome
         return $this->id;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

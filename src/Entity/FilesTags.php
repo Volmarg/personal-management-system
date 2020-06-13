@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FilesTagsRepository")
  */
-class FilesTags
+class FilesTags implements SoftDeletableEntityInterface
 {
 
     /**
@@ -37,7 +38,7 @@ class FilesTags
         return $this->id;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

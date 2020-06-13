@@ -2,13 +2,14 @@
 
 namespace App\Entity\Modules\Goals;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsSubgoalsRepository")
  * @ORM\Table(name="my_goal_subgoal")
  */
-class MyGoalsSubgoals
+class MyGoalsSubgoals implements SoftDeletableEntityInterface
 {
     /**
      * @ORM\Id()
@@ -54,7 +55,7 @@ class MyGoalsSubgoals
         return $this;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

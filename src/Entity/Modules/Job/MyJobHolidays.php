@@ -2,13 +2,15 @@
 
 namespace App\Entity\Modules\Job;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysRepository")
  * @ORM\Table(name="my_job_holiday")
  */
-class MyJobHolidays {
+class MyJobHolidays implements SoftDeletableEntityInterface
+{
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -70,7 +72,7 @@ class MyJobHolidays {
         return $this;
     }
 
-    public function getDeleted(): ?bool {
+    public function isDeleted(): ?bool {
         return $this->deleted;
     }
 

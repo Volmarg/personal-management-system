@@ -9,7 +9,9 @@
 namespace App\Controller\Core;
 
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
@@ -49,6 +51,7 @@ use App\Repository\System\LockedResourceRepository;
 use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Core\Translator;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\MappingException;
@@ -400,10 +403,15 @@ class Repositories extends AbstractController {
     public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response {
         try {
 
-            $id         = $this->trimAndCheckId($id);
+            $id = $this->trimAndCheckId($id);
+
+            /**
+             * @var ServiceEntityRepository $repository
+             */
             $repository = $this->{lcfirst($repository_name)};
             $record     = $repository->find($id);
 
+            $record = $this->handleRecordActiveRelatedEntities($record);
             if ( $this->hasRecordActiveRelatedEntities($record, $repository) ) {
                 $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
 
@@ -417,6 +425,11 @@ class Repositories extends AbstractController {
             #Info: Reattach the entity - doctrine based issue
             $this->entity_manager->clear();
             $record = $repository->find($id);
+
+            if( !($record instanceof SoftDeletableEntityInterface) ){
+                $message = $this->translator->translate("exceptions.general.thisEntityIsNotSoftDeletable");
+                return AjaxResponse::buildResponseForAjaxCall(500, $message);
+            }
 
             $record->setDeleted(1);
             $record = $this->changeRecordData($repository_name, $record);
@@ -506,7 +519,7 @@ class Repositories extends AbstractController {
                 }elseif( $class_meta->hasField($ucFirstParameter) ){
                     $field_mapping = $class_meta->getFieldMapping($ucFirstParameter);
                     $field_type    = $field_mapping['type'];
-                }elseif( $class_meta->hasAssociation($parameter )){
+                }elseif( $class_meta->hasAssociation($parameter)){
                     $field_type = self::FIELD_TYPE_ENTITY;
                 }elseif( $class_meta->hasAssociation($ucFirstParameter) ){
                     $field_type = self::FIELD_TYPE_ENTITY;
@@ -548,133 +561,6 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @param array $entity_data
-     * @return object|null
-     */
-    private function getEntity(array $entity_data) {
-        $entity = null;
-
-        try {
-
-            if (array_key_exists('namespace', $entity_data) && array_key_exists('id', $entity_data)) {
-                $entity = $this->getDoctrine()->getRepository($entity_data['namespace'])->find($entity_data['id']);
-            }
-
-        } catch (ExceptionRepository $er) {
-            echo $er->getMessage();
-        }
-
-        return $entity;
-    }
-
-    /**
-     * @param $record
-     * @param EntityRepository $repository
-     * @return bool
-     * This method is used to define weather the record can be soft deleted or not,
-     * it has to handle all the variety of associations between records
-     * because for example it should not be possible to remove category when there are some other records in it
-     */
-    private function hasRecordActiveRelatedEntities($record, $repository): bool {
-
-        # First if this is not entity for some reason then ignore it, as this applies only to entities
-        $record_class_name  = get_class($record);
-        $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
-        $table_name         = $class_meta->getTableName();
-        $is_record_entity  = $this->isEntityClass($record_class_name);
-
-        if( !$is_record_entity ){
-            return false;
-        }
-
-        # Second thing is that some tables have relation to self without foreign key - this must be checked separately
-        $parent_keys       = ['parent', 'parent_id', 'parentId', 'parentID'];
-        $has_self_relation = false;
-
-        foreach ($parent_keys as $key) {
-
-            if (property_exists($record, $key)) {
-                $child_record      = $repository->findBy([$key => $record->getId(), self::ENTITY_PROPERTY_DELETED => 0]);
-                $has_self_relation = true;
-            }
-
-            if (
-                    isset($child_record)
-                &&  !empty($child_record)
-                &&  (
-                        (
-                                method_exists($child_record, self::ENTITY_GET_DELETED_METHOD_NAME)
-                            &&  !$child_record->getDeleted()
-                        )
-                        ||
-                        (
-                                method_exists($child_record, self::ENTITY_IS_DELETED_METHOD_NAME)
-                            &&  !$child_record->isDeleted()
-                        )
-                    )
-            ) {
-                return true;
-            }
-
-        }
-
-        # Third
-        # We need to check weather we deal with parent or child
-        # the child can be removed, the problem is parent as with active children he must stay
-        # symfony adds _id to every foreign key so if there is property with _id we can assume that it is a children
-        # info: this may cause problems if there will be advanced(i doubt there will) relations (not just parent/child)
-
-        $columns_names = $this->getColumnsNamesForTableName($table_name);
-
-        foreach( $columns_names as $column_name ){
-            # we have a child so we can remove it
-            if( strstr($column_name, "_id") && !$has_self_relation ){
-                return false;
-            }
-        }
-
-        # we have parent so we need to check what's the state of all of his children
-        # we have to find which fields are relational ones
-
-        $associations_mappings = $class_meta->getAssociationMappings();
-
-        foreach( $associations_mappings as $association_mapping ){
-            $field_name = $association_mapping[self::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
-
-            # info: might cause problems in case of using non standard methods name (instead of the ones generated by entity)
-            # build getter method name and if such exists then check children
-
-            $method_name = "get" .  ucfirst($field_name);
-
-            if( !method_exists($record, $method_name) ){
-                continue;
-            }
-
-            $related_entities = $record->$method_name()->getValues();
-            foreach( $related_entities as $related_entity ){
-
-                if( method_exists($related_entity, self::ENTITY_GET_DELETED_METHOD_NAME) ){
-                    $is_deleted = $related_entity->getDeleted();
-
-                    if(!$is_deleted){
-                        return true;
-                    }
-                }
-
-                if( method_exists($related_entity, self::ENTITY_IS_DELETED_METHOD_NAME) ){
-                    $is_deleted = $related_entity->isDeleted();
-
-                    if(!$is_deleted){
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @param array $columns_names
      */
     public static function removeHelperColumnsFromView(array &$columns_names) {
@@ -707,6 +593,69 @@ class Repositories extends AbstractController {
         }
 
         return $id;
+    }
+
+    /**
+     * @param $class
+     * @return bool
+     */
+    public function isEntityClass(string $class): bool
+    {
+        $is_entity_class = !$this->entity_manager->getMetadataFactory()->isTransient($class);
+        return $is_entity_class;
+    }
+
+    /**
+     * @param string $table_name
+     * @return array
+     */
+    public function getColumnsNamesForTableName(string $table_name): array
+    {
+        $schema_manager = $this->entity_manager->getConnection()->getSchemaManager();
+        $columns        = $schema_manager->listTableColumns($table_name);
+
+        $columns_names = [];
+        foreach($columns as $column){
+            $columns_names[] = $column->getName();
+        }
+
+        return $columns_names;
+    }
+
+    /**
+     * This function will retrieve all related entities to given entity (via relations in entity)
+     * Info: might cause problems in case of using non standard methods name (instead of the ones generated by entity)
+     * @param $entity
+     * @return array
+     * @throws Exception
+     */
+    public function getAllRelatedEntities($entity): array
+    {
+        $all_related_entities = [];
+
+        $class     = get_class($entity);
+        $is_entity = $this->isEntityClass($class);
+
+        if( !$is_entity ){
+            throw new Exception("Tried to get related entities on non entity class: {$class}");
+        }
+
+        $class_meta            = $this->entity_manager->getClassMetadata($class);
+        $associations_mappings = $class_meta->getAssociationMappings();
+
+        foreach( $associations_mappings as $association_mapping ){
+            $field_name = $association_mapping[self::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
+
+            $method_name = "get" .  ucfirst($field_name);
+
+            if( !method_exists($entity, $method_name) ){
+                continue;
+            }
+            $related_entities = $entity->$method_name()->getValues();
+            $all_related_entities = array_merge($all_related_entities, $related_entities);
+        }
+
+        return $all_related_entities;
     }
 
     /**
@@ -844,29 +793,184 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @param $class
-     * @return bool
+     * This function will handle soft removal for related entities
+     * @param object $entity
+     * @return object
+     * @throws Exception
      */
-    public function isEntityClass(string $class): bool
+    private function handleCascadeSoftDeleteRelatedEntities($entity)
     {
-        $is_entity_class = !$this->entity_manager->getMetadataFactory()->isTransient($class);
-        return $is_entity_class;
+        $class_name = get_class($entity);
+
+        $this->entity_manager->beginTransaction();
+        {
+
+            if( $entity instanceof SoftDeletableEntityInterface ){
+                $related_entities = $this->getAllRelatedEntities($entity);
+
+                if( empty($related_entities) ){
+                    return $entity;
+                }
+
+                foreach($related_entities as $related_entity){
+                    if( $related_entity instanceof SoftDeletableEntityInterface ){
+                        $related_entity->setDeleted(true);
+                    }
+                }
+
+            }else{
+                throw new Exception("This entity ({$class_name}) does not implements soft delete interface");
+            }
+
+        }
+        $this->entity_manager->commit();
+
+        return $entity;
+    }
+
+
+    /**
+     * @param array $entity_data
+     * @return object|null
+     */
+    private function getEntity(array $entity_data) {
+        $entity = null;
+
+        try {
+
+            if (array_key_exists('namespace', $entity_data) && array_key_exists('id', $entity_data)) {
+                $entity = $this->getDoctrine()->getRepository($entity_data['namespace'])->find($entity_data['id']);
+            }
+
+        } catch (ExceptionRepository $er) {
+            echo $er->getMessage();
+        }
+
+        return $entity;
     }
 
     /**
-     * @param string $table_name
-     * @return array
+     * @param $record
+     * @param EntityRepository $repository
+     * @return bool
+     * This method is used to define weather the record can be soft deleted or not,
+     * it has to handle all the variety of associations between records
+     * because for example it should not be possible to remove category when there are some other records in it
+     * @throws Exception
      */
-    public function getColumnsNamesForTableName(string $table_name): array
-    {
-        $schema_manager = $this->entity_manager->getConnection()->getSchemaManager();
-        $columns        = $schema_manager->listTableColumns($table_name);
+    private function hasRecordActiveRelatedEntities($record, $repository): bool {
 
-        $columns_names = [];
-        foreach($columns as $column){
-            $columns_names[] = $column->getName();
+        # First if this is not entity for some reason then ignore it, as this applies only to entities
+        $record_class_name  = get_class($record);
+        $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
+        $table_name         = $class_meta->getTableName();
+        $is_record_entity  = $this->isEntityClass($record_class_name);
+
+        if( !$is_record_entity ){
+            return false;
         }
 
-        return $columns_names;
+        # Second thing is that some tables have relation to self without foreign key - this must be checked separately
+        $parent_keys       = ['parent', 'parent_id', 'parentId', 'parentID'];
+        $has_self_relation = false;
+
+        foreach ($parent_keys as $key) {
+
+            if (property_exists($record, $key)) {
+                $child_record      = $repository->findBy([$key => $record->getId(), self::ENTITY_PROPERTY_DELETED => 0]);
+                $has_self_relation = true;
+            }
+
+            if (
+                isset($child_record)
+                &&  !empty($child_record)
+                &&  (
+                    (
+                        method_exists($child_record, self::ENTITY_GET_DELETED_METHOD_NAME)
+                        &&  !$child_record->getDeleted()
+                    )
+                    ||
+                    (
+                        method_exists($child_record, self::ENTITY_IS_DELETED_METHOD_NAME)
+                        &&  !$child_record->isDeleted()
+                    )
+                )
+            ) {
+                return true;
+            }
+
+        }
+
+        # Third
+        # We need to check weather we deal with parent or child
+        # the child can be removed, the problem is parent as with active children he must stay
+        # symfony adds _id to every foreign key so if there is property with _id we can assume that it is a children
+        # info: this may cause problems if there will be advanced(i doubt there will) relations (not just parent/child)
+
+        $columns_names = $this->getColumnsNamesForTableName($table_name);
+
+        foreach( $columns_names as $column_name ){
+            # we have a child so we can remove it
+            if( strstr($column_name, "_id") && !$has_self_relation ){
+                return false;
+            }
+        }
+
+        # we have parent so we need to check what's the state of all of his children
+        # we have to find which fields are relational ones
+
+        $related_entities = $this->getAllRelatedEntities($record);
+
+        foreach( $related_entities as $related_entity ){
+
+            if( method_exists($related_entity, self::ENTITY_GET_DELETED_METHOD_NAME) ){
+                $is_deleted = $related_entity->getDeleted();
+
+                if(!$is_deleted){
+                    return true;
+                }
+            }
+
+            if( method_exists($related_entity, self::ENTITY_IS_DELETED_METHOD_NAME) ){
+                $is_deleted = $related_entity->isDeleted();
+
+                if(!$is_deleted){
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
+
+    /**
+     * @param object $entity
+     * @return object
+     * @throws Exception
+     */
+    private function handleRecordActiveRelatedEntities($entity)
+    {
+
+        if( !is_object($entity) ) {
+            $message = $this->translator->translate("exceptions.general.providedEntityIsNotAnObject");
+            throw new Exception($message);
+        }
+
+        $class_name = get_class($entity);
+
+        switch( $class_name ){
+            case MyIssue::class:
+                {
+                    $this->handleCascadeSoftDeleteRelatedEntities($entity);
+                }
+                break;
+
+            default:
+                // do nothing
+                // no break
+        }
+
+        return $entity;
+    }
+
 }

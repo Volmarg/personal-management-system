@@ -2,13 +2,14 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsMonthlyRepository")
  * @ORM\Table(name="my_payment_monthly")
  */
-class MyPaymentsMonthly
+class MyPaymentsMonthly implements SoftDeletableEntityInterface
 {
 
     /**
@@ -109,7 +110,7 @@ class MyPaymentsMonthly
         return $this;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

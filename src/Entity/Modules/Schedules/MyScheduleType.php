@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Schedules;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Schedules\MyScheduleTypeRepository")
  */
-class MyScheduleType
+class MyScheduleType implements SoftDeletableEntityInterface
 {
     const FIELD_NAME = "deleted";
 
@@ -62,7 +63,7 @@ class MyScheduleType
         return $this;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

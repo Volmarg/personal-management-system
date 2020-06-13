@@ -1,6 +1,8 @@
 exceptions:
   general:
     missingRequiredParameter: 'Missing request parameter named: '
+    providedEntityIsNotAnObject: "Provided entity is not an object"
+    thisEntityIsNotSoftDeletable: "This entity is not soft deletable!"
   files:
     subdirectoryLocationMissingInRequest: "Subdirectory location is missing in request."
     cannotRemoveMainFolder: "Cannot remove main folder!"

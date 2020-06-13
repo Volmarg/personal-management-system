@@ -2,13 +2,14 @@
 
 namespace App\Entity\Modules\Passwords;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsGroupsRepository")
  * @ORM\Table(name="my_password_group")
  */
-class MyPasswordsGroups
+class MyPasswordsGroups implements SoftDeletableEntityInterface
 {
     /**
      * @ORM\Id()
@@ -44,7 +45,7 @@ class MyPasswordsGroups
         return $this;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

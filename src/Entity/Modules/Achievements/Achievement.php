@@ -2,12 +2,13 @@
 
 namespace App\Entity\Modules\Achievements;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Achievements\AchievementRepository")
  */
-class Achievement {
+class Achievement implements SoftDeletableEntityInterface {
 
     public const ENUM_SIMPLE = 'simple';
     public const ENUM_MEDIUM = 'medium';
@@ -75,7 +76,7 @@ class Achievement {
         return $this;
     }
 
-    public function getDeleted(): ?bool {
+    public function isDeleted(): ?bool {
         return $this->deleted;
     }
 

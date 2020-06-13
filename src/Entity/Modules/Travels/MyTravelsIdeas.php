@@ -2,13 +2,14 @@
 
 namespace App\Entity\Modules\Travels;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Travels\MyTravelsIdeasRepository")
  * @ORM\Table(name="my_travel_idea")
  */
-class MyTravelsIdeas
+class MyTravelsIdeas implements SoftDeletableEntityInterface
 {
     /**
      * @ORM\Id()
@@ -112,7 +113,7 @@ class MyTravelsIdeas
         return $this;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Passwords;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use SpecShaper\EncryptBundle\Annotations\Encrypted;
 
@@ -9,7 +10,8 @@ use SpecShaper\EncryptBundle\Annotations\Encrypted;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsRepository")
  * @ORM\Table(name="my_password")
  */
-class MyPasswords {
+class MyPasswords implements SoftDeletableEntityInterface
+{
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -93,7 +95,7 @@ class MyPasswords {
         return $this;
     }
 
-    public function getDeleted(): ?bool {
+    public function isDeleted(): ?bool {
         return $this->deleted;
     }
 

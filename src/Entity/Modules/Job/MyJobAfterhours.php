@@ -2,13 +2,15 @@
 
 namespace App\Entity\Modules\Job;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobAfterhoursRepository")
  * @ORM\Table(name="my_job_afterhour")
  */
-class MyJobAfterhours {
+class MyJobAfterhours implements SoftDeletableEntityInterface
+{
 
     public const TYPE_SPENT = 'spent';
 
@@ -113,7 +115,7 @@ class MyJobAfterhours {
         return $this;
     }
 
-    public function getGoal(): ?string {
+    public function isDeleted(): ?bool {
         return $this->goal;
     }
 

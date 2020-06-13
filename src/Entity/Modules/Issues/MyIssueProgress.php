@@ -2,13 +2,15 @@
 
 namespace App\Entity\Modules\Issues;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Issues\MyIssueProgressRepository")
  */
-class MyIssueProgress {
+class MyIssueProgress implements SoftDeletableEntityInterface
+{
 
     const FIELD_NAME_DELETED  = "deleted";
     const FIELD_NAME_RESOLVED = "resolved";

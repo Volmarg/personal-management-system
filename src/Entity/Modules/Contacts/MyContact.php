@@ -3,12 +3,14 @@
 namespace App\Entity\Modules\Contacts;
 
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Contacts\MyContactRepository")
  */
-class MyContact {
+class MyContact implements SoftDeletableEntityInterface
+{
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -159,7 +161,7 @@ class MyContact {
         return $this;
     }
 
-    public function getDeleted(): ?bool {
+    public function isDeleted(): ?bool {
         return $this->deleted;
     }
 

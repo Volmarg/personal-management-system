@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Goals;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsRepository")
  * @ORM\Table(name="my_goal")
  */
-class MyGoals
+class MyGoals implements SoftDeletableEntityInterface
 {
     /**
      * @ORM\Id()
@@ -83,7 +84,7 @@ class MyGoals
         return $this;
     }
 
-    public function getDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
         return $this->deleted;
     }
