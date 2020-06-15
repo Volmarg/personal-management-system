@@ -14,3 +14,4 @@ twig:
         'core/form-types/indentchoice/fields.html.twig']
     globals:
         id_column: 'id'
+    exception_controller: null

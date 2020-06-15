@@ -21,6 +21,7 @@
         "php": "^7.2.0",
         "ext-iconv": "*",
         "beberlei/DoctrineExtensions": "^1.2",
+        "cweagans/composer-patches": "^1.6",
         "friendsofsymfony/user-bundle": "dev-master",
         "google/apiclient": "^2.0",
         "ramsey/uuid": "^3.8",
@@ -56,8 +57,7 @@
         "symfony/css-selector": "^4.0",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^4.0",
-        "symfony/profiler-pack": "^1.0",
-        "symfony/web-server-bundle": "^4.0"
+        "symfony/profiler-pack": "^1.0"
     },
     "config": {
         "preferred-install": {

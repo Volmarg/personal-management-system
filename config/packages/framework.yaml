@@ -30,10 +30,6 @@ framework:
         # feature is supported in Symfony 3.3 and higher
         json_manifest_path: '%kernel.project_dir%/public/assets/manifest.json'
 
-
-    templating:
-        engines: ['twig']
-
     translator: ~
 
     csrf_protection:
