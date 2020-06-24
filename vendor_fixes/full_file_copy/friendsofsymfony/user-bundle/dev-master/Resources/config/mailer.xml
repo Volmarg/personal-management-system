@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="fos_user.resetting.email.template">@FOSUser/Resetting/email.txt.twig</parameter>
+        <parameter key="fos_user.registration.confirmation.template">@FOSUser/Registration/email.txt.twig</parameter>
+        <parameter key="fos_user.registration.confirmation.from_email" type="collection">
+            <parameter key="no-registration@acme.com">Acme Ltd</parameter>
+        </parameter>
+        <parameter key="fos_user.resetting.email.from_email" type="collection">
+            <parameter key="no-resetting@acme.com">Acme Ltd</parameter>
+        </parameter>
+    </parameters>
+
+    <services>
+        <service id="fos_user.mailer.default" class="FOS\UserBundle\Mailer\Mailer" public="false">
+            <argument type="service" id="mailer" />
+            <argument type="service" id="router" />
+            <argument type="service" id="twig" />
+            <argument type="collection">
+                <argument key="confirmation.template">%fos_user.registration.confirmation.template%</argument>
+                <argument key="resetting.template">%fos_user.resetting.email.template%</argument>
+                <argument key="from_email" type="collection">
+                    <argument key="confirmation">%fos_user.registration.confirmation.from_email%</argument>
+                    <argument key="resetting">%fos_user.resetting.email.from_email%</argument>
+                </argument>
+            </argument>
+            <tag name="fos_user.requires_swift" />
+        </service>
+
+        <service id="fos_user.mailer.twig_swift" class="FOS\UserBundle\Mailer\TwigSwiftMailer" public="false">
+            <argument type="service" id="mailer" />
+            <argument type="service" id="router" />
+            <argument type="service" id="twig" />
+            <argument type="collection">
+                <argument key="template" type="collection">
+                    <argument key="confirmation">%fos_user.registration.confirmation.template%</argument>
+                    <argument key="resetting">%fos_user.resetting.email.template%</argument>
+                </argument>
+                <argument key="from_email" type="collection">
+                    <argument key="confirmation">%fos_user.registration.confirmation.from_email%</argument>
+                    <argument key="resetting">%fos_user.resetting.email.from_email%</argument>
+                </argument>
+            </argument>
+            <tag name="fos_user.requires_swift" />
+        </service>
+
+        <service id="fos_user.mailer.noop" class="FOS\UserBundle\Mailer\NoopMailer" public="false" />
+    </services>
+
+</container>

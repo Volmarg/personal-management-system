@@ -20,6 +20,7 @@
     "require": {
         "php": "^7.2.0",
         "ext-iconv": "*",
+        "ext-json": "*",
         "beberlei/DoctrineExtensions": "^1.2",
         "cweagans/composer-patches": "^1.6",
         "friendsofsymfony/user-bundle": "dev-master",
@@ -27,6 +28,7 @@
         "ramsey/uuid": "^3.8",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
+        "slowprog/composer-copy-file": "^0.3.2",
         "specshaper/encrypt-bundle": "^1.1",
         "symfony/asset": "^4.0",
         "symfony/console": "^4.0",
@@ -90,11 +92,11 @@
         },
         "post-install-cmd": [
             "clear",
+            "SlowProg\\CopyFile\\ScriptHandler::copy",
             "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty"
-
         ],
         "post-update-cmd": [
-
+            "SlowProg\\CopyFile\\ScriptHandler::copy"
         ]
     },
     "conflict": {
@@ -104,6 +106,9 @@
         "symfony": {
             "id": "01C3E63HMJ6KB4VE7A0XNTH8PS",
             "allow-contrib": false
+        },
+        "copy-file": {
+            "vendor_fixes/full_file_copy/friendsofsymfony/user-bundle/dev-master/": "vendor/friendsofsymfony/user-bundle/"
         }
     }
 }

@@ -212,6 +212,9 @@
             "ref": "e65a105bf4cd5b1b79012ba029954927f05922e8"
         }
     },
+    "slowprog/composer-copy-file": {
+        "version": "0.3.2"
+    },
     "specshaper/encrypt-bundle": {
         "version": "v1.1.0"
     },
