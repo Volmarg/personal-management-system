@@ -134,4 +134,12 @@ class MyJobAfterhours implements SoftDeletableEntityInterface
 
         return $this;
     }
+
+    /**
+     * @return string | null
+     */
+    public function getGoal():?string {
+        return $this->goal;
+    }
+
 }
