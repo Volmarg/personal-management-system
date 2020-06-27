@@ -119,21 +119,23 @@ export default (function () {
             $button.off('click');
             $button.on('click', function() {
                 if( isUnlocked ){
-                    ui.lockedResource.ajaxToggleSystemLock("");
+                    ui.lockedResource.ajaxToggleSystemLock("", isUnlocked);
                     return;
                 }
 
-                dialogs.ui.systemLock.buildSystemToggleLockDialog();
+                dialogs.ui.systemLock.buildSystemToggleLockDialog(null, isUnlocked);
             });
         },
         /**
          * Sends the request to unlock the resources for whole system
-         * @param password {string}
+         * @param password   {string}
+         * @param isUnlocked {boolean}
          */
-        ajaxToggleSystemLock: function(password){
+        ajaxToggleSystemLock: function(password, isUnlocked){
 
             let data = {
-                "systemLockPassword": password
+                "systemLockPassword": password,
+                "isUnlocked"        : isUnlocked,
             };
             ui.widgets.loader.showLoader();
 
@@ -166,7 +168,7 @@ export default (function () {
 
                     bootstrap_notifications.showGreenNotification(message);
 
-                    // no ajax reload for this as there is also menu to be changed etc.
+                    // now ajax reload for this as there is also menu to be changed etc.
                     ui.widgets.loader.showLoader();
                     window.location.reload();
                 }

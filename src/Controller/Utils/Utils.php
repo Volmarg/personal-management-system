@@ -3,6 +3,7 @@
 namespace App\Controller\Utils;
 
 use App\Services\Files\FileTagger;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -38,7 +39,7 @@ class Utils extends AbstractController {
      * @param string $source
      * @param string $destination
      * @param \App\Services\Files\FileTagger $file_tagger
-     * @throws \Exception
+     * @throws Exception
      */
     public static function copyFiles(string $source, string $destination, FileTagger $file_tagger) {
         $finder = new Finder();
@@ -186,5 +187,26 @@ class Utils extends AbstractController {
         $single_quote_json = str_replace('"','\"' , $json);
 
         return $single_quote_json;
+    }
+
+    /**
+     * @param string $string
+     * @return bool
+     * @throws Exception
+     */
+    public static function getBoolRepresentationOfBoolString(string $string): bool
+    {
+        $true  = "true";
+        $false = "false";
+
+        $allowed_values = [
+            $true, $false
+        ];
+
+        if( !in_array($string, $allowed_values) ){
+            throw new Exception("Not a bool string");
+        }
+
+        return $true === $string;
     }
 }

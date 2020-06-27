@@ -533,9 +533,10 @@ export default (function () {
         systemLock:{
             /**
              * Build dialog with confirmation about setting/removing lock for entire system
-             * @param callback {function}
+             * @param callback   {function}
+             * @param isUnlocked {boolean}
              */
-            buildSystemToggleLockDialog: function (callback = null) {
+            buildSystemToggleLockDialog: function (callback = null, isUnlocked) {
                 let _this = this;
                 let url   = dialogs.ui.methods.systemLockResourcesDialogTemplate;
 
@@ -547,7 +548,7 @@ export default (function () {
                     ui.widgets.loader.toggleLoader();
 
                     if( undefined !== data['template'] ){
-                        _this.callSystemToggleLockDialog(data['template'], callback);
+                        _this.callSystemToggleLockDialog(data['template'], callback, isUnlocked);
                     } else if( undefined !== data['errorMessage'] ) {
                         bootstrap_notifications.notify(data['errorMessage'], 'danger');
                     }else{
@@ -560,10 +561,11 @@ export default (function () {
             },
             /**
              * Call dialog with confirmation about setting/removing lock for entire system
-             * @param template {string}
-             * @param callback {function}
+             * @param template   {string}
+             * @param callback   {function}
+             * @param isUnlocked {boolean}
              */
-            callSystemToggleLockDialog: function (template, callback = null) {
+            callSystemToggleLockDialog: function (template, callback = null, isUnlocked) {
 
                 let dialog = bootbox.alert({
                     size: "large",
@@ -593,7 +595,7 @@ export default (function () {
                     $systemLockPasswordSubmit.on('click', function (event) {
                         event.preventDefault();
                         let password = $systemLockPasswordInput.val();
-                        ui.lockedResource.ajaxToggleSystemLock(password);
+                        ui.lockedResource.ajaxToggleSystemLock(password, isUnlocked);
                     })
                 });
             },

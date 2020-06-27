@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-use mysql_xdevapi\Exception;
+use Exception;
 
 class AbstractDTO{
 
@@ -14,14 +14,14 @@ class AbstractDTO{
      * @param string $key
      * @param bool $asString
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public static function checkAndGetKey(array $array, string $key, bool $asString = true) {
 
         if( array_key_exists($key, $array) ){
             $value = $array[$key];
         }else{
-            throw new \Exception("{$key} was not found in array made from json in class: " . __CLASS__);
+            throw new Exception("{$key} was not found in array made from json in class: " . __CLASS__);
         }
 
         if( $asString && is_array($value)){

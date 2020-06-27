@@ -70,6 +70,7 @@ responses:
     missingFormInput: 'Missing form input named: '
     arrayInResponseIsMissingParameterNamed: "Array in response in missing parameter named: "
     invalidParameterValue: "Invalid Parameter Value"
+    youAreNotAllowedToCallThisLogic: "You are not allowed to call this logic"
   repositories:
     recordDeletedSuccessfully: 'Record was deleted successfully'
     couldNotDeleteRecord: 'Record could not been deleted'

@@ -16,14 +16,8 @@ class LockedResourceController extends AbstractController {
      */
     private $app;
 
-    /**
-     * @var UserRolesSessionService $user_roles_session_service
-     */
-    private $user_roles_session_service;
-
-    public function __construct(Application $app, UserRolesSessionService $user_roles_session_service) {
-        $this->user_roles_session_service = $user_roles_session_service;
-        $this->app                        = $app;
+    public function __construct(Application $app) {
+        $this->app = $app;
     }
 
     /**
@@ -78,7 +72,7 @@ class LockedResourceController extends AbstractController {
      */
     public function isSystemLocked(): bool
     {
-        return !$this->user_roles_session_service->hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        return !UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
     }
 
     /**

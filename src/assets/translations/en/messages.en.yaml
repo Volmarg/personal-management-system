@@ -21,6 +21,7 @@ messages:
     wholeSystemWasLocked: "Whole system was locked"
     wholeSystemHasBeenUnlocked: "Whole system has been unlocked"
     failedToToggleLockForWholeSystem: "Failed to toggle lock for whole system"
+    unlockExpiredReloadingPage: "Unlock expired, reloading page"
   general:
     noEntityWasFoundForId: "No entity was found for id: "
     noSuchRepositoryWasFound: "No such repository was found: "

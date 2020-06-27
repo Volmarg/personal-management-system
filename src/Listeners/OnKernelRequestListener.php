@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
 use App\Services\Core\Translator;
+use App\Services\Session\ExpirableSessionsService;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
@@ -43,25 +45,33 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private $security_logger;
 
     /**
-     * @var \App\Services\Core\Translator $translator
+     * @var Translator $translator
      */
     private $translator;
 
-    public function __construct(Logger $security_logger, Translator $translator) {
-        $this->security_logger = $security_logger->getSecurityLogger();
-        $this->translator      = $translator;
+    /**
+     * @var ExpirableSessionsService $expirable_sessions_service
+     */
+    private $expirable_sessions_service;
+
+    public function __construct(Logger $security_logger, Translator $translator, ExpirableSessionsService $sessions_service) {
+        $this->security_logger  = $security_logger->getSecurityLogger();
+        $this->expirable_sessions_service = $sessions_service;
+        $this->translator       = $translator;
     }
 
     /**
      * @param RequestEvent $ev
      * @throws SecurityException
-     * 
+     * @throws Exception
+     *
      */
     public function onRequest(RequestEvent $ev)
     {
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         //$this->blockIp($ev); #unlock for personal needs
+        $this->handleSessionsLifetimes();
     }
 
     public static function getSubscribedEvents() {
@@ -147,5 +157,13 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             throw new SecurityException($exception_message);
         }
 
+    }
+
+    /**
+     * This method will either extend session lifetime, or invalidate data in session after given idle time
+     * @throws Exception
+     */
+    private function handleSessionsLifetimes() {
+        $this->expirable_sessions_service->handleSessionExpiration();
     }
 }

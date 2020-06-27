@@ -3,6 +3,7 @@
 parameters:
     locale: 'en'
     encrypt_key: 'yJouvLW2cs-jfzMg5Mg52FiRU1YPBSjflcMgQTKqCt8r'
+    session_data.lifetime.system_lock: 900 #in seconds
 
 services:
     # default configuration for services in *this* file
@@ -47,6 +48,11 @@ services:
         decorates: fos_user.command.create_user
         bind:
             $userManipulator: "@fos_user.util.user_manipulator"
+
+    App\Services\ConfigLoaders\ConfigLoaderSession:
+        public: true
+        arguments:
+          $system_lock_lifetime: '%session_data.lifetime.system_lock%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

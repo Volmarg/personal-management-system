@@ -39,3 +39,7 @@ logs:
     visitedPageWithUnallowedMethod: "Visited page with unallowed method"
   notes:
     parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: "Parent child hierarchy - category has children but it is missing in categories depths"
+  sessions:
+    removingRolesFromSession: "Removing roles from session"
+    noSessionDataWasFoundForGivenKey: "No session data was found for given key"
+    sessionsDataForGivenKeyHasExpired: "Session data for given key has expired"

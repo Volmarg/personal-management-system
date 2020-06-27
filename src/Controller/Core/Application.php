@@ -1,15 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: volmarg
- * Date: 29.05.19
- * Time: 20:59
- */
-
 namespace App\Controller\Core;
 
 
-use App\Controller\Core\Settings;
 use App\Controller\Utils\Utils;
 use App\Services\Core\Logger;
 use App\Services\Core\Translator;
@@ -60,6 +52,11 @@ class Application extends AbstractController {
      */
     public $translations;
 
+    /**
+     * @var ConfigLoaders $config_loaders
+     */
+    public $config_loaders;
+
     public function __construct(
         Repositories            $repositories,
         Forms                   $forms,
@@ -67,7 +64,8 @@ class Application extends AbstractController {
         LoggerInterface         $logger,
         Settings                $settings,
         Logger                  $custom_loggers,
-        TranslatorInterface     $translator
+        TranslatorInterface     $translator,
+        ConfigLoaders           $config_loaders
     ) {
         $this->custom_loggers   = $custom_loggers;
         $this->repositories     = $repositories;
@@ -76,6 +74,7 @@ class Application extends AbstractController {
         $this->forms            = $forms;
         $this->em               = $em;
         $this->translator       = new Translator($translator);
+        $this->config_loaders   = $config_loaders;
     }
 
     /**
