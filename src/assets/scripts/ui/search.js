@@ -76,7 +76,9 @@ export default (function () {
                     }).always((data)=>{
                         ui.widgets.loader.hideLoader();
 
-                        let resultsCount = data['searchResults'].length;
+                        let resultsCount  = data['searchResults'].length;
+                        let reloadPage    = data['reload_page'];
+                        let reloadMessage = data['reload_message'];
 
                         if( 0 === resultsCount ){
                             bootstrap_notifications.notify("No results for given tags.", 'danger');
@@ -93,7 +95,12 @@ export default (function () {
 
                         bootstrap_notifications.notify("Found " + resultsCount + " matching result/s", 'success');
 
-
+                        if( reloadPage ){
+                            if( "" !== reloadMessage ){
+                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                            }
+                            location.reload();
+                        }
                     })
                 }, 2000)
 

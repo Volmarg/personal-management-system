@@ -201,8 +201,10 @@ export default (function () {
                         ui.widgets.loader.hideLoader();
 
                         try{
-                            var code    = data['code'];
-                            var message = data['message'];
+                            var code          = data['code'];
+                            var message       = data['message'];
+                            var reloadPage    = data['reload_page'];
+                            var reloadMessage = data['reload_message'];
                         } catch(Exception){
                             throw({
                                 "message"   : "Could not handle ajax call",
@@ -223,6 +225,13 @@ export default (function () {
                         }
 
                         ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+
+                        if( reloadPage ){
+                            if( "" !== reloadMessage ){
+                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                            }
+                            location.reload();
+                        }
                     });
                 });
             },
@@ -290,8 +299,10 @@ export default (function () {
                                 ui.widgets.loader.hideLoader();
 
                                 try{
-                                    var code    = data['code'];
-                                    var message = data['message'];
+                                    var code          = data['code'];
+                                    var message       = data['message'];
+                                    var reloadPage    = data['reload_page'];
+                                    var reloadMessage = data['reload_message'];
                                 } catch(Exception){
                                     throw({
                                         "message"   : "Could not handle ajax call",
@@ -314,6 +325,13 @@ export default (function () {
 
                                 if( "function" === typeof afterRemovalCallback ) {
                                     afterRemovalCallback();
+                                }
+
+                                if( reloadPage ){
+                                    if( "" !== reloadMessage ){
+                                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                                    }
+                                    location.reload();
                                 }
 
                             });
@@ -416,9 +434,11 @@ export default (function () {
                                 let $twigBodySection = $('.twig-body-section');
 
                                 try{
-                                    var code     = data['code'];
-                                    var message  = data['message'];
-                                    var template = data['template'];
+                                    var code          = data['code'];
+                                    var message       = data['message'];
+                                    var template      = data['template'];
+                                    var reloadPage    = data['reload_page'];
+                                    var reloadMessage = data['reload_message'];
                                 } catch(Exception){
                                     throw({
                                         "message"   : "Could not handle ajax call",
@@ -452,6 +472,12 @@ export default (function () {
 
                                 bootstrap_notifications.showGreenNotification(message);
 
+                                if( reloadPage ){
+                                    if( "" !== reloadMessage ){
+                                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                                    }
+                                    location.reload();
+                                }
                             });
                         }
                     }
@@ -492,8 +518,11 @@ export default (function () {
                             ui.widgets.loader.hideLoader();
 
                             try{
-                                var message  = data['message'];
-                                var password = data['password'];
+                                var message       = data['message'];
+                                var password      = data['password'];
+                                var reloadPage    = data['reload_page'];
+                                var reloadMessage = data['reload_message'];
+
                             } catch(Exception){
                                 throw({
                                     "message"   : "Could not handle ajax call",
@@ -521,13 +550,16 @@ export default (function () {
 
                             bootstrap_notifications.showGreenNotification(copy_data.success_message);
 
+                            if( reloadPage ){
+                                if( "" !== reloadMessage ){
+                                    bootstrap_notifications.showBlueNotification(reloadMessage);
+                                }
+                                location.reload();
+                            }
                         });
-
                     })
-
                 });
             }
-
         },
         attachContentSaveEventOnSaveIcon: function () {
             let _this      = this;
@@ -647,6 +679,17 @@ export default (function () {
                         return;
                     }
 
+                    try{
+                            reloadPage    = data['reload_page'];
+                        var reloadMessage = data['reload_message'];
+                    } catch(Exception){
+                        throw({
+                            "message"   : "Could not handle ajax call",
+                            "data"      : data,
+                            "exception" : Exception
+                        })
+                    }
+
                     if( 200 != code ){
                         ui.widgets.loader.hideLoader();
                         bootstrap_notifications.showRedNotification(message);
@@ -685,6 +728,13 @@ export default (function () {
                     ui.widgets.loader.hideLoader();
 
                     bootstrap_notifications.showGreenNotification(message);
+
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 });
 
                 event.preventDefault();
@@ -705,9 +755,12 @@ export default (function () {
                     ui.widgets.loader.hideLoader();
 
                     try{
-                        var code     = data['code'];
-                        var message  = data['message'];
-                        var template = data['template'];
+                        var code          = data['code'];
+                        var message       = data['message'];
+                        var template      = data['template'];
+                        var reloadPage    = data['reload_page'];
+                        var reloadMessage = data['reload_message'];
+
                     } catch(Exception){
                         throw({
                             "message"   : "Could not handle ajax call",
@@ -726,6 +779,12 @@ export default (function () {
                     $('.twig-body-section').html(template);
                     initializer.reinitialize();
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 });
 
                 event.preventDefault();
@@ -833,8 +892,10 @@ export default (function () {
             }).always((data) => {
 
                 try{
-                    var code    = data['code'];
-                    var message = data['message'];
+                    var code          = data['code'];
+                    var message       = data['message'];
+                    var reloadPage    = data['reload_page'];
+                    var reloadMessage = data['reload_message'];
                 } catch(Exception){
                     throw({
                         "message"   : "Could not handle ajax call",
@@ -865,6 +926,13 @@ export default (function () {
                 }
 
                 ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
+
+                if( reloadPage ){
+                    if( "" !== reloadMessage ){
+                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                    }
+                    location.reload();
+                }
             });
         },
         removeDataTableTableRow: function (table_id, tr_parent_element) {

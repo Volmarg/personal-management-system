@@ -127,9 +127,10 @@ export default (function () {
                         ui.widgets.loader.toggleLoader();
 
                         try{
-                            var template     = data['template'];
-                            var errorMessage = data['errorMessage'];
-
+                            var template      = data['template'];
+                            var errorMessage  = data['errorMessage'];
+                            var reloadPage    = data['reload_page'];
+                            var reloadMessage = data['reload_message'];
                         }catch(Exception){
                             throw{
                                 "message"   : "Unable to extract data from ajax response",
@@ -146,8 +147,13 @@ export default (function () {
                             bootstrap_notifications.notify(message, 'danger');
                         }
 
+                        if( reloadPage ){
+                            if( "" !== reloadMessage ){
+                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                            }
+                            location.reload();
+                        }
                     })
-
                 });
             },
             /**
@@ -191,6 +197,9 @@ export default (function () {
                 }).always((data) => {
                     ui.widgets.loader.toggleLoader();
 
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
+
                     if( undefined !== data['template'] ){
                         _this.callDialog(data['template'], callback);
                     } else if(undefined !== data['errorMessage']) {
@@ -200,6 +209,12 @@ export default (function () {
                         bootstrap_notifications.notify(message, 'danger');
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
             },
             /**
@@ -262,6 +277,9 @@ export default (function () {
                 }).always((data) => {
                     ui.widgets.loader.toggleLoader();
 
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
+
                     if( undefined !== data['template'] ){
                         _this.callDataTransferDialog(data['template'], callback);
                     } else if(undefined !== data['errorMessage']) {
@@ -271,8 +289,13 @@ export default (function () {
                         bootstrap_notifications.notify(message, 'danger');
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
-
             },
             callDataTransferDialog: function (template, callback = null) {
 
@@ -328,8 +351,10 @@ export default (function () {
                 }).always( (data) => {
                     ui.widgets.loader.toggleLoader();
 
-                    let responseCode = data['response_code'];
-                    let message      = data['response_message'];
+                    let responseCode  = data['response_code'];
+                    let message       = data['response_message'];
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
                     let notifyType   = '';
 
                     if( responseCode === 200 ){
@@ -354,9 +379,14 @@ export default (function () {
                     if( undefined !== message ){
                         bootstrap_notifications.notify(message, notifyType);
                     }
-                    
-                })
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
+                })
             },
         },
         tagManagement: {
@@ -377,6 +407,9 @@ export default (function () {
                 }).always((data) => {
                     ui.widgets.loader.toggleLoader();
 
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
+
                     if( undefined !== data['template'] ){
                         _this.callTagManagementDialog(data['template'], callback);
                     } else if( undefined !== data['errorMessage'] ) {
@@ -386,8 +419,13 @@ export default (function () {
                         bootstrap_notifications.notify(message, 'danger');
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
-
             },
             callTagManagementDialog: function (template, callback = null) {
 
@@ -451,8 +489,10 @@ export default (function () {
                     data: data
                 }).always( (data) => {
                     ui.widgets.loader.toggleLoader();
-                    let responseCode = data['response_code'];
-                    let message      = data['response_message'];
+                    let responseCode  = data['response_code'];
+                    let message       = data['response_message'];
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
                     let notifyType   = '';
 
                     if( responseCode === 200 ){
@@ -472,9 +512,13 @@ export default (function () {
                         bootstrap_notifications.notify(message, notifyType);
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
-
-
             }
         },
         notePreview: {
@@ -493,6 +537,9 @@ export default (function () {
                 }).always((data) => {
                     ui.widgets.loader.toggleLoader();
 
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
+
                     if( undefined !== data['template'] ){
                         _this.callTagManagementDialog(data['template'], callback);
                     } else if( undefined !== data['errorMessage'] ) {
@@ -502,8 +549,13 @@ export default (function () {
                         bootstrap_notifications.notify(message, 'danger');
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
-
             },
             callTagManagementDialog: function (template, callback = null) {
 
@@ -547,6 +599,9 @@ export default (function () {
                 }).always((data) => {
                     ui.widgets.loader.toggleLoader();
 
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
+
                     if( undefined !== data['template'] ){
                         _this.callSystemToggleLockDialog(data['template'], callback, isUnlocked);
                     } else if( undefined !== data['errorMessage'] ) {
@@ -556,8 +611,13 @@ export default (function () {
                         bootstrap_notifications.notify(message, 'danger');
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
-
             },
             /**
              * Call dialog with confirmation about setting/removing lock for entire system
@@ -614,6 +674,9 @@ export default (function () {
                 }).always((data) => {
                     ui.widgets.loader.toggleLoader();
 
+                    let reloadPage    = data['reload_page'];
+                    let reloadMessage = data['reload_message'];
+
                     if( undefined !== data['template'] ){
                         _this.callCreateLockPasswordForSystemDialog(data['template'], callback);
                     } else if( undefined !== data['errorMessage'] ) {
@@ -623,8 +686,13 @@ export default (function () {
                         bootstrap_notifications.notify(message, 'danger');
                     }
 
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 })
-
             },
             /**
              * Calls dialog for creating first time lock password

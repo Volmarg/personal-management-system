@@ -71,7 +71,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         //$this->blockIp($ev); #unlock for personal needs
-        $this->handleSessionsLifetimes();
+        $this->handleSessionsLifetimes($ev);
     }
 
     public static function getSubscribedEvents() {
@@ -161,9 +161,12 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
     /**
      * This method will either extend session lifetime, or invalidate data in session after given idle time
+     * @param RequestEvent $event
      * @throws Exception
      */
-    private function handleSessionsLifetimes() {
-        $this->expirable_sessions_service->handleSessionExpiration();
+    private function handleSessionsLifetimes(RequestEvent $event): void
+    {
+        $request = $event->getRequest();
+        $this->expirable_sessions_service->handleSessionExpiration($request);
     }
 }

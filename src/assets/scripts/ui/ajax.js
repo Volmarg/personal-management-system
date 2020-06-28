@@ -13,15 +13,27 @@ export default (function () {
             getFormView: {
                 url: '/api/get-form-view-by-class-name',
                 method: "POST"
+            },
+            getTemplateData: {
+                url: '/api/get-template-data', // not implemented on backend
+                method: "GET"
             }
+        },
+        data: {
+          reloadTargetElementData : "data-reload-target-element-data",
+          targetElementSelector   : "data-target-element-selector",
+          templateLocation        : "data-template-location",
+          templateData            : "data-template-data",
+          jsLogic                 : "data-js-logic"
         },
         init: function(){
             this.attachModuleContentLoadingViaAjaxOnMenuLinks();
         },
-
-        entireMenuReload: function(){
-
-        },
+        /**
+         * Will reload menu node
+         * @param menuNodeModuleName
+         * @param returnNotification
+         */
         singleMenuNodeReload: function(menuNodeModuleName = null, returnNotification = false) {
 
             let $menuNode = null;
@@ -65,6 +77,8 @@ export default (function () {
                 let message          = data['message'];
                 let code             = data['code'];
                 let tpl              = data['tpl'];
+                let reloadPage       = data['reload_page'];
+                let reloadMessage    = data['reload_message'];
                 let notificationType = ( code == 200 ? "success" : "danger" );
 
                 if( "undefined" === typeof message ){
@@ -82,9 +96,18 @@ export default (function () {
                 }
 
                 this.attachModuleContentLoadingViaAjaxOnMenuLinks();
-            });
 
+                if( reloadPage ){
+                    if( "" !== reloadMessage ){
+                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                    }
+                    location.reload();
+                }
+            });
         },
+        /**
+         * Attaches ajax call event `onclick` - will reload main content of module
+         */
         attachModuleContentLoadingViaAjaxOnMenuLinks: function(){
 
             let _this = this;
@@ -144,9 +167,11 @@ export default (function () {
                 let twigBodySection = $('.twig-body-section');
 
                 try{
-                    var code     = data['code'];
-                    var message  = data['message'];
-                    var template = data['template'];
+                    var code          = data['code'];
+                    var message       = data['message'];
+                    var template      = data['template'];
+                    var reloadPage    = data['reload_page'];
+                    var reloadMessage = data['reload_message'];
                 } catch(Exception){
                     throw({
                         "message"   : "Could not handle ajax call",
@@ -175,8 +200,13 @@ export default (function () {
                     ui.masonry.init();
                 });
 
+                if( reloadPage ){
+                    if( "" !== reloadMessage ){
+                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                    }
+                    location.reload();
+                }
             });
-
         },
         /**
          * This function will get the form view for namespace if such form exists, otherwise - error
@@ -201,8 +231,11 @@ export default (function () {
             }).always((data) => {
                 ui.widgets.loader.hideLoader();
 
-                let error    = data['error'];
-                let formView = data['form_view'];
+                let error         = data['error'];
+                let formView      = data['form_view'];
+                let reloadPage    = data['reload_page'];
+                let reloadMessage = data['reload_message'];
+
 
                 if( "undefined" !== typeof error ){
                     bootstrap_notifications.notify(error, 'danger');
@@ -218,8 +251,107 @@ export default (function () {
                     callback(formView);
                 }
 
+                if( reloadPage ){
+                    if( "" !== reloadMessage ){
+                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                    }
+                    location.reload();
+                }
             });
+        },
+        /**
+         * @deprecated - not used and not tested after adding
+         * @description
+         * - fetches template content,
+         * - uses the provided data to generate template,
+         * - inserts template data into target element,
+         * - attaches additional js logic,
+         */
+        reloadTargetPageElementByTemplateLocationAndTemplateDataOnClick: function(){
 
+            let $allElementsToAttachEventOn = $(this.data.reloadTargetElementData + "=[true]");
+            let _this                       = this;
+
+            $.each($allElementsToAttachEventOn, function(element, index){
+               let $element = $(element);
+
+               $element.on('click', function(){
+
+                   let targetElementSelector = $element.attr(_this.data.targetElementSelector);
+                   let templateLocation      = $element.attr(_this.data.templateLocation);
+                   let templateData          = $element.attr(_this.data.templateData);
+                   let jsLogic               = $element.attr(_this.data.jsLogic);
+
+                   let $targetElement = $(targetElementSelector);
+
+                   if( 0 === $targetElement.length ){
+                       throw({
+                          "message"  : "No element was found for given selector",
+                          "selector" : targetElementSelector
+                       });
+                   }else if(1 < $targetElement.length){
+                       throw({
+                           "message"  : "More than one element was found for given selector",
+                           "selector" : targetElementSelector,
+                           "elements" : $targetElement
+                       })
+                   }
+
+                    let callbackAfterGettingRenderedTemplate = function(renderedTemplate){
+                       $targetElement.html(renderedTemplate);
+                       let func = new Function(jsLogic);
+                       func();
+                    };
+
+                   let dataArray = {
+                       'templateLocation' : templateLocation,
+                       'templateData'     : templateData,
+                   };
+
+                   _this.getRenderedTemplateForTemplateLocationAndData(dataArray, callbackAfterGettingRenderedTemplate)
+
+               })
+            });
+        },
+        /**
+         * @deprecated - not used and not tested after adding
+         * @param dataArray  {object}
+         * @param callback   {function}
+         */
+        getRenderedTemplateForTemplateLocationAndData: function(dataArray, callback = null){
+
+            let _this = this;
+
+            $.ajax({
+                url: _this.methods.getTemplateData,
+                data: dataArray,
+            }).always(function(data){
+
+                try{
+                    var template      = data['template'];
+                    var code          = data['code'];
+                    var reloadPage    = data['reload_page'];
+                    var reloadMessage = data['reload_message'];
+                }catch(Exception){
+                    throw{
+                        "message": "Exception was throw while trying to get data from ajax get rendered template",
+                        "exc"    : Exception,
+                    }
+                }
+
+                if( 200 == code){
+                    if( "function" === typeof callback ){
+                        callback(template);
+                    }
+                }
+
+                if( reloadPage ){
+                    if( "" !== reloadMessage ){
+                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                    }
+                    location.reload();
+                }
+            })
         }
     };
 }());

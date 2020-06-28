@@ -4,6 +4,7 @@ namespace App\Controller\Utils;
 
 use App\Services\Files\FileTagger;
 use Exception;
+use function PHPSTORM_META\type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -190,23 +191,30 @@ class Utils extends AbstractController {
     }
 
     /**
-     * @param string $string
+     * @param string|bool $value
      * @return bool
      * @throws Exception
      */
-    public static function getBoolRepresentationOfBoolString(string $string): bool
+    public static function getBoolRepresentationOfBoolString($value): bool
     {
-        $true  = "true";
-        $false = "false";
+        if( is_bool($value) ){
+            return $value;
+        }elseif( is_string($value) ){
+            $true  = "true";
+            $false = "false";
 
-        $allowed_values = [
-            $true, $false
-        ];
+            $allowed_values = [
+                $true, $false
+            ];
 
-        if( !in_array($string, $allowed_values) ){
-            throw new Exception("Not a bool string");
+            if( !in_array($value, $allowed_values) ){
+                throw new Exception("Not a bool string");
+            }
+
+            return $true === $value;
+        }else{
+            throw new \TypeError("Not allowed type: " . gettype($value) );
         }
 
-        return $true === $string;
     }
 }

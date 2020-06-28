@@ -139,6 +139,16 @@ export default (function () {
 
                                         }
 
+                                        let reloadPage    = responseData['reload_page'];
+                                        let reloadMessage = responseData['reload_message'];
+
+                                        if( reloadPage ){
+                                            if( "" !== reloadMessage ){
+                                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                                            }
+                                            location.reload();
+                                        }
+
                                     }).fail(() => {
                                         bootstrap_notifications.notify('There was an error while fetching data for bootbox modal', 'danger')
                                     }).always(() => {
@@ -147,7 +157,7 @@ export default (function () {
 
                                     break;
                                 default:
-                                    throw "Unknow type was provided: " + settings.type;
+                                    throw "Unknown type was provided: " + settings.type;
                             }
 
                         }
@@ -212,6 +222,8 @@ export default (function () {
                                     // if there is code there also must be message so i dont check it
                                     let code                = data['code'];
                                     let message             = data['message'];
+                                    let reloadPage          = data['reload_page'];
+                                    let reloadMessage       = data['reload_message'];
                                     let notification_type   = '';
 
                                     if( undefined === code ){
@@ -230,16 +242,19 @@ export default (function () {
                                     }
 
                                     bootstrap_notifications.notify(message, notification_type);
-                                });
 
+                                    if( reloadPage ){
+                                        if( "" !== reloadMessage ){
+                                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                                        }
+                                        location.reload();
+                                    }
+                                });
                             }
                         }
                     });
-
                 });
-
             }
-
         },
         selectize: {
             applyTagsSelectize: function(){

@@ -5,7 +5,8 @@ export default (function () {
         types: {
           green  : "success",
           red    : "danger",
-          orange : "warning"
+          orange : "warning",
+          blue   : "info"
         },
         notify: function (message, type) {
             $.notify({
@@ -39,6 +40,13 @@ export default (function () {
          */
         showOrangeNotification: function (message) {
             this.notify(message, this.types.orange);
+        },
+        /**
+         * Shows orange popup box
+         * @param message {string}
+         */
+        showBlueNotification: function (message) {
+            this.notify(message, this.types.blue);
         }
     };
 

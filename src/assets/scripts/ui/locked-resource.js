@@ -77,8 +77,10 @@ export default (function () {
                         }).always(function(data){
 
                             try{
-                                var code    = data['code'];
-                                var message = data['message'];
+                                var code          = data['code'];
+                                var message       = data['message'];
+                                var reloadPage    = data['reload_page'];
+                                var reloadMessage = data['reload_message'];
                             } catch(Exception){
                                 throw({
                                     "message"   : "Could not handle ajax call",
@@ -99,10 +101,15 @@ export default (function () {
                                 bootstrap_notifications.showGreenNotification(message);
                                 ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
                                 ui.ajax.singleMenuNodeReload();
+
+                                if( reloadPage ){
+                                    if( "" !== reloadMessage ){
+                                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                                    }
+                                    location.reload();
+                                }
                             }
-
                         });
-
                     }
                 }
             });
@@ -147,8 +154,10 @@ export default (function () {
                 ui.widgets.loader.hideLoader();
 
                 try{
-                    var code    = data['code'];
-                    var message = data['message'];
+                    var code          = data['code'];
+                    var message       = data['message'];
+                    var reloadPage    = data['reload_page'];
+                    var reloadMessage = data['reload_message'];
                 } catch(Exception){
                     throw({
                         "message"   : "Could not handle ajax call",
@@ -171,6 +180,13 @@ export default (function () {
                     // now ajax reload for this as there is also menu to be changed etc.
                     ui.widgets.loader.showLoader();
                     window.location.reload();
+
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 }
             })
         },
@@ -205,8 +221,10 @@ export default (function () {
                 ui.widgets.loader.hideLoader();
 
                 try{
-                    var code    = data['code'];
-                    var message = data['message'];
+                    var code          = data['code'];
+                    var message       = data['message'];
+                    var reloadPage    = data['reload_page'];
+                    var reloadMessage = data['reload_message'];
                 } catch(Exception){
                     throw({
                         "message"   : "Could not handle ajax call",
@@ -229,6 +247,13 @@ export default (function () {
                     // no ajax reload for this as there is also menu to be changed etc.
                     ui.widgets.loader.showLoader();
                     window.location.reload();
+
+                    if( reloadPage ){
+                        if( "" !== reloadMessage ){
+                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        }
+                        location.reload();
+                    }
                 }
             })
         },
