@@ -4,7 +4,6 @@ namespace App\Controller\Utils;
 
 use App\Services\Files\FileTagger;
 use Exception;
-use function PHPSTORM_META\type;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -39,7 +38,7 @@ class Utils extends AbstractController {
     /**
      * @param string $source
      * @param string $destination
-     * @param \App\Services\Files\FileTagger $file_tagger
+     * @param FileTagger $file_tagger
      * @throws Exception
      */
     public static function copyFiles(string $source, string $destination, FileTagger $file_tagger) {

@@ -6,6 +6,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +35,7 @@ class MyPaymentsBillsAction extends AbstractController {
      * @Route("/my-payments-bills", name="my-payments-bills")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function display(Request $request) {
         $this->addBill($request);
@@ -132,7 +134,8 @@ class MyPaymentsBillsAction extends AbstractController {
      * @Route("/my-payments-bills/update-bill/" ,name="my-payments-bills-update-bill")
      * @param Request $request
      * @return JsonResponse
-     * 
+     *
+     * @throws MappingException
      */
     public function updateBill(Request $request) {
         $parameters     = $request->request->all();
@@ -146,7 +149,8 @@ class MyPaymentsBillsAction extends AbstractController {
      * @Route("/my-payments-bills/update-bill-item/" ,name="my-payments-bills-update-bill-item")
      * @param Request $request
      * @return JsonResponse
-     * 
+     *
+     * @throws MappingException
      */
     public function updateBillItem(Request $request) {
         $parameters     = $request->request->all();
@@ -166,8 +170,8 @@ class MyPaymentsBillsAction extends AbstractController {
         $bills_form         = $this->app->forms->paymentsBillsForm();
         $bills_items_form   = $this->app->forms->paymentsBillsItemsForm();
 
-        $bills              = $this->app->repositories->myPaymentsBillsRepository->findBy(['deleted' => 0]);
-        $bills_items        = $this->app->repositories->myPaymentsBillsItemsRepository->findBy(['deleted' => 0]);
+        $bills              = $this->app->repositories->myPaymentsBillsRepository->getAllNotDeleted();
+        $bills_items        = $this->app->repositories->myPaymentsBillsItemsRepository->getAllNotDeleted();
 
         $bills_amounts_summaries = $this->controllers->getMyPaymentsBillsController()->buildAmountSummaries($bills, $bills_items);
 

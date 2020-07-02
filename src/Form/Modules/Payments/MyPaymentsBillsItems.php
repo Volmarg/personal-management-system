@@ -32,7 +32,7 @@ class MyPaymentsBillsItems extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $bills = $this->app->repositories->myPaymentsBillsRepository->findBy(['deleted' => 0]);
+        $bills = $this->app->repositories->myPaymentsBillsRepository->getAllNotDeleted();
 
         $builder
             ->add(static::KEY_AMOUNT, NumberType::class, [
