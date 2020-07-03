@@ -7,6 +7,7 @@ use App\Entity\Modules\Schedules\MySchedule;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -46,7 +47,7 @@ class MyScheduleType extends AbstractType {
                 'label'    => $this->app->translator->translate('forms.MyScheduleType.date'),
                 'required' => false
             ])
-            ->add('Information', null, [
+            ->add('Information', TextType::class, [
                 'label' => $this->app->translator->translate('forms.MyScheduleType.information'),
             ])
             ->add('scheduleType', EntityType::class, [

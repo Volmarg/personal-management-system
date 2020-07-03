@@ -27,7 +27,7 @@ class SchedulesStyling extends AbstractExtension {
         }
 
         $currDate   = new \DateTime();
-        $days_diff  = (int)$currDate->diff($schedule_date)->format('%a');
+        $days_diff  = (int)$currDate->diff($schedule_date)->format('%r%a');
 
         switch($days_diff) {
             case $days_diff > 30 && $days_diff <= 60:
