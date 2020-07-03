@@ -51,6 +51,7 @@ class MyPaymentsBillsItems extends AbstractType {
                 'attr' => [
                     'data-provide'              => "datepicker",
                     'data-date-format'          => "yyyy-mm-dd",
+                    'data-date-week-start'      => 1,
                     'data-date-today-highlight' => true,
                     'autocomplete'              => 'off'
                 ],
