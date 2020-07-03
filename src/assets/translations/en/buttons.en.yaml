@@ -1,7 +1,7 @@
 buttons:
   close: Close
   edit: Edit
-  delete: Deleted
+  delete: Delete
   saveChanges: Save changes
   submit: Submit
   toggle:

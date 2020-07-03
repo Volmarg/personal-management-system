@@ -103,7 +103,7 @@ topbar:
 buttons:
     close: Close
     edit: Edit
-    delete: Deleted
+    delete: Delete
     saveChanges: 'Save changes'
     submit: Submit
     toggle: { 'yes': 'Yes', 'no': 'No', 'on': 'On', 'off': 'Off' }

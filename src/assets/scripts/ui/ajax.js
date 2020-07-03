@@ -158,7 +158,7 @@ export default (function () {
             // fix for case when this call comes as second and somehow the previous call for hideLoader instantly hides also this one
             setTimeout(function(){
                 ui.widgets.loader.showLoader();
-            }, 200);
+            }, 500);
 
             $.ajax({
                 url: url,

@@ -735,6 +735,8 @@ export default (function () {
                         }
                         location.reload();
                     }
+
+                    bootbox.hideAll();
                 });
 
                 event.preventDefault();
