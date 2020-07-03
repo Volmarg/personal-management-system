@@ -92,12 +92,15 @@
         },
         "post-install-cmd": [
             "clear",
-            "SlowProg\\CopyFile\\ScriptHandler::copy",
-            "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty"
+            "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "post-update-cmd": [
             "SlowProg\\CopyFile\\ScriptHandler::copy"
-        ]
+        ],
+        "pms-installer": "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty"
+    },
+    "scripts-descriptions": {
+        "pms-installer": "Script for easier project installation"
     },
     "conflict": {
         "symfony/symfony": "*"
