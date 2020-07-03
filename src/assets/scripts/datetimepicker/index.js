@@ -30,10 +30,16 @@ export default (function () {
                     }
                 }
 
-                flatpickr(element, {
+                let flatpicker = flatpickr(element, {
                     enableTime: true,
                     dateFormat: "Y-m-d H:i",
                     time_24hr : true,
+                    defaultDate: new Date(),
+                    defaultHour: new Date().getHours(),
+                    defaultMinute: new Date().getMinutes(),
+                    locale: {
+                        firstDayOfWeek: 1
+                    },
                     onOpen: onOpenFunction
                 });
             });
