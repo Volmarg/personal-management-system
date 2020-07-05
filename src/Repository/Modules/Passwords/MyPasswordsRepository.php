@@ -4,7 +4,7 @@ namespace App\Repository\Modules\Passwords;
 
 use App\Entity\Modules\Passwords\MyPasswords;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyPasswords|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyPasswords[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyPasswordsRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyPasswords::class);
     }
 

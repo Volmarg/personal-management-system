@@ -5,7 +5,7 @@ namespace App\Repository\Modules\Payments;
 use App\Entity\Modules\Payments\MyPaymentsOwed;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyPaymentsOwed|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyPaymentsOwed[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyPaymentsOwedRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyPaymentsOwed::class);
     }
 

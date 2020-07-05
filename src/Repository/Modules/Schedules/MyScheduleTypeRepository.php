@@ -4,7 +4,7 @@ namespace App\Repository\Modules\Schedules;
 
 use App\Entity\Modules\Schedules\MyScheduleType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyScheduleType|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyScheduleType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyScheduleTypeRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyScheduleType::class);
     }
 

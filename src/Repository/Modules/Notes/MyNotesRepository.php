@@ -6,7 +6,7 @@ use App\Entity\Modules\Notes\MyNotes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyNotes|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +18,7 @@ class MyNotesRepository extends ServiceEntityRepository {
 
     private $connection;
 
-    public function __construct(RegistryInterface $registry, Connection $connection) {
+    public function __construct(ManagerRegistry $registry, Connection $connection) {
         parent::__construct($registry, MyNotes::class);
 
         $this->connection = $connection;

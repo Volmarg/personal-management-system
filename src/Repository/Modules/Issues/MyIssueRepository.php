@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyIssue|null find($id, $lockMode = null, $lockVersion = null)
@@ -21,7 +21,7 @@ class MyIssueRepository extends ServiceEntityRepository
 {
     const MY_ISSUE_TABLE_ALIAS = "mi";
 
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MyIssue::class);
     }

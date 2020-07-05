@@ -4,7 +4,7 @@ namespace App\Repository\Modules\Job;
 
 use App\Entity\Modules\Job\MyJobAfterhours;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyJobAfterhours|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +17,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
     const GOAL_FIELD         = 'goal';
     const TIME_SUMMARY_FIELD = 'timeSummary';
 
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyJobAfterhours::class);
     }
 

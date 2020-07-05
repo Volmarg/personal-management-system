@@ -4,7 +4,7 @@ namespace App\Repository\Modules\Travels;
 
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyTravelsIdeas|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyTravelsIdeas[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyTravelsIdeasRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyTravelsIdeas::class);
     }
 

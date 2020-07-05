@@ -5,7 +5,7 @@ namespace App\Repository\Modules\Payments;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyPaymentsMonthly|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +17,7 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
 
     const KEY_COLUMN_NAME_DATE = "date";
 
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyPaymentsMonthly::class);
     }
 

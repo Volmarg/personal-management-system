@@ -4,7 +4,7 @@ namespace App\Repository\Modules\Payments;
 
 use App\Entity\Modules\Payments\MyPaymentsProduct;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyPaymentsProduct|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,7 +13,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyPaymentsProduct[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyPaymentsProductRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyPaymentsProduct::class);
     }
 

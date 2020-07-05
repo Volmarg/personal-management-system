@@ -5,7 +5,7 @@ namespace App\Repository\Modules\Contacts;
 use App\Entity\Modules\Contacts\MyContactType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyContactType|null find($id, $lockMode = null, $lockVersion = null)
@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyContactType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyContactTypeRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyContactType::class);
     }
 

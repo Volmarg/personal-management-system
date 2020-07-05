@@ -4,7 +4,7 @@ namespace App\Repository\Modules\Schedules;
 
 use App\Entity\Modules\Schedules\MySchedule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MySchedule|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,7 +20,7 @@ class MyScheduleRepository extends ServiceEntityRepository {
     const KEY_DAYS_DIFF     = 'daysDiff';
     const KEY_SCHEDULE_TYPE = 'scheduleType';
 
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MySchedule::class);
     }
 
