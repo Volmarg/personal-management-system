@@ -9,7 +9,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Repositories;
 use App\Services\Core\Translator;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +48,7 @@ class RepositoriesAction extends AbstractController {
      * @param array $findByParams
      * @param Request|null $request
      * @return Response
-     *
+     * @throws Exception
      */
     public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response
     {
@@ -163,7 +162,7 @@ class RepositoriesAction extends AbstractController {
         $column_name        = $this->app->camelCaseToSnakeCaseConverter($field_name);
 
         $columns_names      = $this->app->repositories->getColumnsNamesForTableName($table_name);
-        $is_record_entity   = $this->app->repositories->isEntityClass($record_class_name);
+        $is_record_entity   = Repositories::isEntity($entity);
 
         $class_name         = get_class($entity);
 

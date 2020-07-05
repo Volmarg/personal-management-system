@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Job;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobAfterhoursRepository")
  * @ORM\Table(name="my_job_afterhour")
  */
-class MyJobAfterhours implements SoftDeletableEntityInterface
+class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
 {
 
     public const TYPE_SPENT = 'spent';

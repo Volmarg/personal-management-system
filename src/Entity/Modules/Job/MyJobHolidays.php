@@ -2,15 +2,24 @@
 
 namespace App\Entity\Modules\Job;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
+use App\Entity\Interfaces\ValidateEntityForCreateInterface;
+use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysRepository")
  * @ORM\Table(name="my_job_holiday")
  */
-class MyJobHolidays implements SoftDeletableEntityInterface
+class MyJobHolidays implements SoftDeletableEntityInterface, ValidateEntityForUpdateInterface, ValidateEntityForCreateInterface, EntityInterface
 {
+    const FIELD_ID          = "id";
+    const FIELD_DAYS_SPENT  = "daysSpent";
+    const FIELD_INFORMATION = "information";
+    const FIELD_YEAR        = "year";
+    const FIELD_DELETED     = "deleted";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

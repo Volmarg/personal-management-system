@@ -119,8 +119,8 @@ forms:
     MyScheduleType: { scheduleType: 'Schedule type', name: Name, date: Date, information: Information }
     MyScheduleTypeType: { labels: { name: Name, icon: Icon } }
     MyTravelsIdeasType: { placeholders: { category: { exists: 'Either pick category from list or type name of new one', first: 'Add Your first category' }, image: 'Link to image', map: 'Link to google maps' }, labels: { location: Location, country: Country, image: Image, map: Map, category: Category } }
-    MyJobHolidaysType: { placeholders: { daysSpent: 'Amount of days that You want to spend', information: 'Goal/Reason of spending holidays' }, labels: { year: Year, daysSpent: Days, information: Information } }
-    MyJobHolidaysPoolType: { placeholders: { year: 'Add year', daysLeft: 'Amount of days that You have for this year', companyName: 'Provide company name' }, labels: { year: Year, daysLeft: 'Days left', companyName: 'Company name' } }
+    MyJobHolidaysType: { placeholders: { daysSpent: 'Amount of days that You want to spend', information: 'Goal/Reason of spending holidays' }, labels: { year: Year, daysSpent: 'Days spent', information: Information } }
+    MyJobHolidaysPoolType: { placeholders: { year: 'Add year', daysInPool: 'Amount of days that You have for this year generally', companyName: 'Provide company name' }, labels: { year: Year, daysInPool: 'Days in pool', companyName: 'Company name' } }
     MyContactTypeType: { labels: { name: Name, imagePath: 'Image path' } }
     MyContactGroupType: { labels: { name: Name, icon: Icon, color: Color } }
     MyPasswordsGroupsType: { labels: { name: Name } }
@@ -169,6 +169,8 @@ exceptions:
     MyGoalsSettingsController: { thisGoalTypeIsNotAllowed: 'This goal type is not allowed' }
     dtoValidation: { unsupportedSetting: 'Unsupported settings: ' }
     security: { youAreNotAllowedToSeeThis: 'You are not allowed to see this! Your attempt to access this resource was logged!' }
+validations:
+    myJobHolidaysValidator: { greaterThan: 'Amount of days to spend must be bigger than %value%', lessThanOrEqual: 'You don''t have this amount of days left to spend for this year. Days left: %daysLeft%' }
 dialogs:
     createContactCard: { header: 'Create contact card' }
     editContactCard: { header: 'Edit contact card' }
@@ -188,6 +190,7 @@ logs:
     security: { visitedPageWithUnallowedIp: 'Visited page with unallowed ip', visitedPageWithUnallowedMethod: 'Visited page with unallowed method' }
     notes: { parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: 'Parent child hierarchy - category has children but it is missing in categories depths' }
     sessions: { removingRolesFromSession: 'Removing roles from session', noSessionDataWasFoundForGivenKey: 'No session data was found for given key', sessionsDataForGivenKeyHasExpired: 'Session data for given key has expired' }
+    validators: { providedVariableIsNotAnObject: 'Provided variable is not an object: ', objectOfGivenClassIsNotEntity: 'Object of given class is not entity: ', thereIsNoValidationLogicForThisEntity: 'There is no validation logic for this entity: ', undefinedActionOrInterfaceForEntityValidationIsMissing: 'Undefined action or interface for entity validation is missing' }
 login:
     header: { pageName: 'Personal Management System', login: Login }
     labels: { username: 'Username:', password: 'Password:', remember: 'Remember Me' }

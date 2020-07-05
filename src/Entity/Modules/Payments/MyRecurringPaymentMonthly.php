@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface
+class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**

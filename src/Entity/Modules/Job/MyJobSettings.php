@@ -2,13 +2,14 @@
 
 namespace App\Entity\Modules\Job;
 
+use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobSettingsRepository")
  * @ORM\Table(name="my_job_setting")
  */
-class MyJobSettings {
+class MyJobSettings implements EntityInterface{
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

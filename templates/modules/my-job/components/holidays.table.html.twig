@@ -27,10 +27,7 @@
                 {% include 'page-elements/components/forms/input-standard-value.twig' with {
                     type     : "number",
                     value    : holidays_spent.daysSpent,
-                    disabled : true,
-                    min      : 1,
-                    max      : holidays_spent.daysSpent + days_left,
-                    attrs    : "data-validate-form-element=true"
+                    disabled : true
                 }%}
             </td>
             <td class="information">{{ holidays_spent.Information }}</td>

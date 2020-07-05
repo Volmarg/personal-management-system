@@ -2,13 +2,14 @@
 
 namespace App\Entity\Modules\Contacts;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Contacts\MyContactTypeRepository")
  */
-class MyContactType implements SoftDeletableEntityInterface
+class MyContactType implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Entity\System;
 
+use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -16,7 +17,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *
  * @ORM\Entity(repositoryClass="App\Repository\System\LockedResourceRepository")
  */
-class LockedResource
+class LockedResource implements EntityInterface
 {
     const TYPE_ENTITY    = "entity";
     const TYPE_DIRECTORY = "directory";

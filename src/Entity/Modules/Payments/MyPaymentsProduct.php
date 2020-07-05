@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsProductRepository")
  * @ORM\Table(name="my_payment_product")
  */
-class MyPaymentsProduct implements SoftDeletableEntityInterface
+class MyPaymentsProduct implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

@@ -612,9 +612,9 @@ export default (function () {
          * @info this function might require refactor as I'm passing "template" but sometimes there might be code/message
          *  with this the backend should send data['template'] etc,
          *      @see this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm()
-         * @param reloadPage
+         * @param eventAttachReloadPage {bool}
          */
-        attachRecordAddViaAjaxOnSubmit: function (reloadPage = true) {
+        attachRecordAddViaAjaxOnSubmit: function (eventAttachReloadPage = true) {
             let form  = $('.add-record-form form');
 
             $(form).off("submit");
@@ -667,7 +667,7 @@ export default (function () {
                      * This reloadPage must stay like that,
                      * Somewhere in code I call this function but i pass it as string so it's not getting detected
                      */
-                    if (!reloadPage) {
+                    if (!eventAttachReloadPage) {
                         ui.widgets.loader.hideLoader();
 
                         if( 200 != code ){
@@ -680,7 +680,7 @@ export default (function () {
                     }
 
                     try{
-                            reloadPage    = data['reload_page'];
+                        var reloadPage    = data['reload_page'];
                         var reloadMessage = data['reload_message'];
                     } catch(Exception){
                         throw({
@@ -688,6 +688,10 @@ export default (function () {
                             "data"      : data,
                             "exception" : Exception
                         })
+                    }
+
+                    if( "undefined" === typeof reloadPage ){
+                        reloadPage = eventAttachReloadPage;
                     }
 
                     if( 200 != code ){

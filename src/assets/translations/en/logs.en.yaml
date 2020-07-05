@@ -43,3 +43,8 @@ logs:
     removingRolesFromSession: "Removing roles from session"
     noSessionDataWasFoundForGivenKey: "No session data was found for given key"
     sessionsDataForGivenKeyHasExpired: "Session data for given key has expired"
+  validators:
+    providedVariableIsNotAnObject: "Provided variable is not an object: "
+    objectOfGivenClassIsNotEntity: "Object of given class is not entity: "
+    thereIsNoValidationLogicForThisEntity: "There is no validation logic for this entity: "
+    undefinedActionOrInterfaceForEntityValidationIsMissing: "Undefined action or interface for entity validation is missing"

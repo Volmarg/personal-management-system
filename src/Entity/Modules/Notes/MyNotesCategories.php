@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Notes;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Notes\MyNotesCategoriesRepository")
  * @ORM\Table(name="my_note_category")
  */
-class MyNotesCategories implements SoftDeletableEntityInterface
+class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface
 {
 
     const KEY_DELETED = "deleted";

@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Passwords;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use SpecShaper\EncryptBundle\Annotations\Encrypted;
@@ -10,7 +11,7 @@ use SpecShaper\EncryptBundle\Annotations\Encrypted;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsRepository")
  * @ORM\Table(name="my_password")
  */
-class MyPasswords implements SoftDeletableEntityInterface
+class MyPasswords implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +12,7 @@ use Exception;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsIncomeRepository")
  * @ORM\Table(name="my_payment_income")
  */
-class MyPaymentsIncome implements SoftDeletableEntityInterface
+class MyPaymentsIncome implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

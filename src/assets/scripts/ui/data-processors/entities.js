@@ -563,7 +563,7 @@ export default (function () {
             makeUpdateData: function ($baseElement) {
                 let id          = $($baseElement).find('.id').html();
                 let year        = $($baseElement).find('.year input').val();
-                let daysLeft    = $($baseElement).find('.daysLeft input').val();
+                let daysInPool  = $($baseElement).find('.daysInPool input').val();
                 let companyName = $($baseElement).find('.companyName').html();
 
                 let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
@@ -572,7 +572,7 @@ export default (function () {
                 let url = '/my-job/holidays-pool/update/';
                 let ajax_data = {
                     'year'          : year,
-                    'daysLeft'      : daysLeft,
+                    'daysInPool'    : daysInPool,
                     'companyName'   : companyName,
                     'id'            : id,
                 };

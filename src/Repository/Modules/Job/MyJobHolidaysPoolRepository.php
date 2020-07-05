@@ -4,7 +4,9 @@ namespace App\Repository\Modules\Job;
 
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method MyJobHolidaysPool|null find($id, $lockMode = null, $lockVersion = null)
@@ -13,10 +15,14 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method MyJobHolidaysPool[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
-    public function __construct(RegistryInterface $registry) {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyJobHolidaysPool::class);
     }
 
+    /**
+     * @return mixed[]
+     * @throws DBALException
+     */
     public function getHolidaysSummaryGroupedByYears() {
 
         $connection = $this->_em->getConnection();
@@ -24,12 +30,12 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         $sql = "
             SELECT 
                 mjhp.year                                       AS year,
-                mjhp.days_left                                  AS daysForYear,
+                mjhp.days_in_pool                               AS daysForYear,
                 SUM(mjh_days_spent.days_spent)                  AS daysSpent,
                 CASE
-                  WHEN SUM(mjh_days_spent.days_spent) IS NULL THEN mjhp.days_left 
+                  WHEN SUM(mjh_days_spent.days_spent) IS NULL THEN mjhp.days_in_pool 
                 ELSE
-                  mjhp.days_left - SUM(mjh_days_spent.days_spent)
+                  mjhp.days_in_pool - SUM(mjh_days_spent.days_spent)
                 END                                             AS daysLeftForYear
             
             FROM my_job_holiday_pool mjhp
@@ -51,15 +57,19 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         return $results;
     }
 
+    /**
+     * @return false|mixed
+     * @throws DBALException
+     */
     public function getAvailableDaysTotally(){
 
         $connection = $this->_em->getConnection();
 
         $sql = "
             SELECT 
-                -- SUM(mjhp.days_left)                                     AS daysAvailableForAllYears,
+                -- SUM(mjhp.days_in_pool)                                     AS daysAvailableForAllYears,
                 -- daysSpent.daysSpentForAllYears                          AS daysSpentForAllYears,
-                SUM(mjhp.days_left) - daysSpent.daysSpentForAllYears    AS daysAvailableTotally
+                SUM(mjhp.days_in_pool) - daysSpent.daysSpentForAllYears    AS daysAvailableTotally
             
             FROM my_job_holiday_pool mjhp
             
@@ -81,6 +91,10 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         return $result;
     }
 
+    /**
+     * @return array
+     * @throws DBALException
+     */
     public function getAllPoolsYears(){
 
         $connection = $this->_em->getConnection();
@@ -98,4 +112,98 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         return ( !empty($results) ? array_column($results, 'year') : [] );
     }
 
+    /**
+     * Returns the number of days left for given calendar year
+     * @param string $year
+     * @return int
+     * @throws DBALException
+     */
+    public function getDaysInPoolForYear(string $year): int
+    {
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT hp.days_in_pool as daysInPool
+            FROM my_job_holiday_pool hp
+            
+            WHERE 1
+            AND hp.year = :year
+        ";
+
+        $params = [
+          "year" => $year,
+        ];
+
+        $stmt   = $connection->executeQuery($sql, $params);
+        $result = $stmt->fetch();
+
+        if( empty($result) ){
+            return 0;
+        }
+
+        $days_in_pool = (int) $result[MyJobHolidaysPool::FIELD_DAYS_IN_POOL];
+
+        return $days_in_pool;
+    }
+
+    /**
+     * @param int $id
+     * @return MyJobHolidaysPool|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneEntityById(int $id):? MyJobHolidaysPool
+    {
+        $qb = $this->_em->createQueryBuilder();
+
+        $qb->select("hp")
+            ->from(MyJobHolidaysPool::class, "hp")
+            ->where('hp.id = :id')
+            ->setParameter("id", $id);
+
+        $query  = $qb->getQuery();
+        $result = $query->getOneOrNullResult();
+
+        return $result;
+    }
+
+    /**
+     * Returns the number of days left for given calendar year
+     * @param string $year
+     * @return int
+     * @throws DBALException
+     */
+    public function getDaysInPoolLeftForYear(string $year): int
+    {
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT 
+            hp.days_in_pool - SUM(h.days_spent) as daysLeft
+            
+            FROM my_job_holiday_pool hp
+            
+            JOIN my_job_holiday h
+            ON h.year     = hp.year
+            AND h.deleted = 0
+            
+            WHERE 1
+            AND hp.deleted = 0
+            AND hp.year    = :year
+        ";
+
+        $params = [
+            "year" => $year,
+        ];
+
+        $stmt   = $connection->executeQuery($sql, $params);
+        $result = $stmt->fetch();
+
+        if( empty($result) ){
+            return 0;
+        }
+
+        $days_left = (int) $result['daysLeft'];
+
+        return $days_left;
+    }
 }

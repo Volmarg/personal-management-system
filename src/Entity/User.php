@@ -7,6 +7,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\EntityInterface;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\UserInterface;
@@ -15,7 +16,7 @@ use FOS\UserBundle\Model\UserInterface;
  * @ORM\Entity
  * @ORM\Table(name="app_user")
  */
-class User extends BaseUser {
+class User extends BaseUser implements EntityInterface {
 
     const PASSWORD_FIELD = 'password';
     const ROLE_ADMIN     = "ROLE_ADMIN";

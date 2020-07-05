@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Notes;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Notes\MyNotesRepository")
  * @ORM\Table(name="my_note")
  */
-class MyNotes implements SoftDeletableEntityInterface
+class MyNotes implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

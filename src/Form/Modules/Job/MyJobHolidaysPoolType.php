@@ -32,12 +32,12 @@ class MyJobHolidaysPoolType extends AbstractType
                 ],
                 'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.year')
             ])
-            ->add('DaysLeft', IntegerType::class, [
+            ->add('daysInPool', IntegerType::class, [
                 'attr' => [
                     'min'           => 1,
-                    'placeholder'   => $this->app->translator->translate('forms.MyJobHolidaysPoolType.placeholders.daysLeft')
+                    'placeholder'   => $this->app->translator->translate('forms.MyJobHolidaysPoolType.placeholders.daysInPool')
                 ],
-                'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.daysLeft')
+                'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.daysInPool')
             ])
             ->add('CompanyName', TextType::class, [
                 'attr' => [

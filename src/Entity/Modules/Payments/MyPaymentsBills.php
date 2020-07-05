@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Payments;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsBillsRepository")
  * @ORM\Table(name="my_payment_bill")
  */
-class MyPaymentsBills implements SoftDeletableEntityInterface
+class MyPaymentsBills implements SoftDeletableEntityInterface, EntityInterface
 {
     const FIELD_DELETED = "deleted";
     const FIELD_ID      = "id";

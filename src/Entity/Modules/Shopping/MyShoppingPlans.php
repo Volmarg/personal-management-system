@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Shopping;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Shopping\MyShoppingPlansRepository")
  * @ORM\Table(name="my_shopping_plan")
  */
-class MyShoppingPlans implements SoftDeletableEntityInterface
+class MyShoppingPlans implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

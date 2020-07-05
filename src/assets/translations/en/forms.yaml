@@ -67,16 +67,16 @@ forms:
       information: Goal/Reason of spending holidays
     labels:
       year: Year
-      daysSpent: Days
+      daysSpent: Days spent
       information: Information
   MyJobHolidaysPoolType:
     placeholders:
       year: Add year
-      daysLeft: Amount of days that You have for this year
+      daysInPool: Amount of days that You have for this year generally
       companyName: Provide company name
     labels:
       year: Year
-      daysLeft: Days left
+      daysInPool: Days in pool
       companyName: Company name
   MyContactTypeType:
     labels:

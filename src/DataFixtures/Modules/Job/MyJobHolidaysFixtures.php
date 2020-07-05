@@ -38,7 +38,7 @@ class MyJobHolidaysFixtures extends Fixture implements OrderedFixtureInterface
 
             $my_job_holidays_pool = new MyJobHolidaysPool();
             $my_job_holidays_pool->setCompanyName($company_name);
-            $my_job_holidays_pool->setDaysLeft($days);
+            $my_job_holidays_pool->setDaysInPool($days);
             $my_job_holidays_pool->setYear($year);
 
             $manager->persist($my_job_holidays_pool);

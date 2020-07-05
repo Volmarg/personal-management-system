@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Issues;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Issues\MyIssueContactRepository")
  */
-class MyIssueContact implements SoftDeletableEntityInterface
+class MyIssueContact implements SoftDeletableEntityInterface, EntityInterface
 {
 
     const FIELD_NAME_DELETED  = "deleted";

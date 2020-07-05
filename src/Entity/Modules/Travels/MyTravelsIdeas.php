@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Travels;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Travels\MyTravelsIdeasRepository")
  * @ORM\Table(name="my_travel_idea")
  */
-class MyTravelsIdeas implements SoftDeletableEntityInterface
+class MyTravelsIdeas implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

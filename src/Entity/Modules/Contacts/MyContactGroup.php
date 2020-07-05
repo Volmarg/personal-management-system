@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Contacts;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Contacts\MyContactGroupRepository")
  */
-class MyContactGroup implements SoftDeletableEntityInterface
+class MyContactGroup implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**

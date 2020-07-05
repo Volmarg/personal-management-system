@@ -2,13 +2,14 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FilesTagsRepository")
  */
-class FilesTags implements SoftDeletableEntityInterface
+class FilesTags implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**

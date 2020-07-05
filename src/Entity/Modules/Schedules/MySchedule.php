@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Schedules;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Schedules\MyScheduleRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class MySchedule implements SoftDeletableEntityInterface
+class MySchedule implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

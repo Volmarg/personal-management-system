@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SettingRepository")
  */
-class Setting
+class Setting implements EntityInterface
 {
     /**
      * @ORM\Id()

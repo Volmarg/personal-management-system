@@ -9,6 +9,8 @@
 namespace App\Controller\Core;
 
 
+use App\Controller\Validators\Entities\EntityValidator;
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Issues\MyIssue;
@@ -311,6 +313,11 @@ class Repositories extends AbstractController {
      */
     public $myIssueProgressRepository;
 
+    /**
+     * @var EntityValidator $entity_validator
+     */
+    private $entity_validator;
+
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         AchievementRepository               $myAchievementsRepository,
@@ -349,7 +356,8 @@ class Repositories extends AbstractController {
         MyIssueRepository                   $myIssueRepository,
         MyIssueContactRepository            $myIssueContactRepository,
         MyIssueProgressRepository           $myIssueProgressRepository,
-        EntityManagerInterface              $entity_manager
+        EntityManagerInterface              $entity_manager,
+        EntityValidator                     $entity_validator
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->achievementRepository                = $myAchievementsRepository;
@@ -389,6 +397,7 @@ class Repositories extends AbstractController {
         $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->entity_manager                       = $entity_manager;
+        $this->entity_validator                     = $entity_validator;
     }
 
     /**
@@ -399,6 +408,7 @@ class Repositories extends AbstractController {
      * @param Request|null $request
      * @return Response
      *
+     * @throws Exception
      */
     public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response {
         try {
@@ -548,6 +558,16 @@ class Repositories extends AbstractController {
                 $entity->$methodName($value);
             }
 
+            // check constraints now that the entity is updated
+            $validation_result = $this->entity_validator->handleValidation($entity, EntityValidator::ACTION_UPDATE);
+
+            if( !$validation_result->isValid() ){
+                // todo: temporary solution
+                // todo: need to rework ajax + response to support AjaxResponse + validation errors message + js logic
+                $message = $this->translator->translate('responses.repositories.recordUpdateFail');
+                return new JsonResponse($message, 500);
+            }
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -596,13 +616,19 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @param $class
+     * @param $object
      * @return bool
      */
-    public function isEntityClass(string $class): bool
+    public static function isEntity($object): bool
     {
-        $is_entity_class = !$this->entity_manager->getMetadataFactory()->isTransient($class);
-        return $is_entity_class;
+        if(
+                !is_object($object)
+            ||  !($object instanceof EntityInterface)
+        ){
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -634,7 +660,7 @@ class Repositories extends AbstractController {
         $all_related_entities = [];
 
         $class     = get_class($entity);
-        $is_entity = $this->isEntityClass($class);
+        $is_entity = self::isEntity($entity);
 
         if( !$is_entity ){
             throw new Exception("Tried to get related entities on non entity class: {$class}");
@@ -864,7 +890,7 @@ class Repositories extends AbstractController {
         $record_class_name  = get_class($record);
         $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
         $table_name         = $class_meta->getTableName();
-        $is_record_entity  = $this->isEntityClass($record_class_name);
+        $is_record_entity   = self::isEntity($record);
 
         if( !$is_record_entity ){
             return false;
@@ -886,12 +912,12 @@ class Repositories extends AbstractController {
                 &&  !empty($child_record)
                 &&  (
                     (
-                        method_exists($child_record, self::ENTITY_GET_DELETED_METHOD_NAME)
+                            method_exists($child_record, self::ENTITY_GET_DELETED_METHOD_NAME)
                         &&  !$child_record->getDeleted()
                     )
                     ||
                     (
-                        method_exists($child_record, self::ENTITY_IS_DELETED_METHOD_NAME)
+                            method_exists($child_record, self::ENTITY_IS_DELETED_METHOD_NAME)
                         &&  !$child_record->isDeleted()
                     )
                 )

@@ -2,13 +2,17 @@
 
 namespace App\Entity\Modules\Job;
 
+use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysPoolRepository")
  * @ORM\Table(name="my_job_holiday_pool")
  */
-class MyJobHolidaysPool {
+class MyJobHolidaysPool implements EntityInterface{
+
+    const FIELD_DAYS_IN_POOL = "daysInPool";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -24,7 +28,7 @@ class MyJobHolidaysPool {
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $DaysLeft;
+    private $days_in_pool;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -55,12 +59,12 @@ class MyJobHolidaysPool {
         return $this;
     }
 
-    public function getDaysLeft(): ?string {
-        return $this->DaysLeft;
+    public function getDaysInPool(): ?string {
+        return $this->days_in_pool;
     }
 
-    public function setDaysLeft(string $DaysLeft): self {
-        $this->DaysLeft = $DaysLeft;
+    public function setDaysInPool(string $days_in_pool): self {
+        $this->days_in_pool = $days_in_pool;
 
         return $this;
     }

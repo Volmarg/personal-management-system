@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Goals;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsRepository")
  * @ORM\Table(name="my_goal")
  */
-class MyGoals implements SoftDeletableEntityInterface
+class MyGoals implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()

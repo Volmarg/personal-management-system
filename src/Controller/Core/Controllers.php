@@ -12,6 +12,7 @@ use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\Job\MyJobAfterhoursController;
+use App\Controller\Modules\Job\MyJobHolidaysPoolController;
 use App\Controller\Modules\Job\MyJobSettingsController;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
@@ -161,6 +162,11 @@ class Controllers extends AbstractController {
      * @var MyIssuesController $my_issues_controller
      */
     private $my_issues_controller;
+
+    /**
+     * @var MyJobHolidaysPoolController $my_job_holidays_pool_controller
+     */
+    private $my_job_holidays_pool_controller;
 
     /**
      * @return MyIssuesController
@@ -337,6 +343,13 @@ class Controllers extends AbstractController {
         return $this->files_upload_settings_controller;
     }
 
+    /**
+     * @return MyJobHolidaysPoolController
+     */
+    public function getMyJobHolidaysPoolController(): MyJobHolidaysPoolController {
+        return $this->my_job_holidays_pool_controller;
+    }
+
     public function __construct(
         AchievementController         $achievement_controller,
         ReportsController             $reports_controller,
@@ -362,7 +375,8 @@ class Controllers extends AbstractController {
         SettingsValidationController  $settings_validation_controller,
         SettingsViewController        $settings_view_controller,
         FilesUploadSettingsController $files_upload_settings_controller,
-        MyIssuesController            $my_issues_controller
+        MyIssuesController            $my_issues_controller,
+        MyJobHolidaysPoolController   $my_job_holidays_pool_controller
     ) {
         $this->achievement_controller           = $achievement_controller;
         $this->reports_controllers              = $reports_controller;
@@ -389,6 +403,7 @@ class Controllers extends AbstractController {
         $this->settings_view_controller         = $settings_view_controller;
         $this->files_upload_settings_controller = $files_upload_settings_controller;
         $this->my_issues_controller             = $my_issues_controller;
+        $this->my_job_holidays_pool_controller  = $my_job_holidays_pool_controller;
     }
 
 }

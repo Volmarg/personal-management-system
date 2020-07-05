@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Goals;
 
+use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -9,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsPaymentsRepository")
  * @ORM\Table(name="my_goal_payment")
  */
-class MyGoalsPayments implements SoftDeletableEntityInterface
+class MyGoalsPayments implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @ORM\Id()
