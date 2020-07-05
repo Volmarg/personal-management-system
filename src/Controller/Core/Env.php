@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Env extends AbstractController {
 
+    const APP_ENV_TEST = "test";
 
     public static function getUploadDirs() {
         $dirs = [
@@ -66,6 +67,9 @@ class Env extends AbstractController {
         return $dto;
     }
 
+    /**
+     * @return bool
+     */
     public static function isDemo() {
         try {
             $is_demo = (bool)$_ENV['APP_DEMO'];
@@ -75,7 +79,19 @@ class Env extends AbstractController {
         return $is_demo;
     }
 
-    public static function isMaintenance() {
+    public static function isTest(): bool {
+        try {
+            $is_test = $_ENV['APP_ENV'] === self::APP_ENV_TEST;
+        } catch (\Exception $e) {
+            $is_test = false;
+        }
+        return $is_test;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isMaintenance(): bool {
         try {
             $is_maintenance = (bool)$_ENV['APP_MAINTENANCE'];
         } catch (\Exception $e) {

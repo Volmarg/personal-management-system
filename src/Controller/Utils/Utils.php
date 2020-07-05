@@ -15,6 +15,9 @@ class Utils extends AbstractController {
     const FLASH_TYPE_SUCCESS = "success";
     const FLASH_TYPE_DANGER  = "danger";
 
+    const TRUE_AS_STRING  = "true";
+    const FALSE_AS_STRING = "false";
+
     /**
      * @param string $data
      * @return string
@@ -199,18 +202,16 @@ class Utils extends AbstractController {
         if( is_bool($value) ){
             return $value;
         }elseif( is_string($value) ){
-            $true  = "true";
-            $false = "false";
 
             $allowed_values = [
-                $true, $false
+                self::TRUE_AS_STRING, self::FALSE_AS_STRING
             ];
 
             if( !in_array($value, $allowed_values) ){
                 throw new Exception("Not a bool string");
             }
 
-            return $true === $value;
+            return self::TRUE_AS_STRING === $value;
         }else{
             throw new \TypeError("Not allowed type: " . gettype($value) );
         }

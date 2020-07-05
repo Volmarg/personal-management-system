@@ -5,10 +5,11 @@ namespace App;
 /**
  * This script is run from CLI (composer) but symfony will crash later that no such file is found
  */
-if( php_sapi_name() === 'cli' ){
+if( php_sapi_name() === 'cli' && !Env::isTest() ){
     include_once 'src/Controller/Utils/CliHandler.php';
 }
 
+use App\Controller\Core\Env;
 use App\Controller\Utils\CliHandler;
 /**
  * Namespace is omitted here as this is only used by composer
