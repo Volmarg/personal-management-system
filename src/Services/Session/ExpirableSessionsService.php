@@ -125,6 +125,10 @@ class ExpirableSessionsService extends SessionsService {
      */
     public static function getAllSessionKeys(): array
     {
+        if( empty($_SESSION) ){
+            return [];
+        }
+        
         $keys = array_keys($_SESSION[self::KEY_SESSION_ALL_SESSION_KEY]);
         return $keys;
     }
