@@ -2,9 +2,11 @@ import tinymce from "tinymce";
 
 var bootbox = require('bootbox');
 import * as selectize from "selectize";
+import AjaxResponseDto from "../DTO/AjaxResponseDto.js";
 
 /**
  * If possible - avoid moving logic from this script - some methods are called as plain string in twig tpls
+ * @todo  When reweriting to TS - should be placed in separated file instead of adding coments to extensive logic - keep in mind usages in twig
  */
 export default (function () {
     window.ui = {};
@@ -76,9 +78,9 @@ export default (function () {
             this.attachContentEditEventOnEditIcon();
             this.attachContentSaveEventOnSaveIcon();
             this.attachContentCopyEventOnCopyIcon();
-            this.attachFontawesomePickEventOnEmojiIcon();
+            this.attachFontawesomePickEventForFontawesomeAction();
             this.attachRecordAddViaAjaxOnSubmit();
-            this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm();
+            this.attachRecordUpdateViaAjaxOnSubmitForSingleForm();
 
 
             // the order is very important as in one event we block propagation to prevent accordion closing
@@ -561,6 +563,9 @@ export default (function () {
                 });
             }
         },
+        /**
+         * @description attaches logic for saving record edited inline (tables)
+         */
         attachContentSaveEventOnSaveIcon: function () {
             let _this      = this;
             let saveButton = $('.save-record');
@@ -573,7 +578,10 @@ export default (function () {
                 _this.ajaxUpdateDatabaseRecord(closestParent);
             });
         },
-        attachFontawesomePickEventOnEmojiIcon: function () {
+        /**
+         * @description will attach calling furcan fontawesome picker on certain gui elements (actions)
+         */
+        attachFontawesomePickEventForFontawesomeAction: function () {
             let _this = this;
 
             $('.' + this.classes["fontawesome-picker-input"]).each((index, input) => {
@@ -587,13 +595,6 @@ export default (function () {
             });
 
             $('.action-fontawesome').each((index, icon) => {
-
-                // todo: remove - left only case of furcan preview issue - old fix
-                // if ($('.' + _this.classes["fontawesome-picker-preview"]).length === 0) {
-                //     let fontawesome_preview_div = $('<div></div>');
-                //     $(fontawesome_preview_div).addClass(_this.classes["fontawesome-picker-preview"]).addClass(_this.classes.hidden);
-                //     $('body').append(fontawesome_preview_div);
-                // }
 
                 $(icon).addClass('fontawesome-picker' + index);
                 $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);
@@ -609,148 +610,156 @@ export default (function () {
             })
         },
         /**
-         * @info this function might require refactor as I'm passing "template" but sometimes there might be code/message
-         *  with this the backend should send data['template'] etc,
-         *      @see this.attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm()
-         * @param eventAttachReloadPage {bool}
+         * @description This is general method used for handling forms which are associated with entities or single-target forms
+         *              single-target form can be any custom form not associated with entities directly
+         * @info        Method is also used in twig as string which is then parsed and executed
+         * @param reinitializePageLogicAfterAjaxCall {bool}
          */
-        attachRecordAddViaAjaxOnSubmit: function (eventAttachReloadPage = true) {
+        attachRecordAddViaAjaxOnSubmit: function (reinitializePageLogicAfterAjaxCall = true) {
             let form  = $('.add-record-form form');
 
             $(form).off("submit");
             $(form).submit(function (event) {
+                event.preventDefault();
+
                 let form                 = $(event.target);
                 let submitButton         = $(form).find('button[type="submit"]');
                 let callbackParamsJson   = $(submitButton).attr('data-params');
                 let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
 
-                // with this there is a possibility to load different template than the one from url used in ajax
-                // normally the same page should be reloaded but this is helpful for widgets when we want to call
-                // action from one page but load template of other
-                let dataTemplateUrl = $(submitButton).attr('data-template-url');
+                /**
+                 * @description with this there is a possibility to load different template than the one from url used in ajax
+                 *              normally the same page should be reloaded but this is helpful for widgets when we want to call
+                 *              action from one page but load template of other
+                 */
+                let dataTemplateUrl                = $(submitButton).attr('data-template-url');
+                let doReloadTemplateViaTemplateUrl = ("undefined" !== typeof dataTemplateUrl);
 
-                let method      = form.attr('method');
-                let entity_name = form.attr('data-entity');
-                let create_data = null;
+                let formSubmissionType                = form.attr('method');
+                let processedEntityName               = form.attr('data-entity');
+                let singleProcessedFormDefinitionName = form.attr('data-form-target');
 
-                if( "undefined" != typeof entity_name){
-                    create_data = dataProcessors.entities[entity_name].makeCreateData();
-                }else{
-                    let formTarget  = form.attr('data-form-target');
-                    create_data     = dataProcessors.singleTargets[formTarget].makeCreateData();
+                let ajaxRequestDataBag  = null;
+                let isEntityBasedForm   = ("undefined" != typeof processedEntityName);
+
+                /**
+                 * @description build data bag for request using either entity based form or single-target one
+                 *              and build callbacks used after receiving backend response
+                 */
+                try{
+                    if(isEntityBasedForm ){
+                        ajaxRequestDataBag = dataProcessors.entities[processedEntityName].makeCreateData();
+                    }else{
+                        ajaxRequestDataBag = dataProcessors.singleTargets[singleProcessedFormDefinitionName].makeCreateData();
+                    }
+                }catch(Exception){
+                    throw({
+                        "message"   : "Failed on getting data bag for creating record via form submit (ajax call)",
+                        "exception" : Exception
+                    })
+                }
+
+                if( null === ajaxRequestDataBag ){
+                    bootstrap_notifications.showRedNotification("Databag for creating record via form submit (ajax) is null.");
+                    return;
                 }
 
                 ui.widgets.loader.showLoader();
                 $.ajax({
-                    url: create_data.url,
-                    type: method,
+                    url: ajaxRequestDataBag.url,
+                    type: formSubmissionType,
                     data: form.serialize(),
                 }).always((data) => {
+                    let twigBodySection = $('.twig-body-section');
+                    let callback        = () => {};
 
-                    if (create_data.callback_before) {
-                        create_data.callback(dataCallbackParams);
+                    if (ajaxRequestDataBag.callback_before) {
+                        ajaxRequestDataBag.callback(dataCallbackParams);
                     }
 
                     try{
-                        var code     = data['code'];
-                        var message  = data['message'];
-                        var template = data['template'];
+                        var ajaxResponseDto = AjaxResponseDto.fromArray(data);
                     } catch(Exception){
                         throw({
                             "message"   : "Could not handle ajax call",
                             "data"      : data,
                             "exception" : Exception
                         })
+                    }
+
+                    if( !ajaxResponseDto.isSuccessCode() ){
+                        ui.widgets.loader.hideLoader();
+                        bootstrap_notifications.showRedNotification(ajaxResponseDto.message);
+                        return;
                     }
 
                     /**
-                     * This reloadPage must stay like that,
-                     * Somewhere in code I call this function but i pass it as string so it's not getting detected
+                     * @info handle the way of reloading template
                      */
-                    if (!eventAttachReloadPage) {
-                        ui.widgets.loader.hideLoader();
-
-                        if( 200 != code ){
-                            bootstrap_notifications.showRedNotification(message);
-                        }else{
-                            bootstrap_notifications.showGreenNotification(message);
-                        }
-
-                        return;
-                    }
-
-                    try{
-                        var reloadPage    = data['reload_page'];
-                        var reloadMessage = data['reload_message'];
-                    } catch(Exception){
-                        throw({
-                            "message"   : "Could not handle ajax call",
-                            "data"      : data,
-                            "exception" : Exception
-                        })
-                    }
-
-                    if( "undefined" === typeof reloadPage ){
-                        reloadPage = eventAttachReloadPage;
-                    }
-
-                    if( 200 != code ){
-                        ui.widgets.loader.hideLoader();
-                        bootstrap_notifications.showRedNotification(message);
-                        return;
-                    }
-
-                    if( "undefined" !== typeof dataTemplateUrl ){
-                        let callback = () => {};
-                        if(create_data.callback_for_data_template_url){
+                    if( doReloadTemplateViaTemplateUrl ){
+                        if(ajaxRequestDataBag.callback_for_data_template_url){
                             callback = () => {
-                                create_data.callback(dataCallbackParams)
+                                ajaxRequestDataBag.callback(dataCallbackParams)
                             };
                         }
 
                         ui.ajax.loadModuleContentByUrl(dataTemplateUrl, callback, true);
-                    }else{
-                        let twigBodySection = $('.twig-body-section');
-                        if( "undefined" !== template ){
-                            twigBodySection.html(template);
+                    }else if(ajaxResponseDto.isTemplateSet()){
+                        twigBodySection.html(ajaxResponseDto.template);
+                    }
+
+                    if (ajaxRequestDataBag.callback_after) {
+                        ajaxRequestDataBag.callback(dataCallbackParams);
+                    }
+
+                    /**
+                     * @info handle logic reinitialization
+                     */
+                    if ( !reinitializePageLogicAfterAjaxCall ) {
+                        ui.widgets.loader.hideLoader();
+
+                        if( !ajaxResponseDto.isSuccessCode() ){
+                            bootstrap_notifications.showRedNotification(ajaxResponseDto.message);
+                        }else{
+                            bootstrap_notifications.showGreenNotification(ajaxResponseDto.message);
                         }
+
+                        return;
                     }
 
-                    if(
-                            "undefined" === typeof message
-                        ||  ""          === message
-                    ){
-                        message = create_data.success_message;
-                    }
+                    try{
+                        initializer.reinitialize();
+                        ui.widgets.loader.hideLoader();
 
-                    if (create_data.callback_after) {
-                        create_data.callback(dataCallbackParams);
-                    }
+                        bootstrap_notifications.showGreenNotification( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : ajaxRequestDataBag.success_message );
 
-                    initializer.reinitialize();
-
-                    ui.widgets.loader.hideLoader();
-
-                    bootstrap_notifications.showGreenNotification(message);
-
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                        if( ajaxResponseDto.reloadPage ){
+                            if( ajaxResponseDto.isReloadMessageSet() ){
+                                bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                            }
+                            location.reload();
                         }
-                        location.reload();
-                    }
 
-                    bootbox.hideAll();
+                        bootbox.hideAll();
+
+                    }catch(Exception){
+                        ui.widgets.loader.hideLoader();
+                        bootstrap_notifications.showRedNotification("Failed reinitializing logic");
+                        throw Exception;
+                    }
                 });
-
-                event.preventDefault();
             });
         },
-        attachRecordUpdateOrAddViaAjaxOnSubmitForSingleForm: function () {
+        /**
+         * @description Handles performing update for single-target forms (via ajax)
+         */
+        attachRecordUpdateViaAjaxOnSubmitForSingleForm: function () {
             $('.update-record-form form').submit(function (event) {
-                let form = $(event.target);
-                let formTarget = form.attr('data-form-target');
-                let updateData = dataProcessors.singleTargets[formTarget].makeUpdateData(form);
+
+                let $form      = $(event.target);
+                let formTarget = $form.attr('data-form-target');
+                let updateData = dataProcessors.singleTargets[formTarget].makeUpdateData($form);
+
                 ui.widgets.loader.showLoader();
                 $.ajax({
                     url: updateData.url,
@@ -761,12 +770,7 @@ export default (function () {
                     ui.widgets.loader.hideLoader();
 
                     try{
-                        var code          = data['code'];
-                        var message       = data['message'];
-                        var template      = data['template'];
-                        var reloadPage    = data['reload_page'];
-                        var reloadMessage = data['reload_message'];
-
+                        var ajaxResponseDto = AjaxResponseDto.fromArray(data);
                     } catch(Exception){
                         throw({
                             "message"   : "Could not handle ajax call",
@@ -775,19 +779,19 @@ export default (function () {
                         })
                     }
 
-                    if( 200 === code ){
-                        bootstrap_notifications.showGreenNotification(message);
+                    if( ajaxResponseDto.isSuccessCode() ){
+                        bootstrap_notifications.showGreenNotification(ajaxResponseDto.message);
                     }else{
-                        bootstrap_notifications.showRedNotification(message);
+                        bootstrap_notifications.showRedNotification(ajaxResponseDto.message);
                         return;
                     }
 
-                    $('.twig-body-section').html(template);
+                    $('.twig-body-section').html(ajaxResponseDto.template);
                     initializer.reinitialize();
 
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                    if( ajaxResponseDto.reloadPage ){
+                        if( ajaxResponseDto.isReloadMessageSet() ){
+                            bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
                     }
@@ -796,6 +800,11 @@ export default (function () {
                 event.preventDefault();
             });
         },
+        /**
+         * @description Toggles content editable of element - mostly table
+         * Todo: should be refactored
+         * @param baseElement
+         */
         toggleContentEditable: function (baseElement) {
             let isContentEditable = utils.domAttributes.isContentEditable(baseElement, 'td');
             let paramEntityName   = $(baseElement).attr('data-type');
@@ -803,21 +812,27 @@ export default (function () {
             if (!isContentEditable) {
                 utils.domAttributes.contentEditable(baseElement, utils.domAttributes.actions.set,  'td', 'input, select, button, img');
                 $(baseElement).addClass(this.classes["table-active"]);
-                this.toggleActionIconsVisibillity(baseElement, null, isContentEditable);
+                this.toggleActionIconsVisibility(baseElement, null, isContentEditable);
                 this.toggleDisabledClassForTableRow(baseElement);
 
                 bootstrap_notifications.notify(this.messages.entityEditStart(dataProcessors.entities[paramEntityName].entity_name), 'warning');
                 return;
             }
 
-            this.toggleActionIconsVisibillity(baseElement, null, isContentEditable);
+            this.toggleActionIconsVisibility(baseElement, null, isContentEditable);
             this.toggleDisabledClassForTableRow(baseElement);
 
             utils.domAttributes.contentEditable(baseElement, utils.domAttributes.actions.unset,'td', 'input, select, button, img');
             $(baseElement).removeClass(this.classes["table-active"]);
             bootstrap_notifications.notify(this.messages.entityEditEnd(dataProcessors.entities[paramEntityName].entity_name), 'success');
         },
-        toggleActionIconsVisibillity: function ($element, toggleContentEditable = null, isContentEditable) {
+        /**
+         * @description Shows/hides actions icons (for example in tables edit/create/delete)
+         * @param $element
+         * @param toggleContentEditable
+         * @param isContentEditable
+         */
+        toggleActionIconsVisibility: function ($element, toggleContentEditable = null, isContentEditable) {
             let saveIcon        = $($element).find('.save-record');
             let fontawesomeIcon = $($element).find('.action-fontawesome');
 
@@ -836,6 +851,11 @@ export default (function () {
                 this.toggleContentEditable($element);
             }
         },
+        /**
+         * @description Toggles css `disabled` class for certain elements in table
+         *              like for example after clicking on row edit certain data should be undeditable/interractable
+         * @param tr_parent_element
+         */
         toggleDisabledClassForTableRow: function (tr_parent_element) {
             let color_pickers   = $(tr_parent_element).find('.color-picker');
             let toggle_buttons  = $(tr_parent_element).find('.toggle-button');
@@ -864,6 +884,10 @@ export default (function () {
             })
 
         },
+        /**
+         * @description Update entry in DB
+         * @param baseElement
+         */
         ajaxUpdateDatabaseRecord: function (baseElement) {
             let paramEntityName = $(baseElement).attr('data-type');
             let updateData = dataProcessors.entities[paramEntityName].makeUpdateData(baseElement);
@@ -877,7 +901,7 @@ export default (function () {
                     callback: function (result) {
                         if (result) {
                             _this.makeAjaxRecordUpdateCall(updateData);
-                            _this.toggleActionIconsVisibillity(baseElement, true);
+                            _this.toggleActionIconsVisibility(baseElement, true);
                         }
                     }
                 });
@@ -887,6 +911,11 @@ export default (function () {
             }
 
         },
+        /**
+         * @description Updates record (mostly entity) via ajax call
+         *              Works with Entities file to build collect data from front and send it for update on back
+         * @param updateData
+         */
         makeAjaxRecordUpdateCall: function (updateData) {
             ui.widgets.loader.showLoader();
             $.ajax({
@@ -941,16 +970,25 @@ export default (function () {
                 }
             });
         },
+        /**
+         * @description Removes table row on front (via datatable), must be also handled on back otherwise will reapper on refresh
+         * @param table_id
+         * @param tr_parent_element
+         */
         removeDataTableTableRow: function (table_id, tr_parent_element) {
             datatable.destroy(table_id);
             tr_parent_element.remove();
             datatable.reinit(table_id)
         },
+        /**
+         * @description Just removes row from table, wil be shown on refresh if entry is not also removed/handled on back
+         * @param tr_parent_element
+         */
         removeTableRow: function (tr_parent_element) {
             tr_parent_element.remove();
         },
         /**
-         * Will attach logic to element so that when pressed turns the target element into tinymce
+         * @description Will attach logic to element so that when pressed turns the target element into tinymce
          * @param preventFurtherEventPropagation {boolean}
          */
         attachEventOnButtonToTransformTargetSelectorToTinyMceInstance: function(preventFurtherEventPropagation = true){
@@ -983,7 +1021,7 @@ export default (function () {
             });
         },
         /**
-         * Attaches the logic after clicking on button for editing with tinymce
+         * @description Attaches the logic after clicking on button for editing with tinymce
          */
         attachEventOnButtonForEditingViaTinyMce: function(){
             let $allActionButtons = $('.edit-record-with-tiny-mce');
@@ -994,7 +1032,7 @@ export default (function () {
 
                 $button.off('click'); // prevent stacking - also keep in mind that might remove other events attached before
                 $button.on('click', function(event){
-                    ui.crud.toggleActionIconsVisibillity($accordion);
+                    ui.crud.toggleActionIconsVisibility($accordion);
                 });
             });
 

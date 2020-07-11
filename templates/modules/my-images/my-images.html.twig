@@ -54,7 +54,7 @@
                         "type": 'template',
                         "url": path('dialog_body_create_folder'),
                         'callFunctions': '
-                            ui.crud.attachRecordAddViaAjaxOnSubmit(false); // dont reload mainBody
+                            ui.crud.attachRecordAddViaAjaxOnSubmit(false);  // dont reinitialize logic
                             ui.upload.init();
                             ui.forms.init();
                             createFolderWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder();

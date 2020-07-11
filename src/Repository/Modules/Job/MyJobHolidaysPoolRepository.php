@@ -178,11 +178,11 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
 
         $sql = "
             SELECT 
-            hp.days_in_pool - SUM(h.days_spent) as daysLeft
+            hp.days_in_pool - IF( SUM(h.days_spent)  IS NULL, 0 ,SUM(h.days_spent) ) AS daysLeft
             
             FROM my_job_holiday_pool hp
             
-            JOIN my_job_holiday h
+            LEFT JOIN my_job_holiday h
             ON h.year     = hp.year
             AND h.deleted = 0
             

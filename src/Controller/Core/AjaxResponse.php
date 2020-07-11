@@ -188,7 +188,7 @@ class AjaxResponse extends AbstractController {
         ?string $password       = null,
         ?bool   $reload_page    = false,
         string  $reload_message = "",
-        bool    $success        = false,
+        bool    $success        = true,
         string  $form_template  = ""
     ): JsonResponse {
 

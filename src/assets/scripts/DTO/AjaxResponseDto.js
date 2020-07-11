@@ -90,7 +90,7 @@ export default class AjaxResponseDto {
         ajaxResponseDto._message       = ajaxResponseDto.getFromArray(array, 'message');
         ajaxResponseDto._template      = ajaxResponseDto.getFromArray(array, 'template');
         ajaxResponseDto._password      = ajaxResponseDto.getFromArray(array, 'password');
-        ajaxResponseDto._reloadPage    = ajaxResponseDto.getFromArray(array, 'reload_page', false); //todo: check if backend really sends bool
+        ajaxResponseDto._reloadPage    = ajaxResponseDto.getFromArray(array, 'reload_page', false);
         ajaxResponseDto._reloadMessage = ajaxResponseDto.getFromArray(array, 'reload_message');
         ajaxResponseDto._success       = ajaxResponseDto.getFromArray(array, 'success');
         ajaxResponseDto._formTemplate  = ajaxResponseDto.getFromArray(array, 'form_template');

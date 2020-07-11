@@ -713,7 +713,7 @@ export default (function () {
 
             },
             makeCreateData: function () {
-                let url = '/my/travels/ideas';
+                let url = '/my-travels/ideas';
                 let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
                 let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
 
