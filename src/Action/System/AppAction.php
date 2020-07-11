@@ -25,9 +25,6 @@ class AppAction extends AbstractController {
 
     const KEY_MENU_NODE_MODULE_NAME = 'menu_node_module_name';
 
-    const KEY_MESSAGE                 = 'message';
-    const KEY_CODE                    = 'code';
-    const KEY_TPL                     = 'tpl';
     const KEY_CURR_URL                = 'currUrl';
     const KEY_SYSTEM_LOCK_PASSWORD    = 'systemLockPassword';
     const KEY_SYSTEM_LOCK_IS_UNLOCKED = 'isUnlocked';
@@ -127,56 +124,44 @@ class AppAction extends AbstractController {
      * @Route("/actions/render-menu-node-template", name="render_menu_node_template")
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws Exception
      */
-    public function renderMenuNodeTemplate(Request $request) {
+    public function renderMenuNodeTemplate(Request $request)
+    {
+        try{
+            $message = $this->app->translator->translate('responses.menu.nodeHasBeenRendered');
 
-        $message = $this->app->translator->translate('responses.menu.nodeHasBeenRendered');
-        $code    = 200;
-        $tpl     = '';
+            if ( !$request->request->has(static::KEY_MENU_NODE_MODULE_NAME) ) {
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MENU_NODE_MODULE_NAME;
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+            }
 
-        if ( !$request->request->has(static::KEY_MENU_NODE_MODULE_NAME) ) {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MENU_NODE_MODULE_NAME;
-            $code    = 500;
+            $menu_node_module_name = $request->request->get(static::KEY_MENU_NODE_MODULE_NAME);
 
-            $response_data = [
-                static::KEY_MESSAGE => $message,
-                static::KEY_CODE    => $code,
-                static::KEY_TPL     => $tpl
+            if ( !array_key_exists($menu_node_module_name, static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP) ) {
+                $message = $this->app->translator->translate('responses.menu.menuNodeWithNameWasNotFound') . $menu_node_module_name;
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+            }
+
+            $tpl_data = [
+                static::KEY_CURR_URL => $request->server->get('HTTP_REFERER'),
+                static::MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES[$menu_node_module_name] => $menu_node_module_name // because of constants used in tpl
             ];
 
-            return new JsonResponse($response_data);
+            $template = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menu_node_module_name], $tpl_data)->getContent();
+        }catch(Exception $e){
+            $this->app->logExceptionWasThrown($e);
+
+            $ajaxResponse = new AjaxResponse();
+            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $ajaxResponse->setSuccess(false);
+            $json_response = $ajaxResponse->buildJsonResponse();
+            return $json_response;
         }
 
-        $menu_node_module_name = $request->request->get(static::KEY_MENU_NODE_MODULE_NAME);
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, $message, $template);
 
-        if ( !array_key_exists($menu_node_module_name, static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP) ) {
-            $message = $this->app->translator->translate('responses.menu.menuNodeWithNameWasNotFound') . $menu_node_module_name;
-            $code    = 500;
-
-            $response_data = [
-                static::KEY_MESSAGE => $message,
-                static::KEY_CODE    => $code,
-                static::KEY_TPL     => $tpl
-            ];
-
-            return new JsonResponse($response_data);
-        }
-
-        $tpl_data = [
-            static::KEY_CURR_URL => $request->server->get('HTTP_REFERER'),
-            static::MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES[$menu_node_module_name] => $menu_node_module_name // because of constants used in tpl
-        ];
-
-        $tpl = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menu_node_module_name], $tpl_data)->getContent();
-
-        $response_data = [
-            static::KEY_MESSAGE  => $message,
-            static::KEY_CODE     => $code,
-            static::KEY_TPL      => $tpl
-        ];
-
-        return new JsonResponse($response_data);
     }
 
     /**
@@ -209,19 +194,19 @@ class AppAction extends AbstractController {
     {
         if( !$request->isXmlHttpRequest() ){
             $message  = $this->app->translator->translate('responses.general.youAreNotAllowedToCallThisLogic');
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
             return $response;
         }
 
         if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
             $message  = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
             return $response;
         }
 
         if( !$request->request->has(self::KEY_SYSTEM_LOCK_IS_UNLOCKED) ){
             $message  = $this->app->translator->translate('responses.general.missingRequiredParameter'. self::KEY_SYSTEM_LOCK_IS_UNLOCKED);
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
             return $response;
         }
 
@@ -252,7 +237,7 @@ class AppAction extends AbstractController {
 
                 if( !$is_password_valid ){
                     $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
-                    $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+                    $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
                     return $response;
                 }
 
@@ -273,7 +258,7 @@ class AppAction extends AbstractController {
             ]);
         }
 
-        $response = AjaxResponse::buildResponseForAjaxCall($code, $message);
+        $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
         return $response;
     }
 
@@ -288,7 +273,7 @@ class AppAction extends AbstractController {
     {
         if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
             $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
             return $response;
         }
 
@@ -314,7 +299,7 @@ class AppAction extends AbstractController {
                 $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenUpdated');
             }
 
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_OK, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, $message);
         } catch(Exception $e){
             $message = $this->app->translator->translate("responses.lockResource.failedToSetLockPassword");
             $this->app->logger->info($message, [
@@ -322,7 +307,7 @@ class AppAction extends AbstractController {
                 "exceptionCode"     => $e->getCode(),
             ]);
 
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         return $response;

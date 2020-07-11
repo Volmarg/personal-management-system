@@ -58,10 +58,10 @@ class MyContactsSettingsAction extends AbstractController
             $rendered_template = $this->renderSettingsTemplate(true);
             $template_content  = $rendered_template->getContent();
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -75,7 +75,7 @@ class MyContactsSettingsAction extends AbstractController
         $entity     = $this->app->repositories->myContactGroupRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -98,10 +98,10 @@ class MyContactsSettingsAction extends AbstractController
             $rendered_template = $this->renderSettingsTemplate(true);
             $template_content  = $rendered_template->getContent();
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -124,13 +124,13 @@ class MyContactsSettingsAction extends AbstractController
             try{
                 $this->controllers->getMyContactSettingsController()->updateContactsForUpdatedType($entity_before_update, $entity_after_update);
             }catch (Exception $e){
-                $response = new Response("Could not update the contacts for updated contact type");
+                $response = new Response("Could not update the contacts for updated contact type", Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
         }
         $this->app->em->commit();
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -148,7 +148,7 @@ class MyContactsSettingsAction extends AbstractController
         }
 
         $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Throwable;
 
 class Application extends AbstractController {
 
@@ -115,6 +116,19 @@ class Application extends AbstractController {
         $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
         $camel_string                  = $camel_case_to_snake_converter->denormalize($snake_case);
         return $camel_string;
+    }
+
+    /**
+     * Logs the standard exception data
+     * @param Throwable $throwable
+     */
+    public function logExceptionWasThrown(Throwable $throwable): void
+    {
+        $this->logger->critical("Exception was thrown in", [
+            "exceptionMessage" => $throwable->getMessage(),
+            "exceptionCode"    => $throwable->getCode(),
+            "exceptionTrace"   => $throwable->getTraceAsString(),
+        ]);
     }
 
 }

@@ -14,6 +14,7 @@ use App\Services\Files\FileTagger;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -74,7 +75,7 @@ class MyFilesAction extends AbstractController {
      * Handles file renaming and tags updating
      * @Route("/api/my-files/update", name="my_files_update", methods="POST")
      * @param Request $request
-     * @return Response
+     * @return Response|JsonResponse
      * @throws Exception
      */
     public function update(Request $request){
@@ -94,6 +95,8 @@ class MyFilesAction extends AbstractController {
         };
 
         $this->files_handler->renameFileViaRequest($request, $update_file_path);
+
+        // It's ok, further logic decides if that's ajax call or not and sends either json response or response
         return $this->displayFiles($subdirectory, $request);
     }
 
@@ -113,7 +116,7 @@ class MyFilesAction extends AbstractController {
 
         $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
         $message           = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-        return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
     }
 
     /**
@@ -129,7 +132,7 @@ class MyFilesAction extends AbstractController {
         }
 
         $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -179,10 +182,10 @@ class MyFilesAction extends AbstractController {
 
         //todo: do the same with transfer
         if ($response->getStatusCode() == 200) {
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message, $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message, $template_content);
     }
 
     /**

@@ -59,7 +59,7 @@ class MyJobAfterhoursAction extends AbstractController {
         }
 
         $template_content  = $this->renderTemplate(true, false)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -107,7 +107,7 @@ class MyJobAfterhoursAction extends AbstractController {
         $entity     = $this->app->repositories->myJobAfterhoursRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -129,10 +129,10 @@ class MyJobAfterhoursAction extends AbstractController {
             $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**

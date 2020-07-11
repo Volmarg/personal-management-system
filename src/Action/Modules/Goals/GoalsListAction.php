@@ -38,7 +38,7 @@ class GoalsListAction extends AbstractController {
         $are_all_goals_done = boolval($this->app->repositories->myGoalsRepository->areAllSubgoalsDone($goal_id));
 
         if (empty($goal_id)) {
-            return $response;
+            return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
         }
 
         $goal = $this->app->repositories->myGoalsRepository->find($goal_id);
@@ -52,7 +52,7 @@ class GoalsListAction extends AbstractController {
         $this->app->em->persist($goal);
         $this->app->em->flush();
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
 
     }
 
@@ -68,7 +68,7 @@ class GoalsListAction extends AbstractController {
         }
 
         $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

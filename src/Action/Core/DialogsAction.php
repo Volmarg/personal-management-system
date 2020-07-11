@@ -3,6 +3,7 @@
 namespace App\Action\Core;
 
 use App\Action\Files\FileUploadAction;
+use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
@@ -26,6 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
  *  at some point JsonResponse should be replaced with AjaxResponse (my class)
  *  - consider adding new key in class if not yet present `success` or `error`
  *  same ajax calls for dialog should be adjusted on front for more future flexibility
+ *  - test all dialogs in whole system with this changes + also the ones set with data attr
  * This class is only responsible for building dialogs data in response for example on Ajax call
  * Class Dialogs
  * @package App\Controller\Utils
@@ -42,6 +44,8 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS    = 'page-elements/components/dialogs/bodies/preview-issue-details.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA           = 'page-elements/components/dialogs/bodies/add-issue-data.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE             = 'page-elements/components/dialogs/bodies/create-issue.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_CREATE_NOTE              = 'page-elements/components/dialogs/bodies/create-note.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD             = 'page-elements/components/dialogs/bodies/upload.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
@@ -92,75 +96,94 @@ class DialogsAction extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    public function buildDataTransferDialogBody(Request $request) {
+    public function buildDataTransferDialogBody(Request $request): JsonResponse
+    {
 
-        if( !$request->request->has(FilesHandler::KEY_FILES_CURRENT_PATHS) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FilesHandler::KEY_FILES_CURRENT_PATHS;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        if( !$request->request->has(static::KEY_MODULE_NAME) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MODULE_NAME;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
+        try{
 
-        $module_name  = $request->request->get(static::KEY_MODULE_NAME);
+            if( !$request->request->has(FilesHandler::KEY_FILES_CURRENT_PATHS) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FilesHandler::KEY_FILES_CURRENT_PATHS;
 
-        if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
-            $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
 
-        // in ligthgallery.html.twig
-        $files_current_paths = $request->request->get(FilesHandler::KEY_FILES_CURRENT_PATHS);
+            if( !$request->request->has(static::KEY_MODULE_NAME) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MODULE_NAME;
 
-        //check if any of the files path is invalid
-        foreach($files_current_paths as $file_current_path){
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
 
-            $message       = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
-            $response_data = [
-                'errorMessage' => $message
-            ];
+            $module_name  = $request->request->get(static::KEY_MODULE_NAME);
 
-            try{
+            if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+                $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            // in ligthgallery.html.twig
+            $files_current_paths = $request->request->get(FilesHandler::KEY_FILES_CURRENT_PATHS);
+
+            //check if any of the files path is invalid
+            foreach($files_current_paths as $file_current_path){
+
                 $file = new File($file_current_path);
 
                 if( !$file->isFile() ){
-                    return new JsonResponse($response_data);
+                    $message = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
+
+                    $ajax_response->setMessage($message);
+                    $ajax_response->setSuccess(false);
+                    $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                    $jsonResponse = $ajax_response->buildJsonResponse();
+                    return $jsonResponse;
                 }
-            }catch(Exception $e) {
-                return new JsonResponse($response_data);
             }
 
+            $all_upload_based_modules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
+
+            $form_data  = [
+                FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
+            ];
+
+            $form = $this->app->forms->moveSingleFileForm($form_data); //todo: change name to moveFiles
+
+            $template_data = [
+                'form' => $form->createView()
+            ];
+
+            $template = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $all_upload_based_modules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        $form_data  = [
-            FilesHandler::KEY_MODULES_NAMES => $all_upload_based_modules
-        ];
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        $form = $this->app->forms->moveSingleFileForm($form_data); //todo: change name to moveFiles
-
-        $template_data = [
-            'form' => $form->createView()
-        ];
-
-        $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER, $template_data);
-
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
+        return $jsonResponse;
     }
-
 
     /**
      * @Route("/dialog/body/tags-update", name="dialog_body_tags_update", methods="POST")
@@ -168,56 +191,78 @@ class DialogsAction extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    public function buildTagsUpdateDialogBody(Request $request) {
+    public function buildTagsUpdateDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_CURRENT_PATH;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
+        try{
+            if( !$request->request->has(static::KEY_FILE_CURRENT_PATH) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_CURRENT_PATH;
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $module_name  = $request->request->get(static::KEY_MODULE_NAME);
+
+            if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+                $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            // in ligthgallery.html.twig
+            $file_current_path = FilesHandler::trimFirstAndLastSlash($request->request->get(static::KEY_FILE_CURRENT_PATH));
+
+            $file = new File($file_current_path);
+
+            if( !$file->isFile() ){
+                $message = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $this->file_tagger->prepare([],$file_current_path);
+            $file_tags = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_current_path);
+            $tags_json = ( !is_null($file_tags) ? $file_tags->getTags() : '');
+
+            $form_data  = [
+                FileTagger::KEY_TAGS=> $tags_json
+            ];
+            $form = $this->app->forms->updateTagsForm($form_data);
+
+            $template_data = [
+                'form' => $form->createView()
+            ];
+
+            $template = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $module_name  = $request->request->get(static::KEY_MODULE_NAME);
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        if( !array_key_exists($module_name, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
-            $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        // in ligthgallery.html.twig
-        $file_current_path = FilesHandler::trimFirstAndLastSlash($request->request->get(static::KEY_FILE_CURRENT_PATH));
-
-        $file = new File($file_current_path);
-
-        if( !$file->isFile() ){
-            $message = $this->app->translator->translate('responses.files.filePathIsIncorrectFileDoesNotExist');
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
-
-        $this->file_tagger->prepare([],$file_current_path);
-        $file_tags = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_current_path);
-        $tags_json = ( !is_null($file_tags) ? $file_tags->getTags() : '');
-
-        $form_data  = [
-            FileTagger::KEY_TAGS=> $tags_json
-        ];
-        $form = $this->app->forms->updateTagsForm($form_data);
-
-        $template_data = [
-            'form' => $form->createView()
-        ];
-
-        $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS, $template_data);
-
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
+        return $jsonResponse;
     }
 
     /**
@@ -226,44 +271,78 @@ class DialogsAction extends AbstractController
      * @return JsonResponse
      * @throws Exception
      */
-    public function buildCreateNewFolderDialogBody(Request $request) {
-        if( !$request->request->has(static::KEY_MODULE_NAME) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MODULE_NAME;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
+    public function buildCreateNewFolderDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
+
+        try{
+
+            if( !$request->request->has(static::KEY_MODULE_NAME) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MODULE_NAME;
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $module_name = $request->request->get(static::KEY_MODULE_NAME);
+
+            $create_subdir_form = $this->app->forms->uploadCreateSubdirectoryForm();
+
+            $template_data = [
+                'form'                    => $create_subdir_form->createView(),
+                'menu_node_module_name'   => $module_name
+            ];
+
+            $template = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $module_name = $request->request->get(static::KEY_MODULE_NAME);
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        $create_subdir_form = $this->app->forms->uploadCreateSubdirectoryForm();
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        $template_data = [
-          'form'                    => $create_subdir_form->createView(),
-          'menu_node_module_name'   => $module_name
-        ];
-
-        $rendered_view = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER, $template_data);
-
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/upload", name="dialog_body_upload", methods="POST")
-     * @param Request $request
-     * @return Response
+     * @return JsonResponse
      * @throws Exception
      */
-    public function buildUploadDialogBody(Request $request) {
-        $template = 'page-elements/components/dialogs/bodies/upload.twig';
+    public function buildUploadDialogBody(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $rendered_template = $this->file_upload_action->renderTemplate(false, $template);
+        try{
 
-        return $rendered_template;
+            $template = $this->file_upload_action->renderTemplate(false, self::TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
+
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
     }
 
     /**
@@ -271,287 +350,418 @@ class DialogsAction extends AbstractController
      * @param Request $request
      * @param string $category
      * @param string $category_id
-     * @return Response
+     * @return JsonResponse
      */
-    public function buildCreateNoteDialogBody(Request $request, string $category, string $category_id) {
-        $template = 'page-elements/components/dialogs/bodies/create-note.twig';
-        $form_view = $this->app->forms->noteTypeForm()->createView();
+    public function buildCreateNoteDialogBody(Request $request, string $category, string $category_id): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $data = [
-            'form' => $form_view
-        ];
+        try{
+            $form_view = $this->app->forms->noteTypeForm()->createView();
 
-        return $this->render($template, $data);
+            $template_data = [
+                'form' => $form_view
+            ];
 
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_NOTE, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
+
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/note-preview/{note_id}/{category_id}", name="dialog_body_preview_note", methods="GET")
-     * @param Request $request
      * @param string $note_id
      * @param string $category_id
-     * @return Response
+     * @return JsonResponse
      *
      */
-    public function buildPreviewNoteDialogBody(Request $request, string $note_id, string $category_id) {
+    public function buildPreviewNoteDialogBody(string $note_id, string $category_id): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $note = $this->app->repositories->myNotesRepository->find($note_id);
+        try{
+            $note = $this->app->repositories->myNotesRepository->find($note_id);
 
-        if( is_null($note) ){
-            $message = $this->app->translator->translate('responses.notes.couldNotFindNoteForId') . $note_id;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
+            if( is_null($note) ){
+                $message = $this->app->translator->translate('responses.notes.couldNotFindNoteForId') . $note_id;
+                return new JsonResponse([
+                    'errorMessage' => $message
+                ]);
+            }
+
+            $template_data = [
+                'note'          => $note,
+                'category_id'   => $category_id,
+                'no_delete'     => true,
+                'no_close'      => true,
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_NOTE_EDIT_MODAL, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $template_data = [
-            'note'          => $note,
-            'category_id'   => $category_id,
-            'no_delete'     => true,
-            'no_close'      => true,
-        ];
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_NOTE_EDIT_MODAL, $template_data);
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
-
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/create-contact-card", name="dialog_body_create_contact_card", methods="POST")
-     * @param Request $request
-     * @return Response
+     * @return JsonResponse
      */
-    public function buildCreateContactCardDialogBody(Request $request) {
+    public function buildCreateContactCardDialogBody(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $contact_form  = $this->app->forms->contactForm();
+        try{
+            $contact_form  = $this->app->forms->contactForm();
 
-        $template_data = [
-            'contact_form'  => $contact_form->createView(),
-        ];
+            $template_data = [
+                'contact_form'  => $contact_form->createView(),
+            ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD, $template_data);
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
 
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        return new JsonResponse($response_data);
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/system-lock-resources", name="dialog_body_system_lock_resources", methods="GET")
-     * @return Response
+     * @return JsonResponse
      */
-    public function buildSystemLockResourcesDialogBody() {
+    public function buildSystemLockResourcesDialogBody(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $password_form  = $this->app->forms->systemLockResourcesPasswordForm([
-            SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => false
-        ]);
+        try{
+            $password_form  = $this->app->forms->systemLockResourcesPasswordForm([
+                SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => false
+            ]);
 
-        $template_data = [
-            'password_form'  => $password_form->createView(),
-        ];
+            $template_data = [
+                'password_form'  => $password_form->createView(),
+            ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES, $template_data);
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
 
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        return new JsonResponse($response_data);
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/create-system-lock-password", name="dialog_body_create_system_lock_password", methods="GET")
-     * @return Response
+     * @return JsonResponse
      */
-    public function buildCreateSystemLockPasswordDialogBody() {
+    public function buildCreateSystemLockPasswordDialogBody(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $password_form  = $this->app->forms->systemLockResourcesPasswordForm([
-            SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => true
-        ]);
+        try{
+            $password_form  = $this->app->forms->systemLockResourcesPasswordForm([
+                SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => true
+            ]);
 
-        $template_data = [
-            'password_form'  => $password_form->createView(),
-        ];
+            $template_data = [
+                'password_form'  => $password_form->createView(),
+            ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD, $template_data);
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
 
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        return new JsonResponse($response_data);
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/edit-contact-card", name="dialog_body_edit_contact_card", methods="POST")
      * @param Request $request
-     * @return Response
-     *
-     * @throws Exception
+     * @return JsonResponse
      */
-    public function buildEditContactCardDialogBody(Request $request) {
+    public function buildEditContactCardDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        if( !$request->request->has(self::KEY_ENTITY_ID) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
-        }
+        try{
+            if( !$request->request->has(self::KEY_ENTITY_ID) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
 
-        $entity_id      = $request->request->get(self::KEY_ENTITY_ID);
-        $contact        = $this->app->repositories->myContactRepository->findOneById($entity_id);
-        $forms_renders  = [];
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
 
-        if( is_null($contact) ){
-            $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
-            return new JsonResponse([
-                'errorMessage' => $message . $entity_id
-            ]);
-        }
+            $entity_id      = $request->request->get(self::KEY_ENTITY_ID);
+            $contact        = $this->app->repositories->myContactRepository->findOneById($entity_id);
+            $forms_renders  = [];
 
-        $contact_types_dtos = $contact->getContacts()->getContactTypeDtos();
+            if( is_null($contact) ){
+                $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
 
-        foreach( $contact_types_dtos as $contact_type_dto ){
-            $options = [
-                MyContactTypeDtoType::KEY_NAME => $contact_type_dto->getDetails(),
-                MyContactTypeDtoType::KEY_TYPE => $contact_type_dto->getName()
+                $ajax_response->setMessage($message . $entity_id);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $contact_types_dtos = $contact->getContacts()->getContactTypeDtos();
+
+            foreach( $contact_types_dtos as $contact_type_dto ){
+                $options = [
+                    MyContactTypeDtoType::KEY_NAME => $contact_type_dto->getDetails(),
+                    MyContactTypeDtoType::KEY_TYPE => $contact_type_dto->getName()
+                ];
+
+                $forms_renders[] = $this->app->forms->getFormViewWithoutFormTags(MyContactTypeDtoType::class, $options);
+            }
+
+            $contact_form = $this->app->forms->contactForm([], $contact);
+
+            $template_data = [
+                'contact_types_dtos' => $contact_types_dtos, //todo - need to append few type forms with dto data
+                'contact_form'       => $contact_form->createView(),
+                'subforms'           => $forms_renders
             ];
 
-            $forms_renders[] = $this->app->forms->getFormViewWithoutFormTags(MyContactTypeDtoType::class, $options);
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD, $template_data)->getContent();
+
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $contact_form = $this->app->forms->contactForm([], $contact);
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        $template_data = [
-            'contact_types_dtos' => $contact_types_dtos, //todo - need to append few type forms with dto data
-            'contact_form'       => $contact_form->createView(),
-            'subforms'           => $forms_renders
-        ];
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD, $template_data);
-
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/preview-issue-details", name="dialog_body_preview_issue_details", methods="POST")
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      *
      * @throws Exception
      */
-    public function buildPreviewIssueDetailsDialogBody(Request $request) {
+    public function buildPreviewIssueDetailsDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        if( !$request->request->has(self::KEY_ENTITY_ID) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
+        try{
+            if( !$request->request->has(self::KEY_ENTITY_ID) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $entity_id = $request->request->get(self::KEY_ENTITY_ID);
+            $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+
+            if( is_null($issue) ){
+                $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
+
+                $ajax_response->setMessage($message . $entity_id);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+
+            $template_data = [
+                'issueCardDto' => reset($issue_card_dto),
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $entity_id = $request->request->get(self::KEY_ENTITY_ID);
-        $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        if( is_null($issue) ){
-            $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
-            return new JsonResponse([
-                'errorMessage' => $message . $entity_id
-            ]);
-        }
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
-
-        $template_data = [
-            'issueCardDto' => reset($issue_card_dto),
-        ];
-
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS, $template_data);
-
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/add-issue-data", name="dialog_body_add_issue_data", methods="POST")
      * @param Request $request
-     * @return Response
+     * @return JsonResponse
      *
-     * @throws Exception
      */
-    public function buildAddIssueDataDialogBody(Request $request) {
+    public function buildAddIssueDataDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        if( !$request->request->has(self::KEY_ENTITY_ID) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
-            return new JsonResponse([
-                'errorMessage' => $message
-            ]);
+        try{
+            if( !$request->request->has(self::KEY_ENTITY_ID) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $entity_id = $request->request->get(self::KEY_ENTITY_ID);
+            $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+
+            if( is_null($issue) ){
+                $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
+
+                $ajax_response->setMessage($message . $entity_id);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+            $progress_form  = $this->app->forms->issueProgressForm([MyIssueProgressType::OPTION_ENTITY_ID => $entity_id])->createView();
+            $contact_form   = $this->app->forms->issueContactForm([MyIssueContactType::OPTION_ENTITY_ID   => $entity_id])->createView();
+
+            $template_data = [
+                'issueCardDto' => reset($issue_card_dto),
+                'progressForm' => $progress_form,
+                'contactForm'  => $contact_form,
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA, $template_data)->getContent();
+
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        $entity_id = $request->request->get(self::KEY_ENTITY_ID);
-        $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        if( is_null($issue) ){
-            $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
-            return new JsonResponse([
-                'errorMessage' => $message . $entity_id
-            ]);
-        }
+        $jsonResponse = $ajax_response->buildJsonResponse();
 
-        $issue_card_dto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
-        $progress_form  = $this->app->forms->issueProgressForm([MyIssueProgressType::OPTION_ENTITY_ID => $entity_id])->createView();
-        $contact_form   = $this->app->forms->issueContactForm([MyIssueContactType::OPTION_ENTITY_ID   => $entity_id])->createView();
-
-        $template_data = [
-            'issueCardDto' => reset($issue_card_dto),
-            'progressForm' => $progress_form,
-            'contactForm'  => $contact_form,
-        ];
-
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA, $template_data);
-
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
-
-        return new JsonResponse($response_data);
+        return $jsonResponse;
     }
 
     /**
      * @Route("/dialog/body/create-issue", name="dialog_body_create_issue", methods="POST")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
+     * @return JsonResponse
      */
-    public function buildCreateIssueDialogBody(Request $request) {
+    public function buildCreateIssueDialogBody(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
 
-        $template_data = [
-            'issueForm' => $this->app->forms->issueForm()->createView(),
-        ];
+        try{
+            $template_data = [
+                'issueForm' => $this->app->forms->issueForm()->createView(),
+            ];
 
-        $rendered_view = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE, $template_data);
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
 
-        $response_data = [
-            'template' => $rendered_view->getContent()
-        ];
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
 
-        return new JsonResponse($response_data);
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
     }
-
 
 }

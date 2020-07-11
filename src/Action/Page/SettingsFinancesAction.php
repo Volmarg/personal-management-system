@@ -141,7 +141,7 @@ class SettingsFinancesAction extends AbstractController {
             $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currencies_settings_dtos);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall($code, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
     /**

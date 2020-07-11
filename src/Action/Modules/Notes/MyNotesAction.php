@@ -49,7 +49,7 @@ class MyNotesAction extends AbstractController {
 
         $rendered_template = $this->renderCreateNoteTemplate(true);
         $template_content  = $rendered_template->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -67,7 +67,7 @@ class MyNotesAction extends AbstractController {
         }
 
         $template_content  = $this->renderCategoryTemplate($category, $category_id, true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -97,7 +97,7 @@ class MyNotesAction extends AbstractController {
 
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -114,10 +114,10 @@ class MyNotesAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            return AjaxResponse::buildResponseForAjaxCall(200, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**

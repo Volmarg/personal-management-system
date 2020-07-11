@@ -35,7 +35,7 @@ class GoalsPaymentsAction extends AbstractController {
         }
 
         $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

@@ -65,7 +65,7 @@ class SettingsAction extends AbstractController {
         $code     = $call_status_dto->getCode();
         $message  = $call_status_dto->getMessage();
 
-        $response = AjaxResponse::buildResponseForAjaxCall($code, $message, $template);
+        $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $template);
         return $response;
     }
 

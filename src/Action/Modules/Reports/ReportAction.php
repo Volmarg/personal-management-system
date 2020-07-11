@@ -70,7 +70,7 @@ class ReportAction extends AbstractController {
         $rendered_template = $this->renderTemplateMonthlyPaymentsSummaries(true);
         $template_content  = $rendered_template->getContent();
 
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
 
@@ -91,7 +91,7 @@ class ReportAction extends AbstractController {
         $rendered_template = $this->renderTemplatePaymentsCharts(true);
         $template_content  = $rendered_template->getContent();
 
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -110,7 +110,7 @@ class ReportAction extends AbstractController {
         $rendered_template = $this->renderTemplateSavingsCharts(true);
         $template_content  = $rendered_template->getContent();
 
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -128,7 +128,7 @@ class ReportAction extends AbstractController {
         $rendered_template = $this->renderTemplateHistoricalMoneyOwed(true);
         $template_content  = $rendered_template->getContent();
 
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

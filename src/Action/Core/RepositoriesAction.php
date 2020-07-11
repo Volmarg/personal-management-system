@@ -47,15 +47,14 @@ class RepositoriesAction extends AbstractController {
      * @param $id
      * @param array $findByParams
      * @param Request|null $request
-     * @return Response
+     * @return JsonResponse
      * @throws Exception
      */
-    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response
+    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): JsonResponse
     {
         $response = $this->app->repositories->deleteById($repository_name, $id, $findByParams, $request);
         return $response;
     }
-
 
     /**
      * @Route("/api/repository/update/entity", name="api_repository_update_entity")
@@ -63,21 +62,35 @@ class RepositoriesAction extends AbstractController {
      * @return JsonResponse
      * @throws Exception
      */
-    public function updateByRequest(Request $request){
+    public function updateByRequest(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
 
         if( !$request->request->has(self::KEY_PARAMETERS) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_PARAMETERS;
-            return new JsonResponse($message, 500);
+
+            $ajax_response->setMessage($message);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+            return $ajax_response->buildJsonResponse();
         }
 
         if( !$request->request->has(self::KEY_ENTITY_ID) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_ENTITY_ID;
-            return new JsonResponse($message, 500);
+
+            $ajax_response->setMessage($message);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+            return $ajax_response->buildJsonResponse();
         }
 
         if( !$request->request->has(self::KEY_REPOSITORY_NAME) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_REPOSITORY_NAME;
-            return new JsonResponse($message, 500);
+
+            $ajax_response->setMessage($message);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+            return $ajax_response->buildJsonResponse();
         }
 
         $parameters      = $request->request->get(self::KEY_PARAMETERS);
@@ -89,18 +102,20 @@ class RepositoriesAction extends AbstractController {
             $repository = $this->{lcfirst($repository_name)};
             $entity     = $repository->find($id);
 
-            $response = $this->app->repositories->update($parameters, $entity);
+            $response      = $this->app->repositories->update($parameters, $entity);
+            $json_response = AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
         }catch(Exception $e){
-            $this->app->logger->critical("Exception was thrown while updating entity via action", [
-                "exceptionMessage" => $e->getMessage(),
-                "exceptionCode"    => $e->getCode(),
-            ]);
+            $this->app->logExceptionWasThrown($e);
 
-            $message  = $this->translator->translate('messages.general.internalServerError');
-            $response = new JsonResponse($message, 500);
+            $message = $this->translator->translate('messages.general.internalServerError');
+
+            $ajax_response->setMessage($message);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $ajax_response->buildJsonResponse();
         }
 
-        return $response;
+        return $json_response;
     }
 
     /**
@@ -120,24 +135,24 @@ class RepositoriesAction extends AbstractController {
     {
         if( empty($entity_id) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_ENTITY_ID;
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         if( empty($repository_name) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_REPOSITORY_NAME;
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         if( empty($field_name) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_FIELD_NAME;
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         $normalizedRepositoryNameForProperty = lcfirst($repository_name);
 
         if( !property_exists($this->app->repositories, $normalizedRepositoryNameForProperty) ){
             $message = $this->translator->translate('messages.general.noSuchRepositoryWasFound') . $repository_name;
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         /**
@@ -149,7 +164,7 @@ class RepositoriesAction extends AbstractController {
 
         if( empty($entity) ){
             $message = $this->translator->translate('messages.general.noEntityWasFoundForId') . $id;
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         $record_class_name  = get_class($entity);
@@ -168,17 +183,17 @@ class RepositoriesAction extends AbstractController {
 
         if( !$is_record_entity ){
             $message = $this->translator->translate('messages.general.givenClassIsNotEntity') . $class_name;
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         if( !in_array($column_name, $columns_names) ){
             $message = $this->translator->translate('messages.general.noColumnWithThisNameWasFoundInGivenTable') . "{$column_name} ({$table_name})";
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         if( Repositories::DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN !== $field_type ){
             $message = $this->translator->translate('messages.general.thisFieldIsNotBoolean') . "{$field_name} ({$table_name})";
-            return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         try{
@@ -195,7 +210,7 @@ class RepositoriesAction extends AbstractController {
                 $usedMethod = $isserMethodName;
             }else{
                 $message = $this->translator->translate('messages.general.noSuchGetterAndIsserAvailableForClass') . "{$normalizedFieldNameForMethod} ({$class_name})";
-                return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
             }
 
             $boolVal         = (bool)$entity->$usedMethod();
@@ -203,7 +218,7 @@ class RepositoriesAction extends AbstractController {
 
             if( !method_exists($entity, $setterMethodName)){
                 $message = $this->translator->translate('messages.general.noSuchMethodExistsForGivenClass') . "{$setterMethodName} ({$class_name})";
-                return AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
             }
 
             $entity->$setterMethodName($invertedBoolVal);
@@ -212,7 +227,7 @@ class RepositoriesAction extends AbstractController {
             $this->app->em->flush();
 
             $message  = $this->translator->translate("messages.general.boolValueHasBeenToggled");
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_OK, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, $message);
         }catch(Exception $e){
             $this->app->logger->critical("Exception was thrown while updating entity via action", [
                 "exceptionMessage" => $e->getMessage(),
@@ -220,7 +235,7 @@ class RepositoriesAction extends AbstractController {
             ]);
 
             $message  = $this->translator->translate('messages.general.internalServerError');
-            $response = AjaxResponse::buildResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         return $response;

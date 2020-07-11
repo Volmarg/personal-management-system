@@ -50,7 +50,7 @@ class MyContactsAction extends AbstractController
             return $this->renderTemplate( false);
         }
         $template_content  = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -71,12 +71,12 @@ class MyContactsAction extends AbstractController
             $template_content  = $rendered_template->getContent();
             $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
         $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -105,7 +105,7 @@ class MyContactsAction extends AbstractController
         $template_content = $this->renderTemplate( true)->getContent();
         $message          = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
 
-        return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
     }
 
     /**

@@ -82,7 +82,7 @@ class LockedResourceAction extends AbstractController {
             $message = $this->app->translator->translate("messages.lock.couldNotLockResource");
         }
 
-        return AjaxResponse::buildResponseForAjaxCall($code, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
 

@@ -4,6 +4,8 @@
  *  - special logic that must be handled for given call,
  *  - some function were created before building more automatic mechanism with html data attr. utilization
  */
+import AjaxResponseDto from "../DTO/AjaxResponseDto";
+
 var bootbox = require('bootbox');
 
 export default (function () {
@@ -124,55 +126,9 @@ export default (function () {
                         url    : url,
                         data   : data
                     }).always((data) => {
-                        ui.widgets.loader.toggleLoader();
-
-                        try{
-                            var template      = data['template'];
-                            var errorMessage  = data['errorMessage'];
-                            var reloadPage    = data['reload_page'];
-                            var reloadMessage = data['reload_message'];
-                        }catch(Exception){
-                            throw{
-                                "message"   : "Unable to extract data from ajax response",
-                                "exception" : Exception,
-                            }
-                        }
-
-                        if( undefined !== template ){
-                            _this.callDialog(template, callback);
-                        } else if(undefined !== errorMessage) {
-                            bootstrap_notifications.notify(errorMessage, 'danger');
-                        }else{
-                            let message = 'Something went wrong while trying to load dialog template.';
-                            bootstrap_notifications.notify(message, 'danger');
-                        }
-
-                        if( reloadPage ){
-                            if( "" !== reloadMessage ){
-                                bootstrap_notifications.showBlueNotification(reloadMessage);
-                            }
-                            location.reload();
-                        }
+                        dialogs.ui.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDialog);
                     })
                 });
-            },
-            /**
-             * Attaches dialog calling logic for given selector and reads data from it to build dialog
-             * @param selector {string}
-             * @param url {string}
-             * @param method {string}
-             * @param requestData {array}
-             * @param callback {function}
-             */
-            attachDialogCallEventOnSelector(selector, url, method, requestData, callback) {
-
-                let element = $(selector);
-                let _this   = this;
-
-                $(element).on('click', function(){
-                   _this.buildDialogBody(url, method, requestData, callback);
-                });
-
             },
             /**
              * General function for calling the modal
@@ -195,26 +151,7 @@ export default (function () {
                     url: url,
                     data: requestData
                 }).always((data) => {
-                    ui.widgets.loader.toggleLoader();
-
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-
-                    if( undefined !== data['template'] ){
-                        _this.callDialog(data['template'], callback);
-                    } else if(undefined !== data['errorMessage']) {
-                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
-                    }else{
-                        let message = 'Something went wrong while trying to load dialog template.';
-                        bootstrap_notifications.notify(message, 'danger');
-                    }
-
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
-                        }
-                        location.reload();
-                    }
+                    dialogs.ui.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDialog);
                 })
             },
             /**
@@ -250,7 +187,6 @@ export default (function () {
                 });
 
             },
-
         },
         dataTransfer: {
             /**
@@ -261,7 +197,7 @@ export default (function () {
              */
             buildDataTransferDialog: function (filesCurrentPaths, moduleName, callback = null) {
                 dialogs.ui.vars.filesCurrentPaths = filesCurrentPaths;
-                let _this = this;
+                let _this = dialogs.ui.dataTransfer;
                 let getDataTransferDialogTemplate = dialogs.ui.methods.getDataTransferDialogTemplate;
 
                 let data = {
@@ -275,31 +211,12 @@ export default (function () {
                     url: getDataTransferDialogTemplate,
                     data: data
                 }).always((data) => {
-                    ui.widgets.loader.toggleLoader();
-
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-
-                    if( undefined !== data['template'] ){
-                        _this.callDataTransferDialog(data['template'], callback);
-                    } else if(undefined !== data['errorMessage']) {
-                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
-                    }else{
-                        let message = 'Something went wrong while trying to load dialog template.';
-                        bootstrap_notifications.notify(message, 'danger');
-                    }
-
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
-                        }
-                        location.reload();
-                    }
+                    dialogs.ui.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDataTransferDialog)
                 })
             },
             callDataTransferDialog: function (template, callback = null) {
 
-                let _this  = this;
+                let _this  = dialogs.ui.dataTransfer;
 
                 let dialog = bootbox.alert({
                     size: "medium",
@@ -351,13 +268,10 @@ export default (function () {
                 }).always( (data) => {
                     ui.widgets.loader.toggleLoader();
 
-                    let responseCode  = data['response_code'];
-                    let message       = data['response_message'];
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-                    let notifyType   = '';
+                    let ajaxResponseDto = AjaxResponseDto.fromArray(data);
+                    let notifyType      = '';
 
-                    if( responseCode === 200 ){
+                    if( ajaxResponseDto.isSuccessCode() ){
 
                         if( 'function' === typeof(callback) ){
                             callback();
@@ -365,24 +279,18 @@ export default (function () {
                         }
 
                         notifyType = 'success'
-                    }else if( responseCode >200 && responseCode < 300){
-                        if( 'function' === typeof(callback) ){
-                            callback();
-                            bootbox.hideAll()
-                        }
-                        notifyType = 'warning';
                     }else{
                         notifyType = 'danger';
                     }
 
                     // not checking if code is set because if message is then code must be also
-                    if( undefined !== message ){
-                        bootstrap_notifications.notify(message, notifyType);
+                    if( ajaxResponseDto.isMessageSet() ){
+                        bootstrap_notifications.notify(ajaxResponseDto.message, notifyType);
                     }
 
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                    if( ajaxResponseDto.reloadPage ){
+                        if( !ajaxResponseDto.isReloadMessageSet() ){
+                            bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
                     }
@@ -392,7 +300,7 @@ export default (function () {
         tagManagement: {
             buildTagManagementDialog: function (fileCurrentPath, moduleName, callback = null) {
                 dialogs.ui.vars.fileCurrentPath = fileCurrentPath;
-                let _this = this;
+                let _this = dialogs.ui.tagManagement;
                 let getDialogTemplate = dialogs.ui.methods.getTagsUpdateDialogTemplate;
 
                 let data = {
@@ -405,31 +313,12 @@ export default (function () {
                     url: getDialogTemplate,
                     data: data
                 }).always((data) => {
-                    ui.widgets.loader.toggleLoader();
-
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-
-                    if( undefined !== data['template'] ){
-                        _this.callTagManagementDialog(data['template'], callback);
-                    } else if( undefined !== data['errorMessage'] ) {
-                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
-                    }else{
-                        let message = 'Something went wrong while trying to load dialog template.';
-                        bootstrap_notifications.notify(message, 'danger');
-                    }
-
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
-                        }
-                        location.reload();
-                    }
+                    dialogs.ui.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callTagManagementDialog)
                 })
             },
             callTagManagementDialog: function (template, callback = null) {
 
-                let _this  = this;
+                let _this  = dialogs.ui.tagManagement;
 
                 let dialog = bootbox.alert({
                     size: "medium",
@@ -489,13 +378,11 @@ export default (function () {
                     data: data
                 }).always( (data) => {
                     ui.widgets.loader.toggleLoader();
-                    let responseCode  = data['response_code'];
-                    let message       = data['response_message'];
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-                    let notifyType   = '';
 
-                    if( responseCode === 200 ){
+                    let ajaxResponseDto = AjaxResponseDto.fromArray(data);
+                    let notifyType      = '';
+
+                    if( ajaxResponseDto.isSuccessCode() ){
 
                         if( 'function' === typeof(callback) ){
                             callback(tags);
@@ -508,13 +395,13 @@ export default (function () {
                     }
 
                     // not checking if code is set because if message is then code must be also
-                    if( undefined !== message ){
-                        bootstrap_notifications.notify(message, notifyType);
+                    if( ajaxResponseDto.isMessageSet() ){
+                        bootstrap_notifications.notify(ajaxResponseDto.message, notifyType);
                     }
 
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                    if( ajaxResponseDto.reloadPage ){
+                        if( ajaxResponseDto.isReloadMessageSet() ){
+                            bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
                     }
@@ -523,7 +410,7 @@ export default (function () {
         },
         notePreview: {
             buildTagManagementDialog: function (noteId, categoryId, callback = null) {
-                let _this = this;
+                let _this = dialogs.ui.notePreview;
                 let that  = dialogs.ui;
                 let getDialogTemplate = dialogs.ui.methods.getNotePreviewDialogTemplate;
 
@@ -535,29 +422,10 @@ export default (function () {
                     method: "GET",
                     url: url
                 }).always((data) => {
-                    ui.widgets.loader.toggleLoader();
-
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-
-                    if( undefined !== data['template'] ){
-                        _this.callTagManagementDialog(data['template'], callback);
-                    } else if( undefined !== data['errorMessage'] ) {
-                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
-                    }else{
-                        let message = 'Something went wrong while trying to load dialog template.';
-                        bootstrap_notifications.notify(message, 'danger');
-                    }
-
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
-                        }
-                        location.reload();
-                    }
+                    dialogs.ui.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callNotePreviewDialog)
                 })
             },
-            callTagManagementDialog: function (template, callback = null) {
+            callNotePreviewDialog: function (template, callback = null) {
 
                 let _this  = this;
 
@@ -589,7 +457,7 @@ export default (function () {
              * @param isUnlocked {boolean}
              */
             buildSystemToggleLockDialog: function (callback = null, isUnlocked) {
-                let _this = this;
+                let _this = dialogs.ui.systemLock;
                 let url   = dialogs.ui.methods.systemLockResourcesDialogTemplate;
 
                 ui.widgets.loader.toggleLoader();
@@ -664,7 +532,7 @@ export default (function () {
              * @param callback {function}
              */
             buildCreateLockPasswordForSystemDialog: function (callback = null) {
-                let _this = this;
+                let _this = dialogs.ui.systemLock;
                 let url   = dialogs.ui.methods.createSystemLockPasswordDialogTemplate;
 
                 ui.widgets.loader.toggleLoader();
@@ -672,26 +540,7 @@ export default (function () {
                     method: "GET",
                     url: url
                 }).always((data) => {
-                    ui.widgets.loader.toggleLoader();
-
-                    let reloadPage    = data['reload_page'];
-                    let reloadMessage = data['reload_message'];
-
-                    if( undefined !== data['template'] ){
-                        _this.callCreateLockPasswordForSystemDialog(data['template'], callback);
-                    } else if( undefined !== data['errorMessage'] ) {
-                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
-                    }else{
-                        let message = 'Something went wrong while trying to load dialog template.';
-                        bootstrap_notifications.notify(message, 'danger');
-                    }
-
-                    if( reloadPage ){
-                        if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
-                        }
-                        location.reload();
-                    }
+                    dialogs.ui.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callCreateLockPasswordForSystemDialog);
                 })
             },
             /**
@@ -733,6 +582,34 @@ export default (function () {
                     })
                 });
             },
+        },
+        handleCommonAjaxCallLogicForBuildingDialog: function(data, callback, callDialogCallback){
+            ui.widgets.loader.toggleLoader();
+
+            try{
+                var ajaxResponseDto = AjaxResponseDto.fromArray(data);
+            }catch(Exception){
+                throw{
+                    "message"   : "Unable to build AjaxResponseDto from response data",
+                    "exception" : Exception,
+                }
+            }
+
+            if( ajaxResponseDto.isTemplateSet() ){
+                callDialogCallback(ajaxResponseDto.template, callback);
+            } else if( !ajaxResponseDto.success) {
+                bootstrap_notifications.notify(ajaxResponseDto.message, 'danger');
+            }else{
+                let message = 'Something went wrong while trying to load dialog template.';
+                bootstrap_notifications.notify(message, 'danger');
+            }
+
+            if( ajaxResponseDto.reloadPage ){
+                if( ajaxResponseDto.isReloadMessageSet() ){
+                    bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                }
+                location.reload();
+            }
         }
 
     };

@@ -51,7 +51,7 @@ class SettingsAction extends AbstractController {
         }
 
         $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -68,11 +68,12 @@ class SettingsAction extends AbstractController {
         }
 
         $response   = $this->app->repositories->update($parameters, $this->current_user);
-        $message    = $response->getContent();
         $template   = $this->renderTemplate(true)->getContent();
 
-        $code = $response->getStatusCode();
-        return AjaxResponse::buildResponseForAjaxCall($code, $message, $template);
+        $ajax_response = AjaxResponse::initializeFromResponse($response);
+        $ajax_response->setTemplate($template);
+
+        return $ajax_response->buildJsonResponse();
     }
 
     private function renderTemplate($ajax_render = false) {

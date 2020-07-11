@@ -49,7 +49,7 @@ class MyIssuesAction extends AbstractController
             return $this->renderTemplate( false);
         }
         $template_content = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

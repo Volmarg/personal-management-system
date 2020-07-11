@@ -98,7 +98,6 @@ export default (function () {
                     'success_message'   : success_message,
                     'fail_message'      : fail_message,
                     'callback'          : function () {
-                        ui.ajax.entireMenuReload();
                     },
                     'callback_after': true,
                 };
@@ -121,7 +120,6 @@ export default (function () {
                     'is_dataTable'   : false, //temporary
                     'confirm_message': message,
                     'callback'       : function () {
-                        ui.ajax.entireMenuReload();
                     },
                     'callback_after': true,
                 };

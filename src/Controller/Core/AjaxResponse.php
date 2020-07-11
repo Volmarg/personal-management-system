@@ -6,6 +6,8 @@ use App\Services\Session\AjaxCallsSessionService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AjaxResponse extends AbstractController {
 
@@ -15,9 +17,157 @@ class AjaxResponse extends AbstractController {
     const KEY_PASSWORD       = "password";
     const KEY_RELOAD_PAGE    = "reload_page";
     const KEY_RELOAD_MESSAGE = "reload_message";
+    const KEY_SUCCESS        = "success";
+    const KEY_FORM_TEMPLATE  = "form_template";
 
     const XML_HTTP_HEADER_KEY   = "X-Requested-With";
     const XML_HTTP_HEADER_VALUE = "XMLHttpRequest";
+
+    /**
+     * @var int $code
+     */
+    private $code = Response::HTTP_OK;
+    /**
+     * @var string $message
+     */
+    private $message = "";
+    /**
+     * @var null|string $template
+     */
+    private $template = null;
+    /**
+     * @var null|string $password
+     */
+    private $password = null;
+    /**
+     * @var bool $reload_page
+     */
+    private $reload_page = false;
+    /**
+     * @var string $reload_message
+     */
+    private $reload_message = "";
+    /**
+     * @var bool $success
+     */
+    private $success = true;
+
+    /**
+     * @var string $form_template
+     */
+    private $form_template = "";
+
+    /**
+     * @return int
+     */
+    public function getCode(): int {
+        return $this->code;
+    }
+
+    /**
+     * @param int $code
+     */
+    public function setCode(int $code): void {
+        $this->code = $code;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     */
+    public function setMessage(string $message): void {
+        $this->message = $message;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTemplate(): ?string {
+        return $this->template;
+    }
+
+    /**
+     * @param string|null $template
+     */
+    public function setTemplate(?string $template): void {
+        $this->template = $template;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPassword(): ?string {
+        return $this->password;
+    }
+
+    /**
+     * @param string|null $password
+     */
+    public function setPassword(?string $password): void {
+        $this->password = $password;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReloadPage(): bool {
+        return $this->reload_page;
+    }
+
+    /**
+     * @param bool $reload_page
+     */
+    public function setReloadPage(bool $reload_page): void {
+        $this->reload_page = $reload_page;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReloadMessage(): string {
+        return $this->reload_message;
+    }
+
+    /**
+     * @param string $reload_message
+     */
+    public function setReloadMessage(string $reload_message): void {
+        $this->reload_message = $reload_message;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuccess(): bool {
+        return $this->success;
+    }
+
+    /**
+     * @param bool $success
+     */
+    public function setSuccess(bool $success): void {
+        $this->success = $success;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormTemplate(): string {
+        return $this->form_template;
+    }
+
+    /**
+     * @param string $form_template
+     */
+    public function setFormTemplate(string $form_template): void {
+        $this->form_template = $form_template;
+    }
 
     /**
      * @param int $code
@@ -26,16 +176,20 @@ class AjaxResponse extends AbstractController {
      * @param string|null $password
      * @param bool|null $reload_page
      * @param string $reload_message
+     * @param bool $success
+     * @param string $form_template
      * @return JsonResponse
      * @throws Exception
      */
-    public static function buildResponseForAjaxCall(
+    public static function buildJsonResponseForAjaxCall(
         int     $code,
         string  $message,
-        ?string $template = null,
-        ?string $password = null,
-        ?bool   $reload_page = false,
-        string  $reload_message = ""
+        ?string $template       = null,
+        ?string $password       = null,
+        ?bool   $reload_page    = false,
+        string  $reload_message = "",
+        bool    $success        = false,
+        string  $form_template  = ""
     ): JsonResponse {
 
         $response_data = [
@@ -61,6 +215,56 @@ class AjaxResponse extends AbstractController {
 
         $response_data[self::KEY_RELOAD_PAGE]    = $reload_page;
         $response_data[self::KEY_RELOAD_MESSAGE] = $reload_message;
+        $response_data[self::KEY_SUCCESS]        = $success;
+        $response_data[self::KEY_FORM_TEMPLATE]  = $form_template;
+
+        $response = new JsonResponse($response_data, 200);
+        return $response;
+    }
+
+    /**
+     * Will pre-fill code/message from Response and return AjaxResponse
+     * @param Response $response
+     * @return AjaxResponse
+     */
+    public static function initializeFromResponse(Response $response): AjaxResponse
+    {
+        $ajax_response_dto = new AjaxResponse();
+
+        $message = $response->getContent();
+        $code    = $response->getStatusCode();
+
+        $ajax_response_dto->setMessage($message);
+        $ajax_response_dto->setCode($code);
+
+        return $ajax_response_dto;
+    }
+    
+    /**
+     * Transforms AjaxResponse to JsonResponse usable for Ajax call
+     * @return JsonResponse
+     */
+    public function buildJsonResponse(): JsonResponse
+    {
+        $code            = $this->getCode();
+        $message         = $this->getMessage();
+        $template        = $this->getTemplate();
+        $password        = $this->getPassword();
+        $reload_page     = $this->isReloadPage();
+        $reload_message  = $this->getReloadMessage();
+        $success         = $this->isSuccess();
+        $form_template   = $this->getFormTemplate();
+
+        $response_data = [
+            self::KEY_CODE           => $code,
+            self::KEY_MESSAGE        => $message,
+            self::KEY_TEMPLATE       => $template,
+            self::KEY_PASSWORD       => $password,
+            self::KEY_RELOAD_PAGE    => $reload_page,
+            self::KEY_RELOAD_MESSAGE => $reload_message,
+            self::KEY_SUCCESS        => $success,
+            self::KEY_FORM_TEMPLATE  => $form_template,
+        ];
 
         $response = new JsonResponse($response_data, 200);
         return $response;

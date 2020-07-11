@@ -2,10 +2,14 @@
 
 namespace App\Action\Core;
 
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\Services\Core\Translator;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FormsAction extends AbstractController {
@@ -15,12 +19,18 @@ class FormsAction extends AbstractController {
     const KEY_FORM_NAMESPACE = 'form_namespace';
 
     /**
-     * @var \App\Services\Core\Translator $translator
+     * @var Translator $translator
      */
     private $translator;
 
-    public function __construct(Translator $translator) {
+    /**
+     * @var Application $app
+     */
+    private $app;
+
+    public function __construct(Translator $translator, Application $app) {
         $this->translator = $translator;
+        $this->app        = $app;
     }
 
     /**
@@ -30,36 +40,44 @@ class FormsAction extends AbstractController {
      *
      * @Route("/api/get-form-view-by-class-name", name="get_form_view_by_class_name", methods="POST")
      */
-    public function getFormViewByClassName(Request $request):JsonResponse {
-
-        if( !$request->request->has(self::KEY_FORM_NAMESPACE) ){
-            $message = $this->translator->translate('responses.general.missingRequiredParameter') . self::KEY_FORM_NAMESPACE;
-
-            $data = [
-                'error' => $message,
-            ];
-            return new JsonResponse($data);
-        }
-
-        $form_namespace = $request->request->get(self::KEY_FORM_NAMESPACE);
+    public function getFormViewByClassName(Request $request): JsonResponse
+    {
+        $ajaxResponse  = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $form_template = "";
+        $message       = "";
+        $success       = true;
 
         try{
-            $form       = $this->createForm($form_namespace)->createView();
-            $form_view  = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form] )->getContent();
+            if( !$request->request->has(self::KEY_FORM_NAMESPACE) ){
+                $message = $this->translator->translate('responses.general.missingRequiredParameter') . self::KEY_FORM_NAMESPACE;
 
-            $data = [
-                'form_view' => $form_view,
-            ];
+                $ajaxResponse->setMessage($message);
+                $ajaxResponse->setSuccess(false);
+                $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajaxResponse->buildJsonResponse();
+                return $jsonResponse;
+            }
 
-        }catch(\Exception $e){
+            $form_namespace = $request->request->get(self::KEY_FORM_NAMESPACE);
+            $form           = $this->createForm($form_namespace)->createView();
+            $form_template  = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form] )->getContent();
+
+        }catch(Exception $e){
             $message = $this->translator->translate('forms.general.error.couldNotLoadFormForGivenNamespace');
-
-            $data = [
-                'error' => $message,
-            ];
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
         }
 
-        return new JsonResponse($data);
+        $ajaxResponse->setCode($code);
+        $ajaxResponse->setMessage($message);
+        $ajaxResponse->setFormTemplate($form_template);
+        $ajaxResponse->setSuccess($success);
+
+        $jsonResponse = $ajaxResponse->buildJsonResponse();
+
+        return $jsonResponse;
     }
 
 }

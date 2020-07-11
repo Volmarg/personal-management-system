@@ -67,7 +67,7 @@ class FilesAction extends AbstractController {
         $code    = $response->getStatusCode();
         $message = $response->getContent();
 
-        return AjaxResponse::buildResponseForAjaxCall($code, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
     /**

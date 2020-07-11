@@ -1,5 +1,7 @@
 var imagesLoaded = require('imagesloaded');
 
+import AjaxResponseDto from "../DTO/AjaxResponseDto";
+
 export default (function () {
     if (typeof window.ui === 'undefined') {
         window.ui = {};
@@ -74,19 +76,20 @@ export default (function () {
                 data: data,
             }).always((data) => {
 
-                let message          = data['message'];
-                let code             = data['code'];
-                let tpl              = data['tpl'];
-                let reloadPage       = data['reload_page'];
-                let reloadMessage    = data['reload_message'];
-                let notificationType = ( code == 200 ? "success" : "danger" );
+                let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
+                let notificationType = ( ajaxResponseDto.isSuccessCode() ? "success" : "danger" );
 
-                if( "undefined" === typeof message ){
+                if( !ajaxResponseDto.isSuccessCode() ){
+                    bootstrap_notifications.showRedNotification("Internal server error");
                     return;
                 }
 
-                if( '' !== tpl ){
-                    $menuNode.replaceWith(tpl);
+                if( !ajaxResponseDto.isMessageSet() ){
+                    return;
+                }
+
+                if( ajaxResponseDto.isTemplateSet() ){
+                    $menuNode.replaceWith(ajaxResponseDto.template);
                     window.sidebar.links.init();
                     initializer.reinitialize();
                 }
@@ -97,9 +100,9 @@ export default (function () {
 
                 this.attachModuleContentLoadingViaAjaxOnMenuLinks();
 
-                if( reloadPage ){
-                    if( "" !== reloadMessage ){
-                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                if( ajaxResponseDto.reloadPage ){
+                    if( ajaxResponseDto.isReloadMessageSet() ){
+                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }
@@ -167,11 +170,7 @@ export default (function () {
                 let twigBodySection = $('.twig-body-section');
 
                 try{
-                    var code          = data['code'];
-                    var message       = data['message'];
-                    var template      = data['template'];
-                    var reloadPage    = data['reload_page'];
-                    var reloadMessage = data['reload_message'];
+                    var ajaxResponseDto = AjaxResponseDto.fromArray(data);
                 } catch(Exception){
                     throw({
                         "message"   : "Could not handle ajax call",
@@ -180,8 +179,8 @@ export default (function () {
                     })
                 }
 
-                if( "undefined" !== typeof template ){
-                    twigBodySection.html(template);
+                if( ajaxResponseDto.isTemplateSet() ){
+                    twigBodySection.html(ajaxResponseDto.template);
                 }
 
                 if( "function" === typeof callbackAfter ){
@@ -200,9 +199,9 @@ export default (function () {
                     ui.masonry.init();
                 });
 
-                if( reloadPage ){
-                    if( "" !== reloadMessage ){
-                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                if( ajaxResponseDto.reloadPage ){
+                    if( ajaxResponseDto.isReloadMessageSet() ){
+                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }
@@ -231,29 +230,26 @@ export default (function () {
             }).always((data) => {
                 ui.widgets.loader.hideLoader();
 
-                let error         = data['error'];
-                let formView      = data['form_view'];
-                let reloadPage    = data['reload_page'];
-                let reloadMessage = data['reload_message'];
+                let ajaxResponseDto = AjaxResponseDto.fromArray(data);
+                let formTemplate    = ajaxResponseDto.formTemplate;
 
-
-                if( "undefined" !== typeof error ){
-                    bootstrap_notifications.notify(error, 'danger');
+                if( !ajaxResponseDto.success ){
+                    bootstrap_notifications.notify(ajaxResponseDto.message, 'danger');
                     return false;
                 }
 
                 if( stripFormTag ){
-                    formView = formView.replace(/<(.*?)form(.*?)>/, '');
-                    formView = formView.replace('</form>','');
+                    formTemplate = formTemplate.replace(/<(.*?)form(.*?)>/, '');
+                    formTemplate = formTemplate.replace('</form>','');
                 }
 
                 if( "function" === typeof callback ){
-                    callback(formView);
+                    callback(formTemplate);
                 }
 
-                if( reloadPage ){
-                    if( "" !== reloadMessage ){
-                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                if( ajaxResponseDto.reloadPage ){
+                    if( ajaxResponseDto.isReloadMessageSet() ){
+                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }
@@ -328,10 +324,7 @@ export default (function () {
             }).always(function(data){
 
                 try{
-                    var template      = data['template'];
-                    var code          = data['code'];
-                    var reloadPage    = data['reload_page'];
-                    var reloadMessage = data['reload_message'];
+                    var ajaxResponseDto = AjaxResponseDto.fromArray(data);
                 }catch(Exception){
                     throw{
                         "message": "Exception was throw while trying to get data from ajax get rendered template",
@@ -339,15 +332,15 @@ export default (function () {
                     }
                 }
 
-                if( 200 == code){
+                if( ajaxResponseDto.isSuccessCode()){
                     if( "function" === typeof callback ){
-                        callback(template);
+                        callback(ajaxResponseDto.template);
                     }
                 }
 
-                if( reloadPage ){
-                    if( "" !== reloadMessage ){
-                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                if( ajaxResponseDto.reloadPage ){
+                    if( ajaxResponseDto.isReloadMessageSet() ){
+                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }

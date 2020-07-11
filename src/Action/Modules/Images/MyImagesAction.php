@@ -62,7 +62,7 @@ class MyImagesAction extends AbstractController {
         }
 
         $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -78,7 +78,7 @@ class MyImagesAction extends AbstractController {
         }
 
         $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**
@@ -173,16 +173,13 @@ class MyImagesAction extends AbstractController {
         try{
             $this->files_tags_controller->updateTags($tags_string, $file_current_path);
             $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
+            $code    = Response::HTTP_OK;
         } catch (Exception $e){
             $message = $this->app->translator->translate('exceptions.tagger.thereWasAnError');
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        $response_data = [
-            'response_code'     => 200,
-            'response_message'  => $message
-        ];
-
-        return new JsonResponse($response_data);
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
 }

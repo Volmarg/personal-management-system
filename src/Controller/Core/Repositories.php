@@ -59,7 +59,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -401,9 +400,10 @@ class Repositories extends AbstractController {
     }
 
     /**
+     *  This is general method for all common record soft delete called from front
+     *  Also request is present only when calling via ajax, that's why in some places AjaxResponse is being sent back
      * @param string $repository_name
      * @param $id
-     * This is general method for all common record soft delete called from front
      * @param array $findByParams
      * @param Request|null $request
      * @return Response
@@ -426,7 +426,7 @@ class Repositories extends AbstractController {
                 $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
 
                 if( !empty($request) ){
-                    return AjaxResponse::buildResponseForAjaxCall(500, $message);
+                    return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
                 }
 
                 return new Response($message, 500);
@@ -438,7 +438,12 @@ class Repositories extends AbstractController {
 
             if( !($record instanceof SoftDeletableEntityInterface) ){
                 $message = $this->translator->translate("exceptions.general.thisEntityIsNotSoftDeletable");
-                return AjaxResponse::buildResponseForAjaxCall(500, $message);
+
+                if( !empty($request)){
+                    return new Response($message, 500);
+                }
+
+                return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
             }
 
             $record->setDeleted(1);
@@ -452,7 +457,7 @@ class Repositories extends AbstractController {
             $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
 
             if( !empty($request) ){
-                return AjaxResponse::buildResponseForAjaxCall(200, $message);
+                return AjaxResponse::buildJsonResponseForAjaxCall(200, $message);
             }
 
             return new Response($message, 200);
@@ -460,7 +465,7 @@ class Repositories extends AbstractController {
             $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
 
             if( !empty($request) ){
-                return AjaxResponse::buildResponseForAjaxCall(500, $message);
+                return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
             }
 
             return new Response($message, 500);
@@ -472,7 +477,7 @@ class Repositories extends AbstractController {
      * @param $entity
      * This is general method for all common record update called from front
      * @param array $findByParams
-     * @return JsonResponse
+     * @return Response
      *
      * It's required that field for which You want to get entity has this example format in js ajax request:
      * 'category': {
@@ -484,7 +489,8 @@ class Repositories extends AbstractController {
      * @throws MappingException
      * @throws Exception
      */
-    public function update(array $parameters, $entity, array $findByParams = []) {
+    public function update(array $parameters, $entity, array $findByParams = []): Response
+    {
 
         try {
             unset($parameters['id']);
@@ -508,8 +514,8 @@ class Repositories extends AbstractController {
                 $is_parameter_valid = $this->isParameterValid($parameter, $value, $entity);
 
                 if (!$is_parameter_valid) {
-                    $json_response = $this->decideResponseForInvalidUpdateParameter($parameter, $value, $entity);
-                    return $json_response;
+                    $response = $this->decideResponseForInvalidUpdateParameter($parameter, $value, $entity);
+                    return $response;
                 }
 
                 if (is_array($value)) {
@@ -565,7 +571,7 @@ class Repositories extends AbstractController {
                 // todo: temporary solution
                 // todo: need to rework ajax + response to support AjaxResponse + validation errors message + js logic
                 $message = $this->translator->translate('responses.repositories.recordUpdateFail');
-                return new JsonResponse($message, 500);
+                return new Response($message, 500);
             }
 
             $em = $this->getDoctrine()->getManager();
@@ -573,10 +579,10 @@ class Repositories extends AbstractController {
             $em->flush();
 
             $message = $this->translator->translate('responses.repositories.recordUpdateSuccess');
-            return new JsonResponse($message, 200);
+            return new Response($message, 200);
         } catch (ExceptionRepository $er) {
             $message = $this->translator->translate('responses.repositories.recordUpdateFail');
-            return new JsonResponse($message, 500);
+            return new Response($message, 500);
         }
     }
 
@@ -758,9 +764,9 @@ class Repositories extends AbstractController {
      * @param string $parameter
      * @param $value
      * @param $entity
-     * @return JsonResponse
+     * @return Response
      */
-    private function decideResponseForInvalidUpdateParameter(string $parameter, $value, $entity = null): JsonResponse
+    private function decideResponseForInvalidUpdateParameter(string $parameter, $value, $entity = null): Response
     {
         $default_message = $this->translator->translate('responses.general.invalidParameterValue');
         $default_code    = 400;
@@ -775,7 +781,7 @@ class Repositories extends AbstractController {
                 {
                     if( $value != $entity->getParentId() ){
                         $message = $this->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
-                        return new JsonResponse($message, 400);
+                        return new Response($message, 400);
                     }
                 }
                 break;
@@ -787,7 +793,7 @@ class Repositories extends AbstractController {
                     {
                         if( $value != $entity->getName() ){
                             $message = $this->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
-                            return new JsonResponse($message, 400);
+                            return new Response($message, 400);
                         }
                     }
                     break;
@@ -795,7 +801,7 @@ class Repositories extends AbstractController {
             }
         }
 
-        return new JsonResponse($default_message, $default_code);
+        return new Response($default_message, $default_code);
     }
 
     /**

@@ -41,7 +41,7 @@ class GoalsSettingsAction extends AbstractController {
         $entity     = $this->app->repositories->myGoalsRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -55,7 +55,7 @@ class GoalsSettingsAction extends AbstractController {
         $entity     = $this->app->repositories->myGoalsSubgoalsRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -78,10 +78,10 @@ class GoalsSettingsAction extends AbstractController {
             $rendered_template = $this->renderTemplate(true, true);
             $template_content  = $rendered_template->getContent();
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -103,12 +103,12 @@ class GoalsSettingsAction extends AbstractController {
             $template_content  = $rendered_template->getContent();
             $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
         $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -130,12 +130,12 @@ class GoalsSettingsAction extends AbstractController {
             $template_content  = $rendered_template->getContent();
             $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
-            return AjaxResponse::buildResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
         }
 
         $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
 
-        return AjaxResponse::buildResponseForAjaxCall(500, $message);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
@@ -149,7 +149,7 @@ class GoalsSettingsAction extends AbstractController {
         $entity     = $this->app->repositories->myGoalsPaymentsRepository->find($parameters['id']);
         $response   = $this->app->repositories->update($parameters, $entity);
 
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -190,7 +190,7 @@ class GoalsSettingsAction extends AbstractController {
         }
 
         $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
     /**

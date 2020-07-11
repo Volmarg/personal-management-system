@@ -53,3 +53,5 @@ import './ui/locked-resource.js';
 import './prism/index.js';
 import './bootbox/index.js';
 import './initializer/index.js';
+
+import './DTO/AjaxResponseDto.js';
