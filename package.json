@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@symfony/webpack-encore": "^0.17.1",
+    "@types/jquery": "^3.5.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-loader": "^7.1.2",
@@ -48,6 +49,8 @@
     "stylelint": "^8.2.0",
     "stylelint-config-standard": "^17.0.0",
     "sw-precache-webpack-plugin": "0.11.4",
+    "ts-loader": "^3.5.0",
+    "typescript": "^3.9.6",
     "webpack": "^3.8.1",
     "webpack-dashboard": "1.1.1",
     "webpack-dev-server": "2.11.1",

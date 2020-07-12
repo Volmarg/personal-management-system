@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es5"
+  },
+  "include": [
+    "src/assets/scripts/*"
+  ],
+  "files": [
+    "*.ts/*.tsx"
+  ],
+  "exclude": []
+}
