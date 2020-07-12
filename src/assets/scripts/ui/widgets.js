@@ -1,3 +1,5 @@
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 var bootbox   = require('bootbox');
 import * as selectize from "selectize";
 import * as bootstrapToggle from "bootstrap-toggle";
@@ -30,6 +32,7 @@ export default (function () {
         placeholders: {
             uploadModuleDir                 : '{upload_module_dir}'
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function () {
             this.applyAccordion();
             this.selectize.applyTagsSelectize();
@@ -144,13 +147,13 @@ export default (function () {
 
                                         if( reloadPage ){
                                             if( "" !== reloadMessage ){
-                                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                                                ui.widgets.bootstrapNotify.showBlueNotification(reloadMessage);
                                             }
                                             location.reload();
                                         }
 
                                     }).fail(() => {
-                                        bootstrap_notifications.notify('There was an error while fetching data for bootbox modal', 'danger')
+                                        ui.widgets.bootstrapNotify.notify('There was an error while fetching data for bootbox modal', 'danger')
                                     }).always(() => {
                                         ui.widgets.loader.toggleLoader();
                                     });
@@ -241,11 +244,11 @@ export default (function () {
                                         notification_type = 'danger';
                                     }
 
-                                    bootstrap_notifications.notify(message, notification_type);
+                                    ui.widgets.bootstrapNotify.notify(message, notification_type);
 
                                     if( reloadPage ){
                                         if( "" !== reloadMessage ){
-                                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                                            ui.widgets.bootstrapNotify.showBlueNotification(reloadMessage);
                                         }
                                         location.reload();
                                     }

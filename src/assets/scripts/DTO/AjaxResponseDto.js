@@ -44,6 +44,16 @@ export default class AjaxResponseDto {
          * @type {string}
          */
         this._formTemplate = "";
+
+        /**
+         * @type {string}
+         */
+        this._validatedFormPrefix = "";
+
+        /**
+         * @type {Array}
+         */
+        this._invalidFormFields = [];
     }
 
     get code() {
@@ -78,6 +88,22 @@ export default class AjaxResponseDto {
         return this._formTemplate;
     }
 
+    get validatedFormPrefix() {
+        return this._validatedFormPrefix;
+    }
+
+    set validatedFormPrefix(value) {
+        this._validatedFormPrefix = value;
+    }
+
+    get invalidFormFields() {
+        return this._invalidFormFields;
+    }
+
+    set invalidFormFields(value) {
+        this._invalidFormFields = value;
+    }
+
     /**
      * Builds DTO from data array
      * @param array
@@ -86,14 +112,16 @@ export default class AjaxResponseDto {
     static fromArray(array){
         let ajaxResponseDto = new AjaxResponseDto();
 
-        ajaxResponseDto._code          = ajaxResponseDto.getFromArray(array, 'code');
-        ajaxResponseDto._message       = ajaxResponseDto.getFromArray(array, 'message');
-        ajaxResponseDto._template      = ajaxResponseDto.getFromArray(array, 'template');
-        ajaxResponseDto._password      = ajaxResponseDto.getFromArray(array, 'password');
-        ajaxResponseDto._reloadPage    = ajaxResponseDto.getFromArray(array, 'reload_page', false);
-        ajaxResponseDto._reloadMessage = ajaxResponseDto.getFromArray(array, 'reload_message');
-        ajaxResponseDto._success       = ajaxResponseDto.getFromArray(array, 'success');
-        ajaxResponseDto._formTemplate  = ajaxResponseDto.getFromArray(array, 'form_template');
+        ajaxResponseDto._code                = ajaxResponseDto.getFromArray(array, 'code');
+        ajaxResponseDto._message             = ajaxResponseDto.getFromArray(array, 'message');
+        ajaxResponseDto._template            = ajaxResponseDto.getFromArray(array, 'template');
+        ajaxResponseDto._password            = ajaxResponseDto.getFromArray(array, 'password');
+        ajaxResponseDto._reloadPage          = ajaxResponseDto.getFromArray(array, 'reload_page', false);
+        ajaxResponseDto._reloadMessage       = ajaxResponseDto.getFromArray(array, 'reload_message');
+        ajaxResponseDto._success             = ajaxResponseDto.getFromArray(array, 'success');
+        ajaxResponseDto._formTemplate        = ajaxResponseDto.getFromArray(array, 'form_template');
+        ajaxResponseDto._validatedFormPrefix = ajaxResponseDto.getFromArray(array, 'validated_form_prefix');
+        ajaxResponseDto._invalidFormFields   = ajaxResponseDto.getFromArray(array, 'invalid_form_fields', []);
 
         return ajaxResponseDto;
     }
@@ -183,6 +211,20 @@ export default class AjaxResponseDto {
     /**
      * @return {boolean}
      */
+    isVlidatedFormPrefixSet(){
+        return this.isset(this._validatedFormPrefix);
+    }
+
+    /**
+     * @return {boolean}
+     */
+    hasInvalidFields(){
+        return ( 0 !== this._invalidFormFields.length );
+    }
+
+    /**
+     * @return {boolean}
+     */
     isSuccessCode(){
         if(
                 200 >= this._code
@@ -192,6 +234,13 @@ export default class AjaxResponseDto {
         }
 
         return false;
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isInternalServerErrorCode(){
+        return (this._code >= 500);
     }
 
 }

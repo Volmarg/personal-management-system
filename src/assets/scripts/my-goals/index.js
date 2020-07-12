@@ -1,3 +1,5 @@
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 export default (function () {
 
     if (typeof window.myGoals === 'undefined') {
@@ -29,6 +31,7 @@ export default (function () {
                 'badge-todo'                    : 'badge-info'
             }
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function () {
             this.attachSubgoalStatusChangedOnCheckbox();
         },
@@ -82,9 +85,9 @@ export default (function () {
                         url     : '/admin/subgoals/update/',
                         data    : data,
                     }).done(() => {
-                        bootstrap_notifications.notify(_this.messages["mark-subgoal-completed-success"], 'success');
+                        myGoals.ui.bootstrapNotify.notify(_this.messages["mark-subgoal-completed-success"], 'success');
                     }).fail(() => {
-                        bootstrap_notifications.notify(_this.messages["mark-subgoal-completed-fail"], 'danger');
+                        myGoals.ui.bootstrapNotify.notify(_this.messages["mark-subgoal-completed-fail"], 'danger');
                     });
 
                 })

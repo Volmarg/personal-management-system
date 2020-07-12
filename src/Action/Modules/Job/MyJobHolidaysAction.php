@@ -10,6 +10,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Controller\Validators\Entities\EntityValidator;
 use App\Entity\Modules\Job\MyJobHolidays;
+use App\Form\Modules\Job\MyJobHolidaysType;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Mapping\MappingException;
@@ -53,20 +54,44 @@ class MyJobHolidaysAction extends AbstractController {
      */
     public function display(Request $request) {
 
+        $ajax_response     = new AjaxResponse();
         $validation_result = $this->add($request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
-        $template_content = $this->renderTemplate(true)->getContent();
+        try{
+            $template_content = $this->renderTemplate(true)->getContent();
 
-        if( !is_null($validation_result) && !$validation_result->isValid() ){
-            $failed_validation_message = $validation_result->getAllFailedValidationMessagesAsSingleString();
-            return AjaxResponse::buildJsonResponseForAjaxCall(500, $failed_validation_message, $template_content);
+            if( !is_null($validation_result) && !$validation_result->isValid() ){
+                $message = $this->app->translator->translate('messages.general.couldNotHandleTheRequest');
+
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setMessage($message);
+                $ajax_response->setTemplate($template_content);
+                $ajax_response->setInvalidFormFields($validation_result->getInvalidFieldsMessages());
+                $ajax_response->setValidatedFormPrefix(MyJobHolidaysType::getFormPrefix());
+
+                return $ajax_response->buildJsonResponse();
+            }
+        }catch (Exception $e){
+            $this->app->logExceptionWasThrown($e);
+            $message = $this->app->translator->translate('messages.general.internalServerError');
+
+            $ajax_response->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setMessage($message);
+
+            return $ajax_response->buildJsonResponse();
         }
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $ajax_response->setCode(Response::HTTP_OK);
+        $ajax_response->setSuccess(true);
+        $ajax_response->setTemplate($template_content);
+
+        return $ajax_response->buildJsonResponse();
     }
 
     /**

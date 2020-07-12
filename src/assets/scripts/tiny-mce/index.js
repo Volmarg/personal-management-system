@@ -9,6 +9,7 @@ import 'tinymce/plugins/codesample';
 
 import utils_custom from "../utils/utils_custom";
 import Prism from 'prismjs';
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
 
 var IconPicker = require('@furcan/iconpicker');
 
@@ -46,6 +47,7 @@ export default (function () {
             'note-update-fail': 'There was an error while updating the note',
             'note-save-fail': 'Cannot save note changes without editing it first!',
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function () {
             let config = this.config;
             tinymce.remove(tinymce.custom.classes["tiny-mce-selector"]);
@@ -210,12 +212,12 @@ export default (function () {
                                 url: '/my-notes/update/',
                                 data: data,
                             }).done(() => {
-                                bootstrap_notifications.notify(tinymce.custom.messages["note-update-success"], 'success');
+                                tinymce.custom.bootstrapNotify.notify(tinymce.custom.messages["note-update-success"], 'success');
                                 ui.ajax.loadModuleContentByUrl(location.pathname);
                                 $(modalCloseButton).click();
                                 $('.modal-backdrop').remove();
                             }).fail(() => {
-                                bootstrap_notifications.notify(tinymce.custom.messages["note-update-fail"], 'danger');
+                                tinymce.custom.bootstrapNotify.notify(tinymce.custom.messages["note-update-fail"], 'danger');
                             });
 
                         }
@@ -243,7 +245,7 @@ export default (function () {
                             url: '/my-notes/delete-note/',
                             data: data,
                         }).done(() => {
-                            bootstrap_notifications.notify(tinymce.custom.messages["note-delete-success"], 'success');
+                            tinymce.custom.bootstrapNotify.notify(tinymce.custom.messages["note-delete-success"], 'success');
                             $(clickedButton).closest(tinymce.custom.classes["note-wrapper"]).html("");
                             $(tinymce.custom.classes["modal-shadow"]).remove();
 
@@ -254,7 +256,7 @@ export default (function () {
                             }
 
                         }).fail(() => {
-                            bootstrap_notifications.notify(tinymce.custom.messages["note-delete-fail"], 'danger');
+                            tinymce.custom.bootstrapNotify.notify(tinymce.custom.messages["note-delete-fail"], 'danger');
                         }).always( () => {
                             ui.widgets.loader.hideLoader();
                         });

@@ -5,6 +5,7 @@
  *  - some function were created before building more automatic mechanism with html data attr. utilization
  */
 import AjaxResponseDto from "../DTO/AjaxResponseDto";
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
 
 var bootbox = require('bootbox');
 
@@ -63,6 +64,7 @@ export default (function () {
             filesCurrentPaths   : '',
             tags                : ''
         },
+        bootstrapNotify: new BootstrapNotify(),
         general: {
             init: function(){
                 this.attachCallDialogOnClickEvent();
@@ -285,12 +287,12 @@ export default (function () {
 
                     // not checking if code is set because if message is then code must be also
                     if( ajaxResponseDto.isMessageSet() ){
-                        bootstrap_notifications.notify(ajaxResponseDto.message, notifyType);
+                        dialogs.ui.bootstrapNotify.notify(ajaxResponseDto.message, notifyType);
                     }
 
                     if( ajaxResponseDto.reloadPage ){
                         if( !ajaxResponseDto.isReloadMessageSet() ){
-                            bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                            dialogs.ui.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
                     }
@@ -396,12 +398,12 @@ export default (function () {
 
                     // not checking if code is set because if message is then code must be also
                     if( ajaxResponseDto.isMessageSet() ){
-                        bootstrap_notifications.notify(ajaxResponseDto.message, notifyType);
+                        dialogs.ui.bootstrapNotify.notify(ajaxResponseDto.message, notifyType);
                     }
 
                     if( ajaxResponseDto.reloadPage ){
                         if( ajaxResponseDto.isReloadMessageSet() ){
-                            bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                            dialogs.ui.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
                     }
@@ -473,15 +475,15 @@ export default (function () {
                     if( undefined !== data['template'] ){
                         _this.callSystemToggleLockDialog(data['template'], callback, isUnlocked);
                     } else if( undefined !== data['errorMessage'] ) {
-                        bootstrap_notifications.notify(data['errorMessage'], 'danger');
+                        dialogs.ui.bootstrapNotify.notify(data['errorMessage'], 'danger');
                     }else{
                         let message = 'Something went wrong while trying to load dialog template.';
-                        bootstrap_notifications.notify(message, 'danger');
+                        dialogs.ui.bootstrapNotify.notify(message, 'danger');
                     }
 
                     if( reloadPage ){
                         if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                            dialogs.ui.bootstrapNotify.showBlueNotification(reloadMessage);
                         }
                         location.reload();
                     }
@@ -598,15 +600,15 @@ export default (function () {
             if( ajaxResponseDto.isTemplateSet() ){
                 callDialogCallback(ajaxResponseDto.template, callback);
             } else if( !ajaxResponseDto.success) {
-                bootstrap_notifications.notify(ajaxResponseDto.message, 'danger');
+                dialogs.ui.bootstrapNotify.notify(ajaxResponseDto.message, 'danger');
             }else{
                 let message = 'Something went wrong while trying to load dialog template.';
-                bootstrap_notifications.notify(message, 'danger');
+                dialogs.ui.bootstrapNotify.notify(message, 'danger');
             }
 
             if( ajaxResponseDto.reloadPage ){
                 if( ajaxResponseDto.isReloadMessageSet() ){
-                    bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                    dialogs.ui.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                 }
                 location.reload();
             }

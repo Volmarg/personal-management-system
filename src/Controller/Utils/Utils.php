@@ -217,4 +217,16 @@ class Utils extends AbstractController {
         }
 
     }
+
+    /**
+     * Returns the class name without namespace
+     * @param string $class_with_namespace
+     * @return string
+     */
+    public static function getClassBasename(string $class_with_namespace): string
+    {
+        $class_parts             = explode('\\', $class_with_namespace);
+        $class_without_namespace = end($class_parts);
+        return $class_without_namespace;
+    }
 }

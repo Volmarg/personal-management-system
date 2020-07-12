@@ -32,3 +32,4 @@ messages:
     noSuchMethodExistsForGivenClass: "No such method exists for given class: "
     noSuchGetterAndIsserAvailableForClass: "No getter and isser available for class: "
     boolValueHasBeenToggled: "Bool value has been toggled"
+    couldNotHandleTheRequest: "Could not handle the request"

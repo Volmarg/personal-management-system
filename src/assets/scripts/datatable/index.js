@@ -11,6 +11,7 @@
 import * as $ from 'jquery';
 import 'datatables';
 import 'datatables.net-select';
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
 var bootbox = require('bootbox');
 
 export default (function () {
@@ -44,6 +45,7 @@ export default (function () {
                 filterTargetColumn        : "data-target-column",
             }
         },
+        bootstrapNotify: new BootstrapNotify(),
         destroy: function (table_id) {
             $('#' + table_id).DataTable().destroy();
         },
@@ -190,7 +192,7 @@ export default (function () {
                                 }
 
                                 if( 200 != code ){
-                                    bootstrap_notifications.showRedNotification(message);
+                                    datatable.bootstrapNotify.showRedNotification(message);
                                     return;
                                 }else {
 
@@ -203,7 +205,7 @@ export default (function () {
                                         initializer.reinitialize();
                                     }
 
-                                    bootstrap_notifications.showGreenNotification(message);
+                                    datatable.bootstrapNotify.showGreenNotification(message);
                                 }
                             });
                         }

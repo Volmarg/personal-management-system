@@ -1,3 +1,5 @@
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 var bootbox = require('bootbox');
 import Shuffle from 'shufflejs';
 
@@ -60,6 +62,7 @@ export default (function () {
           currentFilename               : '',
           moduleRoute                   : 'modules_my_images'
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function () {
             this.initGallery();
             this.addPlugins();
@@ -188,11 +191,11 @@ export default (function () {
                 }
 
                 if( 200 != code ) {
-                    bootstrap_notifications.showRedNotification(message);
+                    gallery.lightgallery.bootstrapNotify.showRedNotification(message);
                     return;
                 }
 
-                bootstrap_notifications.showGreenNotification(message);
+                gallery.lightgallery.bootstrapNotify.showGreenNotification(message);
 
                 if( 'function' === typeof(callback) ){
                     callback();
@@ -256,11 +259,11 @@ export default (function () {
                                             _this.vars.currentFileName  = $(_this.selectors.classes.currentViewedFilename).text();
                                         }
 
-                                        bootstrap_notifications.notify(data, 'success');
+                                        gallery.lightgallery.bootstrapNotify.notify(data, 'success');
 
                                     },
                                 }).fail((data) => {
-                                    bootstrap_notifications.notify(data.responseText, 'danger')
+                                    gallery.lightgallery.bootstrapNotify.notify(data.responseText, 'danger')
                                 }).always(() => {
                                     ui.widgets.loader.toggleLoader();
                                 });

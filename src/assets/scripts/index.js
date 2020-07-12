@@ -21,7 +21,6 @@ import './modules/my-files/filesTransfer.js';
 import './loading-bar/index.js';
 import './loading-bar/loading-bar.js';
 import './bootstrap-notify/bootstrap-notify.min.js';
-import './bootstrap-notify/index.js';
 
 import './lightgallery/index.js';
 import './shuffle/Shuffler.js';

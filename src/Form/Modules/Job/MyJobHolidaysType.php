@@ -3,13 +3,12 @@
 namespace App\Form\Modules\Job;
 
 use App\Controller\Core\Application;
+use App\Controller\Utils\Utils;
 use App\Entity\Modules\Job\MyJobHolidays;
-use App\Entity\Modules\Job\MyJobHolidaysPool;
 use App\Services\Core\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +16,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyJobHolidaysType extends AbstractType
 {
-    
+    /**
+     * @return string
+     */
+    public static function getFormPrefix(): string {
+        return Utils::getClassBasename(MyJobHolidays::class);
+    }
+
     /**
      * @var Application
      */
@@ -68,5 +73,12 @@ class MyJobHolidaysType extends AbstractType
         ]);
 
         $resolver->setRequired('choices');
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlockPrefix(): string {
+        return self::getFormPrefix();
     }
 }

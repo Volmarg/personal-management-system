@@ -1,3 +1,5 @@
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 var imagesLoaded = require('imagesloaded');
 
 import AjaxResponseDto from "../DTO/AjaxResponseDto";
@@ -28,6 +30,7 @@ export default (function () {
           templateData            : "data-template-data",
           jsLogic                 : "data-js-logic"
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function(){
             this.attachModuleContentLoadingViaAjaxOnMenuLinks();
         },
@@ -80,7 +83,7 @@ export default (function () {
                 let notificationType = ( ajaxResponseDto.isSuccessCode() ? "success" : "danger" );
 
                 if( !ajaxResponseDto.isSuccessCode() ){
-                    bootstrap_notifications.showRedNotification("Internal server error");
+                    ui.ajax.bootstrapNotify.showRedNotification("Internal server error");
                     return;
                 }
 
@@ -95,14 +98,14 @@ export default (function () {
                 }
 
                 if(returnNotification){
-                    bootstrap_notifications.notify(message, notificationType)
+                    ui.ajax.bootstrapNotify.notify(message, notificationType)
                 }
 
                 this.attachModuleContentLoadingViaAjaxOnMenuLinks();
 
                 if( ajaxResponseDto.reloadPage ){
                     if( ajaxResponseDto.isReloadMessageSet() ){
-                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                        ui.ajax.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }
@@ -201,7 +204,7 @@ export default (function () {
 
                 if( ajaxResponseDto.reloadPage ){
                     if( ajaxResponseDto.isReloadMessageSet() ){
-                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                        ui.ajax.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }
@@ -234,7 +237,7 @@ export default (function () {
                 let formTemplate    = ajaxResponseDto.formTemplate;
 
                 if( !ajaxResponseDto.success ){
-                    bootstrap_notifications.notify(ajaxResponseDto.message, 'danger');
+                    ui.ajax.bootstrapNotify.notify(ajaxResponseDto.message, 'danger');
                     return false;
                 }
 
@@ -249,7 +252,7 @@ export default (function () {
 
                 if( ajaxResponseDto.reloadPage ){
                     if( ajaxResponseDto.isReloadMessageSet() ){
-                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                        ui.ajax.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }
@@ -340,7 +343,7 @@ export default (function () {
 
                 if( ajaxResponseDto.reloadPage ){
                     if( ajaxResponseDto.isReloadMessageSet() ){
-                        bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                        ui.ajax.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                     }
                     location.reload();
                 }

@@ -15,7 +15,7 @@
 
 </section>
 
-<script>
+<script type="module">
 
     // prevent overwriting existing variable (js crashes)
     if( "object" === typeof window.messages )
@@ -26,11 +26,11 @@
     window.messages = document.querySelectorAll('.global-messages .alert');
 
     // show message and remove it
-    window.messages .forEach((element) => {
+    window.messages.forEach((element) => {
         let type    = element.getAttribute('data-type');
         let message = element.innerHTML;
 
-        bootstrap_notifications.notify(message, type);
+        window.legacy_notify(message, type);
         element.parentNode.removeChild(element);
     });
 

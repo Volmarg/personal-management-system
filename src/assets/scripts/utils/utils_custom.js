@@ -1,3 +1,5 @@
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 export default (function () {
 
     if (typeof utils === 'undefined') {
@@ -40,7 +42,8 @@ export default (function () {
     utils.window = {
         redirect: function (url, message) {
 
-            bootstrap_notifications.notify(message, 'warning');
+            let bootstrapNotify = new BootstrapNotify();
+            bootstrapNotify.showRedNotification(message);
 
             setTimeout(function () {
                 window.location = url;

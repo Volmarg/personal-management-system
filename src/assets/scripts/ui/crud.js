@@ -3,6 +3,8 @@ import tinymce from "tinymce";
 var bootbox = require('bootbox');
 import * as selectize from "selectize";
 import AjaxResponseDto from "../DTO/AjaxResponseDto.js";
+import FormsValidator from '../validators/FormsValidator';
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
 
 /**
  * If possible - avoid moving logic from this script - some methods are called as plain string in twig tpls
@@ -73,6 +75,7 @@ export default (function () {
             default_copy_data_fail_message: 'There was some problem while copying the data',
             password_copy_confirmation_message: 'Password was copied successfully',
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function () {
             this.attachRemovingEventOnTrashIcon();
             this.attachContentEditEventOnEditIcon();
@@ -216,21 +219,21 @@ export default (function () {
                         }
 
                         if( 200 != code ) {
-                            bootstrap_notifications.showRedNotification(message);
+                            ui.crud.bootstrapNotify.showRedNotification(message);
                             return;
                         }
 
                         if( "undefined" !== typeof successMessage ){
-                            bootstrap_notifications.showGreenNotification(successMessage);
+                            ui.crud.bootstrapNotify.showGreenNotification(successMessage);
                         }else{
-                            bootstrap_notifications.showGreenNotification(message);
+                            ui.crud.bootstrapNotify.showGreenNotification(message);
                         }
 
                         ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
 
                         if( reloadPage ){
                             if( "" !== reloadMessage ){
-                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                                ui.crud.bootstrapNotify.showBlueNotification(reloadMessage);
                             }
                             location.reload();
                         }
@@ -314,7 +317,7 @@ export default (function () {
                                 }
 
                                 if( 200 != code ){
-                                    bootstrap_notifications.showRedNotification(message);
+                                    ui.crud.bootstrapNotify.showRedNotification(message);
                                     return;
                                 }else {
 
@@ -322,7 +325,7 @@ export default (function () {
                                         message = _this.messages.entityHasBeenRemovedFromRepository();
                                     }
 
-                                    bootstrap_notifications.showGreenNotification(message);
+                                    ui.crud.bootstrapNotify.showGreenNotification(message);
                                 }
 
                                 if( "function" === typeof afterRemovalCallback ) {
@@ -331,7 +334,7 @@ export default (function () {
 
                                 if( reloadPage ){
                                     if( "" !== reloadMessage ){
-                                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                                        ui.crud.bootstrapNotify.showBlueNotification(reloadMessage);
                                     }
                                     location.reload();
                                 }
@@ -458,7 +461,7 @@ export default (function () {
                                 }
 
                                 if( 200 != code ) {
-                                    bootstrap_notifications.showRedNotification(message);
+                                    ui.crud.bootstrapNotify.showRedNotification(message);
                                     return;
                                 }
 
@@ -472,11 +475,11 @@ export default (function () {
                                     _this.removeTableRow(parent_wrapper);
                                 }
 
-                                bootstrap_notifications.showGreenNotification(message);
+                                ui.crud.bootstrapNotify.showGreenNotification(message);
 
                                 if( reloadPage ){
                                     if( "" !== reloadMessage ){
-                                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                                        ui.crud.bootstrapNotify.showBlueNotification(reloadMessage);
                                     }
                                     location.reload();
                                 }
@@ -537,12 +540,12 @@ export default (function () {
                                     ""          !== message
                                 &&  "undefined" !== typeof  message
                             ){
-                                bootstrap_notifications.showRedNotification(message);
+                                ui.crud.bootstrapNotify.showRedNotification(message);
                                 return;
                             }
 
                             if( "undefined" === typeof password ){
-                                bootstrap_notifications.showRedNotification(copy_data.fail_message);
+                                ui.crud.bootstrapNotify.showRedNotification(copy_data.fail_message);
                                 return;
                             }
 
@@ -550,11 +553,11 @@ export default (function () {
                             document.execCommand("copy");
                             temporaryCopyDataInput.remove();
 
-                            bootstrap_notifications.showGreenNotification(copy_data.success_message);
+                            ui.crud.bootstrapNotify.showGreenNotification(copy_data.success_message);
 
                             if( reloadPage ){
                                 if( "" !== reloadMessage ){
-                                    bootstrap_notifications.showBlueNotification(reloadMessage);
+                                    ui.crud.bootstrapNotify.showBlueNotification(reloadMessage);
                                 }
                                 location.reload();
                             }
@@ -660,7 +663,7 @@ export default (function () {
                 }
 
                 if( null === ajaxRequestDataBag ){
-                    bootstrap_notifications.showRedNotification("Databag for creating record via form submit (ajax) is null.");
+                    ui.crud.bootstrapNotify.showRedNotification("Databag for creating record via form submit (ajax) is null.");
                     return;
                 }
 
@@ -688,8 +691,16 @@ export default (function () {
                     }
 
                     if( !ajaxResponseDto.isSuccessCode() ){
+
+                        if( ajaxResponseDto.hasInvalidFields() && !ajaxResponseDto.isInternalServerErrorCode() ){
+                            let formValidator = new FormsValidator(ajaxResponseDto.validatedFormPrefix, ajaxResponseDto.invalidFormFields);
+                            formValidator.handleInvalidFields();
+                            ui.widgets.loader.hideLoader();
+                            return;
+                        }
+
                         ui.widgets.loader.hideLoader();
-                        bootstrap_notifications.showRedNotification(ajaxResponseDto.message);
+                        ui.crud.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                         return;
                     }
 
@@ -719,9 +730,9 @@ export default (function () {
                         ui.widgets.loader.hideLoader();
 
                         if( !ajaxResponseDto.isSuccessCode() ){
-                            bootstrap_notifications.showRedNotification(ajaxResponseDto.message);
+                            ui.crud.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                         }else{
-                            bootstrap_notifications.showGreenNotification(ajaxResponseDto.message);
+                            ui.crud.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
                         }
 
                         return;
@@ -731,11 +742,11 @@ export default (function () {
                         initializer.reinitialize();
                         ui.widgets.loader.hideLoader();
 
-                        bootstrap_notifications.showGreenNotification( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : ajaxRequestDataBag.success_message );
+                        ui.crud.bootstrapNotify.showGreenNotification( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : ajaxRequestDataBag.success_message );
 
                         if( ajaxResponseDto.reloadPage ){
                             if( ajaxResponseDto.isReloadMessageSet() ){
-                                bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                                ui.crud.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                             }
                             location.reload();
                         }
@@ -744,9 +755,10 @@ export default (function () {
 
                     }catch(Exception){
                         ui.widgets.loader.hideLoader();
-                        bootstrap_notifications.showRedNotification("Failed reinitializing logic");
+                        ui.crud.bootstrapNotify.showRedNotification("Failed reinitializing logic");
                         throw Exception;
                     }
+
                 });
             });
         },
@@ -780,9 +792,9 @@ export default (function () {
                     }
 
                     if( ajaxResponseDto.isSuccessCode() ){
-                        bootstrap_notifications.showGreenNotification(ajaxResponseDto.message);
+                        ui.crud.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
                     }else{
-                        bootstrap_notifications.showRedNotification(ajaxResponseDto.message);
+                        ui.crud.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                         return;
                     }
 
@@ -791,7 +803,7 @@ export default (function () {
 
                     if( ajaxResponseDto.reloadPage ){
                         if( ajaxResponseDto.isReloadMessageSet() ){
-                            bootstrap_notifications.showBlueNotification(ajaxResponseDto.reloadMessage);
+                            ui.crud.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
                     }
@@ -815,7 +827,7 @@ export default (function () {
                 this.toggleActionIconsVisibility(baseElement, null, isContentEditable);
                 this.toggleDisabledClassForTableRow(baseElement);
 
-                bootstrap_notifications.notify(this.messages.entityEditStart(dataProcessors.entities[paramEntityName].entity_name), 'warning');
+                ui.crud.bootstrapNotify.notify(this.messages.entityEditStart(dataProcessors.entities[paramEntityName].entity_name), 'warning');
                 return;
             }
 
@@ -824,7 +836,7 @@ export default (function () {
 
             utils.domAttributes.contentEditable(baseElement, utils.domAttributes.actions.unset,'td', 'input, select, button, img');
             $(baseElement).removeClass(this.classes["table-active"]);
-            bootstrap_notifications.notify(this.messages.entityEditEnd(dataProcessors.entities[paramEntityName].entity_name), 'success');
+            ui.crud.bootstrapNotify.notify(this.messages.entityEditEnd(dataProcessors.entities[paramEntityName].entity_name), 'success');
         },
         /**
          * @description Shows/hides actions icons (for example in tables edit/create/delete)
@@ -923,7 +935,7 @@ export default (function () {
                 method: 'POST',
                 data: updateData.data
             }).fail(() => {
-                bootstrap_notifications.notify(updateData.fail_message, 'danger')
+                ui.crud.bootstrapNotify.notify(updateData.fail_message, 'danger')
             }).always((data) => {
 
                 try{
@@ -949,9 +961,9 @@ export default (function () {
                 }
 
                 if( "undefined" === typeof message ){
-                    bootstrap_notifications.notify(updateData.success_message, messageType);
+                    ui.crud.bootstrapNotify.notify(updateData.success_message, messageType);
                 } else {
-                    bootstrap_notifications.notify(message, messageType);
+                    ui.crud.bootstrapNotify.notify(message, messageType);
                 }
 
 
@@ -964,7 +976,7 @@ export default (function () {
 
                 if( reloadPage ){
                     if( "" !== reloadMessage ){
-                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                        ui.crud.bootstrapNotify.showBlueNotification(reloadMessage);
                     }
                     location.reload();
                 }

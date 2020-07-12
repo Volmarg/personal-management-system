@@ -100,7 +100,7 @@ class Application extends AbstractController {
      * @param string $camel_string
      * @return string
      */
-    public function camelCaseToSnakeCaseConverter(string $camel_string)
+    public static function camelCaseToSnakeCaseConverter(string $camel_string)
     {
         $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
         $snake_string                  = $camel_case_to_snake_converter->normalize($camel_string);
@@ -111,7 +111,7 @@ class Application extends AbstractController {
      * @param string $snake_case
      * @return string
      */
-    public function snakeCaseToCamelCaseConverter(string $snake_case)
+    public static function snakeCaseToCamelCaseConverter(string $snake_case)
     {
         $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
         $camel_string                  = $camel_case_to_snake_converter->denormalize($snake_case);
@@ -124,7 +124,9 @@ class Application extends AbstractController {
      */
     public function logExceptionWasThrown(Throwable $throwable): void
     {
-        $this->logger->critical("Exception was thrown in", [
+        $message = $this->translator->translate('messages.general.internalServerError');
+
+        $this->logger->critical($message, [
             "exceptionMessage" => $throwable->getMessage(),
             "exceptionCode"    => $throwable->getCode(),
             "exceptionTrace"   => $throwable->getTraceAsString(),

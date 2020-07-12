@@ -174,7 +174,7 @@ class RepositoriesAction extends AbstractController {
         $field_mapping      = $class_meta->getFieldMapping($field_name);
         $field_type         = $field_mapping['type'];
 
-        $column_name        = $this->app->camelCaseToSnakeCaseConverter($field_name);
+        $column_name        = Application::camelCaseToSnakeCaseConverter($field_name);
 
         $columns_names      = $this->app->repositories->getColumnsNamesForTableName($table_name);
         $is_record_entity   = Repositories::isEntity($entity);

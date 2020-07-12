@@ -2,6 +2,8 @@
  * This file handles top bar searching for data in modules by using tags mechanism in selectize
  * Backend searches data by provided mechanisms and returns the minimum required data
  */
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 var bootbox = require('bootbox');
 
 export default (function () {
@@ -33,6 +35,7 @@ export default (function () {
             file: "file",
             note: "note"
         },
+        bootstrapNotify: new BootstrapNotify(),
         init: function(){
             this.attachAjaxCallOnChangeOfSearchInput();
         },
@@ -81,7 +84,7 @@ export default (function () {
                         let reloadMessage = data['reload_message'];
 
                         if( 0 === resultsCount ){
-                            bootstrap_notifications.notify("No results for given tags.", 'danger');
+                            ui.search.bootstrapNotify.notify("No results for given tags.", 'danger');
                             return;
                         }
 
@@ -93,11 +96,11 @@ export default (function () {
                         $(searchResultWrapper).append(filesSearchResultsList);
                         ui.widgets.popover.init();
 
-                        bootstrap_notifications.notify("Found " + resultsCount + " matching result/s", 'success');
+                        ui.search.bootstrapNotify.notify("Found " + resultsCount + " matching result/s", 'success');
 
                         if( reloadPage ){
                             if( "" !== reloadMessage ){
-                                bootstrap_notifications.showBlueNotification(reloadMessage);
+                                ui.search.bootstrapNotify.showBlueNotification(reloadMessage);
                             }
                             location.reload();
                         }

@@ -1,3 +1,5 @@
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+
 var bootbox = require('bootbox');
 import * as selectize from "selectize";
 
@@ -31,7 +33,10 @@ export default (function () {
             dataToggleResourcesLockForSystem : 'data-toggle-resources-lock-for-system',
             dataSetResourcesLockForSystem    : 'data-set-resources-lock-password-for-system',
         },
+        bootstrapNotify: null,
         init: function (){
+            this.bootstrapNotify = new BootstrapNotify();
+
             this.attachToggleRecordLockOnActionLockRecord();
             this.attachEventsOnToggleResourcesLockForSystem();
             this.attachEventsOnLockCreatePasswordForSystem();
@@ -54,6 +59,7 @@ export default (function () {
          * @param tr_parent_element {object}
          */
         ajaxToggleLockRecord: function (tr_parent_element) {
+            let _this  = this;
             let record = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-record');
             let type   = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-type');
             let target = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-target');
@@ -90,7 +96,7 @@ export default (function () {
                             }
 
                             if( 200 != code ){
-                                bootstrap_notifications.showRedNotification(message);
+                                _this.bootstrapNotify.showRedNotification(message);
                                 return;
                             }else {
 
@@ -98,13 +104,13 @@ export default (function () {
                                     message = window.ui.lockedResource.general.messages.ajaxCallHasBeenFinishedSuccessfully;
                                 }
 
-                                bootstrap_notifications.showGreenNotification(message);
+                                _this.bootstrapNotify.showGreenNotification(message);
                                 ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
                                 ui.ajax.singleMenuNodeReload();
 
                                 if( reloadPage ){
                                     if( "" !== reloadMessage ){
-                                        bootstrap_notifications.showBlueNotification(reloadMessage);
+                                        _this.bootstrapNotify.showBlueNotification(reloadMessage);
                                     }
                                     location.reload();
                                 }
@@ -140,7 +146,8 @@ export default (function () {
          */
         ajaxToggleSystemLock: function(password, isUnlocked){
 
-            let data = {
+            let _this = this;
+            let data  = {
                 "systemLockPassword": password,
                 "isUnlocked"        : isUnlocked,
             };
@@ -167,7 +174,7 @@ export default (function () {
                 }
 
                 if( 200 != code ){
-                    bootstrap_notifications.showRedNotification(message);
+                    _this.bootstrapNotify.showRedNotification(message);
                     return;
                 }else {
 
@@ -175,7 +182,7 @@ export default (function () {
                         message = window.ui.lockedResource.general.messages.ajaxCallHasBeenFinishedSuccessfully;
                     }
 
-                    bootstrap_notifications.showGreenNotification(message);
+                    _this.bootstrapNotify.showGreenNotification(message);
 
                     // now ajax reload for this as there is also menu to be changed etc.
                     ui.widgets.loader.showLoader();
@@ -183,7 +190,7 @@ export default (function () {
 
                     if( reloadPage ){
                         if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                            _this.bootstrapNotify.showBlueNotification(reloadMessage);
                         }
                         location.reload();
                     }
@@ -208,7 +215,8 @@ export default (function () {
          */
         ajaxCreateLockPasswordForSystem: function(password){
 
-            let data = {
+            let _this = this;
+            let data  = {
                 "systemLockPassword": password
             };
             ui.widgets.loader.showLoader();
@@ -234,7 +242,7 @@ export default (function () {
                 }
 
                 if( 200 != code ){
-                    bootstrap_notifications.showRedNotification(message);
+                    _this.bootstrapNotify.showRedNotification(message);
                     return;
                 }else {
 
@@ -242,7 +250,7 @@ export default (function () {
                         message = window.ui.lockedResource.general.messages.ajaxCallHasBeenFinishedSuccessfully;
                     }
 
-                    bootstrap_notifications.showGreenNotification(message);
+                    _this.bootstrapNotify.showGreenNotification(message);
 
                     // no ajax reload for this as there is also menu to be changed etc.
                     ui.widgets.loader.showLoader();
@@ -250,7 +258,7 @@ export default (function () {
 
                     if( reloadPage ){
                         if( "" !== reloadMessage ){
-                            bootstrap_notifications.showBlueNotification(reloadMessage);
+                            _this.bootstrapNotify.showBlueNotification(reloadMessage);
                         }
                         location.reload();
                     }
