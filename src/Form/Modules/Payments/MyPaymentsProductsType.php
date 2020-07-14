@@ -30,7 +30,8 @@ class MyPaymentsProductsType extends AbstractType {
             ])
             ->add('Price', NumberType::class, [
                 "attr" => [
-                    "min"  => 0.1,
+                    "min"  => 0.01,
+                    "step" => 0.01,
                 ],
                 'label' => $this->app->translator->translate('forms.MyPaymentsProductsType.labels.price'),
                 'html5' => true,

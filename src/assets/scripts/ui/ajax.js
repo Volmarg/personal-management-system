@@ -98,7 +98,7 @@ export default (function () {
                 }
 
                 if(returnNotification){
-                    ui.ajax.bootstrapNotify.notify(message, notificationType)
+                    ui.ajax.bootstrapNotify.notify(ajaxResponseDto.message, notificationType)
                 }
 
                 this.attachModuleContentLoadingViaAjaxOnMenuLinks();
