@@ -6,7 +6,7 @@ var CopyPlugin = require('copy-webpack-plugin');
  * This is the standard configuration of Personal Management System UI
  */
 Encore
-    .addEntry('app', './src/app.js') // will create public/build/app.js and public/build/app.css
+    .addEntry('app', './src/assets/app.js') // will create public/build/app.js and public/build/app.css
     .setOutputPath('public/assets') // the project directory where all compiled assets will be stored
     .setPublicPath('/assets') // the public path used by the web server to access the previous directory
     .enableSassLoader() // allow sass/scss files to be processed
@@ -38,9 +38,9 @@ Encore
             it doesnt throw any errors if csses are missing yet without them
             in this location - tinymce wont work correctly
          */
-        {from: './src/scss/libs/tinmce/skins/ui/oxide',                  to: 'skins/ui/oxide'},
-        {from: './src/scss/libs/tinmce/skins/ui/oxide/content.css',      to: 'skins/content/default/content.css'},
-        {from: './src/scss/libs/tinymce-editor.css',                     to: 'css/tinymce-editor.css'},
+        {from: './src/assets/scss/libs/tinmce/skins/ui/oxide',                  to: 'skins/ui/oxide'},
+        {from: './src/assets/scss/libs/tinmce/skins/ui/oxide/content.css',      to: 'skins/content/default/content.css'},
+        {from: './src/assets/scss/libs/tinymce-editor.css',                     to: 'css/tinymce-editor.css'},
 
         /**
          * Copying assets
