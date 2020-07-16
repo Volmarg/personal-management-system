@@ -841,6 +841,7 @@ class Repositories extends AbstractController {
                 $related_entities = $this->getAllRelatedEntities($entity);
 
                 if( empty($related_entities) ){
+                    $this->entity_manager->rollback();
                     return $entity;
                 }
 
@@ -851,6 +852,7 @@ class Repositories extends AbstractController {
                 }
 
             }else{
+                $this->entity_manager->rollback();
                 throw new Exception("This entity ({$class_name}) does not implements soft delete interface");
             }
 
