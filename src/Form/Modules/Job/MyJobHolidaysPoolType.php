@@ -32,7 +32,7 @@ class MyJobHolidaysPoolType extends AbstractType
                 ],
                 'label' => $this->app->translator->translate('forms.MyJobHolidaysPoolType.labels.year')
             ])
-            ->add('daysInPool', IntegerType::class, [
+            ->add(MyJobHolidaysPool::FIELD_DAYS_IN_POOL, IntegerType::class, [
                 'attr' => [
                     'min'           => 1,
                     'placeholder'   => $this->app->translator->translate('forms.MyJobHolidaysPoolType.placeholders.daysInPool')

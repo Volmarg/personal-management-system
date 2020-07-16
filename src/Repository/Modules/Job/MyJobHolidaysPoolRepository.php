@@ -123,7 +123,7 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         $connection = $this->_em->getConnection();
 
         $sql = "
-            SELECT hp.days_in_pool as daysInPool
+            SELECT hp.days_in_pool as days_in_pool
             FROM my_job_holiday_pool hp
             
             WHERE 1

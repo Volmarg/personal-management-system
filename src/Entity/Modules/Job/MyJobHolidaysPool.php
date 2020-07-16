@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyJobHolidaysPool implements EntityInterface{
 
-    const FIELD_DAYS_IN_POOL = "daysInPool";
+    const FIELD_DAYS_IN_POOL = "days_in_pool";
 
     /**
      * @ORM\Id()
@@ -26,9 +26,9 @@ class MyJobHolidaysPool implements EntityInterface{
     private $year;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, name="days_in_pool")
      */
-    private $days_in_pool;
+    private $daysInPool;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -60,11 +60,11 @@ class MyJobHolidaysPool implements EntityInterface{
     }
 
     public function getDaysInPool(): ?string {
-        return $this->days_in_pool;
+        return $this->daysInPool;
     }
 
     public function setDaysInPool(string $days_in_pool): self {
-        $this->days_in_pool = $days_in_pool;
+        $this->daysInPool = $days_in_pool;
 
         return $this;
     }
