@@ -8,5 +8,21 @@
   "files": [
     "*.ts/*.tsx"
   ],
-  "exclude": []
+  "exclude": [
+    "src/assets/scripts/accordion/Accordion.ts",
+    "src/assets/scripts/apexcharts/ApexChartsHandler.ts",
+    "src/assets/scripts/bootstrap-toggle/BootstrapToggle.ts",
+    "src/assets/scripts/datepicker/BootstrapDatepicker.ts",
+    "src/assets/scripts/datetimepicker/FlatPicker.ts",
+    "src/assets/scripts/loader/Loader.ts",
+    "src/assets/scripts/masonry/MasonryGallery.ts",
+    "src/assets/scripts/modules/*",
+    "src/assets/scripts/popover/Popover.ts",
+    "src/assets/scripts/prism/PrismHighlight.ts",
+    "src/assets/scripts/selectize/Selectize.ts",
+    "src/assets/scripts/sidebar/Sidebars.ts",
+    "src/assets/scripts/tiny-mce/TinyMce.ts",
+    "src/assets/scripts/ui/*",
+    "src/assets/scripts/utils/*"
+  ]
 }
