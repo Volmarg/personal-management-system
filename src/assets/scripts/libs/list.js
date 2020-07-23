@@ -1,0 +1,15 @@
+import './prism/index.js';
+import './bootbox/index.js';
+import './shuffle/index.js';
+import './tiny-mce/index.js';
+import './datatable/index.js';
+import './scrollbar/index.js';
+import './shuffle/Shuffler.js';
+import './datepicker/index.js';
+import './loading-bar/index.js';
+import './lightgallery/index.js';
+import './datetimepicker/index.js';
+import './jquery-ui/jquery-ui.min.js';
+import './loading-bar/loading-bar.js';
+import './jquery-ui/jquery.ui.touch-punch-improved.js';
+import './bootstrap-notify/bootstrap-notify.min.js';

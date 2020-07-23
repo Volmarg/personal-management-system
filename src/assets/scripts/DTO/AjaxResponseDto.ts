@@ -3,106 +3,55 @@
  */
 export default class AjaxResponseDto {
 
+    /**
+     * @type int
+     */
+    public code = 200;
 
-    constructor(){
-        /**
-         * @type {string}
-         */
-        this._code = "";
+    /**
+     * @type string
+     */
+    public message = "";
 
-        /**
-         * @type {string}
-         */
-        this._message = "";
+    /**
+     * @type string
+     */
+    public template = "";
 
-        /**
-         * @type {string}
-         */
-        this._template = "";
+    /**
+     * @type string
+     */
+    public password = "";
 
-        /**
-         * @type {string}
-         */
-        this._password = "";
+    /**
+     * @type boolean
+     */
+    public reloadPage = false;
 
-        /**
-         * @type {boolean}
-         */
-        this._reloadPage = false;
+    /**
+     * @type string
+     */
+    public reloadMessage = "";
 
-        /**
-         * @type {string}
-         */
-        this._reloadMessage = "";
+    /**
+     * @type boolean
+     */
+    public success = false;
 
-        /**
-         * @type {boolean}
-         */
-        this._success = false;
+    /**
+     * @type string
+     */
+    public formTemplate = "";
 
-        /**
-         * @type {string}
-         */
-        this._formTemplate = "";
+    /**
+     * @type string
+     */
+    public validatedFormPrefix = "";
 
-        /**
-         * @type {string}
-         */
-        this._validatedFormPrefix = "";
-
-        /**
-         * @type {Array}
-         */
-        this._invalidFormFields = [];
-    }
-
-    get code() {
-        return this._code;
-    }
-
-    get message() {
-        return this._message;
-    }
-
-    get template() {
-        return this._template;
-    }
-
-    get password() {
-        return this._password;
-    }
-
-    get reloadPage() {
-        return this._reloadPage;
-    }
-
-    get reloadMessage() {
-        return this._reloadMessage;
-    }
-
-    get success() {
-        return this._success;
-    }
-
-    get formTemplate() {
-        return this._formTemplate;
-    }
-
-    get validatedFormPrefix() {
-        return this._validatedFormPrefix;
-    }
-
-    set validatedFormPrefix(value) {
-        this._validatedFormPrefix = value;
-    }
-
-    get invalidFormFields() {
-        return this._invalidFormFields;
-    }
-
-    set invalidFormFields(value) {
-        this._invalidFormFields = value;
-    }
+    /**
+     * @type Array<string>
+     */
+    public invalidFormFields = [];
 
     /**
      * Builds DTO from data array
@@ -112,16 +61,16 @@ export default class AjaxResponseDto {
     static fromArray(array){
         let ajaxResponseDto = new AjaxResponseDto();
 
-        ajaxResponseDto._code                = ajaxResponseDto.getFromArray(array, 'code');
-        ajaxResponseDto._message             = ajaxResponseDto.getFromArray(array, 'message');
-        ajaxResponseDto._template            = ajaxResponseDto.getFromArray(array, 'template');
-        ajaxResponseDto._password            = ajaxResponseDto.getFromArray(array, 'password');
-        ajaxResponseDto._reloadPage          = ajaxResponseDto.getFromArray(array, 'reload_page', false);
-        ajaxResponseDto._reloadMessage       = ajaxResponseDto.getFromArray(array, 'reload_message');
-        ajaxResponseDto._success             = ajaxResponseDto.getFromArray(array, 'success');
-        ajaxResponseDto._formTemplate        = ajaxResponseDto.getFromArray(array, 'form_template');
-        ajaxResponseDto._validatedFormPrefix = ajaxResponseDto.getFromArray(array, 'validated_form_prefix');
-        ajaxResponseDto._invalidFormFields   = ajaxResponseDto.getFromArray(array, 'invalid_form_fields', []);
+        ajaxResponseDto.code                = ajaxResponseDto.getFromArray(array, 'code');
+        ajaxResponseDto.message             = ajaxResponseDto.getFromArray(array, 'message');
+        ajaxResponseDto.template            = ajaxResponseDto.getFromArray(array, 'template');
+        ajaxResponseDto.password            = ajaxResponseDto.getFromArray(array, 'password');
+        ajaxResponseDto.reloadPage          = ajaxResponseDto.getFromArray(array, 'reload_page', false);
+        ajaxResponseDto.reloadMessage       = ajaxResponseDto.getFromArray(array, 'reload_message');
+        ajaxResponseDto.success             = ajaxResponseDto.getFromArray(array, 'success');
+        ajaxResponseDto.formTemplate        = ajaxResponseDto.getFromArray(array, 'form_template');
+        ajaxResponseDto.validatedFormPrefix = ajaxResponseDto.getFromArray(array, 'validated_form_prefix');
+        ajaxResponseDto.invalidFormFields   = ajaxResponseDto.getFromArray(array, 'invalid_form_fields', []);
 
         return ajaxResponseDto;
     }
@@ -148,7 +97,7 @@ export default class AjaxResponseDto {
      */
     isset(value){
         if(
-            "undefined" === typeof value
+                "undefined" === typeof value
             ||  ""          === value
             || null         === value
             ||  0           === value.length
@@ -163,63 +112,63 @@ export default class AjaxResponseDto {
      * @return {boolean}
      */
     isCodeSet(){
-        return this.isset(this._code);
+        return this.isset(this.code);
     }
 
     /**
      * @return {boolean}
      */
     isMessageSet(){
-        return this.isset(this._message);
+        return this.isset(this.message);
     }
 
     /**
      * @return {boolean}
      */
     isTemplateSet(){
-        return this.isset(this._template);
+        return this.isset(this.template);
     }
 
     /**
      * @return {boolean}
      */
     isPasswordSet(){
-        return this.isset(this._password);
+        return this.isset(this.password);
     }
 
     /**
      * @return {boolean}
      */
     isReloadMessageSet(){
-        return this.isset(this._reloadPage);
+        return this.isset(this.reloadPage);
     }
 
     /**
      * @return {boolean}
      */
     isSuccessSet(){
-        return this.isset(this._success);
+        return this.isset(this.success);
     }
 
     /**
      * @return {boolean}
      */
     isFormTemplateSet(){
-        return this.isset(this._formTemplate);
+        return this.isset(this.formTemplate);
     }
 
     /**
      * @return {boolean}
      */
     isVlidatedFormPrefixSet(){
-        return this.isset(this._validatedFormPrefix);
+        return this.isset(this.validatedFormPrefix);
     }
 
     /**
      * @return {boolean}
      */
     hasInvalidFields(){
-        return ( 0 !== this._invalidFormFields.length );
+        return ( 0 !== this.invalidFormFields.length );
     }
 
     /**
@@ -227,8 +176,8 @@ export default class AjaxResponseDto {
      */
     isSuccessCode(){
         if(
-                200 >= this._code
-            &&  300 > this._code
+                200 >= this.code
+            &&  300 > this.code
         ){
             return true;
         }
@@ -240,7 +189,7 @@ export default class AjaxResponseDto {
      * @returns {boolean}
      */
     isInternalServerErrorCode(){
-        return (this._code >= 500);
+        return (this.code >= 500);
     }
 
 }
