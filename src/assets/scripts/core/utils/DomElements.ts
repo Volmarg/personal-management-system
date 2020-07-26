@@ -46,7 +46,7 @@ export default class DomElements {
      * @param targetSelector
      * @param callbackParam {function}
      */
-    public appendFormView(formName: string, targetSelector: string, callbackParam: Function): void
+    public static appendFormView(formName: string, targetSelector: string, callbackParam: Function): void
     {
 
         let $targetElement = $(targetSelector);
@@ -80,7 +80,7 @@ export default class DomElements {
     /**
      * This function will remove the closest element which matches the selector relative to $element
      */
-    public removeClosesSelecotrParentForElement($element: JQuery, selector: string): void
+    public static removeClosestSelectorParentForElement($element: JQuery, selector: string): void
     {
         let parentToRemove = $($element).closest(selector);
         parentToRemove.remove();

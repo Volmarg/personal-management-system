@@ -245,6 +245,33 @@ export default class DomAttributes {
     };
 
     /**
+     * Add d-none class to element
+     * @param $element
+     */
+    public static setDisplayNoneClass($element): void
+    {
+        $element.addClass("d-none");
+    }
+
+    /**
+     * Remove d-none class from element
+     * @param $element
+     */
+    public static unsetDisplayNoneClass($element): void
+    {
+        $element.removeClass("d-none");
+    }
+
+    /**
+     * Check if element has d-none class
+     * @param $element
+     */
+    public static hasDisplayNoneClass($element): boolean
+    {
+        return $element.hasClass("d-none");
+    }
+
+    /**
      * Will set error class - mostly used for form elements
      * @param element
      */

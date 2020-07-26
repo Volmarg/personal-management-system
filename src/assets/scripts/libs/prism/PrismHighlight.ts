@@ -23,7 +23,7 @@ export default class PrismHighlight {
     /**
      * Main initialization logic
       */
-    private init(): void
+    public init(): void
     {
         this.highlightCode();
     };
@@ -31,7 +31,7 @@ export default class PrismHighlight {
     /**
      * Calling prism on tinymce elements
      */
-    private highlightCode(): void
+    public highlightCode(): void
     {
         let $codeElements               = $('code[class^="language-"]');
         let $tinyMceCodeElements        = $('#tiny-mce-wrapper code');

@@ -2,8 +2,11 @@
  * @info: This class contains the methods and representations used to:
  *  - handle formView fetching from backed
  */
-import * as tinymce from "tinymce";
-import DomAttributes from "../../utils/DomAttributes";
+import * as tinymce     from "tinymce";
+import DomAttributes    from "../../utils/DomAttributes";
+import TinyMce          from "../../../libs/tiny-mce/TinyMce";
+import Ajax             from "../Ajax";
+import AbstractAction   from '../Actions/AbstractAction';
 
 var bootbox = require('bootbox');
 
@@ -14,6 +17,7 @@ export default (function () {
     }
 
     dataProcessors.entities = {
+        ajax: new Ajax(),
         "MySchedules": {
             makeUpdateData: function ($baseElement) {
                 let id              = $($baseElement).find('.id').html();
@@ -22,8 +26,8 @@ export default (function () {
                 let date            = $($baseElement).find('.date input').val();
                 let information     = $($baseElement).find('.information').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-schedule/update/';
                 let ajax_data = {
@@ -48,8 +52,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-schedule/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -66,8 +70,8 @@ export default (function () {
                 let schedulesType = JSON.parse(TWIG_GET_ATTRS).schedules_type;
 
                 let url = '/my-schedules/' + schedulesType;
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -83,8 +87,8 @@ export default (function () {
                 let name = $($baseElement).find('.name').html();
                 let icon = $($baseElement).find('.icon').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-schedule-settings/schedule-type/update';
                 let ajax_data = {
@@ -107,8 +111,8 @@ export default (function () {
                 let id              = $($baseElement).find('.id').html();
                 let name            = $($baseElement).find('.name').html();
                 let url             = '/my-schedule-settings/schedule-type/remove';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 let message = 'You are about to remove schedule type named <b>' + name + ' </b>. There might be schedule connected with it. Are You 100% sure? This might break something...';
                 return {
@@ -127,8 +131,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-schedules-settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -141,7 +145,7 @@ export default (function () {
                             throw ("menuNodeModuleName param is missing in ScheduleType::makeCreateData");
                         }
 
-                        ui.ajax.singleMenuNodeReload(menuNodeModuleName);
+                        dataProcessors.entities.ajax.singleMenuNodeReload(menuNodeModuleName);
                     },
                     'callback_after': true,
                 };
@@ -158,8 +162,8 @@ export default (function () {
                 let information = $($baseElement).find('.information').html();
                 let rejected = $($baseElement).find('.rejected input').prop("checked");
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-products/update/';
                 let ajax_data = {
@@ -181,8 +185,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-payments-products/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -197,8 +201,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-payments-products';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -216,8 +220,8 @@ export default (function () {
                 let description = $($baseElement).find('.description').html();
                 let paymentType = $($baseElement).find('.type :selected');
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-monthly/update/';
                 let ajax_data = {
@@ -242,8 +246,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-payments-monthly/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -258,8 +262,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-payments-monthly';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -277,8 +281,8 @@ export default (function () {
                 let description = $($baseElement).find('.description').html();
                 let paymentType = $($baseElement).find('.type :selected');
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = 'my-recurring-payments-monthly/update/';
                 let ajax_data = {
@@ -303,8 +307,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-recurring-payments-monthly/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -319,8 +323,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-recurring-payments-monthly-settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -339,8 +343,8 @@ export default (function () {
                 let information = $($baseElement).find('.information').html();
                 let currency    = $($baseElement).find('.currency').find("select").val();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-owed/update/';
                 let ajax_data = {
@@ -362,8 +366,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id              = $($baseElement).find('.id').html();
                 let url             = '/my-payments-owed/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -378,8 +382,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url             = '/my-payments-owed';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'            : url,
@@ -397,8 +401,8 @@ export default (function () {
                 let information = $($baseElement).find('.information').html();
                 let currency    = $($baseElement).find('.currency').find("select").val();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-income/update/';
                 let ajax_data = {
@@ -419,8 +423,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id              = $($baseElement).find('.id').html();
                 let url             = '/my-payments-income/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -435,8 +439,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url             = '/my-payments-income';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'            : url,
@@ -455,8 +459,8 @@ export default (function () {
                 let type        = $($baseElement).find('.type').html();
                 let goal        = $($baseElement).find('.goal').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-job/afterhours/update/';
                 let ajax_data = {
@@ -477,8 +481,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-job/afterhours/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -493,8 +497,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-job/afterhours';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -511,8 +515,8 @@ export default (function () {
                 let daysSpent   = $($baseElement).find('.daysSpent').find("input").val();
                 let information = $($baseElement).find('.information').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-job/holidays/update/';
                 let ajax_data = {
@@ -531,8 +535,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id              = $($baseElement).find('.id').html();
                 let url             = '/my-job/holidays/remove/';
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
 
                 return {
                     'url': url,
@@ -547,8 +551,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url             = '/my-job/holidays';
-                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
 
                 return {
                     'url': url,
@@ -565,8 +569,8 @@ export default (function () {
                 let daysInPool  = $($baseElement).find('.daysInPool input').val();
                 let companyName = $($baseElement).find('.companyName').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-job/holidays-pool/update/';
                 let ajax_data = {
@@ -585,8 +589,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id              = $($baseElement).find('.id').html();
                 let url             = '/my-job/holidays-pool/remove/';
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
 
                 return {
                     'url': url,
@@ -601,8 +605,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url             = '/my-job/settings';
-                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
 
                 return {
                     'url': url,
@@ -619,8 +623,8 @@ export default (function () {
                 let example = $($baseElement).find('.example').html();
                 let name = $($baseElement).find('.name').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-shopping/plans/update/';
                 let ajax_data = {
@@ -640,8 +644,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-shopping/plans/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -656,8 +660,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-shopping/plans';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -676,8 +680,8 @@ export default (function () {
                 let map = $($baseElement).find('.map a').attr('href');
                 let category = $($baseElement).find('.category i').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-travels/ideas/update/';
                 let ajax_data = {
@@ -699,8 +703,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-travels/ideas/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -715,8 +719,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-travels/ideas';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -733,8 +737,8 @@ export default (function () {
                 let description = $($baseElement).find('.description').html();
                 let name = $($baseElement).find('.name').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/achievement/update/';
                 let ajax_data = {
@@ -754,8 +758,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/achievement/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -770,8 +774,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/achievement';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -789,8 +793,8 @@ export default (function () {
                 let color = $($baseElement).find('.color').text();
                 let parent = $($baseElement).find('.parent').find(':selected').val();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-notes/settings/update/';
                 let ajax_data = {
@@ -811,8 +815,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-notes/settings/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -828,8 +832,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-notes/settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -842,8 +846,8 @@ export default (function () {
         "MyNotes": {
             makeCreateData: function () {
                 let url = '/my-notes/create';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -866,8 +870,8 @@ export default (function () {
                 let id = $($baseElement).find('.id').html();
                 let value = $($baseElement).find('.value').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-settings/update';
                 let ajax_data = {
@@ -886,8 +890,8 @@ export default (function () {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-payments-settings/remove/';
                 let value = $($baseElement).find('.value').html();
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
                 let message = 'You are about to remove type named <b>' + value + ' </b>. There might be payment connected with it. Are You 100% sure? This might break something...';
 
                 return {
@@ -904,8 +908,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-payments-settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -921,8 +925,8 @@ export default (function () {
                 let name        = $($baseElement).find('.name').html();
                 let imagePath   = $($baseElement).find('.image_path').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-contacts-types/update';
                 let ajax_data = {
@@ -942,8 +946,8 @@ export default (function () {
                 let id   = $($baseElement).find('.id').html();
                 let name = $($baseElement).find('.name').html();
                 let url  = '/my-contacts-types/remove';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 let message = 'You are about to remove type named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
                 return {
@@ -960,8 +964,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-contacts-settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -980,8 +984,8 @@ export default (function () {
                 let $form              = $($baseElement).find('form');
                 let serializedFormData = $form.serialize();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-contacts/update';
                 let ajax_data = {
@@ -1003,8 +1007,8 @@ export default (function () {
                 let icon   = $($baseElement).find('.icon').html();
                 let color  = $($baseElement).find('.color').text();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-contacts-groups/update';
                 let ajax_data = {
@@ -1025,8 +1029,8 @@ export default (function () {
                 let id   = $($baseElement).find('.id').html();
                 let name = $($baseElement).find('.name').html();
                 let url  = '/my-contacts-groups/remove';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 let message = 'You are about to remove group named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
                 return {
@@ -1043,8 +1047,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-contacts-settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1063,8 +1067,8 @@ export default (function () {
                 let description = $($baseElement).find('.description').html().trim();
                 let groupId = $($baseElement).find('.group :selected').val().trim();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let ajax_url = '/my-passwords/update/';
                 let ajax_data = {
@@ -1094,8 +1098,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/my-passwords/remove/';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1110,8 +1114,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-passwords';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1125,8 +1129,8 @@ export default (function () {
 
                 return {
                     'url': url + id,
-                    'success_message': ui.crud.messages.password_copy_confirmation_message,
-                    'fail_message': ui.crud.messages.default_copy_data_fail_message,
+                    'success_message': AbstractAction.messages.password_copy_confirmation_message,
+                    'fail_message': AbstractAction.messages.default_copy_data_fail_message,
                 };
             },
             entity_name: "Password",
@@ -1136,8 +1140,8 @@ export default (function () {
                 let id = $($baseElement).find('.id').html();
                 let name = $($baseElement).find('.name').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-passwords-groups/update';
                 let ajax_data = {
@@ -1156,8 +1160,8 @@ export default (function () {
                 let id              = $($baseElement).find('.id').html();
                 let name            = $($baseElement).find('.name').html();
                 let url             = '/my-passwords-groups/remove';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 let message = 'You are about to remove group named <b>' + name + ' </b>. There might be password connected with it. Are You 100% sure? This might break something...';
                 return {
@@ -1173,8 +1177,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/my-passwords-settings';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1192,8 +1196,8 @@ export default (function () {
                 let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
                 let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
 
-                let success_message     = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/admin/goals/settings/update';
                 let ajax_data = {
@@ -1214,8 +1218,8 @@ export default (function () {
                 let id = $($baseElement).find('.id').html();
                 let name = $($baseElement).find('.name').html();
                 let url = '/admin/goals/settings/remove';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 let message = 'You are about to remove goal named <b>' + name + ' </b>. There might be subgoal connected with it. Are You 100% sure? This might break something...';
                 return {
@@ -1231,8 +1235,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/admin/goals/settings/MyGoals';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1248,8 +1252,8 @@ export default (function () {
                 let name = $($baseElement).find('.name').html();
                 let goalId = $($baseElement).find('.goal :selected').val().trim();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/admin/subgoals/settings/update';
                 let ajax_data = {
@@ -1272,8 +1276,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id = $($baseElement).find('.id').html();
                 let url = '/admin/subgoals/settings/remove';
-                let success_message = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1287,8 +1291,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url = '/admin/goals/settings/MySubgoals';
-                let success_message = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url': url,
@@ -1309,8 +1313,8 @@ export default (function () {
                 let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
                 let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
 
-                let success_message             = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message                = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message             = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message                = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/admin/goals/payments/settings/update';
                 let ajax_data = {
@@ -1333,8 +1337,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id                  = $($baseElement).find('.id').html();
                 let url                 = '/admin/goals/payments/settings/remove';
-                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1348,8 +1352,8 @@ export default (function () {
             },
             makeCreateData: function () {
                 let url                 = '/admin/goals/settings/MyGoalsPayments';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1370,8 +1374,8 @@ export default (function () {
 
                 let url                 = '/api/my-files/update';
 
-                let success_message     = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let ajax_data = {
                     'file_full_path'    : file_full_path,
@@ -1393,8 +1397,8 @@ export default (function () {
                 let file_full_path      = $($baseElement).find('input[name^="file_full_path"]').val();
                 let url                 = '/my-files/remove-file';
 
-                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1415,8 +1419,8 @@ export default (function () {
                 let amount  = $($baseElement).find('.amount').html();
                 let name    = $($baseElement).find('.name').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-bills/update-bill-item/';
                 let ajax_data = {
@@ -1435,8 +1439,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id                  = $($baseElement).find('.id').html();
                 let url                 = '/my-payments-bills/remove-bill-item/';
-                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1459,8 +1463,8 @@ export default (function () {
                 let endDate         = $($baseElement).find('.endDate').val();
                 let plannedAmount   = $($baseElement).find('.plannedAmount').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-payments-bills/update-bill/';
                 let ajax_data = {
@@ -1482,8 +1486,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id                  = $($baseElement).find('.id').html();
                 let url                 = '/my-payments-bills/remove-bill/';
-                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1500,8 +1504,8 @@ export default (function () {
         "MyIssueContact": {
             makeCreateData: function () {
                 let url                 = '/my-issues/pending';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1519,8 +1523,8 @@ export default (function () {
                 let information     = $($baseElement).find('.information').html();
                 let icon            = $($baseElement).find('.icon').html();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-issues-contacts/update';
                 let ajax_data = {
@@ -1544,8 +1548,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let id                  = $($baseElement).find('.id').html();
                 let url                 = '/my-issues-contacts/remove';
-                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1566,8 +1570,8 @@ export default (function () {
         "MyIssueProgress": {
             makeCreateData: function () {
                 let url                 = '/my-issues/pending';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1582,13 +1586,13 @@ export default (function () {
             makeUpdateData: function ($baseElement) {
                 let $tinymceWrapper         = $($baseElement).find('[data-id="tiny-mce-wrapper"]');
                 let tinymceInstanceSelector = $tinymceWrapper.attr('id');
-                let tinymceContent          = tinymce.custom.getTextContentForTinymceIdSelector(tinymceInstanceSelector);
+                let tinymceContent          = TinyMce.getTextContentForTinymceIdSelector(tinymceInstanceSelector);
 
                 let id              = $($baseElement).find('.id').text();
                 let information     = tinymceContent;
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/my-issues-progress/update';
                 let ajax_data = {
@@ -1612,8 +1616,8 @@ export default (function () {
         "MyIssue" : {
             makeCreateData: function () {
                 let url                 = '/my-issues/pending';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'               : url,
@@ -1671,8 +1675,8 @@ export default (function () {
                     'all_rows_data': allRowsData
                 };
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/api/settings-dashboard/update-widgets-visibility';
 
@@ -1695,8 +1699,8 @@ export default (function () {
 
                 let beforeUpdateState = $($baseElement).find('.before-update-state').val();
 
-                let success_message = ui.crud.messages.entityUpdateSuccess(this.entity_name);
-                let fail_message    = ui.crud.messages.entityUpdateFail(this.entity_name);
+                let success_message = AbstractAction.messages.entityUpdateSuccess(this.entity_name);
+                let fail_message    = AbstractAction.messages.entityUpdateFail(this.entity_name);
 
                 let url = '/api/settings-finances/update-currencies';
                 let ajax_data = {
@@ -1717,8 +1721,8 @@ export default (function () {
             makeRemoveData: function ($baseElement) {
                 let name                = $($baseElement).find('.name').text();
                 let url                 = '/api/settings-finances/remove-currency/';
-                let success_message     = ui.crud.messages.entityRemoveSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityRemoveFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityRemoveSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityRemoveFail(this.entity_name);
 
                 return {
                     'url'                   : url + name,
@@ -1734,8 +1738,8 @@ export default (function () {
         'settingsFinancesCurrencyForm':{
             makeCreateData: function () {
                 let url                 = '/page-settings';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.entity_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.entity_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.entity_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.entity_name);
 
                 return {
                     'url'               : url,

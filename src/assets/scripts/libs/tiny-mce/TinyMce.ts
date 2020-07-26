@@ -8,6 +8,7 @@ import 'tinymce/plugins/paste';
 import 'tinymce/plugins/codesample';
 
 import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+import StringUtils from "../../core/utils/StringUtils";
 
 export default class TinyMce {
 
@@ -94,9 +95,13 @@ export default class TinyMce {
     /**
      * Main initialization logic
      */
-    private init() {
-        let tinyMceSelector = TinyMce.classes["tiny-mce-selector"];
-        let config          = TinyMce.getDefaultTinyMceConfig(tinyMceSelector);
+    public init(tinyMceSelector: string = null) {
+
+        if( StringUtils.isEmptyString(tinyMceSelector) ){
+            tinyMceSelector = TinyMce.classes["tiny-mce-selector"];
+        }
+
+        let config = TinyMce.getDefaultTinyMceConfig(tinyMceSelector);
 
         tinymce.remove(TinyMce.classes["tiny-mce-selector"]);
         tinymce.init(config);
@@ -104,6 +109,45 @@ export default class TinyMce {
         this.setDefaultTextAlignment();
         this.preventFocusHijack();
     };
+
+
+    /**
+     * Gets content of the tinymce editor body (html)
+     * @param tinyMceInstanceSelector {string}
+     * @returns {string}
+     */
+    public static getTextContentForTinymceIdSelector(tinyMceInstanceSelector){
+        let tinymceInstance = tinymce.get(tinyMceInstanceSelector);
+
+        if( tinymceInstance === null ){
+            throw{
+                "message"  : "This is not a tinymce instance",
+                "selector" : tinyMceInstanceSelector
+            }
+        }
+
+        let tinymceContent  = tinymceInstance.getContent();
+        return tinymceContent;
+    };
+
+    /**
+     * Returns tinymce instance for given selector
+     * @param selector
+     */
+    public static getTinyMceInstanceForSelector(selector: string)
+    {
+        let tinymceInstance = tinymce.get(selector);
+        return tinymceInstance;
+    }
+
+    /**
+     * Will destroy the tinymce instance for given selector
+     * @param tinyMceInstanceSelector
+     */
+    public static remove(tinyMceInstanceSelector)
+    {
+        tinymce.remove(tinyMceInstanceSelector);
+    }
 
     /**
      * Fix Problem with misbehaving text-alignment
@@ -120,25 +164,6 @@ export default class TinyMce {
                     .attr("data-mce-style", "text-align: left");
             });
         });
-    };
-
-    /**
-     * Gets content of the tinymce editor body (html)
-     * @param tinyMceInstanceSelector {string}
-     * @returns {string}
-     */
-    private getTextContentForTinymceIdSelector(tinyMceInstanceSelector){
-        let tinymceInstance = tinymce.get(tinyMceInstanceSelector);
-
-        if( tinymceInstance === null ){
-            throw{
-                "message"  : "This is not a tinymce instance",
-                "selector" : tinyMceInstanceSelector
-            }
-        }
-
-        let tinymceContent  = tinymceInstance.getContent();
-        return tinymceContent;
     };
 
     /**

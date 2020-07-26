@@ -36,16 +36,7 @@
             <div class="widgets-wrapper">
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
                     'widgetName': "add-contact-card-widget",
-                    'settings':{
-                        "type": 'template',
-                        "url": path('dialog_body_create_contact_card'),
-                        'callFunctions': '
-                            events.general.attachFormViewAppendEvent();
-                            jscolorCustom.init();
-                            ui.crud.attachContentSaveEventOnSaveIcon();
-                        ',
-                        'subtype':'contactCardCreation'
-                    }
+                    'id'        : "add-contact-card-widget"
                 } %}
             </div>
 

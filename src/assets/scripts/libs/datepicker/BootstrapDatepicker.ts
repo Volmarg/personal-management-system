@@ -7,7 +7,7 @@ export default class BootstrapDatepicker {
     /**
      * Main initialization logic
      */
-    public init(): void
+    public static init(): void
     {
         //@ts-ignore
         $('.start-date').datepicker();

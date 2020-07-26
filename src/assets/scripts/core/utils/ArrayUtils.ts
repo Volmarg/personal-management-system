@@ -17,18 +17,9 @@ export default class ArrayUtils {
      * @param needle
      * @param haystack
      */
-    public static inArray(needle: string, haystack: object): boolean
+    public static inArray(needle: string|number|boolean, haystack: Array<any>): boolean
     {
-        let isInArray = false;
-
-        $.each(haystack, (index, value) => {
-            if( needle === value ){
-                isInArray = true;
-                return false;
-            }
-        });
-
-        return isInArray;
+       return $.inArray(needle, haystack) !== -1;
     }
 
     /**

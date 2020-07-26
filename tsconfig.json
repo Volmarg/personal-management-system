@@ -9,20 +9,6 @@
     "*.ts/*.tsx"
   ],
   "exclude": [
-    "src/assets/scripts/libs/bootstrap-toggle/BootstrapToggle.ts",
-    "src/assets/scripts/libs/datepicker/BootstrapDatepicker.ts",
-    "src/assets/scripts/libs/datetimepicker/FlatPicker.ts",
-    "src/assets/scripts/modules/*",
-    "src/assets/scripts/libs/prism/PrismHighlight.ts",
-    "src/assets/scripts/libs/sidebar/Sidebars.ts",
-    "src/assets/scripts/libs/tiny-mce/TinyMce.ts",
-    "src/assets/scripts/core/ui/Ajax.ts",
-    "src/assets/scripts/core/ui/Search.ts",
-    "src/assets/scripts/core/ui/WindowEvents.ts",
-    "src/assets/scripts/core/utils/ArrayUtils.ts",
-    "src/assets/scripts/core/utils/DomElements.ts",
-    "src/assets/scripts/core/utils/StringUtils.ts",
-    "src/assets/scripts/core/utils/UiUtils.ts",
-    "src/assets/scripts/core/utils/ValidationUtils.ts"
+    "src/assets/scripts/core/ui/WindowEvents.ts"
   ]
 }

@@ -33,6 +33,10 @@ export default class BootstrapNotify{
         blue   : "info"
     };
 
+    static readonly MESSAGE_TYPE_SUCCESS = "success";
+
+    static readonly MESSAGE_TYPE_DANGER = "danger";
+
     /**
      * Shows green popup box
      * @param message {string}

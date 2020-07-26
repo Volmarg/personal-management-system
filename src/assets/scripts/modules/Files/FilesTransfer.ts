@@ -1,6 +1,9 @@
 /**
  * This file handles the filesTransfer logic for module "My Files"
  */
+import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
+import RemoveAction         from "../../core/ui/Actions/RemoveAction";
+
 export default class FilesTransfer {
 
     private static selectors = {
@@ -26,11 +29,22 @@ export default class FilesTransfer {
     };
 
     /**
+     * @type DataTransferDialogs
+     */
+    private dataTransferDialogs = new DataTransferDialogs();
+
+    /**
+     * @type RemoveAction
+     */
+    private removeAction = new RemoveAction();
+
+    /**
      * Calls the dialog for data transfer
      */
     private attachCallDialogForDataTransfer(): void
     {
         let button  = $(this.elements.fileTransferButton);
+        let _this   = this;
 
         if( $(button).length > 0 ){
 
@@ -42,10 +56,10 @@ export default class FilesTransfer {
                 let callback = function (){
                     let parent_wrapper  = $(clickedButton).closest('tr');
                     let table_id        = $(parent_wrapper).closest('tbody').closest('table').attr('id');
-                    ui.crud.removeDataTableTableRow(table_id, parent_wrapper);
+                    _this.removeAction.removeDataTableTableRow(table_id, parent_wrapper);
                 };
 
-                dialogs.ui.dataTransfer.buildDataTransferDialog([fileCurrentPath], 'My Files', callback);
+                _this.dataTransferDialogs.buildDataTransferDialog([fileCurrentPath], 'My Files', callback);
             });
 
         }

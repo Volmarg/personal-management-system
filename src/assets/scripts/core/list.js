@@ -1,19 +1,7 @@
-import './utils/index.js';
-import './search/index.js';
-import './sidebar/index.js';
-import './utils/domElements.js';
-import './utils/utils_custom.js';
+import './utils/index.js'; /*No idea what this does*/
 
 // UI
-import './ui/crud.js';
-import './ui/ajax.js';
-import './ui/forms.js';
-import './ui/upload.js';
-import './ui/search.js';
-import './ui/widgets.js';
-import './ui/dialogs.js';
 import './ui/events/general.js';
-import './ui/locked-resource.js';
 import './ui/data-processors/forms.js';
 import './ui/data-processors/entities.js';
 import './ui/data-processors/single-targets.js';

@@ -15,4 +15,14 @@ export default class StringUtils {
         );
     }
 
+    /**
+     * Check if both strings are the same
+     * @param firstString
+     * @param secondString
+     */
+    public static areTheSame(firstString: string, secondString: string): boolean
+    {
+        return firstString === secondString;
+    }
+
 }

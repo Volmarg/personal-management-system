@@ -99,7 +99,7 @@ export default class Upload {
     /**
      * Initialize Upload logic
      */
-    private init(): void
+    public init(): void
     {
         this.elements.init();
         this.vars.init();

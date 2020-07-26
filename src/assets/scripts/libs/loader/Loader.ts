@@ -1,10 +1,16 @@
 export default class Loader {
 
+    private static selectors = {
+        ids: {
+            loader: '#loader'
+        }
+    };
+
     /**
      * Ill show or hide page loader/spinner
      */
     public static toggleLoader() {
-        let loader = $(ui.widgets.elements.loader);
+        let loader = $(Loader.selectors.ids.loader);
 
         if (loader.hasClass('fadeOut')) {
             Loader.showLoader();
@@ -18,7 +24,7 @@ export default class Loader {
      * @param soft
      */
     public static showLoader(soft = true) {
-        let loader = $(ui.widgets.elements.loader);
+        let loader = $(Loader.selectors.ids.loader);
 
         if (loader.hasClass('fadeOut')) {
             if (soft) {
@@ -35,7 +41,7 @@ export default class Loader {
      */
     public static hideLoader() {
         setTimeout(function () {
-            let loader = $(ui.widgets.elements.loader);
+            let loader = $(Loader.selectors.ids.loader);
 
             loader.removeAttr('style');
             loader.addClass('fadeOut');

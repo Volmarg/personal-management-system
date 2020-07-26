@@ -54,17 +54,7 @@
                 <script src="/assets_/static-scripts/modules/my-notes-category.js"></script>
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
                     'widgetName': "add-note",
-                    'settings':{
-                        "type": 'template',
-                        "url": '/dialog/body/create-note/' ~ getAttrs.category ~ '/' ~ getAttrs.category_id,
-                        'callFunctions': '
-                            tinymce.remove(".tiny-mce");
-                            tinymce.custom.init();
-                            ui.crud.attachRecordAddViaAjaxOnSubmit();
-                            myNotesCategory.selectCurrentCategoryOptionForQuickNoteCreator();
-                        ',
-                        'subtype':'add-note'
-                    }
+                    'id'        : "add-note"
                 } %}
             </div>
 

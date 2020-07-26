@@ -30,9 +30,10 @@
 <div
         class="circle-plus {{ widgetName }}-widget  {% if widgetName != "" %} call-widget-modal {% endif %}"
         {% if widgetName != "" %}
-            data-settings='{{ settings | json_encode | raw }}'
+            id="{{ id }}"
             data-widget="true"
         {% else %}
+            id="{{ id }}"
             data-dialog-call-request-url="{{ dialogCallUrl }}"
             data-dialog-call-request-method="{{ dialogCallRequestMethod }}"
             data-dialog-call-request-post-parameters='{{ dialogCallRequestPostParameters }}'

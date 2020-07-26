@@ -3,7 +3,7 @@ var window = window;
 
 export default class Sidebars {
 
-    public init(): void
+    public static init(): void
     {
         // Sidebar links
         $('.sidebar .sidebar-menu li a').on('click', function () {

@@ -227,9 +227,9 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * In normal cases this is handled in twig via keepMenuOpen()
      */
     private function keepUploadBasedMenuOpenJS() {
-
+/*TODO: MUST BE RESOLVED*/
         $script= "
-            <script>
+            <script> 
                 document.addEventListener('DOMContentLoaded', function() {
                     utils.ui.keepUploadBasedMenuOpen();
                 });

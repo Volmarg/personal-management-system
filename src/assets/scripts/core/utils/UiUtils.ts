@@ -4,6 +4,7 @@ var window = window;
 export default class UiUtils {
 
     /**
+     * TODO: must be fixed in PHP also
      * Will keep open menu elements built from folders structure
      */
     public keepUploadBasedMenuOpen(){

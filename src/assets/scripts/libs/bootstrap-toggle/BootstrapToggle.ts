@@ -1,4 +1,5 @@
-import DomAttributes from "../../core/utils/DomAttributes";
+import DomAttributes    from "../../core/utils/DomAttributes";
+import UpdateAction     from "../../core/ui/Actions/UpdateAction";
 
 import 'bootstrap-toggle/css/bootstrap2-toggle.min.css';
 import 'bootstrap-toggle';
@@ -6,17 +7,15 @@ import 'bootstrap-toggle';
 export default class BootstrapToggle {
 
     /**
-     * @type DomAttributes
+     * @type UpdateAction
      */
-    private domAttributes = new DomAttributes();
+    private updateAction = new UpdateAction();
 
     /**
      * Initialize bootstrap toggle on elements which have given attribute/data
      */
     public init(): void
     {
-        var window = window;
-
         let _this                  = this;
         let allElementsToTransform = $('[data-toggle-bootstrap-toggle="true"]');
 
@@ -38,10 +37,10 @@ export default class BootstrapToggle {
             let toggleButton = $(element).closest('.toggle');
 
             $(toggleButton).on('click', () =>{
-                if( _this.domAttributes.isChecked($element)){
-                    _this.domAttributes.unsetChecked($element);
+                if( DomAttributes.isChecked($element)){
+                    DomAttributes.unsetChecked($element);
                 }else{
-                    _this.domAttributes.setChecked($element);
+                    DomAttributes.setChecked($element);
                 }
             })
 
@@ -50,9 +49,8 @@ export default class BootstrapToggle {
         /**
          * This function will attach:
          *   - save event for settings (normally save works with action buttons but I want it here too just for toggle with specific class);
-         *   - todo: check if I can compile everything without building the extensive Actions logic for TS
          */
-        window.ui.crud.attachContentSaveEventOnSaveIcon();
+        _this.updateAction.attachContentSaveEventOnSaveIcon();
     };
 
 }

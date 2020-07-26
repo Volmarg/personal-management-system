@@ -1,10 +1,20 @@
 export default class Accordion {
 
-    private selectors = {
+    public static selectors = {
         ids: {
             accordionId: '#accordion'
+        },
+        classes: {
+            accordionSectionClass: '.accordin-section'
         }
     };
+
+    public init()
+    {
+        $(document).ready(() => {
+            this.fixAccordionsForDisplayFlex();
+        });
+    }
 
     /**
      * Will apply accordion on given elements
@@ -12,7 +22,7 @@ export default class Accordion {
     public applyAccordion(): void
     {
         //@ts-ignore
-        $(this.selectors.ids.accordionId).accordion({
+        $(Accordion.selectors.ids.accordionId).accordion({
             header      : "h3",
             collapsible : true,
             active      : false,

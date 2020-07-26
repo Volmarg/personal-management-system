@@ -1,3 +1,7 @@
+/**
+ * Todo: used in furcan!
+ */
+
 export default(function(){
     window.bootbox_extension = {
         /**

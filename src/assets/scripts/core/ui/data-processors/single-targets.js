@@ -1,3 +1,8 @@
+import Ajax             from "../Ajax";
+import Navigation       from "../../Navigation";
+import StringUtils      from "../../utils/StringUtils";
+import AbstractAction   from "../Actions/AbstractAction";
+
 var bootbox = require('bootbox');
 
 /**
@@ -10,6 +15,7 @@ export default (function () {
     }
 
     dataProcessors.singleTargets = {
+        ajax : new Ajax(),
         "UserAvatar": {
             makeUpdateData: function (form) {
                 let avatar = $(form).find('[data-id="avatar"]').val();
@@ -81,8 +87,8 @@ export default (function () {
         'CreateFolder': {
             makeCreateData: function () {
                 let url                 = '/files/actions/create-folder';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.form_target_action_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.form_target_action_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.form_target_action_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.form_target_action_name);
 
                 return {
                     'url'               : url,
@@ -97,22 +103,18 @@ export default (function () {
                             let menuNodeModuleName           = dataCallbackParams.menuNodeModuleName;
                             let menuNodeModulesNamesToReload = dataCallbackParams.menuNodeModulesNamesToReload;
 
-                            if( "undefined" !== typeof menuNodeModuleName){
-                                ui.ajax.singleMenuNodeReload(menuNodeModuleName);
-                            }else if( "undefined" !== menuNodeModulesNamesToReload ){
+                            if( !StringUtils.isEmptyString(menuNodeModuleName)){
+                                dataProcessors.singleTargets.ajax.singleMenuNodeReload(menuNodeModuleName);
+                            }else if( !StringUtils.isEmptyString(menuNodeModulesNamesToReload) ){
                                 let arrayOfMenuNodeModuleNames = JSON.parse(menuNodeModulesNamesToReload);
                                 $.each(arrayOfMenuNodeModuleNames, function(index, menuNodeModuleName){
-                                    ui.ajax.singleMenuNodeReload(menuNodeModuleName);
+                                    dataProcessors.singleTargets.ajax.singleMenuNodeReload(menuNodeModuleName);
                                 })
                             }
                         }
 
                         bootbox.hideAll();
-
-                        if( "undefined" !== typeof TWIG_REQUEST_URI ) {
-                            ui.ajax.loadModuleContentByUrl(TWIG_REQUEST_URI);
-                        }
-
+                        dataProcessors.singleTargets.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
                     },
                     'callback_before': true,
                 };
@@ -122,8 +124,8 @@ export default (function () {
         'MyPaymentsBills': {
             makeCreateData: function () {
                 let url                 = '/my-payments-bills';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.form_target_action_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.form_target_action_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.form_target_action_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.form_target_action_name);
 
                 return {
                     'url'               : url,
@@ -136,8 +138,8 @@ export default (function () {
         'MyPaymentsBillsItems': {
             makeCreateData: function () {
                 let url                 = '/my-payments-bills';
-                let success_message     = ui.crud.messages.entityCreatedRecordSuccess(this.form_target_action_name);
-                let fail_message        = ui.crud.messages.entityCreatedRecordFail(this.form_target_action_name);
+                let success_message     = AbstractAction.messages.entityCreatedRecordSuccess(this.form_target_action_name);
+                let fail_message        = AbstractAction.messages.entityCreatedRecordFail(this.form_target_action_name);
 
                 return {
                     'url'               : url,

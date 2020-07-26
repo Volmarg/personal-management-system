@@ -47,41 +47,13 @@
                 <script src="/assets_/static-scripts/upload-widget.js"></script>
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
                     'widgetName': "upload-files-widget",
-                    'settings':{
-                        "type": 'template',
-                        "url": path('dialog_body_upload'),
-                        'callFunctions': '
-                        ui.upload.init();
-                        ui.forms.init();
-                        uploadWidget.selectCurrentModuleAndUploadDirOptionForQuickUpload();
-
-                        let mainContentInModal   = document.querySelector(".bootbox-body main.main-content");
-                        mainContentInModal.style = "min-height:auto; padding: 10px;";
-                    ',
-                        'subtype':'form'
-                    }
+                    'id'        : "my-files-upload-files-widget"
                 } %}
 
                 <script src="/assets_/static-scripts/new-folder-widget.js"></script>
                 {% include 'page-elements/components/widgets/new-folder-icon.twig' with {
                     'widgetName': "new-folder-widget",
-                    'settings':{
-                        "type": 'template',
-                        "url": path('dialog_body_create_folder'),
-                        'callFunctions': '
-                            ui.crud.attachRecordAddViaAjaxOnSubmit(false);  // dont reinitialize logic
-                            ui.upload.init();
-                            ui.forms.init();
-                            createFolderWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder();
-
-                            let mainContentInModal   = document.querySelector(".bootbox-body main.main-content");
-                            mainContentInModal.style = "min-height:auto; padding: 10px;";
-                    ',
-                        'subtype':'quickFolderCreation',
-                        "data": {
-                            "moduleName": constant(modules_controller~'MODULE_NAME_FILES')
-                        }
-                    },
+                    'id':"my-files-new-folder-widget",
                     'style': "margin-top: 10px; background-color: #0062cc; opacity: .5;"
                 } %}
             </div>

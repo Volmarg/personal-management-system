@@ -6,6 +6,7 @@ import MasonryGallery  from "../../libs/masonry/MasonryGallery";
 
 import * as $ from 'jquery';
 import * as initializer from "../../initializer.js";
+import Initializer from "../../Initializer";
 // info: this kind of imports of initializer will make a mess since it's being called upon compiling and then initializer tries to init without other libs being ready
 
 var imagesLoaded = require('imagesloaded');
@@ -57,6 +58,11 @@ export default class Ajax {
      * @type BootstrapNotify
      */
     private bootstrapNotify = new BootstrapNotify();
+
+    /**
+     * @type Initializer
+     */
+    private initializer = new Initializer();
 
     public init()
     {
@@ -160,9 +166,8 @@ export default class Ajax {
                 $menuNode.replaceWith(ajaxResponseDto.template);
 
                 //@ts-ignore
-                //todo after redoing rest to TS
-                window.sidebar.links.init();
-                initializer.reinitialize();
+                Sidebars.init();
+                _this.initializer.reinitializeLogic();
             }
 
             if(returnNotification){
@@ -288,6 +293,25 @@ export default class Ajax {
                 location.reload();
             }
         });
+    }
+
+    /**
+     * Will fetch value of constant from backend
+     * @param namespace
+     * @param constant
+     */
+    public getConstantValueFromBackend(namespace: string, constant:string)
+    {
+
+    }
+
+    /**
+     * Will fetch backend defined url for given path
+     * @param pathName
+     */
+    public getUrlForPathName(pathName: string)
+    {
+
     }
 
     /**

@@ -2,6 +2,7 @@ import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import ArrayUtils       from "../../core/utils/ArrayUtils";
 import Loader           from "../../libs/loader/Loader";
 import Popover          from "../../libs/popover/Popover";
+import NotePreviewDialogs from "./Dialogs/NotePreviewDialogs";
 
 var window = window;
 
@@ -41,6 +42,10 @@ export default class Search {
      */
     private bootstrapNotify = new BootstrapNotify();
 
+    /**
+     * @type NotePreviewDialogs
+     */
+    private notePreviewDialogs = new NotePreviewDialogs();
 
     /**
      * Initialize main logic
@@ -53,7 +58,7 @@ export default class Search {
     /**
      * Will attach on change event on the search input
      */
-    public attachAjaxCallOnChangeOfSearchInput(): void
+    private attachAjaxCallOnChangeOfSearchInput(): void
     {
 
         let _this       = this;
@@ -130,10 +135,10 @@ export default class Search {
      * @param noteId
      * @param categoryId
      */
-    public attachDialogCallOnTargetElement(element: JQuery, noteId: string, categoryId: string): void
+    private attachDialogCallOnTargetElement(element: JQuery, noteId: string, categoryId: string): void
     {
         $(element).on('click', () => {
-            dialogs.ui.notePreview.buildTagManagementDialog(noteId, categoryId);
+            this.notePreviewDialogs.buildNotePreviewDialog(noteId, categoryId);
         })
     };
 
@@ -141,7 +146,7 @@ export default class Search {
      * Return UL list with the result list
      * @param data
      */
-    public buildSearchResults(data: Array<string>): JQuery
+    private buildSearchResults(data: Array<string>): JQuery
     {
         let _this = this;
         let ul    = $('<ul>');
@@ -149,13 +154,15 @@ export default class Search {
 
         $.each(data, (index, result) => {
 
-            let type = result['type'];
+            let type:String = result['type'];
 
             switch(type){
                 case _this.resultTypes.file:
+                    //@ts-ignore
                     li = _this.buildFilesSearchResultsListElement(result);
                     break;
                 case _this.resultTypes.note:
+                    //@ts-ignore
                     li = _this.buildNotesSearchResultsListElement(result);
                     break;
                 default:
@@ -176,7 +183,7 @@ export default class Search {
      * Builds single element of search results for files
      * @param data
      */
-   public buildFilesSearchResultsListElement(data: Array<string>): JQuery
+   private buildFilesSearchResultsListElement(data: Array<string>): JQuery
    {
 
         let tagsJson        = data['tags'];
@@ -190,7 +197,7 @@ export default class Search {
         let shortLen        = 16;
 
         // build list of tags
-        $.each(arrayOfTags, (idx, tag) => {
+        $.each(arrayOfTags, (idx: Number, tag) => {
 
             tagsList += tag;
 
@@ -275,7 +282,7 @@ export default class Search {
      * Builds single element of search results for notes
      * @param data
      */
-    public buildNotesSearchResultsListElement(data: Array<string>){
+   private buildNotesSearchResultsListElement(data: Array<string>){
         let title           = data['title'];
         let shortTitle      = title;
         let category        = data['category'];
