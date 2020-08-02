@@ -1,5 +1,3 @@
-import './bootbox/index.js';
-
 //srcs
 import './jquery-ui/src/jquery-ui.min.js';
 import './jquery-ui/src/jquery.ui.touch-punch-improved.js';

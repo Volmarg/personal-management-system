@@ -1,1 +1,0 @@
-// make them all static if possible

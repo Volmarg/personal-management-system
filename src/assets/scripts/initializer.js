@@ -28,6 +28,7 @@ import Accordion                    from "./libs/accordion/Accordion";
 import MonthlyPayments from "./modules/Payments/MonthlyPayments";
 import UploadBasedModules from "./modules/UploadBasedModules";
 import WidgetsDialogs from "./core/ui/Dialogs/WidgetsDialogs";
+import FormAppendAction from "./core/ui/Actions/FormAppendAction";
 
 export default (function () {
 
@@ -69,8 +70,11 @@ export default (function () {
             let monthlyPayments     = new MonthlyPayments();
             let uploadBasedModules  = new UploadBasedModules();
 
+            // actions
+            let formAppendAction    = new FormAppendAction();
+
             // inits
-            events.general.init();
+            formAppendAction.init();
             popover.init();
             selectize.init();
             formsUtils.init();

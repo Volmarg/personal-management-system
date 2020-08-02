@@ -1,7 +1,7 @@
-import AbstractAction from "./AbstractAction";
-import Loader from "../../../libs/loader/Loader";
-import Navigation from "../../Navigation";
-import AjaxResponseDto from "../../../DTO/AjaxResponseDto";
+import AbstractAction   from "./AbstractAction";
+import Loader           from "../../../libs/loader/Loader";
+import Navigation       from "../../Navigation";
+import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
 
 export default class ToggleBoolvalAction extends AbstractAction {
 

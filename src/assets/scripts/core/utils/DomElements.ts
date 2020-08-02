@@ -1,11 +1,7 @@
-// import Ajax from "../../core/ui/Ajax"; - todo:
+import BackendStructureLoader   from "../ui/BackendStructure/BackendStructureLoader";
+import Ajax                     from "../ui/Ajax";
 
 export default class DomElements {
-
-    /**
-     * AjaxGuiElementsReload ajaxGuiElementsReload
-     */
-    // private ajaxGuiElementsReload = new Ajax();
 
     /**
      * Checks if there are existing elements for domElements selected with $();
@@ -48,7 +44,7 @@ export default class DomElements {
      */
     public static appendFormView(formName: string, targetSelector: string, callbackParam: Function): void
     {
-
+        let ajax           = new Ajax();
         let $targetElement = $(targetSelector);
 
         if( 0 === $targetElement.length ){
@@ -59,7 +55,8 @@ export default class DomElements {
         }
 
         try{
-            var namespace = dataProcessors.forms[formName].getFormNamespace();
+            let backendStructure = BackendStructureLoader.getNamespace(BackendStructureLoader.STRUCTURE_TYPE_FORM, formName);
+            var namespace        = backendStructure.getNamespace();
         }catch(Exception){
             throw({
                 'message'   : "Could not load form namespace from data processors.",
@@ -74,7 +71,7 @@ export default class DomElements {
             }
         };
 
-        // this.ajaxGuiElementsReload.getFormViewByNamespace(namespace, callback);
+        ajax.getFormViewByNamespace(namespace, callback);
     };
 
     /**

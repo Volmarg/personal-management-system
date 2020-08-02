@@ -7,6 +7,7 @@ import DataTable        from "../../../libs/datatable/DataTable";
 import DomElements      from "../../utils/DomElements";
 import Navigation       from "../../Navigation";
 import StringUtils      from "../../utils/StringUtils";
+import DataProcessorLoader from "../DataProcessor/DataProcessorLoader";
 
 export default class RemoveAction extends AbstractAction {
 
@@ -45,26 +46,26 @@ export default class RemoveAction extends AbstractAction {
 
         $(removeButton).off('click'); // to prevent double attachement on reinit
         $(removeButton).click(function () {
-            let parent_wrapper    = $(this).closest(_this.elements["removed-element-class"]);
-            let param_entity_name = $(parent_wrapper).attr('data-type');
-            let remove_data       = dataProcessors.entities[param_entity_name].makeRemoveData(parent_wrapper);
+            let $baseElement    = $(this).closest(_this.elements["removed-element-class"]);
+            let paramEntityName = $baseElement.attr('data-type');
 
-            let removal_message = (
-                remove_data.confirm_message !== undefined
-                    ? remove_data.confirm_message
+            let dataProcessorDto = DataProcessorLoader.getRemoveDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, $baseElement);
+
+            let removalMessage = ( dataProcessorDto.isConfirmMessageSet()
+                    ? dataProcessorDto.confirmMessage
                     : AbstractAction.messages.default_record_removal_confirmation_message
             );
 
             BootboxWrapper.mainLogic.confirm({
-                message: removal_message,
+                message: removalMessage,
                 backdrop: true,
                 callback: function (result) {
                     if (result) {
                         Loader.showLoader();
                         $.ajax({
-                            url: remove_data.url,
-                            method: Ajax.REQUEST_TYPE_POST,
-                            data: remove_data.data
+                            url    : dataProcessorDto.url,
+                            method : Ajax.REQUEST_TYPE_POST,
+                            data   : dataProcessorDto.ajaxData
                         }).always( (data) => {
 
                             Loader.hideLoader();
@@ -74,12 +75,10 @@ export default class RemoveAction extends AbstractAction {
 
                             let message = ajaxResponseDto.message;
                             if( !ajaxResponseDto.isMessageSet() ){
-                                message = remove_data.success_message;
+                                message = dataProcessorDto.successMessage;
                             }
 
-                            if (remove_data.callback_after) {
-                                remove_data.callback();
-                            }
+                            dataProcessorDto.callbackAfter();
 
                             if( !ajaxResponseDto.isSuccessCode() ) {
                                 _this.bootstrapNotify.showRedNotification(message);
@@ -89,11 +88,11 @@ export default class RemoveAction extends AbstractAction {
                             if( !ajaxResponseDto.isTemplateSet() ){
                                 $twigBodySection.html(ajaxResponseDto.template);
                                 _this.initializer.reinitializeLogic();
-                            }else if ( remove_data['is_dataTable'] ) {
-                                let table_id = $(parent_wrapper).closest('tbody').closest('table').attr('id');
-                                _this.removeDataTableTableRow(table_id, parent_wrapper);
+                            }else if ( dataProcessorDto.isDataTable ) {
+                                let table_id = $($baseElement).closest('tbody').closest('table').attr('id');
+                                _this.removeDataTableTableRow(table_id, $baseElement);
                             }else{
-                                _this.removeTableRow(parent_wrapper);
+                                _this.removeTableRow($baseElement);
                             }
 
                             _this.bootstrapNotify.showGreenNotification(message);
@@ -158,7 +157,7 @@ export default class RemoveAction extends AbstractAction {
         let url   = this.methods.removeEntity.url.replace(this.methods.removeEntity.params.repositoryName, repositoryName);
         url       = url.replace(this.methods.removeEntity.params.id, entityId);
 
-        let doYouWantToRemoveThisRecordMessage = this.messages.doYouWantToRemoveThisRecord();
+        let doYouWantToRemoveThisRecordMessage = AbstractAction.messages.doYouWantToRemoveThisRecord();
 
         bootbox.confirm({
             message:  doYouWantToRemoveThisRecordMessage,

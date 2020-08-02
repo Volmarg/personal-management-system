@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
     "target": "es5"
+//    "baseUrl": "src",
+//    "paths": {
+//      "assets/scripts/core/ui/DataProcessor/*": ["dataProcessor/*"],
+//      "assets/scripts/DTO/*": ["DTO/*"]
+//    }
   },
   "include": [
     "src/assets/scripts/*"
   ],
   "files": [
     "*.ts/*.tsx"
-  ],
-  "exclude": [
-    "src/assets/scripts/core/ui/WindowEvents.ts"
   ]
 }

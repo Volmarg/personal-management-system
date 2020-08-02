@@ -3,6 +3,7 @@ import Loader           from "../../../libs/loader/Loader";
 import Ajax             from "../Ajax";
 import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
 import DomElements      from "../../utils/DomElements";
+import DataProcessorLoader from "../DataProcessor/DataProcessorLoader";
 
 export default class CopyToClipboardAction extends AbstractAction {
 
@@ -19,16 +20,16 @@ export default class CopyToClipboardAction extends AbstractAction {
             $(allCopyButtons).each((index, button) => {
 
                 $(button).on('click', (event) => {
-                    let clickedElement    = $(event.target);
-                    let parent_wrapper    = $(clickedElement).closest(_this.elements["removed-element-class"]);
-                    let param_entity_name = $(parent_wrapper).attr('data-type');
-                    let copy_data         = dataProcessors.entities[param_entity_name].makeCopyData(parent_wrapper);
+                    let $clickedElement  = $(event.target);
+                    let $baseElement     = $clickedElement.closest(_this.elements["copy-element-class"]);
+                    let entityName       = $($baseElement).attr('data-type');
+                    let dataProcessorDto = DataProcessorLoader.getCopyDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, entityName, $baseElement);
 
                     let temporaryCopyDataInput = $("<input>");
                     $("body").append(temporaryCopyDataInput);
                     Loader.showLoader();
                     $.ajax({
-                        url: copy_data.url,
+                        url: dataProcessorDto.url,
                         method: Ajax.REQUEST_TYPE_GET,
                     }).always((data) => {
                         Loader.hideLoader();
@@ -41,7 +42,7 @@ export default class CopyToClipboardAction extends AbstractAction {
                         }
 
                         if( !ajaxResponseDto.isPasswordSet() ){
-                            _this.bootstrapNotify.showRedNotification(copy_data.fail_message);
+                            _this.bootstrapNotify.showRedNotification(dataProcessorDto.failMessage);
                             return;
                         }
 
@@ -49,7 +50,7 @@ export default class CopyToClipboardAction extends AbstractAction {
                         document.execCommand("copy");
                         temporaryCopyDataInput.remove();
 
-                        _this.bootstrapNotify.showGreenNotification(copy_data.success_message);
+                        _this.bootstrapNotify.showGreenNotification(dataProcessorDto.successMessage);
 
                         if( ajaxResponseDto.reloadPage ){
                             if( ajaxResponseDto.isReloadMessageSet() ){

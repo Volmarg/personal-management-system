@@ -1,7 +1,9 @@
-import AbstractAction from "./AbstractAction";
-import Loader from "../../../libs/loader/Loader";
-import AjaxResponseDto from "../../../DTO/AjaxResponseDto";
-import FormsValidator from "../../validators/FormsValidator";
+import AbstractAction       from "./AbstractAction";
+import Loader               from "../../../libs/loader/Loader";
+import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
+import FormsValidator       from "../../validators/FormsValidator";
+import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
+import DataProcessorDto     from "../../../DTO/DataProcessorDto";
 
 export default class CreateAction extends AbstractAction {
 
@@ -27,7 +29,7 @@ export default class CreateAction extends AbstractAction {
 
             let form                 = $(event.target);
             let submitButton         = $(form).find('button[type="submit"]');
-            let callbackParamsJson   = $(submitButton).attr('data-params');
+            let callbackParamsJson   = $(submitButton).attr('data-params'); //todo: what is this?
             let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
 
             /**
@@ -42,43 +44,28 @@ export default class CreateAction extends AbstractAction {
             let processedEntityName               = form.attr('data-entity');
             let singleProcessedFormDefinitionName = form.attr('data-form-target');
 
-            let ajaxRequestDataBag  = null;
             let isEntityBasedForm   = ("undefined" != typeof processedEntityName);
 
             /**
              * @description build data bag for request using either entity based form or single-target one
              *              and build callbacks used after receiving backend response
              */
-            try{
-                if(isEntityBasedForm ){
-                    ajaxRequestDataBag = dataProcessors.entities[processedEntityName].makeCreateData();
-                }else{
-                    ajaxRequestDataBag = dataProcessors.singleTargets[singleProcessedFormDefinitionName].makeCreateData();
-                }
-            }catch(Exception){
-                throw({
-                    "message"   : "Failed on getting data bag for creating record via form submit (ajax call)",
-                    "exception" : Exception
-                })
-            }
-
-            if( null === ajaxRequestDataBag ){
-                _this.bootstrapNotify.showRedNotification("Databag for creating record via form submit (ajax) is null.");
-                return;
+            var dataProcessorDto = null as DataProcessorDto;
+            if(isEntityBasedForm){
+                dataProcessorDto = DataProcessorLoader.getCreateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, processedEntityName);
+            }else{
+                dataProcessorDto = DataProcessorLoader.getCreateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, singleProcessedFormDefinitionName);
             }
 
             Loader.showLoader();
             $.ajax({
-                url: ajaxRequestDataBag.url,
-                type: formSubmissionType,
+                url: dataProcessorDto.url,
+                type: formSubmissionType, //todo
                 data: form.serialize(),
             }).always((data) => {
                 let twigBodySection = $('.twig-body-section');
-                let callback        = () => {};
 
-                if (ajaxRequestDataBag.callback_before) {
-                    ajaxRequestDataBag.callback(dataCallbackParams);
-                }
+                dataProcessorDto.callback(dataCallbackParams);
 
                 try{
                     var ajaxResponseDto = AjaxResponseDto.fromArray(data);
@@ -108,20 +95,12 @@ export default class CreateAction extends AbstractAction {
                  * @info handle the way of reloading template
                  */
                 if( doReloadTemplateViaTemplateUrl ){
-                    if(ajaxRequestDataBag.callback_for_data_template_url){
-                        callback = () => {
-                            ajaxRequestDataBag.callback(dataCallbackParams)
-                        };
-                    }
-
-                    _this.ajax.loadModuleContentByUrl(dataTemplateUrl, callback, true);
+                    _this.ajax.loadModuleContentByUrl(dataTemplateUrl, dataProcessorDto.callbackForLoadingModuleContentByUrl(), true);
                 }else if(ajaxResponseDto.isTemplateSet()){
                     twigBodySection.html(ajaxResponseDto.template);
                 }
 
-                if (ajaxRequestDataBag.callback_after) {
-                    ajaxRequestDataBag.callback(dataCallbackParams);
-                }
+                dataProcessorDto.callbackAfter(dataCallbackParams);
 
                 /**
                  * @info handle logic reinitialization
@@ -142,7 +121,7 @@ export default class CreateAction extends AbstractAction {
                     _this.initializer.reinitializeLogic();
                     Loader.hideLoader();
 
-                    _this.bootstrapNotify.showGreenNotification( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : ajaxRequestDataBag.success_message );
+                    _this.bootstrapNotify.showGreenNotification( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : dataProcessorDto.successMessage );
 
                     if( ajaxResponseDto.reloadPage ){
                         if( ajaxResponseDto.isReloadMessageSet() ){

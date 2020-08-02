@@ -1,6 +1,6 @@
-import AbstractAction from "./AbstractAction";
-import TinyMce from "../../../libs/tiny-mce/TinyMce";
-import PrismHighlight from "../../../libs/prism/PrismHighlight";
+import AbstractAction   from "./AbstractAction";
+import TinyMce          from "../../../libs/tiny-mce/TinyMce";
+import PrismHighlight   from "../../../libs/prism/PrismHighlight";
 
 export default class EditViaTinyMceAction extends AbstractAction {
 

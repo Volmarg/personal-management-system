@@ -7,6 +7,9 @@ import BootboxWrapper               from "../../../libs/bootbox/BootboxWrapper";
 import Initializer                  from "../../../Initializer";
 import DomAttributes                from "../../utils/DomAttributes";
 import DomElements                  from "../../utils/DomElements";
+import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
+import FormAppendAction             from "./FormAppendAction";
+import UpdateAction                 from "./UpdateAction";
 
 export default abstract class AbstractAction {
 
@@ -14,9 +17,10 @@ export default abstract class AbstractAction {
      * @type Object
      */
     protected elements = {
-        'removed-element-class': '.trash-parent',
-        'edited-element-class': '.editable-parent',
-        'saved-element-class': '.save-parent',
+        'removed-element-class' : '.trash-parent',
+        'edited-element-class'  : '.editable-parent',
+        'saved-element-class'   : '.save-parent',
+        'copy-element-class'    : '.copy-parent',
     };
 
     /**
@@ -102,6 +106,16 @@ export default abstract class AbstractAction {
         password_copy_confirmation_message: 'Password was copied successfully',
     };
 
+    /**
+     * @type FormAppendAction
+     */
+    private formAppendAction = new FormAppendAction();
+
+    /**
+     * @type UpdateAction
+     */
+    private updateAction = new UpdateAction();
+
     protected methods = {
         removeEntity: {
             url: "/api/repository/remove/entity/{repository_name}/{id}",
@@ -115,11 +129,11 @@ export default abstract class AbstractAction {
             MyContactRepository: {
                 url     : "/dialog/body/edit-contact-card",
                 method  : "POST",
-                callback: function(){
-                    events.general.attachFormViewAppendEvent();
-                    events.general.attachRemoveParentEvent();
+                callback: () => {
+                    this.formAppendAction.attachFormViewAppendEvent();
+                    this.formAppendAction.attachRemoveParentEvent();
                     jscolorCustom.init();
-                    ui.crud.attachContentSaveEventOnSaveIcon();
+                    this.updateAction.attachContentSaveEventOnSaveIcon();
                     // todo: keep in mind that create action is extending from this so most likely should be static call
                 }
             },
@@ -267,13 +281,16 @@ export default abstract class AbstractAction {
         let isContentEditable = DomAttributes.isContentEditable(baseElement, 'td');
         let paramEntityName   = $(baseElement).attr('data-type');
 
+        let dataProcessorDto = DataProcessorLoader.getCopyDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName);
+        let message          = AbstractAction.messages.entityEditStart(dataProcessorDto.processorName);
+
         if (!isContentEditable) {
             DomAttributes.contentEditable(baseElement, DomAttributes.actions.set,  'td', 'input, select, button, img');
             $(baseElement).addClass(this.classes["table-active"]);
             this.toggleActionIconsVisibility(baseElement, null, isContentEditable);
             this.toggleDisabledClassForTableRow(baseElement);
 
-            this.bootstrapNotify.notify(this.messages.entityEditStart(dataProcessors.entities[paramEntityName].entity_name), 'warning');
+            this.bootstrapNotify.showOrangeNotification(message);
             return;
         }
 
@@ -282,7 +299,7 @@ export default abstract class AbstractAction {
 
         DomAttributes.contentEditable(baseElement, DomAttributes.actions.unset,'td', 'input, select, button, img');
         $(baseElement).removeClass(this.classes["table-active"]);
-        this.bootstrapNotify.notify(this.messages.entityEditEnd(dataProcessors.entities[paramEntityName].entity_name), 'success');
+        this.bootstrapNotify.showGreenNotification(message);
     };
 
 

@@ -9,6 +9,7 @@ import Initializer from "../Initializer";
 import ActionsInitializer from "../core/ui/Actions/ActionsInitializer";
 import UpdateAction from "../core/ui/Actions/UpdateAction";
 import TinyMce from "../libs/tiny-mce/TinyMce";
+import FormAppendAction from "../core/ui/Actions/FormAppendAction";
 
 export default class TemporaryTwigImbuedLogicExecutionForWidgets {
 
@@ -139,13 +140,14 @@ export default class TemporaryTwigImbuedLogicExecutionForWidgets {
 
     public static addContactCardWidget()
     {
-        let updateAction = new UpdateAction();
+        let updateAction     = new UpdateAction();
+        let formAppendAction = new FormAppendAction();
 
         return {
             type: 'template',
             url: path('dialog_body_create_contact_card'),
             callback: () => {
-                events.general.attachFormViewAppendEvent();
+                formAppendAction.attachFormViewAppendEvent();
                 jscolorCustom.init();
                 updateAction.attachContentSaveEventOnSaveIcon();
             },

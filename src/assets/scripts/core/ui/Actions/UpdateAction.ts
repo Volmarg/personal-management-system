@@ -1,9 +1,11 @@
-import AbstractAction   from "./AbstractAction";
-import Loader           from "../../../libs/loader/Loader";
-import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
-import Navigation       from "../../Navigation";
-import Ajax             from "../Ajax";
-import BootstrapNotify  from "../../../libs/bootstrap-notify/BootstrapNotify";
+import AbstractAction       from "./AbstractAction";
+import Loader               from "../../../libs/loader/Loader";
+import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
+import Navigation           from "../../Navigation";
+import Ajax                 from "../Ajax";
+import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify";
+import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
+import DataProcessorDto     from "../../../DTO/DataProcessorDto";
 
 export default class UpdateAction extends AbstractAction {
 
@@ -50,13 +52,14 @@ export default class UpdateAction extends AbstractAction {
         $('.update-record-form form').submit(function (event) {
             let $form      = $(event.target);
             let formTarget = $form.attr('data-form-target');
-            let updateData = dataProcessors.singleTargets[formTarget].makeUpdateData($form);
+
+            let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, formTarget);
 
             Loader.showLoader();
             $.ajax({
-                url: updateData.url,
+                url : dataProcessorDto.url,
                 type: Ajax.REQUEST_TYPE_POST,
-                data: updateData.data, //In this case the data from target_action is being sent not form directly
+                data: dataProcessorDto.ajaxData,
             }).always((data) => {
 
                 Loader.hideLoader();
@@ -99,41 +102,45 @@ export default class UpdateAction extends AbstractAction {
      */
     private ajaxUpdateDatabaseRecord(baseElement) {
         let paramEntityName = $(baseElement).attr('data-type');
-        let updateData      = dataProcessors.entities[paramEntityName].makeUpdateData(baseElement);
+
+        let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, baseElement);
         let _this           = this;
 
-        if (updateData.edit !== undefined && updateData.edit !== null && updateData.edit.invokeAlert === true) {
+        if ( dataProcessorDto.invokeAlert && dataProcessorDto.isInvokedAlertBodySet() ) {
 
             bootbox.confirm({
-                message: updateData.edit.alertMessage,
+                message: dataProcessorDto.invokedAlertBody,
                 backdrop: true,
                 callback: function (result) {
                     if (result) {
-                        _this.makeAjaxRecordUpdateCall(updateData);
+                        _this.makeAjaxRecordUpdateCall(dataProcessorDto);
                         _this.toggleActionIconsVisibility(baseElement, true);
                     }
                 }
             });
 
         } else {
-            _this.makeAjaxRecordUpdateCall(updateData);
+            _this.makeAjaxRecordUpdateCall(dataProcessorDto);
         }
 
-    },
+    }
+
     /**
      * @description Updates record (mostly entity) via ajax call
      *              Works with Entities file to build collect data from front and send it for update on back
-     * @param updateData
+     * @param dataProcessorDto DataProcessorDto
      */
-    private makeAjaxRecordUpdateCall(updateData) {
+    private makeAjaxRecordUpdateCall(dataProcessorDto: DataProcessorDto): void {
+
         let _this = this;
         Loader.showLoader();
+
         $.ajax({
-            url: updateData.url,
+            url: dataProcessorDto.url,
             method: Ajax.REQUEST_TYPE_POST,
-            data: updateData.data
+            data: dataProcessorDto.ajaxData
         }).fail(() => {
-            _this.bootstrapNotify.showRedNotification(updateData.fail_message)
+            _this.bootstrapNotify.showRedNotification(dataProcessorDto.failMessage)
         }).always((data) => {
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
@@ -143,14 +150,12 @@ export default class UpdateAction extends AbstractAction {
             }
 
             if( !ajaxResponseDto.isMessageSet()){
-                _this.bootstrapNotify.notify(updateData.success_message, messageType);
+                _this.bootstrapNotify.notify(dataProcessorDto.successMessage, messageType);
             } else {
                 _this.bootstrapNotify.notify(ajaxResponseDto.message, messageType);
             }
 
-            if (updateData.callback_after) {
-                updateData.callback();
-            }
+            dataProcessorDto.callbackAfter();
 
             _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
 
@@ -162,5 +167,4 @@ export default class UpdateAction extends AbstractAction {
             }
         });
     }
-
 }

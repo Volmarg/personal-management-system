@@ -1,8 +1,17 @@
-import AbstractAction from "./AbstractAction";
+import AbstractAction       from "./AbstractAction";
+import FontAwesomePicker    from "../../../libs/fontawesome-picker/FontAwesomePicker";
 
 export default class FontawesomeAction extends AbstractAction {
 
-    public init()
+    /**
+     * @type FontAwesomePicker
+     */
+    private fontAwesomePicker = new FontAwesomePicker();
+
+    /**
+     * Main initialization logic
+     */
+    public init(): void
     {
         this.attachFontawesomePickEventForFontawesomeAction();
     }
@@ -10,7 +19,7 @@ export default class FontawesomeAction extends AbstractAction {
     /**
      * @description will attach calling furcan fontawesome picker on certain gui elements (actions)
      */
-    private attachFontawesomePickEventForFontawesomeAction() {
+    private attachFontawesomePickEventForFontawesomeAction(): void {
         let _this = this;
 
         $('.' + this.classes["fontawesome-picker-input"]).each((index, input) => {
@@ -29,13 +38,13 @@ export default class FontawesomeAction extends AbstractAction {
             $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);
             $(icon).attr('data-iconpicker-input', '.' + _this.classes["fontawesome-picker-input"] + index);
 
-            IconPicker.Init({
-                jsonUrl: '/assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.json',
+
+            this.fontAwesomePicker.init({
                 searchPlaceholder: 'Search Icon',
                 showAllButton: 'Show All',
                 cancelButton: 'Cancel',
             });
-            IconPicker.Run('.' + _this.classes["fontawesome-picker"] + index);
+            this.fontAwesomePicker.run('.' + _this.classes["fontawesome-picker"] + index);
         })
     };
 }

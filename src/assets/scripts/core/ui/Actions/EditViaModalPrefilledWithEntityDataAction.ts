@@ -1,5 +1,5 @@
-import AbstractAction from "./AbstractAction";
-import DomElements   from "../../utils/DomElements";
+import AbstractAction   from "./AbstractAction";
+import DomElements      from "../../utils/DomElements";
 
 export default class EditViaModalPrefilledWithEntityDataAction extends AbstractAction {
 
