@@ -1,35 +1,36 @@
-<div class="modal-header">
-    <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ note.title }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<section id="tiny-mce-wrapper" class="p-20">
-    <div class="modal-body modal-tinymce-body-{{ note.id }}">
-        {{ note.body | raw }}
+<section data-is-modal="true"  data-modal-name="noteEdit">
+    <div class="modal-header">
+        <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ note.title }}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <section id="tiny-mce-wrapper" class="p-20">
+        <div class="modal-body modal-tinymce-body-{{ note.id }}">
+            {{ note.body | raw }}
+        </div>
+    </section>
+    <div class="d-flex justify-content-end modal-note-details-buttons">
+
+        <select class="form-control d-none note-modal-categories-list note-category"
+                style="max-width:100px; float:left;">
+            {% set parents_children_dtos = buildParentsChildrenCategoriesHierarchy() %}
+
+            {% for parent_children_dto in parents_children_dtos %}
+                {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": parent_children_dto, "selectedId": category_id} %}
+            {% endfor %}
+        </select>
+
+        <button type="button" class="btn btn-warning edit-note" data-id="{{ note.id }}">{{ 'buttons.edit' | trans }}</button>
+        <button type="button" class="btn btn-primary save-note" data-id="{{ note.id }}">{{ 'buttons.saveChanges' | trans }}</button>
+
+        {% if no_close is not defined %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'buttons.close' | trans }}</button>
+        {% endif %}
+
+        {% if no_delete is not defined %}
+            <button type="button" class="btn btn-danger delete-note"
+                    data-id="{{ note.id }}">{{ 'buttons.delete' | trans }}</button>
+        {% endif %}
     </div>
 </section>
-<div class="d-flex justify-content-end modal-note-details-buttons">
-
-    <select class="form-control d-none note-modal-categories-list note-category"
-            style="max-width:100px; float:left;">
-        {% set parents_children_dtos = buildParentsChildrenCategoriesHierarchy() %}
-
-        {% for parent_children_dto in parents_children_dtos %}
-            {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": parent_children_dto, "selectedId": category_id} %}
-        {% endfor %}
-    </select>
-
-    <button type="button" class="btn btn-warning edit-note" data-id="{{ note.id }}">{{ 'buttons.edit' | trans }}</button>
-    <button type="button" class="btn btn-primary save-note modal-save-note" data-id="{{ note.id }}"
-            onclick="ui.ajax.loadModuleContentByUrl(location.pathname)">{{ 'buttons.saveChanges' | trans }}</button>
-            {# todo: add in front code? Some kind of TS support? #}
-    {% if no_close is not defined %}
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'buttons.close' | trans }}</button>
-    {% endif %}
-
-    {% if no_delete is not defined %}
-        <button type="button" class="btn btn-danger delete-note"
-                data-id="{{ note.id }}">{{ 'buttons.delete' | trans }}</button>
-    {% endif %}
-</div>

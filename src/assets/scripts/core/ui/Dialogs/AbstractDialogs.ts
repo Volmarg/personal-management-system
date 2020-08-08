@@ -1,23 +1,21 @@
-/**
- * This file handles calling dialogs
- *  Keep in mind that some actions are handled explicitly here due to:
- *  - special logic that must be handled for given call,
- *  - some function were created before building more automatic mechanism with html data attr. utilization
- */
-import AjaxResponseDto from "../../../DTO/AjaxResponseDto";
-import BootstrapNotify from "../../../libs/bootstrap-notify/BootstrapNotify";
-import Selectize       from "../../../libs/selectize/Selectize";
-import Loader          from "../../../libs/loader/Loader";
-import LockedResource from "../../LockedResource";
-import TinyMce        from "../../../libs/tiny-mce/TinyMce";
-
-import TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback_DataAttribute
-    from "../../../temp/TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback";
-import BootboxWrapper from "../../../libs/bootbox/BootboxWrapper";
-import FormsUtils from "../../utils/FormsUtils";
+import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
+import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify";
+import Selectize            from "../../../libs/selectize/Selectize";
+import Loader               from "../../../libs/loader/Loader";
+import LockedResource       from "../../LockedResource";
+import TinyMce              from "../../../libs/tiny-mce/TinyMce";
+import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
+import FormsUtils           from "../../utils/FormsUtils";
+import DialogLogicLoader    from "./LogicLoader/DialogLogicLoader";
 
 var bootbox = require('bootbox');
 
+/**
+ * @description This file handles calling dialogs
+ *              Keep in mind that some actions are handled explicitly here due to:
+ *              - special logic that must be handled for given call,
+ *              - some function were created before building more automatic mechanism with html data attr. utilization
+ */
 export default abstract class AbstractDialogs {
 
     /**
@@ -49,10 +47,9 @@ export default abstract class AbstractDialogs {
     protected data = {
         requestMethod     : "data-dialog-call-request-method",
         requestUrl        : "data-dialog-call-request-url",
-        getParameters     : "data-dialog-call-request-get-parameters",
         postParameters    : "data-dialog-call-request-post-parameters",
         callDialogOnClick : "data-call-dialog-on-click",
-        callback          : "data-call-dialog-callback"
+        dialogName        : "data-dialog-name"
     };
 
     /**
@@ -124,6 +121,11 @@ export default abstract class AbstractDialogs {
      * @type FormsUtils
      */
     protected forms = new FormsUtils();
+
+    /**
+     * @type DialogLogicLoader
+     */
+    protected dialogLogicLoader = new DialogLogicLoader();
 
     protected handleCommonAjaxCallLogicForBuildingDialog(data, callback, callDialogCallback){
         Loader.toggleLoader();

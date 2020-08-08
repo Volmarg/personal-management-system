@@ -27,9 +27,9 @@
     {% endif %}
 
     <script>
-        var TWIG_GET_ATTRS   = '{{ getAttrs | json_encode | raw }}';
-        var TWIG_ROUTE       = '{{ app.request.attributes.get('_route') }}';
-        var TWIG_REQUEST_URI = ' {% if skipRewriteTwigVars %}  ' + TWIG_REQUEST_URI + '  {% else %} {{ app.request.requestUri }} {% endif %}';
+        window["TWIG_GET_ATTRS"]   = '{{ getAttrs | json_encode | raw }}';
+        window["TWIG_ROUTE"]       = '{{ app.request.attributes.get('_route') }}';
+        window["TWIG_REQUEST_URI"] = ' {% if skipRewriteTwigVars %}  ' + TWIG_REQUEST_URI + '  {% else %} {{ app.request.requestUri }} {% endif %}';
     </script>
 {% endblock %}
 

@@ -29,27 +29,23 @@
             {% include 'core/galleries/lightgallery.html.twig' with {'images': all_images} %}
 
             <div class="widgets-wrapper">
-                <script src="/assets_/static-scripts/upload-widget.js"></script>
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
                     'widgetName': "upload-files-widget",
                     'id'        : "my-images-upload-files-widget"
                 } %}
 
-                <script src="/assets_/static-scripts/new-folder-widget.js"></script>
                 {% include 'page-elements/components/widgets/new-folder-icon.twig' with {
                     'widgetName': "new-folder-widget",
                     'id'        : "my-images-new-folder-widget",
                     'style': "margin-top: 10px; background-color: #0062cc; opacity: .5;"
                 } %}
 
-                <script src=""></script>
                 {% include 'page-elements/components/widgets/trash-remove-icon.twig' with {
                     'widgetName': "mass-action-lightgallery-remove-images",
                     'style'     : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
                     "classes"   : "disabled mass-action-lightgallery-remove-images mass-action-lightgallery-button"
                 } %}
 
-                <script src=""></script>
                 {% include 'page-elements/components/widgets/data-transfer-icon.twig' with {
                     'widgetName': "mass-action-lightgallery-transfer-images",
                     'style'     : "margin-top: 10px; background-color: #0062cc; opacity: .5;",

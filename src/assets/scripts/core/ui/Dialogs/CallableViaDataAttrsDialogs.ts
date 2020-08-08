@@ -1,8 +1,7 @@
-import AbstractDialogs from "./AbstractDialogs";
-import TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback_DataAttribute
-    from "../../../temp/TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback";
-import Loader from "../../../libs/loader/Loader";
-import Ajax from "../Ajax";
+import AbstractDialogs  from "./AbstractDialogs";
+import Loader           from "../../../libs/loader/Loader";
+import Ajax             from "../Ajax";
+import DialogDataDto    from "../../../DTO/DialogDataDto";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
@@ -19,30 +18,11 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
             let requestMethod  = $clickedElement.attr(_this.data.requestMethod);
             let requestUrl     = $clickedElement.attr(_this.data.requestUrl);
-            let getParameters  = $clickedElement.attr(_this.data.getParameters);
             let postParameters = $clickedElement.attr(_this.data.postParameters);
-            let callbackString = $clickedElement.attr(_this.data.callback);
-            let callback       = new Function(callbackString);
-            let id             = $clickedElement.attr('id');
+            let dialogName     = $clickedElement.attr(_this.data.dialogName);
 
-            // temporary start
-            // @see TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback_DataAttribute
-
-            if( "dataCallDialogCallbackMyIssueCardAddRecords" === id ){
-                callback = TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback_DataAttribute.templatesModulesMyIssuesComponentsMyIssueCardAddRecordsTwig();
-            }else if("dataCallDialogCallbackMyIssueCardPreviewAndEdit" === id ){
-                callback = TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback_DataAttribute.templatesModulesMyIssuesComponentsMyIssueCardPreviewAndEditTwig();
-            }else if("pendingIssuesCreateIssue" === id ){
-                callback = TemporaryTwigImbuedLogicExecutionForDataCallDialogCallback_DataAttribute.createNewIssue();
-            }else{
-                throw {
-                    "message"        : "Seems like there is some another element using this logic?",
-                    "clickedElement" : $clickedElement
-                }
-            }
-
-            // temporary end
-
+            let dialogDataDto  = _this.dialogLogicLoader.getDialogDataDto(dialogName);
+            let callback       = ( !(dialogDataDto instanceof DialogDataDto) ? () => {} : dialogDataDto.callback );
 
             let usedParameters = null;
             let url            = null;
@@ -52,7 +32,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
                 case Ajax.REQUEST_TYPE_POST:
                 {
                     if(
-                        ""          === postParameters
+                        ""              === postParameters
                         ||  "undefined" === typeof postParameters
                     ){
                         throw{
@@ -64,18 +44,8 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
                     url            = requestUrl;
                     data           = JSON.parse(postParameters);
                 }
-                    break;
+                break;
 
-                case Ajax.REQUEST_TYPE_GET:
-                {
-                    usedParameters = getParameters;
-                    data           = null;
-
-                    let getJsonParams  = JSON.parse(getParameters);
-                    let urlParams      = new URLSearchParams(getJsonParams).toString();
-                    url                = requestUrl + '?' + urlParams;
-                }
-                    break;
                 default:
                     throw {
                         "message" : "Unsupported method",

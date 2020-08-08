@@ -11,10 +11,6 @@
     <title>{% block title %}{{ 'page.title' | trans }}{% endblock %}</title>
     <link rel="stylesheet" href="{{ asset('assets/app.css') }}"/>
 
-    {% block staticStyleSheets %}
-        <link rel="stylesheet" href="{{ asset('assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.css') }}"/>
-    {% endblock %}
-
     {% block stylesheets %}
         <style>
             #loader {
@@ -69,15 +65,11 @@
         </style>
     {% endblock %}
 
-    {% block headjavascript %}
-        <script defer src="{{ asset('assets_/static-libs/fontawesome/5.11.3/js/all.min.js') }}"></script>
-    {% endblock %}
-
     {% block twigToJavascript %}
         <script>
-            var TWIG_GET_ATTRS      = '{{ getAttrs | json_encode | raw }}';
-            var TWIG_ROUTE          = '{{ app.request.attributes.get('_route') }}';
-            var TWIG_REQUEST_URI    = '{{ app.request.requestUri }}';
+            window["TWIG_GET_ATTRS"]   = '{{ getAttrs | json_encode | raw }}';
+            window["TWIG_ROUTE"]       = '{{ app.request.attributes.get('_route') }}';
+            window["TWIG_REQUEST_URI"] = '{{ app.request.requestUri }}';
         </script>
     {% endblock %}
 
@@ -128,9 +120,6 @@
             </div>
         </div>
 
-
-
-
         <section class="twig-body-section">
             {% block body %}{% endblock %}
         </section>
@@ -160,23 +149,8 @@
     });
 </script>
 
-{% block staticJavascriptsLibs %}
-    {# Info: due to the fact that webpack initiliazies JQ($) all scripts before can't use it (pure js only) #}
-    <script src="{{ asset('assets_/static-libs/furcan-iconpicker/1.5/iconpicker-1.5.0.js') }}"></script>
-    <script src="/assets_/static-libs/jscolor/jscolor.js"></script>
-{% endblock %}
-
-{% block staticJavascriptsInits %}
-    <script src="/assets_/static-scripts/furcan-iconpicker/index.js"></script>
-    <script src="/assets_/static-scripts/jscolor/index.js"></script>
-
-    {# Info: initialization of this scripts is in the src/assets initializer #}
-{% endblock %}
-
 {% block javascripts %}
     <script src="{{ asset('assets/app.js') }}"></script>
-    {# This script contains small bugfixes for liblaries that change something in dom #}
-    <script src="{{ asset('assets_/static-scripts/bugfixes.js') }}"></script>
 {% endblock %}
 
 {% include 'page-elements/components/messages/messages.twig' %}

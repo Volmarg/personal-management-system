@@ -1,6 +1,8 @@
 import SearchBar            from "./core/search/SearchBar";
 import BootstrapDatepicker  from "./libs/datepicker/BootstrapDatepicker";
 import Scrollbar            from "./libs/scrollbar/Scrollbar";
+import WindowEvents         from "./core/ui/WindowEvents";
+import DocumentEvents       from "./core/ui/DocumentEvents";
 
 export default class Initializer {
 
@@ -46,11 +48,15 @@ export default class Initializer {
      */
     private oneTimeInit(): void
     {
+        let windowEvents   = new WindowEvents();
+        let documentEvents = new DocumentEvents();
 
         // new
         SearchBar.init();
         BootstrapDatepicker.init();
         Scrollbar.init();
+        windowEvents.attachEvents();
+        documentEvents.attachEvents();
     }
 
 }

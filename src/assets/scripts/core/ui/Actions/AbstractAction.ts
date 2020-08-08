@@ -10,6 +10,7 @@ import DomElements                  from "../../utils/DomElements";
 import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
 import FormAppendAction             from "./FormAppendAction";
 import UpdateAction                 from "./UpdateAction";
+import JsColor                      from "../../../libs/jscolor/JsColor";
 
 export default abstract class AbstractAction {
 
@@ -130,9 +131,11 @@ export default abstract class AbstractAction {
                 url     : "/dialog/body/edit-contact-card",
                 method  : "POST",
                 callback: () => {
+                    let jscolor = new JsColor();
+
                     this.formAppendAction.attachFormViewAppendEvent();
                     this.formAppendAction.attachRemoveParentEvent();
-                    jscolorCustom.init();
+                    jscolor.init();
                     this.updateAction.attachContentSaveEventOnSaveIcon();
                     // todo: keep in mind that create action is extending from this so most likely should be static call
                 }

@@ -1,55 +1,48 @@
-import TemporaryTwigImbuedLogicExecutionForWidgets from "../../../temp/TemporaryTwigImbuedLogicExecutionForWidgets";
 import Loader           from "../../../libs/loader/Loader";
 import AbstractDialogs  from "./AbstractDialogs";
 import DomElements      from "../../utils/DomElements";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
-import Ajax from "../Ajax";
+import Ajax             from "../Ajax";
+import WidgetDataLoader from "../Widgets/DialogBased/WidgetDataLoader";
+import AbstractDto      from "../../../DTO/AbstractDto";
+import Application      from "../../Application";
+import WidgetData       from "../Widgets/DialogBased/WidgetData";
+import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
 
+/**
+ * @description Handles building dialogs for given widgets, alongside with building it's content and interaction
+ */
 export default class WidgetsDialogs extends AbstractDialogs {
 
-
+    /**
+     * @description main initialization logic
+     */
     public init(){
-        this.callModalOnWidgetIcon();
+        this.callModalForWidget();
     }
 
-    private callModalOnWidgetIcon() {
-        let callModalButton = $(this.selectors.classes.callWidgetModal);
+    /**
+     * @description builds modal for widget
+     */
+    private callModalForWidget() {
+        let $callModalButton = $(this.selectors.classes.callWidgetModal);
 
-        if (!DomElements.doElementsExists(callModalButton)) {
+        if ( !DomElements.doElementsExists($callModalButton) ) {
             return;
         }
 
         let _this = this;
 
-        callModalButton.off('click'); // prevent adding multiple click events
-        callModalButton.click((event) => {
+        $callModalButton.off('click'); // prevent adding multiple click events
+        $callModalButton.on('click',(event) => {
 
             let clickedButton = $(event.target).closest('[data-widget="true"]');
-            let settings      = null;
+            let id            = clickedButton.attr('id');
+            let widgetDataDto = WidgetDataLoader.getDataForWidgetId(id);
 
-            /* Temporary start */
-            let id = clickedButton.attr('id');
-
-            if( "add-note" == id ){
-                settings = TemporaryTwigImbuedLogicExecutionForWidgets.addNoteWidget();
-            }else if("my-files-upload-files-widget" == id){
-                settings = TemporaryTwigImbuedLogicExecutionForWidgets.myFilesUpload();
-            }else if("my-files-new-folder-widget" == id){
-                settings = TemporaryTwigImbuedLogicExecutionForWidgets.myFilesNewFolder();
-            }else if("my-images-upload-files-widget" == id){
-                settings = TemporaryTwigImbuedLogicExecutionForWidgets.myImagesUpload();
-            }else if("my-images-new-folder-widget" == id){
-                settings = TemporaryTwigImbuedLogicExecutionForWidgets.myImagesNewFolder();
-            }else if("add-contact-card-widget" == id){
-                settings = TemporaryTwigImbuedLogicExecutionForWidgets.addContactCardWidget();
-            }else{
-                throw{
-                    "message"       : "there is some more widget?",
-                    "clickedButton" : clickedButton
-                }
+            if( !(widgetDataDto instanceof AbstractDto) ){
+                Application.abort("Not an DTO");
             }
-
-            /* Temporary end */
 
            let dialog = BootboxWrapper.mainLogic.alert({
                 message: "",
@@ -66,74 +59,40 @@ export default class WidgetsDialogs extends AbstractDialogs {
 
             //@ts-ignore
             // todo: might not work
-            dialog.init( () => {
-                if (settings.type !== undefined && settings.type !== null) {
+           dialog.init( () => {
+                switch (widgetDataDto.type) {
+                    case WidgetData.TYPE_TEMPLATE:
+                        Loader.toggleLoader();
+                        $.ajax({
+                            method : Ajax.REQUEST_TYPE_POST,
+                            data   : widgetDataDto.ajaxData,
+                            url    : widgetDataDto.url
+                        }).done((responseData) => {
 
-                    let ajaxData = '';
+                            let ajaxResponseDto = AjaxResponseDto.fromArray(responseData);
+                            let bootboxBody     = $('.' + _this.selectors.classesNames.widgetModalClassName).find('.bootbox-body');
 
-                    if( "undefined" !== typeof settings.data ){
-                        ajaxData = settings.data;
-                    }
+                            bootboxBody.html(ajaxResponseDto.template);
+                            widgetDataDto.callback();
 
-                    switch (settings.type) {
-                        case 'template':
+                            if( ajaxResponseDto.reloadPage ){
+                                if( ajaxResponseDto.isReloadMessageSet() ){
+                                    _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
+                                }
+                                location.reload();
+                            }
+
+                        }).fail(() => {
+                            _this.bootstrapNotify.showRedNotification('There was an error while fetching data for bootbox modal')
+                        }).always(() => {
                             Loader.toggleLoader();
-                            $.ajax({
-                                method: Ajax.REQUEST_TYPE_POST,
-                                data: ajaxData,
-                                url: settings.url
-                            }).done((responseData) => {
+                        });
 
-                                if( undefined !== responseData['template'] ){
-                                    responseData = responseData['template'];
-                                }
-
-                                let bootboxBody = $('.' + _this.selectors.classesNames.widgetModalClassName).find('.bootbox-body');
-                                bootboxBody.html(responseData);
-
-                                // rewrite new start
-                                if( $.isFunction(settings.callback) ){
-                                    settings.callback()
-                                }
-                                // rewrite new end
-
-                                if( undefined !== settings.subtype ){
-
-                                    switch(settings.subtype){
-                                        case "add-note":
-                                            let formSubmitButton = $('#my_notes_submit');
-                                            formSubmitButton.attr('data-template-url', window.location.pathname);
-                                            formSubmitButton.attr('data-template-method', 'GET');
-                                            break;
-                                    }
-
-                                }
-
-                                let reloadPage    = responseData['reload_page'];
-                                let reloadMessage = responseData['reload_message'];
-
-                                if( reloadPage ){
-                                    if( "" !== reloadMessage ){
-                                        _this.bootstrapNotify.showBlueNotification(reloadMessage);
-                                    }
-                                    location.reload();
-                                }
-
-                            }).fail(() => {
-                                _this.bootstrapNotify.notify('There was an error while fetching data for bootbox modal', 'danger')
-                            }).always(() => {
-                                Loader.toggleLoader();
-                            });
-
-                            break;
-                        default:
-                            throw "Unknown type was provided: " + settings.type;
-                    }
-
+                        break;
+                    default:
+                        Application.abort(`"Unknown type was provided: ${widgetDataDto.type}`);
                 }
             });
-
         })
     };
-
 }

@@ -1,5 +1,6 @@
 import BootboxWrapper                   from "../bootbox/BootboxWrapper";
 import FontAwesomePickerConfigInterface from "./FontAwesomePickerConfigInterface";
+import 'src/iconpicker-1.5.0.css';
 
 /**
  * Personal changes: Volmarg Resio

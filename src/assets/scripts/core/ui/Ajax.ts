@@ -1,13 +1,12 @@
-import BootstrapNotify from "../../libs/bootstrap-notify/BootstrapNotify";
-import AjaxResponseDto from "../../DTO/AjaxResponseDto";
-import Loader          from "../../libs/loader/Loader";
-import Sidebars        from "../../core/sidebar/Sidebars";
-import MasonryGallery  from "../../libs/masonry/MasonryGallery";
-
 import * as $ from 'jquery';
 import * as initializer from "../../initializer.js";
-import Initializer from "../../Initializer";
-// info: this kind of imports of initializer will make a mess since it's being called upon compiling and then initializer tries to init without other libs being ready
+
+import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
+import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
+import Loader           from "../../libs/loader/Loader";
+import Sidebars         from "../../core/sidebar/Sidebars";
+import MasonryGallery   from "../../libs/masonry/MasonryGallery";
+import Initializer      from "../../Initializer";
 
 var imagesLoaded = require('imagesloaded');
 
@@ -300,18 +299,23 @@ export default class Ajax {
      * @param namespace
      * @param constant
      */
-    public getConstantValueFromBackend(namespace: string, constant:string)
+    public static getConstantValueFromBackend(namespace: string, constant:string)
     {
 
     }
 
     /**
+     * Todo: build backend logic
+     *
      * Will fetch backend defined url for given path
      * @param pathName
      */
-    public getUrlForPathName(pathName: string)
+    public static getUrlForPathName(pathName: string)
     {
 
+        // todo: throw exception if not found or stuff
+
+        return "";
     }
 
     /**

@@ -13,7 +13,10 @@ import DomElements     from "../../core/utils/DomElements";
 import Ajax            from "../../core/ui/Ajax";
 import Loader          from "../../libs/loader/Loader";
 import UiUtils         from "../../core/utils/UiUtils";
+import Navigation      from "../../core/Navigation";
+import StringUtils     from "../../core/utils/StringUtils";
 
+// todo: rename class
 export default class NotesTinyMce {
 
     /**
@@ -43,6 +46,27 @@ export default class NotesTinyMce {
         this.attachSaveEvent();
         this.attachDeleteNoteEvent();
     };
+
+    /**
+     * @description Selecting option corresponding to the category on which im at atm.
+     */
+    public static selectCurrentCategoryOptionForQuickNoteCreator() {
+        let $quickNoteSelect = $("select#my_notes_category");
+        let $selectOptions   = $("select#my_notes_category option");
+        let getAttrs         = JSON.parse(Navigation.getCurrentGetAttrs());
+
+        if ( !StringUtils.isEmptyString(getAttrs.category_id) ) {
+            let categoryId = getAttrs.category_id;
+            $quickNoteSelect.val(categoryId);
+
+            $selectOptions.each(function (index, option) {
+                let $option = $(option);
+                if ($option.val() == categoryId) {
+                    $option.attr("selected", "true");
+                }
+            });
+        }
+    }
 
     /**
      * Attaches event responsible for allowing user to edit note by clicking on edit button (modal)
