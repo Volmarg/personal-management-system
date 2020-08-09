@@ -7,9 +7,9 @@ var CopyPlugin              = require('copy-webpack-plugin');
  */
 Encore
     .addEntry('app', './src/assets/app.js') // will create public/build/app.js and public/build/app.css
-    .setOutputPath('public/assets') // the project directory where all compiled assets will be stored
-    .setPublicPath('/assets') // the public path used by the web server to access the previous directory
-    .enableSassLoader() // allow sass/scss files to be processed
+    .setOutputPath('public/assets')         // the project directory where all compiled assets will be stored
+    .setPublicPath('/assets')               // the public path used by the web server to access the previous directory
+    .enableSassLoader()                     // allow sass/scss files to be processed
     .enableTypeScriptLoader(function (typeScriptConfigOptions) {
         typeScriptConfigOptions.transpileOnly = true;
         typeScriptConfigOptions.configFile    = 'tsconfig.json';
@@ -54,7 +54,12 @@ Encore
     .enableBuildNotifications();
 
 const app_js_build = Encore.getWebpackConfig();
-app_js_build.name = 'app_js_build';
+
+app_js_build.name    = 'app_js_build';
+app_js_build.resolve = {
+    extensions: [ '.tsx', '.ts', '.js' ]
+};
+app_js_build.devtool = 'inline-source-map';
 
 // export the final configuration
 module.exports = [app_js_build];

@@ -1,7 +1,6 @@
 /**
  * Output pf this file MUST be on page first, as other outputs are using this configurations
  */
-
 import './scss/index.scss';
 
 import './scripts/index.js';

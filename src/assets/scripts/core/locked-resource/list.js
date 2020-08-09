@@ -1,0 +1,2 @@
+import './LockedResource'
+import './LockedResourceAjaxCall'

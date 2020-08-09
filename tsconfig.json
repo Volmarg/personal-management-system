@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5"
-//    "baseUrl": "src",
-//    "paths": {
-//      "assets/scripts/core/ui/DataProcessor/*": ["dataProcessor/*"],
-//      "assets/scripts/DTO/*": ["DTO/*"]
-//    }
+    "target": "es5",
+    "sourceMap": true
   },
   "include": [
     "src/assets/scripts/*"
