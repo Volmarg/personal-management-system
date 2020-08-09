@@ -10,7 +10,7 @@ import 'tinymce/plugins/codesample';
 import BootstrapNotify from "../../libs/bootstrap-notify/BootstrapNotify";
 import TinyMce         from "../../libs/tiny-mce/TinyMce";
 import DomElements     from "../../core/utils/DomElements";
-import Ajax            from "../../core/ui/Ajax";
+import Ajax            from "../../core/ajax/Ajax";
 import Loader          from "../../libs/loader/Loader";
 import UiUtils         from "../../core/utils/UiUtils";
 import Navigation      from "../../core/Navigation";

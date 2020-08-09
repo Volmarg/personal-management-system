@@ -1,7 +1,8 @@
-import AbstractDialogs  from "./AbstractDialogs";
-import Loader           from "../../../libs/loader/Loader";
-import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
-import Ajax             from "../Ajax";
+import AbstractDialogs          from "./AbstractDialogs";
+import Loader                   from "../../../libs/loader/Loader";
+import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
+import Ajax                     from "../../ajax/Ajax";
+import LockedResourceAjaxCall   from "../../locked-resource/LockedResourceAjaxCall";
 
 export default class SystemLockDialogs extends AbstractDialogs {
 
@@ -79,7 +80,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
             $systemLockPasswordSubmit.on('click', function (event) {
                 event.preventDefault();
                 let password = $systemLockPasswordInput.val();
-                _this.lockedResource.ajaxToggleSystemLock(password, isUnlocked);
+                LockedResourceAjaxCall.ajaxToggleSystemLock(password, isUnlocked);
             })
         });
     };
@@ -137,7 +138,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
             $systemLockCreatePasswordSubmit.on('click', function (event) {
                 event.preventDefault();
                 let password = $systemLockCreatePasswordInput.val();
-                _this.lockedResource.ajaxCreateLockPasswordForSystem(password);
+                LockedResourceAjaxCall.ajaxCreateLockPasswordForSystem(password);
             })
         });
     };

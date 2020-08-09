@@ -1,5 +1,5 @@
 import BootstrapNotify from "../../libs/bootstrap-notify/BootstrapNotify";
-import Ajax            from "../../core/ui/Ajax";
+import Ajax            from "../../core/ajax/Ajax";
 
 export default class GoalsChecklist {
 

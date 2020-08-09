@@ -1,13 +1,13 @@
-import AbstractAction   from "./AbstractAction";
-import Loader           from "../../../libs/loader/Loader";
-import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
-import Ajax             from "../Ajax";
-import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
-import DataTable        from "../../../libs/datatable/DataTable";
-import DomElements      from "../../utils/DomElements";
-import Navigation       from "../../Navigation";
-import StringUtils      from "../../utils/StringUtils";
-import DataProcessorLoader from "../DataProcessor/DataProcessorLoader";
+import AbstractAction       from "./AbstractAction";
+import Loader               from "../../../libs/loader/Loader";
+import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
+import Ajax                 from "../../ajax/Ajax";
+import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
+import DataTable            from "../../../libs/datatable/DataTable";
+import DomElements          from "../../utils/DomElements";
+import Navigation           from "../../Navigation";
+import StringUtils          from "../../utils/StringUtils";
+import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 
 export default class RemoveAction extends AbstractAction {
 

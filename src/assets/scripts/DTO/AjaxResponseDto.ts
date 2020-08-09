@@ -56,6 +56,16 @@ export default class AjaxResponseDto extends AbstractDto {
     public invalidFormFields = [];
 
     /**
+     * @type string
+     */
+    public routeUrl = "";
+
+    /**
+     * @type string
+     */
+    public constantValue = "";
+
+    /**
      * Builds DTO from data array
      * @param array
      * @returns {AjaxResponseDto}
@@ -73,6 +83,8 @@ export default class AjaxResponseDto extends AbstractDto {
         ajaxResponseDto.formTemplate        = ajaxResponseDto.getFromArray(array, 'form_template');
         ajaxResponseDto.validatedFormPrefix = ajaxResponseDto.getFromArray(array, 'validated_form_prefix');
         ajaxResponseDto.invalidFormFields   = ajaxResponseDto.getFromArray(array, 'invalid_form_fields', []);
+        ajaxResponseDto.routeUrl            = ajaxResponseDto.getFromArray(array, 'route_url', "");
+        ajaxResponseDto.constantValue       = ajaxResponseDto.getFromArray(array, 'constant_value', "");
 
         return ajaxResponseDto;
     }
@@ -159,6 +171,22 @@ export default class AjaxResponseDto extends AbstractDto {
      */
     isInternalServerErrorCode(){
         return (this.code >= 500);
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isRouteSet(): boolean
+    {
+        return this.isset(this.routeUrl);
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    isConstantValueSet(): boolean
+    {
+        return this.isset(this.constantValue);
     }
 
 }

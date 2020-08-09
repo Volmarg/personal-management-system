@@ -28,6 +28,9 @@ class AppAction extends AbstractController {
     const KEY_CURR_URL                = 'currUrl';
     const KEY_SYSTEM_LOCK_PASSWORD    = 'systemLockPassword';
     const KEY_SYSTEM_LOCK_IS_UNLOCKED = 'isUnlocked';
+    const KEY_PATH_NAME               = 'pathName';
+    const KEY_CONSTANT_NAME           = 'constantName';
+    const KEY_NAMESPACE               = 'namespace';
 
     const MENU_NODE_MODULE_NAME_ACHIEVEMENTS  = ModulesController::MODULE_NAME_ACHIEVEMENTS;
     const MENU_NODE_MODULE_NAME_GOALS         = ModulesController::MODULE_NAME_GOALS;
@@ -311,6 +314,99 @@ class AppAction extends AbstractController {
         }
 
         return $response;
+    }
+
+    /**
+     * Will return ajax response with url for given route if such route was found, otherwise bad request is returned
+     *
+     * @Route("/api/system/get-url-for-path-name", name="get_url_for_path_name", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function getUrlForPathName(Request $request): JsonResponse
+    {
+        $bad_request_message = $this->app->translator->translate("messages.ajax.failure.badRequest");
+
+        if ( !$request->request->has(self::KEY_PATH_NAME) ) {
+            $this->app->logger->critical("Missing parameter in request", [self::KEY_PATH_NAME]);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $bad_request_message);
+        }
+
+        $path_name = $request->request->get(self::KEY_PATH_NAME);
+
+        $is_exception  = false;
+        $ajax_response = new AjaxResponse();
+        $ajax_response->setCode(Response::HTTP_OK);
+
+        try{
+            $url = $this->generateUrl($path_name);
+        }catch(Exception $e){
+            $is_exception = true;
+        }
+
+        if( empty($url) || $is_exception ){
+            $this->app->logger->critical('No route with this name was found', [$path_name]);
+            $ajax_response->setMessage($bad_request_message);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+
+            return $ajax_response->buildJsonResponse();
+        }
+
+        $ajax_response->setRouteUrl($url);
+
+        return $ajax_response->buildJsonResponse();
+    }
+
+    /**
+     * Will return a value of given constant from given namespace back to frontend
+     *
+     * @Route("/api/system/get-constant-value-from-backend", name="get_constant_value_from_backend", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function getConstantValueFromBackend(Request $request): JsonResponse
+    {
+        $bad_request_message = $this->app->translator->translate("messages.ajax.failure.badRequest");
+
+        if ( !$request->request->has(self::KEY_CONSTANT_NAME) ) {
+            $this->app->logger->critical("Missing parameter in request", [self::KEY_CONSTANT_NAME]);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $bad_request_message);
+        }
+
+        if ( !$request->request->has(self::KEY_NAMESPACE) ) {
+            $this->app->logger->critical("Missing parameter in request", [self::KEY_NAMESPACE]);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $bad_request_message);
+        }
+
+        $namespace = $request->request->get(self::KEY_NAMESPACE);
+        $constant  = $request->request->get(self::KEY_CONSTANT_NAME);
+
+        $is_exception  = false;
+        $ajax_response = new AjaxResponse();
+        $ajax_response->setCode(Response::HTTP_OK);
+
+        try{
+            $constant_value = $namespace::$constant;
+        }catch(Exception $e){
+            $is_exception = true;
+        }
+
+        if( empty($constant_value) || $is_exception ){
+            $this->app->logger->critical("No such constant exists for given namespace", [
+                self::KEY_CONSTANT_NAME => $constant,
+                self::KEY_NAMESPACE     => $namespace,
+            ]);
+            $ajax_response->setMessage($bad_request_message);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+
+            return $ajax_response->buildJsonResponse();
+        }
+
+        $ajax_response->setRouteUrl($constant_value);
+
+        return $ajax_response->buildJsonResponse();
     }
 
 }

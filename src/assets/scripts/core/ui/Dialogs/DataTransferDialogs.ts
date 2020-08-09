@@ -1,7 +1,7 @@
 import AbstractDialogs  from "./AbstractDialogs";
 import Loader           from "../../../libs/loader/Loader";
 import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
-import Ajax             from "../Ajax";
+import Ajax             from "../../ajax/Ajax";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
 
 export default class DataTransferDialogs extends AbstractDialogs {

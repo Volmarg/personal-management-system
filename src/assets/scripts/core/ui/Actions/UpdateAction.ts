@@ -2,7 +2,7 @@ import AbstractAction       from "./AbstractAction";
 import Loader               from "../../../libs/loader/Loader";
 import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
 import Navigation           from "../../Navigation";
-import Ajax                 from "../Ajax";
+import Ajax                 from "../../ajax/Ajax";
 import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";

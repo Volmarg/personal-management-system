@@ -2,7 +2,7 @@ import Loader           from "../../../libs/loader/Loader";
 import AbstractDialogs  from "./AbstractDialogs";
 import DomElements      from "../../utils/DomElements";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
-import Ajax             from "../Ajax";
+import Ajax             from "../../ajax/Ajax";
 import WidgetDataLoader from "../Widgets/DialogBased/WidgetDataLoader";
 import AbstractDto      from "../../../DTO/AbstractDto";
 import Application      from "../../Application";

@@ -15,7 +15,7 @@ import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import Loader           from "../../libs/loader/Loader";
 import DomAttributes    from "../../core/utils/DomAttributes";
 import Navigation       from "../../core/Navigation";
-import Ajax             from "../../core/ui/Ajax";
+import Ajax             from "../../core/ajax/Ajax";
 import Initializer      from "../../Initializer";
 import BootboxWrapper   from "../bootbox/BootboxWrapper";
 import DataTransferDialogs from "../../core/ui/Dialogs/DataTransferDialogs";

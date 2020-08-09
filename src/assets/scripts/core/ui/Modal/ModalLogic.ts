@@ -1,5 +1,5 @@
 import ModalDataDto from "../../../DTO/ModalDataDto";
-import Ajax         from "../Ajax";
+import Ajax         from "../../ajax/Ajax";
 
 /**
  * @description This class contains definitions of logic for given modals

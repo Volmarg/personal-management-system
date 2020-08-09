@@ -1,24 +1,31 @@
+import BootboxWrapper   from "../../libs/bootbox/BootboxWrapper";
+import Navigation       from "../Navigation";
+import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
+import Ajax             from "../ajax/Ajax";
+import Loader           from "../../libs/loader/Loader";
 
-import BootstrapNotify  from "../libs/bootstrap-notify/BootstrapNotify";
-import Loader           from "../libs/loader/Loader";
-import Ajax             from "./ui/Ajax";
-import Navigation       from "./Navigation";
-import BootboxWrapper from "../libs/bootbox/BootboxWrapper";
-import SystemLockDialogs from "./ui/Dialogs/SystemLockDialogs";
+/**
+ * @description contains ajax calls methods used by LockedResource and other scripts
+ *              separation of this logic is required due to circular references issues
+ *              this class should only contain ajax call methods for LockedResource - EXPLICITLY
+ *              other classes can/should use this methods here but none of the logic should be built for other classes
+ */
+export default class LockedResourceAjaxCall {
 
-export default class LockedResource {
+    /**
+     * @type BootstrapNotify
+     */
+    private bootstrapNotify = new BootstrapNotify();
+
+    /**
+     * @type Ajax
+     */
+    private ajax = new Ajax();
 
     /**
      * @type Object
      */
-    private elements = {
-        'saved-element-class': '.save-parent',
-    };
-
-    /**
-     * @type Object
-     */
-    private general = {
+    private static general = {
         methods: {
             lockResource:{
                 url: "/api/lock-resource/toggle",
@@ -41,57 +48,15 @@ export default class LockedResource {
     };
 
     /**
-     * @type Object
-     */
-    private attributes = {
-        dataToggleResourcesLockForSystem : 'data-toggle-resources-lock-for-system',
-        dataSetResourcesLockForSystem    : 'data-set-resources-lock-password-for-system',
-    };
-
-    /**
-     * @type BootstrapNotify
-     */
-    private bootstrapNotify = new BootstrapNotify();
-
-    /**
-     * @type Ajax
-     */
-    private ajax = new Ajax();
-
-    /**
-     * @type SystemLockDialogs
-     */
-    private systemLockDialogs = new SystemLockDialogs();
-
-    public init(){
-        this.attachToggleRecordLockOnActionLockRecord();
-        this.attachEventsOnToggleResourcesLockForSystem();
-        this.attachEventsOnLockCreatePasswordForSystem();
-    };
-
-    /**
-     * Adds click event on every lock record action icon
-     */
-    public attachToggleRecordLockOnActionLockRecord() {
-        let _this              = this;
-        let lockResourceButton = $('.action-lock-record');
-
-        $(lockResourceButton).off('click'); // to prevent double attachement on reinit
-        $(lockResourceButton).on('click', function () {
-            let closest_parent = this.closest(_this.elements["saved-element-class"]);
-            _this.ajaxToggleLockRecord(closest_parent);
-        });
-    };
-
-    /**
      * Sends request to toggle lock for single record
-     * @param tr_parent_element {object}
+     * @param $baseElement
      */
-    public ajaxToggleLockRecord(tr_parent_element) { // todo rename to element
+    public ajaxToggleLockRecord($baseElement): void
+    {
         let _this  = this;
-        let record = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-record');
-        let type   = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-type');
-        let target = $(tr_parent_element).find('.action-lock-record').attr('data-lock-resource-target');
+        let record = $($baseElement).find('.action-lock-record').attr('data-lock-resource-record');
+        let type   = $($baseElement).find('.action-lock-record').attr('data-lock-resource-type');
+        let target = $($baseElement).find('.action-lock-record').attr('data-lock-resource-target');
 
         let data = {
             "record" : record,
@@ -106,8 +71,8 @@ export default class LockedResource {
                 if (result) {
 
                     $.ajax({
-                        method: _this.general.methods.lockResource.method,
-                        url   : _this.general.methods.lockResource.url,
+                        method: LockedResourceAjaxCall.general.methods.lockResource.method,
+                        url   : LockedResourceAjaxCall.general.methods.lockResource.url,
                         data  : data,
                     }).always(function(data){
 
@@ -130,7 +95,7 @@ export default class LockedResource {
                         }else {
 
                             if( "undefined" === typeof message ){
-                                message = _this.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                                message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully;
                             }
 
                             _this.bootstrapNotify.showGreenNotification(message);
@@ -151,33 +116,16 @@ export default class LockedResource {
     };
 
     /**
-     * Attaches event in the user menu Lock button
-     */
-    public attachEventsOnToggleResourcesLockForSystem(){
-        let _this      = this;
-        let $button    = $("[" + this.attributes.dataToggleResourcesLockForSystem + "= true]");
-        let $i         = $button.find('i');
-        let isUnlocked = $i.hasClass("text-success");
-
-        $button.off('click');
-        $button.on('click', function() {
-            if( isUnlocked ){
-                _this.ajaxToggleSystemLock("", isUnlocked);
-                return;
-            }
-
-            _this.systemLockDialogs.buildSystemToggleLockDialog(null, isUnlocked);
-        });
-    };
-
-    /**
-     * Sends the request to unlock the resources for whole system
+     * @description Sends the request to unlock the resources for whole system
+     *              Is static due to circular reference problems
+     *
      * @param password   {string}
      * @param isUnlocked {boolean}
      */
-    ajaxToggleSystemLock(password, isUnlocked){
+    public static ajaxToggleSystemLock(password, isUnlocked): void
+    {
 
-        let _this = this;
+        let bootstrapNotify = new BootstrapNotify();
         let data  = {
             "systemLockPassword": password,
             "isUnlocked"        : isUnlocked,
@@ -185,8 +133,8 @@ export default class LockedResource {
         Loader.showLoader();
 
         $.ajax({
-            method: this.general.methods.toggleLockedResourcesVisibility.method,
-            url   : this.general.methods.toggleLockedResourcesVisibility.url,
+            method: LockedResourceAjaxCall.general.methods.toggleLockedResourcesVisibility.method,
+            url   : LockedResourceAjaxCall.general.methods.toggleLockedResourcesVisibility.url,
             data  : data,
         }).always( function(data){
             Loader.hideLoader();
@@ -205,15 +153,15 @@ export default class LockedResource {
             }
 
             if( 200 != code ){
-                _this.bootstrapNotify.showRedNotification(message);
+                bootstrapNotify.showRedNotification(message);
                 return;
             }else {
 
                 if( "undefined" === typeof message ){
-                    message = _this.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                    message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully;
                 }
 
-                _this.bootstrapNotify.showGreenNotification(message);
+                bootstrapNotify.showGreenNotification(message);
 
                 // now ajax reload for this as there is also menu to be changed etc.
                 Loader.showLoader();
@@ -221,7 +169,7 @@ export default class LockedResource {
 
                 if( reloadPage ){
                     if( "" !== reloadMessage ){
-                        _this.bootstrapNotify.showBlueNotification(reloadMessage);
+                        bootstrapNotify.showBlueNotification(reloadMessage);
                     }
                     location.reload();
                 }
@@ -230,33 +178,22 @@ export default class LockedResource {
     };
 
     /**
-     * Attaches event for creating the first time password for lock when user does not have any set
-     *  this is pretty much like needed due to the fact that there was no such option in old version of project
-     */
-    public attachEventsOnLockCreatePasswordForSystem(){
-        let $button = $("[" + this.attributes.dataSetResourcesLockForSystem + "= true]");
-
-        $button.off('click');
-        $button.on('click', () => {
-            this.systemLockDialogs.buildCreateLockPasswordForSystemDialog();
-        });
-    };
-
-    /**
-     * Sends the request to create first time password for lock system
+     * @description Sends the request to create first time password for lock system
+     *              Is static due to circular reference problems
      * @param password {string}
      */
-    public ajaxCreateLockPasswordForSystem(password){
+    public static ajaxCreateLockPasswordForSystem(password): void
+    {
 
-        let _this = this;
+        let bootstrapNotify = new BootstrapNotify();
         let data  = {
             "systemLockPassword": password
         };
         Loader.showLoader();
 
         $.ajax({
-            method: this.general.methods.lockCreatePasswordType.method,
-            url   : this.general.methods.lockCreatePasswordType.url,
+            method: LockedResourceAjaxCall.general.methods.lockCreatePasswordType.method,
+            url   : LockedResourceAjaxCall.general.methods.lockCreatePasswordType.url,
             data  : data,
         }).always( function(data){
             Loader.hideLoader();
@@ -275,15 +212,15 @@ export default class LockedResource {
             }
 
             if( 200 != code ){
-                _this.bootstrapNotify.showRedNotification(message);
+                bootstrapNotify.showRedNotification(message);
                 return;
             }else {
 
                 if( "undefined" === typeof message ){
-                    message = _this.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                    message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully;
                 }
 
-                _this.bootstrapNotify.showGreenNotification(message);
+                bootstrapNotify.showGreenNotification(message);
 
                 // no ajax reload for this as there is also menu to be changed etc.
                 Loader.showLoader();
@@ -291,7 +228,7 @@ export default class LockedResource {
 
                 if( reloadPage ){
                     if( "" !== reloadMessage ){
-                        _this.bootstrapNotify.showBlueNotification(reloadMessage);
+                        bootstrapNotify.showBlueNotification(reloadMessage);
                     }
                     location.reload();
                 }

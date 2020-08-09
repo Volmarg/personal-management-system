@@ -1,9 +1,9 @@
-import AbstractAction   from "./AbstractAction";
-import Loader           from "../../../libs/loader/Loader";
-import Ajax             from "../Ajax";
-import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
-import DomElements      from "../../utils/DomElements";
-import DataProcessorLoader from "../DataProcessor/DataProcessorLoader";
+import AbstractAction       from "./AbstractAction";
+import Loader               from "../../../libs/loader/Loader";
+import Ajax                 from "../../ajax/Ajax";
+import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
+import DomElements          from "../../utils/DomElements";
+import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 
 export default class CopyToClipboardAction extends AbstractAction {
 

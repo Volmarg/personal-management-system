@@ -1,0 +1,15 @@
+# Called in cli from project root:
+# sudo ./node_modules/.bin/madge ./src/assets/scripts --webpack-config ./webpack.config.js --ts-config ./tsconfig.json  --circular --extensions ts,js --image ./madge.png
+{
+    "fontSize": "10px",
+    "graphVizOptions": {
+        "G": {
+            "rankdir": "LR"
+        }
+    },
+    "detectiveOptions": {
+        "ts": {
+            "mixedImports": true
+        }
+    }
+}

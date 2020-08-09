@@ -1,5 +1,5 @@
 import BackendStructureLoader   from "../ui/BackendStructure/BackendStructureLoader";
-import Ajax                     from "../ui/Ajax";
+import Ajax                     from "../ajax/Ajax";
 
 export default class DomElements {
 

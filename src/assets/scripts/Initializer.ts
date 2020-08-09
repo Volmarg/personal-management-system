@@ -3,17 +3,8 @@ import BootstrapDatepicker  from "./libs/datepicker/BootstrapDatepicker";
 import Scrollbar            from "./libs/scrollbar/Scrollbar";
 import WindowEvents         from "./core/ui/WindowEvents";
 import DocumentEvents       from "./core/ui/DocumentEvents";
-
+// todo: due to circular reference - this might need to be split further
 export default class Initializer {
-
-    /**
-     * Will load logic from scripts not defined in assets part but in public - from external libraries etc.
-     * todo: should become part of assets at some point
-     */
-    public initStaticScriptsLogic(): void
-    {
-
-    }
 
     /**
      * Will call initialization all all required standard system logic
@@ -29,7 +20,6 @@ export default class Initializer {
     public reinitializeLogic(): void
     {
         this.initializeLogic();
-        this.initStaticScriptsLogic();
     }
 
     /**
@@ -38,7 +28,6 @@ export default class Initializer {
     fullInitialization(): void
     {
         this.initializeLogic();
-        this.initStaticScriptsLogic();
         this.oneTimeInit();
     }
 

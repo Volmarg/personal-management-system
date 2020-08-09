@@ -1,5 +1,4 @@
 import * as $ from 'jquery';
-import * as initializer from "../../initializer.js";
 
 import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
@@ -10,6 +9,10 @@ import Initializer      from "../../Initializer";
 
 var imagesLoaded = require('imagesloaded');
 
+/**
+ * @description This class contains the most common/reusable ajax calls required in many places of the project
+ *              like for example loading template for url or rebuilding menu
+ */
 export default class Ajax {
 
     /**
@@ -25,7 +28,7 @@ export default class Ajax {
     /**
      * @type Object
      */
-    private methods = {
+    private static methods = {
         singleMenuNodeReload: {
             url: '/actions/render-menu-node-template',
             method: Ajax.REQUEST_TYPE_POST
@@ -37,6 +40,14 @@ export default class Ajax {
         getTemplateData: {
             url: '/api/get-template-data', // not implemented on backend
             method: Ajax.REQUEST_TYPE_GET
+        },
+        getUrlForPathName: {
+            url: '/api/system/get-url-for-path-name',
+            method: Ajax.REQUEST_TYPE_POST
+        },
+        getConstantValueFromBackend: {
+            url: '/api/system/get-constant-value-from-backend',
+            method: Ajax.REQUEST_TYPE_POST
         }
     };
 
@@ -62,11 +73,6 @@ export default class Ajax {
      * @type Initializer
      */
     private initializer = new Initializer();
-
-    public init()
-    {
-        this.attachModuleContentLoadingViaAjaxOnMenuLinks();
-    }
 
     /**
      * Attaches module content load by clicking on links in menu
@@ -140,8 +146,8 @@ export default class Ajax {
         };
 
         let _this  = this;
-        let url    = this.methods.singleMenuNodeReload.url;
-        let method = this.methods.singleMenuNodeReload.method;
+        let url    = Ajax.methods.singleMenuNodeReload.url;
+        let method = Ajax.methods.singleMenuNodeReload.method;
 
         $.ajax({
             url:    url,
@@ -228,7 +234,7 @@ export default class Ajax {
              * This is badly required for case when module contains images
              */
             imagesLoaded( twigBodySection, function() {
-                initializer.reinitialize();
+                _this.initializer.reinitializeLogic();
                 Loader.hideLoader();
                 history.pushState({}, null, url);
                 Sidebars.markCurrentMenuElementAsActive();
@@ -262,8 +268,8 @@ export default class Ajax {
         };
 
         $.ajax({
-            url:    this.methods.getFormView.url,
-            method: this.methods.getFormView.method,
+            url:    Ajax.methods.getFormView.url,
+            method: Ajax.methods.getFormView.method,
             data:   requestData
         }).always((data) => {
             Loader.hideLoader();
@@ -298,24 +304,81 @@ export default class Ajax {
      * Will fetch value of constant from backend
      * @param namespace
      * @param constant
+     * @return string
      */
-    public static getConstantValueFromBackend(namespace: string, constant:string)
+    public static getConstantValueFromBackend(namespace: string, constant:string): string
     {
+        let bootstrapNotify = new BootstrapNotify();
+        let constantValue   = "";
+        let ajaxData        = {
+            "constantName"  : constant,
+            "namespace"     : namespace
+        };
 
+        $.ajax({
+            url    : Ajax.methods.getUrlForPathName.url,
+            method : Ajax.methods.getUrlForPathName.method,
+            data   : ajaxData,
+            async  : false, // must be async, need to return url, and cannot process other requests without it
+        }).always(function(data){
+
+            try{
+                var ajaxResponseDto = AjaxResponseDto.fromArray(data);
+            }catch(Exception){
+                throw{
+                    "message": "Exception was throw while trying to get data from url generator",
+                    "exc"    : Exception,
+                }
+            }
+
+            if( ajaxResponseDto.isSuccessCode() ){
+                constantValue = ajaxResponseDto.routeUrl;
+                return;
+            }else{
+                bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+            }
+        });
+
+        return constantValue;
     }
 
     /**
-     * Todo: build backend logic
-     *
-     * Will fetch backend defined url for given path
-     * @param pathName
+     * @description Will fetch backend defined url for given path
+     * @param pathName - path/route name for which url should be generated
      */
-    public static getUrlForPathName(pathName: string)
+    public static getUrlForPathName(pathName: string): string
     {
+        let bootstrapNotify = new BootstrapNotify();
+        let returnedUrl     = "";
+        let ajaxData        = {
+            "pathName" : pathName
+        };
 
-        // todo: throw exception if not found or stuff
+        $.ajax({
+            url    : Ajax.methods.getUrlForPathName.url,
+            method : Ajax.methods.getUrlForPathName.method,
+            data   : ajaxData,
+            async  : false, // must be async, need to return url, and cannot process other requests without it
+        }).always(function(data){
 
-        return "";
+            try{
+                var ajaxResponseDto = AjaxResponseDto.fromArray(data);
+            }catch(Exception){
+                throw{
+                    "message": "Exception was throw while trying to get data from url generator",
+                    "exc"    : Exception,
+                }
+            }
+
+            if( ajaxResponseDto.isSuccessCode() ){
+                returnedUrl = ajaxResponseDto.routeUrl;
+                return;
+            }else{
+                bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+            }
+        });
+
+        return returnedUrl;
     }
 
     /**
@@ -383,7 +446,7 @@ export default class Ajax {
         let _this = this;
 
         $.ajax({
-            url:  this.methods.getTemplateData.url,
+            url:  Ajax.methods.getTemplateData.url,
             data: dataArray,
         }).always(function(data){
 

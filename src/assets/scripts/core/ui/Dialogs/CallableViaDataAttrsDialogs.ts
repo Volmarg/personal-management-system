@@ -1,6 +1,6 @@
 import AbstractDialogs  from "./AbstractDialogs";
 import Loader           from "../../../libs/loader/Loader";
-import Ajax             from "../Ajax";
+import Ajax             from "../../ajax/Ajax";
 import DialogDataDto    from "../../../DTO/DialogDataDto";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {

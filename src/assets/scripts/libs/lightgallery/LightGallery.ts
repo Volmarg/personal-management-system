@@ -2,7 +2,7 @@ import BootstrapNotify      from "../../libs/bootstrap-notify/BootstrapNotify";
 import Loader               from "../../libs/loader/Loader";
 import DomAttributes        from "../../core/utils/DomAttributes";
 import ShuffleWrapper       from "../shuffle/ShuffleWrapper";
-import Ajax                 from "../../core/ui/Ajax";
+import Ajax                 from "../../core/ajax/Ajax";
 import Navigation           from "../../core/Navigation";
 import DomElements          from "../../core/utils/DomElements";
 import StringUtils          from "../../core/utils/StringUtils";

@@ -1,7 +1,7 @@
 import Loader           from "../libs/loader/Loader";
 import DomElements      from "../core/utils/DomElements";
 import DomAttributes    from "../core/utils/DomAttributes";
-import Ajax             from "../core/ui/Ajax";
+import Ajax             from "../core/ajax/Ajax";
 import BootstrapNotify  from "../libs/bootstrap-notify/BootstrapNotify";
 
 export default class UploadBasedModules {

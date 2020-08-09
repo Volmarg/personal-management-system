@@ -1,16 +1,13 @@
 import BootstrapNotify              from "../../../libs/bootstrap-notify/BootstrapNotify";
 import DataTable                    from "../../../libs/datatable/DataTable";
 import PrismHighlight               from "../../../libs/prism/PrismHighlight";
-import Ajax                         from "../Ajax";
+import Ajax                         from "../../ajax/Ajax";
 import CallableViaDataAttrsDialogs  from "../Dialogs/CallableViaDataAttrsDialogs";
 import BootboxWrapper               from "../../../libs/bootbox/BootboxWrapper";
 import Initializer                  from "../../../Initializer";
 import DomAttributes                from "../../utils/DomAttributes";
 import DomElements                  from "../../utils/DomElements";
 import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
-import FormAppendAction             from "./FormAppendAction";
-import UpdateAction                 from "./UpdateAction";
-import JsColor                      from "../../../libs/jscolor/JsColor";
 
 export default abstract class AbstractAction {
 
@@ -62,29 +59,12 @@ export default abstract class AbstractAction {
      * @type Object
      */
     public static messages = {
-        entityUpdateSuccess (entity_name) {
-            return entity_name + " record has been succesfully updated";
-        },
-        entityUpdateFail: function (entity_name) {
-            return "Something went wrong while updating " + entity_name + " record";
-        },
-        entityRemoveSuccess: function (entity_name) {
-            return entity_name + " record was succesfully removed";
-        },
-        entityRemoveFail: function (entity_name) {
-            return "Something went wrong while removing " + entity_name + " record";
-        },
+
         entityEditStart: function (entity_name) {
             return 'You are currently editing ' + entity_name + ' record'
         },
         entityEditEnd: function (entity_name) {
             return "You've finished editing " + entity_name + ' record';
-        },
-        entityCreatedRecordSuccess: function (entity_name) {
-            return "New " + entity_name + ' record has been created';
-        },
-        entityCreatedRecordFail: function (entity_name) {
-            return "There was a problem while creating " + entity_name + ' record';
         },
         formTargetActionUpdateSuccess:function(form_target_action_name){
             return "Update action for " + form_target_action_name + ' has been completed';
@@ -102,20 +82,7 @@ export default abstract class AbstractAction {
             return "Record has been removed successfully";
         },
         default_record_removal_confirmation_message: 'Are You sure that You want to remove this record?',
-        default_copy_data_confirmation_message: 'Data was copied successfully',
-        default_copy_data_fail_message: 'There was some problem while copying the data',
-        password_copy_confirmation_message: 'Password was copied successfully',
     };
-
-    /**
-     * @type FormAppendAction
-     */
-    private formAppendAction = new FormAppendAction();
-
-    /**
-     * @type UpdateAction
-     */
-    private updateAction = new UpdateAction();
 
     protected methods = {
         removeEntity: {
@@ -125,26 +92,6 @@ export default abstract class AbstractAction {
                 repositoryName: "{repository_name}",
                 id: "{id}"
             }
-        },
-        buildEditEntityModalByRepositoryName: {
-            MyContactRepository: {
-                url     : "/dialog/body/edit-contact-card",
-                method  : "POST",
-                callback: () => {
-                    let jscolor = new JsColor();
-
-                    this.formAppendAction.attachFormViewAppendEvent();
-                    this.formAppendAction.attachRemoveParentEvent();
-                    jscolor.init();
-                    this.updateAction.attachContentSaveEventOnSaveIcon();
-                    // todo: keep in mind that create action is extending from this so most likely should be static call
-                }
-            },
-            /**
-             * Each dialog method should have target repository
-             * @param entityId
-             */
-            callModal: function(entityId){}
         },
         updateEntityByRepositoryName: {
             MyContactRepository: {

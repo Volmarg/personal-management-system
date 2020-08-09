@@ -1,6 +1,6 @@
 import AbstractDialogs from "./AbstractDialogs";
 import Loader from "../../../libs/loader/Loader";
-import Ajax from "../Ajax";
+import Ajax from "../../ajax/Ajax";
 
 export default class NotePreviewDialogs extends AbstractDialogs {
 

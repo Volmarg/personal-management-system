@@ -20,6 +20,8 @@ class AjaxResponse extends AbstractController {
     const KEY_FORM_TEMPLATE         = "form_template";
     const KEY_VALIDATED_FORM_PREFIX = "validated_form_prefix";
     const KEY_INVALID_FORM_FIELDS   = "invalid_form_fields";
+    const KEY_ROUTE_URL             = "route_url";
+    const KEY_CONSTANT_VALUE        = "constant_value";
 
     const XML_HTTP_HEADER_KEY   = "X-Requested-With";
     const XML_HTTP_HEADER_VALUE = "XMLHttpRequest";
@@ -68,6 +70,16 @@ class AjaxResponse extends AbstractController {
      * @var string $form_template
      */
     private $form_template = "";
+
+    /**
+     * @var string $route_url
+     */
+    private $route_url = "";
+
+    /**
+     * @var string $constant_value
+     */
+    private $constant_value = "";
 
     /**
      * @return int
@@ -210,6 +222,34 @@ class AjaxResponse extends AbstractController {
     }
 
     /**
+     * @return string
+     */
+    public function getRouteUrl(): string {
+        return $this->route_url;
+    }
+
+    /**
+     * @param string $route_url
+     */
+    public function setRouteUrl(string $route_url): void {
+        $this->route_url = $route_url;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConstantValue(): string {
+        return $this->constant_value;
+    }
+
+    /**
+     * @param string $constant_value
+     */
+    public function setConstantValue(string $constant_value): void {
+        $this->constant_value = $constant_value;
+    }
+
+    /**
      * @param int $code
      * @param string $message
      * @param string|null $template
@@ -302,6 +342,8 @@ class AjaxResponse extends AbstractController {
         $form_template         = $this->getFormTemplate();
         $validated_form_prefix = $this->getValidatedFormPrefix();
         $invalid_form_fields   = $this->getInvalidFormFields();
+        $route_url             = $this->getRouteUrl();
+        $constant_value        = $this->getConstantValue();
 
         $response_data = [
             self::KEY_CODE                  => $code,
@@ -314,6 +356,8 @@ class AjaxResponse extends AbstractController {
             self::KEY_FORM_TEMPLATE         => $form_template,
             self::KEY_VALIDATED_FORM_PREFIX => $validated_form_prefix,
             self::KEY_INVALID_FORM_FIELDS   => $invalid_form_fields,
+            self::KEY_ROUTE_URL             => $route_url,
+            self::KEY_CONSTANT_VALUE        => $constant_value,
         ];
 
         $response = new JsonResponse($response_data, 200);

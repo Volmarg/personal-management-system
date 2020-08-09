@@ -1,7 +1,47 @@
 import AbstractAction   from "./AbstractAction";
 import DomElements      from "../../utils/DomElements";
+import JsColor          from "../../../libs/jscolor/JsColor";
+import FormAppendAction from "./FormAppendAction";
+import UpdateAction     from "./UpdateAction";
 
 export default class EditViaModalPrefilledWithEntityDataAction extends AbstractAction {
+
+    /**
+     * @type FormAppendAction
+     */
+    private formAppendAction = new FormAppendAction();
+
+    /**
+     * @type UpdateAction
+     */
+    private updateAction = new UpdateAction();
+
+    /**
+     * @type Object
+     */
+    protected apiMethods = {
+
+        buildEditEntityModalByRepositoryName: {
+            MyContactRepository: {
+                url     : "/dialog/body/edit-contact-card",
+                method  : "POST",
+                callback: () => {
+                    let jscolor = new JsColor();
+
+                    this.formAppendAction.attachFormViewAppendEvent();
+                    this.formAppendAction.attachRemoveParentEvent();
+                    jscolor.init();
+                    this.updateAction.attachContentSaveEventOnSaveIcon();
+                    // todo: keep in mind that create action is extending from this so most likely should be static call
+                }
+            },
+            /**
+             * Each dialog method should have target repository
+             * @param entityId
+             */
+            callModal: function(entityId){}
+        },
+    };
 
     public init()
     {
@@ -36,9 +76,9 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
      * @param repositoryName
      */
     private callModalForEntity(entityId, repositoryName){
-        let modalUrl = this.methods.buildEditEntityModalByRepositoryName[repositoryName].url;
-        let method   = this.methods.buildEditEntityModalByRepositoryName[repositoryName].method;
-        let callback = this.methods.buildEditEntityModalByRepositoryName[repositoryName].callback;
+        let modalUrl = this.apiMethods.buildEditEntityModalByRepositoryName[repositoryName].url;
+        let method   = this.apiMethods.buildEditEntityModalByRepositoryName[repositoryName].method;
+        let callback = this.apiMethods.buildEditEntityModalByRepositoryName[repositoryName].callback;
 
 
         if( "undefined" === typeof modalUrl ){

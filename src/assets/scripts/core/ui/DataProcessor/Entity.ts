@@ -1,15 +1,11 @@
-import Ajax                     from "../Ajax";
-import AbstractAction           from "../Actions/AbstractAction";
+import Ajax                     from "../../ajax/Ajax";
 import AbstractDataProcessor    from "./AbstractDataProcessor";
 import DataProcessorInterface   from "./DataProcessorInterface";
 import TinyMce                  from "../../../libs/tiny-mce/TinyMce";
 import DataProcessorDto         from "../../../DTO/DataProcessorDto";
-import BootboxWrapper from "../../../libs/bootbox/BootboxWrapper";
-import Navigation from "../../Navigation";
-import EntityStructure from "../BackendStructure/EntityStructure";
-
-// todo: rename to base elemnents etc
-// same with crud logic
+import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
+import Navigation               from "../../Navigation";
+import EntityStructure          from "../BackendStructure/EntityStructure";
 
 /**
  * @description This class holds definitions what kind of data is being gathered on frontend
@@ -38,6 +34,8 @@ import EntityStructure from "../BackendStructure/EntityStructure";
  */
 export default class Entity extends AbstractDataProcessor {
 
+
+
     public static MySchedules: DataProcessorInterface = {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return undefined;
@@ -50,8 +48,8 @@ export default class Entity extends AbstractDataProcessor {
             let information     = $($baseElement).find('.information').html();
 
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MySchedules.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MySchedules.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MySchedules.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MySchedules.processorName);
 
             let url      = '/my-schedule/update/';
             let ajaxData = {
@@ -77,8 +75,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-schedule/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MySchedules.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MySchedules.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MySchedules.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MySchedules.processorName);
             let ajaxData        = {
                 id: id
             };
@@ -96,8 +94,8 @@ export default class Entity extends AbstractDataProcessor {
             let schedulesType = JSON.parse(Navigation.getCurrentGetAttrs()).schedules_type;
 
             let url             = '/my-schedules/' + schedulesType;
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MySchedules.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MySchedules.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySchedules.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MySchedules.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.successMessage = successMessage;
@@ -118,8 +116,8 @@ export default class Entity extends AbstractDataProcessor {
             let name = $($baseElement).find('.name').html();
             let icon = $($baseElement).find('.icon').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MySchedulesTypes.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MySchedulesTypes.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MySchedulesTypes.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MySchedulesTypes.processorName);
 
             let url = '/my-schedule-settings/schedule-type/update';
             let ajaxData = {
@@ -140,8 +138,8 @@ export default class Entity extends AbstractDataProcessor {
             let id              = $($baseElement).find('.id').html();
             let name            = $($baseElement).find('.name').html();
             let url             = '/my-schedule-settings/schedule-type/remove';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MySchedulesTypes.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MySchedulesTypes.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MySchedulesTypes.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MySchedulesTypes.processorName);
             let isDataTable     = false;
             let ajaxData        = {
                 id: id
@@ -161,8 +159,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url            = '/my-schedules-settings';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MySchedulesTypes.processorName);
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MySchedulesTypes.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySchedulesTypes.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MySchedulesTypes.processorName);
             let callback       = function (dataCallbackParams) {
                 let ajax = new Ajax();
                 let menuNodeModuleName = dataCallbackParams.menuNodeModuleName;
@@ -198,8 +196,8 @@ export default class Entity extends AbstractDataProcessor {
             let information = $($baseElement).find('.information').html();
             let rejected    = $($baseElement).find('.rejected input').prop("checked");
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsProduct.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsProduct.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsProduct.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsProduct.processorName);
 
             let url      = '/my-payments-products/update/';
             let ajaxData = {
@@ -223,8 +221,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id             = $($baseElement).find('.id').html();
             let url            = '/my-payments-products/remove/';
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsProduct.processorName);
-            let failMessage    = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsProduct.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsProduct.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsProduct.processorName);
 
             let ajaxData       = {
                     id: id
@@ -241,8 +239,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-payments-products';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPaymentsProduct.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPaymentsProduct.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsProduct.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsProduct.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -265,8 +263,8 @@ export default class Entity extends AbstractDataProcessor {
             let description = $($baseElement).find('.description').html();
             let paymentType = $($baseElement).find('.type :selected');
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsMonthly.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsMonthly.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsMonthly.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsMonthly.processorName);
 
             let url      = '/my-payments-monthly/update/';
             let ajaxData = {
@@ -292,8 +290,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-payments-monthly/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsMonthly.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsMonthly.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsMonthly.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsMonthly.processorName);
             let ajaxData        = {
                 id: id
             };
@@ -309,8 +307,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-payments-monthly';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPaymentsMonthly.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPaymentsMonthly.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsMonthly.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsMonthly.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -333,8 +331,8 @@ export default class Entity extends AbstractDataProcessor {
             let description = $($baseElement).find('.description').html();
             let paymentType = $($baseElement).find('.type :selected');
 
-            let successMessage  = AbstractAction.messages.entityUpdateSuccess(Entity.MyRecurringPaymentsMonthly.processorName);
-            let failMessage     = AbstractAction.messages.entityUpdateFail(Entity.MyRecurringPaymentsMonthly.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyRecurringPaymentsMonthly.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyRecurringPaymentsMonthly.processorName);
 
             let url      = 'my-recurring-payments-monthly/update/';
             let ajaxData = {
@@ -360,8 +358,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-recurring-payments-monthly/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyRecurringPaymentsMonthly.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyRecurringPaymentsMonthly.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyRecurringPaymentsMonthly.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyRecurringPaymentsMonthly.processorName);
             let ajaxData        = {
                 id: id
             };
@@ -377,8 +375,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-recurring-payments-monthly-settings';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyRecurringPaymentsMonthly.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyRecurringPaymentsMonthly.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyRecurringPaymentsMonthly.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyRecurringPaymentsMonthly.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -402,8 +400,8 @@ export default class Entity extends AbstractDataProcessor {
             let information = $($baseElement).find('.information').html();
             let currency    = $($baseElement).find('.currency').find("select").val();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsOwed.processorName);
-            let failMessage = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsOwed.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsOwed.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsOwed.processorName);
 
             let url = '/my-payments-owed/update/';
             let ajaxData = {
@@ -426,8 +424,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-payments-owed/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsOwed.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsOwed.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsOwed.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsOwed.processorName);
             let ajaxData        = {
                 id: id
             };
@@ -443,8 +441,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url            = '/my-payments-owed';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPaymentsOwed.processorName);
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPaymentsOwed.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsOwed.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsOwed.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -467,8 +465,8 @@ export default class Entity extends AbstractDataProcessor {
             let information = $($baseElement).find('.information').html();
             let currency    = $($baseElement).find('.currency').find("select").val();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsIncome.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsIncome.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsIncome.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsIncome.processorName);
 
             let url = '/my-payments-income/update/';
             let ajaxData = {
@@ -490,8 +488,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id             = $($baseElement).find('.id').html();
             let url            = '/my-payments-income/remove/';
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsIncome.processorName);
-            let failMessage    = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsIncome.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsIncome.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsIncome.processorName);
             let ajaxData       = {
                 id: id
             };
@@ -507,8 +505,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-payments-income';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPaymentsIncome.processorName);
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPaymentsIncome.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsIncome.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsIncome.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -532,8 +530,8 @@ export default class Entity extends AbstractDataProcessor {
             let type        = $($baseElement).find('.type').html();
             let goal        = $($baseElement).find('.goal').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyJobAfterhours.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyJobAfterhours.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyJobAfterhours.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyJobAfterhours.processorName);
 
             let url      = '/my-job/afterhours/update/';
             let ajaxData = {
@@ -556,8 +554,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-job/afterhours/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyJobAfterhours.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyJobAfterhours.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyJobAfterhours.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyJobAfterhours.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -569,8 +567,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-job/afterhours';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MySchedules.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MySchedules.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySchedules.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MySchedules.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -592,8 +590,8 @@ export default class Entity extends AbstractDataProcessor {
             let daysSpent   = $($baseElement).find('.daysSpent').find("input").val();
             let information = $($baseElement).find('.information').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyJobHolidays.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyJobHolidays.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyJobHolidays.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyJobHolidays.processorName);
 
             let url      = '/my-job/holidays/update/';
             let ajaxData = {
@@ -614,8 +612,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id             = $($baseElement).find('.id').html();
             let url            = '/my-job/holidays/remove/';
-            let failMessage    = AbstractAction.messages.entityRemoveFail(Entity.MyJobHolidays.processorName);
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MyJobHolidays.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyJobHolidays.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyJobHolidays.processorName);
             
             let ajaxData       = {
                 id: id
@@ -633,8 +631,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-job/holidays';
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MyJobHolidays.processorName);
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyJobHolidays.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyJobHolidays.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyJobHolidays.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -656,8 +654,8 @@ export default class Entity extends AbstractDataProcessor {
             let daysInPool  = $($baseElement).find('.daysInPool input').val();
             let companyName = $($baseElement).find('.companyName').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyJobHolidaysPool.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyJobHolidaysPool.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyJobHolidaysPool.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyJobHolidaysPool.processorName);
 
             let url = '/my-job/holidays-pool/update/';
             let ajaxData = {
@@ -677,8 +675,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id             = $($baseElement).find('.id').html();
             let url            = '/my-job/holidays-pool/remove/';
-            let failMessage    = AbstractAction.messages.entityRemoveFail(Entity.MyJobHolidaysPool.processorName);
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MyJobHolidaysPool.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyJobHolidaysPool.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyJobHolidaysPool.processorName);
 
             let ajaxData       = {
                 id: id
@@ -696,8 +694,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-job/settings';
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MyJobHolidaysPool.processorName);
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyJobHolidaysPool.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyJobHolidaysPool.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyJobHolidaysPool.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -719,8 +717,8 @@ export default class Entity extends AbstractDataProcessor {
             let example     = $($baseElement).find('.example').html();
             let name        = $($baseElement).find('.name').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyShoppingPlans.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyShoppingPlans.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyShoppingPlans.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyShoppingPlans.processorName);
 
             let url      = '/my-shopping/plans/update/';
             let ajaxData = {
@@ -741,8 +739,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-shopping/plans/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyShoppingPlans.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyShoppingPlans.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyShoppingPlans.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyShoppingPlans.processorName);
 
             let ajaxData       = {
                 id: id
@@ -760,8 +758,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-shopping/plans';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyShoppingPlans.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyShoppingPlans.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyShoppingPlans.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyShoppingPlans.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -785,8 +783,8 @@ export default class Entity extends AbstractDataProcessor {
             let map         = $($baseElement).find('.map a').attr('href');
             let category    = $($baseElement).find('.category i').html();
 
-            let successMessage  = AbstractAction.messages.entityUpdateSuccess(Entity.MyTravelsIdeas.processorName);
-            let failMessage     = AbstractAction.messages.entityUpdateFail(Entity.MyTravelsIdeas.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyTravelsIdeas.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyTravelsIdeas.processorName);
 
             let url      = '/my-travels/ideas/update/';
             let ajaxData = {
@@ -809,8 +807,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-travels/ideas/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyTravelsIdeas.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyTravelsIdeas.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyTravelsIdeas.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyTravelsIdeas.processorName);
 
             let ajaxData        = {
                 id: id
@@ -828,8 +826,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-travels/ideas';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyTravelsIdeas.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyTravelsIdeas.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyTravelsIdeas.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyTravelsIdeas.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -851,8 +849,8 @@ export default class Entity extends AbstractDataProcessor {
             let description = $($baseElement).find('.description').html();
             let name        = $($baseElement).find('.name').html();
 
-            let successMessage  = AbstractAction.messages.entityUpdateSuccess(Entity.Achievements.processorName);
-            let failMessage     = AbstractAction.messages.entityUpdateFail(Entity.Achievements.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.Achievements.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityUpdateFail(Entity.Achievements.processorName);
 
             let url = '/achievement/update/';
             let ajaxData = {
@@ -873,8 +871,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/achievement/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.Achievements.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.Achievements.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.Achievements.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.Achievements.processorName);
 
             let ajaxData       = {
                 id: id
@@ -891,8 +889,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/achievement';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.Achievements.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.Achievements.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.Achievements.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.Achievements.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -912,8 +910,8 @@ export default class Entity extends AbstractDataProcessor {
             let color   = $($baseElement).find('.color').text();
             let parent  = $($baseElement).find('.parent').find(':selected').val();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyNotesCategories.processorName);
-            let failMessage = AbstractAction.messages.entityUpdateFail(Entity.MyNotesCategories.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyNotesCategories.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyNotesCategories.processorName);
 
             let url      = '/my-notes/settings/update/';
             let ajaxData = {
@@ -935,8 +933,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-notes/settings/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyNotesCategories.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyNotesCategories.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyNotesCategories.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyNotesCategories.processorName);
             let confirmMessage  = "This category might contain notes or be parent of other category. Do You really want to remove it?";
             let ajaxData        = {
                 id: id
@@ -954,8 +952,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-notes/settings';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyNotesCategories.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyNotesCategories.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyNotesCategories.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyNotesCategories.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -981,8 +979,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-notes/create';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyNotes.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyNotes.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyNotes.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyNotes.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1006,8 +1004,8 @@ export default class Entity extends AbstractDataProcessor {
             let id    = $($baseElement).find('.id').html();
             let value = $($baseElement).find('.value').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsSettings.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsSettings.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsSettings.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsSettings.processorName);
 
             let url      = '/my-payments-settings/update';
             let ajaxData = {
@@ -1027,8 +1025,8 @@ export default class Entity extends AbstractDataProcessor {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-payments-settings/remove/';
             let value           = $($baseElement).find('.value').html();
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsSettings.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsSettings.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsSettings.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsSettings.processorName);
             let confirmMessage  = 'You are about to remove type named <b>' + value + ' </b>. There might be payment connected with it. Are You 100% sure? This might break something...';
             let ajaxData        = {
                 id: id
@@ -1046,8 +1044,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-payments-settings';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPaymentsSettings.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPaymentsSettings.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsSettings.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsSettings.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1071,8 +1069,8 @@ export default class Entity extends AbstractDataProcessor {
             let name        = $($baseElement).find('.name').html();
             let imagePath   = $($baseElement).find('.image_path').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyContactType.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyContactType.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyContactType.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyContactType.processorName);
 
             let url = '/my-contacts-types/update';
             let ajaxData = {
@@ -1093,8 +1091,8 @@ export default class Entity extends AbstractDataProcessor {
             let id              = $($baseElement).find('.id').html();
             let name            = $($baseElement).find('.name').html();
             let url             = '/my-contacts-types/remove';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyContactType.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyContactType.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyContactType.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyContactType.processorName);
             let confirmMessage  = 'You are about to remove type named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
             let ajaxData        = {
                 id: id
@@ -1113,8 +1111,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url            = '/my-contacts-settings';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyContactType.processorName);
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MyContactType.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyContactType.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyContactType.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1140,8 +1138,8 @@ export default class Entity extends AbstractDataProcessor {
             let $form              = $($baseElement).find('form');
             let serializedFormData = $form.serialize();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyContact.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyContact.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyContact.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyContact.processorName);
 
             let url      = '/my-contacts/update';
             let ajaxData = {
@@ -1172,8 +1170,8 @@ export default class Entity extends AbstractDataProcessor {
             let icon   = $($baseElement).find('.icon').html();
             let color  = $($baseElement).find('.color').text();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyContactGroup.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyContactGroup.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyContactGroup.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyContactGroup.processorName);
 
             let url      = '/my-contacts-groups/update';
             let ajaxData = {
@@ -1195,8 +1193,8 @@ export default class Entity extends AbstractDataProcessor {
             let id              = $($baseElement).find('.id').html();
             let name            = $($baseElement).find('.name').html();
             let url             = '/my-contacts-groups/remove';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyContactGroup.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyContactGroup.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyContactGroup.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyContactGroup.processorName);
             let confirmMessage  = 'You are about to remove group named <b>' + name + ' </b>. There might be contact connected with it. Are You 100% sure? This might break something...';
             let ajaxData        = {
                 id: id
@@ -1215,8 +1213,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url = '/my-contacts-settings';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyContactGroup.processorName);
-            let failMessage    = AbstractAction.messages.entityCreatedRecordFail(Entity.MyContactGroup.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyContactGroup.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyContactGroup.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1238,8 +1236,8 @@ export default class Entity extends AbstractDataProcessor {
             let groupId         = <string> $($baseElement).find('.group :selected').val();
             let trimmedGroupId  = groupId.trim();
 
-            let successMessage    = AbstractAction.messages.entityUpdateSuccess(Entity.MyPasswords.processorName);
-            let failMessage       = AbstractAction.messages.entityUpdateFail(Entity.MyPasswords.processorName);
+            let successMessage    = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPasswords.processorName);
+            let failMessage       = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPasswords.processorName);
             let invokedAlertBody  = '<b>WARNING</b>! You are about to save Your password. There is NO comming back. If You click save now with all stars **** in the password field then stars will be Your new password!';
 
             let ajaxUrl  = '/my-passwords/update/';
@@ -1269,8 +1267,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
             let url             = '/my-passwords/remove/';
-            let successMessage  = AbstractAction.messages.entityRemoveSuccess(Entity.MyPasswords.processorName);
-            let failMessage     = AbstractAction.messages.entityRemoveFail(Entity.MyPasswords.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPasswords.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPasswords.processorName);
 
             let ajaxData       = {
                 id: id
@@ -1288,8 +1286,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-passwords';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPasswords.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPasswords.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPasswords.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPasswords.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1305,8 +1303,8 @@ export default class Entity extends AbstractDataProcessor {
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = ajaxUrl;
-            dataProcessorsDto.successMessage = AbstractAction.messages.password_copy_confirmation_message;
-            dataProcessorsDto.failMessage    = AbstractAction.messages.default_copy_data_fail_message;
+            dataProcessorsDto.successMessage = AbstractDataProcessor.messages.password_copy_confirmation_message;
+            dataProcessorsDto.failMessage    = AbstractDataProcessor.messages.default_copy_data_fail_message;
 
             return dataProcessorsDto;
         },
@@ -1321,8 +1319,8 @@ export default class Entity extends AbstractDataProcessor {
             let id   = $($baseElement).find('.id').html();
             let name = $($baseElement).find('.name').html();
 
-            let successMessage  = AbstractAction.messages.entityUpdateSuccess(Entity.MyPasswordsGroups.processorName);
-            let failMessage     = AbstractAction.messages.entityUpdateFail(Entity.MyPasswordsGroups.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPasswordsGroups.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPasswordsGroups.processorName);
 
             let url      = '/my-passwords-groups/update';
             let ajaxData = {
@@ -1342,8 +1340,8 @@ export default class Entity extends AbstractDataProcessor {
             let id              = $($baseElement).find('.id').html();
             let name            = $($baseElement).find('.name').html();
             let url             = '/my-passwords-groups/remove';
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MyPasswordsGroups.processorName);
-            let failMessage    = AbstractAction.messages.entityRemoveFail(Entity.MyPasswordsGroups.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPasswordsGroups.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPasswordsGroups.processorName);
             let confirmMessage = 'You are about to remove group named <b>' + name + ' </b>. There might be password connected with it. Are You 100% sure? This might break something...';
             let ajaxData       = {
                 id: id
@@ -1361,8 +1359,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url = '/my-passwords-settings';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyPasswordsGroups.processorName);
-            let failMessage = AbstractAction.messages.entityCreatedRecordFail(Entity.MyPasswordsGroups.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPasswordsGroups.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPasswordsGroups.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1385,8 +1383,8 @@ export default class Entity extends AbstractDataProcessor {
             let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
             let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
 
-            let successMessage     = AbstractAction.messages.entityUpdateSuccess(Entity.MyGoals.processorName);
-            let failMessage        = AbstractAction.messages.entityUpdateFail(Entity.MyGoals.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyGoals.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyGoals.processorName);
 
             let url = '/admin/goals/settings/update';
             let ajaxData = {
@@ -1408,8 +1406,8 @@ export default class Entity extends AbstractDataProcessor {
             let id             = $($baseElement).find('.id').html();
             let name           = $($baseElement).find('.name').html();
             let url            = '/admin/goals/settings/remove';
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MyGoals.processorName);
-            let failMessage    = AbstractAction.messages.entityRemoveFail(Entity.MyGoals.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyGoals.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyGoals.processorName);
             let confirmMessage = 'You are about to remove goal named <b>' + name + ' </b>. There might be subgoal connected with it. Are You 100% sure? This might break something...';
             let ajaxData       = {
                 id: id
@@ -1427,8 +1425,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/admin/goals/settings/MyGoals';
-            let successMessage  = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyGoals.processorName);
-            let failMessage     = AbstractAction.messages.entityCreatedRecordFail(Entity.MyGoals.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyGoals.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyGoals.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1450,8 +1448,8 @@ export default class Entity extends AbstractDataProcessor {
             let goalId        = <string> $($baseElement).find('.goal :selected').val();
             let trimmedGoalId = goalId.trim();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MySubgoals.processorName);
-            let failMessage = AbstractAction.messages.entityUpdateFail(Entity.MySubgoals.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MySubgoals.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MySubgoals.processorName);
 
             let url = '/admin/subgoals/settings/update';
             let ajaxData = {
@@ -1475,8 +1473,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id = $($baseElement).find('.id').html();
             let url = '/admin/subgoals/settings/remove';
-            let successMessage = AbstractAction.messages.entityRemoveSuccess(Entity.MySubgoals.processorName);
-            let failMessage = AbstractAction.messages.entityRemoveFail(Entity.MySubgoals.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MySubgoals.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityRemoveFail(Entity.MySubgoals.processorName);
 
             let ajaxData       = {
                 id: id
@@ -1493,8 +1491,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url = '/admin/goals/settings/MySubgoals';
-            let successMessage = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MySubgoals.processorName);
-            let failMessage = AbstractAction.messages.entityCreatedRecordFail(Entity.MySubgoals.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySubgoals.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MySubgoals.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1520,8 +1518,8 @@ export default class Entity extends AbstractDataProcessor {
             let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
             let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
 
-            let successMessage             = AbstractAction.messages.entityUpdateSuccess(Entity.MyGoalsPayments.processorName);
-            let failMessage                = AbstractAction.messages.entityUpdateFail(Entity.MyGoalsPayments.processorName);
+            let successMessage             = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyGoalsPayments.processorName);
+            let failMessage                = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyGoalsPayments.processorName);
 
             let url      = '/admin/goals/payments/settings/update';
             let ajaxData = {
@@ -1545,8 +1543,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id                 = $($baseElement).find('.id').html();
             let url                = '/admin/goals/payments/settings/remove';
-            let successMessage     = AbstractAction.messages.entityRemoveSuccess(Entity.MyGoalsPayments.processorName);
-            let failMessage        = AbstractAction.messages.entityRemoveFail(Entity.MyGoalsPayments.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyGoalsPayments.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyGoalsPayments.processorName);
             let ajaxData           = {
                 id: id
             };
@@ -1562,8 +1560,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url                 = '/admin/goals/settings/MyGoalsPayments';
-            let successMessage     = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyGoalsPayments.processorName);
-            let failMessage        = AbstractAction.messages.entityCreatedRecordFail(Entity.MyGoalsPayments.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyGoalsPayments.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyGoalsPayments.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1593,8 +1591,8 @@ export default class Entity extends AbstractDataProcessor {
 
             let url                 = '/api/my-files/update';
 
-            let successMessage     = AbstractAction.messages.entityUpdateSuccess(Entity.MyFiles.processorName);
-            let failMessage        = AbstractAction.messages.entityUpdateFail(Entity.MyFiles.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyFiles.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyFiles.processorName);
 
             let ajaxData = {
                 'file_full_path' : file_full_path,
@@ -1621,8 +1619,8 @@ export default class Entity extends AbstractDataProcessor {
                 'subdirectory'      : subdirectory
             };
 
-            let successMessage     = AbstractAction.messages.entityRemoveSuccess(Entity.MyFiles.processorName);
-            let failMessage        = AbstractAction.messages.entityRemoveFail(Entity.MyFiles.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyFiles.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyFiles.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -1648,8 +1646,8 @@ export default class Entity extends AbstractDataProcessor {
             let amount  = $($baseElement).find('.amount').html();
             let name    = $($baseElement).find('.name').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsBillsItems.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsBillsItems.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsBillsItems.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsBillsItems.processorName);
 
             let url = '/my-payments-bills/update-bill-item/';
             let ajaxData = {
@@ -1669,8 +1667,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id                 = $($baseElement).find('.id').html();
             let url                = '/my-payments-bills/remove-bill-item/';
-            let successMessage     = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsBillsItems.processorName);
-            let failMessage        = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsBillsItems.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsBillsItems.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsBillsItems.processorName);
             let ajaxData           = {
                 id : id
             };
@@ -1702,8 +1700,8 @@ export default class Entity extends AbstractDataProcessor {
             let endDate         = $($baseElement).find('.endDate').val();
             let plannedAmount   = $($baseElement).find('.plannedAmount').html();
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyPaymentsBills.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyPaymentsBills.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsBills.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsBills.processorName);
 
             let url = '/my-payments-bills/update-bill/';
             let ajaxData = {
@@ -1726,8 +1724,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id                  = $($baseElement).find('.id').html();
             let url                 = '/my-payments-bills/remove-bill/';
-            let successMessage     = AbstractAction.messages.entityRemoveSuccess(Entity.MyPaymentsBills.processorName);
-            let failMessage        = AbstractAction.messages.entityRemoveFail(Entity.MyPaymentsBills.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsBills.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsBills.processorName);
             let ajaxData           = {
                 id : id
             };
@@ -1750,8 +1748,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url                = '/my-issues/pending';
-            let successMessage     = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyIssueContact.processorName);
-            let failMessage        = AbstractAction.messages.entityCreatedRecordFail(Entity.MyIssueContact.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueContact.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueContact.processorName);
             let callbackAfter      = () => {
                 BootboxWrapper.mainLogic.hideAll();
             };
@@ -1773,8 +1771,8 @@ export default class Entity extends AbstractDataProcessor {
                 BootboxWrapper.mainLogic.hideAll();
             };
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyIssueContact.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyIssueContact.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyIssueContact.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyIssueContact.processorName);
 
             let url      = '/my-issues-contacts/update';
             let ajaxData = {
@@ -1796,8 +1794,8 @@ export default class Entity extends AbstractDataProcessor {
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id                 = $($baseElement).find('.id').html();
             let url                = '/my-issues-contacts/remove';
-            let successMessage     = AbstractAction.messages.entityRemoveSuccess(Entity.MyIssueContact.processorName);
-            let failMessage        = AbstractAction.messages.entityRemoveFail(Entity.MyIssueContact.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyIssueContact.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyIssueContact.processorName);
             let ajaxData           = {
                 id:id
             };
@@ -1827,8 +1825,8 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url                = '/my-issues/pending';
-            let successMessage     = AbstractAction.messages.entityCreatedRecordSuccess(Entity.MyIssueProgress.processorName);
-            let failMessage        = AbstractAction.messages.entityCreatedRecordFail(Entity.MyIssueProgress.processorName);
+            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueProgress.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueProgress.processorName);
             let callbackAfter      = () => {
                 BootboxWrapper.mainLogic.hideAll();
             };
@@ -1850,8 +1848,8 @@ export default class Entity extends AbstractDataProcessor {
             let id              = $($baseElement).find('.id').text();
             let information     = tinymceContent;
 
-            let successMessage = AbstractAction.messages.entityUpdateSuccess(Entity.MyIssueProgress.processorName);
-            let failMessage    = AbstractAction.messages.entityUpdateFail(Entity.MyIssueProgress.processorName);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyIssueProgress.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyIssueProgress.processorName);
 
             let url = '/my-issues-progress/update';
             let ajaxData = {

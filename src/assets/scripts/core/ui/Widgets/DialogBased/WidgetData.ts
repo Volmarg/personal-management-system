@@ -7,7 +7,7 @@ import NotesTinyMce             from "../../../../modules/Notes/NotesTinyMce";
 import Upload                   from "../../../../modules/Files/Upload";
 import FormsUtils               from "../../../utils/FormsUtils";
 import WidgetDataDto            from "../../../../DTO/WidgetDataDto";
-import Ajax                     from "../../Ajax";
+import Ajax                     from "../../../ajax/Ajax";
 import ControllerStructure      from "../../BackendStructure/ControllerStructure";
 import RouterStructure          from "../../BackendStructure/RouterStructure";
 import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget";
