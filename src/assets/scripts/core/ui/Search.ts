@@ -4,8 +4,6 @@ import Loader           from "../../libs/loader/Loader";
 import Popover          from "../../libs/popover/Popover";
 import NotePreviewDialogs from "./Dialogs/NotePreviewDialogs";
 
-var window = window;
-
 export default class Search {
 
     /**
@@ -63,6 +61,7 @@ export default class Search {
 
         let _this       = this;
         let searchInput = $(this.selectors.ids.searchInput);
+        let timeout     = null;
 
         searchInput.on('change', () => {
 
@@ -71,8 +70,8 @@ export default class Search {
 
             if( ArrayUtils.isEmpty(tags)){
 
-                if( undefined !== window.timeout ){
-                    clearTimeout(window.timeout);
+                if( undefined !== timeout ){
+                    clearTimeout(timeout);
                 }
 
                 $(searchResultWrapper).empty();
@@ -84,13 +83,13 @@ export default class Search {
             };
 
             // this is used to prevent instant search whenever new character is inserted in search input
-            if( undefined !== window.timeout ){
-                clearTimeout(window.timeout);
+            if( undefined !== timeout ){
+                clearTimeout(timeout);
             }
 
             Loader.showLoader();
 
-            window.timeout = setTimeout( () => {
+            timeout = setTimeout( () => {
                 $.ajax({
                     method  : "POST",
                     url     : _this.methods.getSearchResultsDataForTag,

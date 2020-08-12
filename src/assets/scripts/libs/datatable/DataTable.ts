@@ -43,7 +43,7 @@ export default class DataTable {
     /**
      * @type Object
      */
-    private selectors: {
+    private selectors = {
         classes:{
             massActionButtonsSection        : ".datatable-mass-actions",
             massActionRemoveFilesButton     : ".datatable-remove-files",

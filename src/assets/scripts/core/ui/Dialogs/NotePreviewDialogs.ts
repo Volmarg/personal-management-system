@@ -1,9 +1,19 @@
-import AbstractDialogs from "./AbstractDialogs";
-import Loader from "../../../libs/loader/Loader";
-import Ajax from "../../ajax/Ajax";
+import AbstractDialogs  from "./AbstractDialogs";
+import Loader           from "../../../libs/loader/Loader";
+import Ajax             from "../../ajax/Ajax";
+import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
+import TinyMce from "../../../libs/tiny-mce/TinyMce";
 
 export default class NotePreviewDialogs extends AbstractDialogs {
 
+    /**
+     * @description fetches the template from backend then calls bootbox dialog and inserts the template alongside
+     *              with triggering logic initialization
+     *
+     * @param noteId
+     * @param categoryId
+     * @param callback
+     */
     public buildNotePreviewDialog(noteId, categoryId, callback = null) {
         let _this             = this;
         let getDialogTemplate = this.methods.getNotePreviewDialogTemplate;
@@ -20,9 +30,14 @@ export default class NotePreviewDialogs extends AbstractDialogs {
         })
     };
 
+    /**
+     * @description builds the bootbox instance, inserts template and calls js logic
+     * @param template
+     * @param callback
+     */
     private callNotePreviewDialog(template, callback = null) {
 
-        let dialog = bootbox.alert({
+        let dialog = BootboxWrapper.mainLogic.alert({
             size: "large",
             backdrop: true,
             closeButton: false,
@@ -40,7 +55,12 @@ export default class NotePreviewDialogs extends AbstractDialogs {
 
         //@ts-ignore
         dialog.init( () => {
-            this.tinyMce.init();
+
+            /**
+             * @description This is required due to loosing context of `this`
+             */
+            let tinymce = new TinyMce();
+            tinymce.init();
         });
     };
 

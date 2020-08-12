@@ -45,7 +45,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
             }
 
            let dialog = BootboxWrapper.mainLogic.alert({
-                message: "",
+                message: "-",
                 backdrop: true,
                 buttons: {
                     ok: {

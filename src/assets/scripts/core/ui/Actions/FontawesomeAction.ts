@@ -22,17 +22,27 @@ export default class FontawesomeAction extends AbstractAction {
     private attachFontawesomePickEventForFontawesomeAction(): void {
         let _this = this;
 
-        $('.' + this.classes["fontawesome-picker-input"]).each((index, input) => {
+        let $inputs   = $('.' + this.classes["fontawesome-picker-input"]);
+        let $previews = $('.' + this.classes["fontawesome-picker-preview"]);
+        let $actions  = $('.action-fontawesome');
+
+        let $fontawesomePickerFormTypeBlocks = $('.fontawesome-picker-form-type-block');
+        let $formTypeBlocksButtons           = $fontawesomePickerFormTypeBlocks.find('[data-iconpicker="true"]');
+
+        let $allActionsElements = $.merge($formTypeBlocksButtons, $actions);
+
+        $inputs.each((index, input) => {
             $(input).removeClass(this.classes["fontawesome-picker-input"]);
             $(input).addClass(this.classes["fontawesome-picker-input"] + index);
         });
 
-        $('.' + this.classes["fontawesome-picker-preview"]).each((index, input) => {
+        $previews.each((index, input) => {
             $(input).removeClass(this.classes["fontawesome-picker-preview"]);
             $(input).addClass(this.classes["fontawesome-picker-preview"] + index);
         });
 
-        $('.action-fontawesome').each((index, icon) => {
+        //@ts-ignore
+        $allActionsElements.each((index, icon) => {
 
             $(icon).addClass('fontawesome-picker' + index);
             $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);

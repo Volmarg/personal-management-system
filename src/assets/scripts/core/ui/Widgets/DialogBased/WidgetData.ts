@@ -11,6 +11,7 @@ import Ajax                     from "../../../ajax/Ajax";
 import ControllerStructure      from "../../BackendStructure/ControllerStructure";
 import RouterStructure          from "../../BackendStructure/RouterStructure";
 import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget";
+import Navigation               from "../../../Navigation";
 
 /**
  * @description this class contains definitions of logic used for given widget
@@ -71,8 +72,11 @@ export default class WidgetData {
             formSubmitButton.attr('data-template-url', window.location.pathname);
             formSubmitButton.attr('data-template-method', 'GET');
         };
+        let getAttrs      = Navigation.getCurrentGetAttrs();
+        let categoryName  = getAttrs['category'];
+        let categoryId    = getAttrs['category_id'];
 
-        let url           = '';//url: '/dialog/body/create-note/' ~ getAttrs.category ~ '/' ~ getAttrs.category_id, ;
+        let url           = `/dialog/body/create-note/${categoryName}/${categoryId}`;
         let widgetDataDto = new WidgetDataDto();
 
         widgetDataDto.url      = url;

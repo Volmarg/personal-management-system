@@ -20,7 +20,7 @@ export default class FontAwesomePicker {
      * @type FontAwesomePickerConfigInterface
      */
     private static ipDefaultOptions: FontAwesomePickerConfigInterface = {
-        jsonUrl           : "src/iconpicker-1.5.0.json",
+        jsonUrl           : "/assets/libs/iconpicker-1.5.0.json",
         searchPlaceholder : 'Search Icon',
         showAllButton     : 'Show All',
         cancelButton      : 'Cancel',
@@ -61,7 +61,7 @@ export default class FontAwesomePicker {
 
     public init(ipUserOptions) {
         //@ts-ignore
-        FontAwesomePicker.ipNewOptions = FontAwesomePicker.extendIconPicker(true, ipDefaultOptions, ipUserOptions);
+        FontAwesomePicker.ipNewOptions = FontAwesomePicker.extendIconPicker(true, FontAwesomePicker.ipDefaultOptions, ipUserOptions);
         BootboxWrapper.removeTabindexFromActiveModals();
     };
 

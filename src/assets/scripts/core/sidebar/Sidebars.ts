@@ -1,5 +1,4 @@
 import * as $ from "jquery";
-var window = window;
 
 export default class Sidebars {
 
@@ -74,6 +73,7 @@ export default class Sidebars {
         $('#sidebar-toggle').click(e => {
             e.preventDefault();
             setTimeout(() => {
+                //@ts-ignore
                 window.dispatchEvent(window.EVENT);
             }, 300);
         });

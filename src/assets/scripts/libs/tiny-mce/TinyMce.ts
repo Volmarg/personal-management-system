@@ -1,4 +1,5 @@
-import tinymce from 'tinymce/tinymce';
+var tinymce = require('tinymce/tinymce');// must be here, because themes are using it - otherwise will crash
+
 import 'tinymce/themes/silver';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/table';
@@ -7,9 +8,14 @@ import 'tinymce/plugins/preview';
 import 'tinymce/plugins/paste';
 import 'tinymce/plugins/codesample';
 
-import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
-import StringUtils from "../../core/utils/StringUtils";
+import BootstrapNotify  from "../bootstrap-notify/BootstrapNotify";
+import StringUtils      from "../../core/utils/StringUtils";
 
+/**
+ * @description Handles tinymce logic
+ *              window.tinymce - must be used instead of `tinymce` directly because the tinymce import has assignment
+ *              to window inside
+ */
 export default class TinyMce {
 
     /**
@@ -86,7 +92,8 @@ export default class TinyMce {
                     this.getDoc().body.style.fontFamily = 'Arial';
                 });
                 ed.on('change', function () {
-                    tinymce.triggerSave();
+                    //@ts-ignore
+                    window.tinymce.triggerSave();
                 });
             }
         }
@@ -102,9 +109,10 @@ export default class TinyMce {
         }
 
         let config = TinyMce.getDefaultTinyMceConfig(tinyMceSelector);
+        TinyMce.remove(TinyMce.classes["tiny-mce-selector"]);
 
-        tinymce.remove(TinyMce.classes["tiny-mce-selector"]);
-        tinymce.init(config);
+        //@ts-ignore
+        window.tinymce.init(config);
 
         this.setDefaultTextAlignment();
         this.preventFocusHijack();
@@ -117,7 +125,8 @@ export default class TinyMce {
      * @returns {string}
      */
     public static getTextContentForTinymceIdSelector(tinyMceInstanceSelector){
-        let tinymceInstance = tinymce.get(tinyMceInstanceSelector);
+        //@ts-ignore
+        let tinymceInstance = window.tinymce.get(tinyMceInstanceSelector);
 
         if( tinymceInstance === null ){
             throw{
@@ -136,7 +145,8 @@ export default class TinyMce {
      */
     public static getTinyMceInstanceForSelector(selector: string)
     {
-        let tinymceInstance = tinymce.get(selector);
+        //@ts-ignore
+        let tinymceInstance = window.tinymce.get(selector);
         return tinymceInstance;
     }
 
@@ -146,7 +156,8 @@ export default class TinyMce {
      */
     public static remove(tinyMceInstanceSelector)
     {
-        tinymce.remove(tinyMceInstanceSelector);
+        //@ts-ignore
+        window.tinymce.remove(tinyMceInstanceSelector);
     }
 
     /**

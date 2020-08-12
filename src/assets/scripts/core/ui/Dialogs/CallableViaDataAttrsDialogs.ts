@@ -2,6 +2,7 @@ import AbstractDialogs  from "./AbstractDialogs";
 import Loader           from "../../../libs/loader/Loader";
 import Ajax             from "../../ajax/Ajax";
 import DialogDataDto    from "../../../DTO/DialogDataDto";
+import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
@@ -96,7 +97,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
      */
     private callDialog(template, callback = null) {
 
-        let dialog = bootbox.alert({
+        let dialog = BootboxWrapper.mainLogic.alert({
             size: "large",
             backdrop: true,
             closeButton: false,

@@ -153,8 +153,8 @@ export default class LightGallery {
         let massActionTransferButton = $(this.selectors.classes.massActionTransferButton);
 
         if(
-            "undefined" === typeof TWIG_ROUTE           // TODO: will have to obtain it somehow
-            ||  TWIG_ROUTE  !== this.vars.moduleRoute
+                "undefined" === typeof Navigation.getCurrentRoute()
+            ||  Navigation.getCurrentRoute()   !== this.vars.moduleRoute
         ){
             return;
         }

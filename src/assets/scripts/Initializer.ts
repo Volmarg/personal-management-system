@@ -30,7 +30,8 @@ import NotesTinyMce                 from "./modules/Notes/NotesTinyMce";
 import MonthlyPayments              from "./modules/Payments/MonthlyPayments";
 import UploadBasedModules           from "./modules/UploadBasedModules";
 import FormAppendAction             from "./core/ui/Actions/FormAppendAction";
-import {debug} from "util";
+import FontawesomeAction from "./core/ui/Actions/FontawesomeAction";
+import ActionsInitializer from "./core/ui/Actions/ActionsInitializer";
 
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
@@ -71,7 +72,6 @@ export default class Initializer {
         // modules
         let goalsChecklist      = new GoalsChecklist();
         let filesTransfer       = new FilesTransfer();
-        let notesTinyMce        = new NotesTinyMce();
         let monthlyPayments     = new MonthlyPayments();
         let uploadBasedModules  = new UploadBasedModules();
 
@@ -79,7 +79,7 @@ export default class Initializer {
         let formAppendAction    = new FormAppendAction();
 
         // inits
-        formAppendAction.init();
+        ActionsInitializer.initializeAll();
         Popover.init();
         selectize.init();
         formsUtils.init();

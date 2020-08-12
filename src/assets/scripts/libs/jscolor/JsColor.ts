@@ -1,4 +1,4 @@
-var jscolor = require("./src/jscolor.js");
+var jsc = require("./src/jscolor.js");
 
 export default class JsColor {
 
@@ -33,9 +33,11 @@ export default class JsColor {
             allPickers.forEach((element, index) => {
 
                 // @ts-ignore
-                if( !element.hasPicker ){
-                    let color   = element.getAttribute(this.attributes.data.color);
-                    new jscolor(element, {'value': color});
+                if( !element.hasPicker ){  // prevent stacking the jscolor
+                    let color = element.getAttribute(this.attributes.data.color);
+
+                    // @ts-ignore
+                    window.jscolor.instance(element, {'value': color});
                     // @ts-ignore
                     element.hasPicker = true;
                 }

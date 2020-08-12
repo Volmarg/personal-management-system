@@ -29,7 +29,7 @@ export default class LoadingBar {
 
     private renderLoadingBar(element){
         // might not work
-        new ldBar.ldBar(element, {});
+        new ldBar(element, {});
     }
 
 }

@@ -1845,6 +1845,7 @@ jsc.jscolor.installByClassName = function (className) {
 	jsc.tryInstallOnElements(buttonElms, className);
 };
 
+jsc.jscolor.instance = jsc.jscolor;
 
 jsc.register();
 

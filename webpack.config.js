@@ -49,6 +49,11 @@ Encore
             {from: './src/assets/static/images/bcgk.jpg',                    to: 'images/bcgk.jpg'},
             {from: './src/assets/static/images/volmarg_avatar.jpg',          to: 'images/volmarg_avatar.jpg'},
             {from: './src/assets/static/images/avatar_placeholder.jpg',      to: 'images/avatar_placeholder.jpg'},
+
+            /**
+             * Other
+             */
+            {from: './src/assets/scripts/libs/fontawesome-picker/src/iconpicker-1.5.0.json',      to: 'libs/iconpicker-1.5.0.json'}, // required for fontawesome picker
         ])
     )
     .enableBuildNotifications();

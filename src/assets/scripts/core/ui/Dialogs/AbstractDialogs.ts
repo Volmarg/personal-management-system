@@ -7,8 +7,6 @@ import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
 import FormsUtils           from "../../utils/FormsUtils";
 import DialogLogicLoader    from "./LogicLoader/DialogLogicLoader";
 
-var bootbox = require('bootbox');
-
 /**
  * @description This file handles calling dialogs
  *              Keep in mind that some actions are handled explicitly here due to:
