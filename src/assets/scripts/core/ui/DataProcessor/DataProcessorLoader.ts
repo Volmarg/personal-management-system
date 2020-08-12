@@ -21,7 +21,7 @@ export default class DataProcessorLoader {
      * @param processorType
      * @param $baseElement
      */
-    public static getUpdateDataProcessorDto(processorName: string, processorType: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
+    public static getUpdateDataProcessorDto(processorType: string, processorName: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
     {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
@@ -47,7 +47,7 @@ export default class DataProcessorLoader {
      * @param processorType
      * @param $baseElement
      */
-    public static getCreateDataProcessorDto(processorName: string, processorType: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
+    public static getCreateDataProcessorDto(processorType: string, processorName: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
     {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
@@ -73,7 +73,7 @@ export default class DataProcessorLoader {
      * @param processorType
      * @param $baseElement
      */
-    public static getRemoveDataProcessorDto(processorName: string, processorType: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
+    public static getRemoveDataProcessorDto(processorType: string, processorName: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
     {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
@@ -99,7 +99,7 @@ export default class DataProcessorLoader {
      * @param processorType
      * @param $baseElement
      */
-    public static getCopyDataProcessorDto(processorName: string, processorType: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
+    public static getCopyDataProcessorDto(processorType: string, processorName: string, $baseElement?: JQuery<HTMLElement>): DataProcessorDto|null
     {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);

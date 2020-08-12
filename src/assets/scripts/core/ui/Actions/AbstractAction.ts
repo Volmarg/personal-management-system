@@ -231,7 +231,7 @@ export default abstract class AbstractAction {
         let isContentEditable = DomAttributes.isContentEditable(baseElement, 'td');
         let paramEntityName   = $(baseElement).attr('data-type');
 
-        let dataProcessorDto = DataProcessorLoader.getCopyDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName);
+        let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName);
         let message          = AbstractAction.messages.entityEditStart(dataProcessorDto.processorName);
 
         if (!isContentEditable) {

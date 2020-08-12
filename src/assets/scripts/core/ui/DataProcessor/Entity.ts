@@ -38,7 +38,7 @@ export default class Entity extends AbstractDataProcessor {
 
     public static MySchedules: DataProcessorInterface = {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            return undefined;
+            return null;
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id              = $($baseElement).find('.id').html();
@@ -69,6 +69,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.url            = url;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -87,6 +88,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = true;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -101,6 +103,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.url            = url;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -131,6 +134,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.url            = url;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -154,6 +158,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.isDataTable    = isDataTable;
             dataProcessorsDto.url            = url;
             dataProcessorsDto.confirmMessage = message;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -177,6 +182,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.callback       = callback;
             dataProcessorsDto.url            = url;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -215,6 +221,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.url            = url;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -234,6 +241,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = true;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -246,6 +254,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -284,6 +293,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -302,6 +312,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -314,6 +325,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -352,6 +364,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -370,6 +383,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -382,6 +396,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -418,6 +433,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -436,6 +452,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -448,6 +465,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -482,6 +500,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -500,6 +519,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -512,6 +532,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -548,6 +569,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -562,6 +584,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -574,6 +597,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -606,6 +630,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -625,6 +650,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
 
@@ -638,6 +664,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -669,6 +696,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -688,6 +716,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
 
@@ -701,6 +730,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -733,6 +763,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -752,6 +783,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
 
@@ -765,6 +797,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -801,6 +834,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -820,6 +854,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
 
@@ -833,6 +868,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -865,6 +901,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -884,6 +921,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -896,6 +934,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -927,6 +966,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -947,6 +987,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
             dataProcessorsDto.confirmMessage = confirmMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -959,6 +1000,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -989,6 +1031,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.callbackForLoadingModuleContentByUrl = () => {
                 TinyMce.remove(".tiny-mce"); //tinymce must be removed or won't be reinitialized.
             };
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1018,6 +1061,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1039,6 +1083,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
             dataProcessorsDto.confirmMessage = confirmMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1051,6 +1096,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1084,6 +1130,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1106,6 +1153,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.isDataTable        = false;
             dataProcessorsDto.confirmMessage     = confirmMessage;
             dataProcessorsDto.useAjaxFailMessage = true;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1118,6 +1166,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1151,6 +1200,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1186,6 +1236,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1208,6 +1259,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.isDataTable        = false;
             dataProcessorsDto.confirmMessage     = confirmMessage;
             dataProcessorsDto.useAjaxFailMessage = true;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1220,6 +1272,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1261,6 +1314,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.ajaxData         = ajaxData;
             dataProcessorsDto.invokeAlert      = true;
             dataProcessorsDto.invokedAlertBody = invokedAlertBody;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1280,6 +1334,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
 
@@ -1293,6 +1348,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1305,6 +1361,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = ajaxUrl;
             dataProcessorsDto.successMessage = AbstractDataProcessor.messages.password_copy_confirmation_message;
             dataProcessorsDto.failMessage    = AbstractDataProcessor.messages.default_copy_data_fail_message;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1333,6 +1390,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1354,6 +1412,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1366,6 +1425,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1399,6 +1459,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1420,6 +1481,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.confirmMessage = confirmMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1432,6 +1494,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1467,6 +1530,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1486,6 +1550,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1498,6 +1563,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1537,6 +1603,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1555,6 +1622,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1567,6 +1635,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1607,6 +1676,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.updateTemplate = true;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1628,6 +1698,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.isDataTable    = true;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1661,6 +1732,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1679,6 +1751,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1718,6 +1791,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1736,6 +1810,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.ajaxData       = ajaxData;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1759,6 +1834,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.callbackAfter  = callbackAfter;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1788,6 +1864,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.callbackAfter  = callbackAfter;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1810,6 +1887,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.callbackAfter  = callbackAfter;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1837,6 +1915,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.callbackAfter  = callbackAfter;
             dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
@@ -1867,6 +1946,7 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.successMessage = successMessage;
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.callbackAfter  = callbackAfter;
+            dataProcessorsDto.processorName  = this.processorName;
 
             return dataProcessorsDto;
         },
