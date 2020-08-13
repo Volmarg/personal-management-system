@@ -26,12 +26,10 @@ import WidgetsDialogs               from "./core/ui/Dialogs/WidgetsDialogs";
 import Modal                        from "./core/ui/Modal/Modal";
 import GoalsChecklist               from "./modules/Goals/GoalsChecklist";
 import FilesTransfer                from "./modules/Files/FilesTransfer";
-import NotesTinyMce                 from "./modules/Notes/NotesTinyMce";
 import MonthlyPayments              from "./modules/Payments/MonthlyPayments";
 import UploadBasedModules           from "./modules/UploadBasedModules";
-import FormAppendAction             from "./core/ui/Actions/FormAppendAction";
-import FontawesomeAction from "./core/ui/Actions/FontawesomeAction";
-import ActionsInitializer from "./core/ui/Actions/ActionsInitializer";
+import ActionsInitializer           from "./core/ui/Actions/ActionsInitializer";
+import Sidebars                     from "./core/sidebar/Sidebars";
 
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
@@ -75,12 +73,10 @@ export default class Initializer {
         let monthlyPayments     = new MonthlyPayments();
         let uploadBasedModules  = new UploadBasedModules();
 
-        // actions
-        let formAppendAction    = new FormAppendAction();
-
         // inits
         ActionsInitializer.initializeAll();
         Popover.init();
+        Sidebars.init();
         selectize.init();
         formsUtils.init();
         upload.init();
