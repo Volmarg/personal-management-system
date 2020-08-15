@@ -84,7 +84,7 @@ export default class Upload {
             this.vars.maxUploadedFilesCount  = parseInt($(this.elements.maxAllowedFilesUploadCount).attr(Upload.attributes.maxAllowedFilesUploadCount));
             this.vars.uploadTable            = $(Upload.selectors.id.uploadTable);
             // @ts-ignore
-            this.uploadDataTable             = $(this.uploadTable).DataTable();
+            this.vars.uploadDataTable        = $(this.vars.uploadTable).DataTable();
         },
         filesTotalSizeBytes    : 0,
         filesTotalSizeMb       : 0,
@@ -179,7 +179,7 @@ export default class Upload {
      */
     private appendFilesSizeToDom():void
     {
-        $(this.elements.currentSizeContainer).html(this.vars.filesTotalSizeMb.toString);
+        $(this.elements.currentSizeContainer).html(String(this.vars.filesTotalSizeMb));
 
         if( this.vars.filesTotalSizeMb < this.vars.maxUploadSize ){
 

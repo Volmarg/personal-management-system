@@ -10,7 +10,7 @@ export default class ControllerStructure {
 
     public static ModulesController: BackendStructureInterface = {
         getNamespace: function() :string{
-            return 'App\\Controller\\Modules';
+            return '\\App\\Controller\\Modules\\ModulesController';
         }
     };
 

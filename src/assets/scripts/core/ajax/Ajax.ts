@@ -316,8 +316,8 @@ export default class Ajax {
         };
 
         $.ajax({
-            url    : Ajax.methods.getUrlForPathName.url,
-            method : Ajax.methods.getUrlForPathName.method,
+            url    : Ajax.methods.getConstantValueFromBackend.url,
+            method : Ajax.methods.getConstantValueFromBackend.method,
             data   : ajaxData,
             async  : false, // must be async, need to return url, and cannot process other requests without it
         }).always(function(data){

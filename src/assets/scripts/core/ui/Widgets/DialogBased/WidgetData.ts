@@ -12,6 +12,7 @@ import ControllerStructure      from "../../BackendStructure/ControllerStructure
 import RouterStructure          from "../../BackendStructure/RouterStructure";
 import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget";
 import Navigation               from "../../../Navigation";
+import DataTable                from "../../../../libs/datatable/DataTable";
 
 /**
  * @description this class contains definitions of logic used for given widget
