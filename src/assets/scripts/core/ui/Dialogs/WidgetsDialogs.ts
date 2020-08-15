@@ -25,7 +25,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
      * @description builds modal for widget
      */
     private callModalForWidget() {
-        let $callModalButton = $(this.selectors.classes.callWidgetModal);
+        let $callModalButton = $(AbstractDialogs.selectors.classes.callWidgetModal);
 
         if ( !DomElements.doElementsExists($callModalButton) ) {
             return;
@@ -52,7 +52,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
                         label: 'Cancel'
                     }
                 },
-                className: _this.selectors.classesNames.widgetModalClassName,
+                className: AbstractDialogs.selectors.classesNames.widgetModalClassName,
                 size: 'large',
                 callback: function(){}
             });
@@ -70,7 +70,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
                         }).done((responseData) => {
 
                             let ajaxResponseDto = AjaxResponseDto.fromArray(responseData);
-                            let bootboxBody     = $('.' + _this.selectors.classesNames.widgetModalClassName).find('.bootbox-body');
+                            let bootboxBody     = $('.' + AbstractDialogs.selectors.classesNames.widgetModalClassName).find('.bootbox-body');
 
                             bootboxBody.html(ajaxResponseDto.template);
                             widgetDataDto.callback();

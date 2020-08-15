@@ -44,13 +44,14 @@ export default class TagManagementDialogs extends AbstractDialogs {
 
         //@ts-ignore
         dialog.init( () => {
-            let modalMainWrapper = $(this.selectors.classes.bootboxModalMainWrapper);
-            let form             = $(modalMainWrapper).find('form');
-            let formSubmitButton = $(form).find("[type^='submit']");
+            let tagManagementDialogs = new TagManagementDialogs();
+            let modalMainWrapper     = $(AbstractDialogs.selectors.classes.bootboxModalMainWrapper);
+            let form                 = $(modalMainWrapper).find('form');
+            let formSubmitButton     = $(form).find("[type^='submit']");
 
-            this.attachTagsUpdateOnFormSubmit(formSubmitButton, form, callback);
-            this.selectize.applyTagsSelectize();
-            this.forms.init();
+            tagManagementDialogs.attachTagsUpdateOnFormSubmit(formSubmitButton, form, callback);
+            tagManagementDialogs.selectize.applyTagsSelectize();
+            tagManagementDialogs.forms.init();
         });
     };
 
@@ -73,7 +74,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
     private makeAjaxCallForTagsUpdate(callback = null){
 
         let fileCurrentPath = this.vars.fileCurrentPath.replace("/", "");
-        let tagsInput       = $(this.selectors.other.updateTagsInputWithTags);
+        let tagsInput       = $(AbstractDialogs.selectors.other.updateTagsInputWithTags);
         let tags            = $(tagsInput).val();
         let _this           = this;
 
@@ -96,7 +97,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
 
                 if( 'function' === typeof(callback) ){
                     callback(tags);
-                    bootbox.hideAll()
+                    BootboxWrapper.mainLogic.hideAll()
                 }
 
                 notifyType = 'success'

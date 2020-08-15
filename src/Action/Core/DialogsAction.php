@@ -166,7 +166,8 @@ class DialogsAction extends AbstractController
             $form = $this->app->forms->moveSingleFileForm($form_data); //todo: change name to moveFiles
 
             $template_data = [
-                'form' => $form->createView()
+                'form'                  => $form->createView(),
+                'transferredFilesJson'  => json_encode($files_current_paths),
             ];
 
             $template = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER, $template_data)->getContent();

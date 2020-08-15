@@ -115,12 +115,13 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
         //@ts-ignore
         dialog.init( () => {
+            let callableViaDataAttrsDialogs = new CallableViaDataAttrsDialogs();
 
             if( "function" === typeof callback ){
                 callback();
             }
 
-            this.forms.init();
+            callableViaDataAttrsDialogs.forms.init();
         });
 
     };

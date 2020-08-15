@@ -388,7 +388,7 @@ class AppAction extends AbstractController {
         $ajax_response->setCode(Response::HTTP_OK);
 
         try{
-            $constant_value = $namespace::$constant;
+            $constant_value = constant("{$namespace}::{$constant}");
         }catch(Exception $e){
             $is_exception = true;
         }
@@ -404,7 +404,7 @@ class AppAction extends AbstractController {
             return $ajax_response->buildJsonResponse();
         }
 
-        $ajax_response->setRouteUrl($constant_value);
+        $ajax_response->setConstantValue($constant_value);
 
         return $ajax_response->buildJsonResponse();
     }

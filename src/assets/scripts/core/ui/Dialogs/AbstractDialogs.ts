@@ -18,7 +18,7 @@ export default abstract class AbstractDialogs {
     /**
      * @type Object
      */
-    protected selectors = {
+    protected static selectors = {
         ids: {
             targetUploadModuleDirInput  : '#move_single_file_target_upload_module_dir',
             targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path',
@@ -42,11 +42,12 @@ export default abstract class AbstractDialogs {
      * @type Object
      */
     protected data = {
-        requestMethod     : "data-dialog-call-request-method",
-        requestUrl        : "data-dialog-call-request-url",
-        postParameters    : "data-dialog-call-request-post-parameters",
-        callDialogOnClick : "data-call-dialog-on-click",
-        dialogName        : "data-dialog-name"
+        requestMethod        : "data-dialog-call-request-method",
+        requestUrl           : "data-dialog-call-request-url",
+        postParameters       : "data-dialog-call-request-post-parameters",
+        callDialogOnClick    : "data-call-dialog-on-click",
+        dialogName           : "data-dialog-name",
+        transferredFilesJson : "data-transferred-files-json"
     };
 
     /**
@@ -84,9 +85,8 @@ export default abstract class AbstractDialogs {
      * @type Object
      */
     protected vars = {
-        fileCurrentPath     : '',
-        filesCurrentPaths   : '',
-        tags                : ''
+        fileCurrentPath : '',
+        tags            : ''
     };
 
     /**

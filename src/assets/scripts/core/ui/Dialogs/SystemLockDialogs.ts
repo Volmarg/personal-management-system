@@ -51,7 +51,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
     public callSystemToggleLockDialog(template, callback = null, isUnlocked) {
 
         let _this = this;
-        let dialog = bootbox.alert({
+        let dialog = BootboxWrapper.mainLogic.alert({
             size: "large",
             backdrop: true,
             closeButton: false,
@@ -69,7 +69,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
 
         //@ts-ignore
         dialog.init( () => {
-            let $systemLockPasswordInput  = $(this.selectors.ids.systemLockPasswordInput);
+            let $systemLockPasswordInput  = $(AbstractDialogs.selectors.ids.systemLockPasswordInput);
             let $form                     = $systemLockPasswordInput.closest('form');
             let $systemLockPasswordSubmit = $form.find('button');
 
@@ -127,7 +127,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
 
         //@ts-ignore
         dialog.init( () => {
-            let $systemLockCreatePasswordInput  = $(this.selectors.ids.systemLockPasswordInput);
+            let $systemLockCreatePasswordInput  = $(AbstractDialogs.selectors.ids.systemLockPasswordInput);
             let $form                           = $systemLockCreatePasswordInput.closest('form');
             let $systemLockCreatePasswordSubmit = $form.find('button');
 

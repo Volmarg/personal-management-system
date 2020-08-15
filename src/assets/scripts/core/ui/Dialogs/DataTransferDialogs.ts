@@ -13,8 +13,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
      * @param callback function
      */
     public buildDataTransferDialog(filesCurrentPaths, moduleName, callback = null) {
-        this.vars.filesCurrentPaths = filesCurrentPaths;
-        let _this                   = this;
+        let _this = this;
 
         let data = {
             'files_current_locations' : filesCurrentPaths,
@@ -34,7 +33,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
     private callDataTransferDialog(template, callback = null) {
 
         let dialog = BootboxWrapper.mainLogic.alert({
-            size: "sm",
+            size: "lg",
             backdrop: true,
             closeButton: false,
             message: template,
@@ -51,31 +50,34 @@ export default class DataTransferDialogs extends AbstractDialogs {
 
         //@ts-ignore
         dialog.init( () => {
-            let modalMainWrapper = $(this.selectors.classes.bootboxModalMainWrapper);
-            let form             = $(modalMainWrapper).find('form');
-            let formSubmitButton = $(form).find("[type^='submit']");
+            let dataTransferDialogs = new DataTransferDialogs();
+            let modalMainWrapper    = $(AbstractDialogs.selectors.classes.bootboxModalMainWrapper);
+            let form                = $(modalMainWrapper).find('form');
+            let formSubmitButton    = $(form).find("[type^='submit']");
 
-            this.attachDataTransferToDialogFormSubmit(formSubmitButton, callback);
-            this.forms.init();
+            let $jsonTransferredFilesListDomElement = $(modalMainWrapper).find("[" + dataTransferDialogs.data.transferredFilesJson + "]");
+            let jsonTransferredFilesList            = JSON.parse($jsonTransferredFilesListDomElement.attr(dataTransferDialogs.data.transferredFilesJson));
+
+            dataTransferDialogs.attachDataTransferToDialogFormSubmit(formSubmitButton, jsonTransferredFilesList, callback);
+            dataTransferDialogs.forms.init();
         });
     };
 
-    private attachDataTransferToDialogFormSubmit(button, callback = null){
+    private attachDataTransferToDialogFormSubmit(button, jsonTransferredFilesList, callback = null){
         let _this = this;
         $(button).on('click', (event) => {
             event.preventDefault();
-            _this.makeAjaxCallForDataTransfer(callback);
+            _this.makeAjaxCallForDataTransfer(jsonTransferredFilesList, callback);
         });
     };
 
-    private makeAjaxCallForDataTransfer(callback = null){
+    private makeAjaxCallForDataTransfer(jsonTransferredFilesList, callback = null){
         let _this                       = this;
-        let filesCurrentPaths           = this.vars.filesCurrentPaths;
-        let targetUploadModuleDirInput  = $(this.selectors.ids.targetUploadModuleDirInput).val();
-        let targetSubdirectoryPath      = $(this.selectors.ids.targetSubdirectoryTypeInput).val();
+        let targetUploadModuleDirInput  = $(AbstractDialogs.selectors.ids.targetUploadModuleDirInput).val();
+        let targetSubdirectoryPath      = $(AbstractDialogs.selectors.ids.targetSubdirectoryTypeInput).val();
 
         let data = {
-            'files_current_locations'                       : filesCurrentPaths,
+            'files_current_locations'                       : jsonTransferredFilesList,
             'target_upload_module_dir'                      : targetUploadModuleDirInput,
             'subdirectory_target_path_in_module_upload_dir' : targetSubdirectoryPath
         };
@@ -94,7 +96,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
 
                 if( 'function' === typeof(callback) ){
                     callback();
-                    bootbox.hideAll()
+                    BootboxWrapper.mainLogic.hideAll()
                 }
 
                 notifyType = 'success'
