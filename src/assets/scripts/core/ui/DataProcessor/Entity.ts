@@ -1953,4 +1953,35 @@ export default class Entity extends AbstractDataProcessor {
         processorName: "Issue progress"
     };
 
+    public static MyIssue: DataProcessorInterface = {
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url                = '/my-issues/pending';
+            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueProgress.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueProgress.processorName);
+            let callbackAfter      = () => {
+                BootboxWrapper.mainLogic.hideAll();
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.callbackAfter  = callbackAfter;
+            dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        processorName: "Issue"
+    };
+
 }

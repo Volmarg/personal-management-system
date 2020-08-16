@@ -43,7 +43,6 @@ import './BackendStructure/RouterStructure'
 
 // ### actions
 import './Actions/AbstractAction'
-import './Actions/ActionsInitializer'
 import './Actions/CopyToClipboardAction'
 import './Actions/CreateAction'
 import './Actions/EditViaModalPrefilledWithEntityDataAction'

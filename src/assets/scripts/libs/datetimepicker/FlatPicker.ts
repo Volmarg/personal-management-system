@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import flatpickr from "flatpickr";
+import * as flatpickr from "flatpickr";
 
 /**
  * @see https://flatpickr.js.org/examples/

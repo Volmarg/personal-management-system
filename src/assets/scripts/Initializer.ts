@@ -28,9 +28,17 @@ import GoalsChecklist               from "./modules/Goals/GoalsChecklist";
 import FilesTransfer                from "./modules/Files/FilesTransfer";
 import MonthlyPayments              from "./modules/Payments/MonthlyPayments";
 import UploadBasedModules           from "./modules/UploadBasedModules";
-import ActionsInitializer           from "./core/ui/Actions/ActionsInitializer";
 import Sidebars                     from "./core/sidebar/Sidebars";
+import CopyToClipboardAction        from "./core/ui/Actions/CopyToClipboardAction";
+import CreateAction                 from "./core/ui/Actions/CreateAction";
+import EditViaTinyMceAction         from "./core/ui/Actions/EditViaTinyMceAction";
+import FontawesomeAction            from "./core/ui/Actions/FontawesomeAction";
+import RemoveAction                 from "./core/ui/Actions/RemoveAction";
+import ToggleBoolvalAction          from "./core/ui/Actions/ToggleBoolvalAction";
+import UpdateAction                 from "./core/ui/Actions/UpdateAction";
 
+
+import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
  *              that might eventually be needed on given page is being triggered or reinitialized
@@ -74,7 +82,7 @@ export default class Initializer {
         let uploadBasedModules  = new UploadBasedModules();
 
         // inits
-        ActionsInitializer.initializeAll();
+        this.initializeActions();
         Popover.init();
         Sidebars.init();
         selectize.init();
@@ -137,6 +145,30 @@ export default class Initializer {
         Scrollbar.init();
         windowEvents.attachEvents();
         documentEvents.attachEvents();
+    }
+
+    /**
+     * @description Initialize logic for all actions
+     */
+    private initializeActions(): void
+    {
+        let copyToClipboardAction                  = new CopyToClipboardAction();
+        let createAction                           = new CreateAction();
+        let editModalPrefilledWithEntityDataAction = new EditViaModalPrefilledWithEntityDataAction();
+        let editViaTinyMceAction                   = new EditViaTinyMceAction();
+        let fontawesomeAction                      = new FontawesomeAction();
+        let removeAction                           = new RemoveAction();
+        let toggleBoolvalAction                    = new ToggleBoolvalAction();
+        let updateAction                           = new UpdateAction();
+
+        copyToClipboardAction.init();
+        createAction.init();
+        editModalPrefilledWithEntityDataAction.init();
+        editViaTinyMceAction.init();
+        fontawesomeAction.init();
+        removeAction.init();
+        toggleBoolvalAction.init();
+        updateAction.init();
     }
 
 }

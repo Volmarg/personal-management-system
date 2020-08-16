@@ -2,8 +2,6 @@ import BootstrapNotify              from "../../../libs/bootstrap-notify/Bootstr
 import DataTable                    from "../../../libs/datatable/DataTable";
 import PrismHighlight               from "../../../libs/prism/PrismHighlight";
 import Ajax                         from "../../ajax/Ajax";
-import CallableViaDataAttrsDialogs  from "../Dialogs/CallableViaDataAttrsDialogs";
-import BootboxWrapper               from "../../../libs/bootbox/BootboxWrapper";
 import Initializer                  from "../../../Initializer";
 import DomAttributes                from "../../utils/DomAttributes";
 import DomElements                  from "../../utils/DomElements";
@@ -134,11 +132,6 @@ export default abstract class AbstractAction {
     protected bootstrapNotify = new BootstrapNotify();
 
     /**
-     * @type DataTable
-     */
-    protected datatable = new DataTable();
-
-    /**
      * @type PrismHighlight
      */
     protected prismjs = new PrismHighlight();
@@ -147,16 +140,6 @@ export default abstract class AbstractAction {
      * @type Ajax
      */
     protected ajax = new Ajax();
-
-    /**
-     * @type CallableViaDataAttrsDialogs
-     */
-    protected dialogsViaAttr = new CallableViaDataAttrsDialogs();
-
-    /**
-     * @type BootboxWrapper
-     */
-    protected bootboxNotify = new BootboxWrapper();
 
     /**
      * @type Initializer
@@ -231,7 +214,7 @@ export default abstract class AbstractAction {
         let isContentEditable = DomAttributes.isContentEditable(baseElement, 'td');
         let paramEntityName   = $(baseElement).attr('data-type');
 
-        let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName);
+        let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, baseElement);
         let message          = AbstractAction.messages.entityEditStart(dataProcessorDto.processorName);
 
         if (!isContentEditable) {

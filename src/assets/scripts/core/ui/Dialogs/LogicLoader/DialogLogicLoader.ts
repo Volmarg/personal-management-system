@@ -1,4 +1,5 @@
-import DialogDataDto from "../../../../DTO/DialogDataDto";
+import DialogDataDto    from "../../../../DTO/DialogDataDto";
+import DialogLogic      from "./DialogLogic";
 
 /**
  * @description this class is responsible for loading dialog logic
@@ -12,10 +13,20 @@ export default class DialogLogicLoader {
      */
     public getDialogDataDto(dialogName: string): DialogDataDto|null
     {
-        let dialogData = DialogDataDto[dialogName];
+        /**
+         * @see DialogLogic.myIssueCardAddRecords()
+         * @see DialogLogic.myIssueCardPreviewAndEdit()
+         */
+        let dialogDataBuilder = DialogLogic[dialogName];
 
-        if( dialogData instanceof DialogDataDto ){
-            return dialogData;
+        if( !$.isFunction(dialogDataBuilder) ){
+            return null;
+        }
+
+        let dialogDataDto = dialogDataBuilder();
+
+        if( dialogDataDto instanceof DialogDataDto ){
+            return dialogDataDto;
         }
 
         return null;

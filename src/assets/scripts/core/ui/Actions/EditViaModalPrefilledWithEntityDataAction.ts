@@ -1,8 +1,9 @@
-import AbstractAction   from "./AbstractAction";
-import DomElements      from "../../utils/DomElements";
-import JsColor          from "../../../libs/jscolor/JsColor";
-import FormAppendAction from "./FormAppendAction";
-import UpdateAction     from "./UpdateAction";
+import AbstractAction               from "./AbstractAction";
+import DomElements                  from "../../utils/DomElements";
+import JsColor                      from "../../../libs/jscolor/JsColor";
+import FormAppendAction             from "./FormAppendAction";
+import UpdateAction                 from "./UpdateAction";
+import CallableViaDataAttrsDialogs  from "../Dialogs/CallableViaDataAttrsDialogs";
 
 export default class EditViaModalPrefilledWithEntityDataAction extends AbstractAction {
 
@@ -15,6 +16,11 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
      * @type UpdateAction
      */
     private updateAction = new UpdateAction();
+
+    /**
+     * @type CallableViaDataAttrsDialogs
+     */
+    private dialogsViaAttr = new CallableViaDataAttrsDialogs();
 
     /**
      * @type Object

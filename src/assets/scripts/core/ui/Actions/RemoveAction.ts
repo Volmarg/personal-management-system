@@ -11,6 +11,11 @@ import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 
 export default class RemoveAction extends AbstractAction {
 
+    /**
+     * @type DataTable
+     */
+    private datatable = new DataTable();
+
     public init()
     {
         this.attachRemovingEventOnElementsViaDataProcessorEntry();
@@ -125,7 +130,7 @@ export default class RemoveAction extends AbstractAction {
 
         let afterRemovalCallback = function(){
             _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
-            bootbox.hideAll();
+            BootboxWrapper.mainLogic.hideAll();
         } ;
 
         $(element).on('click', function(event) {
@@ -159,7 +164,7 @@ export default class RemoveAction extends AbstractAction {
 
         let doYouWantToRemoveThisRecordMessage = AbstractAction.messages.doYouWantToRemoveThisRecord();
 
-        bootbox.confirm({
+        BootboxWrapper.mainLogic.confirm({
             message:  doYouWantToRemoveThisRecordMessage,
             backdrop: true,
             callback: function (result) {
@@ -176,7 +181,7 @@ export default class RemoveAction extends AbstractAction {
                         let ajaxResponseDto = AjaxResponseDto.fromArray(data);
                         let message         = ajaxResponseDto.message;
 
-                        if( ajaxResponseDto.isSuccessCode() ){
+                        if( !ajaxResponseDto.isSuccessCode() ){
                             _this.bootstrapNotify.showRedNotification(message);
                             return;
                         }else {

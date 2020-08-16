@@ -100,7 +100,7 @@ export default class LockedResourceAjaxCall {
 
                             _this.bootstrapNotify.showGreenNotification(message);
                             _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
-                            _this.ajax.singleMenuNodeReload(Navigation.getCurrentUri());
+                            _this.ajax.singleMenuNodeReload();
 
                             if( reloadPage ){
                                 if( "" !== reloadMessage ){

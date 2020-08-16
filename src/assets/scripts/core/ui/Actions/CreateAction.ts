@@ -108,10 +108,16 @@ export default class CreateAction extends AbstractAction {
                 if ( !reinitializePageLogicAfterAjaxCall ) {
                     Loader.hideLoader();
 
+                    let message = "";
+
                     if( !ajaxResponseDto.isSuccessCode() ){
-                        _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+                        message = ( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : dataProcessorDto.failMessage );
+
+                        _this.bootstrapNotify.showRedNotification(message);
                     }else{
-                        _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
+                        message = ( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : dataProcessorDto.successMessage );
+
+                        _this.bootstrapNotify.showGreenNotification(message);
                     }
 
                     return;

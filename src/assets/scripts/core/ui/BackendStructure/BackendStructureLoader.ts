@@ -17,7 +17,7 @@ export default class BackendStructureLoader {
      * @param structureName
      * @param structureType
      */
-    public static getNamespace(structureName: string, structureType: string): BackendStructureInterface|null
+    public static getNamespace(structureType: string, structureName: string): BackendStructureInterface|null
     {
         try{
             let structureClass   = BackendStructureLoader.decideStructureClass(structureType);

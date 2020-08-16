@@ -2,7 +2,6 @@ import UpdateAction             from "../../Actions/UpdateAction";
 import FormAppendAction         from "../../Actions/FormAppendAction";
 import JsColor                  from "../../../../libs/jscolor/JsColor";
 import TinyMce                  from "../../../../libs/tiny-mce/TinyMce";
-import ActionsInitializer       from "../../Actions/ActionsInitializer";
 import NotesTinyMce             from "../../../../modules/Notes/NotesTinyMce";
 import Upload                   from "../../../../modules/Files/Upload";
 import FormsUtils               from "../../../utils/FormsUtils";
@@ -12,7 +11,7 @@ import ControllerStructure      from "../../BackendStructure/ControllerStructure
 import RouterStructure          from "../../BackendStructure/RouterStructure";
 import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget";
 import Navigation               from "../../../Navigation";
-import DataTable                from "../../../../libs/datatable/DataTable";
+import CreateAction             from "../../Actions/CreateAction";
 
 /**
  * @description this class contains definitions of logic used for given widget
@@ -62,11 +61,12 @@ export default class WidgetData {
     public static addNoteWidget(): WidgetDataDto
     {
         let callback = () => {
-            let tinyMce = new TinyMce();
+            let tinyMce      = new TinyMce();
+            let createAction = new CreateAction();
 
             TinyMce.remove(".tiny-mce");
             tinyMce.init();
-            ActionsInitializer.initializeCreateAction();
+            createAction.init();
             NotesTinyMce.selectCurrentCategoryOptionForQuickNoteCreator();
 
             let formSubmitButton = $('#my_notes_submit');
@@ -125,10 +125,12 @@ export default class WidgetData {
             let upload                  = new Upload();
             let forms                   = new FormsUtils();
             let directoriesBasedWidget  = new DirectoriesBasedWidget();
+            let createAction            = new CreateAction();
+
             let moduleSelectSelector    = 'select#upload_subdirectory_create_upload_module_dir';
             let directorySelectSelector = 'select#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir';
 
-            ActionsInitializer.initializeCreateAction(false);  // dont reinitialize logic
+            createAction.init(false);  // dont reinitialize logic
             upload.init();
             forms.init();
 
@@ -194,11 +196,12 @@ export default class WidgetData {
             let upload                  = new Upload();
             let forms                   = new FormsUtils();
             let directoriesBasedWidget  = new DirectoriesBasedWidget();
+            let createAction            = new CreateAction();
 
             let moduleSelectSelector    = 'select#upload_subdirectory_create_upload_module_dir';
             let directorySelectSelector = 'select#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir';
 
-            ActionsInitializer.initializeCreateAction(false);  // dont reinitialize logic
+            createAction.init(false);  // dont reinitialize logic
             upload.init();
             forms.init();
             directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
@@ -227,7 +230,8 @@ export default class WidgetData {
     public static pendingIssuesCreateIssue(): WidgetDataDto
     {
         let callback = () => {
-            ActionsInitializer.initializeCreateAction();
+            let createAction = new CreateAction();
+            createAction.init();
         };
 
         let url           = Ajax.getUrlForPathName('dialog_body_create_issue');

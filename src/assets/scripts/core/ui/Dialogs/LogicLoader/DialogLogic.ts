@@ -4,7 +4,6 @@ import FlatPicker           from "../../../../libs/datetimepicker/FlatPicker";
 import TinyMce              from "../../../../libs/tiny-mce/TinyMce";
 import Accordion            from "../../../../libs/accordion/Accordion";
 import DataTable            from "../../../../libs/datatable/DataTable";
-import ActionsInitializer   from "../../Actions/ActionsInitializer";
 import Popover              from "../../../../libs/popover/Popover";
 
 /**
@@ -28,15 +27,17 @@ export default class DialogLogic {
             let tinymce        = new TinyMce();
             let accordion      = new Accordion();
             let datatable      = new DataTable();
+            let flatpicker     = new FlatPicker();
 
             datatable.init();
-            ActionsInitializer.initializeAll();
+            //ActionsInitializer.initializeAll();
             accordion.applyAccordion();
             Popover.init();
-            ActionsInitializer.initializeEditViaTinyMceAction();
+            //ActionsInitializer.initializeEditViaTinyMceAction();
             prism.init();
             dateTimePicker.init();
             tinymce.init();
+            flatpicker.init();
         };
 
         let dialogDataDto      = new DialogDataDto();
@@ -57,14 +58,16 @@ export default class DialogLogic {
             let dateTimePicker = new FlatPicker();
             let accordion      = new Accordion();
             let datatable      = new DataTable();
+            let flatpicker     = new FlatPicker();
 
             datatable.init();
-            ActionsInitializer.initializeAll();
+            //ActionsInitializer.initializeAll();
             accordion.applyAccordion();
             Popover.init();
-            ActionsInitializer.initializeEditViaTinyMceAction();
+            //ActionsInitializer.initializeEditViaTinyMceAction();
             prism.init();
             dateTimePicker.init();
+            flatpicker.init();
         };
 
         let dialogDataDto      = new DialogDataDto();
