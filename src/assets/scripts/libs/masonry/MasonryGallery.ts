@@ -1,5 +1,5 @@
 import * as $       from "jquery";
-import * as Masonry from 'masonry-layout';
+import Masonry from 'masonry-layout';
 
 export default class MasonryGallery {
 
