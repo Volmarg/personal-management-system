@@ -140,7 +140,7 @@ export default class SpecialAction extends AbstractDataProcessor {
                 let ajax = new Ajax();
 
                 if(
-                    null !== dataCallbackParams
+                        null !== dataCallbackParams
                     &&  "undefined" !== typeof dataCallbackParams
                 ){
                     let menuNodeModuleName           = dataCallbackParams.menuNodeModuleName;

@@ -9,9 +9,11 @@ export default class StringUtils {
     public static isEmptyString(string: string): boolean
     {
         return (
-                ""        == string
-            ||  null      == string
-            ||  undefined == typeof string
+                ""          == string
+            ||  null        == string
+            ||  "null"      == string
+            ||  "undefined" == undefined
+            ||  undefined   == typeof string
         );
     }
 

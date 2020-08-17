@@ -3,6 +3,7 @@
  */
 import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
 import RemoveAction         from "../../core/ui/Actions/RemoveAction";
+import BootboxWrapper       from "../../libs/bootbox/BootboxWrapper";
 
 export default class FilesTransfer {
 
@@ -57,6 +58,7 @@ export default class FilesTransfer {
                     let parent_wrapper  = $(clickedButton).closest('tr');
                     let table_id        = $(parent_wrapper).closest('tbody').closest('table').attr('id');
                     _this.removeAction.removeDataTableTableRow(table_id, parent_wrapper);
+                    BootboxWrapper.mainLogic.hideAll();
                 };
 
                 _this.dataTransferDialogs.buildDataTransferDialog([fileCurrentPath], 'My Files', callback);

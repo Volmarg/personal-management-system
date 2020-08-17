@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-var bootbox = require('bootbox');
+import BootboxWrapper from "../../libs/bootbox/BootboxWrapper";
 
 export default class UploadSettings {
 
@@ -67,7 +67,7 @@ export default class UploadSettings {
                 let buttonId        = $(clickedButton).attr('id');
                 let form            = $(clickedButton).closest('form');
 
-                let message         = _this.messages[buttonId];
+                let message         = _this.messages.settings[buttonId];
 
                 event.preventDefault();
 
@@ -84,7 +84,7 @@ export default class UploadSettings {
      */
     private callBootBoxWithFormSubmitionOnAccept(message: string, $form: JQuery): void
     {
-        bootbox.confirm({
+        BootboxWrapper.mainLogic.confirm({
             message: message,
             backdrop: true,
             callback: function (result) {

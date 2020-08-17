@@ -6,6 +6,7 @@ import Ajax                 from "../../ajax/Ajax";
 import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";
+import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
 
 export default class UpdateAction extends AbstractAction {
 
@@ -54,6 +55,10 @@ export default class UpdateAction extends AbstractAction {
             let formTarget = $form.attr('data-form-target');
 
             let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, formTarget);
+
+            if( !(dataProcessorDto instanceof DataProcessorDto) ){
+                dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, formTarget);
+            }
 
             Loader.showLoader();
             $.ajax({
@@ -108,7 +113,7 @@ export default class UpdateAction extends AbstractAction {
 
         if ( dataProcessorDto.invokeAlert && dataProcessorDto.isInvokedAlertBodySet() ) {
 
-            bootbox.confirm({
+            BootboxWrapper.mainLogic.confirm({
                 message: dataProcessorDto.invokedAlertBody,
                 backdrop: true,
                 callback: function (result) {

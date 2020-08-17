@@ -8,6 +8,8 @@ import DomElements          from "../../core/utils/DomElements";
 import StringUtils          from "../../core/utils/StringUtils";
 import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
 import TagManagementDialogs from "../../core/ui/Dialogs/TagManagementDialogs";
+import BootboxWrapper       from "../bootbox/BootboxWrapper";
+
 var bootbox = require('bootbox');
 
 import * as $ from 'jquery';
@@ -199,7 +201,7 @@ export default class LightGallery {
             // Button click
             $(trashButton).click(() => {
 
-                bootbox.confirm({
+                BootboxWrapper.mainLogic.confirm({
                     message: _this.messages.imageRemovalConfirmation,
                     backdrop: true,
                     callback: function (result) {
@@ -278,7 +280,7 @@ export default class LightGallery {
             $(saveButton).click( () => {
 
                 // Confirmation box
-                bootbox.confirm({
+                BootboxWrapper.mainLogic.confirm({
                     message: _this.messages.imageNameEditConfirmation,
                     backdrop: true,
                     callback: function (result) {
@@ -439,6 +441,7 @@ export default class LightGallery {
                 let callback = function (){
                     _this.removeImageWithMiniature(fileCurrentPath);
                     _this.handleClosingGalleryIfThereAreNoMoreImages();
+                    BootboxWrapper.mainLogic.hideAll();
                 };
 
                 let escapedFileCurrentPath = ( fileCurrentPath.indexOf('/') === 0 ? fileCurrentPath.replace("/", "") : fileCurrentPath ) ;
@@ -650,7 +653,7 @@ export default class LightGallery {
             let massActionButtons = $(_this.selectors.classes.massActionButtons);
             let checkedCheckboxes = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
 
-            bootbox.confirm({
+            BootboxWrapper.mainLogic.confirm({
                 message: _this.messages.imageRemovalConfirmation,
                 backdrop: true,
                 callback: function (result) {
@@ -681,7 +684,7 @@ export default class LightGallery {
                             DomAttributes.unsetChecked(checkedCheckboxes);
                             DomAttributes.setDisabled(massActionButtons);
                             _this.reinitGallery();
-                            bootbox.hideAll();
+                            BootboxWrapper.mainLogic.hideAll();
                         }, 500);
 
                     }
@@ -720,7 +723,7 @@ export default class LightGallery {
             let callback = function (){
                 _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
                 _this.reinitGallery();
-                bootbox.hideAll();
+                BootboxWrapper.mainLogic.hideAll();
             };
 
             this.dataTransferDialogs.buildDataTransferDialog(filePaths, 'My Files', callback);

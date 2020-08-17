@@ -332,7 +332,7 @@ export default class Ajax {
             }
 
             if( ajaxResponseDto.isSuccessCode() ){
-                constantValue = ajaxResponseDto.routeUrl;
+                constantValue = ajaxResponseDto.constantValue;
                 return;
             }else{
                 bootstrapNotify.showRedNotification(ajaxResponseDto.message);

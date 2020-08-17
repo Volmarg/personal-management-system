@@ -16,6 +16,12 @@ export default class DataProcessorLoader {
 
     /**
      * @description Will fetch DataProcessorDto for update Data, for given processorType/name and/or baseElement
+     * @see SpecialAction.settingsDashboardWidgetsVisibility
+     * @see SpecialAction.settingsFinancesCurrencyTable
+     * @see SpecialAction.UserLockPassword
+     * @see SpecialAction.UserPassword
+     * @see SpecialAction.UserNickname
+     * @see SpecialAction.UserAvatar
      *
      * @param processorName
      * @param processorType
@@ -42,6 +48,7 @@ export default class DataProcessorLoader {
 
     /**
      * @description Will fetch DataProcessorDto for create Data/Record, for given processorType/name and/or baseElement
+     * @see SpecialAction.CreateFolder
      *
      * @param processorName
      * @param processorType

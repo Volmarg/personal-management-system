@@ -4,6 +4,7 @@ import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
 import FormsValidator       from "../../validators/FormsValidator";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";
+import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
 
 export default class CreateAction extends AbstractAction {
 
@@ -29,7 +30,7 @@ export default class CreateAction extends AbstractAction {
 
             let form                 = $(event.target);
             let submitButton         = $(form).find('button[type="submit"]');
-            let callbackParamsJson   = $(submitButton).attr('data-params'); //todo: what is this?
+            let callbackParamsJson   = $(submitButton).attr('data-params');
             let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
 
             /**
@@ -136,7 +137,7 @@ export default class CreateAction extends AbstractAction {
                         location.reload();
                     }
 
-                    bootbox.hideAll();
+                    BootboxWrapper.mainLogic.hideAll();
 
                 }catch(Exception){
                     Loader.hideLoader();

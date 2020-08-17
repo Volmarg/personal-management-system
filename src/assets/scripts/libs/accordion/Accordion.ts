@@ -11,6 +11,7 @@ export default class Accordion {
 
     public init()
     {
+        this.applyAccordion();
         $(document).ready(() => {
             this.fixAccordionsForDisplayFlex();
         });

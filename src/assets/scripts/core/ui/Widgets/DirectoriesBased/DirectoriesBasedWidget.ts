@@ -3,7 +3,7 @@ import Navigation       from "../../../Navigation";
 import ModulesStructure from "../../BackendStructure/ModulesStructure";
 import RouterStructure  from "../../BackendStructure/RouterStructure";
 import StringUtils      from "../../../utils/StringUtils";
-import Application from "../../../Application";
+import Application      from "../../../Application";
 
 export default class DirectoriesBasedWidget {
 
@@ -69,16 +69,17 @@ export default class DirectoriesBasedWidget {
 
         if( StringUtils.isEmptyString(directoryPath) ){ // main dir
             // main dir is always first on list so I just select it
-            directoryPath = $(options[0]).attr("value");
+            let $firstOption = $(options[0]);
+            directoryPath    = $firstOption.val() as string;
         }
 
-        directorySelect.attr("value", directoryPath);
+        directorySelect.val(directoryPath);
         $.each(options, (index, option) => {
             let $option = $(option);
 
             $option.attr('class','');
 
-            if ($option.attr("value") == directoryPath) {
+            if ($option.val() == directoryPath) {
                 $option.attr("selected", "true");
             }
         });

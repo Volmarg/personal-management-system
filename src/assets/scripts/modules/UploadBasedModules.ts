@@ -3,6 +3,7 @@ import DomElements      from "../core/utils/DomElements";
 import DomAttributes    from "../core/utils/DomAttributes";
 import Ajax             from "../core/ajax/Ajax";
 import BootstrapNotify  from "../libs/bootstrap-notify/BootstrapNotify";
+import BootboxWrapper   from "../libs/bootbox/BootboxWrapper";
 
 export default class UploadBasedModules {
 
@@ -49,7 +50,7 @@ export default class UploadBasedModules {
                 }
 
                 // bootbox
-                bootbox.confirm({
+                BootboxWrapper.mainLogic.confirm({
                     message: 'Do You really want to remove this folder?',
                     backdrop: true,
                     callback: function (result) {

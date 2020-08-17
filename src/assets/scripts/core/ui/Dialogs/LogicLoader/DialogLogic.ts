@@ -5,6 +5,7 @@ import TinyMce              from "../../../../libs/tiny-mce/TinyMce";
 import Accordion            from "../../../../libs/accordion/Accordion";
 import DataTable            from "../../../../libs/datatable/DataTable";
 import Popover              from "../../../../libs/popover/Popover";
+import EditViaTinyMceAction from "../../Actions/EditViaTinyMceAction";
 
 /**
  * @description This class contains definitions of logic for given dialogs
@@ -30,10 +31,8 @@ export default class DialogLogic {
             let flatpicker     = new FlatPicker();
 
             datatable.init();
-            //ActionsInitializer.initializeAll();
             accordion.applyAccordion();
             Popover.init();
-            //ActionsInitializer.initializeEditViaTinyMceAction();
             prism.init();
             dateTimePicker.init();
             tinymce.init();
@@ -54,17 +53,17 @@ export default class DialogLogic {
     {
 
         let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
-            let prism          = new PrismHighlight();
-            let dateTimePicker = new FlatPicker();
-            let accordion      = new Accordion();
-            let datatable      = new DataTable();
-            let flatpicker     = new FlatPicker();
+            let prism                = new PrismHighlight();
+            let dateTimePicker       = new FlatPicker();
+            let accordion            = new Accordion();
+            let datatable            = new DataTable();
+            let flatpicker           = new FlatPicker();
+            let editViaTinyMceAction = new EditViaTinyMceAction();
 
             datatable.init();
-            //ActionsInitializer.initializeAll();
             accordion.applyAccordion();
             Popover.init();
-            //ActionsInitializer.initializeEditViaTinyMceAction();
+            editViaTinyMceAction.init();
             prism.init();
             dateTimePicker.init();
             flatpicker.init();

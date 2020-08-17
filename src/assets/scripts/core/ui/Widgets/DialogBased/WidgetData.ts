@@ -145,14 +145,15 @@ export default class WidgetData {
 
         let url           = "/dialog/body/create-folder";
         let widgetDataDto = new WidgetDataDto();
-        let ajaxData      = {
+        let params        = {
             moduleName: moduleName
         };
 
-        widgetDataDto.url      = url;
-        widgetDataDto.type     = WidgetData.TYPE_TEMPLATE;
-        widgetDataDto.callback = callback;
-        widgetDataDto.ajaxData = ajaxData;
+        widgetDataDto.url            = url;
+        widgetDataDto.type           = WidgetData.TYPE_TEMPLATE;
+        widgetDataDto.callback       = callback;
+        widgetDataDto.ajaxData       = params;
+        widgetDataDto.callbackParams = params;
 
         return widgetDataDto;
     }

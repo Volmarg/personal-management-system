@@ -18,6 +18,11 @@ export default class WidgetDataDto extends AbstractDto {
     private _ajaxData = {};
 
     /**
+     * @type Object
+     */
+    private _callbackParams = {};
+
+    /**
      * @type Function
      */
     private _callback : Function = () => {};
@@ -52,5 +57,13 @@ export default class WidgetDataDto extends AbstractDto {
 
     set ajaxData(value: {}) {
         this._ajaxData = value;
+    }
+
+    get callbackParams(): {} {
+        return this._callbackParams;
+    }
+
+    set callbackParams(value: {}) {
+        this._callbackParams = value;
     }
 }

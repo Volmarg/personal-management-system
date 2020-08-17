@@ -294,6 +294,7 @@ export default class DataTable {
 
             let callback = function (){
                 _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+                BootboxWrapper.mainLogic.hideAll();
             };
 
             this.dataTransferDialogs.buildDataTransferDialog(pathsOfFilesToTransfer, 'My Files', callback);

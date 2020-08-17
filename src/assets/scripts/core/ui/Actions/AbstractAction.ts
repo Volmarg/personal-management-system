@@ -1,5 +1,4 @@
 import BootstrapNotify              from "../../../libs/bootstrap-notify/BootstrapNotify";
-import DataTable                    from "../../../libs/datatable/DataTable";
 import PrismHighlight               from "../../../libs/prism/PrismHighlight";
 import Ajax                         from "../../ajax/Ajax";
 import Initializer                  from "../../../Initializer";
