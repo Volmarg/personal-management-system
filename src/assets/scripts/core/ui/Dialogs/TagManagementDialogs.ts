@@ -73,7 +73,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
 
     private makeAjaxCallForTagsUpdate(callback = null){
 
-        let fileCurrentPath = this.vars.fileCurrentPath.replace("/", "");
+        let fileCurrentPath = $("[" + this.data.fileCurrentLocation + "]").attr(this.data.fileCurrentLocation);
         let tagsInput       = $(AbstractDialogs.selectors.other.updateTagsInputWithTags);
         let tags            = $(tagsInput).val();
         let _this           = this;

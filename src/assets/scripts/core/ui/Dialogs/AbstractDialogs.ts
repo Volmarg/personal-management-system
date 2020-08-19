@@ -47,7 +47,8 @@ export default abstract class AbstractDialogs {
         postParameters       : "data-dialog-call-request-post-parameters",
         callDialogOnClick    : "data-call-dialog-on-click",
         dialogName           : "data-dialog-name",
-        transferredFilesJson : "data-transferred-files-json"
+        transferredFilesJson : "data-transferred-files-json",
+        fileCurrentLocation  : "data-tag-update-file-current-location",
     };
 
     /**

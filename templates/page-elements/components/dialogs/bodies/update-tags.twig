@@ -1,5 +1,5 @@
-{% set files_handler_service    = 'App\\Services\\Files\\FileTagger' %}
-{% set KEY_TAGS                 = constant(files_handler_service~"::KEY_TAGS") %}
+{% set file_tagger_service = 'App\\Services\\Files\\FileTagger' %}
+{% set KEY_TAGS            = constant(file_tagger_service~"::KEY_TAGS") %}
 
 <div>
     {{ form_start(form) }}
@@ -22,6 +22,7 @@
         </div>
     </div>
 
+    <div data-tag-update-file-current-location="{{ ( file_current_location is defined ? file_current_location : '') }}"></div>
 
     {{ form_end(form) }}
 </div>

@@ -247,7 +247,8 @@ class DialogsAction extends AbstractController
             $form = $this->app->forms->updateTagsForm($form_data);
 
             $template_data = [
-                'form' => $form->createView()
+                'form'                  => $form->createView(),
+                'file_current_location' => $file_current_path,
             ];
 
             $template = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS, $template_data)->getContent();
