@@ -6,6 +6,8 @@ import Accordion            from "../../../../libs/accordion/Accordion";
 import DataTable            from "../../../../libs/datatable/DataTable";
 import Popover              from "../../../../libs/popover/Popover";
 import EditViaTinyMceAction from "../../Actions/EditViaTinyMceAction";
+import FontawesomeAction    from "../../Actions/FontawesomeAction";
+import UpdateAction         from "../../Actions/UpdateAction";
 
 /**
  * @description This class contains definitions of logic for given dialogs
@@ -23,12 +25,13 @@ export default class DialogLogic {
     {
 
         let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
-            let prism          = new PrismHighlight();
-            let dateTimePicker = new FlatPicker();
-            let tinymce        = new TinyMce();
-            let accordion      = new Accordion();
-            let datatable      = new DataTable();
-            let flatpicker     = new FlatPicker();
+            let prism              = new PrismHighlight();
+            let dateTimePicker     = new FlatPicker();
+            let tinymce            = new TinyMce();
+            let accordion          = new Accordion();
+            let datatable          = new DataTable();
+            let flatpicker         = new FlatPicker();
+            let fontawesomeAction  = new FontawesomeAction();
 
             datatable.init();
             accordion.applyAccordion();
@@ -36,6 +39,7 @@ export default class DialogLogic {
             prism.init();
             dateTimePicker.init();
             tinymce.init();
+            fontawesomeAction.init();
             flatpicker.init();
         };
 
@@ -59,6 +63,8 @@ export default class DialogLogic {
             let datatable            = new DataTable();
             let flatpicker           = new FlatPicker();
             let editViaTinyMceAction = new EditViaTinyMceAction();
+            let updateAction         = new UpdateAction();
+            let fontawesomeAction    = new FontawesomeAction();
 
             datatable.init();
             accordion.applyAccordion();
@@ -67,6 +73,8 @@ export default class DialogLogic {
             prism.init();
             dateTimePicker.init();
             flatpicker.init();
+            updateAction.init();
+            fontawesomeAction.init();
         };
 
         let dialogDataDto      = new DialogDataDto();

@@ -29,7 +29,7 @@ export default class FontawesomeAction extends AbstractAction {
         let $fontawesomePickerFormTypeBlocks = $('.fontawesome-picker-form-type-block');
         let $formTypeBlocksButtons           = $fontawesomePickerFormTypeBlocks.find('[data-iconpicker="true"]');
 
-        let $allActionsElements = $.merge($formTypeBlocksButtons, $actions);
+        let $allActionsElements = $.merge($actions, $formTypeBlocksButtons);
 
         $inputs.each((index, input) => {
             $(input).removeClass(this.classes["fontawesome-picker-input"]);
@@ -44,10 +44,23 @@ export default class FontawesomeAction extends AbstractAction {
         //@ts-ignore
         $allActionsElements.each((index, icon) => {
 
-            $(icon).addClass('fontawesome-picker' + index);
-            $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);
-            $(icon).attr('data-iconpicker-input', '.' + _this.classes["fontawesome-picker-input"] + index);
+            let skipRewriteDataAttributesForParentClasses = [
+                'fontawesome-picker-form-type-block',
+            ];
 
+            $(icon).addClass('fontawesome-picker' + index);
+
+            let skipDataAttributeRewrite = false;
+            $.each(skipRewriteDataAttributesForParentClasses, (index, className) => {
+                if( $(icon).parent().hasClass(className) ){
+                    skipDataAttributeRewrite = true;
+                }
+            });
+
+            if( !skipDataAttributeRewrite ){
+                $(icon).attr('data-iconpicker-preview', '.' + _this.classes["fontawesome-picker-preview"] + index);
+                $(icon).attr('data-iconpicker-input', '.' + _this.classes["fontawesome-picker-input"] + index);
+            }
 
             this.fontAwesomePicker.init({
                 searchPlaceholder: 'Search Icon',
