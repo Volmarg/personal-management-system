@@ -1,0 +1,39 @@
+{#
+    Link : https://jscolor.com/docs/
+    Description - used to create jscolorpicker, requires callin JsColor.init in scripts
+    If needed - can be adjusted to for example not showing the picked color
+#}
+
+{# If defaultStyles are used for example in table cell then cell element must be set to position: relative #}
+{% if valueInputStyle is not defined %}
+    {% set valueInputStyle = "left: 23px; bottom: 0px; width: 50px;" %}
+{% endif %}
+
+{# Sets the initial color value - can be obtained for example from database (if is saved) #}
+{% if color is not defined %}
+    {% set color = "" %}
+{% endif %}
+
+{# Required to solve the issue when there are more pickers on the page - each picker needs to have target input element #}
+{% if pickerNumber is not defined %}
+    {% set pickerNumber = "" %}
+{% endif %}
+
+{% if previewElement is not defined %}
+    {% set previewElement = "" %}
+{% else %}
+    {% set previewElement =  ',previewElement:"' ~ previewElement ~ '"'%}
+{% endif %}
+
+<button class="jscolor {value:'{{ color }}'} btn btn-sm disabled color-picker"
+        data-color="{{ color }}"
+        data-jscolor="{
+            preset:'large dark',
+            value:'{{ color }}',
+            format:'hex',
+            valueElement:'.color-holder{{ pickerNumber }}'
+            {{ previewElement }}
+        }"
+        value="{{ color }}"
+></button>
+<input data-color-holder class="color-holder{{ pickerNumber }} input-as-text position-absolute" style="{{ valueInputStyle }}">

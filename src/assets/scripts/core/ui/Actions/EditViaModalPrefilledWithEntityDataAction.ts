@@ -32,11 +32,9 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
                 url     : "/dialog/body/edit-contact-card",
                 method  : "POST",
                 callback: () => {
-                    let jscolor = new JsColor();
-
                     this.formAppendAction.attachFormViewAppendEvent();
                     this.formAppendAction.attachRemoveParentEvent();
-                    jscolor.init();
+                    JsColor.init();
                     this.updateAction.attachContentSaveEventOnSaveIcon();
                     // todo: keep in mind that create action is extending from this so most likely should be static call
                 }

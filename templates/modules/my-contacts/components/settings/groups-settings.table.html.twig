@@ -17,9 +17,11 @@
             <td class="name">           {{ group.name | capitalize}}             </td>
             <td class="data-preview" style="text-align:center; color:#{{ group.getColor() }}">  <i class="{{ group.getIcon() }}" style="font-size: 20px;"></i>  </td>
             <td class="icon fontawesome-input{{ loop.index0 }}"> {{ group.getIcon() }}  </td>
-            <td class="color">
-                <button class="jscolor {value:'{{ group.getColor() }}'} btn btn-sm disabled color-picker"
-                        data-color="{{ group.getColor() }}"></button>
+            <td class="color position-relative">
+                {% include 'page-elements/libs/js-color-button.html.twig' with {
+                    color        : group.getColor(),
+                    pickerNumber : loop.index0,
+                } %}
             </td>
 
             {% include 'modules/common/components/table-cells/actions.html.twig' with {

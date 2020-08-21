@@ -1,3 +1,13 @@
 {% block jscolorpicker_widget %}
-    <input class="jscolor {value:'{{ value }}'} btn btn-sm color-picker" {{ block('widget_attributes') }} data-color="{{ value }}"/>
+    <button class="jscolor {value:'{{ value }}'} btn btn-sm color-picker"
+            data-color="{{ value }}"
+            data-jscolor="{
+            preset:'large dark',
+            value:'{{ value }}',
+            format:'hex',
+            valueElement:'.color-holder-for-form'
+        }"
+    ></button>
+    <input  {{ block('widget_attributes') }}
+            data-color-holder class="color-holder-for-form input-as-text position-absolute"/>
 {% endblock %}

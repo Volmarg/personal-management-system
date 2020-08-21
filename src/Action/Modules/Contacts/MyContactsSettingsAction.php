@@ -6,6 +6,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Services\Files\FilesHandler;
 use Exception;
@@ -249,10 +250,13 @@ class MyContactsSettingsAction extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             /**
-             * @var MyContactType $form_data
+             * @var MyContactGroup $form_data
              */
-            $form_data = $form->getData();
-            $name      = $form_data->getName();
+            $form_data        = $form->getData();
+            $name             = $form_data->getName();
+            $normalized_color = str_replace("#", "", $form_data->getColor());
+
+            $form_data->setColor($normalized_color);
 
             if (!is_null($form_data) && $this->app->repositories->myContactGroupRepository->findBy([ 'name' => $name ] )) {
                 $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');

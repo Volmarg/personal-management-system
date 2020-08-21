@@ -8,7 +8,7 @@ import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
 
 export default class CreateAction extends AbstractAction {
 
-    public init(reinitializePageLogicAfterAjaxCall = false)
+    public init(reinitializePageLogicAfterAjaxCall = true)
     {
         this.attachRecordAddViaAjaxOnSubmit(reinitializePageLogicAfterAjaxCall);
     }

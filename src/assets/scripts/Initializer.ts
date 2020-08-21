@@ -64,7 +64,6 @@ export default class Initializer {
         let datatable         = new DataTable();
         let formsUtils        = new FormsUtils();
         let accordion         = new Accordion();
-        let jscolor           = new JsColor();
 
         // core
         let search                 = new Search();
@@ -108,7 +107,7 @@ export default class Initializer {
         //notesTinyMce.init(); // todo: check how it was called in old js
         monthlyPayments.init();
         uploadBasedModules.init();
-        jscolor.init();
+        JsColor.init();
 
         modal.init();
     }

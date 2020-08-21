@@ -41,10 +41,9 @@ export default class WidgetData {
         let callback = () => {
             let updateAction     = new UpdateAction();
             let formAppendAction = new FormAppendAction();
-            let jscolor          = new JsColor();
 
             formAppendAction.attachFormViewAppendEvent();
-            jscolor.init();
+            JsColor.init();
             updateAction.attachContentSaveEventOnSaveIcon();
         };
 

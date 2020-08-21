@@ -946,7 +946,7 @@ export default class Entity extends AbstractDataProcessor {
             let id      = $($baseElement).find('.id').html();
             let name    = $($baseElement).find('.name').html();
             let icon    = $($baseElement).find('.icon').html();
-            let color   = $($baseElement).find('.color').text();
+            let color   = $($baseElement).find('.color').find('[data-color-holder]').val().replace("#", "");
             let parent  = $($baseElement).find('.parent').find(':selected').val();
 
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyNotesCategories.processorName);
@@ -1218,7 +1218,7 @@ export default class Entity extends AbstractDataProcessor {
             let id     = $($baseElement).find('.id').html();
             let name   = $($baseElement).find('.name').html();
             let icon   = $($baseElement).find('.icon').html();
-            let color  = $($baseElement).find('.color').text();
+            let color  = $($baseElement).find('.color').find('[data-color-holder]').val().replace("#", "");
 
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyContactGroup.processorName);
             let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyContactGroup.processorName);

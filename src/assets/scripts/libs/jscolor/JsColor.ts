@@ -1,4 +1,4 @@
-var jsc = require("./src/jscolor.js");
+require("./src/2.3.3/jscolor.js");
 
 export default class JsColor {
 
@@ -20,29 +20,9 @@ export default class JsColor {
         }
     };
 
-    public init() {
-        this.initForSelector();
+    public static init() {
+        //@ts-ignore
+        window.JSColor.install();
     };
 
-    private initForSelector() {
-
-        let allPickers = document.querySelectorAll(this.selectors.classes.colorPicker);
-
-        if (allPickers.length !== 0) {
-
-            allPickers.forEach((element, index) => {
-
-                // @ts-ignore
-                if( !element.hasPicker ){  // prevent stacking the jscolor
-                    let color = element.getAttribute(this.attributes.data.color);
-
-                    // @ts-ignore
-                    window.jscolor.instance(element, {'value': color});
-                    // @ts-ignore
-                    element.hasPicker = true;
-                }
-
-            });
-        }
-    }
 }

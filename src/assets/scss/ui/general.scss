@@ -140,3 +140,13 @@ h3{
 form legend{
   font-size: 13px;
 }
+
+.input-as-text {
+  border: none;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0 !important;
+  width: auto;
+  background: none;
+}

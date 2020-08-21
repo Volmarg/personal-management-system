@@ -13,6 +13,7 @@ use App\Controller\Validators\Entities\EntityValidator;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Repository\FilesSearchRepository;
@@ -447,7 +448,7 @@ class Repositories extends AbstractController {
             }
 
             $record->setDeleted(1);
-            $record = $this->changeRecordData($repository_name, $record);
+            $record = $this->changeRecordDataBeforeSoftDelete($repository_name, $record);
 
             $em = $this->getDoctrine()->getManager();
 
@@ -575,6 +576,7 @@ class Repositories extends AbstractController {
             }
 
             $em = $this->getDoctrine()->getManager();
+            $entity = $this->changeRecordDataBeforeUpdate($entity);
             $em->persist($entity);
             $em->flush();
 
@@ -810,7 +812,7 @@ class Repositories extends AbstractController {
      * @param $record
      * @return MyContact
      */
-    private function changeRecordData(string $repository_name, $record) {
+    private function changeRecordDataBeforeSoftDelete(string $repository_name, $record) {
 
         switch( $repository_name ){
             case self::MY_CONTACT_REPOSITORY:
@@ -819,6 +821,23 @@ class Repositories extends AbstractController {
                  */
                 $record->setGroup(NULL);
                 break;
+        }
+
+        return $record;
+    }
+
+    /**
+     * This function changes the record before update
+     * @param $record
+     * @return MyContact
+     */
+    private function changeRecordDataBeforeUpdate($record) {
+
+        if( $record instanceof MyContactGroup){
+            $color            = $record->getColor();
+            $normalized_color = str_replace("#", "", $color);
+
+            $record->setColor($normalized_color);
         }
 
         return $record;
