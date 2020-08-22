@@ -14,7 +14,7 @@ export default class FlatPicker {
     };
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
      */
     public init(): void
     {
@@ -22,7 +22,7 @@ export default class FlatPicker {
     };
 
     /**
-     * Invokes DTP on given elements
+     * @description Invokes DTP on given elements
      */
     private applyDateTimePicker(): void
     {

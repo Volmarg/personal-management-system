@@ -1,7 +1,8 @@
 export default class ValidationUtils {
 
     /**
-     * Checks if the provided string is "true"
+     * @description Checks if the provided string is "true"
+     *
      * @param $stringBoolean
      * @returns {boolean}
      */
@@ -10,7 +11,8 @@ export default class ValidationUtils {
     };
 
     /**
-     * Checks if the provided string is "false"
+     * @description Checks if the provided string is "false"
+     * 
      * @param $stringBoolean
      * @returns {boolean}
      */

@@ -1,3 +1,5 @@
+import DomElements from "../../core/utils/DomElements";
+
 export default class Accordion {
 
     public static selectors = {
@@ -48,7 +50,7 @@ export default class Accordion {
         ];
 
         $.each(allSelectorsToFix, function (index, selector) {
-            if ($(selector).length > 0) {
+            if ( DomElements.doElementsExists($(selector)) ) {
                 $(selector)
                     .css(cssFlex)
                     //@ts-ignore

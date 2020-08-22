@@ -1,9 +1,9 @@
-/**
- * @description This class handles standard modals, hardcoded in twig templates - not the one called via js bootbox
- */
 import ModalLogicLoader from "./ModalLogicLoader";
 import ModalDataDto     from "../../../DTO/ModalDataDto";
 
+/**
+ * @description This class handles standard modals, hardcoded in twig templates - not the one called via js bootbox
+ */
 export default class Modal {
 
     /**

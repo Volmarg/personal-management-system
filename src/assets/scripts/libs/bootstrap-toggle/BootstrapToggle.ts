@@ -12,7 +12,7 @@ export default class BootstrapToggle {
     private updateAction = new UpdateAction();
 
     /**
-     * Initialize bootstrap toggle on elements which have given attribute/data
+     * @description Initialize bootstrap toggle on elements which have given attribute/data
      */
     public init(): void
     {

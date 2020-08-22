@@ -7,7 +7,7 @@ export default class Loader {
     };
 
     /**
-     * Ill show or hide page loader/spinner
+     * @description Ill show or hide page loader/spinner
      */
     public static toggleLoader() {
         let loader = $(Loader.selectors.ids.loader);
@@ -20,7 +20,8 @@ export default class Loader {
     };
 
     /**
-     * Will show page loader/spinner
+     * @description Will show page loader/spinner
+     *
      * @param soft
      */
     public static showLoader(soft = true) {
@@ -36,8 +37,8 @@ export default class Loader {
     };
 
     /**
-     * Will hide page loader/spinner
-     * Timeout is needed as in some cases when the project is being run in better environment the hide is kinda being executed to fast
+     * @description Will hide page loader/spinner
+     *              Timeout is needed as in some cases when the project is being run in better environment the hide is kinda being executed to fast
      */
     public static hideLoader() {
         setTimeout(function () {

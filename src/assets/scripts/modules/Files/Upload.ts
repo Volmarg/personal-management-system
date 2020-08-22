@@ -97,7 +97,7 @@ export default class Upload {
     };
 
     /**
-     * Initialize Upload logic
+     * @description Initialize Upload logic
      */
     public init(): void
     {
@@ -110,7 +110,7 @@ export default class Upload {
     };
 
     /**
-     * Handles event on files select change (when something was selected to upload
+     * @description Handles event on files select change (when something was selected to upload
      */
     private handleFilesSelectOnChangeEvent(): void
     {
@@ -131,7 +131,8 @@ export default class Upload {
     };
 
     /**
-     * Will set size of selected files to upload
+     * @description Will set size of selected files to upload
+     *
      * @param selectedFiles
      */
     private setSelectedFilesSize(selectedFiles: Array<string>): void
@@ -148,7 +149,7 @@ export default class Upload {
     };
 
     /**
-     * Will set count of files selected to upload
+     * @description Will set count of files selected to upload
      */
     private setSelectedFilesCount(): void
     {
@@ -175,7 +176,7 @@ export default class Upload {
     };
 
     /**
-     * Appends counted files size to the DOM
+     * @description Appends counted files size to the DOM
      */
     private appendFilesSizeToDom():void
     {
@@ -184,7 +185,7 @@ export default class Upload {
         if( this.vars.filesTotalSizeMb < this.vars.maxUploadSize ){
 
             if(
-                $(this.elements.currentFileSizeWrapper).hasClass("text-danger")
+                    $(this.elements.currentFileSizeWrapper).hasClass("text-danger")
                 &&  0 !== this.vars.filesTotalSizeMb
             ){ //something is blocking upload
                 return;
@@ -201,7 +202,7 @@ export default class Upload {
     };
 
     /**
-     * Attaches logic on reset button [X]
+     * @description Attaches logic on reset button [X]
      */
     private attachFilesInputResetEventToXButton(): void
     {
@@ -228,7 +229,7 @@ export default class Upload {
     };
 
     /**
-     * Handles logic of showing selected files data in the table
+     * @description Handles logic of showing selected files data in the table
      */
     private handleFillingDatatable(selectedFiles: Array<string>): void
     {
@@ -262,7 +263,8 @@ export default class Upload {
     };
 
     /**
-     * Builds and returns input string element
+     * @description Builds and returns input string element
+     *
      * @param id
      * @param prefix
      * @param classes
@@ -279,7 +281,7 @@ export default class Upload {
     };
 
     /**
-     * Handles logic on submitting form
+     * @description Handles logic on submitting form
      */
     private attachEventsToFormSubmitButton(): void
     {
@@ -305,7 +307,7 @@ export default class Upload {
     };
 
     /**
-     * Cleans up the table
+     * @description Cleans up the table
      */
     private cleaUploadTable(): void
     {

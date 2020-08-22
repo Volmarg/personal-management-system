@@ -3,11 +3,13 @@ import Loader                   from "../../../libs/loader/Loader";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
 import Ajax                     from "../../ajax/Ajax";
 import LockedResourceAjaxCall   from "../../locked-resource/LockedResourceAjaxCall";
+import AjaxResponseDto from "../../../DTO/AjaxResponseDto";
 
 export default class SystemLockDialogs extends AbstractDialogs {
 
     /**
-     * Build dialog with confirmation about setting/removing lock for entire system
+     * @description Build dialog with confirmation about setting/removing lock for entire system
+     *
      * @param callback   {function}
      * @param isUnlocked {boolean}
      */
@@ -21,21 +23,20 @@ export default class SystemLockDialogs extends AbstractDialogs {
         }).always((data) => {
             Loader.toggleLoader();
 
-            let reloadPage    = data['reload_page'];
-            let reloadMessage = data['reload_message'];
+            let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
-            if( undefined !== data['template'] ){
-                _this.callSystemToggleLockDialog(data['template'], callback, isUnlocked);
-            } else if( undefined !== data['errorMessage'] ) {
-                _this.bootstrapNotify.notify(data['errorMessage'], 'danger');
+            if( ajaxResponseDto.isTemplateSet() ){
+                _this.callSystemToggleLockDialog(ajaxResponseDto.template, callback, isUnlocked);
+            } else if( ajaxResponseDto.isMessageSet() ) {
+                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
             }else{
                 let message = 'Something went wrong while trying to load dialog template.';
-                _this.bootstrapNotify.notify(message, 'danger');
+                _this.bootstrapNotify.showRedNotification(message);
             }
 
-            if( reloadPage ){
-                if( "" !== reloadMessage ){
-                    _this.bootstrapNotify.showBlueNotification(reloadMessage);
+            if( ajaxResponseDto.reloadPage ){
+                if( ajaxResponseDto.isReloadMessageSet() ){
+                    _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                 }
                 location.reload();
             }
@@ -50,7 +51,6 @@ export default class SystemLockDialogs extends AbstractDialogs {
      */
     public callSystemToggleLockDialog(template, callback = null, isUnlocked) {
 
-        let _this = this;
         let dialog = BootboxWrapper.mainLogic.alert({
             size: "large",
             backdrop: true,
@@ -108,7 +108,6 @@ export default class SystemLockDialogs extends AbstractDialogs {
      */
     public callCreateLockPasswordForSystemDialog(template, callback = null) {
 
-        let _this = this;
         let dialog = BootboxWrapper.mainLogic.alert({
             size: "large",
             backdrop: true,

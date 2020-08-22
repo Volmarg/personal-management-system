@@ -2,7 +2,8 @@
 export default class StringUtils {
 
     /**
-     * Will check if given string is empty
+     * @description Will check if given string is empty
+     *
      * @param string
      * @return boolean
      */
@@ -13,12 +14,12 @@ export default class StringUtils {
             ||  null        == string
             ||  "null"      == string
             ||  "undefined" == undefined
-            ||  undefined   == typeof string
+            ||  "undefined" == typeof string
         );
     }
 
     /**
-     * Check if both strings are the same
+     * @description Check if both strings are the same
      * @param firstString
      * @param secondString
      */

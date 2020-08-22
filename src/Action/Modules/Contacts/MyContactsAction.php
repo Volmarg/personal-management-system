@@ -189,6 +189,12 @@ class MyContactsAction extends AbstractController
 
             $my_contact->setContacts($contacts_json);
 
+            $normalized_description_color = str_replace("#", "", $my_contact->getDescriptionBackgroundColor());
+            $normalized_name_color        = str_replace("#", "", $my_contact->getNameBackgroundColor());
+
+            $my_contact->setNameBackgroundColor($normalized_description_color);
+            $my_contact->setDescriptionBackgroundColor($normalized_name_color);
+
             $this->app->repositories->myContactRepository->saveEntity($my_contact, true);
         }
 

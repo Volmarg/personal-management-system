@@ -15,7 +15,6 @@ import UiUtils         from "../../core/utils/UiUtils";
 import Navigation      from "../../core/Navigation";
 import StringUtils     from "../../core/utils/StringUtils";
 
-// todo: rename class
 export default class NotesTinyMce {
 
     /**

@@ -1,5 +1,5 @@
-
-import Shuffler from './src/Shuffler';
+import Shuffler    from './src/Shuffler';
+import DomElements from "../../core/utils/DomElements";
 
 export default class ShuffleWrapper {
 
@@ -103,11 +103,11 @@ export default class ShuffleWrapper {
     };
 
     public switchToGroupAllIfGroupIsRemoved(){
-        let selectedGroup       = this.shuffler.shuffle.group;
-        let domTagsHolder       = $(this.selectors.classes.tagsHolder);
-        let correspondingButton = $(domTagsHolder).find('[data-group^="' + selectedGroup + '"]');
+        let selectedGroup        = this.shuffler.shuffle.group;
+        let domTagsHolder        = $(this.selectors.classes.tagsHolder);
+        let $correspondingButton = $(domTagsHolder).find('[data-group^="' + selectedGroup + '"]');
 
-        if( 0 === correspondingButton.length ){
+        if( !DomElements.doElementsExists($correspondingButton) ){
             this.shuffler.shuffle.filter("all");
         }
 

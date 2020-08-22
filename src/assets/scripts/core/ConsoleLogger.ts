@@ -5,7 +5,7 @@
 export default class ConsoleLogger {
 
     /**
-     * Log red message
+     * @description Log red message
      *
      * @param message
      * @param data
@@ -17,7 +17,7 @@ export default class ConsoleLogger {
     }
 
     /**
-     * Log orange message
+     * @description Log orange message
      *
      * @param message
      * @param data
@@ -29,7 +29,7 @@ export default class ConsoleLogger {
     }
 
     /**
-     * Log blue message
+     * @description Log blue message
      *
      * @param message
      * @param data
@@ -41,7 +41,7 @@ export default class ConsoleLogger {
     }
 
     /**
-     * Returns styles common for all types of logs
+     * @description Returns styles common for all types of logs
      */
     private static getCommonStylesForLogger(): string
     {

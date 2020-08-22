@@ -39,7 +39,7 @@ export default class BackendStructureLoader {
      *
      * @param structureType
      */
-    private static decideStructureClass(structureType: string) // make returned type correct todo: interface of objects (might work)
+    private static decideStructureClass(structureType: string)
     {
         switch(structureType)
         {

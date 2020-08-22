@@ -3,6 +3,7 @@ import Navigation       from "../Navigation";
 import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import Ajax             from "../ajax/Ajax";
 import Loader           from "../../libs/loader/Loader";
+import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
 
 /**
  * @description contains ajax calls methods used by LockedResource and other scripts
@@ -76,35 +77,25 @@ export default class LockedResourceAjaxCall {
                         data  : data,
                     }).always(function(data){
 
-                        try{
-                            var code          = data['code'];
-                            var message       = data['message'];
-                            var reloadPage    = data['reload_page'];
-                            var reloadMessage = data['reload_message'];
-                        } catch(Exception){
-                            throw({
-                                "message"   : "Could not handle ajax call",
-                                "data"      : data,
-                                "exception" : Exception
-                            })
-                        }
+                        let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
-                        if( 200 != code ){
-                            _this.bootstrapNotify.showRedNotification(message);
+                        if( !ajaxResponseDto.isSuccessCode() ){
+                            _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                             return;
                         }else {
 
-                            if( "undefined" === typeof message ){
-                                message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                            let message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully();
+                            if( ajaxResponseDto.isMessageSet()){
+                                message = ajaxResponseDto.message;
                             }
 
                             _this.bootstrapNotify.showGreenNotification(message);
                             _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
                             _this.ajax.singleMenuNodeReload();
 
-                            if( reloadPage ){
-                                if( "" !== reloadMessage ){
-                                    _this.bootstrapNotify.showBlueNotification(reloadMessage);
+                            if( ajaxResponseDto.reloadPage){
+                                if( ajaxResponseDto.isReloadMessageSet() ){
+                                    _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                                 }
                                 location.reload();
                             }
@@ -138,41 +129,29 @@ export default class LockedResourceAjaxCall {
             data  : data,
         }).always( function(data){
             Loader.hideLoader();
-            // todo: add AjaxDto
-            try{
-                var code          = data['code'];
-                var message       = data['message'];
-                var reloadPage    = data['reload_page'];
-                var reloadMessage = data['reload_message'];
-            } catch(Exception){
-                throw({
-                    "message"   : "Could not handle ajax call",
-                    "data"      : data,
-                    "exception" : Exception
-                })
-            }
+            let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
-            if( 200 != code ){
-                bootstrapNotify.showRedNotification(message);
+            if( !ajaxResponseDto.isSuccessCode() ){
+                bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                 return;
             }else {
 
-                if( "undefined" === typeof message ){
-                    message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                let message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully();
+
+                if( ajaxResponseDto.isMessageSet() ){
+                    message = ajaxResponseDto.message;
                 }
 
                 bootstrapNotify.showGreenNotification(message);
 
                 // now ajax reload for this as there is also menu to be changed etc.
                 Loader.showLoader();
-                window.location.reload();
 
-                if( reloadPage ){
-                    if( "" !== reloadMessage ){
-                        bootstrapNotify.showBlueNotification(reloadMessage);
-                    }
-                    location.reload();
+                if( ajaxResponseDto.isReloadMessageSet() ){
+                    bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                 }
+
+                location.reload();
             }
         })
     };
@@ -198,40 +177,28 @@ export default class LockedResourceAjaxCall {
         }).always( function(data){
             Loader.hideLoader();
 
-            try{
-                var code          = data['code'];
-                var message       = data['message'];
-                var reloadPage    = data['reload_page'];
-                var reloadMessage = data['reload_message'];
-            } catch(Exception){
-                throw({
-                    "message"   : "Could not handle ajax call",
-                    "data"      : data,
-                    "exception" : Exception
-                })
-            }
+            let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
-            if( 200 != code ){
-                bootstrapNotify.showRedNotification(message);
+            if( !ajaxResponseDto.isSuccessCode() ){
+                bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                 return;
             }else {
 
-                if( "undefined" === typeof message ){
-                    message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully;
+                let message = LockedResourceAjaxCall.general.messages.ajaxCallHasBeenFinishedSuccessfully();
+                if( ajaxResponseDto.isMessageSet() ){
+                    message = ajaxResponseDto.message;
                 }
 
                 bootstrapNotify.showGreenNotification(message);
 
                 // no ajax reload for this as there is also menu to be changed etc.
                 Loader.showLoader();
-                window.location.reload();
 
-                if( reloadPage ){
-                    if( "" !== reloadMessage ){
-                        bootstrapNotify.showBlueNotification(reloadMessage);
-                    }
-                    location.reload();
+                if( ajaxResponseDto.isReloadMessageSet() ){
+                    bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                 }
+
+                location.reload();
             }
         })
     };

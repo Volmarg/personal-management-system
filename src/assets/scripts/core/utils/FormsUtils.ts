@@ -18,7 +18,7 @@ export default class FormsUtils {
     };
 
     /**
-     * This function depends on the ChoiceType optgroup, and filters by value of optgroup label
+     * @description This function depends on the ChoiceType optgroup, and filters by value of optgroup label
      */
     private filterDependentListOnChange() {
 

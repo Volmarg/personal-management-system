@@ -58,7 +58,6 @@ export default class WidgetsDialogs extends AbstractDialogs {
             });
 
             //@ts-ignore
-            // todo: might not work
            dialog.init( () => {
                 switch (widgetDataDto.type) {
                     case WidgetData.TYPE_TEMPLATE:

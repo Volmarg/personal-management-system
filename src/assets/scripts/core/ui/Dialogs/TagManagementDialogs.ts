@@ -95,7 +95,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
 
             if( ajaxResponseDto.isSuccessCode() ){
 
-                if( 'function' === typeof(callback) ){
+                if( $.isFunction(callback) ){
                     callback(tags);
                     BootboxWrapper.mainLogic.hideAll()
                 }

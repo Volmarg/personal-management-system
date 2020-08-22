@@ -36,7 +36,7 @@ export default class ToggleBoolvalAction extends AbstractAction {
 
                 let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
-                if( ajaxResponseDto.isSuccessCode() ) {
+                if( !ajaxResponseDto.isSuccessCode() ) {
                     _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                     return;
                 }

@@ -2,7 +2,8 @@
 export default class ArrayUtils {
 
     /**
-     * For standard array with values (strings/ints)
+     * @description For standard array with values (strings/ints)
+     *
      * @param array {object}
      * @returns {any[]}
      */
@@ -13,7 +14,8 @@ export default class ArrayUtils {
     };
 
     /**
-     * This function will return true if needle is in haystack
+     * @description This function will return true if needle is in haystack
+     *
      * @param needle
      * @param haystack
      */
@@ -23,7 +25,8 @@ export default class ArrayUtils {
     }
 
     /**
-     * Checks if array is empty
+     * @description Checks if array is empty
+     *
      * @param array
      */
     public static isEmpty(array): boolean

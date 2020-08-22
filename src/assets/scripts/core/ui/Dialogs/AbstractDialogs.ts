@@ -101,11 +101,6 @@ export default abstract class AbstractDialogs {
     protected selectize = new Selectize();
 
     /**
-     * @type TinyMce
-     */
-    protected tinyMce = new TinyMce();
-
-    /**
      * @type BootboxWrapper
      */
     protected bootbox = new BootboxWrapper();
@@ -135,10 +130,10 @@ export default abstract class AbstractDialogs {
         if( ajaxResponseDto.isTemplateSet() ){
             callDialogCallback(ajaxResponseDto.template, callback);
         } else if( !ajaxResponseDto.success) {
-            this.bootstrapNotify.notify(ajaxResponseDto.message, 'danger');
+            this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
         }else{
             let message = 'Something went wrong while trying to load dialog template.';
-            this.bootstrapNotify.notify(message, 'danger');
+            this.bootstrapNotify.showRedNotification(message);
         }
 
         if( ajaxResponseDto.reloadPage ){

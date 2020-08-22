@@ -34,8 +34,6 @@ import EntityStructure          from "../BackendStructure/EntityStructure";
  */
 export default class Entity extends AbstractDataProcessor {
 
-
-
     public static MySchedules: DataProcessorInterface = {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;

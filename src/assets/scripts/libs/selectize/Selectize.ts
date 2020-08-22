@@ -1,12 +1,15 @@
-import * as $ from 'jquery';
 import 'selectize/dist/js/selectize.min.js';
 import 'selectize/dist/css/selectize.css';
 import 'selectize/dist/css/selectize.bootstrap3.css';
 
+import * as $       from 'jquery';
+import StringUtils  from "../../core/utils/StringUtils";
+import DomElements  from "../../core/utils/DomElements";
+
 export default class Selectize {
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
      */
     public init(): void
     {
@@ -15,7 +18,7 @@ export default class Selectize {
     }
 
     /**
-     * Will apply selectize to given inputs
+     * @description Will apply selectize to given inputs
      */
     public applyTagsSelectize(): void
     {
@@ -28,7 +31,7 @@ export default class Selectize {
 
             let jsonValues   = $(input).attr('data-value');
             let objectValues = [];
-            if( "" !== jsonValues ){
+            if( !StringUtils.isEmptyString(jsonValues) ){
                 objectValues = JSON.parse(jsonValues);
             }
             // @ts-ignore
@@ -73,7 +76,7 @@ export default class Selectize {
 
         // search for selectors on page and if found disable tags
         $.each(disableForSelectorsOnPage, (index, selector) => {
-            if ( $(selector).length > 0 )
+            if ( DomElements.doElementsExists($(selector)) )
             {
                 let allSelectizeRenderdInputWrappers = $(selector);
                 $(allSelectizeRenderdInputWrappers).addClass('disabled');

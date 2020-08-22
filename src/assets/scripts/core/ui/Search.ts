@@ -46,7 +46,7 @@ export default class Search {
     private notePreviewDialogs = new NotePreviewDialogs();
 
     /**
-     * Initialize main logic
+     * @description Initialize main logic
      */
     public init(): void
     {
@@ -54,7 +54,7 @@ export default class Search {
     };
 
     /**
-     * Will attach on change event on the search input
+     * @description Will attach on change event on the search input
      */
     private attachAjaxCallOnChangeOfSearchInput(): void
     {
@@ -130,7 +130,8 @@ export default class Search {
     };
 
     /**
-     * Will call dialog on given element
+     * @description Will call dialog on given element
+     *
      * @param element
      * @param noteId
      * @param categoryId
@@ -143,7 +144,8 @@ export default class Search {
     };
 
     /**
-     * Return UL list with the result list
+     * @description Return UL list with the result list
+     *
      * @param data
      */
     private buildSearchResults(data: Array<string>): JQuery
@@ -180,7 +182,8 @@ export default class Search {
     };
 
     /**
-     * Builds single element of search results for files
+     * @description Builds single element of search results for files
+     *
      * @param data
      */
    private buildFilesSearchResultsListElement(data: Array<string>): JQuery
@@ -279,7 +282,8 @@ export default class Search {
     };
 
     /**
-     * Builds single element of search results for notes
+     * @description Builds single element of search results for notes
+     *
      * @param data
      */
    private buildNotesSearchResultsListElement(data: Array<string>){

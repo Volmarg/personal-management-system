@@ -21,7 +21,7 @@ export default class PrismHighlight {
     };
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
       */
     public init(): void
     {
@@ -29,7 +29,7 @@ export default class PrismHighlight {
     };
 
     /**
-     * Calling prism on tinymce elements
+     * @description Calling prism on tinymce elements
      */
     public highlightCode(): void
     {

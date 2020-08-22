@@ -7,8 +7,6 @@ import Application      from "../../../Application";
 
 export default class DirectoriesBasedWidget {
 
-    // todo: also add ids and move to widget data loading + make callback + dto
-
     /**
      * @description When using in upload directory - this will select currently
      *              opened directory for given module from the list

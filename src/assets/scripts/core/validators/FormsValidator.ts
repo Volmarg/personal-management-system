@@ -68,6 +68,7 @@ export default class FormsValidator {
 
     /**
      * @description Will show error popups - this ones needs to be closed manually
+     *
      * @param message {string}
      */
     private showValidationErrorMessage(message:string): void

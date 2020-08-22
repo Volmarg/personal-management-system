@@ -8,7 +8,8 @@ export default class ModalLogic {
 
     /**
      * @description contains definition of logic for:
-     * @see         templates/modules/my-notes/components/note-edit-modal-body.html.twig
+     *
+     * @see templates/modules/my-notes/components/note-edit-modal-body.html.twig
      */
     public static noteEdit(): ModalDataDto
     {

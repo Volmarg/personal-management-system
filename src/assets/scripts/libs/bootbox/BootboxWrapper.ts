@@ -8,7 +8,8 @@ export default class BootboxWrapper {
     public static mainLogic:BootboxStatic = Bootbox;
 
     /**
-     * When modal is being called from within bootbox it looses all the focus as bootbox has tabindex = -1
+     * @description When modal is being called from within bootbox it looses all the focus as bootbox has tabindex = -1
+     *
      */
     public static removeTabindexFromActiveModals(){
         let $allActiveBootboxesModals = $('.bootbox.modal');
@@ -20,7 +21,8 @@ export default class BootboxWrapper {
     };
 
     /**
-     * The removed tabindex should be restored otherwise it wont be closable by hitting ESC
+     * @description The removed tabindex should be restored otherwise it wont be closable by hitting ESC
+     *
      */
     public static restoreTabindexForActiveModals(){
         let $allActiveBootboxesModals = $('.bootbox.modal');

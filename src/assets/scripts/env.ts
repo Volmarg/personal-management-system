@@ -11,8 +11,10 @@ export default class Env {
         return Env.APP_ENV === Env.ENV_DEV;
     }
 
+    // ---------------------------------------------------------------------------------- ENV SETTINGS BELOW
+
     /**
-     * Env configuration
+     * @description Env configuration
      */
     static readonly APP_ENV = Env.ENV_DEV;
 }

@@ -1,5 +1,8 @@
 import AbstractDto from "./AbstractDto";
 
+/**
+ * @description DTO for widget data
+ */
 export default class WidgetDataDto extends AbstractDto {
 
     /**

@@ -6,6 +6,8 @@ import Loader           from "../../libs/loader/Loader";
 import Sidebars         from "../../core/sidebar/Sidebars";
 import MasonryGallery   from "../../libs/masonry/MasonryGallery";
 import Initializer      from "../../Initializer";
+import StringUtils      from "../utils/StringUtils";
+import DomElements      from "../utils/DomElements";
 
 var imagesLoaded = require('imagesloaded');
 
@@ -97,7 +99,7 @@ export default class Ajax {
                 }
             });
 
-            if ( !skip && "" == href ){
+            if ( !skip && StringUtils.isEmptyString(href) ){
                 skip = true;
             }
 
@@ -123,17 +125,17 @@ export default class Ajax {
     {
         let $menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');
 
-        if( null === menuNodeModuleName ){
+        if( StringUtils.isEmptyString(menuNodeModuleName) ){
             let $currentActiveMenuLink = $('a.sidebar-link.active');
             $menuNode                   = $currentActiveMenuLink.closest('.sidebar-menu-node-element');
             menuNodeModuleName          = $menuNode.attr('data-menu-node-name');
         }
 
-        if( "undefined" === typeof menuNodeModuleName ){
+        if( StringUtils.isEmptyString(menuNodeModuleName) ){
             throw("Menu node name was not defined");
         }
 
-        if( 0 === $menuNode.length ){
+        if( !DomElements.doElementsExists($menuNode) ){
             throw('Menu node with name: ' + menuNodeModuleName + ' - was not found');
         }
 
@@ -225,7 +227,7 @@ export default class Ajax {
                 twigBodySection.html(ajaxResponseDto.template);
             }
 
-            if( "function" === typeof callbackAfter ){
+            if( $.isFunction(callbackAfter) ){
                 callbackAfter();
             }
 
@@ -287,7 +289,7 @@ export default class Ajax {
                 formTemplate = formTemplate.replace('</form>','');
             }
 
-            if( "function" === typeof callback ){
+            if( $.isFunction(callback) ){
                 callback(formTemplate);
             }
 
@@ -406,7 +408,7 @@ export default class Ajax {
 
                 let $targetElement = $(targetElementSelector);
 
-                if( 0 === $targetElement.length ){
+                if( !DomElements.doElementsExists($targetElement) ){
                     throw({
                         "message"  : "No element was found for given selector",
                         "selector" : targetElementSelector
@@ -460,7 +462,7 @@ export default class Ajax {
             }
 
             if( ajaxResponseDto.isSuccessCode()){
-                if( "function" === typeof callback ){
+                if( $.isFunction(callback) ){
                     callback(ajaxResponseDto.template);
                 }
             }

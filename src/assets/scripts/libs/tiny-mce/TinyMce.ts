@@ -8,8 +8,7 @@ import 'tinymce/plugins/preview';
 import 'tinymce/plugins/paste';
 import 'tinymce/plugins/codesample';
 
-import BootstrapNotify  from "../bootstrap-notify/BootstrapNotify";
-import StringUtils      from "../../core/utils/StringUtils";
+import StringUtils from "../../core/utils/StringUtils";
 
 /**
  * @description Handles tinymce logic
@@ -54,11 +53,6 @@ export default class TinyMce {
     };
 
     /**
-     * @type BootstrapNotify
-     */
-    private bootstrapNotify = new BootstrapNotify();
-
-    /**
      *
      * @param selector {string}
      */
@@ -100,7 +94,7 @@ export default class TinyMce {
     };
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
      */
     public init(tinyMceSelector: string = null) {
 
@@ -120,7 +114,8 @@ export default class TinyMce {
 
 
     /**
-     * Gets content of the tinymce editor body (html)
+     * @description Gets content of the tinymce editor body (html)
+     *
      * @param tinyMceInstanceSelector {string}
      * @returns {string}
      */
@@ -140,7 +135,8 @@ export default class TinyMce {
     };
 
     /**
-     * Returns tinymce instance for given selector
+     * @description Returns tinymce instance for given selector
+     *
      * @param selector
      */
     public static getTinyMceInstanceForSelector(selector: string)
@@ -151,7 +147,8 @@ export default class TinyMce {
     }
 
     /**
-     * Will destroy the tinymce instance for given selector
+     * @description Will destroy the tinymce instance for given selector
+     *
      * @param tinyMceInstanceSelector
      */
     public static remove(tinyMceInstanceSelector)
@@ -161,7 +158,7 @@ export default class TinyMce {
     }
 
     /**
-     * Fix Problem with misbehaving text-alignment
+     * @description Fix Problem with misbehaving text-alignment
      */
     private setDefaultTextAlignment(): void
     {
@@ -178,9 +175,9 @@ export default class TinyMce {
     };
 
     /**
-     * This fixes the problem where jquery/Bootstrap is stealing focus from TinyMCE textarea
-     * In this case for plugin:
-     * - codesample
+     * @description This fixes the problem where jquery/Bootstrap is stealing focus from TinyMCE textarea
+     *              In this case for plugin:
+     *              - codesample
      */
     private preventFocusHijack(): void
     {

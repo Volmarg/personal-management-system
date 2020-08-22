@@ -37,7 +37,8 @@ export default class ApexChartsHandler {
     };
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
+     *
      */
     public init(): void
     {
@@ -55,7 +56,8 @@ export default class ApexChartsHandler {
     };
 
     /**
-     * Build options for given chart type if builder is created for given type
+     * @description Build options for given chart type if builder is created for given type
+     *
      * @param $chartToHandle    {object}
      * @returns                 {object}
      */
@@ -111,7 +113,8 @@ export default class ApexChartsHandler {
     };
 
     /**
-     * Build options needed to create pie type chart
+     * @description Build options needed to create pie type chart
+     *
      * @param chartValuesArray      {array}
      * @param chartLabelsArray      {array}
      * @returns                     {object}
@@ -144,7 +147,8 @@ export default class ApexChartsHandler {
         return options;
     };
     /**
-     * Build options needed to create line type chart
+     * @description Build options needed to create line type chart
+     *
      * @param xAxisValuesArray              {array}
      * @param chartDataSetsArray            {array}
      * @param chartColorsArray              {array}
@@ -245,7 +249,8 @@ export default class ApexChartsHandler {
     };
 
     /**
-     * Values must be numeric but from front these always come as string so this function changes string numbers to floats
+     * @description Values must be numeric but from front these always come as string so this function changes string numbers to floats
+     *
      * @param chartValuesArray  {array}
      * @return                  {array}
      */

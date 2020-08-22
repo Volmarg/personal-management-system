@@ -1,9 +1,10 @@
 /**
- * This file handles the filesTransfer logic for module "My Files"
+ * @description This file handles the filesTransfer logic for module "My Files"
  */
 import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
 import RemoveAction         from "../../core/ui/Actions/RemoveAction";
 import BootboxWrapper       from "../../libs/bootbox/BootboxWrapper";
+import DomElements          from "../../core/utils/DomElements";
 
 export default class FilesTransfer {
 
@@ -21,7 +22,7 @@ export default class FilesTransfer {
     };
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
      */
     public init(): void
     {
@@ -40,14 +41,14 @@ export default class FilesTransfer {
     private removeAction = new RemoveAction();
 
     /**
-     * Calls the dialog for data transfer
+     * @description Calls the dialog for data transfer
      */
     private attachCallDialogForDataTransfer(): void
     {
         let button  = $(this.elements.fileTransferButton);
         let _this   = this;
 
-        if( $(button).length > 0 ){
+        if( DomElements.doElementsExists($(button)) ){
 
             $(this.elements.fileTransferButton).on('click', (event) => {
                 let clickedButton           = $(event.target);

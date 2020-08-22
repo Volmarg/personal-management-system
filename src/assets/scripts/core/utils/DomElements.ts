@@ -4,7 +4,8 @@ import Ajax                     from "../ajax/Ajax";
 export default class DomElements {
 
     /**
-     * Checks if there are existing elements for domElements selected with $();
+     * @description Checks if there are existing elements for domElements selected with $();
+     *
      * @param elements
      * @returns {boolean}
      */
@@ -14,8 +15,9 @@ export default class DomElements {
     }
 
     /**
-     * This function is a find() decorator but it will throw exception if element was not found
-     * This is needed as some functionality MUST be executed so missing child element is a bug
+     * @description This function is a find() decorator but it will throw exception if element was not found
+     *              This is needed as some functionality MUST be executed so missing child element is a bug
+     *
      * @param element
      * @param selector
      * @returns {boolean}
@@ -37,7 +39,8 @@ export default class DomElements {
     };
 
     /**
-     * Fetches the form view for given form name and appends it to the targetSelector
+     * @description Fetches the form view for given form name and appends it to the targetSelector
+     *
      * @param formName
      * @param targetSelector
      * @param callbackParam {function}
@@ -75,7 +78,8 @@ export default class DomElements {
     };
 
     /**
-     * This function will remove the closest element which matches the selector relative to $element
+     * @description This function will remove the closest element which matches the selector relative to $element
+     * 
      */
     public static removeClosestSelectorParentForElement($element: JQuery, selector: string): void
     {

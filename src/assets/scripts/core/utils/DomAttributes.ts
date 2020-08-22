@@ -13,9 +13,10 @@ export default class DomAttributes {
     };
 
     /**
-     * This function will check if the element has attribute "content editable"
-     * If selector as second param is provided then found children will be checked
-     * If children is not found then throws error
+     * @description This function will check if the element has attribute "content editable"
+     *              If selector as second param is provided then found children will be checked
+     *              If children is not found then throws error
+     *
      * @param element
      * @param selectorToSearchInElement
      * @returns {boolean}
@@ -42,12 +43,14 @@ export default class DomAttributes {
     };
 
     /**
-     *  This function will set or unset content editable attribute based on the "action" variable
-     *  If "excludeSelectorsForChildren"    is present then only the found children which does NOT contain children will be modified
-     *  If "selectorToSearchInElement"      is present then children will be searched and they will be modified
-     *  If "selectorsToSearchInChildren"    is present then it will search for children inside children and they will be changed alongside with it's parents but not main parent
-     *  If "onlyForChildrenInChildren"      is present then only the children of v will be modified
-     *  Also by default this method will skip elements which have " data-content-editable="false" "
+     *  @description    This function will set or unset content editable attribute based on the "action" variable
+     *                  If "excludeSelectorsForChildren"    is present then only the found children which does NOT contain children will be modified
+     *                  If "selectorToSearchInElement"      is present then children will be searched and they will be modified
+     *                  If "selectorsToSearchInChildren"    is present then it will search for children inside children
+     *                      and they will be changed alongside with it's parents but not main parent
+     *                  If "onlyForChildrenInChildren"      is present then only the children of v will be modified
+     *                  Also by default this method will skip elements which have " data-content-editable="false" "
+     *
      * @param element (jq elem)
      * @param action (set/unset)
      * @param selectorToSearchInElement string
@@ -152,8 +155,9 @@ export default class DomAttributes {
     };
 
     /**
-     * Will check if provided element is a checkbox, and if not then exception will be thrown,
-     * or exception will be skipped if second param will be passed
+     * @description Will check if provided element is a checkbox, and if not then exception will be thrown,
+     *              or exception will be skipped if second param will be passed
+     *
      * @param element {object}
      * @param throwException {boolean}
      */
@@ -176,7 +180,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will mark checkbox as checked
+     * @description Will mark checkbox as checked
+     *
      * @param element {object}
      */
     public static setChecked(element): void
@@ -187,7 +192,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will uncheck checkbox
+     * @description Will uncheck checkbox
+     *
      * @param element {object}
      */
     public static unsetChecked(element): void
@@ -198,7 +204,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will check if checkbox is checked
+     * @description Will check if checkbox is checked
+     *
      * @param element {object}
      */
     public static isChecked(element): boolean
@@ -216,7 +223,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will check if checkbox is checked
+     * @description Will check if checkbox is checked
+     *
      * @param element {object}
      * @return {boolean}
      */
@@ -227,7 +235,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will set disabled class
+     * @description Will set disabled class
+     *
      * @param element {object}
      */
     public static setDisabled(element): void
@@ -236,7 +245,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will unset disabled class
+     * @description Will unset disabled class
+     *
      * @param element {object}
      */
     public static unsetDisabled(element): void
@@ -245,7 +255,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Add d-none class to element
+     * @description Add d-none class to element
+     *
      * @param $element
      */
     public static setDisplayNoneClass($element): void
@@ -255,6 +266,7 @@ export default class DomAttributes {
 
     /**
      * Remove d-none class from element
+     *
      * @param $element
      */
     public static unsetDisplayNoneClass($element): void
@@ -263,7 +275,8 @@ export default class DomAttributes {
     }
 
     /**
-     * Check if element has d-none class
+     * @description Check if element has d-none class
+     *
      * @param $element
      */
     public static hasDisplayNoneClass($element): boolean
@@ -272,7 +285,8 @@ export default class DomAttributes {
     }
 
     /**
-     * Will set error class - mostly used for form elements
+     * @description Will set error class - mostly used for form elements
+     *
      * @param element
      */
     public static setErrorClass(element): void
@@ -281,7 +295,8 @@ export default class DomAttributes {
     };
 
     /**
-     * Will unset error class
+     * @description Will unset error class
+     *
      * @param element
      */
     public static unsetErrorClass(element): void

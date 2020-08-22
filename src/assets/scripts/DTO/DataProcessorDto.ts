@@ -1,6 +1,9 @@
 import AbstractDto from "./AbstractDto";
 import StringUtils from "../core/utils/StringUtils";
 
+/**
+ * @description DTO used for DataProcessors
+ */
 export default class DataProcessorDto extends AbstractDto {
 
     /**

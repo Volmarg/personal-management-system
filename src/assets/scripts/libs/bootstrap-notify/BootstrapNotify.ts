@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 
 /**
  * @description this method is required in twig for handling flashbag messages
+ *
  * @param message
  * @param type
  */
@@ -22,6 +23,7 @@ window.legacy_notify = function(message, type){
 
 /**
  * @description Handles showing small popups with texts
+ *
  * @link http://bootstrap-notify.remabledesigns.com/
  */
 export default class BootstrapNotify{
@@ -38,7 +40,8 @@ export default class BootstrapNotify{
     static readonly MESSAGE_TYPE_DANGER = "danger";
 
     /**
-     * Shows green popup box
+     * @description Shows green popup box
+     *
      * @param message {string}
      * @param delay   {number}
      * @param showProgressbar {boolean}
@@ -48,7 +51,8 @@ export default class BootstrapNotify{
     };
 
     /**
-     * Shows red popup box
+     * @description Shows red popup box
+     *
      * @param message {string}
      * @param delay   {number}
      * @param showProgressbar {boolean}
@@ -58,7 +62,8 @@ export default class BootstrapNotify{
     };
 
     /**
-     * Shows orange popup box
+     * @description Shows orange popup box
+     *
      * @param message {string}
      * @param delay   {number}
      * @param showProgressbar {boolean}*
@@ -68,7 +73,8 @@ export default class BootstrapNotify{
     };
 
     /**
-     * Shows orange popup box
+     * @description Shows orange popup box
+     *
      * @param message {string}
      * @param delay   {number}
      * @param showProgressbar {boolean}
@@ -79,6 +85,7 @@ export default class BootstrapNotify{
 
     /**
      * @description Main method with notifications configuration
+     *
      * @param message
      * @param type
      * @param delay

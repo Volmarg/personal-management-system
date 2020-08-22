@@ -1,4 +1,6 @@
-
+/**
+ * @description Common methods / data used for children DTO classes
+ */
 export default abstract class AbstractDto {
 
     /**

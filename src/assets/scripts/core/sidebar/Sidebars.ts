@@ -1,4 +1,5 @@
 import * as $ from "jquery";
+import DomElements from "../utils/DomElements";
 
 export default class Sidebars {
 
@@ -79,16 +80,17 @@ export default class Sidebars {
         });
     }
 
+    /**
+     * @description Will mark current element in menu as active one - based on current url
+     */
     public static markCurrentMenuElementAsActive(): void
     {
-        // this is done directly by matching url in menu
-        //let currUrl       = unescape(window.location.pathname);
         let currUrl       = window.location.pathname;
         let currMenuLink  = $('[href="' + currUrl + '"');
 
         let currActiveMenuLink = $('.sidebar-menu li.nav-item a.active');
 
-        if( 0 === currMenuLink.length ){
+        if( !DomElements.doElementsExists(currMenuLink) ){
             throw("Could not find menu link for currently visited page. (currUrl: " + currUrl + ")");
         }
 

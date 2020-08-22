@@ -11,14 +11,17 @@
 import * as $ from 'jquery';
 import 'datatables';
 import 'datatables.net-select';
-import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
-import Loader           from "../../libs/loader/Loader";
-import DomAttributes    from "../../core/utils/DomAttributes";
-import Navigation       from "../../core/Navigation";
-import Ajax             from "../../core/ajax/Ajax";
-import Initializer      from "../../Initializer";
-import BootboxWrapper   from "../bootbox/BootboxWrapper";
-import DataTransferDialogs from "../../core/ui/Dialogs/DataTransferDialogs";
+import BootstrapNotify      from "../../libs/bootstrap-notify/BootstrapNotify";
+import Loader               from "../../libs/loader/Loader";
+import DomAttributes        from "../../core/utils/DomAttributes";
+import Navigation           from "../../core/Navigation";
+import Ajax                 from "../../core/ajax/Ajax";
+import Initializer          from "../../Initializer";
+import BootboxWrapper       from "../bootbox/BootboxWrapper";
+import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
+import ValidationUtils      from "../../core/utils/ValidationUtils";
+import DomElements          from "../../core/utils/DomElements";
+import AjaxResponseDto      from "../../DTO/AjaxResponseDto";
 
 export default class DataTable {
 
@@ -86,18 +89,18 @@ export default class DataTable {
     private dataTransferDialogs = new DataTransferDialogs();
 
     /**
-     * Initialize datatable based on DOM attributes
+     * @description Initialize datatable based on DOM attributes
      */
     public init() {
         let _this = this;
         $(document).ready(() => {
 
-            let all_tables = $('body').find('table[data-table="true"]');
-            $(all_tables).each(function (index, table) {
+            let $allTables = $('body').find('table[data-table="true"]');
+            $($allTables).each(function (index, table) {
 
                 let config          = {};
                 let checkboxesAttr  = $(table).attr('data-table-checkboxes');
-                let isSelectable    = ( "true" === checkboxesAttr );
+                let isSelectable    = ( ValidationUtils.isTrue(checkboxesAttr) );
 
                 if( isSelectable ){
                     config = _this.configs.checkboxes;
@@ -120,7 +123,8 @@ export default class DataTable {
     };
 
     /**
-     * Reinitialize existing datatable instance
+     * @description Reinitialize existing datatable instance
+     *
      * @param table_id {string}
      */
     public reinit(table_id) {
@@ -128,7 +132,7 @@ export default class DataTable {
         let table  = $('#' + table_id);
         let checkboxesAttr = $(table).attr('data-table-checkboxes');
 
-        if( "true" === checkboxesAttr ){
+        if( ValidationUtils.isTrue(checkboxesAttr)  ){
             config = this.configs.checkboxes;
         }
 
@@ -150,25 +154,25 @@ export default class DataTable {
      * @param table
      */
    private initSelectOptions(table){
-        let massActionButtonsSection = $(this.selectors.classes.massActionButtonsSection);
-        let massActionButtons        = $(massActionButtonsSection).find('button');
+        let massActionButtonsSection  = $(this.selectors.classes.massActionButtonsSection);
+        let $massActionButtons        = $(massActionButtonsSection).find('button');
         // Buttons MUST be there for this options logic
-        if( 0 === $(massActionButtons).length ){
+        if( !DomElements.doElementsExists($massActionButtons) ){
             return;
         }
 
         this.attachSelectingCheckboxForCheckboxCell(table);
-        this.attachEnablingAndDisablingMassActionButtonsToCheckboxCells(table, massActionButtons);
+        this.attachEnablingAndDisablingMassActionButtonsToCheckboxCells(table, $massActionButtons);
 
-        let massActionRemoveFilesButton   = $(massActionButtonsSection).find(this.selectors.classes.massActionRemoveFilesButton);
-        let massActionTransferFilesButton = $(massActionButtonsSection).find(this.selectors.classes.massActionTransferFilesButton);
+        let $massActionRemoveFilesButton   = $(massActionButtonsSection).find(this.selectors.classes.massActionRemoveFilesButton);
+        let $massActionTransferFilesButton = $(massActionButtonsSection).find(this.selectors.classes.massActionTransferFilesButton);
 
-        if( 0 !==  $(massActionRemoveFilesButton).length ){
-            this.attachFilesRemoveEventOnRemoveFileButton(massActionRemoveFilesButton);
+        if( DomElements.doElementsExists($massActionRemoveFilesButton) ){
+            this.attachFilesRemoveEventOnRemoveFileButton($massActionRemoveFilesButton);
         }
 
-        if( 0 !==  $(massActionTransferFilesButton).length ){
-            this.attachFilesTransferEventOnTransferFileButton(massActionTransferFilesButton);
+        if( DomElements.doElementsExists($massActionTransferFilesButton) ){
+            this.attachFilesTransferEventOnTransferFileButton($massActionTransferFilesButton);
         }
 
     };
@@ -227,31 +231,21 @@ export default class DataTable {
 
                             Loader.hideLoader();
 
+                            let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
                             let $twigBodySection = $('.twig-body-section');
 
-                            try{
-                                var code     = data['code'];
-                                var message  = data['message'];
-                                var template = data['template'];
-                            } catch(Exception){
-                                throw({
-                                    "message"   : "Could not handle ajax call",
-                                    "data"      : data,
-                                    "exception" : Exception
-                                })
-                            }
-
-                            if( 200 != code ){
-                                _this.bootstrapNotify.showRedNotification(message);
+                            if( !ajaxResponseDto.isSuccessCode() ){
+                                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                                 return;
                             }else {
 
-                                if( "undefined" === typeof message ){
+                                let message = ajaxResponseDto.message;
+                                if( !ajaxResponseDto.isMessageSet() ){
                                     message = "Entity has been removed from repository";
                                 }
 
-                                if( "undefined" !== typeof template ){
-                                    $twigBodySection.html(template);
+                                if( ajaxResponseDto.isTemplateSet() ){
+                                    $twigBodySection.html(ajaxResponseDto.template);
                                     _this.initializer.reinitializeLogic();
                                 }
 

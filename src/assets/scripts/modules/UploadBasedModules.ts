@@ -4,6 +4,7 @@ import DomAttributes    from "../core/utils/DomAttributes";
 import Ajax             from "../core/ajax/Ajax";
 import BootstrapNotify  from "../libs/bootstrap-notify/BootstrapNotify";
 import BootboxWrapper   from "../libs/bootbox/BootboxWrapper";
+import AjaxResponseDto  from "../DTO/AjaxResponseDto";
 
 export default class UploadBasedModules {
 
@@ -70,33 +71,29 @@ export default class UploadBasedModules {
                                 data    : data
                             }).always((data) => {
                                 Loader.toggleLoader();
-                                // if there is code there also must be message so i dont check it
-                                let code                = data['code'];
-                                let message             = data['message'];
-                                let reloadPage          = data['reload_page'];
-                                let reloadMessage       = data['reload_message'];
-                                let notification_type   = '';
 
-                                if( undefined === code ){
+                                let ajaxResponseDto = AjaxResponseDto.fromArray(data);
+
+                                // should not happen, but that legacy check was here
+                                if( !ajaxResponseDto.isCodeSet() ){
                                     return;
                                 }
 
-                                if( code === 200 ){
-                                    notification_type = 'success';
+                                if( ajaxResponseDto.isSuccessCode() ){
+                                    _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
 
                                     window.setTimeout( () => {
                                         window.location.reload();
                                     }, 1000)
 
                                 }else{
-                                    notification_type = 'danger';
+                                    _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                                 }
 
-                                _this.bootstrapNotify.notify(message, notification_type);
 
-                                if( reloadPage ){
-                                    if( "" !== reloadMessage ){
-                                        _this.bootstrapNotify.showBlueNotification(reloadMessage);
+                                if( ajaxResponseDto.reloadPage ){
+                                    if( ajaxResponseDto.isReloadMessageSet() ){
+                                        _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                                     }
                                     location.reload();
                                 }

@@ -1,5 +1,6 @@
-import BootstrapNotify from "../../libs/bootstrap-notify/BootstrapNotify";
-import Ajax            from "../../core/ajax/Ajax";
+import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
+import Ajax             from "../../core/ajax/Ajax";
+import DomElements      from "../../core/utils/DomElements";
 
 export default class GoalsChecklist {
 
@@ -36,7 +37,7 @@ export default class GoalsChecklist {
     private bootstrapNotify = new BootstrapNotify();
 
     /**
-     * Main initialization logic
+     * @description Main initialization logic
      */
     public init(): void 
     {
@@ -47,7 +48,7 @@ export default class GoalsChecklist {
         let _this      = this;
         let checkboxes = $(GoalsChecklist.selectors.classes["checklist-checkbox"]);
 
-        if ($(checkboxes).length === 0) {
+        if ( !DomElements.doElementsExists($(checkboxes)) ) {
             return;
         }
 

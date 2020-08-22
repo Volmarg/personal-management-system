@@ -94,7 +94,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
 
             if( ajaxResponseDto.isSuccessCode() ){
 
-                if( 'function' === typeof(callback) ){
+                if( $.isFunction(callback) ){
                     callback();
                     BootboxWrapper.mainLogic.hideAll()
                 }

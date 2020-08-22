@@ -117,7 +117,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
         dialog.init( () => {
             let callableViaDataAttrsDialogs = new CallableViaDataAttrsDialogs();
 
-            if( "function" === typeof callback ){
+            if( $.isFunction(callback) ){
                 callback();
             }
 

@@ -18,6 +18,7 @@ import 'lightgallery/modules/lg-thumbnail'
 import 'lightgallery/modules/lg-zoom'
 import 'lightgallery/dist/css/lightgallery.min.css'
 import 'lightgallery/dist/css/lg-transitions.min.css'
+import AjaxResponseDto from "../../DTO/AjaxResponseDto";
 
 export default class LightGallery {
 
@@ -228,31 +229,21 @@ export default class LightGallery {
 
         Loader.showLoader();
         $.ajax({
-            method: "POST",
+            method:  Ajax.REQUEST_TYPE_POST,
             url:     _this.apiUrls.fileRemoval,
             data:    data,
             async:   async,
         }).always((data) => {
 
             Loader.hideLoader();
+            let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
-            try{
-                var code     = data['code'];
-                var message  = data['message'];
-            } catch(Exception){
-                throw({
-                    "message"   : "Could not handle ajax call",
-                    "data"      : data,
-                    "exception" : Exception
-                })
-            }
-
-            if( 200 != code ) {
-                _this.bootstrapNotify.showRedNotification(message);
+            if( !ajaxResponseDto.isSuccessCode() ) {
+                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                 return;
             }
 
-            _this.bootstrapNotify.showGreenNotification(message);
+            _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
 
             if( $.isFunction(callback) ){
                 callback();
@@ -297,7 +288,7 @@ export default class LightGallery {
 
                             Loader.toggleLoader();
                             $.ajax({
-                                method: Ajax.REQUEST_TYPE_POST,
+                                method:  Ajax.REQUEST_TYPE_POST,
                                 url:     _this.apiUrls.fileRename,
                                 data:    data,
                                 success: (data) => {
@@ -316,10 +307,10 @@ export default class LightGallery {
                                         _this.vars.currentFileName  = $(_this.selectors.classes.currentViewedFilename).text();
                                     }
 
-                                    _this.bootstrapNotify.notify(data, 'success');
+                                    _this.bootstrapNotify.showGreenNotification(data);
                                 },
                             }).fail((data) => {
-                                _this.bootstrapNotify.notify(data.responseText, 'danger')
+                                _this.bootstrapNotify.showRedNotification(data.responseText);
                             }).always(() => {
                                 Loader.toggleLoader();
                             });

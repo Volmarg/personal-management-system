@@ -40,7 +40,7 @@ export default class UploadSettings {
     };
 
     /**
-     * Main initialization functiono
+     * @description Main initialization functiono
      */
     public init()
     {
@@ -49,7 +49,7 @@ export default class UploadSettings {
     }
 
     /**
-     * Add confirmation boxes to forms
+     * @description Add confirmation boxes to forms
      */
    private addConfirmationBoxesToForms(): void
     {
@@ -78,7 +78,7 @@ export default class UploadSettings {
     };
 
     /**
-     * Will build bootbox on form submission
+     * @description Will build bootbox on form submission
      * @param message
      * @param $form
      */

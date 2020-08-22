@@ -1,8 +1,10 @@
-/**
- * Todo: at one point should replace all ajax responses from backend
- */
 import AbstractDto from "./AbstractDto";
 
+/**
+ * @description Main object used to convert standard array response from backend (upon ajax calls)
+ *              might not contain all returned fields - should be expanded if needed / the same about backend
+ *              ajaxResponse
+ */
 export default class AjaxResponseDto extends AbstractDto {
 
     /**

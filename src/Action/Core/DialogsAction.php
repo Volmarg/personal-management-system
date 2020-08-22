@@ -404,7 +404,7 @@ class DialogsAction extends AbstractController
             if( is_null($note) ){
                 $message = $this->app->translator->translate('responses.notes.couldNotFindNoteForId') . $note_id;
                 return new JsonResponse([
-                    'errorMessage' => $message
+                    'message' => $message
                 ]);
             }
 

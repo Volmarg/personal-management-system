@@ -1,5 +1,6 @@
 import * as $       from "jquery";
-import Masonry from 'masonry-layout';
+import Masonry      from 'masonry-layout';
+import DomElements  from "../../core/utils/DomElements";
 
 export default class MasonryGallery {
 
@@ -10,7 +11,7 @@ export default class MasonryGallery {
     {
 
         let masonryTargets = $('.masonry');
-        if( 0 === masonryTargets.length ){
+        if( !DomElements.doElementsExists(masonryTargets) ){
             return;
         }
 

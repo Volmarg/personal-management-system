@@ -5,7 +5,11 @@ import Initializer                  from "../../../Initializer";
 import DomAttributes                from "../../utils/DomAttributes";
 import DomElements                  from "../../utils/DomElements";
 import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
+import StringUtils from "../../utils/StringUtils";
 
+/**
+ * @description Contain logic/ attributes/ variables etc. common for all the actions which are extending inheriting from it
+ */
 export default abstract class AbstractAction {
 
     /**
@@ -60,20 +64,8 @@ export default abstract class AbstractAction {
         entityEditStart: function (entity_name) {
             return 'You are currently editing ' + entity_name + ' record'
         },
-        entityEditEnd: function (entity_name) {
-            return "You've finished editing " + entity_name + ' record';
-        },
-        formTargetActionUpdateSuccess:function(form_target_action_name){
-            return "Update action for " + form_target_action_name + ' has been completed';
-        },
-        formTargetActionUpdateFail:function(form_target_action_name){
-            return "There was a problem while performing update action for " + form_target_action_name;
-        },
         doYouWantToRemoveThisRecord: function(){
             return "Do You want to remove this record?";
-        },
-        couldNotRemoveEntityFromRepository: function(repositoryName){
-            return "Could not remove entity from " + repositoryName;
         },
         entityHasBeenRemovedFromRepository: function(){
             return "Record has been removed successfully";
@@ -107,9 +99,9 @@ export default abstract class AbstractAction {
                  */
                 buildUrl: function(paramEntityId, paramRepositoryName, paramFieldName){
                 if(
-                        "" === paramEntityId
-                    ||  "" === paramRepositoryName
-                    ||  "" === paramFieldName
+                        StringUtils.isEmptyString(paramEntityId)
+                    ||  StringUtils.isEmptyString(paramRepositoryName)
+                    ||  StringUtils.isEmptyString(paramFieldName)
                 ){
                     throw{
                         "message": "At least one of the params required to build url for boolval toggle is missing",
@@ -191,7 +183,7 @@ export default abstract class AbstractAction {
 
         $(elements_to_toggle).each((index, element_type) => {
 
-            if ($(element_type).length !== 0) {
+            if ( DomElements.doElementsExists($(element_type)) ) {
                 $(element_type).each((index, element) => {
 
                     if ($(element).hasClass(_this.classes.disabled)) {

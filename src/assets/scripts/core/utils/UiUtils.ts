@@ -4,8 +4,7 @@ var window = window;
 export default class UiUtils {
 
     /**
-     * TODO: must be fixed in PHP also
-     * Will keep open menu elements built from folders structure
+     * @description Will keep open menu elements built from folders structure
      */
     public keepUploadBasedMenuOpen(){
         let openedMenu       = $('.folder-based-menu .open');
@@ -21,7 +20,7 @@ export default class UiUtils {
     }
 
     /**
-     * Will show red message and redirect to given url
+     * @description Will show red message and redirect to given url
      *
      * @param url
      * @param message
