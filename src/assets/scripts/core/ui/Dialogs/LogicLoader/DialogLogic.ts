@@ -8,6 +8,7 @@ import Popover              from "../../../../libs/popover/Popover";
 import EditViaTinyMceAction from "../../Actions/EditViaTinyMceAction";
 import FontawesomeAction    from "../../Actions/FontawesomeAction";
 import UpdateAction         from "../../Actions/UpdateAction";
+import CreateAction         from "../../Actions/CreateAction";
 
 /**
  * @description This class contains definitions of logic for given dialogs
@@ -32,6 +33,7 @@ export default class DialogLogic {
             let datatable          = new DataTable();
             let flatpicker         = new FlatPicker();
             let fontawesomeAction  = new FontawesomeAction();
+            let createAction       = new CreateAction();
 
             datatable.init();
             accordion.applyAccordion();
@@ -41,6 +43,7 @@ export default class DialogLogic {
             tinymce.init();
             fontawesomeAction.init();
             flatpicker.init();
+            createAction.init();
         };
 
         let dialogDataDto      = new DialogDataDto();

@@ -45,7 +45,7 @@ export default class TinyMce {
     /**
      * @type Object
      */
-    public static messages: {
+    public static messages = {
         'note-delete-success' : 'Note has been successfully deleted',
         'note-delete-fail'    : 'There was an error while deleting the note',
         'note-update-success' : 'Note has been successfully updated',

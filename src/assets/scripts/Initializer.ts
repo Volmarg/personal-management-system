@@ -39,6 +39,7 @@ import UpdateAction                 from "./core/ui/Actions/UpdateAction";
 
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
+import NotesTinyMce from "./modules/Notes/NotesTinyMce";
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
  *              that might eventually be needed on given page is being triggered or reinitialized
@@ -79,6 +80,7 @@ export default class Initializer {
         let filesTransfer       = new FilesTransfer();
         let monthlyPayments     = new MonthlyPayments();
         let uploadBasedModules  = new UploadBasedModules();
+        let notesTinyMce        = new NotesTinyMce();
 
         // inits
         this.initializeActions();
@@ -104,7 +106,7 @@ export default class Initializer {
         callableViaAttrDialogs.init();
         widgetsDialogs.init();
         flatpicker.init();
-        //notesTinyMce.init(); // todo: check how it was called in old js
+        notesTinyMce.init(); // todo: check how it was called in old js
         monthlyPayments.init();
         uploadBasedModules.init();
         JsColor.init();

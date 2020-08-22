@@ -5,9 +5,9 @@
             preset:'large dark',
             value:'{{ value }}',
             format:'hex',
-            valueElement:'.color-holder-for-form'
+            valueElement:'.color-holder-for-form{{ id }}'
         }"
     ></button>
     <input  {{ block('widget_attributes') }}
-            data-color-holder class="color-holder-for-form input-as-text position-absolute"/>
+            data-color-holder class="color-holder-for-form{{ id }} input-as-text position-absolute"/>
 {% endblock %}

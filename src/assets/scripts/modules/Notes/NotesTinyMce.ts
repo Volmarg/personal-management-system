@@ -1,4 +1,3 @@
-import tinymce from 'tinymce/tinymce';
 import 'tinymce/themes/silver';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/table';
@@ -28,19 +27,22 @@ export default class NotesTinyMce {
      * @type Ajax
      */
     private ajax = new Ajax();
+
+    /**
+     * @type TinyMce
+     */
+    private tinyMce = new TinyMce();
     
     /**
      * Main initialization logic
-     * @param editButton
      */
-    public init(editButton): void
+    public init(): void
     {
-        let id              = $(editButton).attr('data-id');
-        let tinyMceSelector = TinyMce.classes["note-modal-tinymce-content"] + id;
+        let $allNoteDialogs = $('[data-modal-name^="noteEdit"]');
 
-        let config  = TinyMce.getDefaultTinyMceConfig(tinyMceSelector);
-
-        tinymce.init(config);
+        if( !DomElements.doElementsExists($allNoteDialogs) ){
+            return;
+        }
 
         this.attachEditEvent();
         this.attachSaveEvent();
@@ -92,7 +94,10 @@ export default class NotesTinyMce {
                 $(noteTitle).attr('contenteditable', 'true');
                 $(noteTitle).css({'border-bottom': '1px rgba(0,0,0,0.2) solid'});
 
-                _this.init(button);
+                let id              = $(button).attr('data-id');
+                let tinyMceSelector = TinyMce.classes["note-modal-tinymce-content"] + id;
+
+                _this.tinyMce.init(tinyMceSelector);
             })
         })
     };
