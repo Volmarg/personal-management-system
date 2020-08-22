@@ -63,6 +63,7 @@ export default class Search {
         let searchInput = $(this.selectors.ids.searchInput);
         let timeout     = null;
 
+        searchInput.off('change'); // prevent stacking
         searchInput.on('change', () => {
 
             let tags                = $(searchInput).val();
