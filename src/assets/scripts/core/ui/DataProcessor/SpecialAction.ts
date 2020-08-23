@@ -134,8 +134,8 @@ export default class SpecialAction extends AbstractDataProcessor {
         },
         makeCreateData: function () {
             let url             = '/files/actions/create-folder';
-            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(this.form_target_action_name);
-            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(this.form_target_action_name);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(SpecialAction.CreateFolder.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.CreateFolder.processorName);
             let callback        = (dataCallbackParams) => {
                 let ajax = new Ajax();
 
@@ -224,8 +224,8 @@ export default class SpecialAction extends AbstractDataProcessor {
                 'all_rows_data': allRowsData
             };
 
-            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(this.entity_name);
-            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(this.entity_name);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(SpecialAction.settingsDashboardWidgetsVisibility.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(SpecialAction.settingsDashboardWidgetsVisibility.processorName);
 
             let url = '/api/settings-dashboard/update-widgets-visibility';
 
@@ -256,8 +256,8 @@ export default class SpecialAction extends AbstractDataProcessor {
 
             let beforeUpdateState = $($baseElement).find('.before-update-state').val();
 
-            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(this.entity_name);
-            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(this.entity_name);
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(SpecialAction.settingsFinancesCurrencyTable.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(SpecialAction.settingsFinancesCurrencyTable.processorName);
 
             let url = '/api/settings-finances/update-currencies';
 
@@ -280,8 +280,8 @@ export default class SpecialAction extends AbstractDataProcessor {
         makeRemoveData: function ($baseElement) {
             let name               = $($baseElement).find('.name').text();
             let url                = '/api/settings-finances/remove-currency/';
-            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(this.entity_name);
-            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(this.entity_name);
+            let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(SpecialAction.settingsFinancesCurrencyTable.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityRemoveFail(SpecialAction.settingsFinancesCurrencyTable.processorName);
 
             let dataProcessorsDto                = new DataProcessorDto();
             dataProcessorsDto.successMessage     = successMessage;
@@ -330,8 +330,8 @@ export default class SpecialAction extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url                 = '/my-payments-bills';
-            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(this.form_target_action_name);
-            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(this.form_target_action_name);
+            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(SpecialAction.MyPaymentsBills.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.MyPaymentsBills.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -353,8 +353,8 @@ export default class SpecialAction extends AbstractDataProcessor {
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url                = '/my-payments-bills';
-            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(this.form_target_action_name);
-            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(this.form_target_action_name);
+            let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(SpecialAction.MyPaymentsBillsItems.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.MyPaymentsBillsItems.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.successMessage = successMessage;

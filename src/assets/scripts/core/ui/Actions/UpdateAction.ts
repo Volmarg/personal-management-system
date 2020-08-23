@@ -107,9 +107,13 @@ export default class UpdateAction extends AbstractAction {
      */
     private ajaxUpdateDatabaseRecord(baseElement) {
         let paramEntityName = $(baseElement).attr('data-type');
+        let _this           = this;
 
         let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, baseElement);
-        let _this           = this;
+
+        if( !(dataProcessorDto instanceof DataProcessorDto) ){
+            dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, paramEntityName, baseElement);
+        }
 
         if ( dataProcessorDto.invokeAlert && dataProcessorDto.isInvokedAlertBodySet() ) {
 

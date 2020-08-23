@@ -31,7 +31,7 @@ class UserRolesSessionService extends SessionsService {
             return [];
         }
 
-        $roles_array = json_decode($roles_json);
+        $roles_array = json_decode($roles_json, true);
         return $roles_array;
     }
 

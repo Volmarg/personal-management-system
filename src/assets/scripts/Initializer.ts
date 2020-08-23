@@ -36,10 +36,9 @@ import FontawesomeAction            from "./core/ui/Actions/FontawesomeAction";
 import RemoveAction                 from "./core/ui/Actions/RemoveAction";
 import ToggleBoolvalAction          from "./core/ui/Actions/ToggleBoolvalAction";
 import UpdateAction                 from "./core/ui/Actions/UpdateAction";
-
+import NotesTinyMce                 from "./modules/Notes/NotesTinyMce";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
-import NotesTinyMce from "./modules/Notes/NotesTinyMce";
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
  *              that might eventually be needed on given page is being triggered or reinitialized

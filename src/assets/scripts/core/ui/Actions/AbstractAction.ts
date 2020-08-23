@@ -5,7 +5,8 @@ import Initializer                  from "../../../Initializer";
 import DomAttributes                from "../../utils/DomAttributes";
 import DomElements                  from "../../utils/DomElements";
 import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
-import StringUtils from "../../utils/StringUtils";
+import StringUtils                  from "../../utils/StringUtils";
+import DataProcessorDto             from "../../../DTO/DataProcessorDto";
 
 /**
  * @description Contain logic/ attributes/ variables etc. common for all the actions which are extending inheriting from it
@@ -206,7 +207,12 @@ export default abstract class AbstractAction {
         let paramEntityName   = $(baseElement).attr('data-type');
 
         let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, baseElement);
-        let message          = AbstractAction.messages.entityEditStart(dataProcessorDto.processorName);
+
+        if( !(dataProcessorDto instanceof DataProcessorDto) ){
+            dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, paramEntityName, baseElement);
+        }
+
+        let message = AbstractAction.messages.entityEditStart(dataProcessorDto.processorName);
 
         if (!isContentEditable) {
             DomAttributes.contentEditable(baseElement, DomAttributes.actions.set,  'td', 'input, select, button, img');
