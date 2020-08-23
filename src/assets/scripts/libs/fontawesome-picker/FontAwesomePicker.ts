@@ -441,20 +441,28 @@ export default class FontAwesomePicker {
 
                             if( null === lastPreviewElement ){
 
-                                if( "undefined" !== typeof previewElem[i] ){
-                                    if( "i" !== previewElem[i].tagName ){
-                                        let parent = previewElem[i].parentElement;
+                                /**
+                                 * @description This is some issue with this plugin itself, remove child will
+                                 *              throw an exception which won't break anything so muting it
+                                 */
+                                try{
+                                    if( "undefined" !== typeof previewElem[i] ){
+                                        if( "i" !== previewElem[i].tagName ){
+                                            let parent = previewElem[i].parentElement;
 
-                                        previewElem[i].parentNode.removeChild(previewElem[i]);
+                                            previewElem[i].parentNode.removeChild(previewElem[i]);
 
-                                        lastPreviewElement = document.createElement("i");
-                                        lastPreviewElement.className = iconClassName;
-                                        parent.appendChild(lastPreviewElement);
-                                        disableFontawesomeLooping = true;
-                                    }else{
-                                        previewElem[i].className = iconClassName;
-                                        disableFontawesomeLooping = true;
+                                            lastPreviewElement = document.createElement("i");
+                                            lastPreviewElement.className = iconClassName;
+                                            parent.appendChild(lastPreviewElement);
+                                            disableFontawesomeLooping = true;
+                                        }else{
+                                            previewElem[i].className = iconClassName;
+                                            disableFontawesomeLooping = true;
+                                        }
                                     }
+                                }catch(Exception){
+                                    // mute
                                 }
 
                             }else{

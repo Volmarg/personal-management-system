@@ -2,7 +2,6 @@ import AjaxResponseDto      from "../../../DTO/AjaxResponseDto";
 import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify";
 import Selectize            from "../../../libs/selectize/Selectize";
 import Loader               from "../../../libs/loader/Loader";
-import TinyMce              from "../../../libs/tiny-mce/TinyMce";
 import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
 import FormsUtils           from "../../utils/FormsUtils";
 import DialogLogicLoader    from "./LogicLoader/DialogLogicLoader";

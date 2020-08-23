@@ -90,7 +90,7 @@ export default class RemoveAction extends AbstractAction {
                                 return;
                             }
 
-                            if( !ajaxResponseDto.isTemplateSet() ){
+                            if( ajaxResponseDto.isTemplateSet() ){
                                 $twigBodySection.html(ajaxResponseDto.template);
                                 _this.initializer.reinitializeLogic();
                             }else if ( dataProcessorDto.isDataTable ) {

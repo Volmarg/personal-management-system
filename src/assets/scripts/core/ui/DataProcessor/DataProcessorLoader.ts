@@ -32,7 +32,12 @@ export default class DataProcessorLoader {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
             let dataProcessor  = <DataProcessorInterface>processorClass[processorName];
-            let dto            = dataProcessor.makeUpdateData($baseElement);
+
+            if( "undefined" === typeof dataProcessor ){
+                return null;
+            }
+
+            let dto = dataProcessor.makeUpdateData($baseElement);
 
             return dto;
         }catch(Exception){
@@ -59,7 +64,12 @@ export default class DataProcessorLoader {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
             let dataProcessor  = <DataProcessorInterface>processorClass[processorName];
-            let dto            = dataProcessor.makeCreateData($baseElement);
+
+            if( "undefined" === typeof dataProcessor ){
+                return null;
+            }
+
+            let dto = dataProcessor.makeCreateData($baseElement);
 
             return dto;
         }catch(Exception){
@@ -85,7 +95,12 @@ export default class DataProcessorLoader {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
             let dataProcessor  = <DataProcessorInterface>processorClass[processorName];
-            let dto            = dataProcessor.makeRemoveData($baseElement);
+
+            if( "undefined" === typeof dataProcessor ){
+                return null;
+            }
+
+            let dto = dataProcessor.makeRemoveData($baseElement);
 
             return dto;
         }catch(Exception){
@@ -111,7 +126,12 @@ export default class DataProcessorLoader {
         try{
             let processorClass = DataProcessorLoader.decideProcessorClass(processorType);
             let dataProcessor  = <DataProcessorInterface>processorClass[processorName];
-            let dto            = dataProcessor.makeCopyData($baseElement);
+
+            if( "undefined" === typeof dataProcessor ){
+                return null;
+            }
+
+            let dto = dataProcessor.makeCopyData($baseElement);
 
             return dto;
         }catch(Exception){

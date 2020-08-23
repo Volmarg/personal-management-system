@@ -11,7 +11,7 @@ import UpdateAction         from "../../Actions/UpdateAction";
 import CreateAction         from "../../Actions/CreateAction";
 
 /**
- * @description This class contains definitions of logic for given dialogs
+ * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
  *
  *              Dialog name in Twig must be the same as function here:
  *              @see data-dialog-name="myIssueCardAddRecords"

@@ -576,6 +576,9 @@ export default class Entity extends AbstractDataProcessor {
             let url             = '/my-job/afterhours/remove/';
             let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyJobAfterhours.processorName);
             let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyJobAfterhours.processorName);
+            let ajaxData        = {
+                id: id
+            };
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -583,13 +586,14 @@ export default class Entity extends AbstractDataProcessor {
             dataProcessorsDto.failMessage    = failMessage;
             dataProcessorsDto.isDataTable    = false;
             dataProcessorsDto.processorName  = this.processorName;
+            dataProcessorsDto.ajaxData       = ajaxData;
 
             return dataProcessorsDto;
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let url             = '/my-job/afterhours';
-            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySchedules.processorName);
-            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MySchedules.processorName);
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyJobAfterhours.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyJobAfterhours.processorName);
 
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
@@ -941,11 +945,12 @@ export default class Entity extends AbstractDataProcessor {
 
     public static MyNotesCategories: DataProcessorInterface = {
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id      = $($baseElement).find('.id').html();
-            let name    = $($baseElement).find('.name').html();
-            let icon    = $($baseElement).find('.icon').html();
-            let color   = $($baseElement).find('.color').find('[data-color-holder]').val().replace("#", "");
-            let parent  = $($baseElement).find('.parent').find(':selected').val();
+            let id              = $($baseElement).find('.id').html();
+            let name            = $($baseElement).find('.name').html();
+            let icon            = $($baseElement).find('.icon').html();
+            let colorWithHash   = $($baseElement).find('.color').find('[data-color-holder]').val() as string;
+            let normalizedColor = colorWithHash.replace("#", "");
+            let parent          = $($baseElement).find('.parent').find(':selected').val();
 
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyNotesCategories.processorName);
             let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyNotesCategories.processorName);
@@ -954,7 +959,7 @@ export default class Entity extends AbstractDataProcessor {
             let ajaxData = {
                 'name'      : name,
                 'icon'      : icon,
-                'color'     : color,
+                'color'     : normalizedColor,
                 'parent_id' : parent,
                 'id'        : id
             };
@@ -1213,10 +1218,11 @@ export default class Entity extends AbstractDataProcessor {
             return null;
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id     = $($baseElement).find('.id').html();
-            let name   = $($baseElement).find('.name').html();
-            let icon   = $($baseElement).find('.icon').html();
-            let color  = $($baseElement).find('.color').find('[data-color-holder]').val().replace("#", "");
+            let id              = $($baseElement).find('.id').html();
+            let name            = $($baseElement).find('.name').html();
+            let icon            = $($baseElement).find('.icon').html();
+            let colorWithHash   = $($baseElement).find('.color').find('[data-color-holder]').val() as string;
+            let normalizedColor = colorWithHash.replace("#", "");
 
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyContactGroup.processorName);
             let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyContactGroup.processorName);
@@ -1224,7 +1230,7 @@ export default class Entity extends AbstractDataProcessor {
             let url      = '/my-contacts-groups/update';
             let ajaxData = {
                 'name'      : name,
-                'color'     : color,
+                'color'     : normalizedColor,
                 'icon'      : icon,
                 'id'        : id
             };

@@ -21,8 +21,10 @@
                                     <div class="accordin-section">
                                         <h3 class="c-grey-900 mB-10">{{ category }}</h3>
                                         <section class="justify-content-around">
-                                            {% for idea in all_ideas if idea.category == category %}
+                                            {% for idea in all_ideas %}
+                                                {%  if idea.category == category %}
                                                     {% include 'modules/my-travels/components/ideas.table.html.twig' %}
+                                                {% endif %}
                                             {% endfor %}
                                         </section>
                                     </div>

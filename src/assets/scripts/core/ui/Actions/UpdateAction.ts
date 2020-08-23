@@ -57,7 +57,7 @@ export default class UpdateAction extends AbstractAction {
             let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, formTarget);
 
             if( !(dataProcessorDto instanceof DataProcessorDto) ){
-                dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, formTarget);
+                dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, formTarget, $form);
             }
 
             Loader.showLoader();
