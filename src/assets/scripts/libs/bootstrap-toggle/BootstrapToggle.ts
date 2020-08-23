@@ -26,7 +26,7 @@ export default class BootstrapToggle {
                 classes = '';
             }
 
-            //@ts-ignore 
+            //@ts-ignore
             $element.bootstrapToggle('destroy');
             //@ts-ignore
             $element.bootstrapToggle({

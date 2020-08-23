@@ -61,6 +61,7 @@ export default class Sidebars {
             .addClass('active');
 
         // ٍSidebar Toggle
+        $('.sidebar-toggle').off('click');
         $('.sidebar-toggle').on('click', e => {
             $('.app').toggleClass('is-collapsed');
             e.preventDefault();
