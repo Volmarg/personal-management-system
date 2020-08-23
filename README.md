@@ -124,6 +124,7 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 <li>Php 7.2.x</li>
 <li>JS</li>
 <li>JQ</li>
+<li>TypeScript (as from v1.3)</li>
 <li>Symfony 4.4</li>
 <li>MySQL</li>
 <li>Css</li>
