@@ -6,6 +6,7 @@ import Ajax                     from "../../ajax/Ajax";
 import DomAttributes            from "../../utils/DomAttributes";
 import DataProcessorDto         from "../../../DTO/DataProcessorDto";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
+import AjaxEvents from "../../ajax/AjaxEvents";
 
 /**
  * @description This class should contain definitions of actions either for special forms or certain elements on the page
@@ -137,7 +138,8 @@ export default class SpecialAction extends AbstractDataProcessor {
             let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(SpecialAction.CreateFolder.processorName);
             let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.CreateFolder.processorName);
             let callback        = (dataCallbackParams) => {
-                let ajax = new Ajax();
+                let ajax       = new Ajax();
+                let ajaxEvents = new AjaxEvents();
 
                 if(
                         null !== dataCallbackParams
@@ -157,7 +159,7 @@ export default class SpecialAction extends AbstractDataProcessor {
                 }
 
                 BootboxWrapper.mainLogic.hideAll();
-                ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+                ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
             };
 
             let dataProcessorsDto            = new DataProcessorDto();

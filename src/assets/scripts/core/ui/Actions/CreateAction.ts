@@ -96,7 +96,7 @@ export default class CreateAction extends AbstractAction {
                  * @info handle the way of reloading template
                  */
                 if( doReloadTemplateViaTemplateUrl ){
-                    _this.ajax.loadModuleContentByUrl(dataTemplateUrl, dataProcessorDto.callbackForLoadingModuleContentByUrl(), true);
+                    _this.ajaxEvents.loadModuleContentByUrl(dataTemplateUrl, dataProcessorDto.callbackForLoadingModuleContentByUrl(), true);
                 }else if(ajaxResponseDto.isTemplateSet()){
                     twigBodySection.html(ajaxResponseDto.template);
                 }

@@ -47,7 +47,7 @@ export default class ToggleBoolvalAction extends AbstractAction {
                     _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
                 }
 
-                _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+                _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
 
                 if( ajaxResponseDto.reloadPage ){
                     if( ajaxResponseDto.isReloadMessageSet() ){

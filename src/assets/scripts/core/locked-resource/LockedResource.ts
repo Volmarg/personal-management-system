@@ -53,13 +53,14 @@ export default class LockedResource {
      * Attaches event in the user menu Lock button
      */
     public attachEventsOnToggleResourcesLockForSystem(){
-        let _this      = this;
-        let $button    = $("[" + this.attributes.dataToggleResourcesLockForSystem + "= true]");
-        let $i         = $button.find('i');
-        let isUnlocked = $i.hasClass("text-success");
+        let _this   = this;
+        let $button = $("[" + this.attributes.dataToggleResourcesLockForSystem + "= true]");
 
         $button.off('click');
         $button.on('click', function() {
+            let $svg       = $button.find('svg');
+            let isUnlocked = $svg.hasClass("text-success");
+
             if( isUnlocked ){
                 LockedResourceAjaxCall.ajaxToggleSystemLock("", isUnlocked);
                 return;

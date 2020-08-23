@@ -129,7 +129,7 @@ export default class RemoveAction extends AbstractAction {
         }
 
         let afterRemovalCallback = function(){
-            _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+            _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
             BootboxWrapper.mainLogic.hideAll();
         } ;
 

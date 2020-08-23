@@ -22,6 +22,7 @@ import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
 import ValidationUtils      from "../../core/utils/ValidationUtils";
 import DomElements          from "../../core/utils/DomElements";
 import AjaxResponseDto      from "../../DTO/AjaxResponseDto";
+import AjaxEvents           from "../../core/ajax/AjaxEvents";
 
 export default class DataTable {
 
@@ -77,6 +78,11 @@ export default class DataTable {
      * @type Ajax
      */
     private ajax = new Ajax();
+
+    /**
+     * @type AjaxEvents
+     */
+    private ajaxEvents = new AjaxEvents();
 
     /**
      * @type Initializer
@@ -287,7 +293,7 @@ export default class DataTable {
             });
 
             let callback = function (){
-                _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+                _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
                 BootboxWrapper.mainLogic.hideAll();
             };
 

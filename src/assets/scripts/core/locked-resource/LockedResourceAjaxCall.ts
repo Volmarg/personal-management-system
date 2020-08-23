@@ -4,6 +4,7 @@ import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import Ajax             from "../ajax/Ajax";
 import Loader           from "../../libs/loader/Loader";
 import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
+import AjaxEvents       from "../ajax/AjaxEvents";
 
 /**
  * @description contains ajax calls methods used by LockedResource and other scripts
@@ -22,6 +23,11 @@ export default class LockedResourceAjaxCall {
      * @type Ajax
      */
     private ajax = new Ajax();
+
+    /**
+     * @type AjaxEvents
+     */
+    private ajaxEvents = new AjaxEvents();
 
     /**
      * @type Object
@@ -90,7 +96,7 @@ export default class LockedResourceAjaxCall {
                             }
 
                             _this.bootstrapNotify.showGreenNotification(message);
-                            _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+                            _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
                             _this.ajax.singleMenuNodeReload();
 
                             if( ajaxResponseDto.reloadPage){

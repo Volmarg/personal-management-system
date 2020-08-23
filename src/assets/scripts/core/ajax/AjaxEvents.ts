@@ -1,17 +1,30 @@
-import * as $       from "jquery";
-import Ajax         from "./Ajax";
-import StringUtils  from "../utils/StringUtils";
+var imagesLoaded = require('imagesloaded');
+
+import * as $           from "jquery";
+import StringUtils      from "../utils/StringUtils";
+import Loader           from "../../libs/loader/Loader";
+import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
+import Sidebars         from "../sidebar/Sidebars";
+import MasonryGallery   from "../../libs/masonry/MasonryGallery";
+import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
+import Initializer      from "../../Initializer";
+import AbstractAjax     from "./AbstractAjax";
 
 /**
- * @default This class contains (and should remain like this) only definitions of events related to logic in
- *          @see ./Ajax.ts
+ * @default This class contains definitions of events and it's logic attached on GUI elements
+ *          This could be remain in Ajax.ts however there are issues with circular dependencies event with statics
  */
-export default class AjaxEvents {
+export default class AjaxEvents extends AbstractAjax {
 
     /**
-     * @type Ajax
+     * @type BootstrapNotify
      */
-    private ajax = new Ajax();
+    private bootstrapNotify = new BootstrapNotify();
+
+    /**
+     * @type Initializer
+     */
+    private initializer = new Initializer();
 
     public init()
     {
@@ -19,14 +32,15 @@ export default class AjaxEvents {
     }
 
     /**
-     * Attaches module content load by clicking on links in menu
+     * @description Attaches module content load by clicking on links in menu
      */
     public attachModuleContentLoadingViaAjaxOnMenuLinks(): void
     {
         let _this = this;
         let excludeHrefsRegexPatterns = [
             /^javascript.*/g,
-            /^#.*/g
+            /^#.*/g,
+            /^\/logout/g
         ];
 
         let allElements = $('.sidebar-menu .sidebar-link, .ajax-content-load');
@@ -50,12 +64,72 @@ export default class AjaxEvents {
                 $(element).on('click', (event) => {
 
                     event.preventDefault();
-                    _this.ajax.loadModuleContentByUrl(href);
+                    _this.loadModuleContentByUrl(href);
                 })
 
             }
 
         })
+    }
+
+    /**
+     * @param url           {string}
+     * @param callbackAfter {function}
+     * @param showMessages  {boolean}
+     * @description This method will fetch module template and load it into mainBody, not showing message here on purpose
+     */
+    public loadModuleContentByUrl(url:string, callbackAfter:Function = undefined, showMessages:boolean = false): void
+    {
+        let _this = this;
+
+        // fix for case when this call comes as second and somehow the previous call for hideLoader instantly hides also this one
+        setTimeout(function(){
+            Loader.showLoader();
+        }, 500);
+
+        $.ajax({
+            url:    url,
+            method: AbstractAjax.REQUEST_TYPE_GET,
+        }).always((data) => {
+            let twigBodySection = $('.twig-body-section');
+
+            try{
+                var ajaxResponseDto = AjaxResponseDto.fromArray(data);
+            } catch(Exception){
+                throw({
+                    "message"   : "Could not handle ajax call",
+                    "data"      : data,
+                    "exception" : Exception
+                })
+            }
+
+            if( ajaxResponseDto.isTemplateSet() ){
+                twigBodySection.html(ajaxResponseDto.template);
+            }
+
+            if( $.isFunction(callbackAfter) ){
+                callbackAfter();
+            }
+
+            /**
+             * Despite this being called imagesLoaded it works fine with normal content as well
+             * This is badly required for case when module contains images
+             */
+            imagesLoaded( twigBodySection, function() {
+                _this.initializer.reinitializeLogic();
+                Loader.hideLoader();
+                history.pushState({}, null, url);
+                Sidebars.markCurrentMenuElementAsActive();
+                MasonryGallery.init();
+            });
+
+            if( ajaxResponseDto.reloadPage ){
+                if( ajaxResponseDto.isReloadMessageSet() ){
+                    _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
+                }
+                location.reload();
+            }
+        });
     }
 
 }

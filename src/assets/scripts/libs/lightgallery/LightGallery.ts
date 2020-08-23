@@ -18,7 +18,8 @@ import 'lightgallery/modules/lg-thumbnail'
 import 'lightgallery/modules/lg-zoom'
 import 'lightgallery/dist/css/lightgallery.min.css'
 import 'lightgallery/dist/css/lg-transitions.min.css'
-import AjaxResponseDto from "../../DTO/AjaxResponseDto";
+import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
+import AjaxEvents       from "../../core/ajax/AjaxEvents";
 
 export default class LightGallery {
 
@@ -101,6 +102,11 @@ export default class LightGallery {
      * @type Ajax
      */
     private ajax = new Ajax();
+
+    /**
+     * @type AjaxEvents
+     */
+    private ajaxEvents = new AjaxEvents();
 
     /**
      * @type DataTransferDialogs
@@ -712,7 +718,7 @@ export default class LightGallery {
             });
 
             let callback = function (){
-                _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+                _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
                 _this.reinitGallery();
                 BootboxWrapper.mainLogic.hideAll();
             };

@@ -166,7 +166,7 @@ export default class UpdateAction extends AbstractAction {
 
             dataProcessorDto.callbackAfter();
 
-            _this.ajax.loadModuleContentByUrl(Navigation.getCurrentUri());
+            _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
 
             if( ajaxResponseDto.reloadPage ){
                 if( ajaxResponseDto.isReloadMessageSet() ){

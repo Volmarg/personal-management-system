@@ -7,6 +7,7 @@ import DomElements                  from "../../utils/DomElements";
 import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
 import StringUtils                  from "../../utils/StringUtils";
 import DataProcessorDto             from "../../../DTO/DataProcessorDto";
+import AjaxEvents                   from "../../ajax/AjaxEvents";
 
 /**
  * @description Contain logic/ attributes/ variables etc. common for all the actions which are extending inheriting from it
@@ -132,6 +133,11 @@ export default abstract class AbstractAction {
      * @type Ajax
      */
     protected ajax = new Ajax();
+
+    /**
+     * @type AjaxEvents
+     */
+    protected ajaxEvents = new AjaxEvents();
 
     /**
      * @type Initializer

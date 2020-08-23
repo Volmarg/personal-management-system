@@ -1,5 +1,6 @@
 import ModalDataDto from "../../../DTO/ModalDataDto";
 import Ajax         from "../../ajax/Ajax";
+import AjaxEvents from "../../ajax/AjaxEvents";
 
 /**
  * @description This class contains definitions of logic for given modals
@@ -16,8 +17,8 @@ export default class ModalLogic {
 
         let callback = ($modalWrapper: JQuery<HTMLElement>) => {
             $('.save-note').on('click', () => {
-                let ajax = new Ajax();
-                ajax.loadModuleContentByUrl(location.pathname);
+                let ajaxEvents = new AjaxEvents();
+                ajaxEvents.loadModuleContentByUrl(location.pathname);
             })
         };
 

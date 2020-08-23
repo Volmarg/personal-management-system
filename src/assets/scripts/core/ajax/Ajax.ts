@@ -8,6 +8,8 @@ import MasonryGallery   from "../../libs/masonry/MasonryGallery";
 import Initializer      from "../../Initializer";
 import StringUtils      from "../utils/StringUtils";
 import DomElements      from "../utils/DomElements";
+import AjaxEvents       from "./AjaxEvents";
+import AbstractAjax     from "./AbstractAjax";
 
 var imagesLoaded = require('imagesloaded');
 
@@ -15,17 +17,7 @@ var imagesLoaded = require('imagesloaded');
  * @description This class contains the most common/reusable ajax calls required in many places of the project
  *              like for example loading template for url or rebuilding menu
  */
-export default class Ajax {
-
-    /**
-     * @type string
-     */
-    static readonly REQUEST_TYPE_GET = "GET";
-
-    /**
-     * @type string`
-     */
-    static readonly REQUEST_TYPE_POST = "POST";
+export default class Ajax extends AbstractAjax{
 
     /**
      * @type Object
@@ -77,44 +69,9 @@ export default class Ajax {
     private initializer = new Initializer();
 
     /**
-     * Attaches module content load by clicking on links in menu
+     * @type AjaxEvents
      */
-    public attachModuleContentLoadingViaAjaxOnMenuLinks(): void
-    {
-        let _this = this;
-        let excludeHrefsRegexPatterns = [
-            /^javascript.*/g,
-            /^#.*/g
-        ];
-
-        let allElements = $('.sidebar-menu .sidebar-link, .ajax-content-load');
-
-        $.each(allElements, (index, element) => {
-            let href = $(element).attr('href');
-            let skip = false;
-
-            $.each(excludeHrefsRegexPatterns, (index, pattern) => {
-                if( null !== href.match(pattern) ){
-                    skip = true;
-                }
-            });
-
-            if ( !skip && StringUtils.isEmptyString(href) ){
-                skip = true;
-            }
-
-            if( !skip ){
-
-                $(element).on('click', (event) => {
-
-                    event.preventDefault();
-                    _this.loadModuleContentByUrl(href);
-                })
-
-            }
-
-        })
-    }
+    private ajaxEvents = new AjaxEvents();
 
     /**
      * Will reload menu node
@@ -181,67 +138,7 @@ export default class Ajax {
                 _this.bootstrapNotify.notify(ajaxResponseDto.message, notificationType)
             }
 
-            _this.attachModuleContentLoadingViaAjaxOnMenuLinks();
-
-            if( ajaxResponseDto.reloadPage ){
-                if( ajaxResponseDto.isReloadMessageSet() ){
-                    _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
-                }
-                location.reload();
-            }
-        });
-    }
-
-    /**
-     * @param url           {string}
-     * @param callbackAfter {function}
-     * @param showMessages  {boolean}
-     * @description This method will fetch module template and load it into mainBody, not showing message here on purpose
-     */
-    public loadModuleContentByUrl(url:string, callbackAfter:Function = undefined, showMessages:boolean = false): void
-    {
-        let _this = this;
-
-        // fix for case when this call comes as second and somehow the previous call for hideLoader instantly hides also this one
-        setTimeout(function(){
-            Loader.showLoader();
-        }, 500);
-
-        $.ajax({
-            url:    url,
-            method: Ajax.REQUEST_TYPE_GET,
-        }).always((data) => {
-            let twigBodySection = $('.twig-body-section');
-
-            try{
-                var ajaxResponseDto = AjaxResponseDto.fromArray(data);
-            } catch(Exception){
-                throw({
-                    "message"   : "Could not handle ajax call",
-                    "data"      : data,
-                    "exception" : Exception
-                })
-            }
-
-            if( ajaxResponseDto.isTemplateSet() ){
-                twigBodySection.html(ajaxResponseDto.template);
-            }
-
-            if( $.isFunction(callbackAfter) ){
-                callbackAfter();
-            }
-
-            /**
-             * Despite this being called imagesLoaded it works fine with normal content as well
-             * This is badly required for case when module contains images
-             */
-            imagesLoaded( twigBodySection, function() {
-                _this.initializer.reinitializeLogic();
-                Loader.hideLoader();
-                history.pushState({}, null, url);
-                Sidebars.markCurrentMenuElementAsActive();
-                MasonryGallery.init();
-            });
+            _this.ajaxEvents.attachModuleContentLoadingViaAjaxOnMenuLinks();
 
             if( ajaxResponseDto.reloadPage ){
                 if( ajaxResponseDto.isReloadMessageSet() ){

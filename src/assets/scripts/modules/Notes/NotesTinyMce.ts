@@ -14,6 +14,7 @@ import Loader          from "../../libs/loader/Loader";
 import UiUtils         from "../../core/utils/UiUtils";
 import Navigation      from "../../core/Navigation";
 import StringUtils     from "../../core/utils/StringUtils";
+import AjaxEvents      from "../../core/ajax/AjaxEvents";
 
 export default class NotesTinyMce {
 
@@ -26,6 +27,11 @@ export default class NotesTinyMce {
      * @type Ajax
      */
     private ajax = new Ajax();
+
+    /**
+     * @type AjaxEvents
+     */
+    private ajaxEvents = new AjaxEvents();
 
     /**
      * @type TinyMce
@@ -140,7 +146,7 @@ export default class NotesTinyMce {
                         data: data,
                     }).done(() => {
                         _this.bootstrapNotify.showGreenNotification(TinyMce.messages["note-update-success"]);
-                        _this.ajax.loadModuleContentByUrl(location.pathname);
+                        _this.ajaxEvents.loadModuleContentByUrl(location.pathname);
                         $(modalCloseButton).click();
                         $('.modal-backdrop').remove();
                     }).fail(() => {

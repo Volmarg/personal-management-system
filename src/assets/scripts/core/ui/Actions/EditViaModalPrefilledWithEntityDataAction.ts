@@ -36,7 +36,6 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
                     this.formAppendAction.attachRemoveParentEvent();
                     JsColor.init();
                     this.updateAction.attachContentSaveEventOnSaveIcon();
-                    // todo: keep in mind that create action is extending from this so most likely should be static call
                 }
             },
             /**

@@ -123,7 +123,7 @@ export default class AjaxResponseDto extends AbstractDto {
      * @return {boolean}
      */
     isReloadMessageSet(){
-        return this.isset(this.reloadPage);
+        return this.isset(this.reloadMessage);
     }
 
     /**
