@@ -136,6 +136,9 @@ class MyFilesAction extends AbstractController {
     }
 
     /**
+     * @deprecated Not used anymore but fully functional
+     *             Spinner on frontend cause a bit of problems with this solution
+     *
      * @Route("download/file", name="download_file")
      * @param Request $request
      * @return Response

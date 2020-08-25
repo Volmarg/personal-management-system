@@ -360,3 +360,4 @@ actions:
     save: Save
     lockRecord: Lock record
     download_file_subdirectory: Download
+    download: Download

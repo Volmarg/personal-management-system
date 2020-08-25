@@ -80,13 +80,7 @@
  {% endif %}
 
 {% if download is defined and download %}
-    <form method="POST" action="{{ download_action }}" class="file-download-form">
-        <input
-                type="hidden"
-                value="{{ download_file_path }}"
-                name="{{ download_file_input_name }}"
-                data-subdirectory="{{ ( download_file_subdirectory is defined ? download_file_subdirectory : "" ) }}"
-        />
+    <a href="/{{ download_file_path }}" download style="color: #72777a;">
         <button class="file-download">
             <span aria-hidden="true"
                   data-toggle-popover="true"                                    {# popover attr #}
@@ -98,8 +92,7 @@
                 <i class="fa fa-download"></i>
             </span>
         </button>
-    </form>
-    <a href="{{ path('download_file') }}">
+    </a>
 {% endif %}
 
 {% if save is defined and save %}
