@@ -7,8 +7,10 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,8 +32,12 @@ class MyTravelsIdeasAction extends AbstractController {
         $this->controllers = $controllers;
     }
 
+    /**
+     * @return FormInterface
+     * @throws DBALException
+     */
     private function getForm() {
-        $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories();
+        $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories(true);
         $travel_ideas_form = $this->app->forms->travelIdeasForm(['categories' => $categories]);
         return $travel_ideas_form;
     }
@@ -40,6 +46,7 @@ class MyTravelsIdeasAction extends AbstractController {
      * @Route("/my-travels/ideas", name="my-travels-ideas")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function display(Request $request) {
         $this->addFormDataToDB($request);
@@ -52,6 +59,12 @@ class MyTravelsIdeasAction extends AbstractController {
         return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
+    /**
+     * @param bool $ajax_render
+     * @param bool $skip_rewriting_twig_vars_to_js
+     * @return Response
+     * @throws DBALException
+     */
     protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $form      = $this->getForm();
         $form_view = $form->createView();

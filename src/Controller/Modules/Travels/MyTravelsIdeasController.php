@@ -3,6 +3,7 @@
 namespace App\Controller\Modules\Travels;
 
 use App\Controller\Core\Application;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyTravelsIdeasController extends AbstractController {
@@ -17,10 +18,12 @@ class MyTravelsIdeasController extends AbstractController {
     }
 
     /**
+     * @param bool $include_empty
      * @return mixed
+     * @throws DBALException
      */
-    public function getAllCategories(){
-        return $this->app->repositories->myTravelsIdeasRepository->getAllCategories();
+    public function getAllCategories(bool $include_empty = false){
+        return $this->app->repositories->myTravelsIdeasRepository->getAllCategories($include_empty);
     }
 
 }

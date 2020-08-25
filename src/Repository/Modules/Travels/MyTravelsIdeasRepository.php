@@ -4,6 +4,8 @@ namespace App\Repository\Modules\Travels;
 
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,18 +19,42 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
         parent::__construct($registry, MyTravelsIdeas::class);
     }
 
-    public function getAllCategories() {
+    /**
+     * @param bool $include_empty
+     * @return array
+     * @throws DBALException
+     */
+    public function getAllCategories(bool $include_empty = false) {
         $categories = [];
         $connection = $this->getEntityManager()->getConnection();
+
+        $deleted_statuses = [0];
+        if( $include_empty ){
+            $deleted_statuses[] = 1;
+        }
+
         $sql = '
-            SELECT category
-            FROM my_travel_idea
-            WHERE category IS NOT NULL
+            SELECT mc.category
+            FROM my_travel_idea mc
+
+            JOIN my_travel_idea mci
+            ON mci.id = mc.id
+
+            WHERE mc.category IS NOT NULL
+            AND mci.deleted IN (?)
+            GROUP BY mc.category
         ';
 
-        $statement = $connection->prepare($sql);
-        $statement->execute();
-        $results = $statement->fetchAll();
+        $params = [
+            $deleted_statuses
+        ];
+
+        $types = [
+            Connection::PARAM_STR_ARRAY,
+        ];
+
+        $statement = $connection->executeQuery($sql, $params, $types);
+        $results   = $statement->fetchAll();
 
         if (!empty($results)) {
             foreach ($results as $result) {
