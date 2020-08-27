@@ -48,7 +48,8 @@ class MyScheduleType extends AbstractType {
                 'required' => false
             ])
             ->add('Information', TextType::class, [
-                'label' => $this->app->translator->translate('forms.MyScheduleType.information'),
+                'label'    => $this->app->translator->translate('forms.MyScheduleType.information'),
+                'required' => false
             ])
             ->add('scheduleType', EntityType::class, [
                 'attr'          => [
