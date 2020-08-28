@@ -13,6 +13,7 @@ import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget
 import Navigation               from "../../../Navigation";
 import CreateAction             from "../../Actions/CreateAction";
 import BootboxWrapper           from "../../../../libs/bootbox/BootboxWrapper";
+import BootstrapSelect          from "../../../../libs/bootstrap-select/BootstrapSelect";
 
 /**
  * @description this class contains definitions of logic used for given widget
@@ -97,6 +98,7 @@ export default class WidgetData {
             let moduleSelectSelector    = 'select#upload_form_upload_module_dir';
             let directorySelectSelector = 'select#upload_form_subdirectory';
 
+            BootstrapSelect.init();
             upload.init();
             forms.init();
             directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
@@ -168,6 +170,7 @@ export default class WidgetData {
             let moduleSelectSelector    = 'select#upload_form_upload_module_dir';
             let directorySelectSelector = 'select#upload_form_subdirectory';
 
+            BootstrapSelect.init();
             upload.init();
             forms.init();
 

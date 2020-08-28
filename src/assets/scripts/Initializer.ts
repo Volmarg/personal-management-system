@@ -37,6 +37,7 @@ import RemoveAction                 from "./core/ui/Actions/RemoveAction";
 import ToggleBoolvalAction          from "./core/ui/Actions/ToggleBoolvalAction";
 import UpdateAction                 from "./core/ui/Actions/UpdateAction";
 import NotesTinyMce                 from "./modules/Notes/NotesTinyMce";
+import BootstrapSelect              from "./libs/bootstrap-select/BootstrapSelect";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -82,6 +83,7 @@ export default class Initializer {
         let notesTinyMce        = new NotesTinyMce();
 
         // inits
+        BootstrapSelect.init();
         this.initializeActions();
         Popover.init();
         Sidebars.init();

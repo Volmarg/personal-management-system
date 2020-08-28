@@ -119,8 +119,13 @@ export default class FormsUtils {
 
             });
 
-        }
+            //handle bootstrap-select
+            if( select.hasClass('selectpicker') ){
+                //@ts-ignore
+                select.selectpicker('refresh');
+            }
 
+        }
 
     };
 

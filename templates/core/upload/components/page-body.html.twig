@@ -45,7 +45,10 @@
 
                                         </section>
                                         {{ form_widget(form.resetSelectedFiles) }}
-                                        {{ form_widget(form.subdirectory) }}
+                                        {{ form_widget(form.subdirectory, {'attr': {
+                                            'class'        : 'form-control align-self-center selectpicker',
+                                            'data-classes' : 'bg-white'
+                                        }}) }}
                                     </section>
 
                                     <section class="button-submit col-md-4">

@@ -81,5 +81,11 @@ export default class DirectoriesBasedWidget {
                 $option.attr("selected", "true");
             }
         });
+
+        //handle bootstrap-select
+        if( directorySelect.hasClass('selectpicker') ){
+            //@ts-ignore
+            directorySelect.selectpicker('refresh');
+        }
     }
 }

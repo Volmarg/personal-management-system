@@ -3,6 +3,7 @@ import Loader           from "../../../libs/loader/Loader";
 import AjaxResponseDto  from "../../../DTO/AjaxResponseDto";
 import Ajax             from "../../ajax/Ajax";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
+import BootstrapSelect  from "../../../libs/bootstrap-select/BootstrapSelect";
 
 export default class DataTransferDialogs extends AbstractDialogs {
 
@@ -57,6 +58,8 @@ export default class DataTransferDialogs extends AbstractDialogs {
 
             let $jsonTransferredFilesListDomElement = $(modalMainWrapper).find("[" + dataTransferDialogs.data.transferredFilesJson + "]");
             let jsonTransferredFilesList            = JSON.parse($jsonTransferredFilesListDomElement.attr(dataTransferDialogs.data.transferredFilesJson));
+
+            BootstrapSelect.init();
 
             dataTransferDialogs.attachDataTransferToDialogFormSubmit(formSubmitButton, jsonTransferredFilesList, callback);
             dataTransferDialogs.forms.init();
