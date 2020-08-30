@@ -44,8 +44,8 @@
             <td data-content-editable="false">
                 {% include 'modules/my-files/components/file-icon.html.twig' with {'extension': file[KEY_FILE_EXTENSION]} %}
             </td>
-            <td class="mass-action-remove-file-path d-none">{{ file[KEY_FILE_FULL_PATH] }}</td>     {# filepath used for mass acction - remove #}
-            <td class="mass-action-remove-file-subdirectory d-none">{{ subdirectory_path }}</td>    {# subdriectory used for mass acction - remove #}
+            <td class="mass-action-remove-file-path file-path d-none">{{ file[KEY_FILE_FULL_PATH] }}</td>     {# filepath used for mass acction - remove #}
+            <td class="mass-action-remove-file-subdirectory subdirectory-path d-none">{{ subdirectory_path }}</td>    {# subdriectory used for mass acction - remove #}
             <td class="{{ KEY_FILE_NAME }}">
                 {{ file[KEY_FILE_NAME] }}
             </td>

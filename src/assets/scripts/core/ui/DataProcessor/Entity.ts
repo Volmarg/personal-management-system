@@ -1654,8 +1654,8 @@ export default class Entity extends AbstractDataProcessor {
             return null;
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let subdirectory        = $($baseElement).find('input[name^="file_full_path"]').attr('data-subdirectory');
-            let file_full_path      = $($baseElement).find('input[name^="file_full_path"]').val();
+            let subdirectory        = $($baseElement).find('.subdirectory-path').text();
+            let file_full_path      = $($baseElement).find('.file-path').text();
             let file_new_name       = $($baseElement).find('.file_name').text();
 
             let selectizeSelect     = $($baseElement).find('.tags');

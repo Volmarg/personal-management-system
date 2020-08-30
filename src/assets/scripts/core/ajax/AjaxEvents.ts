@@ -61,6 +61,7 @@ export default class AjaxEvents extends AbstractAjax {
 
             if( !skip ){
 
+                $(element).off('click'); //prevent stacking
                 $(element).on('click', (event) => {
 
                     event.preventDefault();
