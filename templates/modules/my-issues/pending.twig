@@ -27,8 +27,9 @@
 
             <div class="widgets-wrapper">
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
-                    'widgetName': "pendingIssuesCreateIssue",
-                    'id'        : "pendingIssuesCreateIssue"
+                    'widgetName'     : "pendingIssuesCreateIssue",
+                    'id'             : "pendingIssuesCreateIssue",
+                    'popoverContent' : 'issues.popover.createIssue' | trans
                 } %}
             </div>
 

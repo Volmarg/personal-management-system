@@ -17,7 +17,9 @@
                         {% include 'page-elements/components/widgets/remove-folder.twig' with {
                             'folder_path'           : subdirectory_path,
                             'upload_module_dir'     : upload_module_dir,
-                            'files_count_in_tree'   : files_count_in_tree
+                            'files_count_in_tree'   : files_count_in_tree,
+                            'popoverContent'        : "images.popover.removeFolder"|trans
+
                         } %}
                     </span>
                 </div>
@@ -30,26 +32,31 @@
 
             <div class="widgets-wrapper">
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
-                    'widgetName': "upload-files-widget",
-                    'id'        : "my-images-upload-files-widget"
+                    'widgetName'     : "upload-files-widget",
+                    'id'             : "my-images-upload-files-widget",
+                    'popoverContent' : "images.popover.addFiles"|trans
                 } %}
 
                 {% include 'page-elements/components/widgets/new-folder-icon.twig' with {
-                    'widgetName': "new-folder-widget",
-                    'id'        : "my-images-new-folder-widget",
-                    'style': "margin-top: 10px; background-color: #0062cc; opacity: .5;"
+                    'widgetName'     : "new-folder-widget",
+                    'id'             : "my-images-new-folder-widget",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    'popoverContent' : "images.popover.addFolder"|trans
                 } %}
 
                 {% include 'page-elements/components/widgets/trash-remove-icon.twig' with {
-                    'widgetName': "mass-action-lightgallery-remove-images",
-                    'style'     : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
-                    "classes"   : "disabled mass-action-lightgallery-remove-images mass-action-lightgallery-button"
+                    'widgetName'     : "mass-action-lightgallery-remove-images",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "classes"        : "disabled mass-action-lightgallery-remove-images mass-action-lightgallery-button",
+                    'popoverContent' : "images.popover.removeFiles"|trans
                 } %}
 
                 {% include 'page-elements/components/widgets/data-transfer-icon.twig' with {
-                    'widgetName': "mass-action-lightgallery-transfer-images",
-                    'style'     : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
-                    "classes"   : "disabled mass-action-lightgallery-transfer-images mass-action-lightgallery-button"
+                    'widgetName'     : "mass-action-lightgallery-transfer-images",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "classes"        : "disabled mass-action-lightgallery-transfer-images mass-action-lightgallery-button",
+                    'popoverContent' : "images.popover.transferFiles"|trans
+
                 } %}
 
             </div>

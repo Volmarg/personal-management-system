@@ -7,7 +7,7 @@ goals:
     settings: { headers: { addGoal: 'Add goal', addSubgoal: 'Add subgoal', addPaymentGoal: 'Add payment goal' }, goalsSection: { table: { name: Name, description: Description, displayOnDashboard: 'Display on Dashboard' } }, subGoalsSection: { table: { name: Name, goal: Goal } }, goalsPaymentsSection: { table: { name: Name, collectionStartDate: 'Collection start date', deadline: Deadline, moneyGoal: 'Money goal', moneyCollected: 'Money collected', displayOnDashboard: 'Display on dashboard' } } }
 notes:
     create: { headers: { newNote: 'Add new note' } }
-    category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected', categoryWithThisNameAlreadyExistsInThisParent: 'Category with this name already exists in this parent' } }
+    category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected', categoryWithThisNameAlreadyExistsInThisParent: 'Category with this name already exists in this parent' }, popover: { createNote: 'Create note' } }
     settings: { headers: { settings: { label: 'My notes settings' }, categories: { label: Categories, editCategory: 'Edit categories', addCategory: 'Add category' } } }
 contact:
     headers: { addRemove: 'Add/Remove contact' }
@@ -61,8 +61,10 @@ job:
 files:
     label: Files
     table: { name: Name, extension: Extension, size: 'Size (mb)', tags: Tags }
-    popover: { modified: Modified }
+    popover: { modified: Modified, removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder' }
     massActions: { remove: 'Remove files', transferFiles: 'Transfer files' }
+images:
+    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files' }
 upload:
     settings: { copyFolderData: { label: 'Copy folder data', from: From, to: To }, renameFolder: { label: 'Rename folder' }, createFolder: { label: 'Create folder for module' } }
     headers: { uploadFiles: 'Upload files' }
@@ -74,6 +76,7 @@ upload:
 issues:
     card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { headers: { contacts: Contacts, progress: Progress } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     contactsTable: { icon: Icon, date: Date, information: Information, actions: Actions }
+    popover: { createIssue: 'Create issue' }
 other:
     summary: Summary
     overallSummary: 'Overall summary'

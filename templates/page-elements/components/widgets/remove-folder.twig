@@ -10,5 +10,13 @@
 <div class="widget-remove-folder {{ disabled }} far fa-minus-square"
      data-folder-path-in-upload-dir="{{ folder_path }}"
      data-upload-module-dir="{{ upload_module_dir }}"
-     style="width: 25px; height: 25px; z-index:500; {{ grayed }}">
+     style="width: 25px; height: 25px; z-index:500; {{ grayed }}"
+        {% if popoverContent is defined and popoverContent is not empty %}
+            data-toggle-popover="true"                                {# popover attr #}
+            data-html="true"                                          {# popover attr #}
+            data-trigger="hover"                                      {# popover attr #}
+            data-content="{{ popoverContent }}"                       {# popover attr #}
+            data-placement="right"                                    {# popover attr #}
+        {% endif %}
+>
 </div>

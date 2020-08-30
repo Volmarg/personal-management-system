@@ -52,8 +52,9 @@
 
             <div class="widgets-wrapper">
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
-                    'widgetName': "add-note",
-                    'id'        : "add-note"
+                    'widgetName'     : "add-note",
+                    'id'             : "add-note",
+                    'popoverContent' : 'notes.category.popover.createNote' | trans
                 } %}
             </div>
 

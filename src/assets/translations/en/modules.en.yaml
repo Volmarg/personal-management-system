@@ -52,6 +52,8 @@ notes:
       categoryWithThisNameOrIdExist: Category with this name or id does not exist!
       categoryIsEmpty: The category which You've just tried to enter is empty, therefore You were redirected
       categoryWithThisNameAlreadyExistsInThisParent: "Category with this name already exists in this parent"
+    popover:
+      createNote: Create note
   settings:
     headers:
       settings:
@@ -294,8 +296,19 @@ files:
     tags: Tags
   popover:
     modified: Modified
+    removeFolder: Remove folder
+    addFiles: Add files
+    addFolder: Add folder
   massActions:
     remove: Remove files
+    transferFiles: Transfer files
+
+images:
+  popover:
+    removeFolder: Remove folder
+    addFiles: Add files
+    addFolder: Add folder
+    removeFiles: Remove files
     transferFiles: Transfer files
 
 upload:
@@ -347,6 +360,8 @@ issues:
     date: Date
     information: Information
     actions: Actions
+  popover:
+    createIssue: Create issue
 
 other:
   summary: Summary

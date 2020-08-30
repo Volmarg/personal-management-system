@@ -1,7 +1,15 @@
 {% if style is not defined %}
     {% set style = "" %}
 {% endif %}
-<div class="widget {{ widgetName }}-widget {{ classes }}" style="{{ style }}" data-widget="true">
+<div class="widget {{ widgetName }}-widget {{ classes }}" style="{{ style }}" data-widget="true"
+    {% if popoverContent is defined and popoverContent is not empty %}
+        data-toggle-popover="true"                                {# popover attr #}
+        data-html="true"                                          {# popover attr #}
+        data-trigger="hover"                                      {# popover attr #}
+        data-content="{{ popoverContent }}"                       {# popover attr #}
+        data-placement="left"                                     {# popover attr #}
+    {% endif %}
+>
     <div class="fontawesome-centered">
         <i class="fa fa-random" style="font-size: 25px; color: white;"></i>
     </div>

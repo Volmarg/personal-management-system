@@ -17,7 +17,8 @@
                         {% include 'page-elements/components/widgets/remove-folder.twig' with {
                             'folder_path'           : subdirectory_path,
                             'upload_module_dir'     : upload_module_dir,
-                            'files_count_in_tree'   : files_count_in_tree
+                            'files_count_in_tree'   : files_count_in_tree,
+                            'popoverContent'        : 'files.popover.removeFolder' | trans
                         } %}
                     </span>
                 </div>
@@ -45,14 +46,17 @@
 
             <div class="widgets-wrapper">
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
-                    'widgetName': "upload-files-widget",
-                    'id'        : "my-files-upload-files-widget"
+                    'widgetName'     : "upload-files-widget",
+                    'id'             : "my-files-upload-files-widget",
+                    "popoverContent" : 'files.popover.addFiles' | trans
                 } %}
 
                 {% include 'page-elements/components/widgets/new-folder-icon.twig' with {
-                    'widgetName': "new-folder-widget",
-                    'id':"my-files-new-folder-widget",
-                    'style': "margin-top: 10px; background-color: #0062cc; opacity: .5;"
+                    'widgetName'     : "new-folder-widget",
+                    'id'             : "my-files-new-folder-widget",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "popoverContent" : 'files.popover.addFolder' | trans
+
                 } %}
             </div>
 
