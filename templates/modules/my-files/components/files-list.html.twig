@@ -1,9 +1,10 @@
 {% set my_files_controller = 'App\\Controller\\Modules\\Files\\MyFilesController' %}
-{% set KEY_FILE_NAME        = constant(my_files_controller~"::KEY_FILE_NAME") %}
-{% set KEY_FILE_SIZE        = constant(my_files_controller~"::KEY_FILE_SIZE") %}
-{% set KEY_FILE_EXTENSION   = constant(my_files_controller~"::KEY_FILE_EXTENSION") %}
-{% set KEY_FILE_FULL_PATH   = constant(my_files_controller~"::KEY_FILE_FULL_PATH") %}
-{% set bytes_in_mb          = 1048576 %}
+{% set KEY_FILE_NAME          = constant(my_files_controller~"::KEY_FILE_NAME") %}
+{% set KEY_FILE_SIZE          = constant(my_files_controller~"::KEY_FILE_SIZE") %}
+{% set KEY_FILE_EXTENSION     = constant(my_files_controller~"::KEY_FILE_EXTENSION") %}
+{% set KEY_FILE_FULL_PATH     = constant(my_files_controller~"::KEY_FILE_FULL_PATH") %}
+{% set KEY_FILE_MODIFIED_DATE = constant(my_files_controller~"::KEY_FILE_MODIFIED_DATE") %}
+{% set bytes_in_mb            = 1048576 %}
 
 {% set file_tagger_service = 'App\\Services\\Files\\FileTagger' %}
 {% set KEY_TAGS            = constant(file_tagger_service~"::KEY_TAGS") %}
@@ -26,7 +27,17 @@
 
     {% for file in files %}
         <tr class="trash-parent editable-parent save-parent"
-            data-type="MyFiles">
+            data-type="MyFiles"
+            data-toggle-popover="true"                                {# popover attr #}
+            data-html="true"                                          {# popover attr #}
+            data-trigger="hover"                                      {# popover attr #}
+            data-content="
+            <section>
+                <b>{{ 'files.popover.modified' | trans }}</b>: {{ file[KEY_FILE_MODIFIED_DATE] }}
+            </section>
+            "       {# popover attr #}
+            data-placement="top"                                      {# popover attr #}
+        >
             <td>
                 {% include 'page-elements/components/forms/input-rounded-checkbox.twig'%}
             </td>                                                                                   {# checkbox #}

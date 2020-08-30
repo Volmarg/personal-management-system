@@ -1,6 +1,7 @@
 import StringUtils  from "./StringUtils";
 import DomElements  from "./DomElements";
 import ArrayUtils   from "./ArrayUtils";
+import BootstrapSelect from "../../libs/bootstrap-select/BootstrapSelect";
 
 export default class FormsUtils {
 
@@ -120,9 +121,8 @@ export default class FormsUtils {
             });
 
             //handle bootstrap-select
-            if( select.hasClass('selectpicker') ){
-                //@ts-ignore
-                select.selectpicker('refresh');
+            if( BootstrapSelect.isSelectpicter(select) ){
+                BootstrapSelect.refreshSelector(select);
             }
 
         }

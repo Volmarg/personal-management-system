@@ -4,6 +4,7 @@ import ModulesStructure from "../../BackendStructure/ModulesStructure";
 import RouterStructure  from "../../BackendStructure/RouterStructure";
 import StringUtils      from "../../../utils/StringUtils";
 import Application      from "../../../Application";
+import BootstrapSelect from "../../../../libs/bootstrap-select/BootstrapSelect";
 
 export default class DirectoriesBasedWidget {
 
@@ -83,9 +84,9 @@ export default class DirectoriesBasedWidget {
         });
 
         //handle bootstrap-select
-        if( directorySelect.hasClass('selectpicker') ){
-            //@ts-ignore
-            directorySelect.selectpicker('refresh');
+        if( BootstrapSelect.isSelectpicter(directorySelect) ){
+            BootstrapSelect.refreshSelector(directorySelect);
         }
+
     }
 }

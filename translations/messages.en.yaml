@@ -61,6 +61,7 @@ job:
 files:
     label: Files
     table: { name: Name, extension: Extension, size: 'Size (mb)', tags: Tags }
+    popover: { modified: Modified }
     massActions: { remove: 'Remove files', transferFiles: 'Transfer files' }
 upload:
     settings: { copyFolderData: { label: 'Copy folder data', from: From, to: To }, renameFolder: { label: 'Rename folder' }, createFolder: { label: 'Create folder for module' } }

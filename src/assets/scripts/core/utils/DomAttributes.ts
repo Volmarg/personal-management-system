@@ -304,4 +304,14 @@ export default class DomAttributes {
         $(element).removeClass("has-error");
     }
 
+    /**
+     * @description this function will trim the selector elements like `#` , `.` to get the className
+     *              the classname is used by jquery `hasClass` etc.
+     *              Keep in mind that this won't work with multiple classes and attribute selectors
+     */
+    public static getClassNameFromSelector(selector: string): string
+    {
+        return selector.replace(/[#.]?/g,"");
+    }
+
 }

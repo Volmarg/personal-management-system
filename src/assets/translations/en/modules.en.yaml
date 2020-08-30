@@ -292,6 +292,8 @@ files:
     extension: Extension
     size: Size (mb)
     tags: Tags
+  popover:
+    modified: Modified
   massActions:
     remove: Remove files
     transferFiles: Transfer files

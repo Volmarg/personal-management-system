@@ -7,6 +7,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Entity\FilesTags;
 use App\Services\Files\FileTagger;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
 use Symfony\Component\Finder\Finder;
@@ -14,13 +15,14 @@ use Symfony\Component\Finder\Finder;
 class MyFilesController extends AbstractController
 {
 
-    const KEY_FILE_NAME      = 'file_name';
-    const KEY_FILE_SIZE      = 'file_size';
-    const KEY_FILE_EXTENSION = 'file_extension';
-    const KEY_FILE_FULL_PATH = 'file_full_path';
-    const KEY_SUBDIRECTORY   = 'subdirectory';
-    const MODULE_NAME        = 'My Files';
-    const TARGET_UPLOAD_DIR  = 'files';
+    const KEY_FILE_NAME          = 'file_name';
+    const KEY_FILE_SIZE          = 'file_size';
+    const KEY_FILE_EXTENSION     = 'file_extension';
+    const KEY_FILE_FULL_PATH     = 'file_full_path';
+    const KEY_FILE_MODIFIED_DATE = 'modified_date';
+    const KEY_SUBDIRECTORY       = 'subdirectory';
+    const MODULE_NAME            = 'My Files';
+    const TARGET_UPLOAD_DIR      = 'files';
 
     /**
      * @var Finder $finder
@@ -42,6 +44,7 @@ class MyFilesController extends AbstractController
     /**
      * @param string $subdirectory
      * @return array|null
+     * @throws \Exception
      */
     public function getFilesFromSubdirectory(string $subdirectory):? array
     {
@@ -62,11 +65,12 @@ class MyFilesController extends AbstractController
             $tags_json      = ( $file_tags instanceof FilesTags ? $file_tags->getTags() : "" );
 
             $all_files[$index] = [
-                static::KEY_FILE_NAME      => $file->getFilenameWithoutExtension(),
-                static::KEY_FILE_SIZE      => $file->getSize(),
-                static::KEY_FILE_EXTENSION => $file->getExtension(),
-                static::KEY_FILE_FULL_PATH => $file_full_path,
-                FileTagger::KEY_TAGS       => $tags_json
+                static::KEY_FILE_NAME           => $file->getFilenameWithoutExtension(),
+                static::KEY_FILE_SIZE           => $file->getSize(),
+                static::KEY_FILE_EXTENSION      => $file->getExtension(),
+                static::KEY_FILE_FULL_PATH      => $file_full_path,
+                static::KEY_FILE_MODIFIED_DATE  => (new DateTime())->setTimestamp($file->getMTime())->format("Y-m-d H:i:s"),
+                FileTagger::KEY_TAGS            => $tags_json,
             ];
 
         }
