@@ -158,6 +158,18 @@ export default class TinyMce {
     }
 
     /**
+     * @description Will destroy all instances of tinymce
+     */
+    public static removeAllInstances(): void
+    {
+        //@ts-ignore
+        while ( window.tinymce.editors.length > 0) {
+            //@ts-ignore
+            tinymce.remove(window.tinymce.editors[0]);
+        }
+    }
+
+    /**
      * @description Fix Problem with misbehaving text-alignment
      */
     private setDefaultTextAlignment(): void

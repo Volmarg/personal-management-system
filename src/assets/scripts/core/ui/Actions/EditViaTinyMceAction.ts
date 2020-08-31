@@ -29,6 +29,12 @@ export default class EditViaTinyMceAction extends AbstractAction {
         let $allButtons = $('.transform-to-tiny-mce');
         let _this       = this;
 
+        /**
+         * @description required as save will just close the modal and after that save operates on already existing instance
+         *              might eventually cause problems when there are no other actions
+         */
+        TinyMce.removeAllInstances();
+
         $.each($allButtons, function(index, button){
             let $button = $(button);
 
