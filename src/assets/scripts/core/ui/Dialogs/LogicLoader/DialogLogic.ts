@@ -9,6 +9,7 @@ import EditViaTinyMceAction from "../../Actions/EditViaTinyMceAction";
 import FontawesomeAction    from "../../Actions/FontawesomeAction";
 import UpdateAction         from "../../Actions/UpdateAction";
 import CreateAction         from "../../Actions/CreateAction";
+import RemoveAction         from "../../Actions/RemoveAction";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -67,6 +68,7 @@ export default class DialogLogic {
             let flatpicker           = new FlatPicker();
             let editViaTinyMceAction = new EditViaTinyMceAction();
             let updateAction         = new UpdateAction();
+            let removeAction         = new RemoveAction();
             let fontawesomeAction    = new FontawesomeAction();
 
             datatable.init();
@@ -77,6 +79,7 @@ export default class DialogLogic {
             dateTimePicker.init();
             flatpicker.init();
             updateAction.init();
+            removeAction.init();
             fontawesomeAction.init();
         };
 
