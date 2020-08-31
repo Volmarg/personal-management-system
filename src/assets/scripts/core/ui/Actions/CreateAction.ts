@@ -45,16 +45,13 @@ export default class CreateAction extends AbstractAction {
             let processedEntityName               = form.attr('data-entity');
             let singleProcessedFormDefinitionName = form.attr('data-form-target');
 
-            let isEntityBasedForm   = ("undefined" != typeof processedEntityName);
-
             /**
              * @description build data bag for request using either entity based form or single-target one
              *              and build callbacks used after receiving backend response
              */
-            var dataProcessorDto = null as DataProcessorDto;
-            if(isEntityBasedForm){
-                dataProcessorDto = DataProcessorLoader.getCreateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, processedEntityName);
-            }else{
+            let dataProcessorDto = DataProcessorLoader.getCreateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, processedEntityName);
+
+            if( !(dataProcessorDto instanceof DataProcessorDto) ){
                 dataProcessorDto = DataProcessorLoader.getCreateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, singleProcessedFormDefinitionName);
             }
 
