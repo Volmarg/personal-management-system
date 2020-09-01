@@ -195,18 +195,18 @@ export default class LightGallery {
             let trashIcon = '<a class=\"lg-icon\" id="lightgallery_trash_button"><i class="fa fa-trash" remove-record aria-hidden="true"></i></a>';
             $(_this.selectors.classes.upperToolbar).append(trashIcon);
 
-            let trashButton     = $(_this.selectors.ids.trashButton);
-            let downloadButton  = $(_this.selectors.ids.downloadButton);
-            let filePath        = $(downloadButton).attr('href');
-
-            let callback = function(){
-                // Rebuilding thumbnails etc
-                _this.removeImageWithMiniature(filePath);
-                _this.handleClosingGalleryIfThereAreNoMoreImages();
-            };
+            let trashButton = $(_this.selectors.ids.trashButton);
 
             // Button click
             $(trashButton).click(() => {
+                let downloadButton  = $(_this.selectors.ids.downloadButton);
+                let filePath        = $(downloadButton).attr('href');
+
+                let callback = function(){
+                    // Rebuilding thumbnails etc
+                    _this.removeImageWithMiniature(filePath);
+                    _this.handleClosingGalleryIfThereAreNoMoreImages();
+                };
 
                 BootboxWrapper.mainLogic.confirm({
                     message: _this.messages.imageRemovalConfirmation,
@@ -284,7 +284,7 @@ export default class LightGallery {
 
                         if (result) {
 
-                            let filePath = $(downloadButton).attr('href');
+                            let filePath    = $(downloadButton).attr('href');
                             let newFileName = $(_this.selectors.classes.currentViewedFilename).text();
 
                             let data = {
@@ -304,10 +304,12 @@ export default class LightGallery {
                                         let newFilePath = filePath.replace(_this.vars.currentFileName, newFileName);
                                         let links       = $("[href^='" + filePath + "']");
                                         let images      = $("[src^='" + filePath + "']");
+                                        let dataSrcDivs = $('[data-src^="' + filePath + '"]');
 
                                         $(images).attr('src', newFilePath);
                                         $(images).attr('alt', newFileName);
                                         $(links).attr('href', newFilePath);
+                                        $(dataSrcDivs).attr('data-src', newFilePath);
 
                                         _this.handleGalleryCaptionOnFileRename(_this.vars.currentFileName, newFileName);
                                         _this.vars.currentFileName  = $(_this.selectors.classes.currentViewedFilename).text();
