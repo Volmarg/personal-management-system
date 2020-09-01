@@ -10,3 +10,8 @@
 .folder-based-menu-element .sidebar-link.active::before {
   top: 7px !important;
 }
+
+/* Make gray background for list element on hover */
+.hoverable-list-gray li:hover {
+  background-color: #f9fafb;
+}

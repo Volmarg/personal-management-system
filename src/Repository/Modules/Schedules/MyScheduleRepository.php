@@ -17,6 +17,7 @@ class MyScheduleRepository extends ServiceEntityRepository {
     const KEY_NAME          = 'name';
     const KEY_DATE          = 'date';
     const KEY_ICON          = 'icon';
+    const KEY_INFORMATION   = 'information';
     const KEY_DAYS_DIFF     = 'daysDiff';
     const KEY_SCHEDULE_TYPE = 'scheduleType';
 
@@ -45,7 +46,8 @@ class MyScheduleRepository extends ServiceEntityRepository {
                 mch.date                    AS :date,
                 DATEDIFF(mch.date ,NOW())   AS :daysDiff,
                 mcht.name                   AS :scheduleType,
-                mcht.icon                   AS :icon
+                mcht.icon                   AS :icon,
+                mch.information             AS :information
 
             FROM my_schedule mch
             
@@ -64,6 +66,7 @@ class MyScheduleRepository extends ServiceEntityRepository {
           'daysDiff'     => self::KEY_DAYS_DIFF,
           'scheduleType' => self::KEY_SCHEDULE_TYPE,
           'icon'         => self::KEY_ICON,
+          'information'  => self::KEY_INFORMATION,
           'days'         => $days
         ];
 

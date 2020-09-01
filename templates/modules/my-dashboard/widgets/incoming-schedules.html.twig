@@ -6,13 +6,19 @@
             </div>
             <div class="layer w-100">
 
-                <ul class="list-task list-group" data-role="tasklist">
+                <ul class="list-task list-group hoverable-list-gray" data-role="tasklist">
 
                     {% for schedule in schedules %}
                         {% set icon_classes  = getClassesForSchedulesNotifications(schedule.daysDiff) %}
                         {% set badge_classes = getClassesForSchedulesWidget(schedule.daysDiff) %}
 
-                        <li class="list-group-item bdw-0" data-role="task">
+                        <li class="list-group-item bdw-0" data-role="task"
+                            data-toggle-popover="true"                                {# popover attr #}
+                            data-html="true"                                          {# popover attr #}
+                            data-trigger="hover"                                      {# popover attr #}
+                            data-content="{{ schedule.information }}"                 {# popover attr #}
+                            data-placement="top"                                      {# popover attr #}
+                        >
                             <div class="peers ai-c">
                                 <label for="inputCall1" class=" peers peer-greed js-sb ai-c">
                                         <span class="peer peer-greed">
