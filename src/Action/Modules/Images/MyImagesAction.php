@@ -2,8 +2,10 @@
 
 namespace App\Action\Modules\Images;
 
+use App\Controller\Files\FilesController;
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
@@ -13,9 +15,9 @@ use App\Controller\Core\Env;
 use App\Entity\System\LockedResource;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
+use App\Services\Files\ImageHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -121,10 +123,18 @@ class MyImagesAction extends AbstractController {
         }
 
         if (empty($decoded_subdirectory_path)) {
-            $all_images                 = $this->controllers->getMyImagesController()->getMainFolderImages();
+            $all_images                  = $this->controllers->getMyImagesController()->getMainFolderImages();
         } else {
             $decoded_subdirectory_path   = urldecode($decoded_subdirectory_path);
             $all_images                  = $this->controllers->getMyImagesController()->getImagesFromCategory($decoded_subdirectory_path);
+        }
+
+        foreach($all_images as $index => $image){
+            $corresponding_miniature_path = Env::getMiniaturesUploadDir() . DIRECTORY_SEPARATOR . FilesController::stripUploadDirectoryFromFilePathFront($image[MyFilesController::KEY_FILE_FULL_PATH]);
+            if( file_exists($corresponding_miniature_path) ){
+                $all_images[$index][ImageHandler::KEY_MINIATURE_PATH] = $corresponding_miniature_path;
+                continue;
+            }
         }
 
         # count files in dir tree - disables button for folder removing on front

@@ -328,9 +328,10 @@ class DirectoriesHandler {
     /**
      * @param DirectoryIterator $dir
      * @param bool $use_foldername
+     * @param bool $flatten        - if true then returns tree in single dimension array
      * @return array
      */
-    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $use_foldername = false): array
+    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $use_foldername = false, bool $flatten = false): array
     {
         $data = [];
         foreach ( $dir as $node )
@@ -341,7 +342,15 @@ class DirectoriesHandler {
                 $foldername      = $node->getFilename();
                 $key             = ( $use_foldername ? $foldername : $pathname);
 
-                $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                if( !$flatten ){
+                    $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                }else{
+                    $data[]           = $key;
+                    $recursion_result = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                    $data             = array_merge($data, array_keys($recursion_result));
+                    $data             = array_filter($data);
+                    $data             = array_unique($data);
+                }
             }
 
         }

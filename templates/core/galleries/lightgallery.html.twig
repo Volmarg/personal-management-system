@@ -1,9 +1,11 @@
 {% set my_files_controller = 'App\\Controller\\Modules\\Images\\MyImagesController' %}
+{% set imageResizer        = 'App\\Services\\Files\\ImageResizer' %}
 {% set FileTagger          = 'App\\Services\\Files\\FileTagger' %}
 
 {% set KEY_FILE_FULL_PATH   = constant(my_files_controller~"::KEY_FILE_FULL_PATH") %}
 {% set KEY_FILE_NAME        = constant(my_files_controller~"::KEY_FILE_NAME") %}
 {% set KEY_TAGS             = constant(FileTagger~"::KEY_TAGS") %}
+{% set KEY_MINIATURE_PATH   = constant(imageResizer~"::KEY_MINIATURE_PATH") %}
 {% set bytes_in_mb          = 1048576 %}
 {% set max_filename_len     = 75 %}
 
@@ -94,7 +96,12 @@
                                             }%}
                                         </section>
 
-                                        <img src="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px; "/>
+                                        {% set imgSrc = image[KEY_FILE_FULL_PATH] %}
+                                        {% if image[KEY_MINIATURE_PATH] is defined %}
+                                            {% set imgSrc = image[KEY_MINIATURE_PATH] %}
+                                        {% endif %}
+
+                                        <img src="/{{ imgSrc }}" data-src-real="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px; "/>
 
                                         <div class="caption-wrapper"></div>
                                         <span class="caption-text-holder image_{{ loop.index0 }}" data-filename="{{ image[KEY_FILE_NAME] }}">

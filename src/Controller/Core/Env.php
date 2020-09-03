@@ -27,6 +27,14 @@ class Env extends AbstractController {
         return $_ENV['IMAGES_UPLOAD_DIR'];
     }
 
+    public static function getMiniaturesUploadDir() {
+        return $_ENV['MINIATURES_UPLOAD_DIR'];
+    }
+
+    public static function getPublicRootDir(){
+        return $_ENV['PUBLIC_ROOT_DIR'];
+    }
+
     public static function getFilesUploadDir() {
         return $_ENV['FILES_UPLOAD_DIR'];
     }

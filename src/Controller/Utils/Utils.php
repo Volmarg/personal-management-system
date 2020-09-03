@@ -39,12 +39,14 @@ class Utils extends AbstractController {
     }
 
     /**
+     * Todo: move to files handling service/controller
+     *
      * @param string $source
      * @param string $destination
-     * @param FileTagger $file_tagger
+     * @param FileTagger|null $file_tagger
      * @throws Exception
      */
-    public static function copyFiles(string $source, string $destination, FileTagger $file_tagger) {
+    public static function copyFiles(string $source, string $destination, ?FileTagger $file_tagger = null) {
         $finder = new Finder();
         $finder->depth('==0');
 
@@ -70,7 +72,10 @@ class Utils extends AbstractController {
                 }
 
                 copy($filepath, $file_path_in_destination_folder);
-                $file_tagger->copyTagsFromPathToNewPath($filepath, $file_path_in_destination_folder);
+
+                if( !is_null($file_tagger) ){
+                    $file_tagger->copyTagsFromPathToNewPath($filepath, $file_path_in_destination_folder);
+                }
             }
 
         }else{

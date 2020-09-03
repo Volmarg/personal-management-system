@@ -58,9 +58,15 @@ class FilesHandler {
      */
     private $file_tagger;
 
-    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger) {
+    /**
+     * @var ImageHandler $image_handler
+     */
+    private $image_handler;
+
+    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger, ImageHandler $image_handler) {
         $this->application          = $application;
         $this->directories_handle   = $directories_handler;
+        $this->image_handler        = $image_handler;
         $this->logger               = $logger;
         $this->file_tagger          = $file_tagger;
     }
@@ -394,6 +400,7 @@ class FilesHandler {
 
             if( !file_exists($new_relative_file_path) ) {
                 rename($curr_relative_filepath, $new_relative_file_path);
+                $this->image_handler->moveMiniatureBasedOnMovingOriginalFile($curr_relative_filepath, $new_relative_file_path);
 
                 $message = $this->application->translator->translate('responses.files.fileSuccessfullyRename');
                 return new JsonResponse($message, 200);
@@ -427,6 +434,7 @@ class FilesHandler {
 
             $this->file_tagger->updateFilePath($current_file_location, $target_file_location);
             $this->application->repositories->lockedResourceRepository->updatePath($current_file_location, $target_file_location);
+            $this->image_handler->moveMiniatureBasedOnMovingOriginalFile($current_file_location, $target_file_location);
 
             $message = $this->application->translator->translate('responses.files.fileHasBeenSuccesfullyMoved');
             return new JsonResponse($message, 200);
@@ -438,6 +446,29 @@ class FilesHandler {
             return new JsonResponse($response_message, 500);
         }
 
+    }
+
+    /**
+     * Will list all files in given directories
+     *
+     * @param array $directories
+     * @return array
+     */
+    public function listAllFilesInDirectories(array $directories): array
+    {
+        $files_paths_list = [];
+
+        foreach($directories as $directory){
+            $finder = new Finder();
+            $finder->depth(0);
+            $finder->files()->in($directory);
+
+            foreach($finder as $file){
+                $files_paths_list[$directory][] = $file->getFilename();
+            }
+        }
+
+        return $files_paths_list;
     }
 
     /**

@@ -303,10 +303,10 @@ export default class LightGallery {
                                     if( !StringUtils.areTheSame(_this.vars.currentFileName, newFileName) ){
                                         let newFilePath = filePath.replace(_this.vars.currentFileName, newFileName);
                                         let links       = $("[href^='" + filePath + "']");
-                                        let images      = $("[src^='" + filePath + "']");
+                                        let images      = $("[data-src-real^='" + filePath + "']");
                                         let dataSrcDivs = $('[data-src^="' + filePath + '"]');
 
-                                        $(images).attr('src', newFilePath);
+                                        $(images).attr('data-src-real', newFilePath);
                                         $(images).attr('alt', newFileName);
                                         $(links).attr('href', newFilePath);
                                         $(dataSrcDivs).attr('data-src', newFilePath);
@@ -488,7 +488,7 @@ export default class LightGallery {
 
     private removeImageWithMiniature(filePath){
         let thumbnails               = $(this.selectors.classes.thumbnails);
-        let removedImageMiniature    = $(thumbnails).find("[src^='" + filePath + "']");
+        let removedImageMiniature    = $(thumbnails).find("[data-src-real^='" + filePath + "']");
         let nextButton               = $(this.selectors.classes.nextButton);
         let currentViewedImage       = $(this.selectors.classes.currentViewedImage);
         let htmlGallery              = $(this.selectors.ids.lightboxGallery);
@@ -531,6 +531,10 @@ export default class LightGallery {
             _this.handleRebuildingEntireGalleryWhenClosingIt(lightboxGallery);
         });
 
+        lightboxGallery.on('onAfterOpen.lg',function() {
+            _this.modifyThumbnailsWhenOpeningGallery(lightboxGallery);
+        });
+
     };
 
     private handleMovingBetweenImagesAfterImageRemoval(lightboxGallery){
@@ -538,7 +542,7 @@ export default class LightGallery {
         // Handling skipping removed images - because of above - this is dirty solution but works
         let downloadButton  = $(this.selectors.ids.downloadButton);
         var filePath        = $(downloadButton).attr('href');
-        let isImagePresent  = ( lightboxGallery.find("[src^='" + filePath + "']").length > 0 );
+        let isImagePresent  = ( lightboxGallery.find("[data-src-real^='" + filePath + "']").length > 0 );
         let _this           = this;
 
         if( !isImagePresent ){
@@ -571,8 +575,26 @@ export default class LightGallery {
         if( !DomElements.doElementsExists(foundImages) ){
             $(closeButton).click();
         }
-    }; 
-     
+    };
+
+    /**
+     * @description will modify the thumbnails
+     *              - add data-src-real attribute (used with backend generated miniatures)
+     */
+    private modifyThumbnailsWhenOpeningGallery($lightboxGallery: JQuery<HTMLElement>): void
+    {
+        let $thumbnailsImages = $('.lg-thumb img');
+        $.each($thumbnailsImages, (index, thumbnailImage) => {
+            let $thumbnailImage = $(thumbnailImage);
+            let thumbnailSrc    = $thumbnailImage.attr('src');
+
+            let $correspondingGalleryImage = $lightboxGallery.find('[src^="' +  thumbnailSrc + '"]');
+            let dataSrcReal                = $correspondingGalleryImage.attr('data-src-real');
+
+            $thumbnailImage.attr('data-src-real', dataSrcReal);
+        })
+    }
+
     /**
      * This function will prevent triggering events such as showing gallery for image in wrapper (click)
      */

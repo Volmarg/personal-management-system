@@ -6,12 +6,14 @@ use App\Controller\Files\FilesTagsController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Validators\FileValidator;
 use App\Services\Exceptions;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,8 +66,14 @@ class FileUploader extends AbstractController {
      */
     private $files_tags_controller;
 
-    public function __construct(LoggerInterface $logger, Application $app, FilesTagsController $files_tags_controller) {
+    /**
+     * @var ImageHandler $image_handler
+     */
+    private $image_handler;
+
+    public function __construct(LoggerInterface $logger, Application $app, FilesTagsController $files_tags_controller, ImageHandler $image_handler) {
         $this->files_tags_controller = $files_tags_controller;
+        $this->image_handler         = $image_handler;
         $this->finder                = new Finder();
         $this->logger                = $logger;
         $this->app                   = $app;
@@ -135,6 +143,12 @@ class FileUploader extends AbstractController {
 
         try {
             $file->move($target_directory, $filename_with_extension);
+
+            // Todo(maybe) in future: make checking which file based module is targeted - generate miniatures only for MyImages, as it will be only used in this case
+            $moved_file = new File($file_full_path);
+            if( FileValidator::isFileImage($moved_file) && FileValidator::isImageResizable($moved_file)){
+                $this->image_handler->createMiniature($file_full_path);
+            }
 
             if( !empty($tags) ){
                 $this->files_tags_controller->updateTags($tags, $file_full_path);

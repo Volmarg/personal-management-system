@@ -134,6 +134,9 @@
     "google/auth": {
         "version": "v1.5.1"
     },
+    "gumlet/php-image-resize": {
+        "version": "2.0.0"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
     },
