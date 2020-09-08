@@ -83,8 +83,7 @@ export default class AjaxEvents extends AbstractAjax {
     {
         let _this = this;
 
-        // fix for case when this call comes as second and somehow the previous call for hideLoader instantly hides also this one
-        setTimeout(function(){
+        let showLoaderTimeout = setTimeout(function(){
             Loader.showLoader();
         }, 500);
 
@@ -119,6 +118,7 @@ export default class AjaxEvents extends AbstractAjax {
             imagesLoaded( twigBodySection, function() {
                 _this.initializer.reinitializeLogic();
                 Loader.hideLoader();
+                clearTimeout(showLoaderTimeout);
                 history.pushState({}, null, url);
                 Sidebars.markCurrentMenuElementAsActive();
                 MasonryGallery.init();
