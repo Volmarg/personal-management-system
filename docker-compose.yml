@@ -1,0 +1,39 @@
+version: "3.6"
+services:
+    nginx:
+      image: nginx:1.19.0-alpine
+      restart: always
+      container_name: nginx
+      volumes:
+        - './public/:/usr/src/app'
+        - './docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
+      ports:
+        - '80:80'
+      depends_on: 
+        - php
+
+    php:
+      build:
+        context: .
+        dockerfile: docker/php/Dockerfile
+      volumes: 
+        - '.:/usr/src/app'
+      restart: always
+      env_file:
+        - .env
+      user: 1000:1000
+
+    mariadb:
+      image: mariadb
+      container_name: mariadb
+      restart: always
+      environment: 
+        - MYSQL_DATABASE=pms
+        - MYSQL_ROOT_PASSWORD=password
+      
+    adminer:
+      container_name: adminer
+      image: adminer
+      restart: always
+      ports: 
+        - 8081:8080
