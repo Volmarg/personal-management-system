@@ -16,6 +16,7 @@ services:
       build:
         context: .
         dockerfile: docker/php/Dockerfile
+      container_name: php
       volumes: 
         - '.:/usr/src/app'
       restart: always
@@ -30,6 +31,8 @@ services:
       environment: 
         - MYSQL_DATABASE=pms
         - MYSQL_ROOT_PASSWORD=password
+      volumes: 
+        - mariadb:/var/lib/mysql
       
     adminer:
       container_name: adminer
@@ -37,3 +40,7 @@ services:
       restart: always
       ports: 
         - 8081:8080
+
+volumes: 
+  mariadb:
+    external: true
