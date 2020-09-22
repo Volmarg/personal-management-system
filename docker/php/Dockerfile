@@ -29,6 +29,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 WORKDIR /usr/src/app
 
-COPY --chown=1000:1000 . /usr/src/app
+COPY --chown=www-data:www-data . /usr/src/app
 
 RUN PATH=$PATH:/usr/src/apps/vendor/bin:bin

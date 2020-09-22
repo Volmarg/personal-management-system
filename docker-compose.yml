@@ -22,7 +22,7 @@ services:
       restart: always
       env_file:
         - .env
-      user: 1000:1000
+      user: www-data
 
     mariadb:
       image: mariadb

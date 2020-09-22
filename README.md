@@ -84,6 +84,14 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 You will be guided through the autoinstaller - it won't do everything for You but will attempt to help You setting up the project.
 </p>
 
+<h3>Docker</h3>
+<p>
+mkdir vendor
+mkdir var
+chown -R www-data vendor
+chown -R www-data var
+</p>
+
 <h2>Future development plans</h2>
 
 <h3>Improvements</h3>
