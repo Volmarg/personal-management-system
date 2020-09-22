@@ -16,6 +16,7 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Entity\System\Module;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
@@ -48,9 +49,12 @@ use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Repository\Modules\Schedules\MyScheduleTypeRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
+use App\Repository\Modules\Todo\MyTodoElementRepository;
+use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\SettingRepository;
 use App\Repository\System\LockedResourceRepository;
+use App\Repository\System\ModuleRepository;
 use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Core\Translator;
@@ -59,10 +63,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+// todo: add later some logic for cascade soft-delete
+// todo: need to check if todo can be removed while there are some associated elements
 class Repositories extends AbstractController {
 
     const ACHIEVEMENT_REPOSITORY_NAME                   = 'AchievementRepository';
@@ -101,6 +108,9 @@ class Repositories extends AbstractController {
     const MY_ISSUES_REPOSITORY                          = "MyIssueRepository";
     const MY_ISSUES_CONTACT_REPOSITORY                  = "MyIssueContactRepository";
     const MY_ISSUES_PROGRESS_REPOSITORY                 = "MyIssueProgressRepository";
+    const MY_TODO_REPOSITORY                            = "MyTodoRepository";
+    const MY_TODO_ELEMENT_REPOSITORY                    = "MyTodoElementRepository";
+    const MODULE_REPOSITORY                             = "ModuleRepository";
 
     const PASSWORD_FIELD        = 'password';
     const PARENT_ID_FIELD       = 'parent_id';
@@ -108,6 +118,8 @@ class Repositories extends AbstractController {
     const FIELD_TYPE_ENTITY     = 'entity';
 
     const KEY_MESSAGE           = "message";
+    const KEY_REPOSITORY        = "repository";
+    const KEY_ID                = "id";
 
     const KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME          = "fieldName";
     const KEY_CLASS_META_RELATED_ENTITY_FIELD_TARGET_ENTITY = "targetEntity";
@@ -314,9 +326,29 @@ class Repositories extends AbstractController {
     public $myIssueProgressRepository;
 
     /**
+     * @var MyTodoRepository $myTodoRepository
+     */
+    public $myTodoRepository;
+
+    /**
+     * @var MyTodoElementRepository $myTodoElementRepository
+     */
+    public $myTodoElementRepository;
+
+    /**
+     * @var Module $moduleRepository
+     */
+    public $moduleRepository;
+
+    /**
      * @var EntityValidator $entity_validator
      */
     private $entity_validator;
+
+    /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
 
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
@@ -356,8 +388,12 @@ class Repositories extends AbstractController {
         MyIssueRepository                   $myIssueRepository,
         MyIssueContactRepository            $myIssueContactRepository,
         MyIssueProgressRepository           $myIssueProgressRepository,
+        MyTodoRepository                    $myTodoRepository,
+        MyTodoElementRepository             $myTodoElementRepository,
+        ModuleRepository                    $moduleRepository,
         EntityManagerInterface              $entity_manager,
-        EntityValidator                     $entity_validator
+        EntityValidator                     $entity_validator,
+        LoggerInterface                     $logger
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->achievementRepository                = $myAchievementsRepository;
@@ -398,6 +434,10 @@ class Repositories extends AbstractController {
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->entity_manager                       = $entity_manager;
         $this->entity_validator                     = $entity_validator;
+        $this->myTodoRepository                     = $myTodoRepository;
+        $this->myTodoElementRepository              = $myTodoElementRepository;
+        $this->moduleRepository                     = $moduleRepository;
+        $this->logger                               = $logger;
     }
 
     /**
@@ -415,6 +455,10 @@ class Repositories extends AbstractController {
         try {
 
             $id = $this->trimAndCheckId($id);
+            $this->logger->info("Now handling removal for: ", [
+                self::KEY_REPOSITORY => $repository_name,
+                self::KEY_ID         => $id,
+            ]);
 
             /**
              * @var ServiceEntityRepository $repository
@@ -425,6 +469,7 @@ class Repositories extends AbstractController {
             $record = $this->handleRecordActiveRelatedEntities($record);
             if ( $this->hasRecordActiveRelatedEntities($record, $repository) ) {
                 $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
+                $this->logger->warning($message);
 
                 if( !empty($request) ){
                     return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
@@ -439,6 +484,7 @@ class Repositories extends AbstractController {
 
             if( !($record instanceof SoftDeletableEntityInterface) ){
                 $message = $this->translator->translate("exceptions.general.thisEntityIsNotSoftDeletable");
+                $this->logger->warning($message);
 
                 if( !empty($request)){
                     return new Response($message, 500);
@@ -461,9 +507,14 @@ class Repositories extends AbstractController {
                 return AjaxResponse::buildJsonResponseForAjaxCall(200, $message);
             }
 
+            $this->logger->info($message);
+
             return new Response($message, 200);
         } catch (Exception | ExceptionRepository $er) {
             $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
+            $this->logger->warning($message, [
+                self::KEY_MESSAGE => $er->getMessage(),
+            ]);
 
             if( !empty($request) ){
                 return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);

@@ -7,6 +7,8 @@ import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
 import Navigation               from "../../Navigation";
 import EntityStructure          from "../BackendStructure/EntityStructure";
 
+// todo: remove GOAL ?
+
 /**
  * @description This class holds definitions what kind of data is being gathered on frontend
  *              how should it be additionally handled (callbacks, messages) etc.
@@ -1436,144 +1438,6 @@ export default class Entity extends AbstractDataProcessor {
         processorName: "Password group"
     };
 
-    public static MyGoals: DataProcessorInterface = {
-        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            return null;
-        },
-        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id                          = $($baseElement).find('.id').html();
-            let name                        = $($baseElement).find('.name').html();
-            let description                 = $($baseElement).find('.description').html();
-            let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
-            let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
-
-            let successMessage     = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyGoals.processorName);
-            let failMessage        = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyGoals.processorName);
-
-            let url = '/admin/goals/settings/update';
-            let ajaxData = {
-                'name'               : name,
-                'description'        : description,
-                'id'                 : id,
-                'displayOnDashboard' : displayOnDashboard,
-            };
-
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.processorName  = this.processorName;
-
-            return dataProcessorsDto;
-        },
-        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id             = $($baseElement).find('.id').html();
-            let name           = $($baseElement).find('.name').html();
-            let url            = '/admin/goals/settings/remove';
-            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyGoals.processorName);
-            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyGoals.processorName);
-            let confirmMessage = 'You are about to remove goal named <b>' + name + ' </b>. There might be subgoal connected with it. Are You 100% sure? This might break something...';
-            let ajaxData       = {
-                id: id
-            };
-
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.confirmMessage = confirmMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.isDataTable    = false;
-            dataProcessorsDto.processorName  = this.processorName;
-
-            return dataProcessorsDto;
-        },
-        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let url             = '/admin/goals/settings/MyGoals';
-            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyGoals.processorName);
-            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyGoals.processorName);
-
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.processorName  = this.processorName;
-
-            return dataProcessorsDto;
-        },
-        processorName: "Goal"
-    };
-
-    public static MySubgoals: DataProcessorInterface = {
-        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            return null;
-        },
-        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id            = $($baseElement).find('.id').html();
-            let name          = $($baseElement).find('.name').html();
-            let goalId        = <string> $($baseElement).find('.goal :selected').val();
-            let trimmedGoalId = goalId.trim();
-
-            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MySubgoals.processorName);
-            let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MySubgoals.processorName);
-
-            let url = '/admin/subgoals/settings/update';
-            let ajaxData = {
-                'id'        : id,
-                'name'      : name,
-                'myGoal'    : {
-                    "type"      : "entity",
-                    'namespace' : EntityStructure.MyGoals.getNamespace(),
-                    'id'        : trimmedGoalId,
-                },
-            };
-
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.ajaxData       = ajaxData;
-            dataProcessorsDto.processorName  = this.processorName;
-
-            return dataProcessorsDto;
-        },
-        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id = $($baseElement).find('.id').html();
-            let url = '/admin/subgoals/settings/remove';
-            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MySubgoals.processorName);
-            let failMessage = AbstractDataProcessor.messages.entityRemoveFail(Entity.MySubgoals.processorName);
-
-            let ajaxData       = {
-                id: id
-            };
-
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.ajaxData       = ajaxData;
-            dataProcessorsDto.isDataTable    = false;
-            dataProcessorsDto.processorName  = this.processorName;
-
-            return dataProcessorsDto;
-        },
-        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let url = '/admin/goals/settings/MySubgoals';
-            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySubgoals.processorName);
-            let failMessage = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MySubgoals.processorName);
-
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.processorName  = this.processorName;
-
-            return dataProcessorsDto;
-        },
-        processorName: "Subgoal"
-    };
-
     public static MyGoalsPayments: DataProcessorInterface = {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;
@@ -1986,6 +1850,149 @@ export default class Entity extends AbstractDataProcessor {
             return null;
         },
         processorName: "Issue"
+    };
+
+    public static MyTodo: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        //todo
+        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id                          = $($baseElement).find('.id').html();
+            let name                        = $($baseElement).find('.name').html();
+            let description                 = $($baseElement).find('.description').html();
+            let displayOnDashboardCheckbox  = $($baseElement).find('.displayOnDashboard');
+            let displayOnDashboard          = $(displayOnDashboardCheckbox).prop("checked");
+
+            let successMessage     = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyTodo.processorName);
+            let failMessage        = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyTodo.processorName);
+
+            let url = '/admin/goals/settings/update';
+            let ajaxData = {
+                'name'               : name,
+                'description'        : description,
+                'id'                 : id,
+                'displayOnDashboard' : displayOnDashboard,
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        //todo
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id             = $($baseElement).find('.id').html();
+            let name           = $($baseElement).find('.name').html();
+            let url            = '/admin/goals/settings/remove';
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyTodo.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyTodo.processorName);
+            let confirmMessage = 'You are about to remove goal named <b>' + name + ' </b>. There might be subgoal connected with it. Are You 100% sure? This might break something...';
+            let ajaxData       = {
+                id: id
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.confirmMessage = confirmMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url             = '/admin/todo/list';
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyTodo.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyTodo.processorName);
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        processorName: "Todo"
+    };
+
+
+    public static MyTodoElement: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        // todo
+        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id            = $($baseElement).find('.id').html();
+            let name          = $($baseElement).find('.name').html();
+            let goalId        = <string> $($baseElement).find('.goal :selected').val();
+            let trimmedGoalId = goalId.trim();
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyTodoElement.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyTodoElement.processorName);
+
+            let url = '/admin/subgoals/settings/update';
+            let ajaxData = {
+                'id'        : id,
+                'name'      : name,
+                'myGoal'    : {
+                    "type"      : "entity",
+                    'namespace' : EntityStructure.MyGoals.getNamespace(),
+                    'id'        : trimmedGoalId,
+                },
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        //todo
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id = $($baseElement).find('.id').html();
+            let url = '/admin/subgoals/settings/remove';
+            let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyTodoElement.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyTodoElement.processorName);
+
+            let ajaxData       = {
+                id: id
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url = '/admin/todo/list';
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyTodoElement.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyTodoElement.processorName);
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        processorName: "Todo element"
     };
 
 }

@@ -9,3 +9,6 @@ dialogs:
     header: Add issue progress
   addIssueContact:
     header: Add issue contact
+  addOrModifyTodo:
+    add: Add todo
+    modify: Modify todo

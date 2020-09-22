@@ -17,6 +17,7 @@ export default class DialogLogicLoader {
         /**
          * @see DialogLogic.myIssueCardAddRecords()
          * @see DialogLogic.myIssueCardPreviewAndEdit()
+         * @see DialogLogic.addTodo()
          */
         let dialogDataBuilder = DialogLogic[dialogName];
 

@@ -37,7 +37,10 @@ class MyNotesCategoriesType extends AbstractType {
                     return $note_category->getName();
                 },
                 'required' => false,
-                'label' => $this->app->translator->translate('forms.MyNotesCategoriesType.parentId')
+                'label' => $this->app->translator->translate('forms.MyNotesCategoriesType.parentId'),
+                "attr"  => [
+                    "class" => 'selectpicker col-12 p-0'
+                ]
             ])
             ->add('icon', FontawesomepickerType::class, [
                 'label' => $this->app->translator->translate('forms.MyNotesCategoriesType.icon')

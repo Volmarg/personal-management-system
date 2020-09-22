@@ -1,6 +1,6 @@
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'upload') }}">
 
-    <a class="sidebar-link" href="javascript:void(0);">
+    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
         <span class="icon-holder" style="color:orange;">
             <i class="fas fa-upload fa-sm"></i>
         </span>
@@ -14,12 +14,12 @@
     <ul class="dropdown-menu">
 
         <li>
-            <a class="sidebar-link" href="{{ path('upload') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('upload') }}">
                 {{ 'sidebar.menu.upload.add' | trans }}
             </a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('upload_settings') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('upload_settings') }}">
                 {{ 'sidebar.menu.upload.manage' | trans }}
             </a>
         </li>

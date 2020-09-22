@@ -10,6 +10,7 @@ import FontawesomeAction    from "../../Actions/FontawesomeAction";
 import UpdateAction         from "../../Actions/UpdateAction";
 import CreateAction         from "../../Actions/CreateAction";
 import RemoveAction         from "../../Actions/RemoveAction";
+import TodoChecklist        from "../../../../modules/Todo/TodoChecklist";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -84,6 +85,25 @@ export default class DialogLogic {
         };
 
         let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for add/modify todo
+     */
+    public static addTodo()
+    {
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let todoChecklist = new TodoChecklist();
+            let createAction  = new CreateAction();
+
+            createAction.init();
+            todoChecklist.init();
+        };
+
+        let dialogDataDto = new DialogDataDto();
         dialogDataDto.callback = callback;
 
         return dialogDataDto;

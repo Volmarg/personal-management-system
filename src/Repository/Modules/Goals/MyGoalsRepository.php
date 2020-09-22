@@ -65,11 +65,4 @@ class MyGoalsRepository extends ServiceEntityRepository
 
     }
 
-    public function getGoalsForWidget(){
-        $results = $this->findBy([
-            'displayOnDashboard' => 1,
-            'deleted'            => 0
-        ]);
-        return $results;
-    }
 }

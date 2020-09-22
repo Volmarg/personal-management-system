@@ -98,3 +98,8 @@ responses:
     passwordHasBeenCreated: "Password has been created"
     passwordHasBeenUpdated: "Password has been updated"
     failedToSetLockPassword: "Failed to set lock password"
+  todo:
+    todoElementStatusHasBeenChanged: 'Todo element status has been changed'
+    todoElementStatusCouldNotBeenChanged: 'Todo element status could not been changed'
+    allTodoElementsAreDoneTodoIsCompleted: 'All todo elements are done, todo has been marked as completed'
+    todoElementUncheckedTodoNoLongerCompleted: 'You have unchecked one of todo elements therefore todo status has been marked as not completed'

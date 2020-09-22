@@ -7,14 +7,19 @@
             <div class="layer w-100">
 
                 <ul class="list-c ">
-                    {% for goal in goals %}
-                        <li class=" list-group-item">
-                            <b>{{ goal.name }}</b>
+                    {% for todo in all_todo %}
+                        <li class=" list-group-item"
+                            data-toggle-popover="true"                                      {# popover attr #}
+                            data-html="true"                                                {# popover attr #}
+                            data-trigger="hover"                                            {# popover attr #}
+                            data-content="{{  todo.description }}"                          {# popover attr #}
+                            data-placement="top"                                            {# popover attr #}
+                        >
+                            <b>{{ todo.name }}</b>
                             <ul class="list-c">
-                                {% for subgoal in goal.mySubgoal %}
+                                {% for element in todo.myTodoElement %}
 
-                                    {#TODO: make a twig function for list from this#}
-                                    {% if subgoal.completed %}
+                                    {% if element.completed %}
                                         {% set status_label   = 'success' %}
                                         {% set status_text    = 'Done' %}
                                     {% else %}
@@ -23,7 +28,7 @@
                                     {% endif %}
 
                                     <li style="margin-left:15px;margin-top:5px;">
-                                        {{ subgoal.name }}
+                                        {{ element.name }}
                                         <span class="peer" style="display:inline;">
                                             <span class="badge badge-pill fl-r badge-{{ status_label }} lh-0 p-10">{{ status_text }}</span>
                                         </span>

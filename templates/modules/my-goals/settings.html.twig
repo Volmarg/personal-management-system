@@ -15,27 +15,6 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'goals.settings.headers.addGoal' | trans }}</h5>
-
-                            {% include('modules/my-goals/components/goals-settings.table.html.twig') %}
-
-                            <div class="col-md-6 align-self-center add-record-form">
-                                {{ form_start(goals_form, {'attr':{'data-entity':"MyGoals"}}) }}
-                                {{ form_end(goals_form) }}
-                            </div>
-                        </div>
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'goals.settings.headers.addSubgoal' | trans }}</h5>
-
-                            {% include('modules/my-goals/components/subgoals-settings.table.html.twig') %}
-
-                            <div class="col-md-6 align-self-center add-record-form">
-                                {{ form_start(subgoals_form,{'attr':{'data-entity':"MySubgoals"}}) }}
-                                {{ form_end(subgoals_form) }}
-                            </div>
-                        </div>
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
 
                             <h5 class="c-grey-900 mB-20 align-self-center">{{ 'goals.settings.headers.addPaymentGoal' | trans }}</h5>
 

@@ -13,9 +13,33 @@
                     data-toggle-popover="true"                                      {# popover attr #}
                     data-html="true"                                                {# popover attr #}
                     data-trigger="hover"                                            {# popover attr #}
-                    data-content="{{  issueCardDto.getIssue().getInformation() }}"  {# popover attr #}
+                    data-content=
+                    "                                                  {# popover attr #}
+                        <b>Description: </b>{{  issueCardDto.getIssue().getInformation() }}
+
+                        {%
+                            if  isCompact is defined
+                            and isCompact
+                            and issueCardDto.waitingTodo is not empty
+                        %}
+                            </br>
+                            </br>
+                            <b>Waiting todo: </b>
+
+                            <ul class='list-task list-group'>
+                                <li class='list-group-item bdw-0 element'>
+                                    {% for waitingTodo in issueCardDto.waitingTodo %}
+                                        <span class='peer'>
+                                            <i class='fas fa-dot-circle fa-sm text-info'></i>
+                                                <span>{{ waitingTodo }}</span>
+                                        </span>
+                                    {% endfor %}
+                                </li>
+                            </ul>
+                        {% endif %}
+                    "
                     data-placement="top"                                            {# popover attr #}
-                >
+                > {#todo: add translation strings to popover#}
                     {{ issueCardDto.getIssue().getName() }}
                 </h1>
                 <p class="text-center p-0 m-0">
@@ -138,6 +162,27 @@
                                       "
                             >
                                 <i class="fas fa-plus-circle fa-lg"></i>
+                            </span>
+
+                            <span class="action pointer"
+                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                  data-entity-detials-action="true"
+                                  data-dialog-call-request-url="{{ path('dialog_body_add_or_modify_todo') }}"
+                                  data-dialog-call-request-method="POST"
+                                  data-dialog-call-request-post-parameters='{
+                                        "entityId": "{{ issueCardDto.issue().getId() }}",
+                                        "actionPathname": "{{ app.request.attributes.get('_route') }}"
+                                    }'
+                                  data-call-dialog-on-click="true"
+                                  data-dialog-name="addTodo"
+                                  data-toggle-popover="true"                         {# popover attr #}
+                                      data-html="true"                               {# popover attr #}
+                                      data-trigger="hover"                           {# popover attr #}
+                                      data-content="                                 {# popover attr #}
+                                        {{ 'issues.card.popovers.addOrModifyExistingTodo' | trans }}
+                                      "
+                            >
+                                <i class="fas fa-tasks"></i>
                             </span>
 
                             <span class="action pointer"

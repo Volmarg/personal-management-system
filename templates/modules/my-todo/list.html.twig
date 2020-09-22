@@ -1,0 +1,46 @@
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{# todo: add standard action for crud on todo - also later (maybe like it's done in issues or note) ?#}
+{# todo 2 : add grouping by module - each todo should be in the section of given module - later #}
+{# todo 3: removal/ adding without page reload - direct in gui - add some global logic? Or use existing for contact #}
+{% block body %}
+    <!-- ### $App Screen Content ### -->
+    <main class='main-content bgc-grey-100'>
+        <div id='mainContent'>
+
+            {% if all_grouped_todo is defined %}
+                {% for module_name, all_todo in all_grouped_todo %}
+                    {%  include 'modules/my-todo/components/single-todo-group.html.twig' with {
+                        all_todo    : all_todo,
+                        module_name : module_name
+                    } %}
+                {% endfor %}
+            {% elseif all_todo is defined %}
+                {%  include 'modules/my-todo/components/single-todo-group.html.twig' with {
+                    all_todo: all_todo
+                } %}
+            {% endif  %}
+
+            {# Forms #}
+            {% if todo_form is defined %}
+                <div class="row mT-20">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ 'todo.list.headers.addTodo' | trans }}</h4>
+                            <div class="col-md-6 align-self-center">
+                                {{ form(todo_form ,{'attr':{' data-entity':"MyTodo"}}) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </main>
+{% endblock body %}

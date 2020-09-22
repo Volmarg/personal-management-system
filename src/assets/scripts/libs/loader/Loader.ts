@@ -1,3 +1,5 @@
+import {int} from "flatpickr/dist/utils";
+
 export default class Loader {
 
     private static selectors = {
@@ -21,10 +23,12 @@ export default class Loader {
 
     /**
      * @description Will show page loader/spinner
+     * Todo: add timeout support later on, and return that timeout eventually so that it can be cancelled
      *
      * @param soft
+     * @param timeout
      */
-    public static showLoader(soft = true) {
+    public static showLoader(soft = true, timeout: number = null) {
         let loader = $(Loader.selectors.ids.loader);
 
         if (loader.hasClass('fadeOut')) {

@@ -5,6 +5,7 @@ import FormsValidator       from "../../validators/FormsValidator";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";
 import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
+import StringUtils from "../../utils/StringUtils";
 
 export default class CreateAction extends AbstractAction {
 
@@ -39,7 +40,7 @@ export default class CreateAction extends AbstractAction {
              *              action from one page but load template of other
              */
             let dataTemplateUrl                = $(submitButton).attr('data-template-url');
-            let doReloadTemplateViaTemplateUrl = ("undefined" !== typeof dataTemplateUrl);
+            let doReloadTemplateViaTemplateUrl = !StringUtils.isEmptyString(dataTemplateUrl);
 
             let formSubmissionType                = form.attr('method');
             let processedEntityName               = form.attr('data-entity');

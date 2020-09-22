@@ -5,8 +5,10 @@ namespace App\Action\Modules\Dashboard;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use App\Controller\Modules\ModulesController;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Modules\Issues\MyIssue;
+use App\Entity\Modules\Todo\MyTodo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -64,7 +66,7 @@ class DashboardAction extends AbstractController {
         }
 
         $schedules      = $this->getIncomingSchedules();
-        $goals          = $this->getGoalsForWidget();
+        $all_too        = $this->getGoalsTodoForWidget();
         $goals_payments = $this->getGoalsPayments();
 
         $pending_issues    = $this->getPendingIssues();
@@ -73,7 +75,7 @@ class DashboardAction extends AbstractController {
         $data = [
             'dashboard_widgets_visibility_dtos'  => $dashboard_widgets_visibility_dtos,
             'schedules'                          => $schedules,
-            'goals'                              => $goals,
+            'all_todo'                           => $all_too,
             'goals_payments'                     => $goals_payments,
             'issues_cards_dtos'                  => $issues_cards_dtos,
             'ajax_render'                        => $ajax_render,
@@ -86,8 +88,11 @@ class DashboardAction extends AbstractController {
         return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::SCHEDULES_DEFAULT_DAYS_INTERVAL);
     }
 
-    private function getGoalsForWidget(){
-        return $this->app->repositories->myGoalsRepository->getGoalsForWidget();
+    /**
+     * @return MyTodo[]
+     */
+    private function getGoalsTodoForWidget(){
+        return $this->app->repositories->myTodoRepository->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
     }
 
     private function getGoalsPayments(){

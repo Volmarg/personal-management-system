@@ -1,5 +1,5 @@
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'reports') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_REPORTS }}">
-    <a class="sidebar-link" href="javascript:void(0);">
+    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder" style="color:blue;">
                     <i class="far fa-list-alt fa-sm"></i>
                 </span>
@@ -11,22 +11,22 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('reports-monthly-payments-summaries') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('reports-monthly-payments-summaries') }}">
                 {{  'sidebar.menu.reports.monthlyPaymentsSummaries' | trans }}
             </a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('reports-historical-money-owed') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('reports-historical-money-owed') }}">
                 {{  'sidebar.menu.reports.historicalMoneyOwed' | trans }}
             </a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('reports-payments-charts') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('reports-payments-charts') }}">
                 {{  'sidebar.menu.reports.paymentsCharts' | trans }}
             </a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('reports-savings-charts') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('reports-savings-charts') }}">
                 {{  'sidebar.menu.reports.savingsCharts' | trans }}
             </a>
         </li>

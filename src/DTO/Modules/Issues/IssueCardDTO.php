@@ -38,6 +38,11 @@ class IssueCardDTO {
     private $issue_last_progress = null;
 
     /**
+     * @var string[] $waiting_todo
+     */
+    private $waiting_todo = [];
+
+    /**
      * @return MyIssue
      */
     public function getIssue(): MyIssue {
@@ -119,6 +124,20 @@ class IssueCardDTO {
      */
     public function setIssueLastProgress(?DateTime $issue_last_progress): void {
         $this->issue_last_progress = $issue_last_progress;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getWaitingTodo(): array {
+        return $this->waiting_todo;
+    }
+
+    /**
+     * @param string[] $waiting_todo
+     */
+    public function setWaitingTodo(array $waiting_todo): void {
+        $this->waiting_todo = $waiting_todo;
     }
 
 }

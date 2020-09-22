@@ -21,6 +21,8 @@ use App\Controller\Modules\Payments\MyPaymentsBillsController;
 use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Modules\Reports\ReportsController;
 use App\Controller\Modules\Schedules\MySchedulesController;
+use App\Controller\Modules\Todo\MyTodoController;
+use App\Controller\Modules\Todo\MyTodoElementController;
 use App\Controller\Modules\Travels\MyTravelsIdeasController;
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
@@ -28,6 +30,7 @@ use App\Controller\Page\SettingsFinancesController;
 use App\Controller\Page\SettingsValidationController;
 use App\Controller\Page\SettingsViewController;
 use App\Controller\System\LockedResourceController;
+use App\Controller\System\ModuleController;
 use App\Controller\System\SecurityController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -167,6 +170,21 @@ class Controllers extends AbstractController {
      * @var MyJobHolidaysPoolController $my_job_holidays_pool_controller
      */
     private $my_job_holidays_pool_controller;
+
+    /**
+     * @var MyTodoController $my_todo_controller
+     */
+    private $my_todo_controller;
+
+    /**
+     * @var MyTodoElementController $my_todo_element_controller
+     */
+    private $my_todo_element_controller;
+
+    /**
+     * @var ModuleController $module_controller
+     */
+    private $module_controller;
 
     /**
      * @return MyIssuesController
@@ -350,6 +368,27 @@ class Controllers extends AbstractController {
         return $this->my_job_holidays_pool_controller;
     }
 
+    /**
+     * @return MyTodoController
+     */
+    public function getMyTodoController(): MyTodoController {
+        return $this->my_todo_controller;
+    }
+
+    /**
+     * @return MyTodoElementController
+     */
+    public function getMyTodoElementController(): MyTodoElementController {
+        return $this->my_todo_element_controller;
+    }
+
+    /**
+     * @return ModuleController
+     */
+    public function getModuleController(): ModuleController {
+        return $this->module_controller;
+    }
+
     public function __construct(
         AchievementController         $achievement_controller,
         ReportsController             $reports_controller,
@@ -376,7 +415,10 @@ class Controllers extends AbstractController {
         SettingsViewController        $settings_view_controller,
         FilesUploadSettingsController $files_upload_settings_controller,
         MyIssuesController            $my_issues_controller,
-        MyJobHolidaysPoolController   $my_job_holidays_pool_controller
+        MyJobHolidaysPoolController   $my_job_holidays_pool_controller,
+        MyTodoController              $my_todo_controller,
+        MyTodoElementController       $my_todo_element_controller,
+        ModuleController              $module_controller
     ) {
         $this->achievement_controller           = $achievement_controller;
         $this->reports_controllers              = $reports_controller;
@@ -404,6 +446,9 @@ class Controllers extends AbstractController {
         $this->files_upload_settings_controller = $files_upload_settings_controller;
         $this->my_issues_controller             = $my_issues_controller;
         $this->my_job_holidays_pool_controller  = $my_job_holidays_pool_controller;
+        $this->my_todo_controller               = $my_todo_controller;
+        $this->my_todo_element_controller       = $my_todo_element_controller;
+        $this->module_controller                = $module_controller;
     }
 
 }

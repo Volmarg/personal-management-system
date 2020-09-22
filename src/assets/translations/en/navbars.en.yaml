@@ -9,6 +9,10 @@ sidebar:
       list: List
       payments: Payments
       settings: Settings
+    todo:
+      label: Todo
+      list: List
+      settings: Settings
     car:
       label: Car
       schedules: Schedules

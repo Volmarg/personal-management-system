@@ -7,9 +7,11 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Modules\ModulesController;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Form\Modules\Issues\MyIssueContactType;
 use App\Form\Modules\Issues\MyIssueProgressType;
+use App\Form\Modules\Todo\MyTodoType;
 use App\Form\System\SystemLockResourcesPasswordType;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
@@ -46,10 +48,12 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE             = 'page-elements/components/dialogs/bodies/create-issue.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_NOTE              = 'page-elements/components/dialogs/bodies/create-note.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD             = 'page-elements/components/dialogs/bodies/upload.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_ADD_OR_MODIFY_TODO       = 'page-elements/components/dialogs/bodies/add-or-modify-todo.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
     const KEY_ENTITY_ID                                      = "entityId";
+    const KEY_ACTION_PATHNAME                                = 'actionPathname';
 
     /**
      * @var Application $app
@@ -751,6 +755,78 @@ class DialogsAction extends AbstractController
             ];
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
+
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/add-or-modify-todo", name="dialog_body_add_or_modify_todo", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function buildAddOrModifyTodoDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
+
+        if( !$request->request->has(self::KEY_ENTITY_ID) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+
+            $ajax_response->setMessage($message);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+            $jsonResponse = $ajax_response->buildJsonResponse();
+            return $jsonResponse;
+        }
+
+        if( !$request->request->has(self::KEY_ACTION_PATHNAME) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ACTION_PATHNAME;
+
+            $ajax_response->setMessage($message);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+            $jsonResponse = $ajax_response->buildJsonResponse();
+            return $jsonResponse;
+        }
+
+        $entity_id       = $request->request->get(self::KEY_ENTITY_ID);
+        $action_pathname = $request->request->get(self::KEY_ACTION_PATHNAME);
+
+        try{
+
+            $issue_module = $this->app->repositories->moduleRepository->getOneByName(ModulesController::MODULE_NAME_ISSUES);
+            $todo         = $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId(ModulesController::MODULE_NAME_ISSUES, $entity_id);
+
+            $todo_form = $this->app->forms->todoForm([
+                MyTodoType::OPTION_PREDEFINED_MODULE => $issue_module
+            ]);
+
+            $todo_element_form = $this->app->forms->todoElementForm();
+
+            $template_data = [
+                'issue_id'                  => $entity_id,
+                'todo'                      => $todo,
+                'hide_module_select'        => true,
+                'hide_display_on_dashboard' => true,
+                'todo_form'                 => $todo_form->createView(),
+                'todo_element_form'         => $todo_element_form,
+                'data_template_url'         => $this->generateUrl($action_pathname),
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_ADD_OR_MODIFY_TODO, $template_data)->getContent();
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;

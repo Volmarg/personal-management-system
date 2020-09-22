@@ -1,0 +1,53 @@
+<!-- Modal -->
+
+<div class="modal fade bd-example-modal-lg" id="todo{{ todo.id }}" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-id="{{ todo.id }}">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ todo.name | capitalize }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body" style="padding: 0;">
+                {% include 'modules/my-todo/components/modal-body.html.twig' with {
+                    todo: todo
+                } %}
+            </div>
+            <div class="modal-footer modal-note-details-buttons">
+                <div class="d-flex justify-content-end modal-note-details-buttons">
+
+                    {# Todo later: indents #}
+                    <select class="form-control selectpicker"
+                            style="max-width:100px; float:left;">
+                        {% for module in all_modules %}
+                            <option value="{{ module.id }}">{{ module.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="button" class="btn btn-warning "
+                            data-id="{{ todo.id }}"
+                    > {{ 'buttons.edit' | trans }} </button>
+
+                    <button type="button" class="btn btn-primary save-note"
+                            data-id="{{ todo.id }}">
+                        {{ 'buttons.saveChanges' | trans }} </button>
+
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                        {{ 'buttons.close' | trans }} </button>
+
+                    <button type="button" class="btn btn-danger"
+                            data-id="{{ todo.id }}"
+                            data-entity-id="{{ todo.id }}"
+                            data-entity-removal-action="true"
+                            data-repository-name="MyTodoRepository"
+                    > {{ 'buttons.delete' | trans }} </button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

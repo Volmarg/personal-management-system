@@ -24,7 +24,6 @@ import LockedResource               from "./core/locked-resource/LockedResource"
 import CallableViaDataAttrsDialogs  from "./core/ui/Dialogs/CallableViaDataAttrsDialogs";
 import WidgetsDialogs               from "./core/ui/Dialogs/WidgetsDialogs";
 import Modal                        from "./core/ui/Modal/Modal";
-import GoalsChecklist               from "./modules/Goals/GoalsChecklist";
 import FilesTransfer                from "./modules/Files/FilesTransfer";
 import MonthlyPayments              from "./modules/Payments/MonthlyPayments";
 import UploadBasedModules           from "./modules/UploadBasedModules";
@@ -38,6 +37,7 @@ import ToggleBoolvalAction          from "./core/ui/Actions/ToggleBoolvalAction"
 import UpdateAction                 from "./core/ui/Actions/UpdateAction";
 import NotesTinyMce                 from "./modules/Notes/NotesTinyMce";
 import BootstrapSelect              from "./libs/bootstrap-select/BootstrapSelect";
+import TodoChecklist                from "./modules/Todo/TodoChecklist";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -76,7 +76,7 @@ export default class Initializer {
         let modal                  = new Modal();
 
         // modules
-        let goalsChecklist      = new GoalsChecklist();
+        let todoChecklist       = new TodoChecklist();
         let filesTransfer       = new FilesTransfer();
         let monthlyPayments     = new MonthlyPayments();
         let uploadBasedModules  = new UploadBasedModules();
@@ -94,7 +94,7 @@ export default class Initializer {
         datatable.init();
         loadingBar.init();
         tinymce.init();
-        goalsChecklist.init();
+        todoChecklist.init();
         lightGallery.init();
         shuffler.init();
         bootstrapToogle.init();

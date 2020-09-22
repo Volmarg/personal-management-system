@@ -15,7 +15,7 @@
 {% set MENU_NODE_MODULE_NAME_MY_ISSUES         = constant(app_action~"MENU_NODE_MODULE_NAME_MY_ISSUES") %}
 
 <ul class="sidebar-menu scrollable pos-r">
-    <li class="nav-item mT-30 active">
+    <li class="nav-item mT-10 active">
         <a class="sidebar-link" href="{{ path('dashboard') }}">
                 <span class="icon-holder">
                   <i class="c-blue-500 ti-home"></i>
@@ -24,9 +24,10 @@
         </a>
     </li>
 
-    <hr/>
+    <hr class="mT-3 mB-3"/>
 
     {% include 'page-elements/components/sidebar/menu-nodes/goals.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/todo.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/notes.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-contacts.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-passwords.twig' %}
@@ -39,7 +40,7 @@
     {% include 'page-elements/components/sidebar/menu-nodes/my-job.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-reports.twig' %}
 
-    <hr/>
+    <hr class="mT-3 mB-3"/>
     {% include 'page-elements/components/sidebar/menu-nodes/my-files.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-images.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/upload.twig' %}

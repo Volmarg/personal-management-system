@@ -3,7 +3,7 @@
 namespace App\DataFixtures\Modules\Goals;
 
 use App\DataFixtures\Providers\Modules\Goals;
-use App\Entity\Modules\Goals\MyGoals;
+use App\Entity\Modules\Goals\MyTodo;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -28,7 +28,7 @@ class MyGoalsFixtures extends Fixture implements OrderedFixtureInterface
 
                 $display_on_dashboard = $this->faker->boolean;
 
-                $my_goal = new MyGoals();
+                $my_goal = new MyTodo();
                 $my_goal->setName($goal_name);
                 $my_goal->setDescription('');
                 $my_goal->setDisplayOnDashboard($display_on_dashboard);

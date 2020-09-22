@@ -31,87 +31,6 @@ class GoalsSettingsAction extends AbstractController {
     }
 
     /**
-     * @Route("/admin/goals/settings/update", name="goals_settings_update")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function updateGoal(Request $request) {
-        $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myGoalsRepository->find($parameters['id']);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/admin/subgoals/settings/update", name="subgoals_settings_update")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function updateSubgoal(Request $request) {
-        $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myGoalsSubgoalsRepository->find($parameters['id']);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/admin/goals/settings/remove", name="goals_settings_remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function removeGoal(Request $request) {
-        $id = trim($request->request->get('id'));
-
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_GOALS_REPOSITORY_NAME,
-            $id
-        );
-
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
-        }
-
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @Route("/admin/subgoals/settings/remove", name="subgoals_settings_remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function removeSubgoal(Request $request) {
-        $id = trim($request->request->get('id'));
-
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_SUBGOALS_REPOSITORY_NAME,
-            $id
-        );
-
-        if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
-            $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
-        }
-
-        $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
-
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
      * @Route("/admin/goals/payments/settings/remove", name="goals_payments_settings_remove")
      * @param Request $request
      * @return Response
@@ -159,31 +78,8 @@ class GoalsSettingsAction extends AbstractController {
      * @throws Exception
      */
     public function display(Request $request) {
-
-        $attributes     = $request->attributes->all();
-        $type           = $attributes['type'];
-
-        switch($type){
-            case static::MY_GOALS:
-                $form = $this->app->forms->goalForm();
-                break;
-            case static::MY_GOALS_SUBGOALS:
-                $form = $this->app->forms->subgoalForm();
-                break;
-            case static::MY_GOALS_PAYMENTS:
-                $form = $this->app->forms->goalPaymentForm();
-                break;
-            case null:
-                $form = null;
-                break;
-            default:
-                $message = $this->app->translator->translate('exceptions.MyGoalsSettingsController.thisGoalTypeIsNotAllowed');
-                throw new Exception($message);
-        }
-
-        if( !is_null($form) ){
-            $this->addRecord($form, $request);
-        }
+        $form = $this->app->forms->goalPaymentForm();
+        $this->addRecord($form, $request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
@@ -199,21 +95,12 @@ class GoalsSettingsAction extends AbstractController {
      * @return Response
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $goals_form             = $this->app->forms->goalForm();
-        $subgoals_form          = $this->app->forms->subgoalForm();
-        $goals_payments_form    = $this->app->forms->goalPaymentForm();
-
-        $all_goals              = $this->app->repositories->myGoalsRepository->findBy(['deleted' => 0]);
-        $all_subgoals           = $this->app->repositories->myGoalsSubgoalsRepository->findBy(['deleted' => 0]);
-        $all_goals_payments     = $this->app->repositories->myGoalsPaymentsRepository->findBy(['deleted' => 0]);
+        $goals_payments_form  = $this->app->forms->goalPaymentForm();
+        $all_goals_payments   = $this->app->repositories->myGoalsPaymentsRepository->findBy(['deleted' => 0]);
 
         $data = [
             'ajax_render'           => $ajax_render,
-            'goals_form'            => $goals_form->createView(),
-            'subgoals_form'         => $subgoals_form->createView(),
             'goals_payments_form'   => $goals_payments_form->createView(),
-            'all_goals'             => $all_goals,
-            'all_subgoals'          => $all_subgoals,
             'all_goals_payments'    => $all_goals_payments,
             'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];

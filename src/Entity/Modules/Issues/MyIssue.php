@@ -4,6 +4,7 @@ namespace App\Entity\Modules\Issues;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
+use App\Entity\Modules\Todo\MyTodo;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -67,9 +68,14 @@ class MyIssue implements SoftDeletableEntityInterface, EntityInterface
      */
     private $showOnDashboard = true;
 
+    /**
+     * @ORM\OneToOne(targetEntity=MyTodo::class, cascade={"persist", "remove"})
+     */
+    private $todo;
+
     public function __construct()
     {
-        $this->issueContact = new ArrayCollection();
+        $this->issueContact  = new ArrayCollection();
         $this->issueProgress = new ArrayCollection();
     }
 
@@ -236,6 +242,18 @@ class MyIssue implements SoftDeletableEntityInterface, EntityInterface
                 $issueProgress->setIssue(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getTodo(): ?MyTodo
+    {
+        return $this->todo;
+    }
+
+    public function setTodo(?MyTodo $todo): self
+    {
+        $this->todo = $todo;
 
         return $this;
     }

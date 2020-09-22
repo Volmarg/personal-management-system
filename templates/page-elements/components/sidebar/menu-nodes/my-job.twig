@@ -1,5 +1,5 @@
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-job-afterhours')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_JOB }}">
-    <a class="sidebar-link" href="javascript:void(0);">
+    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder">
                     <i class="fas fa-desktop fa-sm"></i>
                 </span>
@@ -11,13 +11,13 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-job-afterhours') }}">{{ 'sidebar.menu.job.afterhours' | trans }}</a>
+            <a class="sidebar-link left-nav-link" href="{{ path('my-job-afterhours') }}">{{ 'sidebar.menu.job.afterhours' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-job-holidays') }}">{{ 'sidebar.menu.job.holidays' | trans }}</a>
+            <a class="sidebar-link left-nav-link" href="{{ path('my-job-holidays') }}">{{ 'sidebar.menu.job.holidays' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-job-settings') }}">{{ 'sidebar.menu.job.settings' | trans }}</a>
+            <a class="sidebar-link left-nav-link" href="{{ path('my-job-settings') }}">{{ 'sidebar.menu.job.settings' | trans }}</a>
         </li>
     </ul>
 </li>

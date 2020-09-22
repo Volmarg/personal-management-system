@@ -30,12 +30,15 @@ class MySubgoalsType extends AbstractType
                'label' => $this->app->translator->translate('forms.MySubgoalsType.name')
             ])
             ->add('myGoal', EntityType::class, [
-                'class' => MyGoals::class,
-                'choices' => $this->app->repositories->myGoalsRepository->findBy(['deleted' => 0]),
+                'class'        => MyGoals::class,
+                'choices'      => $this->app->repositories->myGoalsRepository->findBy(['deleted' => 0]),
                 'choice_label' => function (MyGoals $my_goal) {
                     return $my_goal->getName();
                 },
-                'label' => $this->app->translator->translate('forms.MySubgoalsType.myGoal')
+                'label'        => $this->app->translator->translate('forms.MySubgoalsType.myGoal'),
+                "attr"         => [
+                    "class" => 'selectpicker'
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')

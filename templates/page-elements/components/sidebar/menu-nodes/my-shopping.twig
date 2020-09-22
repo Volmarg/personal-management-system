@@ -1,5 +1,5 @@
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-shopping-plans')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SHOPPING }}">
-    <a class="sidebar-link" href="javascript:void(0);">
+    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder">
                         <i class="fas fa-shopping-cart fa-sm"></i>
                 </span>
@@ -11,7 +11,7 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-shopping-plans') }}">{{ 'sidebar.menu.shopping.plans' | trans }}</a>
+            <a class="sidebar-link left-nav-link" href="{{ path('my-shopping-plans') }}">{{ 'sidebar.menu.shopping.plans' | trans }}</a>
         </li>
     </ul>
 </li>

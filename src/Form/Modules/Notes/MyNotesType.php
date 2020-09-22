@@ -54,7 +54,10 @@ class MyNotesType extends AbstractType {
             ->add(self::KEY_CATEGORY, IndentchoiceType::class, [
                 'choices' => $choices,
                 "data"    => false,    // this skips some internal validation for choices and allows to save strings, not just int
-                'label'   => $this->app->translator->translate('forms.MyNotesType.labels.category')
+                'label'   => $this->app->translator->translate('forms.MyNotesType.labels.category'),
+                "attr"    => [
+                    "class" => 'selectpicker col-12 p-0'
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')

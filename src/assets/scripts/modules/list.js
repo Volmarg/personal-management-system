@@ -1,6 +1,6 @@
 import './UploadBasedModules';
 import './Files/UploadSettings';
 import './Files/Upload';
-import './Goals/GoalsChecklist';
+import './Todo/TodoChecklist';
 import './Notes/NotesTinyMce';
 import './Payments/MonthlyPayments';

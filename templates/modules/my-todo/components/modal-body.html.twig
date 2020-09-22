@@ -1,0 +1,48 @@
+{% if data_template_url is not defined  %}
+    {% set data_template_url = "" %}
+{% endif %}
+
+<section class="p-20">
+    {% include 'modules/my-todo/components/checklist.html.twig' with {
+        todo: todo
+    } %}
+</section>
+
+{% if todo_element_form is defined %}
+    <hr/>
+
+    <section class="p-20 add-record-form" data-type="MyTodoElement">
+        <h3 class="text-center">{{ 'todo.list.headers.addElement' | trans }}</h3>
+        {# Info: direct object must be passed to render form multiple time #}
+        {% set form = todo_element_form.createView %}
+        {{ form_start(form, {attr: {
+            'data-entity': 'MyTodoElement'
+        }})}}
+
+        <div class="form-group row">
+            {{ form_label(form.name) }}
+            <div class="col-sm-10">
+                {{ form_widget(form.name) }}
+            </div>
+        </div>
+
+        <div class="form-group row d-none">
+            {{ form_label(form.myTodo) }}
+            <div class="col-sm-10">
+                {{ setSelectedOption(form_widget(form.myTodo), todo.id) | raw }}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                {{ form_widget(form.add, {attr: {
+                    class: 'btn-primary btn',
+                    'data-template-url': data_template_url
+                }}) }}
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+    </section>
+{% endif %}

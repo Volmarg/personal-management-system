@@ -31,7 +31,7 @@
                 </td>
 
                 <td class="parent-td">
-                    <select class="form-control disabled parent option-picker">
+                    <select class="form-control disabled parent option-picker selectpicker">
                         <option value=""></option>
                         {% for parent_children_dto in parents_children_dtos %}
                             {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": parent_children_dto, "selectedId": category.getParentId()} %}

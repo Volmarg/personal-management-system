@@ -35,6 +35,8 @@ use App\Form\Modules\Issues\MyIssueType;
 use App\Form\Modules\Schedules\MyScheduleType;
 use App\Form\Modules\Schedules\MyScheduleTypeType;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
+use App\Form\Modules\Todo\MyTodoElementType;
+use App\Form\Modules\Todo\MyTodoType;
 use App\Form\Modules\Travels\MyTravelsIdeasType;
 use App\Form\Page\Settings\Finances\CurrencyType;
 use App\Form\System\SystemLockResourcesPasswordType;
@@ -205,6 +207,14 @@ class Forms extends AbstractController {
 
     public function issueContactForm(array $params = []): FormInterface {
         return $this->createForm(MyIssueContactType::class, null, $params);
+    }
+
+    public function todoForm(array $params = []): FormInterface {
+        return $this->createForm(MyTodoType::class, null, $params);
+    }
+
+    public function todoElementForm(array $params = []): FormInterface {
+        return $this->createForm(MyTodoElementType::class, null, $params);
     }
 
     /**

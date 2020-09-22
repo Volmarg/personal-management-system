@@ -1,5 +1,5 @@
 <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_NOTES }}">
-    <a class="sidebar-link" href="javascript:void(0);">
+    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder" style="color:violet;">
                     <i class="fas fa-book fa-sm"></i>
                 </span>
@@ -12,7 +12,7 @@
     {# Notes - 1st level #}
     <ul class="dropdown-menu">
         <li>
-            <a class="sidebar-link" href="{{ path('my-notes-create') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('my-notes-create') }}">
                 <span class="icon-holder" style="color:violet;">
                     <i class="fas fa-plus-circle fa-sm"></i>
                 </span>
@@ -20,7 +20,7 @@
             </a>
         </li>
         <li>
-            <a class="sidebar-link" href="{{ path('my-notes-settings') }}">
+            <a class="sidebar-link left-nav-link" href="{{ path('my-notes-settings') }}">
                 <span class="icon-holder" style="color:violet;">
                     <i class="fas fa-cog fa-sm"></i>
                 </span>

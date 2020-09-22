@@ -7,6 +7,7 @@ use App\DTO\Modules\Issues\IssueCardDTO;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
+use App\Entity\Modules\Todo\MyTodo;
 use DateTime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,6 +46,17 @@ class MyIssuesController extends AbstractController {
             $issue_progresses = $issue->getIssueProgress()->getValues();
 
             $issue_contacts_grouped_by_icon = [];
+            $waiting_todo                   = [];
+
+            if(
+                    !empty($issue->getTodo())
+                &&  ($issue->getTodo() instanceof MyTodo)
+                &&  !empty($issue->getTodo()->getMyTodoElement())
+            ){
+                foreach($issue->getTodo()->getMyTodoElement() as $todo_element){
+                    $waiting_todo[] = $todo_element->getName();
+                }
+            }
 
             $is_latest_contact_date_used = false;
             $latest_contact_date         = null;
@@ -86,6 +98,7 @@ class MyIssuesController extends AbstractController {
             $issue_card_dto->setIssueContactsByIcon($issue_contacts_grouped_by_icon);
             $issue_card_dto->setIssueLastContact($latest_contact_date);
             $issue_card_dto->setIssueLastProgress($latest_progress_date);
+            $issue_card_dto->setWaitingTodo($waiting_todo);
 
             $issues_cards_dtos[] = $issue_card_dto;
         }

@@ -1,0 +1,28 @@
+<div class="row gap-10 masonry pos-r">
+    <!-- ### todo container ### !-->
+    <div class="masonry-item col-md-12 todo-container">
+        <div class="bgc-white p-20 bd">
+            {% if module_name is defined %}
+                <h4 class="text-center">{{ module_name }}</h4>
+            {% endif %}
+            <section class="d-flex justify-content-around todo-wrapper">
+                {% for todo in all_todo %}
+                    <div class="single-parent-task"
+                         data-toggle-popover="true"                                {# popover attr #}
+                         data-html="true"                                          {# popover attr #}
+                         data-trigger="hover"                                      {# popover attr #}
+                         data-content="{{ todo.description }}"                     {# popover attr #}
+                         data-placement="top"                                      {# popover attr #}
+                    >
+                        {% include 'modules/my-todo/components/one-parent-task-todo.html.twig' with {
+                            todo: todo
+                        } %}
+                    </div>
+                    {% include 'modules/my-todo/components/modal.html.twig' with {
+                        'todo' : todo
+                    } %}
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+</div>

@@ -2,7 +2,7 @@
     {% set moduleToCheckActiveCategory = 'MyNotes' %}
 
     <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes/category') }}">
-        <a class="sidebar-link" href="javascript:void(0);">
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
             <span class="title">{{  'sidebar.menu.notes.categories' | trans }}</span>
             <span class="arrow"><i class="ti-angle-right fa-sm"></i></span>
         </a>
@@ -23,9 +23,9 @@
                             {% set disabled = '' %}
                         {% endif %}
 
-                    <li class="dropdown {{ keepMenuOpen(currUrl, '', '', category.childrens_id) }} test">
+                    <li class="dropdown{{ keepMenuOpen(currUrl, '', '', category.childrens_id) }}" style="margin-top: 5px;">
                         {# Link #}
-                        <a class="sidebar-link {{ disabled }}"
+                        <a class="sidebar-link left-nav-link {{ disabled }}"
                            href="{{ path(path_name,{'category':category.category, 'category_id':category.category_id}) }}"
                            style="display: inline;">
                             {# Icon #}
@@ -42,7 +42,7 @@
                                 category.childrens_id is not null
                             and category.childrens_id is not empty
                         %}
-                            <a class="sidebar-link" href="javascript:void(0);" style="display:inline;">
+                            <a class="sidebar-link left-nav-link" href="javascript:void(0);" style="display:inline;">
                                 <span class="arrow"><i class="ti-angle-right fa-sm"></i></span>
                             </a>
 

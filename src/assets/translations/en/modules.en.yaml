@@ -9,7 +9,7 @@ user:
 goals:
   list:
     headers:
-      todolist: Todo list
+      todolist: Goals list
   payments:
     timeElapsed: time elapsed
     daysLeft: days left
@@ -37,6 +37,13 @@ goals:
         moneyGoal: Money goal
         moneyCollected: Money collected
         displayOnDashboard: Display on dashboard
+
+todo:
+  list:
+    headers:
+      label: Todo list
+      addTodo: Add todo
+      addElement: Add element
 
 notes:
   create:
@@ -358,6 +365,7 @@ issues:
       toggleDashboardVisibility: "Toggle dashboard visibility"
       previewAndEdit: "Preview and edit"
       addRecords: "Add records"
+      addOrModifyExistingTodo: "Add or modify existing todo"
       removeRecord: "Remove record"
     ajaxCallMessages:
       dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"

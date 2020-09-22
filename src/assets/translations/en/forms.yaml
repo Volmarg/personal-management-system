@@ -10,9 +10,17 @@ forms:
     displayOnDashboard: Display on dashboard
     name: Name
     description: Description
+  MyTodoType:
+    displayOnDashboard: Display on dashboard
+    name: Name
+    description: Description
+    module: Module
   MySubgoalsType:
     name: Name
     myGoal: My goal
+  MyTodoElementType:
+    name: Name
+    todo: Todo
   MyNotesCategoriesType:
     parentId: Parent
     name: Name

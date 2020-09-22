@@ -1,0 +1,47 @@
+<div class="layers">
+    <div class="layer w-100">
+        <ul class="list-task list-group" data-role="tasklist">
+
+            {% for element in todo.myTodoElement %}
+
+                {% if element.completed %}
+                    {% set checked = 'checked' %}
+
+                    {% set status_label   = 'success' %}
+                    {% set status_text    = 'Done' %}
+                {% else %}
+                    {% set checked = '' %}
+                    {% set status_label   = 'info' %}
+                    {% set status_text    = 'Not done' %}
+                {% endif %}
+
+                <li class="list-group-item bdw-0 element" data-role="task">
+                    <div class="checkbox checkbox-circle checkbox-info peers ai-c">
+                        <input type="checkbox" id="inputCall{{ todo.id }}{{ element.id }}" name="inputCheckboxesCall"
+                        class="peer checklist-checkbox completed"
+                        {{ checked }}
+                        data-todo-id="{{ todo.id }}"
+                        data-element-id="{{ element.id  }}"
+                        >
+                        <label for="inputCall{{ todo.id }}{{ element.id }}" class=" peers peer-greed js-sb ai-c">
+                            <span class="peer peer-greed">{{ element.name }}</span>
+
+                            <span class="peer">
+                            <div class="fl-r">
+                                <span class="badge badge-pill badge-{{ status_label }} lh-0 p-10">{{ status_text }}</span>
+                                {% include 'modules/common/components/actions.twig' with {
+                                    "trash" : true,
+                                    "edit"  : true,
+                                    "save"  : true
+                                } %}
+                        </div>
+                        </span>
+                        </label>
+                    </div>
+                </li>
+
+            {% endfor %}
+
+        </ul>
+    </div>
+</div>

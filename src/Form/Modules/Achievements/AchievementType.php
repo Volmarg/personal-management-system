@@ -44,7 +44,10 @@ class AchievementType extends AbstractType {
             ])
             ->add(self::KEY_TYPE, ChoiceType::class, [
                 'choices' => $options[self::KEY_OPTION_ENUM_TYPES],
-                'label'   => $this->app->translator->translate('forms.AchievementType.labels.type')
+                'label'   => $this->app->translator->translate('forms.AchievementType.labels.type'),
+                "attr"    => [
+                    "class" => 'selectpicker'
+                ]
             ])
             ->add(self::KEY_SUBMIT, SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')

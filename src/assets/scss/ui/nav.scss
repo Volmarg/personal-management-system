@@ -15,3 +15,12 @@
 .hoverable-list-gray li:hover {
   background-color: #f9fafb;
 }
+
+/* Nav elements in left menu */
+.left-nav-link{
+  height: 35px;
+}
+
+.left-nav-li-element:not(.open){
+  height: 28px;
+}
