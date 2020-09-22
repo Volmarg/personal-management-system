@@ -15,7 +15,7 @@ services:
     php:
       build:
         context: .
-        dockerfile: docker/php/Dockerfile
+        dockerfile: docker/php-fpm/Dockerfile
       container_name: php
       volumes: 
         - '.:/usr/src/app'

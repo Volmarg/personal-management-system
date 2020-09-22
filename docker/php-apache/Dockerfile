@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4-apache
 
 RUN docker-php-ext-install pdo_mysql
 
@@ -17,7 +17,7 @@ RUN apt-get update && \
     apt-get install -y \
         zlib1g-dev 
 
-COPY ./docker/php/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN docker-php-ext-install gd
 
@@ -27,8 +27,12 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && mv composer /usr/local/bin/composer
 
-WORKDIR /usr/src/app
+WORKDIR /var/www/html/
 
-COPY --chown=www-data:www-data . /usr/src/app
+COPY --chown=www-data:www-data . /var/www/html/
 
-RUN PATH=$PATH:/usr/src/apps/vendor/bin:bin
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+RUN PATH=$PATH:/var/www/html/vendor/bin:bin
