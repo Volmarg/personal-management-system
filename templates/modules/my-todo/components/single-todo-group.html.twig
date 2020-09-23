@@ -5,7 +5,7 @@
             {% if module_name is defined %}
                 <h4 class="text-center">{{ module_name }}</h4>
             {% endif %}
-            <section class="d-flex justify-content-around todo-wrapper">
+            <section class="d-flex justify-content-around todo-wrapper flex-wrap">
                 {% for todo in all_todo %}
                     <div class="single-parent-task"
                          data-toggle-popover="true"                                {# popover attr #}

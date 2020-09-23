@@ -16,6 +16,7 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
@@ -68,9 +69,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// todo: add later some logic for cascade soft-delete
-// todo: need to check if todo can be removed while there are some associated elements
-//  at best via custom annotation and handle removal in there
 class Repositories extends AbstractController {
 
     const ACHIEVEMENT_REPOSITORY_NAME                   = 'AchievementRepository';
@@ -737,7 +735,13 @@ class Repositories extends AbstractController {
             if( !method_exists($entity, $method_name) ){
                 continue;
             }
-            $related_entities = $entity->$method_name()->getValues();
+
+            $data_for_method_name = $entity->$method_name();
+            if( empty($data_for_method_name) ){
+                continue;
+            }
+
+            $related_entities     = $entity->$method_name()->getValues();
             $all_related_entities = array_merge($all_related_entities, $related_entities);
         }
 
@@ -919,6 +923,7 @@ class Repositories extends AbstractController {
                 foreach($related_entities as $related_entity){
                     if( $related_entity instanceof SoftDeletableEntityInterface ){
                         $related_entity->setDeleted(true);
+                        $this->entity_manager->persist($related_entity);
                     }
                 }
 
@@ -927,6 +932,7 @@ class Repositories extends AbstractController {
                 throw new Exception("This entity ({$class_name}) does not implements soft delete interface");
             }
 
+            $this->entity_manager->flush();
         }
         $this->entity_manager->commit();
 
@@ -1065,6 +1071,7 @@ class Repositories extends AbstractController {
 
         switch( $class_name ){
             case MyIssue::class:
+            case MyTodo::class:
                 {
                     $this->handleCascadeSoftDeleteRelatedEntities($entity);
                 }

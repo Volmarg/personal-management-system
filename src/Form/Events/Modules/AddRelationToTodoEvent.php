@@ -5,6 +5,10 @@ namespace App\Form\Events\Modules;
 use App\Controller\Core\Controllers;
 use Symfony\Component\Form\FormEvent;
 
+//todo: must be expanded in case of having issue already existing but it's marked as active/deleted
+// given relation should receive new issue and the old
+// would be nice to have some global history table with json data inside HistoryDto - but that;s for far later
+
 /**
  * Will handle adding relation with `todo` module with given module
  *
