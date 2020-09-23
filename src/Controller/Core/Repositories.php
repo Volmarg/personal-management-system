@@ -70,6 +70,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 // todo: add later some logic for cascade soft-delete
 // todo: need to check if todo can be removed while there are some associated elements
+//  at best via custom annotation and handle removal in there
 class Repositories extends AbstractController {
 
     const ACHIEVEMENT_REPOSITORY_NAME                   = 'AchievementRepository';

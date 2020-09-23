@@ -44,8 +44,6 @@ class MyTodoRepository extends ServiceEntityRepository
             ->andWhere("td.deleted = 0")
             ->setParameter("module_name", $module_name);
 
-        dump($module_name);
-
         if($for_dashboard)
         {
             $query_builder->andWhere("td.displayOnDashboard = 1");
@@ -147,15 +145,15 @@ class MyTodoRepository extends ServiceEntityRepository
             ->from(MyTodo::class, "td")
             ->join(Module::class, "m")
             ->where("m.name = :moduleName")
-            ->setParameter("entityId", $entity_id)
             ->setParameter("moduleName", $module_name);
 
         switch($module_name)
         {
             case ModulesController::MODULE_NAME_ISSUES:
                 {
-                    $query_builder->join(MyIssue::class, 'is')
-                        ->andWhere("is.id = entityId");
+                    $query_builder->join(MyIssue::class, 'iss', "WITH", "iss.todo = td.id")
+                        ->andWhere("iss.id = :entityId")
+                        ->setParameter("entityId", $entity_id);
                 }
             break;
 

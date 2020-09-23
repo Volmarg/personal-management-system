@@ -6,6 +6,10 @@ use Psr\Log\LoggerInterface;
 
 class Logger {
 
+    const KEY_MESSAGE     = "message";
+    const KEY_ID          = "id";
+    const KEY_MODULE_NAME = "module_name";
+
     /**
      * @var LoggerInterface $security_logger
      */

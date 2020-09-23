@@ -3,7 +3,10 @@
 namespace App\Controller\Modules\Todo;
 
 use App\Controller\Core\Application;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Interfaces\Relational\RelatesToMyTodoInterface;
 use App\Entity\Modules\Todo\MyTodo;
+use App\Services\Core\Logger;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -93,4 +96,45 @@ class MyTodoController extends AbstractController {
         $are_elements_done = $this->app->repositories->myTodoRepository->areAllElementsDone($todo_id);
         return $are_elements_done;
     }
+
+    /**
+     * Will set relation with `todo` with given entity in module
+     *
+     * @param MyTodo $todo
+     */
+    public function setRelationForTodo(MyTodo $todo): void
+    {
+        $entity_id        = $todo->getRelatedEntityId();
+        $module_name      = $todo->getModule()->getName();
+        $entity_namespace = ModulesController::getEntityNamespaceForModuleName($module_name);
+
+        if( is_null($entity_namespace) ){
+            $this->app->logger->warning("Cannot set relation to MyTodo as no entity was found for module name", [
+                Logger::KEY_MODULE_NAME => $module_name,
+                Logger::KEY_ID          => $entity_id,
+            ]);
+            return;
+        }
+
+        $entity = $this->getDoctrine()->getManager()->find($entity_namespace, $entity_id);
+
+        if( !$entity instanceof RelatesToMyTodoInterface ){
+            $this->app->logger->warning("Cannot set relation to MyTodo as this entity does not implements relation interface", [
+                Logger::KEY_MODULE_NAME => $module_name,
+                Logger::KEY_ID          => $entity_id,
+            ]);
+            return;
+        }
+
+        $entity->setTodo($todo);
+
+        if( is_null($entity) ){
+            $this->app->logger->warning("Cannot set relation to MyTodo as no entity namespace mapping is defined for given module name", [
+                Logger::KEY_MODULE_NAME => $module_name,
+                Logger::KEY_ID          => $entity_id,
+            ]);
+            return;
+        }
+    }
+
 }

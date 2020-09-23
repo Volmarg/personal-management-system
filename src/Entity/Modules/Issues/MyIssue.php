@@ -2,7 +2,10 @@
 
 namespace App\Entity\Modules\Issues;
 
+use App\Controller\Modules\ModulesController;
 use App\Entity\Interfaces\EntityInterface;
+use App\Entity\Interfaces\Modules\ModuleMainEntityInterface;
+use App\Entity\Interfaces\Relational\RelatesToMyTodoInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Modules\Todo\MyTodo;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -12,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Issues\MyIssueRepository")
  */
-class MyIssue implements SoftDeletableEntityInterface, EntityInterface
+class MyIssue implements SoftDeletableEntityInterface, EntityInterface, RelatesToMyTodoInterface, ModuleMainEntityInterface
 {
 
     const FIELD_NAME_DELETED  = "deleted";
@@ -251,11 +254,14 @@ class MyIssue implements SoftDeletableEntityInterface, EntityInterface
         return $this->todo;
     }
 
-    public function setTodo(?MyTodo $todo): self
+    public function setTodo(?MyTodo $todo): RelatesToMyTodoInterface
     {
         $this->todo = $todo;
 
         return $this;
     }
 
+    public function getRelatedModuleName(): string {
+        return ModulesController::MODULE_NAME_ISSUES;
+    }
 }

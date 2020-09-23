@@ -7,6 +7,7 @@ use App\Controller\Core\Controllers;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
+use App\Form\Events\Modules\AddRelationToTodoEvent;
 use App\Form\Type\RoundcheckboxType;
 use App\Services\Core\Translator;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -14,6 +15,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MyTodoType extends AbstractType
@@ -25,6 +28,7 @@ class MyTodoType extends AbstractType
      */
     const OPTION_PREDEFINED_MODULE = "predefined_module";
 
+    const KEY_RELATED_ENTITY_ID    = "relatedEntityId";
     /**
      * @var Application
      */
@@ -74,10 +78,14 @@ class MyTodoType extends AbstractType
                 'label'     => $this->app->translator->translate('forms.MyTodoType.displayOnDashboard'),
                 'required'  => false
             ])
+            ->add(self::KEY_RELATED_ENTITY_ID, HiddenType::class)
             ->add('submit', SubmitType::class,[
                 'label' => $this->app->translator->translate('forms.general.submit'),
-            ])
-        ;
+            ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event){
+            AddRelationToTodoEvent::postEvent($event, $this->controllers);
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)
