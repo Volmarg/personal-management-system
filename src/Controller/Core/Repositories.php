@@ -737,11 +737,11 @@ class Repositories extends AbstractController {
             }
 
             $data_for_method_name = $entity->$method_name();
-            if( empty($data_for_method_name) ){
+            if( self::isEntity($entity)){
                 continue;
             }
 
-            $related_entities     = $entity->$method_name()->getValues();
+            $related_entities     = $data_for_method_name->getValues();
             $all_related_entities = array_merge($all_related_entities, $related_entities);
         }
 
@@ -902,41 +902,32 @@ class Repositories extends AbstractController {
     /**
      * This function will handle soft removal for related entities
      * @param object $entity
-     * @return object
+     * @return array
      * @throws Exception
      */
     private function handleCascadeSoftDeleteRelatedEntities($entity)
     {
         $class_name = get_class($entity);
 
-        $this->entity_manager->beginTransaction();
-        {
+        if( $entity instanceof SoftDeletableEntityInterface ){
+            $related_entities = $this->getAllRelatedEntities($entity);
 
-            if( $entity instanceof SoftDeletableEntityInterface ){
-                $related_entities = $this->getAllRelatedEntities($entity);
-
-                if( empty($related_entities) ){
-                    $this->entity_manager->rollback();
-                    return $entity;
-                }
-
-                foreach($related_entities as $related_entity){
-                    if( $related_entity instanceof SoftDeletableEntityInterface ){
-                        $related_entity->setDeleted(true);
-                        $this->entity_manager->persist($related_entity);
-                    }
-                }
-
-            }else{
-                $this->entity_manager->rollback();
-                throw new Exception("This entity ({$class_name}) does not implements soft delete interface");
+            if( empty($related_entities) ){
+                return $related_entities;
             }
 
-            $this->entity_manager->flush();
-        }
-        $this->entity_manager->commit();
+            foreach($related_entities as $related_entity){
+                if( $related_entity instanceof SoftDeletableEntityInterface ){
+                    $related_entity->setDeleted(true);
+                }
+            }
 
-        return $entity;
+        }else{
+            $this->entity_manager->rollback();
+            throw new Exception("This entity ({$class_name}) does not implements soft delete interface");
+        }
+
+        return $related_entities;
     }
 
 
@@ -1061,26 +1052,34 @@ class Repositories extends AbstractController {
      */
     private function handleRecordActiveRelatedEntities($entity)
     {
+        $this->entity_manager->beginTransaction();
+        {
+            $related_entities = [];
+            if( !is_object($entity) ) {
+                $message = $this->translator->translate("exceptions.general.providedEntityIsNotAnObject");
+                throw new Exception($message);
+            }
 
-        if( !is_object($entity) ) {
-            $message = $this->translator->translate("exceptions.general.providedEntityIsNotAnObject");
-            throw new Exception($message);
-        }
+            if( $entity instanceof  MyTodo ){
+                $related_entities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
+                $my_issue         = $entity->getMyIssue();
 
-        $class_name = get_class($entity);
-
-        switch( $class_name ){
-            case MyIssue::class:
-            case MyTodo::class:
-                {
-                    $this->handleCascadeSoftDeleteRelatedEntities($entity);
+                if( !empty($my_issue) ){
+                    $my_issue->setTodo(null);
+                    $this->entity_manager->persist($my_issue);
                 }
-                break;
 
-            default:
-                // do nothing
-                // no break
+            }elseif( $entity instanceof MyIssue){
+                $related_entities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
+            }
+
+            foreach($related_entities as $related_entity){
+                $this->entity_manager->persist($related_entity);
+            }
+            $this->entity_manager->persist($entity);
+            $this->entity_manager->flush();
         }
+        $this->entity_manager->commit();
 
         return $entity;
     }

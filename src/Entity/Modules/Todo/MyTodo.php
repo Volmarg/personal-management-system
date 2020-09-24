@@ -4,6 +4,7 @@ namespace App\Entity\Modules\Todo;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
+use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\System\Module;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -75,6 +76,11 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
      * @var int $relatedEntityId
      */
     private $relatedEntityId = 0;
+
+    /**
+     * @ORM\OneToOne(targetEntity=MyIssue::class, mappedBy="todo", cascade={"persist", "remove"})
+     */
+    private $myIssue;
 
     public function __construct()
     {
@@ -201,6 +207,24 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
      */
     public function setRelatedEntityId(int $relatedEntityId): void {
         $this->relatedEntityId = $relatedEntityId;
+    }
+
+    public function getMyIssue(): ?MyIssue
+    {
+        return $this->myIssue;
+    }
+
+    public function setMyIssue(?MyIssue $myIssue): self
+    {
+        $this->myIssue = $myIssue;
+
+        // set (or unset) the owning side of the relation if necessary
+        $newTodo = null === $myIssue ? null : $this;
+        if ($myIssue->getTodo() !== $newTodo) {
+            $myIssue->setTodo($newTodo);
+        }
+
+        return $this;
     }
 
 }

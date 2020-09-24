@@ -72,7 +72,7 @@ class MyIssue implements SoftDeletableEntityInterface, EntityInterface, RelatesT
     private $showOnDashboard = true;
 
     /**
-     * @ORM\OneToOne(targetEntity=MyTodo::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=MyTodo::class, inversedBy="myIssue", cascade={"persist", "remove"})
      */
     private $todo;
 
