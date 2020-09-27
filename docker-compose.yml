@@ -1,46 +1,32 @@
-version: "3.6"
+version: "3.1"
 services:
-    nginx:
-      image: nginx:1.19.0-alpine
-      restart: always
-      container_name: nginx
-      volumes:
-        - './public/:/usr/src/app'
-        - './docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
-      ports:
-        - '80:80'
-      depends_on: 
-        - php
+  db:
+    image: mysql:5.6
+    restart: always
+    volumes:
+      - ./data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
 
-    php:
-      build:
-        context: .
-        dockerfile: docker/php-fpm/Dockerfile
-      container_name: php
-      volumes: 
-        - '.:/usr/src/app'
-      restart: always
-      env_file:
-        - .env
-      user: www-data
+  webserver:
+    image: nginx:alpine
+    container_name: docker-symfony4-webserver
+    working_dir: /application
+    volumes:
+      - .:/application
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8000:80"
 
-    mariadb:
-      image: mariadb
-      container_name: mariadb
-      restart: always
-      environment: 
-        - MYSQL_DATABASE=pms
-        - MYSQL_ROOT_PASSWORD=password
-      volumes: 
-        - mariadb:/var/lib/mysql
-      
-    adminer:
-      container_name: adminer
-      image: adminer
-      restart: always
-      ports: 
-        - 8081:8080
+  php-fpm:
+    build: ./docker/php-fpm
+    container_name: php
+    working_dir: /application
+    volumes:
+      - .:/application
 
-volumes: 
-  mariadb:
-    external: true
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080

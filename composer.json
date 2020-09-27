@@ -22,7 +22,7 @@
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "beberlei/DoctrineExtensions": "^1.2",
+        "beberlei/doctrineextensions": "^1.2",
         "cweagans/composer-patches": "^1.6",
         "friendsofsymfony/user-bundle": "dev-master",
         "google/apiclient": "^2.0",
@@ -95,10 +95,11 @@
             "security-checker security:check": "script"
         },
         "post-install-cmd": [
-            "clear",
+            "@auto-scripts",
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "post-update-cmd": [
+            "@auto-scripts",
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "pms-installer": "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",
