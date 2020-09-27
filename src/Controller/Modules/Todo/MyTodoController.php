@@ -108,6 +108,12 @@ class MyTodoController extends AbstractController {
         $module_name      = $todo->getModule()->getName();
         $entity_namespace = ModulesController::getEntityNamespaceForModuleName($module_name);
 
+        if( empty($entity_id) )
+        {
+            $this->app->logger->info("Not setting relation to myTodo as no entity was give to relate with");
+            return;
+        }
+
         if( is_null($entity_namespace) ){
             $this->app->logger->warning("Cannot set relation to MyTodo as no entity was found for module name", [
                 Logger::KEY_MODULE_NAME => $module_name,

@@ -782,8 +782,8 @@ class DialogsAction extends AbstractController
         $template      = "";
         $success       = true;
 
-        if( !$request->request->has(self::KEY_ENTITY_ID) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+        if( !$request->request->has(self::KEY_MODULE_NAME) ){
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_MODULE_NAME;
 
             $ajax_response->setMessage($message);
             $ajax_response->setSuccess(false);
@@ -804,20 +804,25 @@ class DialogsAction extends AbstractController
 
         $entity_id       = $request->request->get(self::KEY_ENTITY_ID);
         $action_pathname = $request->request->get(self::KEY_ACTION_PATHNAME);
+        $module_name     = $request->request->get(self::KEY_MODULE_NAME);
 
         try{
 
-            $issue_module = $this->app->repositories->moduleRepository->getOneByName(ModulesController::MODULE_NAME_ISSUES);
-            $todo         = $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId(ModulesController::MODULE_NAME_ISSUES, $entity_id);
+            $module = $this->controllers->getModuleController()->getOneByName($module_name);
+
+            $todo = null;
+            if( !empty($entity_id) ){
+                $todo = $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId($module_name, $entity_id);
+            }
 
             $todo_form = $this->app->forms->todoForm([
-                MyTodoType::OPTION_PREDEFINED_MODULE => $issue_module
+                MyTodoType::OPTION_PREDEFINED_MODULE => $module
             ]);
 
             $todo_element_form = $this->app->forms->todoElementForm();
 
             $template_data = [
-                'issue_id'                  => $entity_id,
+                'entity_id'                 => $entity_id,
                 'todo'                      => $todo,
                 'hide_module_select'        => true,
                 'hide_display_on_dashboard' => true,

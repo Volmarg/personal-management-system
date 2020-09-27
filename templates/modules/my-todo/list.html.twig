@@ -6,8 +6,10 @@
 
     {% extends template %}
 
+{% set modules_controller = "App\\Controller\\Modules\\ModulesController::" %}
+{% set MODULE_NAME_GOALS  = constant(modules_controller ~ 'MODULE_NAME_GOALS') %}
+
 {# todo: add standard action for crud on todo - also later (maybe like it's done in issues or note) ?#}
-{# todo 2 : add grouping by module - each todo should be in the section of given module - later #}
 {# todo 3: removal/ adding without page reload - direct in gui - add some global logic? Or use existing for contact #}
 {% block body %}
     <!-- ### $App Screen Content ### -->
@@ -21,7 +23,7 @@
                         module_name : module_name
                     } %}
                 {% endfor %}
-            {% elseif all_todo is defined %}
+            {% elseif all_todo is defined %}`
                 {%  include 'modules/my-todo/components/single-todo-group.html.twig' with {
                     all_todo: all_todo
                 } %}
@@ -38,6 +40,33 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            {% endif %}
+
+            {% if show_add_todo_widget is defined and  show_add_todo_widget %}
+                <div class="widgets-wrapper">
+                    <span class="action pointer circle-plus"
+                         data-entity-detials-action="true"
+                         data-dialog-call-request-url="{{ path('dialog_body_add_or_modify_todo') }}"
+                         data-dialog-call-request-method="POST"
+                         data-dialog-call-request-post-parameters='{
+                               "actionPathname": "{{ app.request.attributes.get('_route') }}",
+                               "moduleName": "{{ MODULE_NAME_GOALS }}"
+                            }'
+                         data-call-dialog-on-click="true"
+                         data-dialog-name="addTodo"
+                         data-toggle-popover="true"                     {# popover attr #}
+                         data-html="true"                               {# popover attr #}
+                         data-trigger="hover"                           {# popover attr #}
+                         data-content="                                 {# popover attr #}
+                            {{ 'todo.widget.add.label' | trans }}
+                         "
+                    >
+                        <div class="circle">
+                            <div class="horizontal"></div>
+                            <div class="vertical"></div>
+                        </div>
+                    </span>
                 </div>
             {% endif %}
 

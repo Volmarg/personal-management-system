@@ -73,7 +73,7 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
     /**
      * This is only help field to build later relation with given module
      *
-     * @var int $relatedEntityId
+     * @var int|null $relatedEntityId
      */
     private $relatedEntityId = 0;
 
@@ -196,16 +196,16 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getRelatedEntityId(): int {
+    public function getRelatedEntityId():? int {
         return $this->relatedEntityId;
     }
 
     /**
-     * @param int $relatedEntityId
+     * @param int|null $relatedEntityId
      */
-    public function setRelatedEntityId(int $relatedEntityId): void {
+    public function setRelatedEntityId(?int $relatedEntityId): void {
         $this->relatedEntityId = $relatedEntityId;
     }
 

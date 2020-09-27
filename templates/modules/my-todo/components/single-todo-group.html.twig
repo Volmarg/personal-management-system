@@ -1,3 +1,5 @@
+{% set modules_controller = "App\\Controller\\Modules\\ModulesController::" %}
+{% set MODULE_NAME_ISSUES = constant(modules_controller ~ "MODULE_NAME_ISSUES") %}
 <div class="row gap-10 masonry pos-r">
     <!-- ### todo container ### !-->
     <div class="masonry-item col-md-12 todo-container">
@@ -7,12 +9,49 @@
             {% endif %}
             <section class="d-flex justify-content-around todo-wrapper flex-wrap">
                 {% for todo in all_todo %}
+
+                    {% set use_popover_description = true %}
+                    {% if   todo.description is null
+                        and todo.myIssue     is null
+                    %}
+                        {% set use_popover_description = false %}
+                    {% endif %}
+
+                    {% set popover_description = "" %}
+                    {% if use_popover_description %}
+                        {% set popover_description %}
+                            {% if todo.description is not null%}
+                                <span style='display:block;'>
+                                <b>{{ 'todo.list.info.description' | trans }}:</b>
+                                {{ todo.description }}
+                            </span>
+                            {% endif %}
+
+                            {% if todo.myIssue is not null %}
+                                <span style='display:block;'>
+                                <b>{{ 'todo.list.relatedModules.issues.singular' | trans }}: </b>{{ todo.myIssue.name }}
+                            </span>
+                            {% endif %}
+
+                            {% if
+                                (
+                                MODULE_NAME_ISSUES == todo.module.name
+                                and todo.myIssue is null
+                                )
+                            %}
+                                <span style='display:block;'>
+                                <b>{{ 'todo.list.info.notRelatedToAnySpecificRecord' | trans }}</b>
+                            </span>
+                            {% endif %}
+                        {% endset %}
+                    {% endif %}
+
                     <div class="single-parent-task"
-                         data-toggle-popover="true"                                {# popover attr #}
-                         data-html="true"                                          {# popover attr #}
-                         data-trigger="hover"                                      {# popover attr #}
-                         data-content="{{ todo.description }}"                     {# popover attr #}
-                         data-placement="top"                                      {# popover attr #}
+                        data-toggle-popover="true"                                {# popover attr #}
+                        data-html="true"                                          {# popover attr #}
+                        data-trigger="hover"                                      {# popover attr #}
+                        data-content="{{ popover_description }}"                  {# popover attr #}
+                        data-placement="top"                                      {# popover attr #}
                     >
                         {% include 'modules/my-todo/components/one-parent-task-todo.html.twig' with {
                             todo: todo

@@ -9,6 +9,7 @@ use App\Controller\Modules\Achievements\AchievementController;
 use App\Controller\Modules\Contacts\MyContactsController;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
 use App\Controller\Modules\Files\MyFilesController;
+use App\Controller\Modules\Goals\GoalsListController;
 use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\Job\MyJobAfterhoursController;
@@ -185,6 +186,11 @@ class Controllers extends AbstractController {
      * @var ModuleController $module_controller
      */
     private $module_controller;
+
+    /**
+     * @var GoalsListController $goals_list_controller
+     */
+    private $goals_list_controller;
 
     /**
      * @return MyIssuesController
@@ -389,6 +395,13 @@ class Controllers extends AbstractController {
         return $this->module_controller;
     }
 
+    /**
+     * @return GoalsListController
+     */
+    public function getGoalsListController(): GoalsListController {
+        return $this->goals_list_controller;
+    }
+
     public function __construct(
         AchievementController         $achievement_controller,
         ReportsController             $reports_controller,
@@ -418,7 +431,8 @@ class Controllers extends AbstractController {
         MyJobHolidaysPoolController   $my_job_holidays_pool_controller,
         MyTodoController              $my_todo_controller,
         MyTodoElementController       $my_todo_element_controller,
-        ModuleController              $module_controller
+        ModuleController              $module_controller,
+        GoalsListController           $goals_list_controller
     ) {
         $this->achievement_controller           = $achievement_controller;
         $this->reports_controllers              = $reports_controller;
@@ -449,6 +463,7 @@ class Controllers extends AbstractController {
         $this->my_todo_controller               = $my_todo_controller;
         $this->my_todo_element_controller       = $my_todo_element_controller;
         $this->module_controller                = $module_controller;
+        $this->goals_list_controller            = $goals_list_controller;
     }
 
 }

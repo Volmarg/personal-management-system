@@ -31,4 +31,15 @@ class ModuleController extends AbstractController {
         return $modules;
     }
 
+    /**
+     * Will return one module by its name
+     *
+     * @param string $name
+     * @return Module
+     */
+    public function getOneByName(string $name): Module
+    {
+        return $this->app->repositories->moduleRepository->getOneByName($name);
+    }
+
 }

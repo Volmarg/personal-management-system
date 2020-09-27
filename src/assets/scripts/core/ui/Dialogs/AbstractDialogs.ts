@@ -5,6 +5,7 @@ import Loader               from "../../../libs/loader/Loader";
 import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
 import FormsUtils           from "../../utils/FormsUtils";
 import DialogLogicLoader    from "./LogicLoader/DialogLogicLoader";
+import AjaxEvents           from "../../ajax/AjaxEvents";
 
 /**
  * @description This file handles calling dialogs
@@ -114,6 +115,11 @@ export default abstract class AbstractDialogs {
      */
     protected dialogLogicLoader = new DialogLogicLoader();
 
+    /**
+     * @type AjaxEvents
+     */
+    protected ajaxEvents = new AjaxEvents();
+
     protected handleCommonAjaxCallLogicForBuildingDialog(data, callback, callDialogCallback){
         Loader.toggleLoader();
 
@@ -126,7 +132,9 @@ export default abstract class AbstractDialogs {
             }
         }
 
-        if( ajaxResponseDto.isTemplateSet() ){
+        if( ajaxResponseDto.isRouteSet() ){
+            this.ajaxEvents.loadModuleContentByUrl(ajaxResponseDto.routeUrl)
+        }else if( ajaxResponseDto.isTemplateSet() ){
             callDialogCallback(ajaxResponseDto.template, callback);
         } else if( !ajaxResponseDto.success) {
             this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);

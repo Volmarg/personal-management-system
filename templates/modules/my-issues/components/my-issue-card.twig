@@ -1,3 +1,6 @@
+{% set modules_controller = 'App\\Controller\\Modules\\ModulesController::' %}
+{% set MODULE_NAME_ISSUES = constant(modules_controller ~ 'MODULE_NAME_ISSUES') %}
+
 <div
     class="issue-wrapper"
     style="
@@ -171,7 +174,8 @@
                                   data-dialog-call-request-method="POST"
                                   data-dialog-call-request-post-parameters='{
                                         "entityId": "{{ issueCardDto.issue().getId() }}",
-                                        "actionPathname": "{{ app.request.attributes.get('_route') }}"
+                                        "actionPathname": "{{ app.request.attributes.get('_route') }}",
+                                        "moduleName": {{ MODULE_NAME_ISSUES }}
                                     }'
                                   data-call-dialog-on-click="true"
                                   data-dialog-name="addTodo"

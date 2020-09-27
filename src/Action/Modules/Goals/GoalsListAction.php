@@ -4,6 +4,7 @@ namespace App\Action\Modules\Goals;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,9 +18,16 @@ class GoalsListAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var Controllers
+     *
+     */
+    private $controllers;
 
-        $this->app = $app;
+    public function __construct(Application $app, Controllers $controllers) {
+
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -44,11 +52,17 @@ class GoalsListAction extends AbstractController {
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
-        $all_todo = $this->app->repositories->myTodoRepository->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS); // todo: move to controller
+        $all_todo          = $this->controllers->getGoalsListController()->getGoals();
+        $goal_module       = $this->controllers->getModuleController()->getOneByName(ModulesController::MODULE_NAME_GOALS);
+        $todo_element_form = $this->app->forms->todoElementForm();
 
         $data = [
+            'all_modules'                    => [$goal_module],
             'all_todo'                       => $all_todo,
             'ajax_render'                    => $ajax_render,
+            'show_add_todo_widget'           => true,
+            'todo_element_form'              => $todo_element_form,
+            'data_template_url'              => $this->generateUrl('goals_list'),
             'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 

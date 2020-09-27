@@ -44,6 +44,15 @@ todo:
       label: Todo list
       addTodo: Add todo
       addElement: Add element
+    relatedModules:
+      issues:
+        singular: Issue
+    info:
+      notRelatedToAnySpecificRecord: Not related to any specific record
+      description: Description
+  widget:
+    add:
+      label: Add
 
 notes:
   create:

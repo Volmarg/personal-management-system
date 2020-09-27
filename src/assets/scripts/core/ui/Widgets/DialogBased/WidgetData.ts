@@ -30,7 +30,8 @@ export default class WidgetData {
         myImagesUploadFilesWidget : 'my-images-upload-files-widget',
         myImagesNewFolderWidget   : 'my-images-new-folder-widget',
         addContactCardWidget      : 'add-contact-card-widget',
-        pendingIssuesCreateIssue  : 'pendingIssuesCreateIssue'
+        pendingIssuesCreateIssue  : 'pendingIssuesCreateIssue',
+        addMyTodo                 : 'widget-add-my-todo',
     };
 
     /**
