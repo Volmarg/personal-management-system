@@ -5,7 +5,7 @@ namespace App;
 /**
  * This script is run from CLI (composer) but symfony will crash later that no such file is found
  */
-if( php_sapi_name() === 'cli' && !Env::isTest() ){
+if( php_sapi_name() === 'cli'){
     include_once 'src/Controller/Utils/CliHandler.php';
 }
 
@@ -68,6 +68,53 @@ class AutoInstaller{
     static $user_selected_mode = '';
 
     static $encryption_key = '';
+
+    public static function runDocker(){
+
+        CliHandler::initialize();
+
+        CliHandler::newLine();
+        self::installerAreaLine();
+        {
+            self::getDependenciesInformation();
+
+            self::writeGeneralInformation();
+            #self::writeDependenciesMessage();
+
+            CliHandler::lineSeparator();
+            CliHandler::newLine();
+
+            #self::askQuestions();
+
+            #CliHandler::lineSeparator();
+            #self::checkMysqlMode();
+
+            #CliHandler::lineSeparator();
+            #self::buildEnv();
+
+            CliHandler::lineSeparator();
+            self::setDatabase();
+
+            CliHandler::lineSeparator();
+            self::createFolders();
+
+            CliHandler::lineSeparator();
+            self::buildCache();
+
+            CliHandler::lineSeparator();
+            self::setPermissions();
+
+            #CliHandler::lineSeparator();
+            #self::installPackages();
+
+            CliHandler::lineSeparator();
+            self::generateEncryptionKey();
+
+            self::writeEndInformation();
+        }
+        self::installerAreaLine();
+        CliHandler::newLine();
+    }
     
     public static function run(){
 
