@@ -10,9 +10,9 @@ services:
     volumes: 
       - ./data:/var/lib/mysql
 
-  webserver:
+  nginx:
     image: nginx:alpine
-    container_name: docker-symfony4-webserver
+    container_name: nginx
     working_dir: /application
     volumes:
       - .:/application
@@ -22,12 +22,13 @@ services:
 
   php-fpm:
     build: ./docker/php-fpm
-    container_name: php
+    container_name: php-fpm
     working_dir: /application
     volumes:
       - .:/application
 
   adminer:
+    container_name: adminer
     image: adminer
     restart: always
     ports:
