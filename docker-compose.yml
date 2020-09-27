@@ -1,12 +1,14 @@
 version: "3.1"
 services:
-  db:
-    image: mysql:5.6
+  mariadb:
+    image: mariadb
+    container_name: mariadb
     restart: always
-    volumes:
+    environment: 
+      - MYSQL_DATABASE=pms
+      - MYSQL_ROOT_PASSWORD=password
+    volumes: 
       - ./data:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: example
 
   webserver:
     image: nginx:alpine
@@ -16,7 +18,7 @@ services:
       - .:/application
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "8000:80"
+      - "8001:80"
 
   php-fpm:
     build: ./docker/php-fpm
