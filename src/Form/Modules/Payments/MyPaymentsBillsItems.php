@@ -67,6 +67,9 @@ class MyPaymentsBillsItems extends AbstractType {
                 },
                 'attr' => [
                     'required' => true,
+                    'class'                                          => 'selectpicker',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
                 ],
                 'label' => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.bill')
             ]);

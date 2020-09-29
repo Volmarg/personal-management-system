@@ -806,6 +806,10 @@ class DialogsAction extends AbstractController
         $action_pathname = $request->request->get(self::KEY_ACTION_PATHNAME);
         $module_name     = $request->request->get(self::KEY_MODULE_NAME);
 
+        $hide_display_on_dashboard = (
+            ModulesController::MODULE_NAME_ISSUES == $module_name
+        );
+
         try{
 
             $module = $this->controllers->getModuleController()->getOneByName($module_name);
@@ -825,7 +829,7 @@ class DialogsAction extends AbstractController
                 'entity_id'                 => $entity_id,
                 'todo'                      => $todo,
                 'hide_module_select'        => true,
-                'hide_display_on_dashboard' => true,
+                'hide_display_on_dashboard' => $hide_display_on_dashboard,
                 'todo_form'                 => $todo_form->createView(),
                 'todo_element_form'         => $todo_element_form,
                 'data_template_url'         => $this->generateUrl($action_pathname),

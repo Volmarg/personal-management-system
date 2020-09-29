@@ -29,7 +29,7 @@ class MoveSingleFileType extends AbstractType
             ->add(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
-                    'class'                        => 'form-control listFilterer',
+                    'class'                        => 'form-control listFilterer selectpicker',
                     'data-dependent-list-selector' => '#move_single_file_target_subdirectory_path'
                 ],
                 'label' => $this->app->translator->translate('forms.MoveSingleFileType.labels.targetUploadModuleDir')

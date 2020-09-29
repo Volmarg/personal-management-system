@@ -71,7 +71,9 @@ class MyTodoType extends AbstractType
                 'label'    => $this->app->translator->translate('forms.MyTodoType.module'),
                 'required' => $is_module_predefined, // this must be set via variable to force set predefined module,
                 "attr"     => [
-                    "class" => 'selectpicker'
+                    'class'                                          => 'selectpicker',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
                 ]
             ])
             ->add(MyTodo::FIELD_DISPLAY_ON_DASHBOARD,RoundcheckboxType::class,[

@@ -56,7 +56,9 @@ class MyNotesType extends AbstractType {
                 "data"    => false,    // this skips some internal validation for choices and allows to save strings, not just int
                 'label'   => $this->app->translator->translate('forms.MyNotesType.labels.category'),
                 "attr"    => [
-                    "class" => 'selectpicker col-12 p-0'
+                    'class'                                          => 'selectpicker',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
                 ]
             ])
             ->add('submit', SubmitType::class, [

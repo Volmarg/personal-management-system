@@ -57,7 +57,10 @@ class MyPaymentsMonthlyType extends AbstractType {
                     return $payment_type->getValue();
                 },
                 'attr' => [
-                    'required' => true,
+                    'required'                                       => true,
+                    'class'                                          => 'selectpicker',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
                 ],
                 'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.type')
             ]);

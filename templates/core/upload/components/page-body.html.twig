@@ -34,7 +34,15 @@
 
                                 <div class="col-md-6 justify-content-center align-self-center">
 
-                                    {{ form_widget(form[KEY_UPLOAD_MODULE_DIR], {'attr': {'class': 'form-control upload-type listFilterer'}}) }}
+                                    <section>
+                                        {{ form_widget(form[KEY_UPLOAD_MODULE_DIR], {'attr': {
+                                            'class': 'form-control upload-type listFilterer selectpicker'
+                                        }}) }}
+
+                                        {{ form_widget(form.subdirectory, {'attr': {
+                                            'class' : 'form-control align-self-center selectpicker'
+                                        }}) }}
+                                    </section>
 
                                     <section class="file-picker-and-folder-picker d-flex">
                                         <section id="file-upload-file-select"
@@ -45,17 +53,11 @@
 
                                         </section>
                                         {{ form_widget(form.resetSelectedFiles) }}
-                                        {{ form_widget(form.subdirectory, {'attr': {
-                                            'class'        : 'form-control align-self-center selectpicker',
-                                            'data-classes' : 'bg-white'
-                                        }}) }}
+
+                                        <section class="button-submit col-md-4">
+                                            {{ form_widget(form.submit) }}
+                                        </section>
                                     </section>
-
-                                    <section class="button-submit col-md-4">
-                                        {{ form_widget(form.submit) }}
-                                    </section>
-
-
                                 </div>
                                 {# table #}
                                 <div class="row mT-50">

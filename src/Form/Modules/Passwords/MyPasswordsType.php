@@ -46,7 +46,12 @@ class MyPasswordsType extends AbstractType {
                 'choice_label' => function (MyPasswordsGroups $password_group) {
                     return $password_group->getName();
                 },
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.group')
+                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.group'),
+                'attr'  => [
+                    'class'                                          => 'selectpicker',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')

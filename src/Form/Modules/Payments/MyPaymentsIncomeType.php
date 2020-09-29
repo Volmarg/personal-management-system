@@ -78,6 +78,11 @@ class MyPaymentsIncomeType extends AbstractType
                 'choices'      => $choices,
                 "required"     => true,
                 "data"         => false,    // this skips some internal validation for choices and allows to save strings, not just int
+                'attr'         => [
+                    'class'                                          => 'selectpicker',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
+                ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit')

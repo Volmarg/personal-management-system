@@ -34,7 +34,7 @@ class UploadSubdirectoryCopyDataType extends AbstractType
             ->add(FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
-                    'class'                        => 'form-control listFilterer',
+                    'class'                        => 'form-control listFilterer selectpicker',
                     'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_current_path_in_module_upload_dir'
                 ],
                 'label' => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.currentUploadModuleDir')
@@ -42,7 +42,7 @@ class UploadSubdirectoryCopyDataType extends AbstractType
             ->add(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
-                    'class'                        => 'form-control listFilterer',
+                    'class'                        => 'form-control listFilterer selectpicker',
                     'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_target_path_in_module_upload_dir'
                 ],
                 'label' => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.targetUploadModuleDir')
