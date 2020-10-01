@@ -46,7 +46,6 @@ class MyTodoListAction extends AbstractController {
         $this->controllers = $controllers;
     }
 
-
     /**
      * @Route("admin/todo/list", name="todo_list")
      * @param Request $request

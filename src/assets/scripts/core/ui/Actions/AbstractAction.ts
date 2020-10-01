@@ -37,6 +37,7 @@ export default abstract class AbstractAction {
         'entity-remove-action'      : '.entity-remove-action',
         'accordion'                 : '.ui-accordion',
         'accordionContent'          : '.ui-accordion-content',
+        'contentEditableText'       : 'content-editable-text'
     };
 
     protected otherSelectors = {
@@ -209,7 +210,7 @@ export default abstract class AbstractAction {
      * @param baseElement
      */
     protected toggleContentEditable(baseElement) {
-        let isContentEditable = DomAttributes.isContentEditable(baseElement, 'td');
+        let isContentEditable = DomAttributes.isContentEditable(baseElement, 'td, .toggle-content-editable');
         let paramEntityName   = $(baseElement).attr('data-type');
 
         let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, baseElement);
@@ -221,8 +222,9 @@ export default abstract class AbstractAction {
         let message = AbstractAction.messages.entityEditStart(dataProcessorDto.processorName);
 
         if (!isContentEditable) {
-            DomAttributes.contentEditable(baseElement, DomAttributes.actions.set,  'td', 'input, select, button, img');
+            DomAttributes.contentEditable(baseElement, DomAttributes.actions.set,  'td, .toggle-content-editable', 'input, select, button, img');
             $(baseElement).addClass(this.classes["table-active"]);
+            $(baseElement).find('.toggle-content-editable').addClass(this.classes.contentEditableText);
             this.toggleActionIconsVisibility(baseElement, null, isContentEditable);
             this.toggleDisabledClassForTableRow(baseElement);
 
@@ -233,8 +235,9 @@ export default abstract class AbstractAction {
         this.toggleActionIconsVisibility(baseElement, null, isContentEditable);
         this.toggleDisabledClassForTableRow(baseElement);
 
-        DomAttributes.contentEditable(baseElement, DomAttributes.actions.unset,'td', 'input, select, button, img');
+        DomAttributes.contentEditable(baseElement, DomAttributes.actions.unset,'td, .toggle-content-editable', 'input, select, button, img');
         $(baseElement).removeClass(this.classes["table-active"]);
+        $(baseElement).find('.toggle-content-editable').removeClass(this.classes.contentEditableText);
         this.bootstrapNotify.showGreenNotification(message);
     };
 

@@ -29,7 +29,10 @@
 
                     {# Todo later: indents #}
                     <select class="form-control selectpicker"
-                            style="max-width:100px; float:left;">
+                            data-append-classes-to-bootstrap-select-parent = 'align-self-center'
+                            data-append-classes-to-bootstrap-select-button = 'm-0'
+                            style="max-width:100px; float:left;"
+                    >
                         {% for module in all_modules %}
                             <option value="{{ module.id }}">{{ module.name }}</option>
                         {% endfor %}

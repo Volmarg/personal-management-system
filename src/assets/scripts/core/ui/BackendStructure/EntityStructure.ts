@@ -29,4 +29,10 @@ export default class EntityStructure {
         }
     };
 
+    public static MyTodo: BackendStructureInterface = {
+        getNamespace: function() :string{
+            return 'App\\Entity\\Modules\\Todo\\MyTodo';
+        }
+    };
+
 }
