@@ -48,7 +48,7 @@ export default class WidgetData {
             formAppendAction.attachFormViewAppendEvent();
             JsColor.init();
             updateAction.attachContentSaveEventOnSaveIcon();
-            BootboxWrapper.mainLogic.hideAll();
+            BootboxWrapper.hideAll();;
         };
 
         let url           = Ajax.getUrlForPathName(RouterStructure.DIALOG_BODY_CREATE_CONTACT_CARD_PATH);

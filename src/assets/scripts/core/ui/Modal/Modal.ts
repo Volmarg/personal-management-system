@@ -48,4 +48,13 @@ export default class Modal {
         });
     }
 
+    /**
+     * @description Will hide the modal backdrop only
+     * Fix: Bootbox/Bootstrap based problem - the backdrop wont be sometimes remove on closing modal
+     */
+    public hideModalBackdrop()
+    {
+        $('.modal-backdrop').remove();
+    }
+
 }

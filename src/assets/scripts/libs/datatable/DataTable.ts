@@ -222,7 +222,7 @@ export default class DataTable {
                 'subdirectory'    : subdirectory
             };
 
-            BootboxWrapper.mainLogic.confirm({
+            BootboxWrapper.confirm({
                 message: "Do You really want to remove selected files?",
                 backdrop: true,
                 callback: function (result) {
@@ -294,7 +294,7 @@ export default class DataTable {
 
             let callback = function (){
                 _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             this.dataTransferDialogs.buildDataTransferDialog(pathsOfFilesToTransfer, 'My Files', callback);

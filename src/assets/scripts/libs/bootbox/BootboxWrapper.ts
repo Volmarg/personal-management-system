@@ -8,6 +8,38 @@ export default class BootboxWrapper {
     public static mainLogic:BootboxStatic = Bootbox;
 
     /**
+     * @description Hides all the currently opened modals, but also handles the provided logic
+     */
+    public static hideAll(){
+
+        BootboxWrapper.mainLogic.hideAll();
+    }
+
+    /**
+     * @description Creates bootbox alert and handles the additional logic
+     *
+     * @param options
+     */
+    public static alert(options: BootboxAlertOptions): JQuery
+    {
+        let alertInstance = BootboxWrapper.mainLogic.alert(options);
+
+        return alertInstance;
+    }
+
+    /**
+     * @description Creates bootbox confirm and handles the additional logic
+     *
+     * @param options
+     */
+    public static confirm(options: BootboxConfirmOptions): JQuery
+    {
+        let confirmInstance = BootboxWrapper.mainLogic.confirm(options);
+
+        return confirmInstance;
+    }
+
+    /**
      * @description When modal is being called from within bootbox it looses all the focus as bootbox has tabindex = -1
      *
      */

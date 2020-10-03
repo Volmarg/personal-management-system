@@ -84,7 +84,7 @@ export default class UploadSettings {
      */
     private callBootBoxWithFormSubmitionOnAccept(message: string, $form: JQuery): void
     {
-        BootboxWrapper.mainLogic.confirm({
+        BootboxWrapper.confirm({
             message: message,
             backdrop: true,
             callback: function (result) {

@@ -33,7 +33,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
 
     private callDataTransferDialog(template, callback = null) {
 
-        let dialog = BootboxWrapper.mainLogic.alert({
+        let dialog = BootboxWrapper.alert({
             size: "lg",
             backdrop: true,
             closeButton: false,
@@ -99,7 +99,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
 
                 if( $.isFunction(callback) ){
                     callback();
-                    BootboxWrapper.mainLogic.hideAll()
+                    BootboxWrapper.hideAll();
                 }
 
                 notifyType = 'success'

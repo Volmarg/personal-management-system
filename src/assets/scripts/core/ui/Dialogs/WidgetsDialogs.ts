@@ -44,7 +44,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
                 Application.abort("Not an DTO");
             }
 
-           let dialog = BootboxWrapper.mainLogic.alert({
+           let dialog = BootboxWrapper.alert({
                 message: "-",
                 backdrop: true,
                 buttons: {

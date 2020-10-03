@@ -26,7 +26,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
 
     private callTagManagementDialog(template, callback = null) {
 
-        let dialog = BootboxWrapper.mainLogic.alert({
+        let dialog = BootboxWrapper.alert({
             size: "sm",
             backdrop: true,
             closeButton: false,
@@ -97,7 +97,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
 
                 if( $.isFunction(callback) ){
                     callback(tags);
-                    BootboxWrapper.mainLogic.hideAll()
+                    BootboxWrapper.hideAll();
                 }
 
                 notifyType = 'success'

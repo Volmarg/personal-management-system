@@ -158,7 +158,7 @@ export default class SpecialAction extends AbstractDataProcessor {
                     }
                 }
 
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
                 ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
             };
 

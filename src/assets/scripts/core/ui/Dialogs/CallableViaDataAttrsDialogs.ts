@@ -97,7 +97,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
      */
     private callDialog(template, callback = null) {
 
-        let dialog = BootboxWrapper.mainLogic.alert({
+        let dialog = BootboxWrapper.alert({
             size: "large",
             backdrop: true,
             closeButton: false,

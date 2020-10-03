@@ -51,7 +51,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
      */
     public callSystemToggleLockDialog(template, callback = null, isUnlocked) {
 
-        let dialog = BootboxWrapper.mainLogic.alert({
+        let dialog = BootboxWrapper.alert({
             size: "large",
             backdrop: true,
             closeButton: false,
@@ -108,7 +108,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
      */
     public callCreateLockPasswordForSystemDialog(template, callback = null) {
 
-        let dialog = BootboxWrapper.mainLogic.alert({
+        let dialog = BootboxWrapper.alert({
             size: "large",
             backdrop: true,
             closeButton: false,

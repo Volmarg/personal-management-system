@@ -117,7 +117,7 @@ export default class UpdateAction extends AbstractAction {
 
         if ( dataProcessorDto.invokeAlert && dataProcessorDto.isInvokedAlertBodySet() ) {
 
-            BootboxWrapper.mainLogic.confirm({
+            BootboxWrapper.confirm({
                 message: dataProcessorDto.invokedAlertBody,
                 backdrop: true,
                 callback: function (result) {

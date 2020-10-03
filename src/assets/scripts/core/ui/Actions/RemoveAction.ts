@@ -61,7 +61,7 @@ export default class RemoveAction extends AbstractAction {
                     : AbstractAction.messages.default_record_removal_confirmation_message
             );
 
-            BootboxWrapper.mainLogic.confirm({
+            BootboxWrapper.confirm({
                 message: removalMessage,
                 backdrop: true,
                 callback: function (result) {
@@ -130,7 +130,7 @@ export default class RemoveAction extends AbstractAction {
 
         let afterRemovalCallback = function(){
             _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-            BootboxWrapper.mainLogic.hideAll();
+            BootboxWrapper.hideAll();;
         } ;
 
         $(element).on('click', function(event) {
@@ -164,7 +164,7 @@ export default class RemoveAction extends AbstractAction {
 
         let doYouWantToRemoveThisRecordMessage = AbstractAction.messages.doYouWantToRemoveThisRecord();
 
-        BootboxWrapper.mainLogic.confirm({
+        BootboxWrapper.confirm({
             message:  doYouWantToRemoveThisRecordMessage,
             backdrop: true,
             callback: function (result) {

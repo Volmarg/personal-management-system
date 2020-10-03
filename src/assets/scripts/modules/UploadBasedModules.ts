@@ -51,7 +51,7 @@ export default class UploadBasedModules {
                 }
 
                 // bootbox
-                BootboxWrapper.mainLogic.confirm({
+                BootboxWrapper.confirm({
                     message: 'Do You really want to remove this folder?',
                     backdrop: true,
                     callback: function (result) {

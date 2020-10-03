@@ -59,7 +59,7 @@ export default class FilesTransfer {
                     let parent_wrapper  = $(clickedButton).closest('tr');
                     let table_id        = $(parent_wrapper).closest('tbody').closest('table').attr('id');
                     _this.removeAction.removeDataTableTableRow(table_id, parent_wrapper);
-                    BootboxWrapper.mainLogic.hideAll();
+                    BootboxWrapper.hideAll();;
                 };
 
                 _this.dataTransferDialogs.buildDataTransferDialog([fileCurrentPath], 'My Files', callback);

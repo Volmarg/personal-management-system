@@ -135,7 +135,7 @@ export default class CreateAction extends AbstractAction {
                         location.reload();
                     }
 
-                    BootboxWrapper.mainLogic.hideAll();
+                    BootboxWrapper.hideAll();;
 
                 }catch(Exception){
                     Loader.hideLoader();

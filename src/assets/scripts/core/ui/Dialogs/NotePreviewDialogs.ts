@@ -37,7 +37,7 @@ export default class NotePreviewDialogs extends AbstractDialogs {
      */
     private callNotePreviewDialog(template, callback = null) {
 
-        let dialog = BootboxWrapper.mainLogic.alert({
+        let dialog = BootboxWrapper.alert({
             size: "large",
             backdrop: true,
             closeButton: false,

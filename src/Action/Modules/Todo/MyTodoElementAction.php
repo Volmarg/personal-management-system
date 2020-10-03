@@ -83,13 +83,12 @@ class MyTodoElementAction extends AbstractController {
 
         $parameters = $request->request->all();
 
-        dump($parameters);
-
         try{
             $id     = $parameters[self::KEY_ID];
             $entity = $this->app->repositories->myTodoElementRepository->find($id);
 
-            $this->app->repositories->update($parameters, $entity);
+            $update_response = $this->app->repositories->update($parameters, $entity);
+            $message         = $update_response->getContent();
 
             $this->app->em->persist($entity);
             $this->app->em->flush();
@@ -99,7 +98,7 @@ class MyTodoElementAction extends AbstractController {
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        $ajax_response->setMessage('TODO: DONE');
+        $ajax_response->setMessage($message);
         $ajax_response->setCode($code);
 
         return $ajax_response->buildJsonResponse();

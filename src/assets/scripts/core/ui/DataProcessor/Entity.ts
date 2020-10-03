@@ -1692,7 +1692,7 @@ export default class Entity extends AbstractDataProcessor {
             let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueContact.processorName);
             let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueContact.processorName);
             let callbackAfter      = () => {
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -1710,7 +1710,7 @@ export default class Entity extends AbstractDataProcessor {
             let information     = $($baseElement).find('.information').html();
             let icon            = $($baseElement).find('.icon').html();
             let callbackAfter   = () => {
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyIssueContact.processorName);
@@ -1743,7 +1743,7 @@ export default class Entity extends AbstractDataProcessor {
                 id:id
             };
             let callbackAfter      = () => {
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -1772,7 +1772,7 @@ export default class Entity extends AbstractDataProcessor {
             let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueProgress.processorName);
             let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueProgress.processorName);
             let callbackAfter      = () => {
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -1803,7 +1803,7 @@ export default class Entity extends AbstractDataProcessor {
             };
 
             let callbackAfter = () => {
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -1831,7 +1831,7 @@ export default class Entity extends AbstractDataProcessor {
             let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueProgress.processorName);
             let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueProgress.processorName);
             let callbackAfter      = () => {
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             let dataProcessorsDto            = new DataProcessorDto();

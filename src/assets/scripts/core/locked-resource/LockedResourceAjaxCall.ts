@@ -71,7 +71,7 @@ export default class LockedResourceAjaxCall {
             "target" : target
         };
 
-        BootboxWrapper.mainLogic.confirm({
+        BootboxWrapper.confirm({
             message: "Do you want to toggle lock for this resource",
             backdrop: true,
             callback: function (result) {

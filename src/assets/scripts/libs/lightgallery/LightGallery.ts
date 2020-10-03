@@ -208,7 +208,7 @@ export default class LightGallery {
                     _this.handleClosingGalleryIfThereAreNoMoreImages();
                 };
 
-                BootboxWrapper.mainLogic.confirm({
+                BootboxWrapper.confirm({
                     message: _this.messages.imageRemovalConfirmation,
                     backdrop: true,
                     callback: function (result) {
@@ -277,7 +277,7 @@ export default class LightGallery {
             $(saveButton).click( () => {
 
                 // Confirmation box
-                BootboxWrapper.mainLogic.confirm({
+                BootboxWrapper.confirm({
                     message: _this.messages.imageNameEditConfirmation,
                     backdrop: true,
                     callback: function (result) {
@@ -440,7 +440,7 @@ export default class LightGallery {
                 let callback = function (){
                     _this.removeImageWithMiniature(fileCurrentPath);
                     _this.handleClosingGalleryIfThereAreNoMoreImages();
-                    BootboxWrapper.mainLogic.hideAll();
+                    BootboxWrapper.hideAll();;
                 };
 
                 let escapedFileCurrentPath = ( fileCurrentPath.indexOf('/') === 0 ? fileCurrentPath.replace("/", "") : fileCurrentPath ) ;
@@ -674,7 +674,7 @@ export default class LightGallery {
             let massActionButtons = $(_this.selectors.classes.massActionButtons);
             let checkedCheckboxes = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
 
-            BootboxWrapper.mainLogic.confirm({
+            BootboxWrapper.confirm({
                 message: _this.messages.imageRemovalConfirmation,
                 backdrop: true,
                 callback: function (result) {
@@ -705,7 +705,7 @@ export default class LightGallery {
                             DomAttributes.unsetChecked(checkedCheckboxes);
                             DomAttributes.setDisabled(massActionButtons);
                             _this.reinitGallery();
-                            BootboxWrapper.mainLogic.hideAll();
+                            BootboxWrapper.hideAll();;
                         }, 500);
 
                     }
@@ -744,7 +744,7 @@ export default class LightGallery {
             let callback = function (){
                 _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
                 _this.reinitGallery();
-                BootboxWrapper.mainLogic.hideAll();
+                BootboxWrapper.hideAll();;
             };
 
             this.dataTransferDialogs.buildDataTransferDialog(filePaths, 'My Files', callback);
