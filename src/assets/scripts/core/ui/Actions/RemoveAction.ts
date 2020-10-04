@@ -8,6 +8,7 @@ import DomElements          from "../../utils/DomElements";
 import Navigation           from "../../Navigation";
 import StringUtils          from "../../utils/StringUtils";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
+import Ui                   from "../Ui";
 
 export default class RemoveAction extends AbstractAction {
 
@@ -75,7 +76,6 @@ export default class RemoveAction extends AbstractAction {
 
                             Loader.hideLoader();
 
-                            let $twigBodySection = $('.twig-body-section');
                             let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
 
                             let message = ajaxResponseDto.message;
@@ -91,7 +91,7 @@ export default class RemoveAction extends AbstractAction {
                             }
 
                             if( ajaxResponseDto.isTemplateSet() ){
-                                $twigBodySection.html(ajaxResponseDto.template);
+                                Ui.inertIntoMainContent(ajaxResponseDto.template);
                                 _this.initializer.reinitializeLogic();
                             }else if ( dataProcessorDto.isDataTable ) {
                                 let table_id = $($baseElement).closest('tbody').closest('table').attr('id');

@@ -7,6 +7,7 @@ import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";
 import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
+import                      Ui from "../Ui";
 
 export default class UpdateAction extends AbstractAction {
 
@@ -86,7 +87,7 @@ export default class UpdateAction extends AbstractAction {
                     return;
                 }
 
-                $('.twig-body-section').html(ajaxResponseDto.template);
+                Ui.inertIntoMainContent(ajaxResponseDto.template);
                 _this.initializer.reinitializeLogic();
 
                 if( ajaxResponseDto.reloadPage ){

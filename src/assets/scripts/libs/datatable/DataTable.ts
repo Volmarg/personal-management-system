@@ -23,6 +23,7 @@ import ValidationUtils      from "../../core/utils/ValidationUtils";
 import DomElements          from "../../core/utils/DomElements";
 import AjaxResponseDto      from "../../DTO/AjaxResponseDto";
 import AjaxEvents           from "../../core/ajax/AjaxEvents";
+import Ui from "../../core/ui/Ui";
 
 export default class DataTable {
 
@@ -238,7 +239,6 @@ export default class DataTable {
                             Loader.hideLoader();
 
                             let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
-                            let $twigBodySection = $('.twig-body-section');
 
                             if( !ajaxResponseDto.isSuccessCode() ){
                                 _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
@@ -251,7 +251,7 @@ export default class DataTable {
                                 }
 
                                 if( ajaxResponseDto.isTemplateSet() ){
-                                    $twigBodySection.html(ajaxResponseDto.template);
+                                    Ui.inertIntoMainContent(ajaxResponseDto.template);
                                     _this.initializer.reinitializeLogic();
                                 }
 

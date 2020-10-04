@@ -5,7 +5,8 @@ import FormsValidator       from "../../validators/FormsValidator";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";
 import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
-import StringUtils from "../../utils/StringUtils";
+import StringUtils          from "../../utils/StringUtils";
+import Ui                   from "../Ui";
 
 export default class CreateAction extends AbstractAction {
 
@@ -62,8 +63,6 @@ export default class CreateAction extends AbstractAction {
                 type: formSubmissionType, //todo
                 data: form.serialize(),
             }).always((data) => {
-                let twigBodySection = $('.twig-body-section');
-
                 dataProcessorDto.callback(dataCallbackParams);
 
                 try{
@@ -96,7 +95,7 @@ export default class CreateAction extends AbstractAction {
                 if( doReloadTemplateViaTemplateUrl ){
                     _this.ajaxEvents.loadModuleContentByUrl(dataTemplateUrl, dataProcessorDto.callbackForLoadingModuleContentByUrl(), true);
                 }else if(ajaxResponseDto.isTemplateSet()){
-                    twigBodySection.html(ajaxResponseDto.template);
+                    Ui.inertIntoMainContent(ajaxResponseDto.template);
                 }
 
                 dataProcessorDto.callbackAfter(dataCallbackParams);
@@ -135,7 +134,7 @@ export default class CreateAction extends AbstractAction {
                         location.reload();
                     }
 
-                    BootboxWrapper.hideAll();;
+                    BootboxWrapper.hideAll();
 
                 }catch(Exception){
                     Loader.hideLoader();

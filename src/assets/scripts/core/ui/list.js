@@ -3,6 +3,7 @@
 import './DocumentEvents'
 import './WindowEvents'
 import './Search'
+import './Ui';
 
 // ### widgets
 import './Widgets/DirectoriesBased/DirectoriesBasedWidget'

@@ -1,3 +1,5 @@
+import Ui from "../ui/Ui";
+
 var imagesLoaded = require('imagesloaded');
 
 import * as $           from "jquery";
@@ -110,8 +112,7 @@ export default class AjaxEvents extends AbstractAjax {
             }
 
             if( ajaxResponseDto.isTemplateSet() ){
-                twigBodySection.html(ajaxResponseDto.template);
-                _this.modal.hideModalBackdrop();
+                Ui.inertIntoMainContent(ajaxResponseDto.template);
             }
 
             if( $.isFunction(callbackAfter) ){
