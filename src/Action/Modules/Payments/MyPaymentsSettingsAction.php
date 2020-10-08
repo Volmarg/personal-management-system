@@ -45,8 +45,12 @@ class MyPaymentsSettingsAction extends AbstractController {
      * 
      */
     public function display(Request $request) {
-        $setting_type = $request->request->all();
-        $setting_type = reset($setting_type)['name'];
+        $request_bag = $request->request->all();
+
+        $setting_type = null;
+        if( !empty($request_bag) ){
+            $setting_type = reset($request_bag)['name'];
+        }
 
         switch ($setting_type) {
             case self::KEY_SETTING_NAME_TYPE:

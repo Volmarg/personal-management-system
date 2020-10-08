@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Controller\Core\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -21,7 +22,7 @@ final class Version20200111164416 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('ALTER TABLE my_payment_owed ADD currency VARCHAR(255) NOT NULL');
+        $this->addSql(Migrations::buildSqlExecutedIfColumnDoesNotExist('currency', 'my_payment_owed', 'ALTER TABLE my_payment_owed ADD currency VARCHAR(255) NOT NULL'));
     }
 
     public function down(Schema $schema) : void
