@@ -30,7 +30,7 @@ class MyContact implements SoftDeletableEntityInterface, EntityInterface
     private $description;
 
     /**
-     * @ORM\Column(type="text", length=255)
+     * @ORM\Column(type="text")
      */
     private $contacts;
 
