@@ -39,6 +39,52 @@ final class Version20200912025220 extends AbstractMigration
             VALUES("My Goals", true),
                   ("My Issues", true)   
         ');
+
+        // move goals/subgoals to todo
+        $this->addSql("
+            INSERT INTO my_todo(`module_id`, `name`, `description`, `deleted`, `completed`, `display_on_dashboard`,`related_entity`)
+            (
+                SELECT
+                m.id,
+                g.name,
+                g.description,
+                g.deleted,
+                g.completed,
+                g.display_on_dashboard,
+                NULL
+                
+                FROM my_goal g
+
+                JOIN module m
+                ON m.name = 'My Goals'
+            )
+        ");
+
+        $this->addSql("
+            INSERT INTO my_todo_element(`my_todo_id`, `name`, `deleted`, `completed`)
+            (
+                SELECT
+                t.id,
+                mgs.name,
+                mgs.deleted,
+                mgs.completed
+                
+                FROM my_goal g
+                
+                JOIN my_todo t
+                ON t.name                   = g.name
+                AND t.deleted               = g.deleted
+                AND t.display_on_dashboard  = g.display_on_dashboard
+                AND t.completed             = g.completed
+                
+                JOIN my_goal_subgoal mgs
+                ON mgs.my_goal_id = g.id
+            )
+        ");
+
+        // drop no longer used tables - in this order
+        $this->addSql("DROP TABLE my_goal_subgoal");
+        $this->addSql("DROP TABLE my_goal");
     }
 
     public function down(Schema $schema) : void

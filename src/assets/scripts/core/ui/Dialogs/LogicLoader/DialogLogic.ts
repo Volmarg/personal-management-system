@@ -93,14 +93,19 @@ export default class DialogLogic {
     /**
      * @description contains definition of logic for add/modify todo
      */
-    public static addTodo()
+    public static addOrModifyTodo()
     {
         let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
             let todoChecklist = new TodoChecklist();
             let createAction  = new CreateAction();
+            let removeAction  = new RemoveAction();
+            let updateAction  = new UpdateAction();
 
             createAction.init();
             todoChecklist.init();
+            removeAction.init();
+            updateAction.init();
+            Popover.init();
         };
 
         let dialogDataDto = new DialogDataDto();

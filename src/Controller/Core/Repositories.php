@@ -25,8 +25,6 @@ use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
-use App\Repository\Modules\Goals\MyGoalsRepository;
-use App\Repository\Modules\Goals\MyGoalsSubgoalsRepository;
 use App\Repository\Modules\Issues\MyIssueContactRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Issues\MyIssueRepository;
@@ -84,8 +82,6 @@ class Repositories extends AbstractController {
     const MY_PASSWORDS_REPOSITORY_NAME                  = 'MyPasswordsRepository';
     const MY_PASSWORDS_GROUPS_REPOSITORY_NAME           = 'MyPasswordsGroupsRepository';
     const USER_REPOSITORY                               = 'UserRepository';
-    const MY_GOALS_REPOSITORY_NAME                      = 'MyGoalsRepository';
-    const MY_SUBGOALS_REPOSITORY_NAME                   = 'MyGoalsSubgoalsRepository';
     const MY_GOALS_PAYMENTS_REPOSITORY_NAME             = 'MyGoalsPaymentsRepository';
     const MY_JOB_HOLIDAYS_REPOSITORY_NAME               = 'MyJobHolidaysRepository';
     const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME          = 'MyJobHolidaysPoolRepository';
@@ -203,16 +199,6 @@ class Repositories extends AbstractController {
      * @var UserRepository
      */
     public $userRepository;
-
-    /**
-     * @var MyGoalsRepository
-     */
-    public $myGoalsRepository;
-
-    /**
-     * @var MyGoalsSubgoalsRepository
-     */
-    public $myGoalsSubgoalsRepository;
 
     /**
      * @var MyGoalsPaymentsRepository
@@ -362,8 +348,6 @@ class Repositories extends AbstractController {
         MyPasswordsRepository               $myPasswordsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         UserRepository                      $userRepository,
-        MyGoalsRepository                   $myGoalsRepository,
-        MyGoalsSubgoalsRepository           $myGoalsSubgoalsRepository,
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
         MyJobHolidaysRepository             $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
@@ -406,8 +390,6 @@ class Repositories extends AbstractController {
         $this->myPasswordsRepository                = $myPasswordsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->userRepository                       = $userRepository;
-        $this->myGoalsRepository                    = $myGoalsRepository;
-        $this->myGoalsSubgoalsRepository            = $myGoalsSubgoalsRepository;
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
         $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;

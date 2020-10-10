@@ -5,9 +5,6 @@ import StringUtils   from "../../core/utils/StringUtils";
 import DomAttributes from "../../core/utils/DomAttributes";
 
 /**
- * todo: most likely will need some kind of config loading logic or separated method - need to think about the refresh case
- *       it must also share the logic from `init` later
- *
  * @description handles the logic of bootstrap select
  */
 export default class BootstrapSelect
@@ -36,8 +33,6 @@ export default class BootstrapSelect
     };
 
     /**
-     * Todo: Not working for:
-     * - MyImages/MyFiles: new Folder widget
      * @description main initialization logic of bootstrap select on elements
      */
     public static init(): void

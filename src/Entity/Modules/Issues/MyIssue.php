@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 class MyIssue implements SoftDeletableEntityInterface, EntityInterface, RelatesToMyTodoInterface, ModuleMainEntityInterface
 {
 
+    const FIELD_NAME_ID       = "id";
     const FIELD_NAME_DELETED  = "deleted";
     const FIELD_NAME_RESOLVED = "resolved";
 

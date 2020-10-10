@@ -95,7 +95,7 @@ export default class CreateAction extends AbstractAction {
                 if( doReloadTemplateViaTemplateUrl ){
                     _this.ajaxEvents.loadModuleContentByUrl(dataTemplateUrl, dataProcessorDto.callbackForLoadingModuleContentByUrl(), true);
                 }else if(ajaxResponseDto.isTemplateSet()){
-                    Ui.inertIntoMainContent(ajaxResponseDto.template);
+                    Ui.insertIntoMainContent(ajaxResponseDto.template);
                 }
 
                 dataProcessorDto.callbackAfter(dataCallbackParams);

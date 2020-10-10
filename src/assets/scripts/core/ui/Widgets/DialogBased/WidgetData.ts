@@ -137,7 +137,7 @@ export default class WidgetData {
             createAction.init(false);  // dont reinitialize logic
             upload.init();
             forms.init();
-
+            BootstrapSelect.init();
             directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
 
             let $mainContentInModal = $('.bootbox-body main.main-content');
@@ -210,6 +210,7 @@ export default class WidgetData {
             createAction.init(false);  // dont reinitialize logic
             upload.init();
             forms.init();
+            BootstrapSelect.init();
             directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
 
             let $mainContentInModal = $('.bootbox-body main.main-content');

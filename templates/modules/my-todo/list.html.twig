@@ -35,7 +35,7 @@
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                             <h4 class="c-grey-900 mB-20 align-self-center">{{ 'todo.list.headers.addTodo' | trans }}</h4>
-                            <div class="col-md-6 align-self-center">
+                            <div class="col-md-6 align-self-center add-record-form" data-type="MyTodo">
                                 {{ form(todo_form ,{'attr':{' data-entity':"MyTodo"}}) }}
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                                "moduleName": "{{ MODULE_NAME_GOALS }}"
                             }'
                          data-call-dialog-on-click="true"
-                         data-dialog-name="addTodo"
+                         data-dialog-name="addOrModifyTodo"
                          data-toggle-popover="true"                     {# popover attr #}
                          data-html="true"                               {# popover attr #}
                          data-trigger="hover"                           {# popover attr #}

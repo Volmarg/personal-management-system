@@ -5,7 +5,8 @@
 
         {% if
             (
-                MODULE_NAME_ISSUES == todo.module.name
+                    todo.module is not null
+                and MODULE_NAME_ISSUES == todo.module.name
                 and todo.myIssue is null
             )
         %}

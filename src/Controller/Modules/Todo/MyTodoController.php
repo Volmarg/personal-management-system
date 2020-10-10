@@ -104,12 +104,18 @@ class MyTodoController extends AbstractController {
      */
     public function setRelationForTodo(MyTodo $todo): void
     {
-        $entity_id        = $todo->getRelatedEntityId();
-        $module_name      = $todo->getModule()->getName();
+        $entity_id = $todo->getRelatedEntityId();
+        $module    = $todo->getModule();
+
+        if( empty($module) ){
+            $this->app->logger->info("Not setting relation to myTodo as no related module was selected");
+            return;
+        }
+
+        $module_name      = $module->getName();
         $entity_namespace = ModulesController::getEntityNamespaceForModuleName($module_name);
 
-        if( empty($entity_id) )
-        {
+        if( empty($entity_id) ){
             $this->app->logger->info("Not setting relation to myTodo as no entity was give to relate with");
             return;
         }

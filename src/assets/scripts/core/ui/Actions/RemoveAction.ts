@@ -91,7 +91,7 @@ export default class RemoveAction extends AbstractAction {
                             }
 
                             if( ajaxResponseDto.isTemplateSet() ){
-                                Ui.inertIntoMainContent(ajaxResponseDto.template);
+                                Ui.insertIntoMainContent(ajaxResponseDto.template, false);
                                 _this.initializer.reinitializeLogic();
                             }else if ( dataProcessorDto.isDataTable ) {
                                 let table_id = $($baseElement).closest('tbody').closest('table').attr('id');
