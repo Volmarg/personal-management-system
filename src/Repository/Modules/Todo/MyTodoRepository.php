@@ -127,8 +127,6 @@ class MyTodoRepository extends ServiceEntityRepository
         return (0 === $result);
     }
 
-    // todo: need to adjust queries and fetch the via joins to given module for module name
-
     /**
      * Will return one module entity for given name or null if no matching module with this name was found
      *
