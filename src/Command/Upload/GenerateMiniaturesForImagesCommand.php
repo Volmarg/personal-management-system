@@ -126,12 +126,12 @@ class GenerateMiniaturesForImagesCommand extends Command
 
                             if( !FileValidator::isFileImage($file_object) ){
                                 $this->io->warning("File is not an image");
-                                return 1;
+                                continue;
                             }
 
                             if( !FileValidator::isImageResizable($file_object) ){
                                 $this->io->warning("Image type is not resizable");
-                                return 1;
+                                continue;
                             }
 
                             $this->image_handler->createMiniature($file_absolute_path, true, $target_miniature_file_absolute_path);
@@ -146,6 +146,7 @@ class GenerateMiniaturesForImagesCommand extends Command
                 $this->app->logger->critical("There was an error.");
                 $this->app->logger->critical($e->getMessage());
                 $this->app->logger->critical($e->getTraceAsString());
+                return 1;
             }
 
         }
