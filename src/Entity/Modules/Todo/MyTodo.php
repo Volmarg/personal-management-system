@@ -60,7 +60,7 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
     private $displayOnDashboard = 0;
 
     /**
-     * @ORM\OneToOne(targetEntity=Module::class, cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="App\Entity\System\Module", inversedBy="myTodo")
      * @ORM\JoinColumn(nullable=true)
      */
     private $module;

@@ -4,6 +4,7 @@ namespace App\Entity\System;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\System\ModuleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,6 +33,16 @@ class Module implements EntityInterface
      */
     private $active;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Todo\MyTodo", mappedBy="module")
+     */
+    private $myTodo;
+
+    public function __construct()
+    {
+        $this->myTodo = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,7 +60,7 @@ class Module implements EntityInterface
         return $this;
     }
 
-    public function getAllActive(): ?bool
+    public function getActive(): ?bool
     {
         return $this->active;
     }
@@ -60,4 +71,13 @@ class Module implements EntityInterface
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMyTodo()
+    {
+        return $this->myTodo;
+    }
+
 }

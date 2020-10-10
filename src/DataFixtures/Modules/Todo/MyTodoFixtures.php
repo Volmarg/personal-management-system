@@ -1,14 +1,16 @@
 <?php
 namespace App\DataFixtures\Modules\Todo;
 
+use App\Controller\Modules\ModulesController;
 use App\DataFixtures\Providers\Modules\Todo;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
+use App\Entity\System\Module;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-// todo: adjust fixtures +/or demo cron to keep inserting the data from migrations, same for other fixtures, or just make sql callable with cron which will reinsert data to DB
+
 class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
 {
     /**
@@ -35,6 +37,8 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoGoals(ObjectManager $manager): void
     {
+        $goals_module = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_GOALS]);
+
         foreach(Todo::ALL_TODO_GOALS as $index => $todo_with_elements) {
 
             foreach($todo_with_elements as $todo_name => $elements) {
@@ -43,6 +47,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
 
                 $my_todo = new MyTodo();
                 $my_todo->setName($todo_name);
+                $my_todo->setModule($goals_module);
                 $my_todo->setDisplayOnDashboard($display_on_dashboard);
 
                 $manager->persist($my_todo);
@@ -79,6 +84,8 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addIssueTodo(ObjectManager $manager): void
     {
+        $issue_module = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_ISSUES]);
+
         foreach(Todo::ALL_TODO_ISSUE as $issue_id => $todo_with_elements) {
 
             foreach($todo_with_elements as $todo_name => $elements) {
@@ -90,6 +97,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
                 $my_todo = new MyTodo();
                 $my_todo->setName($todo_name);
                 $my_todo->setMyIssue($issue);
+                $my_todo->setModule($issue_module);
                 $my_todo->setDisplayOnDashboard($display_on_dashboard);
 
                 $manager->persist($my_todo);

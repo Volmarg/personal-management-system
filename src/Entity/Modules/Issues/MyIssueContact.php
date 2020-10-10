@@ -68,7 +68,7 @@ class MyIssueContact implements SoftDeletableEntityInterface, EntityInterface
     }
 
     /**
-     * @param string $information
+     * @param string|null $information
      */
     public function setInformation(?string $information): void {
         $this->information = $information;

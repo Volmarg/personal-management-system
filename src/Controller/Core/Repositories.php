@@ -321,7 +321,7 @@ class Repositories extends AbstractController {
     public $myTodoElementRepository;
 
     /**
-     * @var Module $moduleRepository
+     * @var ModuleRepository $moduleRepository
      */
     public $moduleRepository;
 
