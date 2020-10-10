@@ -234,4 +234,38 @@ class Utils extends AbstractController {
         $class_without_namespace = end($class_parts);
         return $class_without_namespace;
     }
+
+    /**
+     * Will round the given value to the nearest (LOWER/DOWN) value provided as second parameter, for example nearest 0.25
+     * 1.0, 1.25, 1.5, 1,75 ....
+     *
+     * @param float $actual_value
+     * @param float $round_to_repentance_of
+     * @return float|int
+     */
+    public static function roundDownToAny(float $actual_value, float $round_to_repentance_of) {
+        if( 0 === $actual_value ){
+            return 0;
+        }
+
+        return floor($actual_value/$round_to_repentance_of) * $round_to_repentance_of;
+    }
+
+    /**
+     * Will convert seconds to time based format
+     * Example: 20:35:15
+     *
+     * @param int $seconds
+     * @return string
+     */
+    public static function secondsToTimeFormat(int $seconds): string
+    {
+        $hours = floor($seconds / 3600);
+        $mins  = floor($seconds / 60 % 60);
+        $secs  = floor($seconds % 60);
+
+        $time_format = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+
+        return $time_format;
+    }
 }

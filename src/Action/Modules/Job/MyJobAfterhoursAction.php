@@ -75,9 +75,31 @@ class MyJobAfterhoursAction extends AbstractController {
         $column_names       = $this->getDoctrine()->getManager()->getClassMetadata(MyJobAfterhours::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($column_names);
 
-        $afterhours_all     = $this->app->repositories->myJobAfterhoursRepository->findBy(['deleted' => 0]);
-        $afterhours_spent   = $this->filterAfterhours($afterhours_all, MyJobAfterhours::TYPE_SPENT);
-        $afterhours_made    = $this->filterAfterhours($afterhours_all, MyJobAfterhours::TYPE_MADE);
+        $afterhours_all = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
+            MyJobAfterhours::TYPE_SPENT,
+            MyJobAfterhours::TYPE_MADE
+        ]);
+
+        $afterhours_spent = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
+            MyJobAfterhours::TYPE_SPENT
+        ]);
+
+        $afterhours_made = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
+            MyJobAfterhours::TYPE_MADE
+        ]);
+
+        $days_all    = 0;
+        $seconds_all = 0;
+        foreach($afterhours_all as $afterhour)
+        {
+            if( MyJobAfterhours::TYPE_MADE === $afterhour->getType() ){
+                $seconds_all += $afterhour->getSeconds();
+                $days_all    += $afterhour->getDays();
+            }else{
+                $seconds_all -= $afterhour->getSeconds();
+                $days_all    -= $afterhour->getDays();
+            }
+        }
 
         $remaining_time_to_spend_per_goal = $this->controllers->getMyJobAfterhoursController()->getTimeToSpend();
 
@@ -87,6 +109,8 @@ class MyJobAfterhoursAction extends AbstractController {
             'afterhours_all'                    => $afterhours_all,
             'afterhours_spent'                  => $afterhours_spent,
             'afterhours_made'                   => $afterhours_made,
+            'seconds_all'                       => $seconds_all,
+            'days_all'                          => $days_all,
             'remaining_time_to_spend_per_goal'  => $remaining_time_to_spend_per_goal,
             'ajax_render'                       => $ajax_render,
             'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js,
@@ -150,19 +174,6 @@ class MyJobAfterhoursAction extends AbstractController {
             'entity_enums' => $this->entity_enums,
             'goals'        => $goals,
         ]);
-    }
-
-    /**
-     * @param array $afterhours_all
-     * @param string $type_filtered
-     * @return array
-     */
-    private function filterAfterhours(array $afterhours_all, string $type_filtered): array {
-
-        return array_filter($afterhours_all, function ($afterhour) use ($type_filtered) {
-            return $afterhour->getType() === $type_filtered;
-        });
-
     }
 
     /**

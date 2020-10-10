@@ -36,10 +36,16 @@
                                 <h4 class="c-grey-900 mB-20 text-center">{{ 'job.afterhours.headers.remainingAfterhours' | trans }}</h4>
                                 {% for goal, remaining_time_to_spent in remaining_time_to_spend_per_goal %}
                                     <section>
-                                        <span>I've got: </span> <b class="text-danger">{{ remaining_time_to_spent }}</b>
+                                        {#todo: use the array keys as consts from repo#}
+                                        <span>I've got: </span> <b class="text-danger">{{ remaining_time_to_spent['timeSummary'] }}  ( {{ roundDownToAny(remaining_time_to_spent['daysSummary'], 0.25) }} day/s )</b>
                                         <span> for <b>{{ goal }} </b>left to spend</span>
                                     </section>
                                 {% endfor %}
+                                <h4 class="c-grey-900 mB-20 text-center">{{ 'job.afterhours.headers.summary' | trans }}</h4>
+                                <section><span>{{ 'job.afterhours.labels.hours' | trans }}: <b class="text-danger">{{ secondsToTimeFormat(seconds_all) }} </b></span></section>
+                                <section><span>{{ 'job.afterhours.labels.days' | trans }}: <b class="text-danger">{{ roundDownToAny(days_all, 0.25) }}</b></span></section>
+                                <br>
+                                <p style="font-size: 10px;"><span class="text-danger">*</span> <span>{{ 'job.afterhours.info.daysAreRounded'|trans|raw }}</span></p>
                             </div>
                         </div>
                     </div>

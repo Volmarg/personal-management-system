@@ -281,6 +281,12 @@ job:
       spentAfterhours: Spent afterhours
       remainingAfterhours: Remaining afterhours
       addSpendAfterhours: Add/Spend afterhours
+      summary: Summary
+    labels:
+      hours: Hours
+      days: Days
+    info:
+      daysAreRounded: Days are rounded down to the nearest <b>0.25</b>
   holidays:
     headers:
       summary: Holidays summary

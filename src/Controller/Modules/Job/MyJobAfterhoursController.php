@@ -3,6 +3,7 @@
 namespace App\Controller\Modules\Job;
 
 use App\Controller\Core\Application;
+use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -29,12 +30,26 @@ class MyJobAfterhoursController extends AbstractController {
         $goals = $this->app->repositories->myJobAfterhoursRepository->getGoalsWithTime();
 
         foreach ($goals as $goal) {
-            $time_remaining         = $goal[MyJobAfterhoursRepository::TIME_SUMMARY_FIELD];
             $goal_key               = (is_null($goal[MyJobAfterhoursRepository::GOAL_FIELD]) ? static::GENERAL_USAGE : $goal[MyJobAfterhoursRepository::GOAL_FIELD]);
-            $afterhours[$goal_key]  = $time_remaining;
+            $afterhours[$goal_key]  = [
+                MyJobAfterhoursRepository::TIME_SUMMARY_FIELD => $goal[MyJobAfterhoursRepository::TIME_SUMMARY_FIELD],
+                MyJobAfterhoursRepository::DAYS_SUMMARY_FIELD => $goal[MyJobAfterhoursRepository::DAYS_SUMMARY_FIELD],
+            ];
         }
 
         return $afterhours;
+    }
+
+    /**
+     * Will search for not deleted afterhours by types
+     *
+     * @param string[] $types
+     * @return MyJobAfterhours[]
+     */
+    public function findAllNotDeletedByType(array $types): array
+    {
+        $entities = $this->app->repositories->myJobAfterhoursRepository->findAllNotDeletedByType($types);
+        return $entities;
     }
 
 }

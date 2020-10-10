@@ -17,6 +17,9 @@ class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
 
     public const TYPE_MADE  = 'made';
 
+    public const FIELD_NAME_DELETED = "deleted";
+    public const FIELD_NAME_TYPE    = "Type";
+
     const ALL_TYPES = [
       self::TYPE_SPENT,
       self::TYPE_MADE,
@@ -143,4 +146,24 @@ class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
         return $this->goal;
     }
 
+    /**
+     * @return int
+     */
+    public function getSeconds(): int {
+        return $this->Minutes * 60;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getHours(): float {
+        return round($this->Minutes/60, 2);
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getDays(): float {
+        return round($this->getHours()/8, 2);
+    }
 }

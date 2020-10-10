@@ -16,6 +16,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
 
     const GOAL_FIELD         = 'goal';
     const TIME_SUMMARY_FIELD = 'timeSummary';
+    const DAYS_SUMMARY_FIELD = 'daysSummary';
 
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MyJobAfterhours::class);
@@ -39,7 +40,15 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
                 WHEN SUM(mja2.minutes) IS NOT NULL AND SUM(mja3.minutes) IS NULL THEN 
                   SEC_TO_TIME((SUM(mja2.minutes) - 0) * 60)
                ELSE 0
-            END AS timeSummary
+            END AS timeSummary,
+            CASE
+                WHEN SUM(mja2.minutes) IS NOT NULL AND SUM(mja3.minutes) IS NOT NULL THEN 
+                  ROUND((SUM(mja2.minutes) - SUM(mja3.minutes))/60/8, 2)
+                WHEN SUM(mja2.minutes) IS NOT NULL AND SUM(mja3.minutes) IS NULL THEN 
+                  ROUND((SUM(mja2.minutes) - 0)/60/8, 2)
+               ELSE 0
+            END AS daysSummary
+            
             FROM my_job_afterhour AS mja
             LEFT JOIN my_job_afterhour AS mja2
               ON mja.id = mja2.id
@@ -84,6 +93,22 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         $results = $statement->fetchAll();
 
         return (!empty($results) ? array_column($results,'goal') : []);
+    }
+
+    /**
+     * Will search for not deleted afterhours by types
+     *
+     * @param string[] $types
+     * @return MyJobAfterhours[]
+     */
+    public function findAllNotDeletedByType(array $types): array
+    {
+        $entities = $this->findBy([
+            MyJobAfterhours::FIELD_NAME_DELETED => 0,
+            MyJobAfterhours::FIELD_NAME_TYPE    => $types
+        ]);
+
+        return $entities;
     }
 
 }
