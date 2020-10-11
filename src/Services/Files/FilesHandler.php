@@ -410,6 +410,13 @@ class FilesHandler {
             }
 
         }catch(Exception $e){
+            $this->application->logger->critical("Exception was thrown while renaming file.", [
+                "message" => $e->getMessage(),
+                "code"    => $e->getCode(),
+                "class"   => __CLASS__,
+                "method"  => __FUNCTION__,
+            ]);
+
             $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileRenamingFile');
             return new JsonResponse($message, 500);
         }

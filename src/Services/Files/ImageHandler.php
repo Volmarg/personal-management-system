@@ -117,7 +117,7 @@ class ImageHandler {
             Utils::copyFiles($target_miniature_file_for_current_location, $target_miniature_file_for_target_location);
             unlink($target_miniature_file_for_current_location);
         }else{
-            $this->createMiniature($current_file_location);
+            $this->createMiniature($target_file_location);
         }
     }
 
