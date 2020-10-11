@@ -66,7 +66,7 @@ class Schedules {
     const ALL_SCHEDULES_TYPES = [
         [
             self::KEY_NAME  => 'car',
-            self::KEY_ICON  => 'fas fa-car-alt',
+            self::KEY_ICON  => 'fas fa-car',
         ],
         [
             self::KEY_NAME  => 'home',

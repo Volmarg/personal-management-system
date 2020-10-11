@@ -115,21 +115,21 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 
 <h2>Tech</h2>
 <p style="text-align:justify;">
-    Personal Management System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 18.x.
+    Personal Management System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 20.x.
 </p>
 
 <h3>Used languages/frameworks/solutions</h3>
 
 <ul>
-<li>Php 7.2.x</li>
+<li>Php 7.4.x</li>
 <li>JS</li>
 <li>JQ</li>
 <li>TypeScript (as from v1.3)</li>
-<li>Symfony 4.4</li>
+<li>Symfony 4.4x</li>
 <li>MySQL</li>
 <li>Css</li>
 <li>Scss</li>
-<li>Node</li>
+<li>Node 10.22.1</li>
 <li>Bootstrap</li>
 <li>Webpack</li>
 <li><small>And maybe some others which I just don't remember</small></li>

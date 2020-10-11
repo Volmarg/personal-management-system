@@ -215,26 +215,15 @@ export default class Search {
             shortFilename   = filename.substr(0, shortLen) + '...';
         }
 
-        // build download form
-        let form = $('<form>');
-        $(form).attr('method', "POST");
-        $(form).attr('action', "/download/file");
-        $(form).addClass('file-download-form d-inline');
-
-        let input = $('<input>');
-        $(input).attr('type','hidden');
-        $(input).attr('name','file_full_path');
-        $(input).val(filePath);
-
-        let button = $('<button>');
-        $(button).addClass('file-download d-inline');
+        // build download link
+        let downloadLink = $("<A>");
+        downloadLink.attr("download", "");
+        downloadLink.attr("href", '/' + filePath);
 
         let downloadIcon = $('<i>');
         $(downloadIcon).addClass('fa fa-download');
 
-        $(button).append(downloadIcon);
-        $(form).append(input);
-        $(form).append(button);
+        downloadLink.append(downloadIcon);
 
         let moduleIcon = $('<span>');
         $(moduleIcon).addClass('search-data-module-icon');
@@ -275,7 +264,7 @@ export default class Search {
         // combine list elements
         let li = $('<li>');
         $(li).append(link);
-        $(li).append(form);
+        $(li).append(downloadLink);
 
         return li;
 
