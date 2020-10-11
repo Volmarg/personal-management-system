@@ -3,6 +3,7 @@ import Loader           from "../../../libs/loader/Loader";
 import Ajax             from "../../ajax/Ajax";
 import DialogDataDto    from "../../../DTO/DialogDataDto";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
+import Dialog           from "./Dialog";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
@@ -121,6 +122,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
                 callback();
             }
 
+            dialog.addClass("." + Dialog.classesNames.modalMovedBackdrop);
             callableViaDataAttrsDialogs.forms.init();
         });
 

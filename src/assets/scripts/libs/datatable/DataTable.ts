@@ -251,7 +251,7 @@ export default class DataTable {
                                 }
 
                                 if( ajaxResponseDto.isTemplateSet() ){
-                                    Ui.insertIntoMainContent(ajaxResponseDto.template, false);
+                                    Ui.insertIntoMainContent(ajaxResponseDto.template);
                                     _this.initializer.reinitializeLogic();
                                 }
 

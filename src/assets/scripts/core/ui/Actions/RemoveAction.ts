@@ -91,7 +91,7 @@ export default class RemoveAction extends AbstractAction {
                             }
 
                             if( ajaxResponseDto.isTemplateSet() ){
-                                Ui.insertIntoMainContent(ajaxResponseDto.template, false);
+                                Ui.insertIntoMainContent(ajaxResponseDto.template);
                                 _this.initializer.reinitializeLogic();
                             }else if ( dataProcessorDto.isDataTable ) {
                                 let table_id = $($baseElement).closest('tbody').closest('table').attr('id');
@@ -130,8 +130,8 @@ export default class RemoveAction extends AbstractAction {
 
         let afterRemovalCallback = function(){
             _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-            BootboxWrapper.hideAll();;
-        } ;
+            BootboxWrapper.hideAll();
+        };
 
         $(element).on('click', function(event) {
             let clickedElement  = $(this);

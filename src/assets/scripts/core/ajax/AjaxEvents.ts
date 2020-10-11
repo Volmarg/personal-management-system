@@ -112,7 +112,7 @@ export default class AjaxEvents extends AbstractAjax {
             }
 
             if( ajaxResponseDto.isTemplateSet() ){
-                Ui.insertIntoMainContent(ajaxResponseDto.template, false);
+                Ui.insertIntoMainContent(ajaxResponseDto.template);
             }
 
             if( $.isFunction(callbackAfter) ){

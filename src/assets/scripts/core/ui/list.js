@@ -25,6 +25,7 @@ import './Dialogs/NotePreviewDialogs'
 import './Dialogs/SystemLockDialogs'
 import './Dialogs/TagManagementDialogs'
 import './Dialogs/WidgetsDialogs'
+import './Dialogs/Dialog'
 
 // ### data processor
 import './DataProcessor/AbstractDataProcessor'

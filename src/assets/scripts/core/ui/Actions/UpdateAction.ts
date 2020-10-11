@@ -87,7 +87,7 @@ export default class UpdateAction extends AbstractAction {
                     return;
                 }
 
-                Ui.insertIntoMainContent(ajaxResponseDto.template, false);
+                Ui.insertIntoMainContent(ajaxResponseDto.template);
                 _this.initializer.reinitializeLogic();
 
                 if( ajaxResponseDto.reloadPage ){

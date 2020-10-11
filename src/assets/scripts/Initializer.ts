@@ -24,6 +24,7 @@ import LockedResource               from "./core/locked-resource/LockedResource"
 import CallableViaDataAttrsDialogs  from "./core/ui/Dialogs/CallableViaDataAttrsDialogs";
 import WidgetsDialogs               from "./core/ui/Dialogs/WidgetsDialogs";
 import Modal                        from "./core/ui/Modal/Modal";
+import Dialog                       from "./core/ui/Dialogs/Dialog";
 import FilesTransfer                from "./modules/Files/FilesTransfer";
 import MonthlyPayments              from "./modules/Payments/MonthlyPayments";
 import UploadBasedModules           from "./modules/UploadBasedModules";
@@ -74,6 +75,7 @@ export default class Initializer {
         let callableViaAttrDialogs = new CallableViaDataAttrsDialogs();
         let widgetsDialogs         = new WidgetsDialogs();
         let modal                  = new Modal();
+        let dialog                 = new Dialog();
 
         // modules
         let todoChecklist       = new TodoChecklist();
@@ -113,6 +115,7 @@ export default class Initializer {
         JsColor.init();
 
         modal.init();
+        dialog.init();
     }
 
     /**
