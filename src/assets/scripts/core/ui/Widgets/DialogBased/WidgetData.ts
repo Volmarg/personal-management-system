@@ -12,7 +12,6 @@ import RouterStructure          from "../../BackendStructure/RouterStructure";
 import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget";
 import Navigation               from "../../../Navigation";
 import CreateAction             from "../../Actions/CreateAction";
-import BootboxWrapper           from "../../../../libs/bootbox/BootboxWrapper";
 import BootstrapSelect          from "../../../../libs/bootstrap-select/BootstrapSelect";
 
 /**
@@ -48,7 +47,6 @@ export default class WidgetData {
             formAppendAction.attachFormViewAppendEvent();
             JsColor.init();
             updateAction.attachContentSaveEventOnSaveIcon();
-            BootboxWrapper.hideAll();;
         };
 
         let url           = Ajax.getUrlForPathName(RouterStructure.DIALOG_BODY_CREATE_CONTACT_CARD_PATH);
