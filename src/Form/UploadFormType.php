@@ -55,7 +55,7 @@ class UploadFormType extends AbstractType {
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'upload-submit btn btn-sm btn-primary',
-                    'style' => 'width:100%;'
+                    'style' => 'width:100%; margin: 6px 0 0 6px;'
                 ],
                 'label' => $this->app->translator->translate('forms.general.submit')
             ]);
@@ -64,7 +64,7 @@ class UploadFormType extends AbstractType {
             ->add('resetSelectedFiles', ButtonType::class, [
                 'attr' => [
                     'class' => 'btn btn-sm btn-primary clear-selection col-1',
-                    'style' => 'width:100%;'
+                    'style' => 'width:100%; margin: 6px 0 6px 0;'
                 ],
                 "label" => " "
             ]);

@@ -29,16 +29,21 @@ class UploadSubdirectoryRenameType extends AbstractType {
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class, [
                 'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'    => [
-                    'class'                        => 'form-control listFilterer selectpicker',
-                    'data-dependent-list-selector' => '#upload_subdirectory_rename_subdirectory_current_path_in_module_upload_dir'
+                    'class'                                          => 'form-control listFilterer selectpicker',
+                    'data-dependent-list-selector'                   => '#upload_subdirectory_rename_subdirectory_current_path_in_module_upload_dir',
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
                 ],
                 'label' => $this->app->translator->translate('forms.UploadSubdirectoryRenameType.labels.uploadModuleDir')
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR, UploadrecursiveoptionsType::class, [
                 'choices'   => [], //this is not used anyway but parent ChoiceType requires it
                 'required'  => true,
-                'label' => $this->app->translator->translate('forms.UploadSubdirectoryRenameType.labels.subdirectoryInModuleUploadDir')
-
+                'label'     => $this->app->translator->translate('forms.UploadSubdirectoryRenameType.labels.subdirectoryInModuleUploadDir'),
+                'attr'      => [
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
+                ]
             ])
             ->add(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME, TextType::class, [
                 'attr'  => [
