@@ -62,7 +62,9 @@ class MyContactTypeDtoType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_TYPE),
                 'data'  => $selected_entity,
                 'attr'  => [
-                    "class" => "selectpicker"
+                    "class"                                          => "selectpicker",
+                    'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
+                    'data-append-classes-to-bootstrap-select-button' => 'm-0',
                 ]
             ])
         ;

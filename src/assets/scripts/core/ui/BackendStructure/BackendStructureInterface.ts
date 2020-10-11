@@ -4,4 +4,5 @@
  */
 export default interface BackendStructureInterface {
     getNamespace(): string;
+    getCallback(): Function;
 }

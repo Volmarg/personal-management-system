@@ -58,7 +58,7 @@ export default class DomElements {
         }
 
         try{
-            let backendStructure = BackendStructureLoader.getNamespace(BackendStructureLoader.STRUCTURE_TYPE_FORM, formName);
+            var backendStructure = BackendStructureLoader.getNamespace(BackendStructureLoader.STRUCTURE_TYPE_FORM, formName);
             var namespace        = backendStructure.getNamespace();
         }catch(Exception){
             throw({
@@ -72,6 +72,7 @@ export default class DomElements {
             if( "function" === typeof callbackParam){
                 callbackParam();
             }
+            backendStructure.getCallback()();
         };
 
         ajax.getFormViewByNamespace(namespace, callback);

@@ -78,8 +78,12 @@ class GoalsSettingsAction extends AbstractController {
      * @throws Exception
      */
     public function display(Request $request) {
-        $form = $this->app->forms->goalPaymentForm();
-        $this->addRecord($form, $request);
+        $form                = $this->app->forms->goalPaymentForm();
+        $add_record_response = $this->addRecord($form, $request);
+
+        if( Response::HTTP_OK !== $add_record_response->getStatusCode() ){
+            return AjaxResponse::buildJsonResponseForAjaxCall($add_record_response->getStatusCode(), $add_record_response->getContent());
+        }
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
@@ -111,16 +115,15 @@ class GoalsSettingsAction extends AbstractController {
     /**
      * @param FormInterface $form
      * @param Request $request
-     * @return JsonResponse
-     * 
+     * @return Response
      */
     private function addRecord(FormInterface $form, Request $request) {
         $form->handleRequest($request);
         $form_data = $form->getData();
 
-        if (!is_null($form_data) && $this->app->repositories->myGoalsRepository->findBy(['name' => $form_data->getName()])) {
+        if (!is_null($form_data) && $this->app->repositories->myGoalsPaymentsRepository->findBy(['name' => $form_data->getName()])) {
             $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new JsonResponse($record_with_this_name_exist, 409);
+            return new Response($record_with_this_name_exist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -130,7 +133,7 @@ class GoalsSettingsAction extends AbstractController {
         }
 
         $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message,200);
+        return new Response($form_submitted_message,200);
     }
 
 

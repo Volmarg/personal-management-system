@@ -93,6 +93,7 @@ goals:
     settings: { headers: { addGoal: 'Add goal', addSubgoal: 'Add subgoal', addPaymentGoal: 'Add payment goal' }, goalsSection: { table: { name: Name, description: Description, displayOnDashboard: 'Display on Dashboard' } }, subGoalsSection: { table: { name: Name, goal: Goal } }, goalsPaymentsSection: { table: { name: Name, collectionStartDate: 'Collection start date', deadline: Deadline, moneyGoal: 'Money goal', moneyCollected: 'Money collected', displayOnDashboard: 'Display on dashboard' } } }
 todo:
     list: { headers: { label: 'Todo list', addTodo: 'Add todo', addElement: 'Add element' }, relatedModules: { issues: { singular: Issue } }, info: { notRelatedToAnySpecificRecord: 'Not related to any specific record', description: Description } }
+    widget: { add: { label: Add } }
 notes:
     create: { headers: { newNote: 'Add new note' } }
     category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected', categoryWithThisNameAlreadyExistsInThisParent: 'Category with this name already exists in this parent' }, popover: { createNote: 'Create note' } }

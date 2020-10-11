@@ -70,6 +70,7 @@ export default class WidgetData {
             TinyMce.remove(".tiny-mce");
             tinyMce.init();
             createAction.init();
+            BootstrapSelect.init();
             NotesTinyMce.selectCurrentCategoryOptionForQuickNoteCreator();
 
             let formSubmitButton = $('#my_notes_submit');

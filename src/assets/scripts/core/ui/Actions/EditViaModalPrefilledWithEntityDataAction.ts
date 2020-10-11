@@ -4,6 +4,7 @@ import JsColor                      from "../../../libs/jscolor/JsColor";
 import FormAppendAction             from "./FormAppendAction";
 import UpdateAction                 from "./UpdateAction";
 import CallableViaDataAttrsDialogs  from "../Dialogs/CallableViaDataAttrsDialogs";
+import BootstrapSelect              from "../../../libs/bootstrap-select/BootstrapSelect";
 
 export default class EditViaModalPrefilledWithEntityDataAction extends AbstractAction {
 
@@ -36,6 +37,7 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
                     this.formAppendAction.attachRemoveParentEvent();
                     JsColor.init();
                     this.updateAction.attachContentSaveEventOnSaveIcon();
+                    BootstrapSelect.init();
                 }
             },
             /**

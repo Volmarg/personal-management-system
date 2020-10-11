@@ -9,6 +9,9 @@ export default class ControllerStructure {
     static readonly CONST_MODULE_NAME_IMAGES = 'MODULE_NAME_IMAGES';
 
     public static ModulesController: BackendStructureInterface = {
+        getCallback(): Function {
+            return ()=>{};
+        },
         getNamespace: function() :string{
             return '\\App\\Controller\\Modules\\ModulesController';
         }
