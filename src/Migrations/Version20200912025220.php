@@ -76,6 +76,8 @@ final class Version20200912025220 extends AbstractMigration
 
                 JOIN module m
                 ON m.name = 'My Goals'
+                
+                GROUP BY g.id
             )
         ");
 
@@ -98,6 +100,8 @@ final class Version20200912025220 extends AbstractMigration
                 
                 JOIN my_goal_subgoal mgs
                 ON mgs.my_goal_id = g.id
+                
+                GROUP BY g.id, mgs.id
             )
         ");
 
