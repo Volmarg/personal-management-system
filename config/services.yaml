@@ -5,6 +5,11 @@ parameters:
     encrypt_key: 'yJouvLW2cs-jfzMg5Mg52FiRU1YPBSjflcMgQTKqCt8r'
     session_data.lifetime.system_lock: 900 #in seconds
 
+# Resolving deprecation for moving from 4.4x to 5.x
+sensio_framework_extra:
+    router:
+        annotations: false
+
 services:
     # default configuration for services in *this* file
     _defaults:

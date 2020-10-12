@@ -1,0 +1,61 @@
+
+services:
+  # default configuration for services in *this* file
+  _defaults:
+    # automatically injects dependencies in your services
+    autowire: true
+    # automatically registers your services as commands, event subscribers, etc.
+    autoconfigure: true
+    # this means you cannot fetch services directly from the container via $container->get()
+    # if you need to do this, you can override this setting on individual services
+    public: false
+
+  # Subscriber Interface, default is DoctrineEncryptSubscriber but it can be overriden in the app config
+  SpecShaper\EncryptBundle\Subscribers\DoctrineEncryptSubscriberInterface:
+    class: '%spec_shaper_encrypt.subscriber_class%'
+    arguments:
+      $annotationArray: '%spec_shaper_encrypt.annotation_classes%'
+      $isDisabled: '%spec_shaper_encrypt.is_disabled%'
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
+  # Subscriber to catch any encrypt or decrypt events thrown
+  SpecShaper\EncryptBundle\Subscribers\EncryptEventSubscriber:
+    arguments:
+      $isDisabled: '%spec_shaper_encrypt.is_disabled%'
+    tags:
+      - { name: kernel.event_subscriber, connection: default }
+
+  # Factory to create the encryptor/decryptor
+  SpecShaper\EncryptBundle\Encryptors\EncryptorFactory:
+    arguments: ['@logger']
+    tags:
+      - { name: monolog.logger, channel: app }
+
+  # The encryptor service created by the factory according to the passed method and using the encrypt_key
+  SpecShaper\EncryptBundle\Encryptors\EncryptorService:
+    factory: ['@SpecShaper\EncryptBundle\Encryptors\EncryptorFactory', 'createService']
+    arguments:
+      - '%spec_shaper_encrypt.method%'
+      - '%spec_shaper_encrypt.encrypt_key%'
+
+  # Alias the service as EncryptorInterface
+  SpecShaper\EncryptBundle\Encryptors\EncryptorInterface:
+    alias: 'SpecShaper\EncryptBundle\Encryptors\EncryptorService'
+    # public: true
+
+  # Encrypt Twig extension that defins the decrypt filter.
+  SpecShaper\EncryptBundle\Twig\EncryptExtension:
+    tags: ['twig.extension']
+
+  # CLI command to decrypt all fields in a database
+  SpecShaper\EncryptBundle\Command\DecryptCommand:
+    calls:
+      - method: setSubscriber
+        arguments:
+          - '@SpecShaper\EncryptBundle\Subscribers\DoctrineEncryptSubscriberInterface'
+
+  # CLI command to generate a 256 bit encryption key
+  SpecShaper\EncryptBundle\Command\GenKeyCommand:
+    tags:
+      -  { name: console.command }

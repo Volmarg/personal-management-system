@@ -3,9 +3,9 @@
 namespace App\Controller\Modules\Dashboard;
 
 use App\Controller\Core\Application;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class DashboardController extends Controller {
+class DashboardController extends AbstractController {
 
 
     /**

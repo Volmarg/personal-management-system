@@ -2,23 +2,25 @@
     <table id="Achievements" class="table" cellspacing="0"
            data-table="false" width="100%">
         <tbody>
-        {% for achievement in all_achievements  if  achievement.type == achievement_type %}
-            <tr class="trash-parent achievement-single-data editable-parent save-parent {{ getClassForAchievementType(achievement.type) }} "
-                style="outline: 5px white solid;" data-type="Achievements">
-                {% for column in columns_names %}
-                    <td class="{{ column }} {% if column != 'name' %}d-none{% endif %}" style="border:none;">
-                        {{ attribute(achievement,column) }}
-                    </td>
-                {% endfor %}
+        {% for achievement in all_achievements %}
+            {% if if  achievement.type == achievement_type %}
+                <tr class="trash-parent achievement-single-data editable-parent save-parent {{ getClassForAchievementType(achievement.type) }} "
+                    style="outline: 5px white solid;" data-type="Achievements">
+                    {% for column in columns_names %}
+                        <td class="{{ column }} {% if column != 'name' %}d-none{% endif %}" style="border:none;">
+                            {{ attribute(achievement,column) }}
+                        </td>
+                    {% endfor %}
 
-                {% include 'modules/common/components/table-cells/actions.html.twig' with {
-                    "trash"       : true,
-                    "edit"        : true,
-                    "save"        : true,
-                    "tableClasses": "d-none actions"
-                } %}
+                    {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                        "trash"       : true,
+                        "edit"        : true,
+                        "save"        : true,
+                        "tableClasses": "d-none actions"
+                    } %}
 
-            </tr>
+                </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>

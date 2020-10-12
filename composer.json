@@ -46,7 +46,6 @@
         "symfony/swiftmailer-bundle": "^3.3",
         "symfony/templating": "^4.0",
         "symfony/twig-bundle": "^4.0",
-        "symfony/web-server-bundle": "^4.0",
         "symfony/webpack-encore-bundle": "^1.4",
         "symfony/webpack-encore-pack": "^1.0",
         "symfony/yaml": "^4.0",
@@ -118,7 +117,8 @@
             "allow-contrib": false
         },
         "copy-file": {
-            "vendor_fixes/full_file_copy/friendsofsymfony/user-bundle/dev-master/": "vendor/friendsofsymfony/user-bundle/"
+            "vendor_fixes/full_file_copy/friendsofsymfony/user-bundle/dev-master/" : "vendor/friendsofsymfony/user-bundle/",
+            "vendor_fixes/full_file_copy/specsharper/encrypt-bundle/"              : "vendor/specsharper/encrypt-bundle/"
         }
     }
 }
