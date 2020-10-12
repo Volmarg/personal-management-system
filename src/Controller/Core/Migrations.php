@@ -69,7 +69,7 @@ class Migrations
                   AND   (column_name  = @columnname)
               ) > 0,
               'SELECT 1',
-              {$executed_sql}}
+              '{$executed_sql}'
             ));
             PREPARE executedIfColumnNotExist FROM @preparedStatement;
             EXECUTE executedIfColumnNotExist;

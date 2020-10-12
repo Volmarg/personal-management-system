@@ -34,8 +34,6 @@ final class Version20200912025220 extends AbstractMigration
             'ALTER TABLE my_todo_element ADD CONSTRAINT FK_ECBCC86E60E7101F FOREIGN KEY (my_todo_id) REFERENCES my_todo (id)'
         ));
 
-        $this->addSql(Migrations::buildSqlExecutedIfColumnDoesNotExist('related_entity', 'my_todo', 'ALTER TABLE my_todo ADD related_entity INT DEFAULT NULL'));
-
         $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_9A299FF4AFC2B591',
