@@ -34,3 +34,6 @@ framework:
 
     csrf_protection:
         enabled: true
+
+    templating:
+        engines: ['twig', 'php']
