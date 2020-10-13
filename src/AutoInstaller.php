@@ -4,12 +4,12 @@ namespace App;
 
 /**
  * This script is run from CLI (composer) but symfony will crash later that no such file is found
+ * The same goes for the testCheck - this will require later to reimplementing check Env::isTest();
  */
-if( php_sapi_name() === 'cli'){
+if( php_sapi_name() === 'cli' ){
     include_once 'src/Controller/Utils/CliHandler.php';
 }
 
-use App\Controller\Core\Env;
 use App\Controller\Utils\CliHandler;
 /**
  * Namespace is omitted here as this is only used by composer
@@ -79,18 +79,9 @@ class AutoInstaller{
             self::getDependenciesInformation();
 
             self::writeGeneralInformation();
-            #self::writeDependenciesMessage();
 
             CliHandler::lineSeparator();
             CliHandler::newLine();
-
-            #self::askQuestions();
-
-            #CliHandler::lineSeparator();
-            #self::checkMysqlMode();
-
-            #CliHandler::lineSeparator();
-            #self::buildEnv();
 
             CliHandler::lineSeparator();
             self::setDatabase();
@@ -103,9 +94,6 @@ class AutoInstaller{
 
             CliHandler::lineSeparator();
             self::setPermissions();
-
-            #CliHandler::lineSeparator();
-            #self::installPackages();
 
             CliHandler::lineSeparator();
             self::generateEncryptionKey();
@@ -179,6 +167,8 @@ class AutoInstaller{
         #    Make sure that You've run 'composer install' as sudo - this is a requirement!                                      #
         #    Also call 'composer install' ONLY from within the project root dir, otherwise You might mess up Your system        #
         #    As there are permissions being set to 'var' folder which is a subfolder of symfony project                         #
+        #                                                                                                                       #
+        #   Please install the composer dependencies first if You haven't made this yet!                                        #
         #########################################################################################################################
         ");
 
@@ -431,18 +421,27 @@ class AutoInstaller{
 
         CliHandler::infoText("Started setting permissions.");
         {
-            $chown_command = "chown -R www-data var";
-            $chgrp_command = "chgrp -R www-data var";
-            $chmod_command = "chmod -R 777 var";
+            $chown_command_var_folder = "chown -R www-data var";
+            $chgrp_command_var_folder = "chgrp -R www-data var";
+            $chmod_command_var_folder = "chmod -R 777 var";
 
-            shell_exec($chown_command);
-            CliHandler::text("Owner has been set.");
+            $chown_command_vendor_folder = "chown -R www-data vendor";
+            $chgrp_command_vendor_folder = "chgrp -R www-data vendor";
 
-            shell_exec($chgrp_command);
-            CliHandler::text("Group has been set.");
+            shell_exec($chown_command_var_folder);
+            CliHandler::text("Owner for `var` folder has been set.");
 
-            shell_exec($chmod_command);
-            CliHandler::text("Read, write, execute permissions have been set.", false);
+            shell_exec($chgrp_command_var_folder);
+            CliHandler::text("Group for `var` folder has been set.");
+
+            shell_exec($chmod_command_var_folder);
+            CliHandler::text("Read, write, execute permissions for `var` folder have been set.", false);
+
+            shell_exec($chown_command_vendor_folder);
+            CliHandler::text("Owner for `vendor` folder has been set.");
+
+            shell_exec($chgrp_command_vendor_folder);
+            CliHandler::text("Group for `vendor` folder has been set.");
         }
         CliHandler::infoText("Finished setting permissions.");
 
@@ -479,19 +478,21 @@ class AutoInstaller{
         #                                                                                                                       #
         #    Password encryption:                                                                                               # 
         #    Open file: ./config/services.yaml                                                                                  # 
-        #    Modify paramters section, it should look like this now:                                                            #
+        #    Modify parameters section, it should look like this now:                                                           #
         #       locale: 'en'                                                                                                    #
         #       encrypt_key: 'Your key goes here' (without the [OK] part                                                        #
-        #    Modify paramters section, it should look like this now:                                                            #
+        #    Modify parameters section, it should look like this now:                                                           #
         #                                                                                                                       #
         #    User register:                                                                                                     #
         #    Run this command and follow all steps:                                                                             #
         #    sudo bin/console fos:user:create --super-admin                                                                     #
         #                                                                                                                       #
-        #    Now You can start the project: bin/console --env=dev server:run 0.0.0.0:8001 (or other port)                       #
+        #    Local Server                                                                                                       #
+        #     Get the script from: https://symfony.com/download                                                                 #
+        #    Now You can call in the root of project: symfony server:start --port=8001                                          #
         #    Go to: http://127.0.0.1:8001                                                                                       #
         #    For more information visit: https://volmarg.github.io/ (if still works)                                            #
-        #                                                                                                                       #
+        #                                                                                                                       #    
         #    For more information about running the encore watcher for development mode - go to:                                #
         #    https://volmarg.github.io/developer-mode/                                                                          #
         #########################################################################################################################

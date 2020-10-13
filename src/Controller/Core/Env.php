@@ -87,6 +87,12 @@ class Env extends AbstractController {
         return $is_demo;
     }
 
+    /**
+     * @description Special check if the `test` mode for phpunit is turned on,
+     *              some code elements requires special handling for such case
+     *
+     * @return bool
+     */
     public static function isTest(): bool {
         try {
             $is_test = $_ENV['APP_ENV'] === self::APP_ENV_TEST;
