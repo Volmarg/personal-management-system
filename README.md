@@ -79,18 +79,15 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 </p>
 
 <h3> Linux installer </h3>
+
 <p>
-	The project can also be installed by simply calling <b>composer install</b> in project root folder <b>(Read the information that will popup)</b>.
-You will be guided through the autoinstaller - it won't do everything for You but will attempt to help You setting up the project.
+<b> In both cases it's explicitly required to install composer dependencies at first! </b>
 </p>
 
-<h3>Docker</h3>
-<p>
-mkdir vendor
-mkdir var
-chown -R www-data vendor
-chown -R www-data var
-</p>
+<ul>
+    <li><b>For standard installation call:</b> <pre>composer pms-installer</pre></li>
+    <li><b>For installation from within docker usage call:</b> <pre>composer pms-installer-docker</pre></li>
+</ul>
 
 <h2>Future development plans</h2>
 
@@ -161,5 +158,7 @@ chown -R www-data var
 	<li><a href="https://github.com/mogilvie">Mark Ogilvie</a> - for fixing EncryptBundle bugs for Symfony 4</li>
 	<li><a href="https://github.com/furcan">Furcan</a> - for adding my idea of contenteditable support for Icon Picker</li>
 	<li><a href="https://github.com/petervanderwalt">Petervanderwalt</a> - for adding fontawesome <b>js</b> version support for <a href="https://github.com/furcan/IconPicker">IconPicker</a></li>	
+	<li><a href="https://github.com/SimonHaas">SimonHaas</a> - for providing <b>docker</b> configuration</li>	
+	<li><a href="https://github.com/MohamedElashri">MohamedElashri</a> - for testing <b>docker</b> configuration</li>	
 </ul>
 <hr>
