@@ -54,7 +54,9 @@ class MyIssuesController extends AbstractController {
                 &&  !empty($issue->getTodo()->getMyTodoElement())
             ){
                 foreach($issue->getTodo()->getMyTodoElement() as $todo_element){
-                    $waiting_todo[] = $todo_element->getName();
+                    if( !$todo_element->getCompleted() ){
+                        $waiting_todo[] = $todo_element->getName();
+                    }
                 }
             }
 
