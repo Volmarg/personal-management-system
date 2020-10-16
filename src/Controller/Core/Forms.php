@@ -44,6 +44,7 @@ use App\Form\UploadFormType;
 use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
 use App\Form\User\UserPasswordType;
+use App\Form\User\UserRegisterType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 
@@ -215,6 +216,10 @@ class Forms extends AbstractController {
 
     public function todoElementForm(array $params = []): FormInterface {
         return $this->createForm(MyTodoElementType::class, null, $params);
+    }
+
+    public function userRegisterForm(array $params = []): FormInterface {
+        return $this->createForm(UserRegisterType::class, null, $params);
     }
 
     /**

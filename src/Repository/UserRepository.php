@@ -47,4 +47,13 @@ class UserRepository extends ServiceEntityRepository {
             $this->_em->flush();
         }
     }
+
+    /**
+     * Will return all existing users
+     * @return User[]
+     */
+    public function getAllUsers(): array
+    {
+        return $this->findAll();
+    }
 }

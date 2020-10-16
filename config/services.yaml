@@ -49,11 +49,6 @@ services:
         calls:
             - [setTranslator, ['@translator']]
 
-    App\Command\Override\Fos\UserCreateCommand:
-        decorates: fos_user.command.create_user
-        bind:
-            $userManipulator: "@fos_user.util.user_manipulator"
-
     App\Services\ConfigLoaders\ConfigLoaderSession:
         public: true
         arguments:

@@ -60,6 +60,7 @@ forms:
     MyIssueType: { resolved: Resolved, dashboard: 'Show on dashboard', name: Name, information: Information }
     MyIssueTypeProgress: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
     MyIssueContactType: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
+    UserRegisterType: { username: Username, email: Email, password: Password, passwordRepeat: 'Repeat password', lockPassword: 'Lock password', lockPasswordRepeat: 'Repeat lock password', submit: Submit }
 Types:
     indentChoice: { errors: { choiceIsNotInstanceOfIndentChoiceTypeDTO: 'Choice is not instance of IndentChoiceTypeDTO', choicesIsNotArray: 'Choices is not array', choicesAreMissing: 'Choices are missing' } }
 flash:
@@ -198,6 +199,7 @@ login:
     placeholders: { username: Username, password: Password }
     submit: Login
     pageTitle: 'Sign In'
+    errors: { invalidPassword: 'Invalid password', userNotFound: 'No such user was found' }
 codePages:
     error: { h1: Oops, h3: 'Page Error', text: 'We track these errors automatically, but if the problem persists feel free to contact us.', button: 'Go back' }
     error403: { h1: 403, h3: 'Access Denied', text: 'Full authentication is required to access this resource.', button: 'Go back', title: 'Access Denied' }

@@ -33,6 +33,7 @@ use App\Controller\Page\SettingsViewController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\System\ModuleController;
 use App\Controller\System\SecurityController;
+use App\Controller\UserController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -191,6 +192,11 @@ class Controllers extends AbstractController {
      * @var GoalsListController $goals_list_controller
      */
     private $goals_list_controller;
+
+    /**
+     * @var UserController $user_controller
+     */
+    private UserController $user_controller;
 
     /**
      * @return MyIssuesController
@@ -402,6 +408,14 @@ class Controllers extends AbstractController {
         return $this->goals_list_controller;
     }
 
+    /**
+     * @return UserController
+     */
+    public function getUserController(): UserController
+    {
+        return $this->user_controller;
+    }
+
     public function __construct(
         AchievementController         $achievement_controller,
         ReportsController             $reports_controller,
@@ -432,7 +446,8 @@ class Controllers extends AbstractController {
         MyTodoController              $my_todo_controller,
         MyTodoElementController       $my_todo_element_controller,
         ModuleController              $module_controller,
-        GoalsListController           $goals_list_controller
+        GoalsListController           $goals_list_controller,
+        UserController                $user_controller
     ) {
         $this->achievement_controller           = $achievement_controller;
         $this->reports_controllers              = $reports_controller;
@@ -464,6 +479,7 @@ class Controllers extends AbstractController {
         $this->my_todo_element_controller       = $my_todo_element_controller;
         $this->module_controller                = $module_controller;
         $this->goals_list_controller            = $goals_list_controller;
+        $this->user_controller                  = $user_controller;
     }
 
 }

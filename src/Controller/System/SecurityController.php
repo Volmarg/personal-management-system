@@ -7,8 +7,6 @@ namespace App\Controller\System;
 use App\DTO\System\SecurityDTO;
 use App\Entity\User;
 use Exception;
-use FOS\UserBundle\Model\UserManagerInterface;
-use FOS\UserBundle\Util\PasswordUpdater;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
@@ -21,15 +19,9 @@ class SecurityController {
      */
     private $encoderFactory;
 
-    /**
-     * @var UserManagerInterface $userManager
-     */
-    private $userManager;
-
-    public function __construct(EncoderFactoryInterface $encoderFactory, UserManagerInterface $userManager)
+    public function __construct(EncoderFactoryInterface $encoderFactory)
     {
         $this->encoderFactory = $encoderFactory;
-        $this->userManager    = $userManager;
     }
 
     /**

@@ -6,6 +6,7 @@ namespace App\Action\System;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
 use App\Controller\Utils\Utils;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AppAction extends AbstractController {
     const TWIG_MENU_NODE_PATH = 'page-elements/components/sidebar/menu-nodes/';
@@ -109,8 +111,14 @@ class AppAction extends AbstractController {
      */
     private $expirable_sessions_service;
 
-    public function __construct(Application $app, ExpirableSessionsService $sessions_service) {
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, ExpirableSessionsService $sessions_service, Controllers $controllers) {
         $this->app                        = $app;
+        $this->controllers                = $controllers;
         $this->expirable_sessions_service = $sessions_service;
     }
 
@@ -170,6 +178,7 @@ class AppAction extends AbstractController {
     /**
      * This originally came with symfonator
      * @Route("admin/{pageName}", name="admin_default")
+     * @deprecated - to be removed
      * @param string $pageName Page name
      * @return Response
      */
@@ -409,4 +418,87 @@ class AppAction extends AbstractController {
         return $ajax_response->buildJsonResponse();
     }
 
+    /**
+     * The login page
+     * @Route("/login", name="login")
+     * @param AuthenticationUtils $authentication_utils
+     * @return Response
+     */
+    public function login(AuthenticationUtils $authentication_utils)
+    {
+        $error          = $authentication_utils->getLastAuthenticationError();
+        $error_message  = "";
+
+        $all_users      = $this->controllers->getUserController()->getAllUsers();
+        $count_of_users = count($all_users);
+
+        $show_register_button = true;
+        if( empty($count_of_users) ){
+            $show_register_button = false;
+        }
+
+        if(
+                empty($error)
+            &&  empty($count_of_users)
+        ){
+            $error_message = "Todo, no user defined, message";
+        }elseif(!empty($error)){
+            $error_message = $this->app->translator->translate($error->getMessage(), $error->getMessageData(), 'security');
+        }
+
+        $template      = "security/pages/login.html.twig";
+        $template_data = [
+            'error_message'         => $error_message,
+            'show_register_button'  => $show_register_button
+        ];
+
+        return $this->render($template, $template_data);
+    }
+
+    /**
+     * User registration page
+     * @Route("/register", name="register")
+     */
+    public function register()
+    {
+
+        // todo: block registering if user already exists
+        // todo: show errors + validate on backend
+
+        $all_users      = $this->controllers->getUserController()->getAllUsers();
+        $count_of_users = count($all_users);
+
+        $allow_to_register = true;
+        if( !empty($count_of_users) ){
+            $allow_to_register = false;
+        }
+
+        $user_register_form = $this->app->forms->userRegisterForm()->createView();
+
+        $template      = "security/pages/register.html.twig";
+        $template_data = [
+            'allow_to_register'  => $allow_to_register,
+            'user_register_form' => $user_register_form,
+        ];
+
+        return $this->render($template, $template_data);
+    }
+
+    /**
+     * The logout action
+     * @Route("/logout", name="logout")
+     */
+    public function logout()
+    {
+
+    }
+
+    /**
+     * Main page when user is not logged int
+     * @Route("/", name="home")
+     */
+    public function home()
+    {
+        // todo: register to dashboard when user is logged in
+    }
 }

@@ -29,10 +29,12 @@ class Translator extends AbstractController {
     /**
      * @param string $searched_key
      * @param array $params
+     * @param string|null $domain
+     * @param string|null $locale
      * @return string
      */
-    public function translate(string $searched_key, array $params = []): string {
-        $translation = self::$translator->trans($searched_key, $params);
+    public function translate(string $searched_key, array $params = [], string $domain = null, string $locale = null): string {
+        $translation = self::$translator->trans($searched_key, $params, $domain, $locale);
         return $translation;
     }
 

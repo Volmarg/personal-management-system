@@ -11,6 +11,9 @@ login:
     password: 'Password'
   submit: "Login"
   pageTitle: Sign In
+  errors:
+    invalidPassword: Invalid password
+    userNotFound: No such user was found
 
 codePages:
   error:

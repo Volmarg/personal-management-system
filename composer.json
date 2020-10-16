@@ -23,7 +23,6 @@
         "ext-json": "*",
         "beberlei/DoctrineExtensions": "^1.2",
         "cweagans/composer-patches": "^1.6",
-        "friendsofsymfony/user-bundle": "dev-master",
         "google/apiclient": "^2.0",
         "gumlet/php-image-resize": "^2.0",
         "phpunit/phpunit": "^8.5",
@@ -42,6 +41,7 @@
         "symfony/lts": "^4@dev",
         "symfony/orm-pack": "^1.0",
         "symfony/routing": "^4.0",
+        "symfony/security-bundle": "^4.0",
         "symfony/serializer": "^4.0",
         "symfony/swiftmailer-bundle": "^3.3",
         "symfony/templating": "^4.0",
@@ -117,7 +117,6 @@
             "allow-contrib": false
         },
         "copy-file": {
-            "vendor_fixes/full_file_copy/friendsofsymfony/user-bundle/dev-master/" : "vendor/friendsofsymfony/user-bundle/",
             "vendor_fixes/full_file_copy/specsharper/encrypt-bundle/"              : "vendor/specsharper/encrypt-bundle/"
         }
     }
