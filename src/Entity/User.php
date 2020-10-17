@@ -21,6 +21,7 @@ class User implements UserInterface, EntityInterface {
 
     const PASSWORD_FIELD   = 'password';
     const USERNAME_FIELD   = "username";
+    const EMAIL_FIELD      = "email";
     const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 
     const ROLE_PERMISSION_SEE_LOCKED_RESOURCES = "ROLE_PERMISSION_SEE_LOCKED_RESOURCES";

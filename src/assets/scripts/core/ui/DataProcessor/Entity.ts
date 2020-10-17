@@ -1979,7 +1979,7 @@ export default class Entity extends AbstractDataProcessor {
             return null;
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let url             = Ajax.getUrlForPathName('register');
+            let url             = '/register'; // cannot use the ajax `getUrlForRoute` as that method requires to be authenticated
             let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.User.processorName);
             let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.User.processorName);
 

@@ -3,7 +3,7 @@
            data-table="false" width="100%">
         <tbody>
         {% for achievement in all_achievements %}
-            {% if if  achievement.type == achievement_type %}
+            {% if  achievement.type == achievement_type %}
                 <tr class="trash-parent achievement-single-data editable-parent save-parent {{ getClassForAchievementType(achievement.type) }} "
                     style="outline: 5px white solid;" data-type="Achievements">
                     {% for column in columns_names %}

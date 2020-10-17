@@ -49,7 +49,15 @@ class UserRegisterTypeValidator extends FormTypeValidator implements FormValidat
         }elseif( !filter_var($email, FILTER_VALIDATE_EMAIL) ){
             $message                      = $this->app->translator->translate('validators.UserRegisterTypeValidator.email.invalidSyntax');
             $form_validation_violations[] = FormValidationViolationDto::buildForFieldNameAndMessage(UserRegisterType::FIELD_EMAIL, $message);
+        }else{
+            $user_found_by_email = $this->controllers->getUserController()->findOneByEmail($email);
+
+            if( !empty($user_found_by_email) ){
+                $message                      = $this->app->translator->translate('validators.UserRegisterTypeValidator.email.alreadyInUse');
+                $form_validation_violations[] = FormValidationViolationDto::buildForFieldNameAndMessage(UserRegisterType::FIELD_EMAIL, $message);
+            }
         }
+
 
         if( empty($password) ){
             $message                      = $this->app->translator->translate('validators.UserRegisterTypeValidator.password.isEmpty');

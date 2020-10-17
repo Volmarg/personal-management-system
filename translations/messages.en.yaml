@@ -1,5 +1,5 @@
 validators:
-    UserRegisterTypeValidator: { email: { isEmpty: 'Email cannot be empty', invalidSyntax: 'Email address is syntethically incorrect' }, username: { isEmpty: 'Username cannot be empty', alreadyExist: 'This username already exist' }, password: { isEmpty: 'Password cannot be empty' }, repeatPassword: { doesNotMatch: 'Repeated password does not match the password' }, lockPassword: { isEmpty: 'Password cannot be empty' }, repeatLockPassword: { doesNotMatch: 'Repeated lock password does not match the password' } }
+    UserRegisterTypeValidator: { email: { isEmpty: 'Email cannot be empty', invalidSyntax: 'Email address is syntethically incorrect', alreadyInUse: 'This Email is already in use' }, username: { isEmpty: 'Username cannot be empty', alreadyExist: 'This username already exist' }, password: { isEmpty: 'Password cannot be empty' }, repeatPassword: { doesNotMatch: 'Repeated password does not match the password' }, lockPassword: { isEmpty: 'Password cannot be empty' }, repeatLockPassword: { doesNotMatch: 'Repeated lock password does not match the password' } }
     messages: { invalidDataHasBeenProvided: 'Invalid data has been provided' }
 messages:
     SettingValidationDTO: { success: 'Validation has been passed', failure: { duplicatedValue: 'Duplicated value has been found for given key: ', exceptionWaThrown: 'Exception was thrown with message' } }
@@ -202,7 +202,7 @@ login:
     placeholders: { username: Username, password: Password }
     submit: Login
     pageTitle: 'Sign In'
-    errors: { invalidPassword: 'Invalid password', userNotFound: 'No such user was found' }
+    errors: { invalidPassword: 'Invalid password', userNotFound: 'No such user was found', noExistingUserWasFoundPleaseContinueWithRegistration: 'No existing user was found, please continue with registaration' }
     buttons: { register: register }
 register:
     header: { register: Register }

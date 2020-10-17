@@ -42,6 +42,17 @@ class UserController
     }
 
     /**
+     * Will return one user for given email
+     * or if no user was found then null is being returned
+     * @param string $email
+     * @return User|null
+     */
+    public function findOneByEmail(string $email): ?User
+    {
+        return $this->app->repositories->userRepository->findOneByEmail($email);
+    }
+
+    /**
      * Will save given user in database
      *
      * @param User $user

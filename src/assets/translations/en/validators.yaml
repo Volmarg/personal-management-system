@@ -3,6 +3,7 @@ validators:
     email:
       isEmpty: Email cannot be empty
       invalidSyntax: Email address is syntethically incorrect
+      alreadyInUse: This Email is already in use
     username:
       isEmpty: Username cannot be empty
       alreadyExist: This username already exist

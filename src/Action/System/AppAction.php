@@ -444,7 +444,7 @@ class AppAction extends AbstractController {
                 empty($error)
             &&  empty($count_of_users)
         ){
-            $error_message = "Todo, no user defined, message";
+            $error_message = $this->app->translator->translate('login.errors.noExistingUserWasFoundPleaseContinueWithRegistration');
         }elseif(!empty($error)){
             $error_message = $this->app->translator->translate($error->getMessage(), $error->getMessageData(), 'security');
         }
@@ -466,11 +466,6 @@ class AppAction extends AbstractController {
      */
     public function register(Request $request)
     {
-        // todo: test if i can access authenticated pages without logging in (due to authentication changes
-        // todo: fix duration of the alert upon trying to register additional user
-        // todo: fix go back to login page upon registering user
-        // todo: fix 500 by getting url to user register
-        // todo: fix, spinner not showing directly after pressing submit, takes to long to show it
         if( !$this->controllers->getSecurityController()->canRegisterUser() ){
             $message = $this->app->translator->translate('register.messages.notAllowedToRegisterAdditionalUsers');
             $this->app->addDangerFlash($message);
@@ -503,7 +498,6 @@ class AppAction extends AbstractController {
                 if(
                         $user_register_form->isSubmitted()
                     &&  $user_register_form->isValid()
-                    && empty($form_validation_violations)
                 )
                 {
                     /**
@@ -523,15 +517,15 @@ class AppAction extends AbstractController {
                     $user_entity->setEmailCanonical($user_entity->getEmail());
 
                     $this->controllers->getUserController()->saveUser($user_entity);
-                }elseif( !empty($form_validation_violations) ){
-                    $code      = Response::HTTP_BAD_REQUEST;
-                    $success   = false;
-                    $message   = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
-                    $route_url = "";
                 }
 
             }catch(FormValidationException $exception){
                 $form_validation_violations = $exception->getFormValidationViolations(true);
+                $success                    = false;
+                $code                       = Response::HTTP_BAD_REQUEST;
+                $route_url                  = "";
+                $message                    = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
+
                 $this->app->logger->error("Some of the UserRegistration form inputs are invalid", $form_validation_violations);
             }catch(Exception | TypeError $e){
                 $this->app->logger->critical("Exception was thrown while registering new user", [
@@ -561,15 +555,6 @@ class AppAction extends AbstractController {
         ];
 
         return $this->render($template, $template_data);
-    }
-
-    /**
-     * The logout action
-     * @Route("/logout", name="logout")
-     */
-    public function logout()
-    {
-
     }
 
     /**
