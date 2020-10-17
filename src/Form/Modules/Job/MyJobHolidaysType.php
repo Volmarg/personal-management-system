@@ -5,6 +5,7 @@ namespace App\Form\Modules\Job;
 use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\Job\MyJobHolidays;
+use App\Form\Interfaces\ValidableFormInterface;
 use App\Services\Core\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -14,7 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MyJobHolidaysType extends AbstractType
+class MyJobHolidaysType extends AbstractType implements ValidableFormInterface
 {
     /**
      * @return string

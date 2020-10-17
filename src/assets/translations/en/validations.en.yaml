@@ -1,3 +1,4 @@
+# todo: move to validators once the deprecation will be removed
 validations:
   myJobHolidaysValidator:
     greaterThan: "Amount of days to spend must be bigger than %value%"

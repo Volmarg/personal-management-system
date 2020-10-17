@@ -56,4 +56,20 @@ class UserRepository extends ServiceEntityRepository {
     {
         return $this->findAll();
     }
+
+    /**
+     * Will return one user for given username
+     * or if no user was found then null is being returned
+     * @param string $username
+     * @return User|null
+     */
+    public function findOneByName(string $username): ?User
+    {
+        $entity = $this->findOneBy([
+           User::USERNAME_FIELD => $username,
+        ]);
+
+        return $entity;
+    }
+
 }

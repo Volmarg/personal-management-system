@@ -28,7 +28,12 @@ class SerializedJson extends Type
 
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        // This is executed when the value is written to the database. Make your conversions here, optionally using the $platform.
+        if( !is_array($value) ){
+            throw new \TypeError("Expected array! Got: " . gettype($value) );
+        }
+
+        $serialized_json = serialize($value);
+        return $serialized_json;
     }
 
     public function getName()

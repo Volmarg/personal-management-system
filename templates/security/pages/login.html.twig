@@ -42,6 +42,13 @@
                             </div>
                             <div class="peer">
                                 <button class="btn btn-primary" id="_submit" type="submit" >{{ 'login.submit'|trans }}</button>
+
+                                {% if canRegisterUser() %}
+                                    <a href="{{ path('register') }}">
+                                        <button class="btn btn-primary" type="button">{{ 'login.buttons.register'|trans }}</button>
+                                    </a>
+                                {% endif %}
+
                             </div>
                         </div>
                     </div>

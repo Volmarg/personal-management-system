@@ -78,7 +78,8 @@
 </script>
 
 {% block content %}{% endblock content %}
+<script src="{{ asset('assets/app.js') }}"></script>
+{% include 'page-elements/components/messages/messages.twig' %}
 
 </body>
-<script src="{{ asset('assets/app.js') }}"></script>
 </html>

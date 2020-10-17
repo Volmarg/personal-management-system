@@ -14,6 +14,14 @@ login:
   errors:
     invalidPassword: Invalid password
     userNotFound: No such user was found
+  buttons:
+    register: register
+
+register:
+  header:
+    register: Register
+  messages:
+    notAllowedToRegisterAdditionalUsers: Not allowed to register additional users
 
 codePages:
   error:

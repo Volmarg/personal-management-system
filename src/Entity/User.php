@@ -7,6 +7,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Interfaces\EntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -14,12 +15,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(name="app_user")
- * @UniqueEntity(fields={"username, email"}, message="There is already an account with this username and email")
+ * @UniqueEntity(fields={"username", "email"}, message="There is already an account with this username and email")
  */
-class User implements UserInterface {
+class User implements UserInterface, EntityInterface {
 
-    const PASSWORD_FIELD = 'password';
-    const ROLE_ADMIN     = "ROLE_ADMIN";
+    const PASSWORD_FIELD   = 'password';
+    const USERNAME_FIELD   = "username";
+    const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 
     const ROLE_PERMISSION_SEE_LOCKED_RESOURCES = "ROLE_PERMISSION_SEE_LOCKED_RESOURCES";
 
@@ -63,10 +65,22 @@ class User implements UserInterface {
     private string $email = "";
 
     /**
-     * @var string $email
+     * @var string $emailCanonical
+     * @ORM\Column(type="string", length=100, name="email_canonical")
+     */
+    private string $emailCanonical = "";
+
+    /**
+     * @var string $username
      * @ORM\Column(type="string", length=100)
      */
     private string $username = "";
+
+    /**
+     * @var string $usernameCanonical
+     * @ORM\Column(type="string", length=100, name="username_canonical")
+     */
+    private string $usernameCanonical = "";
 
     /**
      * @var bool $enabled
@@ -85,6 +99,18 @@ class User implements UserInterface {
      * @ORM\Column(type="datetime")
      */
     private DateTime $lastLogin;
+
+    // these fields are only used to transfer data - not being saved directly in DB
+
+    /**
+     * @var string $password_repeat
+     */
+    private string $password_repeat;
+
+    /**
+     * @var string $lock_password_repeat
+     */
+    private string $lock_password_repeat;
 
 # todo: migration to move user data to new table and remove old
 # todo: update demo data
@@ -156,14 +182,19 @@ class User implements UserInterface {
     }
 
     /**
+     * @param string $username
+     */
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+    /**
      * @see UserInterface
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
@@ -254,4 +285,69 @@ class User implements UserInterface {
         $this->lastLogin = $lastLogin;
     }
 
+    /**
+     * @return string
+     */
+    public function getEmailCanonical(): string
+    {
+        return $this->emailCanonical;
+    }
+
+    /**
+     * @param string $emailCanonical
+     */
+    public function setEmailCanonical(string $emailCanonical): void
+    {
+        $this->emailCanonical = $emailCanonical;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsernameCanonical(): string
+    {
+        return $this->usernameCanonical;
+    }
+
+    /**
+     * @param string $usernameCanonical
+     */
+    public function setUsernameCanonical(string $usernameCanonical): void
+    {
+        $this->usernameCanonical = $usernameCanonical;
+    }
+
+    // these fields are only used to transfer data - not being saved directly in DB
+
+    /**
+     * @return string
+     */
+    public function getPasswordRepeat(): string
+    {
+        return $this->password_repeat;
+    }
+
+    /**
+     * @param string $password_repeat
+     */
+    public function setPasswordRepeat(string $password_repeat): void
+    {
+        $this->password_repeat = $password_repeat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLockPasswordRepeat(): string
+    {
+        return $this->lock_password_repeat;
+    }
+
+    /**
+     * @param string $lock_password_repeat
+     */
+    public function setLockPasswordRepeat(string $lock_password_repeat): void
+    {
+        $this->lock_password_repeat = $lock_password_repeat;
+    }
 }

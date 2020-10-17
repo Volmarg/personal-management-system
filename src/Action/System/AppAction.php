@@ -11,6 +11,8 @@ use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
 use App\Controller\Utils\Utils;
 use App\Entity\User;
+use App\Form\User\UserRegisterType;
+use App\Services\Exceptions\FormValidationException;
 use App\Services\Session\ExpirableSessionsService;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
@@ -20,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use TypeError;
 
 class AppAction extends AbstractController {
     const TWIG_MENU_NODE_PATH = 'page-elements/components/sidebar/menu-nodes/';
@@ -303,7 +306,7 @@ class AppAction extends AbstractController {
             $hashed_password = $security_dto->getHashedPassword();
 
             $user->setLockPassword($hashed_password);
-            $this->app->repositories->userRepository->saveUser($user);
+            $this->controllers->getUserController()->saveUser($user);
 
             if( $has_password ){
                 $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenCreated');
@@ -458,27 +461,103 @@ class AppAction extends AbstractController {
     /**
      * User registration page
      * @Route("/register", name="register")
+     * @param Request $request
+     * @return Response
      */
-    public function register()
+    public function register(Request $request)
     {
+        // todo: test if i can access authenticated pages without logging in (due to authentication changes
+        // todo: fix duration of the alert upon trying to register additional user
+        // todo: fix go back to login page upon registering user
+        // todo: fix 500 by getting url to user register
+        // todo: fix, spinner not showing directly after pressing submit, takes to long to show it
+        if( !$this->controllers->getSecurityController()->canRegisterUser() ){
+            $message = $this->app->translator->translate('register.messages.notAllowedToRegisterAdditionalUsers');
+            $this->app->addDangerFlash($message);
+            return $this->redirectToRoute('login');
+        }
 
-        // todo: block registering if user already exists
-        // todo: show errors + validate on backend
-
-        $all_users      = $this->controllers->getUserController()->getAllUsers();
-        $count_of_users = count($all_users);
+        $all_users                  = $this->controllers->getUserController()->getAllUsers();
+        $count_of_users             = count($all_users);
 
         $allow_to_register = true;
         if( !empty($count_of_users) ){
             $allow_to_register = false;
         }
 
-        $user_register_form = $this->app->forms->userRegisterForm()->createView();
+        $user_register_form      = $this->app->forms->userRegisterForm();
+        $user_register_form_view = $user_register_form->createView();
+
+        // happens only on form submission
+        if( $request->isXmlHttpRequest() )
+        {
+            $form_validation_violations = [];
+            $code                       = Response::HTTP_OK;
+            $success                    = true;
+            $route_url                  = $this->generateUrl('login');
+            $message                    = $this->app->translator->translate("");
+
+            try{
+                $user_register_form->handleRequest($request);
+
+                if(
+                        $user_register_form->isSubmitted()
+                    &&  $user_register_form->isValid()
+                    && empty($form_validation_violations)
+                )
+                {
+                    /**
+                     * @var User $user_entity
+                     */
+                    $user_entity = $user_register_form->getData();
+
+                    $raw_login_password     = $user_entity->getPassword();
+                    $raw_lock_password      = $user_entity->getLockPassword();
+                    $crypted_login_password = $this->controllers->getSecurityController()->hashPassword($raw_login_password)->getHashedPassword();
+                    $crypted_lock_password  = $this->controllers->getSecurityController()->hashPassword($raw_lock_password)->getHashedPassword();
+
+                    $user_entity->setRoles([User::ROLE_SUPER_ADMIN]);
+                    $user_entity->setPassword($crypted_login_password);
+                    $user_entity->setLockPassword($crypted_lock_password);;
+                    $user_entity->setUsernameCanonical($user_entity->getUsername());
+                    $user_entity->setEmailCanonical($user_entity->getEmail());
+
+                    $this->controllers->getUserController()->saveUser($user_entity);
+                }elseif( !empty($form_validation_violations) ){
+                    $code      = Response::HTTP_BAD_REQUEST;
+                    $success   = false;
+                    $message   = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
+                    $route_url = "";
+                }
+
+            }catch(FormValidationException $exception){
+                $form_validation_violations = $exception->getFormValidationViolations(true);
+                $this->app->logger->error("Some of the UserRegistration form inputs are invalid", $form_validation_violations);
+            }catch(Exception | TypeError $e){
+                $this->app->logger->critical("Exception was thrown while registering new user", [
+                    "message" => $e->getMessage(),
+                    "trace"   => $e->getTraceAsString(),
+                ]);
+                $success = false;
+                $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+                $message = $this->app->translator->translate('messages.general.internalServerError');
+            }
+
+            $ajax_response = new AjaxResponse();
+            $ajax_response->setInvalidFormFields($form_validation_violations);
+            $ajax_response->setMessage($message);
+            $ajax_response->setCode($code);
+            $ajax_response->setSuccess($success);;
+            $ajax_response->setValidatedFormPrefix(UserRegisterType::getFormPrefix());
+            $ajax_response->setRouteUrl($route_url);
+
+            return $ajax_response->buildJsonResponse();
+        }
 
         $template      = "security/pages/register.html.twig";
         $template_data = [
             'allow_to_register'  => $allow_to_register,
-            'user_register_form' => $user_register_form,
+            'user_register_form' => $user_register_form_view,
         ];
 
         return $this->render($template, $template_data);
