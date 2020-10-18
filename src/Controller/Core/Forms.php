@@ -13,8 +13,6 @@ use App\Form\Modules\Contacts\MyContactGroupType;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeType;
 use App\Form\Modules\Goals\MyGoalsPaymentsType;
-use App\Form\Modules\Goals\MyGoalsType;
-use App\Form\Modules\Goals\MySubgoalsType;
 use App\Form\Modules\Issues\MyIssueContactType;
 use App\Form\Modules\Issues\MyIssueProgressType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
@@ -128,14 +126,6 @@ class Forms extends AbstractController {
 
     public function achievementForm(array $params = []): FormInterface {
         return $this->createForm(AchievementType::class, null, $params);
-    }
-
-    public function goalForm(array $params = []): FormInterface {
-        return $this->createForm(MyGoalsType::class, null, $params);
-    }
-
-    public function subgoalForm(array $params = []): FormInterface {
-        return $this->createForm(MySubgoalsType::class, null, $params);
     }
 
     public function goalPaymentForm(array $params = []): FormInterface {

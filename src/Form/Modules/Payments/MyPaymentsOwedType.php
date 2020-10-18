@@ -64,7 +64,8 @@ class MyPaymentsOwedType extends AbstractType
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
                 'required'  => false,
-                'label' => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.date')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsOwedType.labels.date'),
+                'html5'     => false,
             ])
             ->add('amount', NumberType::class, [
                 'attr' => [

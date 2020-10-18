@@ -42,7 +42,8 @@ class MyPaymentsBills extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $this->app->translator->translate('forms.MyPaymentsBills.labels.startDate')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsBills.labels.startDate'),
+                'html5'     => false,
             ])
             ->add(static::END_DATE, DateType::class, [
                 'attr' => [
@@ -54,7 +55,8 @@ class MyPaymentsBills extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $this->app->translator->translate('forms.MyPaymentsBills.labels.endDate')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsBills.labels.endDate'),
+                'html5'     => false,
             ])
             ->add(static::NAME, null, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsBills.labels.name')

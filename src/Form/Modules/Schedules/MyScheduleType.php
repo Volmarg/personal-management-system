@@ -45,7 +45,8 @@ class MyScheduleType extends AbstractType {
                 'widget'   => 'single_text',
                 'format'   => 'y-M-d',
                 'label'    => $this->app->translator->translate('forms.MyScheduleType.date'),
-                'required' => false
+                'required' => false,
+                'html5'    => false,
             ])
             ->add('Information', TextType::class, [
                 'label'    => $this->app->translator->translate('forms.MyScheduleType.information'),

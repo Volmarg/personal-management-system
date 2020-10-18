@@ -565,4 +565,12 @@ class AppAction extends AbstractController {
     {
         // todo: register to dashboard when user is logged in
     }
+
+    /**
+     * @Route("/logout", name="logout")
+     */
+    public function logout()
+    {
+        // nothing to be done here, required to use in path generator, but symfony auth. overrides this.
+    }
 }
