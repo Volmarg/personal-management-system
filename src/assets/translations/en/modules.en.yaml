@@ -119,21 +119,6 @@ achievements:
     label: Achievements
     addAchievement: Add achievements
 
-car:
-  settings:
-    headers:
-      changeAddCarScheduleType: Change/Add car schedule type
-  headers:
-    schedules: Schedules
-    addSchedule: Add schedule
-  legend:
-    label: Legend
-    over30: In 30 - 60 days
-    over14: In 14 -30 days
-    14: In 14 days
-  table:
-    scheduleType: Schedule type
-
 schedules:
   settings:
     headers:
@@ -303,6 +288,11 @@ job:
       days: Days
     info:
       daysAreRounded: Days are rounded down to the nearest <b>0.25</b>
+    summaryPartials:
+      iHaveGot: "I've got:"
+      days: "day/s"
+      for: for
+      leftToSpend: left to spend
   holidays:
     headers:
       summary: Holidays summary

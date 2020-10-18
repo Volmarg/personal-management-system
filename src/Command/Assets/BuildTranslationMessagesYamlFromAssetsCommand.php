@@ -86,6 +86,8 @@ class BuildTranslationMessagesYamlFromAssetsCommand extends Command
         }
         $io->newLine();
         $io->success("Finished building translation messages Yaml file");
+
+        return 0;
     }
 
     private function getTranslationFilesData()

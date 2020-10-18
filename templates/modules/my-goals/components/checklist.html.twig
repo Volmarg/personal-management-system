@@ -8,7 +8,7 @@
             {% for subgoal in all_subgoals%}
                 {% if goal.id == subgoal.myGoal.id %}
                     {% set subgoal_number = subgoal.id %}
-                    {#TODO: make a twig function for list from this#}
+
                     {% if subgoal.completed %}
                         {% set checked = 'checked' %}
 
