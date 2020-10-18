@@ -125,7 +125,7 @@ You will be guided through the autoinstaller - it won't do everything for You bu
 <li>JS</li>
 <li>JQ</li>
 <li>TypeScript (as from v1.3)</li>
-<li>Symfony 4.4x</li>
+<li>Symfony 5.x</li>
 <li>MySQL</li>
 <li>Css</li>
 <li>Scss</li>
