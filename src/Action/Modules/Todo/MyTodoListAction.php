@@ -15,16 +15,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-// todo
-//  - update name, description
-//  - update task,
-//  - add task,
-//  - remove task,
-//  - remove main point
-
-// todo 2:
-//  - change the demo data generator
-
 class MyTodoListAction extends AbstractController {
 
     const KEY_TODO = "myTodo";

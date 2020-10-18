@@ -405,8 +405,7 @@ export default class LightGallery {
             let transferIcon = '<a class=\"lg-icon\" id="lightgallery_transfer_button"><i class="fas fa-random file-transfer"></i></a>';
             $(_this.selectors.classes.upperToolbar).append(transferIcon);
 
-            _this.attachCallDialogForDataTransfer()
-            // TODO: add removing moved item from views
+            _this.attachCallDialogForDataTransfer();
         });
 
     };

@@ -109,7 +109,7 @@ export default class Initializer {
         callableViaAttrDialogs.init();
         widgetsDialogs.init();
         flatpicker.init();
-        notesTinyMce.init(); // todo: check how it was called in old js
+        notesTinyMce.init();
         monthlyPayments.init();
         uploadBasedModules.init();
         JsColor.init();

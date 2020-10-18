@@ -18,7 +18,7 @@
     ],
     "type": "project",
     "require": {
-        "php": "^7.2.0",
+        "php": "^7.4.0",
         "ext-iconv": "*",
         "ext-json": "*",
         "beberlei/DoctrineExtensions": "^1.2",

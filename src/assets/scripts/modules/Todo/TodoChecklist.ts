@@ -4,7 +4,6 @@ import DomElements      from "../../core/utils/DomElements";
 import AjaxResponseDto from "../../DTO/AjaxResponseDto";
 import DomAttributes from "../../core/utils/DomAttributes";
 
-// todo: remove
 export default class TodoChecklist {
 
     private static strings = {

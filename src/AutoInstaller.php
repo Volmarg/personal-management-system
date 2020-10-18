@@ -480,8 +480,5 @@ class AutoInstaller{
         }
         CliHandler::infoText("Finished checking Mysql mode.");
     }
-    /**
-     * TODO:
-     *  add checking php version in composer
-     */
+
 }
