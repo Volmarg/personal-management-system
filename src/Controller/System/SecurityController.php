@@ -102,7 +102,7 @@ class SecurityController {
         $count_of_users       = count($all_registered_users);
 
         if( $count_of_users > 0 ){
-            return true;
+            return false;
         }
 
         return true;

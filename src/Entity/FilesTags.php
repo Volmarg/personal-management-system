@@ -5,9 +5,12 @@ namespace App\Entity;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FilesTagsRepository")
+ * @Table(name="files_tags",indexes={@Index(name="file_path_index", columns={"full_file_path"})})
  */
 class FilesTags implements SoftDeletableEntityInterface, EntityInterface
 {
