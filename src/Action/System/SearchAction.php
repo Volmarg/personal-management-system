@@ -57,7 +57,7 @@ class SearchAction extends AbstractController {
 
             if(
                 (
-                    $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_FILES)
+                        $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_FILES)
                     ||  $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_IMAGES)
                 )
                 &&  $this->locked_resource_controller->isSystemLocked()

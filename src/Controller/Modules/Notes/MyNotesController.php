@@ -29,18 +29,28 @@ class MyNotesController extends AbstractController {
     }
 
     /**
-     * @param string $category_id
+     * Checks is the whole notes family has any active notes at all
+     *
+     * @param string $checked_category_id
      * @return bool
-     * 
+     * @throws \Exception
      */
-    public function hasCategoryFamilyVisibleNotes(string $category_id)
+    public function hasCategoryFamilyVisibleNotes(string $checked_category_id)
     {
 
         # 1. Some notes might just be empty, but if they have children then it cannot be hidden if some child has active note
         $has_category_family_active_note = false;
-        $categories_ids = [$category_id];
+        $categories_ids                  = [$checked_category_id];
 
         while( !$has_category_family_active_note ){
+
+
+                // it can be that the whole category itself is blocked, not only few notes inside
+                foreach($categories_ids as $idx => $category_id){
+                    if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false) ){
+                        unset($categories_ids[$idx]);
+                    }
+                }
 
                 $have_categories_notes = $this->app->repositories->myNotesCategoriesRepository->haveCategoriesNotes($categories_ids);
 
@@ -51,14 +61,13 @@ class MyNotesController extends AbstractController {
                     # 2. Check lock and make sure that there are some notes visible
                     foreach( $notes as $index => $note ){
                         $note_id = $note->getId();
-                        if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false)         ){
+                        if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false) ){
                             unset($notes[$index]);
                         }
                     }
 
                     if( !empty($notes) ){
                         $has_category_family_active_note = true;
-                        break;
                     }
 
                 }
