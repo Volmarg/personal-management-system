@@ -6,12 +6,21 @@ use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Index;
 
 /**
  * @Table(name="locked_resource",
  *    uniqueConstraints={
- *        @UniqueConstraint(name="unique_record",
- *            columns={"type", "target", "record"})
+ *        @UniqueConstraint(
+ *            name="unique_record",
+ *            columns={"type", "target", "record"}
+ *        )
+ *    },
+ *    indexes={
+ *       @Index(
+ *          name="locked_resource_index",
+ *          columns={"type", "record", "target"}
+ *        )
  *    }
  * )
  *

@@ -7,6 +7,8 @@ use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Statement;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,45 +24,44 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param array $categories_ids
-     * @return bool
+     * @return Statement
+     * @throws Exception
      */
-    public function haveCategoriesNotes(array $categories_ids): bool
+    public function buildHaveCategoriesNotesStatement(): Statement
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $connection = $this->_em->getConnection();
 
-        $query_builder->select('mnc')
-            ->from(MyNotesCategories::class, "mnc")
-            ->join(MyNotes::class, 'mn', Join::WITH, "mn.category = mnc.id")
-            ->where("mnc.id IN(:categoriesIds)")
-            ->andWhere("mn.deleted = 0")
-            ->setParameter("categoriesIds", $categories_ids, Connection::PARAM_STR_ARRAY);
+        $sql = "
+            SELECT COUNT(id)
+            FROM my_note
+            
+            WHERE 1
+            AND category_id IN(?)
+        ";
 
-        $query   = $query_builder->getQuery();
-        $results = $query->execute();
+        $stmt = $connection->prepare($sql);
 
-        return !empty($results);
+        return $stmt;
     }
 
     /**
+     * @param Statement $statement
      * @param array $categories_ids
      * @return bool
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function haveCategoriesChildren(array $categories_ids): bool
+    public function executeHaveCategoriesNotesStatement(Statement $statement, array $categories_ids): bool
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $ids = "'" . implode("','", $categories_ids) . "'";
 
-        $query_builder->select('mnc_child')
-            ->from(MyNotesCategories::class, "mnc")
-            ->join(MyNotesCategories::class, 'mnc_child', Join::WITH, "mnc_child.parent_id = mnc.id")
-            ->where("mnc.id IN (:categoriesIds)")
-            ->andWhere("mnc_child.deleted = 0")
-            ->setParameter("categoriesIds", $categories_ids);
+        $statement->execute([$ids]);
+        $result = $statement->fetchFirstColumn();
 
-        $query   = $query_builder->getQuery();
-        $results = $query->execute();
+        if( empty($result) ){
+            return false;
+        }
 
-        return !empty($results);
+        return true;
     }
 
     /**
@@ -107,59 +108,42 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param bool $only_categories_with_notes
      * @return array
-     * @throws DBALException
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function getCategories(bool $only_categories_with_notes = false): array
+    public function getCategories(): array
     {
         $connection = $this->_em->getConnection();
 
-        $categoriesWithNotes = '';
-
-        //add counting of notes so if category has 0 notes then disable it
-
-        if( $only_categories_with_notes ){
-            $categoriesWithNotes = "
-                -- get only categories with notes
-                ON mn.category_id = mnc.id
-                -- now additionally check if there are some categories with children that have active notes (need for menu)
-                OR 
-                (
-                    SELECT GROUP_CONCAT(note.id) AS noteId
-                    FROM my_note AS note
-                    WHERE note.category_id IN 
-                        (
-                            SELECT DISTINCT mnc_.id
-                            FROM my_note_category mnc_
-                            WHERE mnc_.parent_id = mnc.id
-                            AND mnc_.parent_id IS NOT NULL
-                        )
-                ) IS NOT NULL
-            ";
-        }
-
         $sql = "
-          SELECT 
-            mnc.name AS category,
-            mnc.icon AS icon,
-            mnc.color AS color,
-            mnc.id AS category_id,
-            mnc.parent_id AS parent_id,
-             ( -- get children categories
-               SELECT GROUP_CONCAT(DISTINCT mnc_.id)
-               FROM my_note_category mnc_
-               WHERE mnc_.parent_id = mnc.id
-               AND mnc_.parent_id IS NOT NULL
-              ) AS childrens_id
-          FROM my_note mn
-          JOIN my_note_category mnc
-            $categoriesWithNotes
-
-          WHERE mn.deleted  = 0
-            AND mnc.deleted = 0
-
-          GROUP BY mnc.name
+            SELECT
+                mnc.name               AS category,
+                mnc.icon               AS icon,
+                mnc.color              AS color,
+                mnc.id                 AS category_id,
+                mnc.parent_id          AS parent_id,
+                childrens.childrens_id AS childrens_id
+            FROM my_note mn
+                
+            JOIN my_note_category mnc
+            ON mnc.id = mn.category_id
+                
+            LEFT JOIN (
+                SELECT 
+                    GROUP_CONCAT(DISTINCT mnc_.id)  AS childrens_id,
+                    mnc_.parent_id                  AS category_id
+                
+                FROM my_note_category mnc_
+                
+                GROUP BY mnc_.parent_id
+            ) AS childrens
+            ON childrens.category_id = mnc.id
+            
+            WHERE mn.deleted = 0
+            AND mnc.deleted  = 0
+            
+            GROUP BY mnc.name
         ";
 
         $statement = $connection->prepare($sql);

@@ -6,6 +6,7 @@ use App\Controller\Core\Application;
 use App\Entity\System\LockedResource;
 use App\Entity\User;
 use App\Services\Session\UserRolesSessionService;
+use Doctrine\DBAL\Statement;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,16 +25,22 @@ class LockedResourceController extends AbstractController {
      * @param string $record
      * @param string $type
      * @param string $target
+     * @param Statement|null $stmt
      * @return bool
-     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function isResourceLocked(string $record, string $type, string $target): bool
+    public function isResourceLocked(string $record, string $type, string $target, Statement $stmt = null): bool
     {
+        if( is_null($stmt) ){
+            $stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
+        }
+
         switch($type){
             case LockedResource::TYPE_ENTITY:
-                $locked_resource = $this->app->repositories->lockedResourceRepository->findOne($record, $type, $target);
+                $is_locked_resource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
 
-                if( empty($locked_resource) ){
+                if( empty($is_locked_resource) ){
                     return false;
                 }
                 return true;
@@ -45,7 +52,7 @@ class LockedResourceController extends AbstractController {
                 $pattern = "#(.*)[\/]{1}(.*)#";
                 while( preg_match($pattern, $record, $matches) ){ # walk over the path and build parent path
 
-                    $locked_resource = $this->app->repositories->lockedResourceRepository->findOne($record, $type, $target);
+                    $locked_resource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
                     if( !empty($locked_resource) ){
                         return true;
                     }
@@ -80,13 +87,15 @@ class LockedResourceController extends AbstractController {
      * @param string $type
      * @param string $target
      * @param bool $show_flash_message
+     * @param Statement|null $stmt
      * @return bool
      *
-     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function isAllowedToSeeResource(string $record, string $type, string $target, bool $show_flash_message = true): bool
+    public function isAllowedToSeeResource(string $record, string $type, string $target, bool $show_flash_message = true, Statement $stmt = null): bool
     {
-        $is_resource_locked = $this->isResourceLocked($record, $type, $target);
+        $is_resource_locked = $this->isResourceLocked($record, $type, $target, $stmt);
         $is_system_locked   = $this->isSystemLocked();
 
         if(

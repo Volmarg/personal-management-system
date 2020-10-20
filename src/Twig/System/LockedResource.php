@@ -61,11 +61,13 @@ class LockedResource extends AbstractExtension {
      * @param string $record
      * @param string $type
      * @param string $target
-     * @return mixed[]
+     * @return string
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getClassForLockedResource(string $record, string $type, string $target): string
     {
-        $locked_resource = $this->app->repositories->lockedResourceRepository->findOne($record, $type, $target);
+        $locked_resource = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement($record, $type, $target);
 
         if( empty($locked_resource) ){
             return "text-success";

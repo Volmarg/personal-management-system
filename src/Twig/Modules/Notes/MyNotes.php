@@ -7,6 +7,7 @@ use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Core\Application;
 use App\DTO\ParentChildDTO;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -72,8 +73,9 @@ class MyNotes extends AbstractExtension {
 
     /**
      * @return array
-     * 
+     *
      * @throws DBALException
+     * @throws Exception
      */
     public function getAccessibleNotesCategories() {
         $accessible_categories = $this->my_notes_categories_controller->getAccessibleCategories();

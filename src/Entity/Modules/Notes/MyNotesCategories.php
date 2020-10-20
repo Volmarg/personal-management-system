@@ -7,10 +7,19 @@ use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index; 
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Notes\MyNotesCategoriesRepository")
- * @ORM\Table(name="my_note_category")
+ * @ORM\Table(name="my_note_category",
+ *    indexes={
+ *       @Index(
+ *          name="my_note_category_index",
+ *          columns={"id"}
+ *        )
+ *    }
+ * )
+ *
  */
 class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface
 {

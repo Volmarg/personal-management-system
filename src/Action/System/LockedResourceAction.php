@@ -59,7 +59,7 @@ class LockedResourceAction extends AbstractController {
         $target = $request->request->get(self::KEY_TARGET);
 
         //first check if the record exists if not then we create new, otherwise we have removal
-        $locked_resource = $this->app->repositories->lockedResourceRepository->findOne($record, $type, $target);
+        $locked_resource = $this->app->repositories->lockedResourceRepository->findOneEntity($record, $type, $target);
         $code            = 200;
 
         try{

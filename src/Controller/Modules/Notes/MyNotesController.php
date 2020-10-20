@@ -6,6 +6,8 @@ use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\Core\Application;
 use App\Entity\System\LockedResource;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Statement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyNotesController extends AbstractController {
@@ -32,11 +34,18 @@ class MyNotesController extends AbstractController {
      * Checks is the whole notes family has any active notes at all
      *
      * @param string $checked_category_id
+     * @param Statement|null $is_allowed_to_see_resource_stmt
+     * @param null $have_categories_notes_stmt
      * @return bool
-     * @throws \Exception
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function hasCategoryFamilyVisibleNotes(string $checked_category_id)
+    public function hasCategoryFamilyVisibleNotes(string $checked_category_id, Statement $is_allowed_to_see_resource_stmt = null, $have_categories_notes_stmt = null): bool
     {
+        if( is_null($have_categories_notes_stmt) ){
+            $have_categories_notes_stmt = $this->app->repositories->myNotesCategoriesRepository->buildHaveCategoriesNotesStatement();
+        }
+
 
         # 1. Some notes might just be empty, but if they have children then it cannot be hidden if some child has active note
         $has_category_family_active_note = false;
@@ -47,12 +56,12 @@ class MyNotesController extends AbstractController {
 
                 // it can be that the whole category itself is blocked, not only few notes inside
                 foreach($categories_ids as $idx => $category_id){
-                    if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false) ){
+                    if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $is_allowed_to_see_resource_stmt) ){
                         unset($categories_ids[$idx]);
                     }
                 }
 
-                $have_categories_notes = $this->app->repositories->myNotesCategoriesRepository->haveCategoriesNotes($categories_ids);
+                $have_categories_notes = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($have_categories_notes_stmt, $categories_ids);
 
                 if( $have_categories_notes ){
 
@@ -61,7 +70,7 @@ class MyNotesController extends AbstractController {
                     # 2. Check lock and make sure that there are some notes visible
                     foreach( $notes as $index => $note ){
                         $note_id = $note->getId();
-                        if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false) ){
+                        if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false, $is_allowed_to_see_resource_stmt) ){
                             unset($notes[$index]);
                         }
                     }
@@ -72,7 +81,7 @@ class MyNotesController extends AbstractController {
 
                 }
 
-                $have_categories_children = $this->app->repositories->myNotesCategoriesRepository->haveCategoriesChildren($categories_ids);
+                $have_categories_children = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($have_categories_notes_stmt, $categories_ids);
 
                 if( !$have_categories_children ){
                     break;
