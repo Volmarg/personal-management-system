@@ -19,12 +19,16 @@
                 <form method="post">
                     <div class="form-group">
                         <label class="text-normal text-dark">{{ 'login.labels.username' | trans }}</label>
-                        <input type="text" class="form-control" placeholder="{{ 'login.placeholders.username'|trans }}"
+
+                        {% set usernamePlaceholder = (isDemo() ? constant("App\\Entity\\User::DEMO_LOGIN") : 'login.placeholders.username'|trans )%}
+                        <input type="text" class="form-control" placeholder="{{ usernamePlaceholder }}"
                                id="inputUsername" name="username" value="" required="required">
                     </div>
                     <div class="form-group">
                         <label class="text-normal text-dark">{{ 'login.labels.password' | trans }}</label>
-                        <input type="password" class="form-control" placeholder="{{ 'login.placeholders.password'|trans }}"
+
+                        {% set passwordPlaceholder = (isDemo() ? constant("App\\Entity\\User::DEMO_PASSWORD") : 'login.placeholders.password'|trans )%}
+                        <input type="password" class="form-control" placeholder="{{ passwordPlaceholder }}"
                                id="inputPassword" name="password" required="required">
                     </div>
 

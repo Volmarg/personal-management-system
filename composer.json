@@ -91,17 +91,17 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
-        "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "cache:warmup": "symfony-cmd",
-            "security-checker security:check": "script"
-        },
+        "after-install-script": [
+          "bin/console cache:clear",
+          "bin/console cache:warmup",
+          "bin/console security:check"
+        ],
         "post-install-cmd": [
-            "@auto-scripts",
+            "@after-install-script",
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "post-update-cmd": [
-            "@auto-scripts",
+            "after-install-script",
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "pms-installer": "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",

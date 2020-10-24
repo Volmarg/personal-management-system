@@ -4,6 +4,8 @@ namespace App\Form\System;
 
 use App\Action\System\AppAction;
 use App\Controller\Core\Application;
+use App\Controller\Core\Env;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -47,10 +49,12 @@ class SystemLockResourcesPasswordType extends AbstractType
                 break;
             default:
                 {
+                    $placeholder_label = ( Env::isDemo() ? User::DEMO_PASSWORD : $this->app->translator->translate("forms.systemLockPassword.placeholders.password") );
+
                     $builder->add(AppAction::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class, [
                         'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
                         'attr'  => [
-                            "placeholder" => $this->app->translator->translate("forms.systemLockPassword.placeholders.password"),
+                            "placeholder" => $placeholder_label,
                         ]
                     ]);
                 }

@@ -4,6 +4,7 @@
 namespace App\Controller\System;
 
 
+use App\Controller\Core\Env;
 use App\Controller\UserController;
 use App\DTO\System\SecurityDTO;
 use App\Entity\User;
@@ -98,6 +99,10 @@ class SecurityController {
      */
     public function canRegisterUser(): bool
     {
+        if( Env::isDemo() ){
+            return false;
+        }
+
         $all_registered_users = $this->user_controller->getAllUsers();
         $count_of_users       = count($all_registered_users);
 

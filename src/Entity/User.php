@@ -26,6 +26,9 @@ class User implements UserInterface, EntityInterface {
 
     const ROLE_PERMISSION_SEE_LOCKED_RESOURCES = "ROLE_PERMISSION_SEE_LOCKED_RESOURCES";
 
+    const DEMO_LOGIN    = "admin";
+    const DEMO_PASSWORD = "admin";
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
