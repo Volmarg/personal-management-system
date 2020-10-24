@@ -7,8 +7,6 @@ use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -41,8 +39,8 @@ class MyPaymentsMonthlyType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.date')
-
+                'label'     => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.date'),
+                "html5"     => false,
             ])
             ->add('money', NumberType::class, [
                 'label' => $this->app->translator->translate('forms.MyPaymentsMonthlyType.labels.money')

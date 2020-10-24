@@ -57,7 +57,8 @@ class MyPaymentsBillsItems extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.date')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsBillsItems.labels.date'),
+                'html5'     => false,
             ])
             ->add(static::KEY_BILL, EntityType::class, [
                 'class'         => MyPaymentsBillsEntity::class,

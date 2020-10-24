@@ -12,3 +12,5 @@ dialogs:
   addOrModifyTodo:
     add: Add todo
     modify: Modify todo
+  filesTransfer:
+    confirm: "Do You really want to move this/these file/s."

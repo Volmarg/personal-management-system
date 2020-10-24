@@ -62,7 +62,8 @@ class MyPaymentsIncomeType extends AbstractType
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
                 'required'  => false,
-                'label' => $this->app->translator->translate('forms.MyPaymentsIncomeType.labels.date')
+                'label'     => $this->app->translator->translate('forms.MyPaymentsIncomeType.labels.date'),
+                'html5'     => false,
             ])
             ->add(self::KEY_AMOUNT, NumberType::class, [
                 'attr' => [

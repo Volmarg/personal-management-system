@@ -130,7 +130,7 @@ You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here
 <li>JS</li>
 <li>JQ</li>
 <li>TypeScript (as from v1.3)</li>
-<li>Symfony 4.4x</li>
+<li>Symfony 5.x</li>
 <li>MySQL</li>
 <li>Css</li>
 <li>Scss</li>

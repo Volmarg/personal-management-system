@@ -295,6 +295,14 @@ forms:
     name: Name
     issue: Issue
     information: Information
+  UserRegisterType:
+    username: Username
+    email: Email
+    password: Password
+    passwordRepeat: Repeat password
+    lockPassword: Lock password
+    lockPasswordRepeat: Repeat lock password
+    submit: Submit
 
 Types:
   indentChoice:

@@ -8,18 +8,21 @@
 namespace App\Entity;
 
 use App\Entity\Interfaces\EntityInterface;
-use FOS\UserBundle\Model\User as BaseUser;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use FOS\UserBundle\Model\UserInterface;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(name="app_user")
+ * @UniqueEntity(fields={"username", "email"}, message="There is already an account with this username and email")
  */
-class User extends BaseUser implements EntityInterface {
+class User implements UserInterface, EntityInterface {
 
-    const PASSWORD_FIELD = 'password';
-    const ROLE_ADMIN     = "ROLE_ADMIN";
+    const PASSWORD_FIELD   = 'password';
+    const USERNAME_FIELD   = "username";
+    const EMAIL_FIELD      = "email";
+    const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 
     const ROLE_PERMISSION_SEE_LOCKED_RESOURCES = "ROLE_PERMISSION_SEE_LOCKED_RESOURCES";
 
@@ -30,20 +33,21 @@ class User extends BaseUser implements EntityInterface {
      */
     protected $id;
 
-    public function __construct() {
-        parent::__construct();
-        // your own logic
-    }
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private string $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $avatar;
+    protected ?string $avatar;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected $nickname;
+    protected ?string $nickname;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -51,32 +55,72 @@ class User extends BaseUser implements EntityInterface {
     protected $lockPassword;
 
     /**
-     * @param UserInterface $base_user
-     * @return User
+     * @ORM\Column(type="serialized_json")
      */
-    public static function createFromBaseUser(UserInterface $base_user): User
-    {
-        $user = new User();
+    private array $roles = [];
 
-        $email              = $base_user->getEmail();
-        $email_canonical    = $base_user->getEmailCanonical();
-        $username           = $base_user->getUsername();
-        $username_canonical = $base_user->getUsernameCanonical();
-        $enabled            = $base_user->isEnabled();
-        $salt               = $base_user->getSalt();
-        $roles              = $base_user->getRoles();
-        $password           = $base_user->getPassword();
+    /**
+     * @var string $email
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $email = "";
 
-        $user->setEmail($email);
-        $user->setEmailCanonical($email_canonical);
-        $user->setUsername($username);
-        $user->setUsernameCanonical($username_canonical);
-        $user->setEnabled($enabled);
-        $user->setSalt($salt);
-        $user->setRoles($roles);
-        $user->setPassword($password);
+    /**
+     * @var string $emailCanonical
+     * @ORM\Column(type="string", length=100, name="email_canonical")
+     */
+    private string $emailCanonical = "";
 
-        return $user;
+    /**
+     * @var string $username
+     * @ORM\Column(type="string", length=100)
+     */
+    private string $username = "";
+
+    /**
+     * @var string $usernameCanonical
+     * @ORM\Column(type="string", length=100, name="username_canonical")
+     */
+    private string $usernameCanonical = "";
+
+    /**
+     * @var bool $enabled
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled = 1;
+
+    /**
+     * @var string|null $salt
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $salt = "";
+
+    /**
+     * @var DateTime $lastLogin
+     * @ORM\Column(type="datetime")
+     */
+    private DateTime $lastLogin;
+
+    // these fields are only used to transfer data - not being saved directly in DB
+
+    /**
+     * @var string $password_repeat
+     */
+    private string $password_repeat;
+
+    /**
+     * @var string $lock_password_repeat
+     */
+    private string $lock_password_repeat;
+
+# todo: migration to move user data to new table and remove old
+# todo: update demo data
+# todo: command to generate user
+# todo: add register form instead of using command,
+# todo: command should be able only to reset password
+
+    public function __construct() {
+        $this->lastLogin = new DateTime();
     }
 
     /**
@@ -87,7 +131,7 @@ class User extends BaseUser implements EntityInterface {
     }
 
     /**
-     * @param string $avatar
+     * @param string|null $avatar
      */
     public function setAvatar(?string $avatar): void {
         $this->avatar = $avatar;
@@ -126,5 +170,185 @@ class User extends BaseUser implements EntityInterface {
             return false;
         }
         return true;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->username;
+    }
+
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username): void
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     */
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getLastLogin(): DateTime
+    {
+        return $this->lastLogin;
+    }
+
+    /**
+     * @param DateTime $lastLogin
+     */
+    public function setLastLogin(DateTime $lastLogin): void
+    {
+        $this->lastLogin = $lastLogin;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmailCanonical(): string
+    {
+        return $this->emailCanonical;
+    }
+
+    /**
+     * @param string $emailCanonical
+     */
+    public function setEmailCanonical(string $emailCanonical): void
+    {
+        $this->emailCanonical = $emailCanonical;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsernameCanonical(): string
+    {
+        return $this->usernameCanonical;
+    }
+
+    /**
+     * @param string $usernameCanonical
+     */
+    public function setUsernameCanonical(string $usernameCanonical): void
+    {
+        $this->usernameCanonical = $usernameCanonical;
+    }
+
+    // these fields are only used to transfer data - not being saved directly in DB
+
+    /**
+     * @return string
+     */
+    public function getPasswordRepeat(): string
+    {
+        return $this->password_repeat;
+    }
+
+    /**
+     * @param string $password_repeat
+     */
+    public function setPasswordRepeat(string $password_repeat): void
+    {
+        $this->password_repeat = $password_repeat;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLockPasswordRepeat(): string
+    {
+        return $this->lock_password_repeat;
+    }
+
+    /**
+     * @param string $lock_password_repeat
+     */
+    public function setLockPasswordRepeat(string $lock_password_repeat): void
+    {
+        $this->lock_password_repeat = $lock_password_repeat;
     }
 }

@@ -4,7 +4,10 @@ namespace App\Repository\System;
 
 use App\Entity\System\LockedResource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\DBAL\Driver\ResultStatement;
+use Doctrine\DBAL\Statement;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
@@ -50,7 +53,7 @@ class LockedResourceRepository extends ServiceEntityRepository
      * @param string $target
      * @return LockedResource|null
      */
-    public function findOne(string $record, string $type, string $target):? LockedResource
+    public function findOneEntity(string $record, string $type, string $target):? LockedResource
     {
         $query_builder = $this->_em->createQueryBuilder();
 
@@ -72,6 +75,64 @@ class LockedResourceRepository extends ServiceEntityRepository
 
         $record = reset($results);
         return $record;
+    }
+
+    /**
+     * Returns executable statement for information (bool) weather there is lock entry in DB for given:
+     * - record,
+     * - type,
+     * - target,
+     *
+     * Solution with building statement at first was implemented due to need of reducing sqls call time
+     *
+     * @return Statement
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function buildIsLockForRecordTypeAndTargetStatement()
+    {
+        $connection = $this->_em->getConnection();
+
+        $sql = "
+            SELECT id
+            
+            FROM locked_resource
+            
+            WHERE 1
+            AND type   = ?
+            AND target = ?
+            AND record = ?
+        ";
+
+        $stmt  = $connection->prepare($sql);
+
+        return $stmt;
+    }
+
+    /**
+     * Returns information (bool) weather there is lock entry in DB for given:
+     * - record,
+     * - type,
+     * - target,
+     *
+     * @param Statement $stmt
+     * @param string $record
+     * @param string $type
+     * @param string $target
+     * @return bool
+     * @throws Exception
+     */
+    public function executeIsLockForRecordTypeAndTargetStatement(Statement $stmt, string $record, string $type, string $target): bool
+    {
+        $params = [
+            $type,
+            $target,
+            $record,
+        ];
+
+        $stmt->execute($params);
+        $result = $stmt->fetchFirstColumn();
+
+        return !empty($result);
     }
 
     /**

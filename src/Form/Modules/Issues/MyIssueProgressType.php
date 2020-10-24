@@ -69,6 +69,7 @@ class MyIssueProgressType extends AbstractType {
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
                 'required'  => true,
+                'html5'     => false,
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->app->translator->translate('forms.general.submit'),

@@ -4,9 +4,12 @@ namespace App\Controller\Modules\Notes;
 
 use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\LockedResourceController;
 use App\DTO\ParentChildDTO;
 use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Entity\System\LockedResource;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyNotesCategoriesController extends AbstractController {
@@ -24,9 +27,15 @@ class MyNotesCategoriesController extends AbstractController {
      */
     private $my_notes_controller;
 
-    public function __construct(Application $app, MyNotesController $my_notes_controller) {
-        $this->app                 = $app;
-        $this->my_notes_controller = $my_notes_controller;
+    /**
+     * @var LockedResourceController $locked_resource_controller
+     */
+    private LockedResourceController  $locked_resource_controller;
+
+    public function __construct(Application $app, MyNotesController $my_notes_controller, LockedResourceController  $locked_resource_controller) {
+        $this->app                        = $app;
+        $this->my_notes_controller        = $my_notes_controller;
+        $this->locked_resource_controller = $locked_resource_controller;
     }
 
     /**
@@ -61,21 +70,37 @@ class MyNotesCategoriesController extends AbstractController {
     }
 
     /**
-     * Returns the categories that are visible, have notes, are not deleted or have family tree inside with same rules
+     * Returns the categories that:
+     * - are visible,
+     * - have notes,
+     * - are not deleted or have family tree inside with same rules
+     * - are not locked
+     l
+     *
      * @return array
      * @throws DBALException
-     * 
+     * @throws Exception
+     *
      */
     public function getAccessibleCategories(): array
     {
-        $all_categories        = $this->app->repositories->myNotesCategoriesRepository->getCategories();
-        $accessible_categories = [];
+        $is_allowed_to_see_resource_stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
+        $have_categories_notes_stmt      = $this->app->repositories->myNotesCategoriesRepository->buildHaveCategoriesNotesStatement();
+
+        $all_categories                  = $this->app->repositories->myNotesCategoriesRepository->getCategories();
+        $accessible_categories           = [];
 
         foreach ($all_categories as $key => $result) {
             $category_id = $result[self::CATEGORY_ID];
 
             // check if this category is accessible
-            if( !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id)){
+            if( !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id, $is_allowed_to_see_resource_stmt, $have_categories_notes_stmt)){
+                unset($all_categories[$key]);
+                continue;
+            }
+
+            // check if category is locked (parent)
+            if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $is_allowed_to_see_resource_stmt) ){
                 unset($all_categories[$key]);
                 continue;
             }
@@ -98,7 +123,13 @@ class MyNotesCategoriesController extends AbstractController {
             }
 
             foreach( $children_ids as $index => $child_id ){
-                $is_child_accessible = $this->my_notes_controller->hasCategoryFamilyVisibleNotes($child_id);
+                $is_child_accessible = true;
+                if(
+                        !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($child_id, $is_allowed_to_see_resource_stmt, $have_categories_notes_stmt)
+                    ||  !$this->locked_resource_controller->isAllowedToSeeResource($child_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $is_allowed_to_see_resource_stmt)
+                ){
+                    $is_child_accessible = false;
+                }
 
                 if( !$is_child_accessible ){
                     unset($accessible_categories[$category_id][self::CHILDRENS_ID][$index]);

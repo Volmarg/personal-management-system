@@ -1,3 +1,6 @@
+validators:
+    UserRegisterTypeValidator: { email: { isEmpty: 'Email cannot be empty', invalidSyntax: 'Email address is syntethically incorrect', alreadyInUse: 'This Email is already in use' }, username: { isEmpty: 'Username cannot be empty', alreadyExist: 'This username already exist' }, password: { isEmpty: 'Password cannot be empty' }, repeatPassword: { doesNotMatch: 'Repeated password does not match the password' }, lockPassword: { isEmpty: 'Password cannot be empty' }, repeatLockPassword: { doesNotMatch: 'Repeated lock password does not match the password' } }
+    messages: { invalidDataHasBeenProvided: 'Invalid data has been provided' }
 messages:
     SettingValidationDTO: { success: 'Validation has been passed', failure: { duplicatedValue: 'Duplicated value has been found for given key: ', exceptionWaThrown: 'Exception was thrown with message' } }
     ajax: { success: { recordHasBeenCreated: 'Record has been created', recordHasBeenRemoved: 'Record has been removed' }, failure: { duplicatedRecord: 'Duplicated record', formValidationFailed: 'Form validation failed', internalServerError: 'Internal server error', undefinedError: 'Undefined error', couldNotRemoveRecord: 'Could not remove record', badRequest: 'Bad Request' } }
@@ -60,6 +63,7 @@ forms:
     MyIssueType: { resolved: Resolved, dashboard: 'Show on dashboard', name: Name, information: Information }
     MyIssueTypeProgress: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
     MyIssueContactType: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
+    UserRegisterType: { username: Username, email: Email, password: Password, passwordRepeat: 'Repeat password', lockPassword: 'Lock password', lockPasswordRepeat: 'Repeat lock password', submit: Submit }
 Types:
     indentChoice: { errors: { choiceIsNotInstanceOfIndentChoiceTypeDTO: 'Choice is not instance of IndentChoiceTypeDTO', choicesIsNotArray: 'Choices is not array', choicesAreMissing: 'Choices are missing' } }
 flash:
@@ -72,6 +76,7 @@ dialogs:
     addIssueProgress: { header: 'Add issue progress' }
     addIssueContact: { header: 'Add issue contact' }
     addOrModifyTodo: { add: 'Add todo', modify: 'Modify todo' }
+    filesTransfer: { confirm: 'Do You really want to move this/these file/s.' }
 exceptions:
     general: { missingRequiredParameter: 'Missing request parameter named: ', providedEntityIsNotAnObject: 'Provided entity is not an object', thisEntityIsNotSoftDeletable: 'This entity is not soft deletable!' }
     files: { subdirectoryLocationMissingInRequest: 'Subdirectory location is missing in request.', cannotRemoveMainFolder: 'Cannot remove main folder!' }
@@ -109,11 +114,6 @@ passwords:
     hiddenPassword: '*****'
 achievements:
     headers: { label: Achievements, addAchievement: 'Add achievements' }
-car:
-    settings: { headers: { changeAddCarScheduleType: 'Change/Add car schedule type' } }
-    headers: { schedules: Schedules, addSchedule: 'Add schedule' }
-    legend: { label: Legend, over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' }
-    table: { scheduleType: 'Schedule type' }
 schedules:
     settings: { headers: { changeAddScheduleType: 'Change/Add schedule type' }, table: { name: Name, icon: Icon } }
     headers: { schedules: Schedules, addSchedule: 'Add schedule' }
@@ -145,7 +145,7 @@ datatables:
 shopping:
     headers: { plannedShoppingItems: 'Planned shopping items', addPlannedItem: 'Add planned item' }
 job:
-    afterhours: { headers: { allAfterhours: 'All afterhours', spentAfterhours: 'Spent afterhours', remainingAfterhours: 'Remaining afterhours', addSpendAfterhours: 'Add/Spend afterhours', summary: Summary }, labels: { hours: Hours, days: Days }, info: { daysAreRounded: 'Days are rounded down to the nearest <b>0.25</b>' } }
+    afterhours: { headers: { allAfterhours: 'All afterhours', spentAfterhours: 'Spent afterhours', remainingAfterhours: 'Remaining afterhours', addSpendAfterhours: 'Add/Spend afterhours', summary: Summary }, labels: { hours: Hours, days: Days }, info: { daysAreRounded: 'Days are rounded down to the nearest <b>0.25</b>' }, summaryPartials: { iHaveGot: 'I''ve got:', days: day/s, for: for, leftToSpend: 'left to spend' } }
     holidays: { headers: { summary: 'Holidays summary', spent: 'Holidays spent', spend: 'Spend holidays' } }
 files:
     label: Files
@@ -198,6 +198,11 @@ login:
     placeholders: { username: Username, password: Password }
     submit: Login
     pageTitle: 'Sign In'
+    errors: { invalidPassword: 'Invalid password', userNotFound: 'No such user was found', noExistingUserWasFoundPleaseContinueWithRegistration: 'No existing user was found, please continue with registaration' }
+    buttons: { register: register }
+register:
+    header: { register: Register }
+    messages: { notAllowedToRegisterAdditionalUsers: 'Not allowed to register additional users' }
 codePages:
     error: { h1: Oops, h3: 'Page Error', text: 'We track these errors automatically, but if the problem persists feel free to contact us.', button: 'Go back' }
     error403: { h1: 403, h3: 'Access Denied', text: 'Full authentication is required to access this resource.', button: 'Go back', title: 'Access Denied' }

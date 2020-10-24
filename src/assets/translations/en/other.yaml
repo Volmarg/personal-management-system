@@ -11,6 +11,18 @@ login:
     password: 'Password'
   submit: "Login"
   pageTitle: Sign In
+  errors:
+    invalidPassword: Invalid password
+    userNotFound: No such user was found
+    noExistingUserWasFoundPleaseContinueWithRegistration: No existing user was found, please continue with registaration
+  buttons:
+    register: register
+
+register:
+  header:
+    register: Register
+  messages:
+    notAllowedToRegisterAdditionalUsers: Not allowed to register additional users
 
 codePages:
   error:

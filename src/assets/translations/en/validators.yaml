@@ -1,0 +1,19 @@
+validators:
+  UserRegisterTypeValidator:
+    email:
+      isEmpty: Email cannot be empty
+      invalidSyntax: Email address is syntethically incorrect
+      alreadyInUse: This Email is already in use
+    username:
+      isEmpty: Username cannot be empty
+      alreadyExist: This username already exist
+    password:
+      isEmpty: Password cannot be empty
+    repeatPassword:
+      doesNotMatch: Repeated password does not match the password
+    lockPassword:
+      isEmpty: Password cannot be empty
+    repeatLockPassword:
+      doesNotMatch: Repeated lock password does not match the password
+  messages:
+    invalidDataHasBeenProvided: Invalid data has been provided

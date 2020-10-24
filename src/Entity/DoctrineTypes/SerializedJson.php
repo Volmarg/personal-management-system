@@ -1,0 +1,43 @@
+<?php
+namespace App\Entity\DoctrineTypes;
+
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Symfony\Component\HttpFoundation\Response;
+
+
+class SerializedJson extends Type
+{
+    const TYPE_NAME = 'serialized_json'; // modify to match your type name
+
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        // return the SQL used to create your column type. To create a portable column type, use the $platform.
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        try{
+            $array = unserialize($value);
+        }catch(\Exception $e){
+            throw new \Exception("Could not unserialize json from DB", Response::HTTP_INTERNAL_SERVER_ERROR, $e);
+        }
+
+        return $array;
+    }
+
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if( !is_array($value) ){
+            throw new \TypeError("Expected array! Got: " . gettype($value) );
+        }
+
+        $serialized_json = serialize($value);
+        return $serialized_json;
+    }
+
+    public function getName()
+    {
+        return self::TYPE_NAME;
+    }
+}

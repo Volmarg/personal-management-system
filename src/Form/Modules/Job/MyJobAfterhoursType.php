@@ -44,7 +44,8 @@ class MyJobAfterhoursType extends AbstractType {
                 ],
                 'widget' => 'single_text',
                 'format' => 'y-M-d',
-                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.date')
+                'label' => $this->app->translator->translate('forms.MyJobAfterhoursType.labels.date'),
+                "html5" => false,
             ])
             ->add('Description', null, [
                 'attr' => [

@@ -13,8 +13,6 @@ use App\Form\Modules\Contacts\MyContactGroupType;
 use App\Form\Modules\Contacts\MyContactType;
 use App\Form\Modules\Contacts\MyContactTypeType;
 use App\Form\Modules\Goals\MyGoalsPaymentsType;
-use App\Form\Modules\Goals\MyGoalsType;
-use App\Form\Modules\Goals\MySubgoalsType;
 use App\Form\Modules\Issues\MyIssueContactType;
 use App\Form\Modules\Issues\MyIssueProgressType;
 use App\Form\Modules\Job\MyJobHolidaysPoolType;
@@ -44,6 +42,7 @@ use App\Form\UploadFormType;
 use App\Form\User\UserAvatarType;
 use App\Form\User\UserNicknameType;
 use App\Form\User\UserPasswordType;
+use App\Form\User\UserRegisterType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 
@@ -129,14 +128,6 @@ class Forms extends AbstractController {
         return $this->createForm(AchievementType::class, null, $params);
     }
 
-    public function goalForm(array $params = []): FormInterface {
-        return $this->createForm(MyGoalsType::class, null, $params);
-    }
-
-    public function subgoalForm(array $params = []): FormInterface {
-        return $this->createForm(MySubgoalsType::class, null, $params);
-    }
-
     public function goalPaymentForm(array $params = []): FormInterface {
         return $this->createForm(MyGoalsPaymentsType::class, null, $params);
     }
@@ -215,6 +206,10 @@ class Forms extends AbstractController {
 
     public function todoElementForm(array $params = []): FormInterface {
         return $this->createForm(MyTodoElementType::class, null, $params);
+    }
+
+    public function userRegisterForm(array $params = []): FormInterface {
+        return $this->createForm(UserRegisterType::class, null, $params);
     }
 
     /**

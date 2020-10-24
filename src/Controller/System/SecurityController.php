@@ -4,12 +4,10 @@
 namespace App\Controller\System;
 
 
+use App\Controller\UserController;
 use App\DTO\System\SecurityDTO;
 use App\Entity\User;
 use Exception;
-use FOS\UserBundle\Model\UserManagerInterface;
-use FOS\UserBundle\Util\PasswordUpdater;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\BCryptPasswordEncoder;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\Encoder\SelfSaltingEncoderInterface;
@@ -22,14 +20,19 @@ class SecurityController {
     private $encoderFactory;
 
     /**
-     * @var UserManagerInterface $userManager
+     * @var UserController $user_controller
      */
-    private $userManager;
+    private UserController $user_controller;
 
-    public function __construct(EncoderFactoryInterface $encoderFactory, UserManagerInterface $userManager)
+    /**
+     * SecurityController constructor.
+     * @param EncoderFactoryInterface $encoderFactory
+     * @param UserController $user_controller
+     */
+    public function __construct(EncoderFactoryInterface $encoderFactory, UserController $user_controller)
     {
-        $this->encoderFactory = $encoderFactory;
-        $this->userManager    = $userManager;
+        $this->encoderFactory  = $encoderFactory;
+        $this->user_controller = $user_controller;
     }
 
     /**
@@ -76,6 +79,33 @@ class SecurityController {
         $encoder           = $this->encoderFactory->getEncoder($user);
         $is_password_valid = $encoder->isPasswordValid($user_password, $used_password, $salt_for_used_password);
         return $is_password_valid;
+    }
+
+    /**
+     * Returns the information if it's allowed to register user in system
+     *
+     * WARNING!
+     *
+     * This is the main method which control permission to register showing/hiding registration.
+     * The `personal` in the project stands for ONE USER for ONE PROJECT INSTANCE
+     *
+     * If Your really for some reason want to have more users then set `return true` in this method
+     * However the project was never tested with more than one user so You potentially risk loosing some data
+     * This should never happen because all the entries are saved globally without user tracking but You just
+     * need to be aware of it
+     *
+     * @return bool
+     */
+    public function canRegisterUser(): bool
+    {
+        $all_registered_users = $this->user_controller->getAllUsers();
+        $count_of_users       = count($all_registered_users);
+
+        if( $count_of_users > 0 ){
+            return false;
+        }
+
+        return true;
     }
 
 }

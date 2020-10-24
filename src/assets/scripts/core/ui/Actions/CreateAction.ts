@@ -132,6 +132,8 @@ export default class CreateAction extends AbstractAction {
                             _this.bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
                         }
                         location.reload();
+                    }else if( ajaxResponseDto.isRouteSet() ){
+                        location.href = ajaxResponseDto.routeUrl;
                     }
 
                     BootboxWrapper.hideAll();

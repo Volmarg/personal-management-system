@@ -8,7 +8,7 @@ framework:
     # Remove or comment this section to explicitly disable session support.
     session:
         handler_id: session.handler.native_file
-        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+        save_path: '/tmp'
 
 
     #esi: ~

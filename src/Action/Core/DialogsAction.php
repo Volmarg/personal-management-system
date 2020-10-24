@@ -25,11 +25,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Todo:
- *  at some point JsonResponse should be replaced with AjaxResponse (my class)
- *  - consider adding new key in class if not yet present `success` or `error`
- *  same ajax calls for dialog should be adjusted on front for more future flexibility
- *  - test all dialogs in whole system with this changes + also the ones set with data attr
  * This class is only responsible for building dialogs data in response for example on Ajax call
  * Class Dialogs
  * @package App\Controller\Utils

@@ -45,8 +45,8 @@ class MyRecurringPaymentsMonthlyType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label' => $this->app->translator->translate('forms.MyRecurringPaymentMonthlyType.labels.date')
-
+                'label'     => $this->app->translator->translate('forms.MyRecurringPaymentMonthlyType.labels.date'),
+                'html5'     => false,
             ])
             ->add(self::KEY_MONEY, NumberType::class, [
                 'label' => $this->app->translator->translate('forms.MyRecurringPaymentMonthlyType.labels.money')

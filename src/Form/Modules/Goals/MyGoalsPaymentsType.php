@@ -38,7 +38,8 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.collectionStartDate')
+                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.collectionStartDate'),
+                'html5'     => false,
             ])
             ->add('deadline', DateType::class, [
                 'attr' => [
@@ -50,7 +51,8 @@ class MyGoalsPaymentsType extends AbstractType {
                 ],
                 'widget'    => 'single_text',
                 'format'    => 'y-M-d',
-                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.deadline')
+                'label'     => $this->app->translator->translate('forms.MyGoalsPaymentsType.deadline'),
+                'html5'     => false,
             ])
             ->add('moneyGoal', IntegerType::class,[
                 'attr' => [

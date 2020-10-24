@@ -1854,7 +1854,6 @@ export default class Entity extends AbstractDataProcessor {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;
         },
-        //todo
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id                          = $($baseElement).find('.id').html();
             let name                        = $($baseElement).find('.name').html();
@@ -1900,7 +1899,6 @@ export default class Entity extends AbstractDataProcessor {
         },
         processorName: "Todo"
     };
-
 
     public static MyTodoElement: DataProcessorInterface = {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
@@ -1968,6 +1966,32 @@ export default class Entity extends AbstractDataProcessor {
             return dataProcessorsDto;
         },
         processorName: "Todo element"
+    };
+
+    public static User: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url             = '/register'; // cannot use the ajax `getUrlForRoute` as that method requires to be authenticated
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.User.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.User.processorName);
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        processorName: "User"
     };
 
 }

@@ -77,8 +77,9 @@
     });
 </script>
 
-{% block fos_user_content %}{% endblock fos_user_content %}
+{% block content %}{% endblock content %}
+<script src="{{ asset('assets/app.js') }}"></script>
+{% include 'page-elements/components/messages/messages.twig' %}
 
 </body>
-<script src="{{ asset('assets/app.js') }}"></script>
 </html>
