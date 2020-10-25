@@ -117,7 +117,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
         $connection = $this->_em->getConnection();
 
         $sql = "
-            SELECT
+            SELECT DISTINCT
                 mnc.name               AS category,
                 mnc.icon               AS icon,
                 mnc.color              AS color,
@@ -142,8 +142,6 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
             
             WHERE mn.deleted = 0
             AND mnc.deleted  = 0
-            
-            GROUP BY mnc.name
         ";
 
         $statement = $connection->prepare($sql);
