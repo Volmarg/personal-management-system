@@ -8,15 +8,10 @@
 <h1 align="center"> Personal Management System</h1>
 <p align="center"><i>Your central point for managing personal data <br> (if current modules allow to do that).</i></p>
 
-<h3>Links</h3>
-<hr>
-<p>Demo - available <a href="http://personal-management-system.pl/"><b>here</b></a>.</p>
-<ul>
-	<li><b>Login:</b> admin</li>
-	<li><b>Password:</b> admin</li>
-	<li><b>LockPassword:</b> admin</li>	
-</ul>	
-<p>Documentation - available <a href="https://volmarg.github.io"><b>here</b></a></p>
+<p align="center"><b>Documentation</b> - available <a href="https://volmarg.github.io"><b>here</b></a></p>
+<p align="center"><b>Demo</b> - click <a href="http://personal-management-system.pl/"><b>here </b></a></p>
+<p align="center"><b>Login:</b> admin</p>
+<p align="center"><b>Password/LockPassword:</b> admin</p>
 
 <h3>Description</h3>
 <hr>
