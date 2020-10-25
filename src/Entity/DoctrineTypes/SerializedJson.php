@@ -10,9 +10,9 @@ class SerializedJson extends Type
 {
     const TYPE_NAME = 'serialized_json'; // modify to match your type name
 
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
-        // return the SQL used to create your column type. To create a portable column type, use the $platform.
+        return $platform->getVarcharTypeDeclarationSQL($column);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)

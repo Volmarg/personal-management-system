@@ -28,9 +28,10 @@ class AutoInstaller{
 
     const PUBLIC_DIR        = 'public';
 
-    const UPLOAD_DIR        = 'upload';
-    const UPLOAD_DIR_IMAGES = 'upload/images';
-    const UPLOAD_DIR_FILES  = 'upload/files';
+    const UPLOAD_DIR            = 'upload';
+    const UPLOAD_DIR_IMAGES     = 'upload/images';
+    const UPLOAD_DIR_FILES      = 'upload/files';
+    const UPLOAD_DIR_MINIATURES = 'upload/miniatures';
 
     const APP_SECRET        = 'b9abc19ae10d53eb7cf5b5684ec6511f';
 
@@ -46,6 +47,8 @@ class AutoInstaller{
     const ENV_KEY_UPLOAD_DIR            = 'UPLOAD_DIR';
     const ENV_KEY_IMAGES_UPLOAD_DIR     = 'IMAGES_UPLOAD_DIR';
     const ENV_KEY_FILES_UPLOAD_DIR      = 'FILES_UPLOAD_DIR';
+    const ENV_KEY_MINIATURES_UPLOAD_DIR = 'MINIATURES_UPLOAD_DIR';
+    const ENV_KEY_PUBLIC_ROOT_DIR       = 'PUBLIC_ROOT_DIR';
 
     static $is_node_installed = false;
 
@@ -288,9 +291,9 @@ class AutoInstaller{
         }
 
         if( file_exists($env_file_name) ){
-            CliHandler::errorText("Env file already exist so I'm aborting. Copy Your env or remove it and let the installer proceed.");
+            CliHandler::errorText("Env file already exist so It won't be modified - You must do this manually then.");
             self::installerAreaLine();
-            exit();
+            return;
         }
 
         $database_url = "mysql://{$db_login}:{$db_password}@{$db_host}:{$db_port}/{$db_name}";
@@ -310,8 +313,10 @@ class AutoInstaller{
             fwrite($file_handler,self::ENV_KEY_MAILER_URL   . "="  . self::MAILER_URL  . PHP_EOL);
             fwrite($file_handler,self::ENV_KEY_DATABASE_URL . "="  . $database_url     . PHP_EOL);
             fwrite($file_handler,self::ENV_KEY_UPLOAD_DIR   . "="  . self::UPLOAD_DIR  . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_IMAGES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_IMAGES . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_FILES_UPLOAD_DIR  . "="  . self::UPLOAD_DIR_FILES  . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_IMAGES_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_IMAGES      . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_FILES_UPLOAD_DIR      . "="  . self::UPLOAD_DIR_FILES       . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_MINIATURES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_MINIATURES  . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_PUBLIC_ROOT_DIR       . "="  . self::PUBLIC_DIR             . PHP_EOL);
         }
         fclose($file_handler);
         CliHandler::infoText('Env file has been created.');
@@ -326,6 +331,7 @@ class AutoInstaller{
             $drop_database_command   = "bin/console doctrine:database:drop -n --force";
             $create_database_command = "bin/console doctrine:database:create -n";
             $build_tables            = "bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
+            $run_migrations          = "bin/console doctrine:migrations:migrate -n";
 
             shell_exec($drop_database_command);
             CliHandler::text("Database has been dropped (if You provided the existing one)");
@@ -336,7 +342,12 @@ class AutoInstaller{
             CliHandler::text("Creating database tables, please wait");
 
             shell_exec($build_tables);
-            CliHandler::text("Database tables has been created", false);
+            CliHandler::text("Database tables has been created");
+
+            CliHandler::text("Inserting base data into the tables, please wait");
+
+            shell_exec($run_migrations);
+            CliHandler::text("Base data base been inserted into the tables", false);
 
         }
         CliHandler::infoText("Finished configuring the database.");
