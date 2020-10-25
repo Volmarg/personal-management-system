@@ -8,6 +8,16 @@
 <h1 align="center"> Personal Management System</h1>
 <p align="center"><i>Your central point for managing personal data <br> (if current modules allow to do that).</i></p>
 
+<h3>Links</h3>
+<hr>
+<p>Demo - available <a href="http://personal-management-system.pl/"><b>here</b></a>.</p>
+<ul>
+	<li><b>Login:</b> admin</li>
+	<li><b>Password:</b> admin</li>
+	<li><b>LockPassword:</b> admin</li>	
+</ul>	
+<p>Documentation - available <a href="https://volmarg.github.io"><b>here</b></a></p>
+
 <h3>Description</h3>
 <hr>
 <p align="justify">
@@ -52,14 +62,6 @@
 
 <h2>Preview</h2>
 
-<p align="center">Fully accessible demo can be found <a href="http://personal-management-system.pl/"><b>⇛Here⇚</b></a>.</p>
-<ul>
-	<li><b>Login:</b> admin</li>
-	<li><b>Password:</b> admin</li>
-</ul>
-<p><i><b>Info!</b> All data on demo instance is removed and <b>generated</b> each day. If the demo is not working then either someone did his best to enter some untested invalid data, or server is simply down.</i></p>
-	
-	
 <img src="https://github.com/Volmarg/personal-management-system/blob/main/github/1.20_contacts.jpg?raw=true">
 
 <hr>	
@@ -74,9 +76,6 @@
 <hr>
 
 <h2>How to install/documentation</h2>
-<p>
-You can find all the informations <a href="https://volmarg.github.io"><b>⇛Here⇚</b></a>.
-</p>
 
 <h3> Linux installer </h3>
 
