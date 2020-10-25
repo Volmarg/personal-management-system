@@ -84,3 +84,4 @@ topbar:
       unlocked: Unlocked
       setLockPassword: Set lock password
     logout: Logout
+    about: About

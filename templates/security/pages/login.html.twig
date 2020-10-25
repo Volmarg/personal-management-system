@@ -56,6 +56,23 @@
                             </div>
                         </div>
                     </div>
+
+                    {# Links #}
+                    {% set rowStyle  = "text-align: center;display: flex;justify-content: center; height: 25px;"%}
+                    {% set linkStyle = "text-decoration: none; color: gray;text-align: center; " %}
+                    <div class="row" style="{{ rowStyle }}">
+                        <p>
+                            <i class="fab fa-github" aria-hidden="true"></i>
+                            <a href="https://github.com/Volmarg/personal-management-system" style="{{ linkStyle }}" target="_blank"> Github project </a>
+                        </p>
+                    </div>
+                    <div class="row" style="{{ rowStyle }}">
+                        <p>
+                            <i class="fas fa-book" aria-hidden="true"></i>
+                            <a href="https://volmarg.github.io/" style="{{ linkStyle }}" target="_blank">Documentation</a>
+                        </p>
+                    </div>
+
                 </form>
 
             </div>
