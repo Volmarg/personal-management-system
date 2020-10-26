@@ -67,9 +67,10 @@ class LockedResource extends AbstractExtension {
      */
     public function getClassForLockedResource(string $record, string $type, string $target): string
     {
-        $locked_resource = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement($record, $type, $target);
+        $is_allowed_to_see_resource_stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
+        $is_resource_locked              = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($is_allowed_to_see_resource_stmt, $record, $type, $target);
 
-        if( empty($locked_resource) ){
+        if( empty($is_resource_locked) ){
             return "text-success";
         }
             return "text-danger";
