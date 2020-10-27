@@ -86,9 +86,11 @@ class GenerateMiniaturesForImagesCommand extends Command
             try{
                 foreach($processed_upload_directories as $upload_directory){
 
-                    $absolute_path             = getcwd() . DIRECTORY_SEPARATOR . Env::getPublicRootDir() . DIRECTORY_SEPARATOR . $upload_directory;
-                    $absoulte_folders_list     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator($absolute_path), false, true);
-                    $files_list_in_directories = $this->files_handler->listAllFilesInDirectories($absoulte_folders_list);
+                    $upload_directory_absolute_path = getcwd() . DIRECTORY_SEPARATOR . Env::getPublicRootDir() . DIRECTORY_SEPARATOR . $upload_directory;
+                    $absolute_folders_list          = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator($upload_directory_absolute_path), false, true);
+
+                    $absolute_folders_list[]   = $upload_directory_absolute_path;
+                    $files_list_in_directories = $this->files_handler->listAllFilesInDirectories($absolute_folders_list);
 
                     foreach($files_list_in_directories as $directory => $files){
                         foreach($files as $filename){
