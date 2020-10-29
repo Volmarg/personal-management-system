@@ -388,6 +388,6 @@ actions:
     fontawesome: Pick fontawesome icon
     copy: Copy
     save: Save
-    lockRecord: Lock record
+    lockRecord: Toggle lock
     download_file_subdirectory: Download
     download: Download

@@ -1,0 +1,9 @@
+{# This contains only the popup attributes as this is repeated in many please in case of having guide turned on#}
+
+{% if isGuide() %}
+    data-toggle-popover="true"              {# popover attr #}
+    data-html="true"                        {# popover attr #}
+    data-trigger="hover"                    {# popover attr #}
+    data-content="{{ popoverContent }}"     {# popover attr #}
+    data-placement="{{ popoverAlignment }}" {# popover attr #}
+{% endif %}

@@ -60,6 +60,8 @@ settings:
           labels:
             name: Name
             displayWidget: Display widget
+  guide:
+    label: Guide
   finances:
     label: Finances
     type:

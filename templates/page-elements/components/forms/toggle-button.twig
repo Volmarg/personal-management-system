@@ -15,6 +15,9 @@
     {% set checked = "checked" %}
 {% endif %}
 
+{% if additional_attributes is not defined %}
+    {% set additional_attributes = "" %}
+{% endif %}
 
 <input
     type="checkbox"
@@ -24,4 +27,5 @@
     data-toggle-class="{{ classes }}"
     data-toggle-bootstrap-toggle="true"
     {{ checked }}
+    {{ additional_attributes }}
 >

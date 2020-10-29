@@ -1,4 +1,9 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-files') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_FILES }}">
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-files') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_FILES }}"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "right",
+    popoverContent  : 'guide.modules.files.description' | trans
+}%}
+>
 
     <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder" style="color:rgb(255,215,0);">

@@ -64,4 +64,19 @@ export default class BootboxWrapper {
             $modal.attr('tabindex', '-1');
         });
     };
+
+    /**
+     * Will center the given bootbox dialog
+     * @param bootbox
+     */
+    public static centerDialog(bootbox: JQuery): JQuery
+    {
+        bootbox.css({
+            'top': '50%',
+            'margin-top': function () {
+                return -(bootbox.height() / 2);
+            }
+        });
+        return bootbox;
+    }
 }

@@ -72,8 +72,10 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
      * @param method {string}
      * @param requestData {object}
      * @param callback {function}
+     * @param center {boolean}
+     * @param dialogButtonLabel {string}
      */
-    public buildDialogBody(url, method, requestData, callback) {
+    public buildDialogBody(url, method, requestData, callback, center :boolean = false, dialogButtonLabel :string = null) {
 
         if( "undefined" === typeof callback ){
             callback = null;
@@ -87,7 +89,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
             url: url,
             data: requestData
         }).always((data) => {
-            _this.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDialog);
+            _this.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDialog, center, dialogButtonLabel);
         })
     };
 
@@ -95,17 +97,20 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
      * Call the dialog and insert template in it's body
      * @param template {string}
      * @param callback {function}
+     * @param center {boolean}
+     * @param dialogButtonLabel {string}
      */
-    private callDialog(template, callback = null) {
+    private callDialog(template, callback = null, center :boolean = false, dialogButtonLabel :string = "Cancel") {
 
         let dialog = BootboxWrapper.alert({
             size: "large",
             backdrop: true,
             closeButton: false,
             message: template,
+            centerVertical: center,
             buttons: {
                 ok: {
-                    label: 'Cancel',
+                    label: dialogButtonLabel,
                     className: 'btn-primary dialog-ok-button',
                     callback: () => {}
                 },
@@ -126,6 +131,10 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
             callableViaDataAttrsDialogs.forms.init();
         });
 
+        if( center )
+        {
+            BootboxWrapper.centerDialog(dialog);
+        }
     };
 
 }

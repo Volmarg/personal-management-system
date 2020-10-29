@@ -89,6 +89,7 @@
     "jquery-sparkline": "^2.4.0",
     "jquery-ui": "^1.12.1",
     "js-base64": "^2.5.1",
+    "js-cookie": "^2.2.1",
     "jvectormap": "^2.0.4",
     "lg-autoplay": "^1.0.4",
     "lg-fullscreen": "^1.1.0",

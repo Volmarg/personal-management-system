@@ -13,7 +13,12 @@
 {% set schedules_count  = data[KEY_SCHEDULES_COUNT] %}
 {% set schedules        = data[KEY_SCHEDULES] %}
 
-<li class="notifications dropdown">
+<li class="notifications dropdown"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "left",
+    popoverContent  : 'guide.system.notifications.description' | trans
+}%}
+>
     {% if 0 != schedules_count %}
         <span class="counter bgc-red">{{ schedules_count }}</span>
     {% endif %}

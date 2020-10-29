@@ -1,4 +1,9 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-job-afterhours')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_JOB }}">
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-job-afterhours')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_JOB }}"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "right",
+    popoverContent  : 'guide.modules.job.description' | trans
+}%}
+>
     <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder">
                     <i class="fas fa-desktop fa-sm"></i>

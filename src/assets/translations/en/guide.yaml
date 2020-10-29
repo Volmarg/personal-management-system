@@ -1,0 +1,82 @@
+guide:
+  modules:
+    goals:
+      description: You can use todolist to keep track of your goals progress or keep an eye of the money amount to collect.
+    todo:
+      description: Create a todo list to either track a goals, issues or any personal things to un-check.
+    notes:
+      description: Here, you can keep any small information that you need, it can be either quick notes some personal data.
+    contacts:
+      description: With this simple module you can organize your personal contacts.
+    passwords:
+      description: You can keep Your passwords encrypted in Your database, and retrieve them via decryption.
+    achievements:
+      description: Want to keep a track on anything cool you did - put in this module!
+    schedules:
+      description: This module purpose is to keep track of any recurring things you got to do like car oil changes.
+    issues:
+      description: In this section You can track any ongiong/pending cases that have to be eventually resolved.
+    travels:
+      description: Having some ideas of places to visit but without any specific plans to it? Add it to this Module.
+    payments:
+      description: Used to store money spend monthly on given shoppings, track owed money, bills, incomes.
+    shopping:
+      description: Perfect spot to store anything interesting to come back to it later.
+    job:
+      description: Track the job afterhours or spent/left holidays for given year.
+    reports:
+      description: Contains readonly reports created from already existing data in database
+    files:
+      description: Perfect for storing any kind of documents - keep it organized with tags.
+    images:
+      description: Organize Your photos/scans/downloaded pics in form of masonry galleries.
+    upload:
+      description: Management of uploaded files and images, allows to create folders, quickly copy data between directories.
+    dashboard:
+      description: The main page of admin panel, with overview of data available in form of widgets.
+  system:
+    profile:
+      description: Profile settings - password, avatar, nick etc.
+    lock:
+      description: Special second layer password. Unlocks the hidden entries, allows to show them back. See <b>Notes</b> module.
+    settings:
+      description: System settings - for example shown widgets.
+    logout:
+      description: Bye Bye!
+    about:
+      description: You will be moved to the external page with guide related to this project.
+    notifications:
+      description: Contains the count/quick overview of incomming schedules entries.
+    search:
+      description: Click here, enter searched word and hit enter.
+    hamburger:
+      description: Click here to fade-in/out the menu on left.
+  firstTimeLogin:
+    global:
+      description: |
+        Hello, <br/><br/>
+
+        Seems like this is the first time that You are logging into the project.
+        Please keep in mind that the <b>Guide</b> mode is turned on, therefore You will see
+        popups when hovering upon certain elements. <br/><br/>
+
+        In order to turn this off You need to edit the <code>.env</code> file and replace the <code>APP_GUIDE=true</code>
+        to <code>APP_GUIDE=false</code><br/><br/>
+
+        This popup is shown only upon first login.
+
+        Have a nice day,
+    demo:
+      description: |
+        Hello, <br/><br/>
+
+        Seems like this is the first time that You are logging into the project.
+        Please keep in mind that the <b>Guide</b> mode is turned on, therefore You will see
+        popups when hovering upon certain elements. <br/><br/>
+
+        You are on the demo right now. Beware that some functionality has been disabled for demo,
+        for example: changing password, registering users, etc. <br/><br/>
+
+        This popup is shown only upon first login.
+
+        Have a nice day,

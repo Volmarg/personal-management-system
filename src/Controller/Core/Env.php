@@ -2,6 +2,7 @@
 
 namespace App\Controller\Core;
 
+use App\Controller\Utils\Utils;
 use App\DTO\DatabaseCredentialsDTO;
 use \Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,6 +45,19 @@ class Env extends AbstractController {
     }
 
     /**
+     * Returns the information whether the guide mode is on/off
+     * @return bool
+     */
+    public static function isGuide() {
+        try {
+            $is_guide = Utils::getBoolRepresentationOfBoolString($_ENV['APP_GUIDE']);
+        } catch (\Exception $e) {
+            $is_guide = false;
+        }
+        return $is_guide;
+    }
+
+    /**
      * @return DatabaseCredentialsDTO
      * @throws Exception
      */
@@ -80,7 +94,7 @@ class Env extends AbstractController {
      */
     public static function isDemo() {
         try {
-            $is_demo = (bool)$_ENV['APP_DEMO'];
+            $is_demo = Utils::getBoolRepresentationOfBoolString($_ENV['APP_DEMO']);
         } catch (\Exception $e) {
             $is_demo = false;
         }
@@ -107,7 +121,7 @@ class Env extends AbstractController {
      */
     public static function isMaintenance(): bool {
         try {
-            $is_maintenance = (bool)$_ENV['APP_MAINTENANCE'];
+            $is_maintenance = Utils::getBoolRepresentationOfBoolString($_ENV['APP_MAINTENANCE']);
         } catch (\Exception $e) {
             $is_maintenance = false;
         }

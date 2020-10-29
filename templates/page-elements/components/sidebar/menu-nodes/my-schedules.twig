@@ -1,4 +1,9 @@
-<li class="nav-item dropdown sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SCHEDULES }}">
+<li class="nav-item dropdown sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SCHEDULES }}"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "right",
+    popoverContent  : 'guide.modules.schedules.description' | trans
+}%}
+>
     <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder" style="color:black;">
                     <i class="far fa-calendar-alt fa-sm"></i>

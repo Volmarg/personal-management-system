@@ -1,4 +1,9 @@
-<li class="search-box">
+<li class="search-box"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "bottom",
+    popoverContent  : 'guide.system.search.description' | trans
+}%}
+>
     <a class="search-toggle no-pdd-right" href="javascript:void(0);">
         <i class="search-icon ti-search pdd-right-10"></i>
         <i class="search-icon-close ti-close pdd-right-10"></i>

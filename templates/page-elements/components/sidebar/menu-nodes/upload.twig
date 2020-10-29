@@ -1,4 +1,9 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'upload') }}">
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'upload') }}"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "right",
+    popoverContent  : 'guide.modules.upload.description' | trans
+}%}
+>
 
     <a class="sidebar-link left-nav-link" href="javascript:void(0);">
         <span class="icon-holder" style="color:orange;">

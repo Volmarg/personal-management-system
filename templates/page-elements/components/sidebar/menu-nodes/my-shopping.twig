@@ -1,4 +1,9 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-shopping-plans')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SHOPPING }}">
+<li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-shopping-plans')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SHOPPING }}"
+{% include 'page-elements/components/guide-popup.twig' with {
+    popoverAlignment: "right",
+    popoverContent  : 'guide.modules.shopping.description' | trans
+}%}
+>
     <a class="sidebar-link left-nav-link" href="javascript:void(0);">
                 <span class="icon-holder">
                         <i class="fas fa-shopping-cart fa-sm"></i>

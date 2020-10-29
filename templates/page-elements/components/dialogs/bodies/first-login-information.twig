@@ -1,0 +1,7 @@
+<p class="text-justify" style="font-size: 13px;" data-highlight-prism-code="true">
+    {% if isDemo() %}
+        {{ 'guide.firstTimeLogin.demo.description' | trans | raw }}
+    {% else %}
+        {{ 'guide.firstTimeLogin.global.description' | trans | raw }}
+    {% endif %}
+</p>

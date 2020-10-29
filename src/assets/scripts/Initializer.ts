@@ -39,6 +39,10 @@ import UpdateAction                 from "./core/ui/Actions/UpdateAction";
 import NotesTinyMce                 from "./modules/Notes/NotesTinyMce";
 import BootstrapSelect              from "./libs/bootstrap-select/BootstrapSelect";
 import TodoChecklist                from "./modules/Todo/TodoChecklist";
+import JsCookie                     from "./libs/js-cookie/JsCookie";
+import Ajax                         from "./core/ajax/Ajax";
+import Loader                       from "./libs/loader/Loader";
+import DomElements                  from "./core/utils/DomElements";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -141,6 +145,8 @@ export default class Initializer {
      */
     private oneTimeInit(): void
     {
+        this.handleFirstTimeLogin();
+
         let windowEvents   = new WindowEvents();
         let documentEvents = new DocumentEvents();
 
@@ -174,6 +180,33 @@ export default class Initializer {
         removeAction.init();
         toggleBoolvalAction.init();
         updateAction.init();
+    }
+
+    /**
+     * @description Will handle special logic designed for the first time login only
+     * @private
+     */
+    private handleFirstTimeLogin()
+    {
+        if(
+                !JsCookie.isHideFirstLoginInformation()
+            &&  location.pathname.indexOf('/login') == -1
+        ){
+            let isDemoMode = DomElements.doElementsExists($('[data-guide-mode]'));
+
+            if( isDemoMode ){
+                let callableViaDataAttrsDialogs = new CallableViaDataAttrsDialogs();
+                let dialogUrl                   = Ajax.getUrlForPathName('dialog_body_first_login_information');
+
+                callableViaDataAttrsDialogs.buildDialogBody(dialogUrl, Ajax.REQUEST_TYPE_POST,{}, ()=>{
+                    let prism = new PrismHighlight();
+                    prism.init();
+                    Loader.hideLoader();
+                }, true, "Ok")
+            }
+
+            JsCookie.setHideFirstLoginInformation()
+        }
     }
 
 }

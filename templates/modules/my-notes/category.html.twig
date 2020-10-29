@@ -30,6 +30,11 @@
                                               data-lock-resource-record ="{{ lock_record }}"
                                               data-lock-resource-type   ="{{ lock_type }}"
                                               data-lock-resource-target ="{{ lock_target }}"
+                                              data-toggle-popover="true"                                      {# popover attr #}
+                                              data-html="true"                                                {# popover attr #}
+                                              data-trigger="hover"                                            {# popover attr #}
+                                              data-content="{{ 'actions.popover.lockRecord' | trans }}"       {# popover attr #}
+                                              data-placement="top"                                            {# popover attr #}
                                         ></span>
 
                                             <button type="button" class="btn btn-primary note-button" data-toggle="modal"

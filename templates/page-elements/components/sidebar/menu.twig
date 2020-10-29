@@ -15,7 +15,12 @@
 {% set MENU_NODE_MODULE_NAME_MY_ISSUES         = constant(app_action~"MENU_NODE_MODULE_NAME_MY_ISSUES") %}
 
 <ul class="sidebar-menu scrollable pos-r">
-    <li class="nav-item mT-10 active">
+    <li class="nav-item mT-10 active"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.dashboard.description' | trans
+    }%}
+    >
         <a class="sidebar-link" href="{{ path('dashboard') }}">
                 <span class="icon-holder">
                   <i class="c-blue-500 ti-home"></i>

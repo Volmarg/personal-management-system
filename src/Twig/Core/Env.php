@@ -13,6 +13,7 @@ class Env extends AbstractExtension {
         return [
             new TwigFunction('unset', [$this, '_unset']),
             new TwigFunction('isDemo', [$this, 'isDemo']),
+            new TwigFunction('isGuide', [$this, 'isGuide']),
             new TwigFunction('isMaintenance', [$this, 'isMaintenance']),
         ];
     }
@@ -41,6 +42,15 @@ class Env extends AbstractExtension {
     public function isMaintenance() {
         $is_maintenance = EnvController::isMaintenance();
         return $is_maintenance;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGuide(): bool
+    {
+        $is_guide = EnvController::isGuide();
+        return $is_guide;
     }
 
 }

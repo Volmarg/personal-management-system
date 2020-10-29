@@ -44,6 +44,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_NOTE              = 'page-elements/components/dialogs/bodies/create-note.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD             = 'page-elements/components/dialogs/bodies/upload.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_ADD_OR_MODIFY_TODO       = 'page-elements/components/dialogs/bodies/add-or-modify-todo.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION  = 'page-elements/components/dialogs/bodies/first-login-information.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
@@ -831,6 +832,36 @@ class DialogsAction extends AbstractController
             ];
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_ADD_OR_MODIFY_TODO, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
+
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/first-login-information", name="dialog_body_first_login_information", methods="POST")
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function buildFirstLoginInformationDialog(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
+
+        try{
+
+            $template = $this->file_upload_action->renderTemplate(false, self::TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION)->getContent();
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;
