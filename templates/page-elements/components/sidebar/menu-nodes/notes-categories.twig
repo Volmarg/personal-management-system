@@ -1,12 +1,7 @@
 {% if elements is not empty %}
     {% set moduleToCheckActiveCategory = 'MyNotes' %}
 
-    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes/category') }}"
-    {% include 'page-elements/components/guide-popup.twig' with {
-        popoverAlignment: "right",
-        popoverContent  : 'guide.modules.notes.description' | trans
-    }%}
-    >
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes/category') }}">
         <a class="sidebar-link left-nav-link" href="javascript:void(0);">
             <span class="title">{{  'sidebar.menu.notes.categories' | trans }}</span>
             <span class="arrow"><i class="ti-angle-right fa-sm"></i></span>
