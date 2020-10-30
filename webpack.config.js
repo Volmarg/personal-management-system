@@ -56,15 +56,20 @@ Encore
             {from: './src/assets/scripts/libs/fontawesome-picker/src/iconpicker-1.5.0.json',      to: 'libs/iconpicker-1.5.0.json'}, // required for fontawesome picker
         ])
     )
-    .enableBuildNotifications();
+    .enableBuildNotifications()
+    .enableSingleRuntimeChunk();
 
 const app_js_build = Encore.getWebpackConfig();
 
 app_js_build.name    = 'app_js_build';
 app_js_build.resolve = {
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: [ '.tsx', '.ts', '.js' ],
 };
-app_js_build.devtool = 'inline-source-map';
+app_js_build.stats                      = {};
+app_js_build.stats.errors                = true;
+app_js_build.optimization               = {}; // this reset is needed
+app_js_build.optimization.namedModules  = true;
+app_js_build.devtool                    = 'inline-source-map';
 
 // export the final configuration
 module.exports = [app_js_build];

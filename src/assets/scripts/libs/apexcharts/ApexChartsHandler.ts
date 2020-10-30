@@ -1,6 +1,6 @@
 import * as $     from 'jquery';
 // @ts-ignore
-import ApexCharts from 'apexcharts';
+var ApexCharts = require('apexcharts');
 
 /**
  * @link https://www.npmjs.com/package/apexcharts

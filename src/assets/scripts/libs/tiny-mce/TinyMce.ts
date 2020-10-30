@@ -7,6 +7,7 @@ import 'tinymce/plugins/image';
 import 'tinymce/plugins/preview';
 import 'tinymce/plugins/paste';
 import 'tinymce/plugins/codesample';
+import 'tinymce/icons/default'
 
 import StringUtils from "../../core/utils/StringUtils";
 
@@ -64,6 +65,7 @@ export default class TinyMce {
             mode: "specific_textareas",
             plugins: ['lists', 'table', 'image', 'preview', 'paste', 'codesample'],
             toolbar: 'bold italic | formatselect fontselect | forecolor colorpicker | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | image | codesample | preview',
+            toolbar_mode: 'wrap',
             height: 400,
             forced_root_block: '',
             paste_data_images: true,

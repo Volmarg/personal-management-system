@@ -124,8 +124,8 @@ class AutoInstaller{
 
             self::askQuestions();
 
-//            CliHandler::lineSeparator();
-//            self::checkMysqlMode();
+            CliHandler::lineSeparator();
+            self::checkMysqlMode();
 
             CliHandler::lineSeparator();
             self::buildEnv();
