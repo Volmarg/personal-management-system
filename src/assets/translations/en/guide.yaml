@@ -30,6 +30,8 @@ guide:
       description: Perfect for storing any kind of documents - keep it organized with tags.
     images:
       description: Organize Your photos/scans/downloaded pics in form of masonry galleries.
+    video:
+      description: A place to store Your short videos.
     upload:
       description: Management of uploaded files and images, allows to create folders, quickly copy data between directories.
     dashboard:

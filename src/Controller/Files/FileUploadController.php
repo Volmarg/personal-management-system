@@ -7,6 +7,8 @@ use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Video\MyVideoController;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Core\Translator;
@@ -17,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FileUploadController extends AbstractController {
 
     const MODULE_UPLOAD_DIR_FOR_IMAGES  = 'images';
+    const MODULE_UPLOAD_DIR_FOR_VIDEO   = 'video';
     const MODULE_UPLOAD_DIR_FOR_FILES   = 'files';
 
     const KEY_SUBDIRECTORY_NEW_NAME       = 'subdirectory_new_name';
@@ -38,17 +41,20 @@ class FileUploadController extends AbstractController {
 
     const MODULES_UPLOAD_DIRS = [
         self::MODULE_UPLOAD_DIR_FOR_IMAGES => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
+        self::MODULE_UPLOAD_DIR_FOR_VIDEO  => self::MODULE_UPLOAD_DIR_FOR_VIDEO,
         self::MODULE_UPLOAD_DIR_FOR_FILES  => self::MODULE_UPLOAD_DIR_FOR_FILES
     ];
 
     const MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES = [
-        MyImagesController::MODULE_NAME => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
-        MyFilesController::MODULE_NAME  => self::MODULE_UPLOAD_DIR_FOR_FILES
+        MyImagesController::MODULE_NAME       => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
+        MyFilesController::MODULE_NAME        => self::MODULE_UPLOAD_DIR_FOR_FILES,
+        ModulesController::MODULE_NAME_VIDEO  => self::MODULE_UPLOAD_DIR_FOR_VIDEO,
     ];
 
     const MODULE_UPLOAD_DIR_TO_MODULE_NAME = [
-       self::MODULE_UPLOAD_DIR_FOR_IMAGES => MyImagesController::MODULE_NAME,
+       self::MODULE_UPLOAD_DIR_FOR_IMAGES => MyVideoController::MODULE_NAME,
        self::MODULE_UPLOAD_DIR_FOR_FILES  => MyFilesController::MODULE_NAME,
+       self::MODULE_UPLOAD_DIR_FOR_VIDEO  => ModulesController::MODULE_NAME_VIDEO,
     ];
 
     /**
@@ -86,6 +92,9 @@ class FileUploadController extends AbstractController {
                 break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
                 $targetDirectory = Env::getImagesUploadDir();
+                break;
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_VIDEO:
+                $targetDirectory = Env::getVideoUploadDir();
                 break;
             default:
                 $message  = $translator->translate('responses.upload.uploadDirNotSupported');

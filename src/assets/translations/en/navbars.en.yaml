@@ -32,6 +32,10 @@ sidebar:
     images:
       label: Images
       mainDir: Main folder
+    video:
+      label: Video
+      settings: Settings
+      mainDir: Main folder
     job:
       label: Job
       afterhours: Afterhours

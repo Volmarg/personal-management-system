@@ -13,6 +13,7 @@
 {% set MENU_NODE_MODULE_NAME_NOTES             = constant(app_action~"MENU_NODE_MODULE_NAME_NOTES") %}
 {% set MENU_NODE_MODULE_NAME_REPORTS           = constant(app_action~"MENU_NODE_MODULE_NAME_REPORTS") %}
 {% set MENU_NODE_MODULE_NAME_MY_ISSUES         = constant(app_action~"MENU_NODE_MODULE_NAME_MY_ISSUES") %}
+{% set MENU_NODE_MODULE_NAME_MY_VIDEO          = constant(app_action~"MENU_NODE_MODULE_NAME_MY_VIDEO") %}
 
 <ul class="sidebar-menu scrollable pos-r">
     <li class="nav-item mT-10 active"
@@ -48,6 +49,7 @@
     <hr class="mT-3 mB-3"/>
     {% include 'page-elements/components/sidebar/menu-nodes/my-files.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-images.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-video.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/upload.twig' %}
 
   {#  {% include 'page-elements/components/sidebar/menu-nodes-demo/all-interface-examples.twig' %}#}

@@ -25,6 +25,7 @@ use App\Controller\Modules\Schedules\MySchedulesController;
 use App\Controller\Modules\Todo\MyTodoController;
 use App\Controller\Modules\Todo\MyTodoElementController;
 use App\Controller\Modules\Travels\MyTravelsIdeasController;
+use App\Controller\Modules\Video\MyVideoController;
 use App\Controller\Page\SettingsController;
 use App\Controller\Page\SettingsDashboardController;
 use App\Controller\Page\SettingsFinancesController;
@@ -197,6 +198,11 @@ class Controllers extends AbstractController {
      * @var UserController $user_controller
      */
     private UserController $user_controller;
+
+    /**
+     * @var MyVideoController $my_video_controller
+     */
+    private MyVideoController $my_video_controller;
 
     /**
      * @return MyIssuesController
@@ -416,6 +422,14 @@ class Controllers extends AbstractController {
         return $this->user_controller;
     }
 
+    /**
+     * @return MyVideoController
+     */
+    public function getMyVideoController(): MyVideoController
+    {
+        return $this->my_video_controller;
+    }
+
     public function __construct(
         AchievementController         $achievement_controller,
         ReportsController             $reports_controller,
@@ -447,7 +461,8 @@ class Controllers extends AbstractController {
         MyTodoElementController       $my_todo_element_controller,
         ModuleController              $module_controller,
         GoalsListController           $goals_list_controller,
-        UserController                $user_controller
+        UserController                $user_controller,
+        MyVideoController             $my_video_controller
     ) {
         $this->achievement_controller           = $achievement_controller;
         $this->reports_controllers              = $reports_controller;
@@ -480,6 +495,7 @@ class Controllers extends AbstractController {
         $this->module_controller                = $module_controller;
         $this->goals_list_controller            = $goals_list_controller;
         $this->user_controller                  = $user_controller;
+        $this->my_video_controller              = $my_video_controller;
     }
 
 }

@@ -15,6 +15,7 @@ class Env extends AbstractController {
         $dirs = [
           self::getImagesUploadDir(),
           self::getFilesUploadDir(),
+          self::getVideoUploadDir(),
         ];
 
         return $dirs;
@@ -26,6 +27,10 @@ class Env extends AbstractController {
 
     public static function getImagesUploadDir() {
         return $_ENV['IMAGES_UPLOAD_DIR'];
+    }
+
+    public static function getVideoUploadDir() {
+        return $_ENV['VIDEO_UPLOAD_DIR'];
     }
 
     public static function getMiniaturesUploadDir() {

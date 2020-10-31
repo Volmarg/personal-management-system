@@ -323,6 +323,19 @@ images:
     removeFiles: Remove files
     transferFiles: Transfer files
 
+video:
+  popover:
+    removeFolder: Remove folder
+    addFiles: Add files
+    addFolder: Add folder
+    removeFiles: Remove files
+    transferFiles: Transfer files
+  labels:
+    search: Search
+    tags: Tags
+    headers:
+      main: Video
+
 upload:
   settings:
     copyFolderData:

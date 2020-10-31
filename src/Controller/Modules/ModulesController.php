@@ -21,6 +21,7 @@ class ModulesController extends AbstractController {
     const MODULE_NAME_FILES                     = "My Files";
     const MODULE_NAME_GOALS                     = "My Goals";
     const MODULE_NAME_IMAGES                    = "My Images";
+    const MODULE_NAME_VIDEO                     = "My Video";
     const MODULE_NAME_JOB                       = "My Job";
     const MODULE_NAME_NOTES                     = "My Notes";
     const MODULE_NAME_PASSWORDS                 = "My Passwords";
@@ -39,6 +40,7 @@ class ModulesController extends AbstractController {
         self::MODULE_NAME_FILES,
         self::MODULE_NAME_GOALS,
         self::MODULE_NAME_IMAGES,
+        self::MODULE_NAME_VIDEO,
         self::MODULE_NAME_JOB,
         self::MODULE_NAME_NOTES,
         self::MODULE_NAME_PASSWORDS,
@@ -55,6 +57,7 @@ class ModulesController extends AbstractController {
         self::MODULE_NAME_FILES                     => null,
         self::MODULE_NAME_GOALS                     => MyTodo::class, // this is not a mistake
         self::MODULE_NAME_IMAGES                    => null ,
+        self::MODULE_NAME_VIDEO                     => null ,
         self::MODULE_NAME_JOB                       => null,
         self::MODULE_NAME_NOTES                     => MyNotes::class,
         self::MODULE_NAME_PASSWORDS                 => MyPasswords::class,

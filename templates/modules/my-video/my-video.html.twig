@@ -1,0 +1,171 @@
+{% set my_video_controller = 'App\\Controller\\Modules\\Video\\MyVideoController' %}
+{% set imageHandler        = 'App\\Services\\Files\\ImageHandler' %}
+{% set FileTagger          = 'App\\Services\\Files\\FileTagger' %}
+
+{% set KEY_FILE_FULL_PATH   = constant(my_video_controller~"::KEY_FILE_FULL_PATH") %}
+{% set KEY_FILE_NAME        = constant(my_video_controller~"::KEY_FILE_NAME") %}
+{% set KEY_TAGS             = constant(FileTagger~"::KEY_TAGS") %}
+
+{% if ajax_render == false %}
+    {% set template= "base.html.twig" %}
+{% else %}
+    {% set template= "blank.html.twig" %}
+{% endif %}
+
+    {% extends template %}
+
+{% block body %}
+
+    <main class='main-content bgc-grey-100'>
+
+        {% if not is_main_dir %}
+            <div class="masonry-item col-md-12 mB-10" style="font-size: 19px;">
+                <div class="bgc-white p-10 bd">
+                    <span>
+                        {% include 'page-elements/components/widgets/remove-folder.twig' with {
+                            'folder_path'           : subdirectory_path,
+                            'upload_module_dir'     : upload_module_dir,
+                            'files_count_in_tree'   : files_count_in_tree,
+                            'popoverContent'        : "video.popover.removeFolder"|trans
+
+                        } %}
+                    </span>
+                </div>
+            </div>
+        {% endif %}
+
+        <div id='mainContent'>
+
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+                            <h4 class="c-grey-900 mB-20 align-self-center">{{ 'video.labels.headers.main' | trans }}</h4>
+                            <div style="margin-left: 20px;">
+
+                                {# Topbar #}
+                                <div class="row">
+                                    {# Tags #}
+                                    <div class="row col-8">
+                                        <div class="col-12@sm tags-group-wrap">
+                                            <div class="tags-group">
+                                                <p class="tags-label">{{ 'video.labels.tags' | trans }}</p>
+                                                <div class="btn-group shuffler-tags-options d-flex flex-wrap">
+                                                    {# Buttons here will be generated via JS #}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {# Search #}
+                                    <div class="row col-4 flex-row-reverse">
+                                        <div class="row flex-row-reverse">
+                                            <div class="">
+                                                <div class="form-group">
+                                                    <label for="filters-search-input" class="filter-label">{{ 'video.labels.search' | trans }}</label>
+                                                    <input
+                                                            class="textfield filter__search js-shuffle-search form-control"
+                                                            type="search"
+                                                            id="filters-search-input"
+                                                            placeholder="Search by title" >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {#
+                                    the leading "/" in twig tpl must be added
+                                    because to display video from upload dir it needs to have "/"
+                                #}
+                                <div class="row my-shuffle-container" id="aniimated-thumbnials">
+                                    {% for video in all_video %}
+
+                                        {% set tags = ( "" == video[KEY_TAGS] ? "[]" : video[KEY_TAGS] ) %}
+                                        {% set tags_list = jsonDecode(tags) | join(', ') %}
+
+                                        <div class="col-4@sm grid-item"                     {# shuffle attr #}
+                                             data-groups="{{ tags }}"                       {# shuffle attr #}
+                                             data-date-created="2016-08-12"                 {# shuffle attr #}
+                                             data-title="{{ video[KEY_FILE_NAME] }}"        {# shuffle attr #}
+                                             data-toggle-popover="true"                     {# popover attr #}
+                                             data-html="true"                               {# popover attr #}
+                                             data-trigger="hover"                           {# popover attr #}
+                                             data-content="                                 {# popover attr #}
+                                                 <p style='display: flex;'>
+                                                    <span style='font-weight: bold; '>
+                                                        Tags:&nbsp;
+                                                    </span>
+                                                        <span style='word-break: break-all;'>{{ tags_list }}</span>
+                                                </p>
+                                             "
+                                                {# shuffle styles #}
+                                             style="position:relative; margin: 5px;"
+                                            >
+
+                                            {# todo: add the checkbox to handle mass transfer/removal widget #}
+                                            {# todo: handle tags changing, or make it via additional plugin in videojs - near PLAY button? #}
+                                            <div class="video-wrapper">
+                                                {# todo: adjust the size, beahves badly on smaller screen#}
+                                                <video
+                                                        id="video_{{ loop.index0 }}"
+                                                        class="video-js"
+                                                        controls
+                                                        preload="auto"
+                                                        width="640"
+                                                        height="264"
+                                                >
+                                                    <source src="/{{ video[KEY_FILE_FULL_PATH] }}"/>
+                                                </video>
+                                                <p class="text-center" style="color: black;">
+                                                    {{ video[KEY_FILE_NAME] }}
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widgets-wrapper">
+                {# todo: adjust widgets and consider making the widgets code reusable as this might be 3rd time that it will repeat in js #}
+                {% include 'page-elements/components/widgets/plus-icon.twig' with {
+                    'widgetName'     : "upload-files-widget",
+                    'id'             : "my-images-upload-files-widget",
+                    'popoverContent' : "video.popover.addFiles"|trans
+                } %}
+
+                {% include 'page-elements/components/widgets/new-folder-icon.twig' with {
+                    'widgetName'     : "new-folder-widget",
+                    'id'             : "my-images-new-folder-widget",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    'popoverContent' : "video.popover.addFolder"|trans
+                } %}
+
+                {% include 'page-elements/components/widgets/trash-remove-icon.twig' with {
+                    'widgetName'     : "mass-action-lightgallery-remove-images",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "classes"        : "disabled mass-action-lightgallery-remove-images mass-action-lightgallery-button",
+                    'popoverContent' : "video.popover.removeFiles"|trans
+                } %}
+
+                {% include 'page-elements/components/widgets/data-transfer-icon.twig' with {
+                    'widgetName'     : "mass-action-lightgallery-transfer-images",
+                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
+                    "classes"        : "disabled mass-action-lightgallery-transfer-images mass-action-lightgallery-button",
+                    'popoverContent' : "video.popover.transferFiles"|trans
+
+                } %}
+
+            </div>
+
+        </div>
+    </main>
+
+{% endblock body %}

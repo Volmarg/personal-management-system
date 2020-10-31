@@ -28,7 +28,6 @@ export default class LightGallery {
      */
     private selectors = {
         ids: {
-            lightboxGallery    : '#aniimated-thumbnials',
             trashButton        : '#lightgallery_trash_button',
             pencilButton       : '#lightgallery_pencil_button',
             saveButton         : '#lightgallery_save_button',
@@ -50,6 +49,7 @@ export default class LightGallery {
             massActionRemoveButton   : '.mass-action-lightgallery-remove-images',
             massActionTransferButton : '.mass-action-lightgallery-transfer-images',
             massActionButtons        : '.mass-action-lightgallery-button',
+            lightboxGallery          : '.lightbox-gallery',
         },
         other: {
             checkboxForImage        : '.checkbox-circle input',
@@ -130,7 +130,7 @@ export default class LightGallery {
     };
 
     private initGallery(){
-        let $lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let $lightboxGallery = $(this.selectors.classes.lightboxGallery);
 
         if( DomElements.doElementsExists($lightboxGallery) ){
             //@ts-ignore
@@ -141,7 +141,7 @@ export default class LightGallery {
     };
 
     private reinitGallery(){
-        let $lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let $lightboxGallery = $(this.selectors.classes.lightboxGallery);
 
         if( DomElements.doElementsExists($lightboxGallery) ){
             $lightboxGallery.data('lightGallery').destroy(true);
@@ -187,7 +187,7 @@ export default class LightGallery {
     };
 
     private addPluginRemoveFile(){
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let _this           = this;
 
         // Handling removing images
@@ -259,7 +259,7 @@ export default class LightGallery {
     };
 
     private addPluginRenameFile(){
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let _this           = this;
 
         // Handling editing name
@@ -397,7 +397,7 @@ export default class LightGallery {
 
     private addPluginTransferFile() {
 
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let _this           = this;
 
         // Handling editing name
@@ -412,7 +412,7 @@ export default class LightGallery {
 
     private addPluginManageFileTags() {
 
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let _this           = this;
 
         // Handling managing tags
@@ -462,7 +462,7 @@ export default class LightGallery {
                 let fileCurrentPath         = $(buttonsToolbar).find(_this.selectors.classes.downloadButton).attr('href');
 
                 let addTagsToImageOnViewAndRebuildShuffleGroups = (tags) => {
-                    let gallery   = $(_this.selectors.ids.lightboxGallery);
+                    let gallery   = $(_this.selectors.classes.lightboxGallery);
                     let currImage = $(gallery).find('[data-src^="' + fileCurrentPath + '"]');
                     let tagsArr   = tags.split(',');
                     let tagsJson  = JSON.stringify(tagsArr);
@@ -490,7 +490,7 @@ export default class LightGallery {
         let removedImageMiniature    = $(thumbnails).find("[data-src-real^='" + filePath + "']");
         let nextButton               = $(this.selectors.classes.nextButton);
         let currentViewedImage       = $(this.selectors.classes.currentViewedImage);
-        let htmlGallery              = $(this.selectors.ids.lightboxGallery);
+        let htmlGallery              = $(this.selectors.classes.lightboxGallery);
 
         $(removedImageMiniature).parent('div').remove();
         $(currentViewedImage).remove();
@@ -520,7 +520,7 @@ export default class LightGallery {
 
     private handleGalleryEvents(){
         let _this           = this;
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
 
         lightboxGallery.on('onAfterSlide.lg', function () {
             _this.handleMovingBetweenImagesAfterImageRemoval(lightboxGallery);
@@ -567,7 +567,7 @@ export default class LightGallery {
     };
 
     private handleClosingGalleryIfThereAreNoMoreImages() {
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let foundImages     = $(lightboxGallery).find('img');
         let closeButton     = $('.lg-close');
 
@@ -598,7 +598,7 @@ export default class LightGallery {
      * This function will prevent triggering events such as showing gallery for image in wrapper (click)
      */
     private preventCheckboxEventTriggering(){
-        let lightboxGallery              = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery              = $(this.selectors.classes.lightboxGallery);
         let checkboxesForImagesWrappers  = $( lightboxGallery.find(this.selectors.other.checkboxForImageWrapper) );
         let checkboxesForImages          = $( lightboxGallery.find(this.selectors.other.checkboxForImage) );
 
@@ -637,7 +637,7 @@ export default class LightGallery {
      */
     private handleCheckboxForImageInGalleryView(){
         let _this                = this;
-        let lightboxGallery      = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery      = $(this.selectors.classes.lightboxGallery);
         let checkboxesForImages  = ( lightboxGallery.find(this.selectors.other.checkboxForImage) );
 
         $(checkboxesForImages).on('change', () => {
@@ -659,7 +659,7 @@ export default class LightGallery {
      * @param button {object}
      */
     private handleWidgetMassActionRemove(button){
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let _this           = this;
 
         $(button).off('click');
@@ -718,7 +718,7 @@ export default class LightGallery {
      * @param button {object}
      */
     private handleWidgetMassActionTransfer(button){
-        let lightboxGallery = $(this.selectors.ids.lightboxGallery);
+        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
         let _this           = this;
 
         $(button).off('click');
@@ -743,7 +743,7 @@ export default class LightGallery {
             let callback = function (){
                 _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
                 _this.reinitGallery();
-                BootboxWrapper.hideAll();;
+                BootboxWrapper.hideAll();
             };
 
             this.dataTransferDialogs.buildDataTransferDialog(filePaths, 'My Files', callback);
@@ -757,9 +757,10 @@ export default class LightGallery {
      * because JS overwrites it and besides i don't want to interfere with original code of that lib.
      */
     private preventSettingMasonryGalleryAsAbsolute(){
+        let _this = this;
         document.addEventListener("DOMContentLoaded", function() {
             let $myGallery  = $('.lightgallery .my-gallery');
-            let $thumbnails = $('#aniimated-thumbnials');
+            let $thumbnails = $(_this.selectors.classes.lightboxGallery);
 
             if( DomElements.doElementsExists($myGallery) && DomElements.doElementsExists($thumbnails)){
                 $myGallery.attr("style", "");
