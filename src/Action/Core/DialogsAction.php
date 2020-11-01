@@ -8,6 +8,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\ModulesController;
+use App\Controller\Utils\Utils;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Form\Modules\Issues\MyIssueContactType;
 use App\Form\Modules\Issues\MyIssueProgressType;
@@ -50,6 +51,7 @@ class DialogsAction extends AbstractController
     const KEY_MODULE_NAME                                    = 'moduleName';
     const KEY_ENTITY_ID                                      = "entityId";
     const KEY_ACTION_PATHNAME                                = 'actionPathname';
+    const KEY_IS_UPDATE_ACTION                               = 'isUpdateAction';
 
     /**
      * @var Application $app
@@ -222,7 +224,7 @@ class DialogsAction extends AbstractController
                 return $jsonResponse;
             }
 
-            // in ligthgallery.html.twig
+            // for example in: ligthgallery.html.twig
             $file_current_path = FilesHandler::trimFirstAndLastSlash($request->request->get(static::KEY_FILE_CURRENT_PATH));
 
             $file = new File($file_current_path);
@@ -242,13 +244,15 @@ class DialogsAction extends AbstractController
             $tags_json = ( !is_null($file_tags) ? $file_tags->getTags() : '');
 
             $form_data  = [
-                FileTagger::KEY_TAGS=> $tags_json
+                FileTagger::KEY_TAGS => $tags_json
             ];
-            $form = $this->app->forms->updateTagsForm($form_data);
+            $form             = $this->app->forms->updateTagsForm($form_data);
+            $is_update_action = Utils::getBoolRepresentationOfBoolString($request->request->get(self::KEY_IS_UPDATE_ACTION, false));
 
             $template_data = [
                 'form'                  => $form->createView(),
                 'file_current_location' => $file_current_path,
+                'is_update_action'      => $is_update_action,
             ];
 
             $template = $this->render(static::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS, $template_data)->getContent();

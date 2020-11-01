@@ -159,8 +159,8 @@ export default class AjaxResponseDto extends AbstractDto {
      */
     isSuccessCode(){
         if(
-                200 >= this.code
-            &&  300 > this.code
+                this.code >= 200
+            &&  this.code < 300
         ){
             return true;
         }

@@ -330,6 +330,7 @@ video:
     addFolder: Add folder
     removeFiles: Remove files
     transferFiles: Transfer files
+    editTags: Edit tags
   labels:
     search: Search
     tags: Tags

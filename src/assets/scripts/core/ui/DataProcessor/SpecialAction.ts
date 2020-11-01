@@ -6,7 +6,7 @@ import Ajax                     from "../../ajax/Ajax";
 import DomAttributes            from "../../utils/DomAttributes";
 import DataProcessorDto         from "../../../DTO/DataProcessorDto";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
-import AjaxEvents from "../../ajax/AjaxEvents";
+import AjaxEvents               from "../../ajax/AjaxEvents";
 
 /**
  * @description This class should contain definitions of actions either for special forms or certain elements on the page
@@ -367,4 +367,42 @@ export default class SpecialAction extends AbstractDataProcessor {
         },
         processorName: "Payment bill item"
     };
+
+    /**
+     *  @description special action handled for tags updating
+     */
+    public static UpdateTags: DataProcessorInterface =  {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        }, makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        }, makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let tags           = $($baseElement).find('.tags-input-wrapper input').val();
+            let filePath       = $($baseElement).find('[data-tag-update-file-current-location]').data('tagUpdateFileCurrentLocation');
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(SpecialAction.UpdateTags.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(SpecialAction.UpdateTags.processorName);
+
+            let ajaxUpdateUrl  = Ajax.getUrlForPathName('api_files_tagger_update_tags');
+
+            let ajaxData = {
+                'name'          : name,
+                'tags'          : tags,
+                'file_full_path': filePath,
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.url            = ajaxUpdateUrl;
+            dataProcessorsDto.ajaxData       = ajaxData;
+
+            return dataProcessorsDto;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        processorName: "Tags"
+    };
+
 }

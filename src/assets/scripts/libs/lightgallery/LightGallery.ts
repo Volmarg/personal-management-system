@@ -439,7 +439,7 @@ export default class LightGallery {
                 let callback = function (){
                     _this.removeImageWithMiniature(fileCurrentPath);
                     _this.handleClosingGalleryIfThereAreNoMoreImages();
-                    BootboxWrapper.hideAll();;
+                    BootboxWrapper.hideAll();
                 };
 
                 let escapedFileCurrentPath = ( fileCurrentPath.indexOf('/') === 0 ? fileCurrentPath.replace("/", "") : fileCurrentPath ) ;
@@ -479,6 +479,10 @@ export default class LightGallery {
 
                 };
 
+                /**
+                 * SpecialActions::UpdateTags - should be theoretically used here but due to special handling of
+                 * miniatures etc in background - this must remain like this
+                 */
                 _this.tagManagementDialogs.buildTagManagementDialog(fileCurrentPath, 'My Images', addTagsToImageOnViewAndRebuildShuffleGroups);
             });
 

@@ -314,4 +314,16 @@ export default class DomAttributes {
         return selector.replace(/[#.]?/g,"");
     }
 
+    /**
+     * @description Will check if target DOM element has given attribute
+     *              Does not rely on the value but just if the attribute is there at all
+     *
+     * @param $element
+     * @param attributeName
+     */
+    public static hasAttribute($element: JQuery<HTMLElement>, attributeName: string): boolean
+    {
+        return !( "undefined" === typeof $element.attr(attributeName) );
+    }
+
 }

@@ -145,6 +145,4 @@ class MyVideoAction extends AbstractController {
         return $this->render(static::TWIG_TEMPLATE_MY_VIDEO, $data);
     }
 
-    /* todo: add some logic to handle tags like in images*/
-
 }

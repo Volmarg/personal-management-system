@@ -21,10 +21,17 @@ export default class VideoJs {
     {
         let $allVideoElements = $(VideoJs.selectors.videoDomElement);
 
+        // at first it's required to invalidate all instances
+        let allInstances = videojs.getAllPlayers();
+
+        $.each(allInstances, (index, instance) => {
+            instance.dispose();
+        });
+
         $.each($allVideoElements, (index, element) => {
             let $element  = $(element);
             let elementId = $element.attr('id');
-            let instance  = videojs(elementId, {});
+            videojs(elementId, {});
         })
 
     }

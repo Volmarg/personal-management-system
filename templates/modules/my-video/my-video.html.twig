@@ -1,10 +1,18 @@
 {% set my_video_controller = 'App\\Controller\\Modules\\Video\\MyVideoController' %}
 {% set imageHandler        = 'App\\Services\\Files\\ImageHandler' %}
 {% set FileTagger          = 'App\\Services\\Files\\FileTagger' %}
+{% set dialogs_action      = 'App\\Action\\Core\\DialogsAction' %}
+{% set modules_controller  = 'App\\Controller\\Modules\\ModulesController' %}
 
 {% set KEY_FILE_FULL_PATH   = constant(my_video_controller~"::KEY_FILE_FULL_PATH") %}
 {% set KEY_FILE_NAME        = constant(my_video_controller~"::KEY_FILE_NAME") %}
 {% set KEY_TAGS             = constant(FileTagger~"::KEY_TAGS") %}
+
+{% set KEY_FILE_CURRENT_PATH = constant(dialogs_action~"::KEY_FILE_CURRENT_PATH") %}
+{% set KEY_MODULE_NAME       = constant(dialogs_action~"::KEY_MODULE_NAME") %}
+{% set KEY_MODULE_NAME       = constant(dialogs_action~"::KEY_MODULE_NAME") %}
+{% set KEY_IS_UPDATE_ACTION  = constant(dialogs_action~"::KEY_IS_UPDATE_ACTION") %}
+{% set MODULE_NAME_VIDEO     = constant(modules_controller~"::MODULE_NAME_VIDEO") %}
 
 {% if ajax_render == false %}
     {% set template= "base.html.twig" %}
@@ -85,21 +93,10 @@
                                         {% set tags = ( "" == video[KEY_TAGS] ? "[]" : video[KEY_TAGS] ) %}
                                         {% set tags_list = jsonDecode(tags) | join(', ') %}
 
-                                        <div class="col-4@sm grid-item"                     {# shuffle attr #}
-                                             data-groups="{{ tags }}"                       {# shuffle attr #}
-                                             data-date-created="2016-08-12"                 {# shuffle attr #}
-                                             data-title="{{ video[KEY_FILE_NAME] }}"        {# shuffle attr #}
-                                             data-toggle-popover="true"                     {# popover attr #}
-                                             data-html="true"                               {# popover attr #}
-                                             data-trigger="hover"                           {# popover attr #}
-                                             data-content="                                 {# popover attr #}
-                                                 <p style='display: flex;'>
-                                                    <span style='font-weight: bold; '>
-                                                        Tags:&nbsp;
-                                                    </span>
-                                                        <span style='word-break: break-all;'>{{ tags_list }}</span>
-                                                </p>
-                                             "
+                                        <div class="col-4@sm grid-item"              {# shuffle attr #}
+                                             data-groups="{{ tags }}"                {# shuffle attr #}
+                                             data-date-created="2016-08-12"          {# shuffle attr #}
+                                             data-title="{{ video[KEY_FILE_NAME] }}" {# shuffle attr #}
                                                 {# shuffle styles #}
                                              style="position:relative; margin: 5px;"
                                             >
@@ -115,14 +112,61 @@
                                                         preload="auto"
                                                         width="640"
                                                         height="264"
+                                                        data-toggle-popover="true"                     {# popover attr #}
+                                                        data-html="true"                               {# popover attr #}
+                                                        data-trigger="hover"                           {# popover attr #}
+                                                        data-content="                                 {# popover attr #}
+                                                         <p style='display: flex;'>
+                                                            <span>
+                                                                <b>Tags:&nbsp;</b>
+                                                            </span>
+                                                                <span style='word-break: break-all;'>{{ tags_list }}</span>
+                                                        </p>
+                                                     "
                                                 >
                                                     <source src="/{{ video[KEY_FILE_FULL_PATH] }}"/>
                                                 </video>
-                                                <p class="text-center" style="color: black;">
-                                                    {{ video[KEY_FILE_NAME] }}
-                                                </p>
-                                            </div>
 
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="issue-card-actions-left">
+                                                        <span>
+                                                            {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
+                                                                "wrapperStyles": "padding: 5px;",
+                                                                "labelStyle"   : "left: 13px;",
+                                                                "classes"      : "pointer"
+                                                            }%}
+                                                        </span>
+                                                    </div>
+
+                                                    <div class="issue-card-actions-center">
+                                                        <p class="text-center" style="color: black;">
+                                                            {{ video[KEY_FILE_NAME] }}
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="issue-card-actions-right">
+                                                        <span
+                                                                data-entity-detials-action="true"
+                                                                data-dialog-call-request-url="{{ path('dialog_body_tags_update') }}"
+                                                                data-dialog-call-request-method="POST"
+                                                                data-dialog-call-request-post-parameters='{
+                                                                    "{{ KEY_FILE_CURRENT_PATH }}" : "{{ video[KEY_FILE_FULL_PATH] }}",
+                                                                    "{{ KEY_MODULE_NAME }}"       : "{{ MODULE_NAME_VIDEO }}",
+                                                                    "{{ KEY_IS_UPDATE_ACTION }}"  : true
+                                                                }'
+                                                                data-call-dialog-on-click="true"
+                                                                data-dialog-name="tagsUpdate"
+
+                                                                data-toggle-popover="true"                             {# popover attr #}
+                                                                data-html="true"                                       {# popover attr #}
+                                                                data-trigger="hover"                                   {# popover attr #}
+                                                                data-content="{{ 'video.popover.editTags' | trans }}"> {# popover attr #}
+                                                            <i class="fas fa-tags fa-lg pointer mT-3"></i>
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                         </div>
                                     {% endfor %}
                                 </div>

@@ -11,6 +11,8 @@ import UpdateAction         from "../../Actions/UpdateAction";
 import CreateAction         from "../../Actions/CreateAction";
 import RemoveAction         from "../../Actions/RemoveAction";
 import TodoChecklist        from "../../../../modules/Todo/TodoChecklist";
+import Selectize from "../../../../libs/selectize/Selectize";
+import TagManagementDialogs from "../TagManagementDialogs";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -110,6 +112,25 @@ export default class DialogLogic {
 
         let dialogDataDto = new DialogDataDto();
         dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of updating tags via dialog
+     */
+    public static tagsUpdate(): DialogDataDto
+    {
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let updateAction = new UpdateAction();
+            let selectize    = new Selectize();
+
+            selectize.applyTagsSelectize();
+            updateAction.init();
+        };
+
+        let dialogDataDto        = new DialogDataDto();
+        dialogDataDto.callback   = callback;
 
         return dialogDataDto;
     }

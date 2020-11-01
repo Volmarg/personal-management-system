@@ -159,7 +159,7 @@ files:
 images:
     popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files' }
 video:
-    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files' }
+    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files', editTags: 'Edit tags' }
     labels: { search: Search, tags: Tags, headers: { main: Video } }
 upload:
     settings: { copyFolderData: { label: 'Copy folder data', from: From, to: To }, renameFolder: { label: 'Rename folder' }, createFolder: { label: 'Create folder for module' } }
