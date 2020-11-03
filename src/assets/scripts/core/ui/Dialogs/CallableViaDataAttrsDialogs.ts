@@ -4,6 +4,7 @@ import Ajax             from "../../ajax/Ajax";
 import DialogDataDto    from "../../../DTO/DialogDataDto";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
 import Dialog           from "./Dialog";
+import StringUtils     from "../../utils/StringUtils";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
@@ -33,18 +34,14 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
             switch( requestMethod ){
                 case Ajax.REQUEST_TYPE_POST:
                 {
-                    if(
-                        ""              === postParameters
-                        ||  "undefined" === typeof postParameters
-                    ){
-                        throw{
-                            "message": "Post parameters are missing for dialog call"
-                        }
+                    if( StringUtils.isEmptyString(postParameters) ){
+                        data = dialogDataDto.ajaxData;
+                    }else{
+                        data = JSON.parse(postParameters);
                     }
 
                     usedParameters = postParameters;
                     url            = requestUrl;
-                    data           = JSON.parse(postParameters);
                 }
                 break;
 
@@ -124,7 +121,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
             let callableViaDataAttrsDialogs = new CallableViaDataAttrsDialogs();
 
             if( $.isFunction(callback) ){
-                callback();
+                callback(dialog);
             }
 
             dialog.addClass("." + Dialog.classesNames.modalMovedBackdrop);

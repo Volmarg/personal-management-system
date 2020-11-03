@@ -12,6 +12,7 @@ import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import Initializer      from "../../Initializer";
 import AbstractAjax     from "./AbstractAjax";
 import Modal            from "../ui/Modal/Modal";
+import Ajax from "./Ajax";
 
 /**
  * @default This class contains definitions of events and it's logic attached on GUI elements
@@ -140,5 +141,44 @@ export default class AjaxEvents extends AbstractAjax {
             }
         });
     }
+
+    /**
+     * @description Calls file removal for given link - via ajax
+     * @param filePath
+     * @param callback
+     * @param async
+     */
+    public callAjaxFileRemovalForImageLink(filePath, callback = null, async = true){
+        let _this           = this;
+        let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
+
+        let data = {
+            "file_full_path":  escapedFilePath
+        };
+
+        Loader.showLoader();
+        $.ajax({
+            method:  Ajax.REQUEST_TYPE_POST,
+            url:     AbstractAjax.API_URLS.fileRemoval,
+            data:    data,
+            async:   async,
+        }).always((data) => {
+
+            Loader.hideLoader();
+            let ajaxResponseDto = AjaxResponseDto.fromArray(data);
+
+            if( !ajaxResponseDto.isSuccessCode() ) {
+                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+                return;
+            }
+
+            _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
+
+            if( $.isFunction(callback) ){
+                callback();
+            }
+
+        });
+    };
 
 }

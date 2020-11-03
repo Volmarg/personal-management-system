@@ -13,6 +13,14 @@ import RemoveAction         from "../../Actions/RemoveAction";
 import TodoChecklist        from "../../../../modules/Todo/TodoChecklist";
 import Selectize from "../../../../libs/selectize/Selectize";
 import TagManagementDialogs from "../TagManagementDialogs";
+import MassActions from "../../Actions/MassActions";
+import Navigation from "../../../Navigation";
+import BootboxWrapper from "../../../../libs/bootbox/BootboxWrapper";
+import AjaxEvents from "../../../ajax/AjaxEvents";
+import LightGallery from "../../../../libs/lightgallery/LightGallery";
+import ModulesStructure from "../../BackendStructure/ModulesStructure";
+import BootstrapSelect from "../../../../libs/bootstrap-select/BootstrapSelect";
+import DataTransferDialogs from "../DataTransferDialogs";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -131,6 +139,71 @@ export default class DialogLogic {
 
         let dialogDataDto        = new DialogDataDto();
         dialogDataDto.callback   = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * todo: need to be replaced in the twig and retested, this was only prepared to for replacement
+     *
+     * @description contains definition of logic for mass action dialog - transfer data transfer, module: Images
+     */
+    public static massActionDataTransferImagesModule(): DialogDataDto
+    {
+        let massActions = new MassActions();
+        let filesPaths  = massActions.getFilesPathsForAllSelectedCheckboxes();
+
+        let callback = () => {
+            let ajaxEvents   = new AjaxEvents();
+            let lightGallery = new LightGallery();
+
+            ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            lightGallery.reinitGallery();
+            BootboxWrapper.hideAll();
+        };
+
+        let ajaxData = {
+            'files_current_locations': filesPaths
+        };
+
+        let dialogDataDto        = new DialogDataDto();
+        dialogDataDto.callback = callback;
+        dialogDataDto.ajaxData = ajaxData;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog - transfer data transfer, module: Video
+     */
+    private static massActionDataTransferVideoModule(): DialogDataDto
+    {
+        let massActions = new MassActions();
+        let filesPaths  = massActions.getFilesPathsForAllSelectedCheckboxes();
+
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let dataTransferDialogs = new DataTransferDialogs();
+
+            let submitButton        = dialogWrapper.find('[type^="submit"]');
+            let jsonFilesPaths      = dialogWrapper.find("[data-transferred-files-json]").attr('data-transferred-files-json');
+            let filesPathsArray     = JSON.parse(jsonFilesPaths);
+
+            dataTransferDialogs.attachDataTransferToDialogFormSubmit(submitButton, filesPathsArray, () => {
+                let ajaxEvents = new AjaxEvents();
+                ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            });
+
+            BootstrapSelect.init();
+        };
+
+        let ajaxData = {
+            'files_current_locations': filesPaths,
+            'moduleName'             : "My Video"
+        };
+
+        let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+        dialogDataDto.ajaxData = ajaxData;
 
         return dialogDataDto;
     }

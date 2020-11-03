@@ -97,26 +97,26 @@
                                              data-groups="{{ tags }}"                {# shuffle attr #}
                                              data-date-created="2016-08-12"          {# shuffle attr #}
                                              data-title="{{ video[KEY_FILE_NAME] }}" {# shuffle attr #}
-                                                {# shuffle styles #}
-                                             style="position:relative; margin: 5px;"
+                                             style="position:relative; margin: 5px;"                             {# shuffle styles #}
                                             >
 
-                                            {# todo: add the checkbox to handle mass transfer/removal widget #}
-                                            {# todo: handle tags changing, or make it via additional plugin in videojs - near PLAY button? #}
                                             <div class="video-wrapper">
-                                                {# todo: adjust the size, beahves badly on smaller screen#}
                                                 <video
                                                         id="video_{{ loop.index0 }}"
                                                         class="video-js"
                                                         controls
                                                         preload="auto"
-                                                        width="640"
-                                                        height="264"
+                                                        width="440"
+                                                        height="184"
                                                         data-toggle-popover="true"                     {# popover attr #}
                                                         data-html="true"                               {# popover attr #}
                                                         data-trigger="hover"                           {# popover attr #}
                                                         data-content="                                 {# popover attr #}
                                                          <p style='display: flex;'>
+                                                         <span>
+                                                            {{ video[KEY_FILE_NAME] }}
+                                                         </span>
+                                                         <hr/>
                                                             <span>
                                                                 <b>Tags:&nbsp;</b>
                                                             </span>
@@ -131,16 +131,21 @@
                                                     <div class="issue-card-actions-left">
                                                         <span>
                                                             {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
-                                                                "wrapperStyles": "padding: 5px;",
-                                                                "labelStyle"   : "left: 13px;",
-                                                                "classes"      : "pointer"
+                                                                "wrapperStyles"         : "padding: 5px;",
+                                                                "labelStyle"            : "left: 13px;",
+                                                                "classes"               : "pointer",
+                                                                "inputDataValue"        : video[KEY_FILE_FULL_PATH],
+                                                                "additionalAttributes"  : "
+                                                                    data-is-mass-action-checkbox
+                                                                    data-value=\'" ~ video[KEY_FILE_FULL_PATH] ~ "\'
+                                                                "
                                                             }%}
                                                         </span>
                                                     </div>
 
                                                     <div class="issue-card-actions-center">
                                                         <p class="text-center" style="color: black;">
-                                                            {{ video[KEY_FILE_NAME] }}
+                                                            {{ substring(video[KEY_FILE_NAME])  }}
                                                         </p>
                                                     </div>
 
@@ -185,6 +190,7 @@
                     'popoverContent' : "video.popover.addFiles"|trans
                 } %}
 
+                {# todo: there is some issue here with folder = it creates it but the container crashes - videojs issue #}
                 {% include 'page-elements/components/widgets/new-folder-icon.twig' with {
                     'widgetName'     : "new-folder-widget",
                     'id'             : "my-images-new-folder-widget",
@@ -199,13 +205,24 @@
                     'popoverContent' : "video.popover.removeFiles"|trans
                 } %}
 
-                {% include 'page-elements/components/widgets/data-transfer-icon.twig' with {
-                    'widgetName'     : "mass-action-lightgallery-transfer-images",
-                    'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
-                    "classes"        : "disabled mass-action-lightgallery-transfer-images mass-action-lightgallery-button",
-                    'popoverContent' : "video.popover.transferFiles"|trans
-
-                } %}
+                {# todo: adjust that logic in images #}
+                <div class="widget action pointer"
+                     data-entity-detials-action="true"                                      {# dialog attr #}
+                     data-dialog-call-request-url="{{ path('dialog_body_data_transfer') }}" {# dialog attr #}
+                     data-dialog-call-request-method="POST"                                 {# dialog attr #}
+                     data-dialog-call-request-post-parameters=''                            {# dialog attr #}
+                     data-call-dialog-on-click="true"                                       {# dialog attr #}
+                     data-dialog-name="massActionDataTransferVideoModule"                   {# dialog attr #}
+                     style="margin-top: 10px; background-color: #0062cc; opacity: .5;"      {# dialog attr #}
+                     data-toggle-popover="true"                                             {# popover attr #}
+                     data-html="true"                                                       {# popover attr #}
+                     data-trigger="hover"                                                   {# popover attr #}
+                     data-content="{{ 'massActions.transferFiles.label' | trans }}"         {# popover attr #}
+                >
+                    <div class="fontawesome-centered ">
+                        <i class="fa fa-random" style="font-size: 25px; color: white;"></i>
+                    </div>
+                </div>
 
             </div>
 

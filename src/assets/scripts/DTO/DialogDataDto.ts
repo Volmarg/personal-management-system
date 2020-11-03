@@ -7,11 +7,25 @@ export default class DialogDataDto extends AbstractDto{
 
     private _callback = ($dialogWrapper?: JQuery<HTMLElement>) => {};
 
+    /**
+     * @type Object
+     * @private
+     */
+    private _ajaxData: Object = {};
+
     get callback(): ($dialogWrapper?: JQuery<HTMLElement>) => void {
         return this._callback;
     }
 
     set callback(value: ($dialogWrapper?: JQuery<HTMLElement>) => void) {
         this._callback = value;
+    }
+
+    get ajaxData(): Object {
+        return this._ajaxData;
+    }
+
+    set ajaxData(value: Object) {
+        this._ajaxData = value;
     }
 }

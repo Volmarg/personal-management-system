@@ -66,21 +66,21 @@ export default class DataTransferDialogs extends AbstractDialogs {
         });
     };
 
-    private attachDataTransferToDialogFormSubmit(button, jsonTransferredFilesList, callback = null){
+    public attachDataTransferToDialogFormSubmit(button, transferredFilesPaths: Array<string>, callback = null){
         let _this = this;
         $(button).on('click', (event) => {
             event.preventDefault();
-            _this.makeAjaxCallForDataTransfer(jsonTransferredFilesList, callback);
+            _this.makeAjaxCallForDataTransfer(transferredFilesPaths, callback);
         });
     };
 
-    private makeAjaxCallForDataTransfer(jsonTransferredFilesList, callback = null){
+    private makeAjaxCallForDataTransfer(transferredFilesPaths: Array<string>, callback = null){
         let _this                       = this;
         let targetUploadModuleDirInput  = $(AbstractDialogs.selectors.ids.targetUploadModuleDirInput).val();
         let targetSubdirectoryPath      = $(AbstractDialogs.selectors.ids.targetSubdirectoryTypeInput).val();
 
         let data = {
-            'files_current_locations'                       : jsonTransferredFilesList,
+            'files_current_locations'                       : transferredFilesPaths,
             'target_upload_module_dir'                      : targetUploadModuleDirInput,
             'subdirectory_target_path_in_module_upload_dir' : targetSubdirectoryPath
         };

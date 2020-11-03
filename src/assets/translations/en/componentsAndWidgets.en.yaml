@@ -15,3 +15,7 @@ dashboard:
       label: Goals progress
     pending-issues:
       label: Pending issues
+
+massActions:
+  transferFiles:
+    label: Transfer files

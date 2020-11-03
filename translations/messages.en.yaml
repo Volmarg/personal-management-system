@@ -183,6 +183,8 @@ lightgallery:
     labels: { tags: Tags, search: Search }
 dashboard:
     widgets: { incoming-schedules: { label: Schedules }, my-goals-payments: { label: 'Goals payments' }, my-goals: { label: 'Goals progress' }, pending-issues: { label: 'Pending issues' } }
+massActions:
+    transferFiles: { label: 'Transfer files' }
 page:
     title: 'Personal Management System (PMS)'
     footerCopyright: 'Copyright © 2019 Built by'

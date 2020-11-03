@@ -9,6 +9,9 @@ import StringUtils          from "../../core/utils/StringUtils";
 import DataTransferDialogs  from "../../core/ui/Dialogs/DataTransferDialogs";
 import TagManagementDialogs from "../../core/ui/Dialogs/TagManagementDialogs";
 import BootboxWrapper       from "../bootbox/BootboxWrapper";
+import AjaxResponseDto      from "../../DTO/AjaxResponseDto";
+import AjaxEvents           from "../../core/ajax/AjaxEvents";
+import AbstractAjax         from "../../core/ajax/AbstractAjax";
 
 var bootbox = require('bootbox');
 
@@ -18,8 +21,6 @@ import 'lightgallery/modules/lg-thumbnail'
 import 'lightgallery/modules/lg-zoom'
 import 'lightgallery/dist/css/lightgallery.min.css'
 import 'lightgallery/dist/css/lg-transitions.min.css'
-import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
-import AjaxEvents       from "../../core/ajax/AjaxEvents";
 
 export default class LightGallery {
 
@@ -65,14 +66,6 @@ export default class LightGallery {
         imageNameEditConfirmation : "Do You want to rename this image?",
     };
 
-    /**
-     * @type Object
-     */
-    private apiUrls = {
-        fileRemoval : "/files/action/remove-file",
-        fileRename  : "/files/action/rename-file",
-    };
-    
     /**
      * @type Object 
      */
@@ -140,7 +133,7 @@ export default class LightGallery {
         }
     };
 
-    private reinitGallery(){
+    public reinitGallery(){
         let $lightboxGallery = $(this.selectors.classes.lightboxGallery);
 
         if( DomElements.doElementsExists($lightboxGallery) ){
@@ -214,7 +207,7 @@ export default class LightGallery {
                     callback: function (result) {
                         if (result) {
                             //  File removal ajax
-                            _this.callAjaxFileRemovalForImageLink(filePath, callback);
+                            _this.ajaxEvents.callAjaxFileRemovalForImageLink(filePath, callback);
                         }
                     }
                 });
@@ -223,39 +216,6 @@ export default class LightGallery {
 
         });
 
-    };
-
-    private callAjaxFileRemovalForImageLink(filePath, callback = null, async = true){
-        let _this           = this;
-        let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
-
-        let data = {
-            "file_full_path":  escapedFilePath
-        };
-
-        Loader.showLoader();
-        $.ajax({
-            method:  Ajax.REQUEST_TYPE_POST,
-            url:     _this.apiUrls.fileRemoval,
-            data:    data,
-            async:   async,
-        }).always((data) => {
-
-            Loader.hideLoader();
-            let ajaxResponseDto = AjaxResponseDto.fromArray(data);
-
-            if( !ajaxResponseDto.isSuccessCode() ) {
-                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
-                return;
-            }
-
-            _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
-
-            if( $.isFunction(callback) ){
-                callback();
-            }
-
-        });
     };
 
     private addPluginRenameFile(){
@@ -295,7 +255,7 @@ export default class LightGallery {
                             Loader.toggleLoader();
                             $.ajax({
                                 method:  Ajax.REQUEST_TYPE_POST,
-                                url:     _this.apiUrls.fileRename,
+                                url:     AbstractAjax.API_URLS.fileRename,
                                 data:    data,
                                 success: (data) => {
 
@@ -659,6 +619,7 @@ export default class LightGallery {
     };
 
     /**
+     * Todo: move this to special action class MassActions (this must be reusable also for videos)
      * This function will handle the mass action removal button
      * @param button {object}
      */
@@ -702,7 +663,7 @@ export default class LightGallery {
                                 };
 
                                 // in this case we MUST wait for ajax call being done before reinitializing gallery
-                                _this.callAjaxFileRemovalForImageLink(filePath, callback, false);
+                                _this.ajaxEvents.callAjaxFileRemovalForImageLink(filePath, callback, false);
                             });
 
                             DomAttributes.unsetChecked(checkedCheckboxes);
