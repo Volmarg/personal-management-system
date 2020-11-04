@@ -40,6 +40,11 @@ export default class WidgetDataLoader {
                 return WidgetData.pendingIssuesCreateIssue();
             }
 
+            case WidgetData.widgetsIds.filesUploadWidget:
+            {
+                return WidgetData.filesUpload();
+            }
+
             default:
                 if(Env.isDev()){
                     ConsoleLogger.info("There might be an ID which was not handled upon rewriting to TS", [

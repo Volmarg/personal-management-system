@@ -11,19 +11,16 @@ import UpdateAction         from "../../Actions/UpdateAction";
 import CreateAction         from "../../Actions/CreateAction";
 import RemoveAction         from "../../Actions/RemoveAction";
 import TodoChecklist        from "../../../../modules/Todo/TodoChecklist";
-import Selectize from "../../../../libs/selectize/Selectize";
-import TagManagementDialogs from "../TagManagementDialogs";
-import MassActions from "../../Actions/MassActions";
-import Navigation from "../../../Navigation";
-import BootboxWrapper from "../../../../libs/bootbox/BootboxWrapper";
-import AjaxEvents from "../../../ajax/AjaxEvents";
-import LightGallery from "../../../../libs/lightgallery/LightGallery";
-import ModulesStructure from "../../BackendStructure/ModulesStructure";
-import BootstrapSelect from "../../../../libs/bootstrap-select/BootstrapSelect";
-import DataTransferDialogs from "../DataTransferDialogs";
-import Loader from "../../../../libs/loader/Loader";
+import Selectize            from "../../../../libs/selectize/Selectize";
+import MassActions          from "../../Actions/MassActions";
+import Navigation           from "../../../Navigation";
+import BootboxWrapper       from "../../../../libs/bootbox/BootboxWrapper";
+import AjaxEvents           from "../../../ajax/AjaxEvents";
+import LightGallery         from "../../../../libs/lightgallery/LightGallery";
+import BootstrapSelect      from "../../../../libs/bootstrap-select/BootstrapSelect";
+import DataTransferDialogs  from "../DataTransferDialogs";
+
 import * as $ from "jquery";
-import DomAttributes from "../../../utils/DomAttributes";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -222,7 +219,33 @@ export default class DialogLogic {
             let ajaxEvents        = new AjaxEvents();
             let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
 
-            // todo, bind event on submit button
+            $('[type^="submit"]').on('click', (event) => {
+                let callback = function(){
+                    ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+                };
+                event.preventDefault();
+                ajaxEvents.callAjaxFileRemovalForFilePath(removedFilesPaths, callback);
+            });
+
+        };
+
+        let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog - files removal, module: images
+     */
+    private static massActionFilesRemovalForImagesModule(): DialogDataDto
+    {
+        let massActions = new MassActions();
+
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let ajaxEvents        = new AjaxEvents();
+            let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
+
             $('[type^="submit"]').on('click', (event) => {
                 let callback = function(){
                     ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());

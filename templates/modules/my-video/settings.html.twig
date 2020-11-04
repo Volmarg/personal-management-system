@@ -5,7 +5,6 @@
 {% endif %}
 
     {% extends template %}
-{# todo replace the images/lightgallery classes #}
 
 {% block body %}
     <main class='main-content bgc-grey-100'>
@@ -18,11 +17,11 @@
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                             <h4 class="c-grey-900 mB-20 align-self-center">{{ 'files.label' | trans }}</h4>
-                            <div class="my-images-all-images d-flex justify-content-around flex-wrap">
+                            <div class="d-flex justify-content-around flex-wrap">
 
                                 {% include 'modules/common/components/files-modules/settings/lock-tables.twig' with {
-                                    'moduleType'  : 'images',
-                                    'lock_target' : constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_IMAGES')
+                                    'moduleType'  : 'video',
+                                    'lock_target' : constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_VIDEO')
                                 } %}
 
                             </div>

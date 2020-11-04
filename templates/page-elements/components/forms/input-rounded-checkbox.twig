@@ -6,7 +6,6 @@
 {% set inputDataValue       = ( inputDataValue is not defined ? "" : inputDataValue) %}
 {% set additionalAttributes = ( additionalAttributes is not defined ? "" : additionalAttributes) %}
 
-{# todo: adjust this also in images module#}
 <div class="checkbox checkbox-circle checkbox-info peers ai-c" style="{{ wrapperStyles }}">
     <input type="checkbox" name="inputCheckboxesCall" class="peer {{ classes }}" {{ checked }} style="width: 30px;" data-value="{{ inputDataValue }}" {{ additionalAttributes }}>
     <label class=" peers peer-greed js-sb ai-c" style="position: absolute;{{ labelStyle }}">

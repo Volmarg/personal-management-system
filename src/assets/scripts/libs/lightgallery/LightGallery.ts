@@ -116,7 +116,6 @@ export default class LightGallery {
         this.initGallery();
         this.addPlugins();
         this.preventCheckboxEventTriggering();
-        this.handleWidgets();
         this.handleGalleryEvents();
         this.handleCheckboxForImageInGalleryView();
         this.preventSettingMasonryGalleryAsAbsolute();
@@ -144,39 +143,9 @@ export default class LightGallery {
 
     private addPlugins(){
         this.addPluginRemoveFile();
-        this.addPluginRenameFile();
+        this.addPluginRenameFile(); 
         this.addPluginTransferFile();
         this.addPluginManageFileTags();
-    };
-
-    private handleWidgets(){
-
-        let massActionRemoveButton   = $(this.selectors.classes.massActionRemoveButton);
-        let massActionTransferButton = $(this.selectors.classes.massActionTransferButton);
-
-        if(
-                "undefined" === typeof Navigation.getCurrentRoute()
-            ||  Navigation.getCurrentRoute()   !== this.vars.moduleRoute
-        ){
-            return;
-        }
-
-        if( !DomElements.doElementsExists(massActionRemoveButton) )
-        {
-            throw({
-                "message": "Mass action remove button (widget) was not found"
-            })
-        }
-
-        if( !DomElements.doElementsExists(massActionTransferButton) )
-        {
-            throw({
-                "message": "Mass action transfer button (widget) was not found"
-            })
-        }
-
-        this.handleWidgetMassActionRemove(massActionRemoveButton);
-        this.handleWidgetMassActionTransfer(massActionTransferButton);
     };
 
     private addPluginRemoveFile(){
@@ -616,104 +585,6 @@ export default class LightGallery {
             DomAttributes.setDisabled(massActionButtons);
         })
 
-    };
-
-    /**
-     * Todo: move this to special action class MassActions (this must be reusable also for videos)
-     * This function will handle the mass action removal button
-     * @param button {object}
-     */
-    private handleWidgetMassActionRemove(button){
-        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
-        let _this           = this;
-
-        $(button).off('click');
-        $(button).on('click', (event) => {
-            let isDisabled = DomAttributes.isDisabled(this);
-
-            if(isDisabled){
-                return false;
-            }
-
-            let massActionButtons = $(_this.selectors.classes.massActionButtons);
-            let checkedCheckboxes = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
-
-            BootboxWrapper.confirm({
-                message: _this.messages.imageRemovalConfirmation,
-                backdrop: true,
-                callback: function (result) {
-                    if (result) {
-
-                        /**
-                         * Due to the ajax being done via async this loader MUST be called here
-                         * Also we need timeout because due to async = false the spinner will not be shown
-                         */
-                        Loader.showLoader();
-
-                        setTimeout( () => {
-                            $.each(checkedCheckboxes, (index, checkbox) => {
-                                DomAttributes.isCheckbox(checkbox);
-
-                                let imageWrapper = $(checkbox).closest('.shuffle-item');
-                                let filePath     = $(imageWrapper).attr('data-src');
-
-                                let callback = function(){
-                                    // Rebuilding thumbnails etc
-                                    _this.removeImageWithMiniature(filePath);
-                                };
-
-                                // in this case we MUST wait for ajax call being done before reinitializing gallery
-                                _this.ajaxEvents.callAjaxFileRemovalForFilePath([filePath], callback, false);
-                            });
-
-                            DomAttributes.unsetChecked(checkedCheckboxes);
-                            DomAttributes.setDisabled(massActionButtons);
-                            _this.reinitGallery();
-                            BootboxWrapper.hideAll();
-                        }, 500);
-
-                    }
-                }
-            });
-        });
-    };
-     
-    /**
-     * This function will handle the mass action transfer button
-     * @param button {object}
-     */
-    private handleWidgetMassActionTransfer(button){
-        let lightboxGallery = $(this.selectors.classes.lightboxGallery);
-        let _this           = this;
-
-        $(button).off('click');
-        $(button).on('click', (event) => {
-            let isDisabled = DomAttributes.isDisabled(this);
-
-            if(isDisabled){
-                return false;
-            }
-
-            let checkedCheckboxes   = ( lightboxGallery.find(this.selectors.other.checkboxForImage + ':checked') );
-            let imageWrappers       = $(checkedCheckboxes).closest('.shuffle-item');
-            let filePaths           = [];
-
-            $.each(imageWrappers, (index, wrapper) => {
-                let filePath        = $(wrapper).attr('data-src');
-                let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
-
-                filePaths.push(escapedFilePath);
-            });
-
-            let callback = function (){
-                _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-                _this.reinitGallery();
-                BootboxWrapper.hideAll();
-            };
-
-            this.dataTransferDialogs.buildDataTransferDialog(filePaths, 'My Files', callback);
-
-        });
     };
 
     /**

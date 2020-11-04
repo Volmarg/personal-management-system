@@ -92,7 +92,14 @@
                                             z-index: 999999999;
                                         ">
                                             {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
-                                                "wrapperStyles": "padding: 10px;"
+                                                "wrapperStyles"         : "padding: 5px;",
+                                                "labelStyle"            : "left: 13px;",
+                                                "classes"               : "pointer",
+                                                "inputDataValue"        : image[KEY_FILE_FULL_PATH],
+                                                "additionalAttributes"  : "
+                                                    data-is-mass-action-checkbox
+                                                    data-value=\'" ~ image[KEY_FILE_FULL_PATH] ~ "\'
+                                                "
                                             }%}
                                         </section>
 

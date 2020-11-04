@@ -185,7 +185,7 @@
             <div class="widgets-wrapper">
 
                 {% include 'page-elements/components/widgets/plus-icon.twig' with {
-                    'widgetName'     : "upload-files-widget",
+                    'widgetName'     : "my-files-upload-widget",
                     'id'             : "my-files-upload-widget",
                     'popoverContent' : "video.popover.addFiles"|trans
                 } %}
@@ -197,7 +197,6 @@
                     'popoverContent' : "video.popover.addFolder"|trans
                 } %}
 
-                {# todo: adjust that logic in images #}
                 <div class="widget action pointer mass-action disabled"
                      data-entity-detials-action="true"                                       {# dialog attr #}
                      data-dialog-call-request-url="{{ path('dialog_body_files_removal') }}"  {# dialog attr #}
@@ -216,7 +215,6 @@
                     </div>
                 </div>
 
-                {# todo: adjust that logic in images #}
                 <div class="widget action pointer mass-action disabled"
                      data-entity-detials-action="true"                                       {# dialog attr #}
                      data-dialog-call-request-url="{{ path('dialog_body_data_transfer') }}" {# dialog attr #}
