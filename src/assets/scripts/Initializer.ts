@@ -44,6 +44,7 @@ import Ajax                         from "./core/ajax/Ajax";
 import Loader                       from "./libs/loader/Loader";
 import DomElements                  from "./core/utils/DomElements";
 import VideoJs                      from "./libs/video-js/VideoJs";
+import MassActions                  from "./core/ui/Actions/MassActions";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -175,6 +176,7 @@ export default class Initializer {
         let removeAction                           = new RemoveAction();
         let toggleBoolvalAction                    = new ToggleBoolvalAction();
         let updateAction                           = new UpdateAction();
+        let massActions                            = new MassActions();
 
         copyToClipboardAction.init();
         createAction.init();
@@ -184,6 +186,7 @@ export default class Initializer {
         removeAction.init();
         toggleBoolvalAction.init();
         updateAction.init();
+        massActions.init();
     }
 
     /**

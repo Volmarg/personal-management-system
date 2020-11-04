@@ -19,3 +19,5 @@ dashboard:
 massActions:
   transferFiles:
     label: Transfer files
+  removeFiles:
+    label: Remove files

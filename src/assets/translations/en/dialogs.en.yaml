@@ -14,3 +14,5 @@ dialogs:
     modify: Modify todo
   filesTransfer:
     confirm: "Do You really want to move this/these file/s."
+  removeFiles:
+    confirm: "Do You really want to remove this/these file/s."

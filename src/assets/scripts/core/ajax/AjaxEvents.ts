@@ -143,17 +143,22 @@ export default class AjaxEvents extends AbstractAjax {
     }
 
     /**
-     * @description Calls file removal for given link - via ajax
-     * @param filePath
+     * @description Calls file removal for given files paths - via ajax
+     * @param filesPaths
      * @param callback
      * @param async
      */
-    public callAjaxFileRemovalForImageLink(filePath, callback = null, async = true){
-        let _this           = this;
-        let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
+    public callAjaxFileRemovalForFilePath(filesPaths: Array<string>, callback = null, async = true){
+        let _this             = this;
+        let escapedFilesPaths = [];
+
+        $.each(filesPaths, (index, filePath) => {
+            let escapedFilePath = ( filePath.indexOf('/') === 0 ? filePath.replace("/", "") : filePath ) ;
+            escapedFilesPaths.push(escapedFilePath);
+        })
 
         let data = {
-            "file_full_path":  escapedFilePath
+            "files_full_paths":  escapedFilesPaths
         };
 
         Loader.showLoader();

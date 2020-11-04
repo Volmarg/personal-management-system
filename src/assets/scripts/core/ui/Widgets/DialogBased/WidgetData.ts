@@ -24,10 +24,10 @@ export default class WidgetData {
      */
     static readonly widgetsIds = {
         addNote                   : 'add-note',
-        myFilesUploadFilesWidget  : 'my-files-upload-files-widget',
         myFilesNewFolderWidget    : 'my-files-new-folder-widget',
-        myImagesUploadFilesWidget : 'my-images-upload-files-widget',
         myImagesNewFolderWidget   : 'my-images-new-folder-widget',
+        filesUploadWidget         : 'my-files-upload-widget',
+        myVideoNewFolderWidget    : 'my-video-new-folder-widget',
         addContactCardWidget      : 'add-contact-card-widget',
         pendingIssuesCreateIssue  : 'pendingIssuesCreateIssue',
         addMyTodo                 : 'widget-add-my-todo',
@@ -89,7 +89,15 @@ export default class WidgetData {
         return widgetDataDto;
     }
 
-    public static myFilesUpload(): WidgetDataDto
+    public static myFilesNewFolder(): WidgetDataDto
+    {
+        return WidgetData.newFolder(ControllerStructure.CONST_MODULE_NAME_FILES);
+    }
+
+    /**
+     * @description handles the logic of folder creation widget for files module
+     */
+    public static filesUpload(): WidgetDataDto
     {
         let callback = () => {
             let upload                  = new Upload();
@@ -101,16 +109,17 @@ export default class WidgetData {
             BootstrapSelect.init();
             upload.init();
             forms.init();
+
             directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
 
-            let mainContentInModal = $(".bootbox-body main.main-content");
-            mainContentInModal.css({
-                "min-height" : "auto",
-                "padding"    : "10px"
+            let $mainContentInModal = $('.bootbox-body main.main-content');
+            $mainContentInModal.css({
+                'min-height' : "auto",
+                'padding'    : '10px',
             });
         };
 
-        let url           = '/dialog/body/upload';
+        let url           = Ajax.getUrlForPathName(RouterStructure.DIALOG_BODY_UPLOAD_PATH);
         let widgetDataDto = new WidgetDataDto();
 
         widgetDataDto.url      = url;
@@ -120,9 +129,48 @@ export default class WidgetData {
         return widgetDataDto;
     }
 
-    public static myFilesNewFolder(): WidgetDataDto
+    /**
+     * @description handles the logic of folder creation widget for images module
+     */
+    public static myImagesNewFolder(): WidgetDataDto
     {
-        let moduleName = Ajax.getConstantValueFromBackend(ControllerStructure.ModulesController.getNamespace(), ControllerStructure.CONST_MODULE_NAME_FILES);
+        return WidgetData.newFolder(ControllerStructure.CONST_MODULE_NAME_IMAGES);
+    }
+
+    /**
+     * @description handles the logic of folder creation widget for video module
+     */
+    public static myVideoNewFolder(): WidgetDataDto
+    {
+        return WidgetData.newFolder(ControllerStructure.CONST_MODULE_NAME_VIDEO);
+    }
+
+    public static pendingIssuesCreateIssue(): WidgetDataDto
+    {
+        let callback = () => {
+            let createAction = new CreateAction();
+            createAction.init();
+        };
+
+        let url           = Ajax.getUrlForPathName('dialog_body_create_issue');
+        let widgetDataDto = new WidgetDataDto();
+
+        widgetDataDto.url      = url;
+        widgetDataDto.type     = WidgetData.TYPE_TEMPLATE;
+        widgetDataDto.callback = callback;
+
+        return widgetDataDto;
+    }
+
+    /**
+     * @description handles the logic of folder creation widget
+     *
+     * @param moduleNameBackendConstant
+     * @private
+     */
+    private static newFolder(moduleNameBackendConstant: string): WidgetDataDto
+    {
+        let moduleName = Ajax.getConstantValueFromBackend(ControllerStructure.ModulesController.getNamespace(), moduleNameBackendConstant);
 
         let callback = () => {
             let upload                  = new Upload();
@@ -160,94 +208,4 @@ export default class WidgetData {
 
         return widgetDataDto;
     }
-
-    public static myImagesUpload(): WidgetDataDto
-    {
-        let callback = () => {
-            let upload                  = new Upload();
-            let forms                   = new FormsUtils();
-            let directoriesBasedWidget  = new DirectoriesBasedWidget();
-            let moduleSelectSelector    = 'select#upload_form_upload_module_dir';
-            let directorySelectSelector = 'select#upload_form_subdirectory';
-
-            BootstrapSelect.init();
-            upload.init();
-            forms.init();
-
-            directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
-
-            let $mainContentInModal = $('.bootbox-body main.main-content');
-            $mainContentInModal.css({
-                'min-height' : "auto",
-                'padding'    : '10px',
-            });
-        };
-
-        let url           = Ajax.getUrlForPathName(RouterStructure.DIALOG_BODY_UPLOAD_PATH);
-        let widgetDataDto = new WidgetDataDto();
-
-        widgetDataDto.url      = url;
-        widgetDataDto.type     = WidgetData.TYPE_TEMPLATE;
-        widgetDataDto.callback = callback;
-
-        return widgetDataDto;
-    };
-
-    public static myImagesNewFolder(): WidgetDataDto
-    {
-        let moduleName = Ajax.getConstantValueFromBackend(ControllerStructure.ModulesController.getNamespace(), ControllerStructure.CONST_MODULE_NAME_IMAGES);
-
-        let callback = () => {
-            let upload                  = new Upload();
-            let forms                   = new FormsUtils();
-            let directoriesBasedWidget  = new DirectoriesBasedWidget();
-            let createAction            = new CreateAction();
-
-            let moduleSelectSelector    = 'select#upload_subdirectory_create_upload_module_dir';
-            let directorySelectSelector = 'select#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir';
-
-            createAction.init(false);  // dont reinitialize logic
-            upload.init();
-            forms.init();
-            BootstrapSelect.init();
-            directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
-
-            let $mainContentInModal = $('.bootbox-body main.main-content');
-            $mainContentInModal.css({
-                'min-height' : "auto",
-                'padding'    : '10px',
-            });
-        };
-
-        let url           = Ajax.getUrlForPathName('dialog_body_create_folder');
-        let widgetDataDto = new WidgetDataDto();
-        let ajaxData      = {
-            moduleName: moduleName
-        };
-
-        widgetDataDto.url      = url;
-        widgetDataDto.type     = WidgetData.TYPE_TEMPLATE;
-        widgetDataDto.callback = callback;
-        widgetDataDto.ajaxData = ajaxData;
-
-        return widgetDataDto;
-    }
-
-    public static pendingIssuesCreateIssue(): WidgetDataDto
-    {
-        let callback = () => {
-            let createAction = new CreateAction();
-            createAction.init();
-        };
-
-        let url           = Ajax.getUrlForPathName('dialog_body_create_issue');
-        let widgetDataDto = new WidgetDataDto();
-
-        widgetDataDto.url      = url;
-        widgetDataDto.type     = WidgetData.TYPE_TEMPLATE;
-        widgetDataDto.callback = callback;
-
-        return widgetDataDto;
-    }
-
 }

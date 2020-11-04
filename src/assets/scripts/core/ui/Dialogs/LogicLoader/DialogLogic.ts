@@ -21,6 +21,9 @@ import LightGallery from "../../../../libs/lightgallery/LightGallery";
 import ModulesStructure from "../../BackendStructure/ModulesStructure";
 import BootstrapSelect from "../../../../libs/bootstrap-select/BootstrapSelect";
 import DataTransferDialogs from "../DataTransferDialogs";
+import Loader from "../../../../libs/loader/Loader";
+import * as $ from "jquery";
+import DomAttributes from "../../../utils/DomAttributes";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -208,4 +211,31 @@ export default class DialogLogic {
         return dialogDataDto;
     }
 
+    /**
+     * @description contains definition of logic for mass action dialog - files removal, module: Video
+     */
+    private static massActionFilesRemovalForVideoModule(): DialogDataDto
+    {
+        let massActions = new MassActions();
+
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let ajaxEvents        = new AjaxEvents();
+            let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
+
+            // todo, bind event on submit button
+            $('[type^="submit"]').on('click', (event) => {
+                let callback = function(){
+                    ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+                };
+                event.preventDefault();
+                ajaxEvents.callAjaxFileRemovalForFilePath(removedFilesPaths, callback);
+            });
+
+        };
+
+        let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
 }

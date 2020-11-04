@@ -207,7 +207,7 @@ export default class LightGallery {
                     callback: function (result) {
                         if (result) {
                             //  File removal ajax
-                            _this.ajaxEvents.callAjaxFileRemovalForImageLink(filePath, callback);
+                            _this.ajaxEvents.callAjaxFileRemovalForFilePath([filePath], callback);
                         }
                     }
                 });
@@ -449,7 +449,7 @@ export default class LightGallery {
         }
     };
 
-    private removeImageWithMiniature(filePath){
+    public removeImageWithMiniature(filePath){
         let thumbnails               = $(this.selectors.classes.thumbnails);
         let removedImageMiniature    = $(thumbnails).find("[data-src-real^='" + filePath + "']");
         let nextButton               = $(this.selectors.classes.nextButton);
@@ -663,13 +663,13 @@ export default class LightGallery {
                                 };
 
                                 // in this case we MUST wait for ajax call being done before reinitializing gallery
-                                _this.ajaxEvents.callAjaxFileRemovalForImageLink(filePath, callback, false);
+                                _this.ajaxEvents.callAjaxFileRemovalForFilePath([filePath], callback, false);
                             });
 
                             DomAttributes.unsetChecked(checkedCheckboxes);
                             DomAttributes.setDisabled(massActionButtons);
                             _this.reinitGallery();
-                            BootboxWrapper.hideAll();;
+                            BootboxWrapper.hideAll();
                         }, 500);
 
                     }

@@ -25,19 +25,14 @@ export default class WidgetDataLoader {
                 return WidgetData.myFilesNewFolder();
             }
 
-            case WidgetData.widgetsIds.myFilesUploadFilesWidget:
-            {
-                return WidgetData.myFilesUpload();
-            }
-
             case WidgetData.widgetsIds.myImagesNewFolderWidget:
             {
                 return WidgetData.myImagesNewFolder();
             }
 
-            case WidgetData.widgetsIds.myImagesUploadFilesWidget:
+            case WidgetData.widgetsIds.myVideoNewFolderWidget:
             {
-                return WidgetData.myImagesUpload();
+                return WidgetData.myVideoNewFolder();
             }
 
             case WidgetData.widgetsIds.pendingIssuesCreateIssue:

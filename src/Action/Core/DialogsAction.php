@@ -34,9 +34,9 @@ class DialogsAction extends AbstractController
 {
     const TWIG_TEMPLATE_DIALOG_BODY_EDIT_CREATE_CONTACT_CARD = 'page-elements/components/dialogs/bodies/edit-create-contact-card.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_TRANSFER           = 'page-elements/components/dialogs/bodies/files-transfer.html.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_REMOVE_FILES             = 'page-elements/components/dialogs/bodies/remove-files.html.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_TAGS              = 'page-elements/components/dialogs/bodies/update-tags.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_NEW_FOLDER               = 'page-elements/components/dialogs/bodies/new-folder.twig';
-    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD                   = 'page-elements/components/dialogs/bodies/new-folder.twig';
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_RESOURCES         = 'page-elements/components/dialogs/bodies/system-lock-resources.twig';
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD   = 'page-elements/components/dialogs/bodies/system-lock-create-password.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS    = 'page-elements/components/dialogs/bodies/preview-issue-details.twig';
@@ -866,6 +866,42 @@ class DialogsAction extends AbstractController
         try{
 
             $template = $this->file_upload_action->renderTemplate(false, self::TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
+
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/files-removal", name="dialog_body_files_removal", methods="POST")
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function buildFilesRemovalDialog(): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
+
+        try{
+
+            $removed_files_json = json_encode([]);
+
+            $template_data = [
+                'removedFilesJson' =>   $removed_files_json
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_REMOVE_FILES, $template_data)->getContent();
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;

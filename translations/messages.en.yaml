@@ -81,6 +81,7 @@ dialogs:
     addIssueContact: { header: 'Add issue contact' }
     addOrModifyTodo: { add: 'Add todo', modify: 'Modify todo' }
     filesTransfer: { confirm: 'Do You really want to move this/these file/s.' }
+    removeFiles: { confirm: 'Do You really want to remove this/these file/s.' }
 exceptions:
     general: { missingRequiredParameter: 'Missing request parameter named: ', providedEntityIsNotAnObject: 'Provided entity is not an object', thisEntityIsNotSoftDeletable: 'This entity is not soft deletable!' }
     files: { subdirectoryLocationMissingInRequest: 'Subdirectory location is missing in request.', cannotRemoveMainFolder: 'Cannot remove main folder!' }
@@ -185,6 +186,7 @@ dashboard:
     widgets: { incoming-schedules: { label: Schedules }, my-goals-payments: { label: 'Goals payments' }, my-goals: { label: 'Goals progress' }, pending-issues: { label: 'Pending issues' } }
 massActions:
     transferFiles: { label: 'Transfer files' }
+    removeFiles: { label: 'Remove files' }
 page:
     title: 'Personal Management System (PMS)'
     footerCopyright: 'Copyright © 2019 Built by'

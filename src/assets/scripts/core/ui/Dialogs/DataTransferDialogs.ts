@@ -5,6 +5,9 @@ import Ajax             from "../../ajax/Ajax";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
 import BootstrapSelect  from "../../../libs/bootstrap-select/BootstrapSelect";
 
+/**
+ * @description This is an old solution used to handle mass transfer of files, used for example in datatables
+ */
 export default class DataTransferDialogs extends AbstractDialogs {
 
     /**
