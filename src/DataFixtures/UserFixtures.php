@@ -32,8 +32,6 @@ class UserFixtures extends Fixture
         $app_user->setPassword(static::PASSWORD);
         $app_user->setLockPassword(static::PASSWORD);
         $app_user->setLastLogin(static::LAST_LOGIN);
-        $app_user->setConfirmationToken(static::CONFIRMATION_TOKEN);
-        $app_user->setPasswordRequestedAt(static::PASSWORD_REQUESTED_AT);
         $app_user->setRoles([static::ROLES]);
         $app_user->setAvatar(static::AVATAR);
         $app_user->setNickname(static::NICKNAME);

@@ -99,10 +99,10 @@ class User implements UserInterface, EntityInterface {
     private ?string $salt = "";
 
     /**
-     * @var DateTime $lastLogin
-     * @ORM\Column(type="datetime")
+     * @var ?DateTime $lastLogin
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private DateTime $lastLogin;
+    private ?DateTime $lastLogin;
 
     // these fields are only used to transfer data - not being saved directly in DB
 
@@ -115,12 +115,6 @@ class User implements UserInterface, EntityInterface {
      * @var string $lock_password_repeat
      */
     private string $lock_password_repeat;
-
-# todo: migration to move user data to new table and remove old
-# todo: update demo data
-# todo: command to generate user
-# todo: add register form instead of using command,
-# todo: command should be able only to reset password
 
     public function __construct() {
         $this->lastLogin = new DateTime();
@@ -274,17 +268,17 @@ class User implements UserInterface, EntityInterface {
     }
 
     /**
-     * @return DateTime
+     * @return DateTime|null
      */
-    public function getLastLogin(): DateTime
+    public function getLastLogin(): ?DateTime
     {
         return $this->lastLogin;
     }
 
     /**
-     * @param DateTime $lastLogin
+     * @param DateTime|null $lastLogin
      */
-    public function setLastLogin(DateTime $lastLogin): void
+    public function setLastLogin(?DateTime $lastLogin): void
     {
         $this->lastLogin = $lastLogin;
     }
@@ -354,4 +348,13 @@ class User implements UserInterface, EntityInterface {
     {
         $this->lock_password_repeat = $lock_password_repeat;
     }
+
+    /**
+     * @param string|null $salt
+     */
+    public function setSalt(?string $salt): void
+    {
+        $this->salt = $salt;
+    }
+
 }
