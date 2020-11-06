@@ -13,6 +13,6 @@ dialogs:
     add: Add todo
     modify: Modify todo
   filesTransfer:
-    confirm: "Do You really want to move this/these file/s."
+    confirm: "Do You really want to move these files?"
   removeFiles:
-    confirm: "Do You really want to remove this/these file/s."
+    confirm: "Do You really want to remove these files?"

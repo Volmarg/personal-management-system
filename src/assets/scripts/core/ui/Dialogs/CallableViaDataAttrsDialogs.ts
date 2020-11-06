@@ -8,6 +8,8 @@ import StringUtils     from "../../utils/StringUtils";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
+    static readonly ALERT_CANCEL_BUTTON_STRING = "Cancel";
+
     public init(){
         this.attachCallDialogOnClickEvent();
     };
@@ -97,7 +99,12 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
      * @param center {boolean}
      * @param dialogButtonLabel {string}
      */
-    private callDialog(template, callback = null, center :boolean = false, dialogButtonLabel :string = "Cancel") {
+    private callDialog(template, callback = null, center :boolean = false, dialogButtonLabel :string = CallableViaDataAttrsDialogs.ALERT_CANCEL_BUTTON_STRING) {
+
+        if( StringUtils.isEmptyString(dialogButtonLabel) )
+        {
+            dialogButtonLabel = CallableViaDataAttrsDialogs.ALERT_CANCEL_BUTTON_STRING;
+        }
 
         let dialog = BootboxWrapper.alert({
             size: "large",

@@ -232,6 +232,8 @@ export default class Search {
             $(moduleIcon).addClass('fas fa-folder-open d-inline');
         }else if( 'My Images' === module ){
             $(moduleIcon).addClass('fas fa-image d-inline');
+        }else if( 'My Video' === module ){
+            $(moduleIcon).addClass('fas fa-film d-inline');
         }
 
         let name = $('<span>');

@@ -73,7 +73,7 @@ class SearchAction extends AbstractController {
 
             if(
                 (
-                    $this->locked_resource_controller->isResourceLocked($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES)
+                        $this->locked_resource_controller->isResourceLocked($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES)
                     ||  $this->locked_resource_controller->isResourceLocked($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY)
                 )
                 &&  $this->locked_resource_controller->isSystemLocked()

@@ -144,39 +144,52 @@ export default class DialogLogic {
     }
 
     /**
-     * todo: need to be replaced in the twig and retested, this was only prepared to for replacement
-     *
      * @description contains definition of logic for mass action dialog - transfer data transfer, module: Images
      */
     public static massActionDataTransferImagesModule(): DialogDataDto
     {
-        let massActions = new MassActions();
-        let filesPaths  = massActions.getFilesPathsForAllSelectedCheckboxes();
-
-        let callback = () => {
-            let ajaxEvents   = new AjaxEvents();
-            let lightGallery = new LightGallery();
-
-            ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-            lightGallery.reinitGallery();
-            BootboxWrapper.hideAll();
-        };
-
-        let ajaxData = {
-            'files_current_locations': filesPaths
-        };
-
-        let dialogDataDto        = new DialogDataDto();
-        dialogDataDto.callback = callback;
-        dialogDataDto.ajaxData = ajaxData;
-
-        return dialogDataDto;
+        return DialogLogic.massActionDataTransferForModule('My Images');
     }
 
     /**
      * @description contains definition of logic for mass action dialog - transfer data transfer, module: Video
      */
-    private static massActionDataTransferVideoModule(): DialogDataDto
+    public static massActionDataTransferVideoModule(): DialogDataDto
+    {
+        return DialogLogic.massActionDataTransferForModule('My Video');
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog - files removal, module: images
+     */
+    public static massActionFilesRemoval(): DialogDataDto
+    {
+        let massActions = new MassActions();
+
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let ajaxEvents        = new AjaxEvents();
+            let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
+
+            $('[type^="submit"]').on('click', (event) => {
+                let callback = function(){
+                    ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+                };
+                event.preventDefault();
+                ajaxEvents.callAjaxFileRemovalForFilePath(removedFilesPaths, callback);
+            });
+        };
+
+        let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog for given module
+     * @param moduleName
+     */
+    private static massActionDataTransferForModule(moduleName: string): DialogDataDto
     {
         let massActions = new MassActions();
         let filesPaths  = massActions.getFilesPathsForAllSelectedCheckboxes();
@@ -198,66 +211,12 @@ export default class DialogLogic {
 
         let ajaxData = {
             'files_current_locations': filesPaths,
-            'moduleName'             : "My Video"
+            'moduleName'             : moduleName
         };
 
         let dialogDataDto      = new DialogDataDto();
         dialogDataDto.callback = callback;
         dialogDataDto.ajaxData = ajaxData;
-
-        return dialogDataDto;
-    }
-
-    /**
-     * @description contains definition of logic for mass action dialog - files removal, module: Video
-     */
-    private static massActionFilesRemovalForVideoModule(): DialogDataDto
-    {
-        let massActions = new MassActions();
-
-        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
-            let ajaxEvents        = new AjaxEvents();
-            let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
-
-            $('[type^="submit"]').on('click', (event) => {
-                let callback = function(){
-                    ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-                };
-                event.preventDefault();
-                ajaxEvents.callAjaxFileRemovalForFilePath(removedFilesPaths, callback);
-            });
-
-        };
-
-        let dialogDataDto      = new DialogDataDto();
-        dialogDataDto.callback = callback;
-
-        return dialogDataDto;
-    }
-
-    /**
-     * @description contains definition of logic for mass action dialog - files removal, module: images
-     */
-    private static massActionFilesRemovalForImagesModule(): DialogDataDto
-    {
-        let massActions = new MassActions();
-
-        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
-            let ajaxEvents        = new AjaxEvents();
-            let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
-
-            $('[type^="submit"]').on('click', (event) => {
-                let callback = function(){
-                    ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
-                };
-                event.preventDefault();
-                ajaxEvents.callAjaxFileRemovalForFilePath(removedFilesPaths, callback);
-            });
-
-        };
-
-        let dialogDataDto      = new DialogDataDto();
-        dialogDataDto.callback = callback;
 
         return dialogDataDto;
     }

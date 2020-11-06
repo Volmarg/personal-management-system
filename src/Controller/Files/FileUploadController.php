@@ -52,7 +52,7 @@ class FileUploadController extends AbstractController {
     ];
 
     const MODULE_UPLOAD_DIR_TO_MODULE_NAME = [
-       self::MODULE_UPLOAD_DIR_FOR_IMAGES => MyVideoController::MODULE_NAME,
+       self::MODULE_UPLOAD_DIR_FOR_IMAGES => ModulesController::MODULE_NAME_IMAGES,
        self::MODULE_UPLOAD_DIR_FOR_FILES  => MyFilesController::MODULE_NAME,
        self::MODULE_UPLOAD_DIR_FOR_VIDEO  => ModulesController::MODULE_NAME_VIDEO,
     ];

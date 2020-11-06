@@ -22,7 +22,7 @@ export default class DialogLogicLoader {
          * @see DialogLogic.tagsUpdate()
          * @see DialogLogic.massActionDataTransferImagesModule()
          * @see DialogLogic.massActionDataTransferVideoModule()
-         * @see DialogLogic.massActionFilesRemovalForVideoModule()
+         * @see DialogLogic.massActionFilesRemoval()
          */
         let dialogDataBuilder = DialogLogic[dialogName];
 
