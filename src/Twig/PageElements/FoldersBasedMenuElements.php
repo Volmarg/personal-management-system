@@ -213,6 +213,9 @@ class FoldersBasedMenuElements extends AbstractExtension {
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
                 $path = $this->url_generator->generate('modules_my_images', ['encoded_subdirectory_path' => $encoded_subdirectory_path]);
                 break;
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_VIDEO:
+                $path = $this->url_generator->generate('modules_my_video', ['encoded_subdirectory_path' => $encoded_subdirectory_path]);
+                break;
             default:
                 throw new Exception("This upload directory is not supported: {$upload_module_directory}");
         }

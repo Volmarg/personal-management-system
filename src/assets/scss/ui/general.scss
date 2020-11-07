@@ -155,3 +155,7 @@ form legend{
   font-size: 130%;
   cursor: initial;
 }
+
+.dropdown-menu.show {
+  z-index: 3
+}

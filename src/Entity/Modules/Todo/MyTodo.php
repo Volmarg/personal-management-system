@@ -157,7 +157,7 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
         return $this->module;
     }
 
-    public function setModule(Module $module): self
+    public function setModule(?Module $module): self
     {
         $this->module = $module;
 

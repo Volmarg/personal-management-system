@@ -97,17 +97,20 @@ class FilesAction extends AbstractController {
 
         if( !$request->request->has(FilesHandler::KEY_FILES_CURRENT_PATHS) ){
             $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FilesHandler::KEY_FILES_CURRENT_PATHS;
-            throw new \Exception($message);
+            $this->app->logger->warning($message);;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         if (!$request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR)) {
             $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR;
-            throw new \Exception($message);
+            $this->app->logger->warning($message);;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         if (!$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR)) {
             $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR;
-            throw new \Exception($message);
+            $this->app->logger->warning($message);;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         /** @info: this will be used to build single file transfer for each path */
@@ -130,7 +133,9 @@ class FilesAction extends AbstractController {
             }catch(Exception $e){
                 $message  = $this->app->translator->translate("responses.files.thereWasAnErrorWhileTryingToMoveFile");
                 $response = new Response($message);
-                return $response;
+
+                $this->app->logger->warning($message);;
+                return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
             }
             $response_data = json_decode($response->getContent(), true);
 
@@ -152,17 +157,17 @@ class FilesAction extends AbstractController {
         //all files copied
         if( empty($response_errors_data) ){
             $message = $this->app->translator->translate('responses.files.filesHasBeenSuccesfullyMoved');
-            $code    = 200;
+            $code    = Response::HTTP_OK;
         }else{
 
             // all failed
             $message = $this->app->translator->translate('responses.files.couldNotTheFiles');
-            $code    = 500;
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
 
             // some failed
             if( !empty($response_success_data) && !empty($response_errors_data) ) {
                 $message = $this->app->translator->translate('responses.files.couldNotMoveSomeFiles');
-                $code    = 202;
+                $code    = Response::HTTP_ACCEPTED;
             }
 
             $this->app->logger->warning($message, [
@@ -170,13 +175,7 @@ class FilesAction extends AbstractController {
             ]);
         }
 
-        $response_data = [
-            self::KEY_RESPONSE_MESSAGE => $message,
-            self::KEY_RESPONSE_CODE    => $code,
-        ];
-
-        return new JsonResponse($response_data);
-
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
 

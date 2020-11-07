@@ -11,6 +11,16 @@ import UpdateAction         from "../../Actions/UpdateAction";
 import CreateAction         from "../../Actions/CreateAction";
 import RemoveAction         from "../../Actions/RemoveAction";
 import TodoChecklist        from "../../../../modules/Todo/TodoChecklist";
+import Selectize            from "../../../../libs/selectize/Selectize";
+import MassActions          from "../../Actions/MassActions";
+import Navigation           from "../../../Navigation";
+import BootboxWrapper       from "../../../../libs/bootbox/BootboxWrapper";
+import AjaxEvents           from "../../../ajax/AjaxEvents";
+import LightGallery         from "../../../../libs/lightgallery/LightGallery";
+import BootstrapSelect      from "../../../../libs/bootstrap-select/BootstrapSelect";
+import DataTransferDialogs  from "../DataTransferDialogs";
+
+import * as $ from "jquery";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -114,4 +124,100 @@ export default class DialogLogic {
         return dialogDataDto;
     }
 
+    /**
+     * @description contains definition of updating tags via dialog
+     */
+    public static tagsUpdate(): DialogDataDto
+    {
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let updateAction = new UpdateAction();
+            let selectize    = new Selectize();
+
+            selectize.applyTagsSelectize();
+            updateAction.init();
+        };
+
+        let dialogDataDto        = new DialogDataDto();
+        dialogDataDto.callback   = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog - transfer data transfer, module: Images
+     */
+    public static massActionDataTransferImagesModule(): DialogDataDto
+    {
+        return DialogLogic.massActionDataTransferForModule('My Images');
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog - transfer data transfer, module: Video
+     */
+    public static massActionDataTransferVideoModule(): DialogDataDto
+    {
+        return DialogLogic.massActionDataTransferForModule('My Video');
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog - files removal, module: images
+     */
+    public static massActionFilesRemoval(): DialogDataDto
+    {
+        let massActions = new MassActions();
+
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let ajaxEvents        = new AjaxEvents();
+            let removedFilesPaths = massActions.getFilesPathsForAllSelectedCheckboxes();
+
+            $('[type^="submit"]').on('click', (event) => {
+                let callback = function(){
+                    ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+                };
+                event.preventDefault();
+                ajaxEvents.callAjaxFileRemovalForFilePath(removedFilesPaths, callback);
+            });
+        };
+
+        let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for mass action dialog for given module
+     * @param moduleName
+     */
+    private static massActionDataTransferForModule(moduleName: string): DialogDataDto
+    {
+        let massActions = new MassActions();
+        let filesPaths  = massActions.getFilesPathsForAllSelectedCheckboxes();
+
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let dataTransferDialogs = new DataTransferDialogs();
+
+            let submitButton        = dialogWrapper.find('[type^="submit"]');
+            let jsonFilesPaths      = dialogWrapper.find("[data-transferred-files-json]").attr('data-transferred-files-json');
+            let filesPathsArray     = JSON.parse(jsonFilesPaths);
+
+            dataTransferDialogs.attachDataTransferToDialogFormSubmit(submitButton, filesPathsArray, () => {
+                let ajaxEvents = new AjaxEvents();
+                ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            });
+
+            BootstrapSelect.init();
+        };
+
+        let ajaxData = {
+            'files_current_locations': filesPaths,
+            'moduleName'             : moduleName
+        };
+
+        let dialogDataDto      = new DialogDataDto();
+        dialogDataDto.callback = callback;
+        dialogDataDto.ajaxData = ajaxData;
+
+        return dialogDataDto;
+    }
 }

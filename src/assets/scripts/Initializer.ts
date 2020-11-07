@@ -43,6 +43,8 @@ import JsCookie                     from "./libs/js-cookie/JsCookie";
 import Ajax                         from "./core/ajax/Ajax";
 import Loader                       from "./libs/loader/Loader";
 import DomElements                  from "./core/utils/DomElements";
+import VideoJs                      from "./libs/video-js/VideoJs";
+import MassActions                  from "./core/ui/Actions/MassActions";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -70,6 +72,7 @@ export default class Initializer {
         let datatable         = new DataTable();
         let formsUtils        = new FormsUtils();
         let accordion         = new Accordion();
+        let videoJs           = new VideoJs();
 
         // core
         let search                 = new Search();
@@ -120,6 +123,8 @@ export default class Initializer {
 
         modal.init();
         dialog.init();
+
+        videoJs.init();
     }
 
     /**
@@ -171,6 +176,7 @@ export default class Initializer {
         let removeAction                           = new RemoveAction();
         let toggleBoolvalAction                    = new ToggleBoolvalAction();
         let updateAction                           = new UpdateAction();
+        let massActions                            = new MassActions();
 
         copyToClipboardAction.init();
         createAction.init();
@@ -180,6 +186,7 @@ export default class Initializer {
         removeAction.init();
         toggleBoolvalAction.init();
         updateAction.init();
+        massActions.init();
     }
 
     /**

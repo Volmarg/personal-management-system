@@ -6,6 +6,7 @@ use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\Env;
+use App\Controller\Modules\ModulesController;
 use App\Services\Database\DatabaseExporter;
 use App\Services\Files\Archivizer;
 use Symfony\Component\Console\Command\Command;
@@ -139,8 +140,9 @@ class CronMakeBackupCommand extends Command
     private function backupFiles(SymfonyStyle $io, string $argument_backup_directory, string $backup_files_filename, array $skipped_modules = []){
 
         $upload_dirs_for_modules = [
-          MyImagesController::MODULE_NAME => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
-          MyFilesController::MODULE_NAME  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
+          MyImagesController::MODULE_NAME       => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
+          MyFilesController::MODULE_NAME        => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
+          ModulesController::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getVideoUploadDir(),
         ];
 
         foreach($skipped_modules as $skipped_module){

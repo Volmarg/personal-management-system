@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Controller\Modules\ModulesController;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -77,6 +78,11 @@ class FilesSearchRepository
      * @return string
      */
     private function getSqlForFileSearch(string $tags_sql){
+
+        $my_images_module_name = ModulesController::MODULE_NAME_IMAGES;
+        $my_video_module_name  = ModulesController::MODULE_NAME_VIDEO;
+        $my_files_module_name  = ModulesController::MODULE_NAME_FILES;
+
         $sql = "
             SELECT
                 ft.tags                      AS tags,
@@ -87,6 +93,7 @@ class FilesSearchRepository
             CONCAT(  '/', -- to have absolute path  
                     CASE -- here add part of url pointing to the module name
                         WHEN full_file_path LIKE '%images%' THEN 'my-images'
+                        WHEN full_file_path LIKE '%video%' THEN 'my-video'
                         WHEN full_file_path LIKE '%files%' THEN 'my-files'
                     END,
                     '/dir/', 
@@ -101,15 +108,24 @@ class FilesSearchRepository
                                       ),
                                     ''
                             )
-                    WHEN full_file_path LIKE '%files%' THEN 
-                        REPLACE(
+                        WHEN full_file_path LIKE '%files%' THEN 
                             REPLACE(
-                                ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
-                                IF( -- if main dir then strip is different
-                                    LOCATE('upload/files/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/files', 'upload/files/'
-                                 ),
-                                ''
-                        )
+                                REPLACE(
+                                    ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                                    IF( -- if main dir then strip is different
+                                        LOCATE('upload/files/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/files', 'upload/files/'
+                                     ),
+                                    ''
+                            )
+                        WHEN full_file_path LIKE '%video%' THEN 
+                            REPLACE(
+                                REPLACE(
+                                    ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
+                                    IF( -- if main dir then strip is different
+                                        LOCATE('upload/video/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/video', 'upload/video/'
+                                     ),
+                                    ''
+                            )                        
                     END , 
                     '/', '%252F') -- this is needed for routes, as this is encoded slash
                 )
@@ -121,8 +137,9 @@ class FilesSearchRepository
                 SELECT
                     id AS id,
                 CASE
-                    WHEN full_file_path LIKE '%images%' THEN 'My Images'
-                    WHEN full_file_path LIKE '%files%' THEN 'My Files'
+                    WHEN full_file_path LIKE '%images%' THEN '{$my_images_module_name}'
+                    WHEN full_file_path LIKE '%files%' THEN '{$my_files_module_name}'
+                    WHEN full_file_path LIKE '%video%' THEN '{$my_video_module_name}'
                 END AS module
                 
                 FROM files_tags

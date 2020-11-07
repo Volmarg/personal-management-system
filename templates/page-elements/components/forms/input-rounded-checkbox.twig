@@ -1,11 +1,14 @@
-{% set classes = ( classes is not defined ? "" : classes ) %}
-{% set checked = ( checked is not defined ? "" : checked ) %}
-{% set label   = ( label is not defined   ? "" : label ) %}
-{% set wrapperStyles =  ( wrapperStyles is not defined   ? "" : wrapperStyles ) %}
+{% set classes              = ( classes        is not defined ? "" : classes ) %}
+{% set checked              = ( checked        is not defined ? "" : checked ) %}
+{% set label                = ( label          is not defined ? "" : label ) %}
+{% set wrapperStyles        = ( wrapperStyles  is not defined ? "" : wrapperStyles ) %}
+{% set labelStyle           = ( labelStyle     is not defined ? "" : labelStyle ) %}
+{% set inputDataValue       = ( inputDataValue is not defined ? "" : inputDataValue) %}
+{% set additionalAttributes = ( additionalAttributes is not defined ? "" : additionalAttributes) %}
 
 <div class="checkbox checkbox-circle checkbox-info peers ai-c" style="{{ wrapperStyles }}">
-    <input type="checkbox" name="inputCheckboxesCall" class="peer {{ classes }}" {{ checked }} style="width: 30px;">
-    <label class=" peers peer-greed js-sb ai-c" style="position: absolute;">
+    <input type="checkbox" name="inputCheckboxesCall" class="peer {{ classes }}" {{ checked }} style="width: 30px;" data-value="{{ inputDataValue }}" {{ additionalAttributes }}>
+    <label class=" peers peer-greed js-sb ai-c" style="position: absolute;{{ labelStyle }}">
 
             <span class="peer peer-greed">
                 {{ label }}

@@ -4,6 +4,7 @@
 namespace App\Action\Files;
 
 
+use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Modules\Files\MyFilesController;
@@ -43,24 +44,27 @@ class FilesTagsAction extends AbstractController {
 
         if (!$request->request->has(FileTagger::KEY_TAGS)){
             $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileTagger::KEY_TAGS;
-            throw new Exception($message);
+            $this->app->logger->critical($message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         if (!$request->request->has(MyFilesController::KEY_FILE_FULL_PATH)){
             $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . MyFilesController::KEY_FILE_FULL_PATH;
-            throw new Exception($message);
-        }
-
-        if( empty($file_full_path) ){
-            $message = $this->app->translator->translate('responses.files.filePathIsAnEmptyString');
-            return new Response($message);
+            $this->app->logger->critical($message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         $tags_string    = $request->request->get(FileTagger::KEY_TAGS);
         $file_full_path = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
 
+        if( empty($file_full_path) ){
+            $message = $this->app->translator->translate('responses.files.filePathIsAnEmptyString');
+            $this->app->logger->critical($message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+        }
+
         $response = $this->controllers->getFilesTagsController()->updateTags($tags_string, $file_full_path);
-        return $response;
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
 

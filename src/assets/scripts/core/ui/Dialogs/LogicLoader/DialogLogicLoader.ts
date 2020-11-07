@@ -19,6 +19,10 @@ export default class DialogLogicLoader {
          * @see DialogLogic.myIssueCardPreviewAndEdit()
          * @see DialogLogic.addOrModifyTodo()
          * @see DialogLogic.firstLoginInformation()
+         * @see DialogLogic.tagsUpdate()
+         * @see DialogLogic.massActionDataTransferImagesModule()
+         * @see DialogLogic.massActionDataTransferVideoModule()
+         * @see DialogLogic.massActionFilesRemoval()
          */
         let dialogDataBuilder = DialogLogic[dialogName];
 

@@ -43,6 +43,7 @@ class AppAction extends AbstractController {
     const MENU_NODE_MODULE_NAME_MY_CONTACTS   = ModulesController::MODULE_NAME_CONTACTS;
     const MENU_NODE_MODULE_NAME_MY_FILES      = ModulesController::MODULE_NAME_FILES;
     const MENU_NODE_MODULE_NAME_MY_IMAGES     = ModulesController::MODULE_NAME_IMAGES;
+    const MENU_NODE_MODULE_NAME_MY_VIDEO      = ModulesController::MODULE_NAME_VIDEO;
     const MENU_NODE_MODULE_NAME_MY_JOB        = ModulesController::MODULE_NAME_JOB;
     const MENU_NODE_MODULE_NAME_MY_PASSWORDS  = ModulesController::MODULE_NAME_PASSWORDS;
     const MENU_NODE_MODULE_NAME_MY_PAYMENTS   = ModulesController::MODULE_NAME_PAYMENTS;
@@ -61,6 +62,7 @@ class AppAction extends AbstractController {
     const MENU_NODE_NAME_MY_CONTACTS  = 'my-contacts';
     const MENU_NODE_NAME_MY_FILES     = 'my-files';
     const MENU_NODE_NAME_MY_IMAGES    = 'my-images';
+    const MENU_NODE_NAME_MY_VIDEO     = 'my-video';
     const MENU_NODE_NAME_MY_JOB       = 'my-job';
     const MENU_NODE_NAME_MY_PASSWORDS = 'my-passwords';
     const MENU_NODE_NAME_MY_PAYMENTS  = 'my-payments';
@@ -77,6 +79,7 @@ class AppAction extends AbstractController {
         self::MENU_NODE_MODULE_NAME_MY_CONTACTS   => 'MENU_NODE_MODULE_NAME_MY_CONTACTS',
         self::MENU_NODE_MODULE_NAME_MY_FILES      => 'MENU_NODE_MODULE_NAME_MY_FILES',
         self::MENU_NODE_MODULE_NAME_MY_IMAGES     => 'MENU_NODE_MODULE_NAME_MY_IMAGES',
+        self::MENU_NODE_MODULE_NAME_MY_VIDEO      => 'MENU_NODE_MODULE_NAME_MY_VIDEO',
         self::MENU_NODE_MODULE_NAME_MY_JOB        => 'MENU_NODE_MODULE_NAME_MY_JOB',
         self::MENU_NODE_MODULE_NAME_MY_PASSWORDS  => 'MENU_NODE_MODULE_NAME_MY_PASSWORDS',
         self::MENU_NODE_MODULE_NAME_MY_PAYMENTS   => 'MENU_NODE_MODULE_NAME_MY_PAYMENTS',
@@ -94,6 +97,7 @@ class AppAction extends AbstractController {
         self::MENU_NODE_MODULE_NAME_MY_CONTACTS   => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_CONTACTS  . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_MY_FILES      => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_FILES     . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_MY_IMAGES     => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_IMAGES    . self::TWIG_EXT,
+        self::MENU_NODE_MODULE_NAME_MY_VIDEO      => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_VIDEO     . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_MY_JOB        => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_JOB       . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_MY_PASSWORDS  => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_PASSWORDS . self::TWIG_EXT,
         self::MENU_NODE_MODULE_NAME_MY_PAYMENTS   => self::TWIG_MENU_NODE_PATH . self::MENU_NODE_NAME_MY_PAYMENTS  . self::TWIG_EXT,

@@ -8,5 +8,6 @@ export default class RouterStructure {
 
     static readonly MODULES_MY_FILES_PATH                = 'modules_my_files';
     static readonly MODULES_MY_IMAGES_PATH               = 'modules_my_images';
+    static readonly MODULES_MY_VIDEO_PATH                = 'modules_my_video';
 
 }

@@ -4,6 +4,7 @@
     <select {{ block('widget_attributes') }} autocomplete="off" class="form-control selectpicker">
         {{ buildOptionsForUploadFormType('images', add_main_folder) | raw }}
         {{ buildOptionsForUploadFormType('files', add_main_folder) | raw }}
+        {{ buildOptionsForUploadFormType('video', add_main_folder) | raw }}
     </select>
 
 {% endblock %}

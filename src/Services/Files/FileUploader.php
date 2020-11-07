@@ -7,7 +7,6 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Validators\FileValidator;
-use App\Services\Exceptions;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -115,6 +114,9 @@ class FileUploader extends AbstractController {
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
                 $target_directory = Env::getImagesUploadDir();
             break;
+            case FileUploadController::MODULE_UPLOAD_DIR_FOR_VIDEO:
+                $target_directory = Env::getVideoUploadDir();
+                break;
             default:
                 $log_message = $this->app->translator->translate('logs.upload.triedToUploadForUnknownUploadType') . $type;
                 $exc_message = $this->app->translator->translate('exception.upload.thisUploadTypeIsNotAllowed') . $type;

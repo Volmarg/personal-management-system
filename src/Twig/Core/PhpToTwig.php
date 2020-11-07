@@ -7,12 +7,14 @@ use Twig\TwigFunction;
 
 class PhpToTwig extends AbstractExtension {
 
+    const DEFAULT_SUBSTRING_LENGTH = 40;
 
     public function getFunctions() {
         return [
             new TwigFunction('unset', [$this, '_unset']),
             new TwigFunction('unsetKeys', [$this, 'unsetKeys']),
             new TwigFunction('jsonDecode', [$this, 'jsonDecode']),
+            new TwigFunction('substring', [$this, 'substring']),
         ];
     }
 
@@ -47,6 +49,29 @@ class PhpToTwig extends AbstractExtension {
     public function jsonDecode(string $json): array {
         $arr = json_decode($json, true);
         return $arr;
+    }
+
+    /**
+     * Extracts substring from string for given offset. Allows to add 3 dots on end of substracted string
+     *
+     * @param string $string
+     * @param int $start
+     * @param int $length
+     * @param bool $add_dots - if true then applies ... on end of string
+     * @return string
+     */
+    public function substring(string $string, int $start = 0, int $length = self::DEFAULT_SUBSTRING_LENGTH, bool $add_dots = true): string
+    {
+        $substring = substr($string, $start, $length);
+
+        if(
+                $add_dots
+            &&  strlen($string) > $length
+        ){
+            $substring .="...";
+        }
+
+        return $substring;
     }
 
 }
