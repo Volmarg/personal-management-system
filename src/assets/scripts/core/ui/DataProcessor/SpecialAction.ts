@@ -158,7 +158,7 @@ export default class SpecialAction extends AbstractDataProcessor {
                     }
                 }
 
-                BootboxWrapper.hideAll();;
+                BootboxWrapper.hideAll();
                 ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
             };
 
@@ -171,6 +171,66 @@ export default class SpecialAction extends AbstractDataProcessor {
             return dataProcessorsDto;
         },
         processorName: "Create folder"
+    };
+
+    public static RenameFolder: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        }, makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        }, makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url             = '/files/actions/rename-folder';
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(SpecialAction.RenameFolder.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.RenameFolder.processorName);
+
+            let uploadModuleDir              = $baseElement.find('.upload-module-dir select').val();
+            let currentPathInUploadModuleDir = $baseElement.find('.current-path-in-module-upload-dir select').val();
+            let subdirectoryNewName          = $baseElement.find('.subdirectory-new-name input').val();
+
+            let ajaxData = {
+                subdirectory_current_path_in_module_upload_dir  : currentPathInUploadModuleDir,
+                upload_module_dir                               : uploadModuleDir,
+                subdirectory_new_name                           : subdirectoryNewName
+            };
+
+            let callback = (dataCallbackParams) => {
+                let ajax       = new Ajax();
+                let ajaxEvents = new AjaxEvents();
+
+                if(
+                        null !== dataCallbackParams
+                    &&  "undefined" !== typeof dataCallbackParams
+                ){
+                    let menuNodeModuleName           = dataCallbackParams.menuNodeModuleName;
+                    let menuNodeModulesNamesToReload = dataCallbackParams.menuNodeModulesNamesToReload;
+
+                    if( !StringUtils.isEmptyString(menuNodeModuleName)){
+                        ajax.singleMenuNodeReload(menuNodeModuleName);
+                    }else if( !StringUtils.isEmptyString(menuNodeModulesNamesToReload) ){
+                        let arrayOfMenuNodeModuleNames = JSON.parse(menuNodeModulesNamesToReload);
+                        $.each(arrayOfMenuNodeModuleNames, function(index, menuNodeModuleName){
+                            ajax.singleMenuNodeReload(menuNodeModuleName);
+                        })
+                    }
+                }
+
+                BootboxWrapper.hideAll();
+                ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.callback       = callback;
+            dataProcessorsDto.ajaxData       = ajaxData;
+
+            return dataProcessorsDto;
+        },
+        makeCreateData: function (): DataProcessorDto | null {
+            return null
+        },
+        processorName: "Rename folder"
     };
 
     public static settingsDashboardWidgetsVisibility: DataProcessorInterface = {

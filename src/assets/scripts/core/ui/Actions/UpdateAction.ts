@@ -55,6 +55,10 @@ export default class UpdateAction extends AbstractAction {
             let $form      = $(event.target);
             let formTarget = $form.attr('data-form-target');
 
+            let $submitButton        = $($form).find('button[type="submit"]');
+            let callbackParamsJson   = $($submitButton).attr('data-params');
+            let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
+
             let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, formTarget);
 
             if( !(dataProcessorDto instanceof DataProcessorDto) ){
@@ -87,8 +91,14 @@ export default class UpdateAction extends AbstractAction {
                     return;
                 }
 
-                Ui.insertIntoMainContent(ajaxResponseDto.template);
+                if( ajaxResponseDto.isRouteSet() ){
+                    _this.ajaxEvents.loadModuleContentByUrl(ajaxResponseDto.routeUrl);
+                }else if( ajaxResponseDto.isTemplateSet() ){
+                    Ui.insertIntoMainContent(ajaxResponseDto.template);
+                }
+
                 _this.initializer.reinitializeLogic();
+                dataProcessorDto.callback(dataCallbackParams);
 
                 if( ajaxResponseDto.reloadPage ){
                     if( ajaxResponseDto.isReloadMessageSet() ){

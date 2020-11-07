@@ -4,6 +4,7 @@ namespace App\Action\Files;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\Files\DirectoriesHandler;
@@ -43,16 +44,23 @@ class FilesAction extends AbstractController {
      */
     private $directories_handler;
 
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
     public function __construct(
         Application        $app,
         FilesHandler       $files_handler,
         FileTagger         $file_tagger,
-        DirectoriesHandler $directories_handler
+        DirectoriesHandler $directories_handler,
+        Controllers        $controllers
     ) {
         $this->app                 = $app;
         $this->files_handler       = $files_handler;
         $this->file_tagger         = $file_tagger;
         $this->directories_handler = $directories_handler;
+        $this->controllers         = $controllers;
     }
 
     /**
@@ -340,6 +348,40 @@ class FilesAction extends AbstractController {
         ];
 
         return new JsonResponse($response_data);
+    }
+
+    /**
+     * Handles renaming of the folder via ajax call
+     *
+     * @Route("/files/actions/rename-folder", name="action_rename_subdirectory", methods="POST")
+     * @param Request $request
+     * @return Response
+     *
+     * @throws \Exception
+     */
+    public function renameFolderByPostRequest(Request $request)
+    {
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        if ( !$request->request->has(FileUploadController::KEY_UPLOAD_MODULE_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_UPLOAD_MODULE_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NEW_NAME;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        $new_name             = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
+        $upload_module_dir    = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+        $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+
+        $response = $this->controllers->getFilesUploadSettingsController()->renameSubdirectory($upload_module_dir, $current_directory_path_in_module_upload_dir, $new_name);
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
 }

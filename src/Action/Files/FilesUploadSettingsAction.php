@@ -93,6 +93,7 @@ class FilesUploadSettingsAction extends AbstractController {
         $menu_node_modules_names_to_reload = [
             ModulesController::MODULE_NAME_IMAGES,
             ModulesController::MODULE_NAME_FILES,
+            ModulesController::MODULE_NAME_VIDEO,
         ];
 
         $data = [
