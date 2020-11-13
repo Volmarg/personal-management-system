@@ -9,6 +9,7 @@ use App\Controller\Core\Repositories;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Services\Files\FilesHandler;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -69,11 +70,14 @@ class MyContactsSettingsAction extends AbstractController
      * @Route("/my-contacts-groups/update",name="my-contacts-groups-update")
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws MappingException
      */
     public function updateContactGroup(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myContactGroupRepository->find($parameters['id']);
+        $entity_id  = $parameters['id'];
+
+        $entity     = $this->controllers->getMyContactGroupController()->getOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -115,7 +119,7 @@ class MyContactsSettingsAction extends AbstractController
     public function updateContactType(Request $request) {
         $parameters = $request->request->all();
 
-        $entity_after_update  = $this->app->repositories->myContactTypeRepository->find($parameters['id']);
+        $entity_after_update  = $this->controllers->getMyContactTypeController()->findOneById($parameters['id']);
         $entity_before_update = clone($entity_after_update); // because doctrine will overwrite the data we got to clone it
 
         $this->app->em->beginTransaction(); //all or nothing
@@ -178,7 +182,7 @@ class MyContactsSettingsAction extends AbstractController
      */
     private function renderContactTypeTemplate($ajax_render = false) {
 
-        $types = $this->app->repositories->myContactTypeRepository->findBy(['deleted' => 0]);
+        $types = $this->controllers->getMyContactTypeController()->getAllNotDeleted();
 
         $data = [
             'ajax_render' => $ajax_render,
@@ -194,7 +198,7 @@ class MyContactsSettingsAction extends AbstractController
      */
     private function renderContactGroupTemplate($ajax_render = false) {
 
-        $groups = $this->app->repositories->myContactGroupRepository->findBy(['deleted' => 0]);
+        $groups = $this->controllers->getMyContactGroupController()->getAllNotDeleted();
 
         $data = [
             'ajax_render' => $ajax_render,
@@ -221,7 +225,10 @@ class MyContactsSettingsAction extends AbstractController
             $contact_type = $form->getData();
             $name         = $contact_type->getName();
 
-            if (!is_null($contact_type) && $this->app->repositories->myContactTypeRepository->findBy([ 'name' => $name ] )) {
+            if (
+                        !is_null($contact_type)
+                    &&  !is_null($this->controllers->getMyContactTypeController()->getOneByName($name))
+            ) {
                 $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
                 return new JsonResponse($record_with_this_name_exist, 409);
             }
@@ -258,7 +265,10 @@ class MyContactsSettingsAction extends AbstractController
 
             $form_data->setColor($normalized_color);
 
-            if (!is_null($form_data) && $this->app->repositories->myContactGroupRepository->findBy([ 'name' => $name ] )) {
+            if (
+                        !is_null($form_data)
+                    &&  $this->controllers->getMyContactGroupController()->getOneByName($name)
+            ) {
                 $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
                 return new Response($record_with_this_name_exist, 409);
             }

@@ -29,8 +29,15 @@ class MyContactTypeRepository extends ServiceEntityRepository {
      * @param string $name
      * @return MyContactType|null
      */
-    public function getOneNonDeletedByName(string $name):?MyContactType {
-        return $this->findOneBy( ["name" => $name] );
+    public function getOneByName(string $name):?MyContactType
+    {
+        $results = $this->findBy(["name" => $name]);
+
+        if( empty($results) ){
+            return null;
+        }
+
+        return $results[0];
     }
 
     /**
@@ -39,7 +46,7 @@ class MyContactTypeRepository extends ServiceEntityRepository {
      * @return false|mixed
      * @throws DBALException
      */
-    public function getImagePathForTypeById(string $id){
+    public function getImagePathForById(string $id){
 
         $connection = $this->_em->getConnection();
 
@@ -65,7 +72,7 @@ class MyContactTypeRepository extends ServiceEntityRepository {
      * @return false|mixed
      * @throws DBALException
      */
-    public function getTypeNameTypeById(string $id){
+    public function getTypeNameById(string $id){
 
         $connection = $this->_em->getConnection();
 
@@ -85,5 +92,15 @@ class MyContactTypeRepository extends ServiceEntityRepository {
         return $result;
     }
 
+    /**
+     * Will return one entity for given id, if none was found then null wil be returned
+     *
+     * @param int $id
+     * @return MyContactType|null
+     */
+    public function findOneById(int $id): ?MyContactType
+    {
+        return $this->find($id);
+    }
 
 }

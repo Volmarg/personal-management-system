@@ -6,6 +6,7 @@ namespace App\Action\Modules\Goals;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,9 +19,15 @@ class GoalsPaymentsAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
 
-        $this->app = $app;
+    public function __construct(Application $app, Controllers $controllers)
+    {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -45,7 +52,7 @@ class GoalsPaymentsAction extends AbstractController {
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
-        $all_payments       = $this->app->repositories->myGoalsPaymentsRepository->findBy(['deleted' => 0]);
+        $all_payments = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
 
         $data = [
             'all_payments'                   => $all_payments,

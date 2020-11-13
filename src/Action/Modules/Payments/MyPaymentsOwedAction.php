@@ -6,6 +6,7 @@ namespace App\Action\Modules\Payments;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use Doctrine\DBAL\DBALException;
 use Exception;
@@ -23,9 +24,14 @@ class MyPaymentsOwedAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
 
-        $this->app = $app;
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -77,7 +83,9 @@ class MyPaymentsOwedAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters     = $request->request->all();
-        $entity         = $this->app->repositories->myPaymentsOwedRepository->find($parameters['id']);
+        $entity_id      = trim($parameters['id']);
+
+        $entity         = $this->controllers->getMyPaymentsOwedController()->findOneById($entity_id);
         $response       = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -92,19 +100,13 @@ class MyPaymentsOwedAction extends AbstractController {
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form           = $this->app->forms->moneyOwedForm();
-        $owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->findBy([
-            'deleted'  => 0,
-            'owedByMe' => 1
-        ]);
+        $owed_by_me     = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(true);
+        $owed_by_others = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(false);
 
-        $owed_by_others = $this->app->repositories->myPaymentsOwedRepository->findBy([
-            'deleted'  => 0,
-            'owedByMe' => 0
-        ]);
+        $summary_owed_by_others = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(false);
+        $summary_owed_by_me     = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(true);
 
-        $summary_owed_by_others = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(0);
-        $summary_owed_by_me     = $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide(1);
-        $summary_overall        = $this->app->repositories->myPaymentsOwedRepository->fetchSummaryWhoOwesHowMuch();
+        $summary_overall        = $this->controllers->getMyPaymentsOwedController()->fetchSummaryWhoOwesHowMuch();
 
         $summary_overall_owed_by_me     = [];
         $summary_overall_owed_by_others = [];

@@ -32,4 +32,15 @@ class MyIssueContactRepository extends ServiceEntityRepository
         $this->_em->flush($issueContact);
     }
 
+    /**
+     * Will return entity for given id, otherwise null if nothing was found
+     *
+     * @param int $id
+     * @return MyIssueContact|null
+     */
+    public function findOneById(int $id): ?MyIssueContact
+    {
+        return $this->find($id);
+    }
+
 }

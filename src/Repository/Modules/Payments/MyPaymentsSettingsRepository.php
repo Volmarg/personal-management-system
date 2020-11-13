@@ -33,4 +33,32 @@ class MyPaymentsSettingsRepository extends ServiceEntityRepository {
         ]);
     }
 
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param int $id
+     * @return MyPaymentsSettings|null
+     */
+    public function findOneById(int $id): ?MyPaymentsSettings
+    {
+       return $this->find($id);
+    }
+
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param string $value
+     * @return MyPaymentsSettings | null
+     */
+    public function findOneByValue(string $value): ?MyPaymentsSettings
+    {
+        $result = $this->findBy(['value' => $value]);
+
+        if( empty($result) ){
+            return null;
+        }
+
+        return $result[0];
+    }
+
 }

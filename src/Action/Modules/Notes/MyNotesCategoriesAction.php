@@ -88,7 +88,7 @@ class MyNotesCategoriesAction extends AbstractController {
         $parameters = $request->request->all();
         $id         = $parameters[self::PARAMETER_ID];
 
-        $entity     = $this->app->repositories->myNotesCategoriesRepository->find($id);
+        $entity     = $this->controllers->getMyNotesCategoriesController()->findOneById($id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         $message    = $response->getContent();

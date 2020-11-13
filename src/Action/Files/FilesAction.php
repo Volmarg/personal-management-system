@@ -88,7 +88,7 @@ class FilesAction extends AbstractController {
 
         $update_file_path = function ($curr_relative_filepath, $new_relative_file_path) {
             $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
-            $this->app->repositories->lockedResourceRepository->updatePath($curr_relative_filepath, $new_relative_file_path);
+            $this->controllers->getLockedResourceController()->updatePath($curr_relative_filepath, $new_relative_file_path);
         };
 
         $response = $this->files_handler->renameFileViaRequest($request, $update_file_path);

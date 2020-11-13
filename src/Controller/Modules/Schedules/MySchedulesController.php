@@ -3,6 +3,7 @@
 namespace App\Controller\Modules\Schedules;
 
 use App\Controller\Core\Application;
+use App\Entity\Modules\Schedules\MySchedule;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MySchedulesController extends AbstractController {
@@ -41,6 +42,17 @@ class MySchedulesController extends AbstractController {
             throw new \Exception("Schedules type name: {$schedules_type} is incorrect ");
         }
 
+    }
+
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MySchedule|null
+     */
+    public function findOneById(int $id): ?MySchedule
+    {
+        return $this->app->repositories->myScheduleRepository->findOneById($id);
     }
 
 }

@@ -6,6 +6,7 @@ namespace App\Action\Modules\Payments;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +22,15 @@ class MyPaymentsIncomeAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
 
-        $this->app = $app;
+    public function __construct(Application $app, Controllers $controllers)
+    {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -75,7 +82,9 @@ class MyPaymentsIncomeAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters     = $request->request->all();
-        $entity         = $this->app->repositories->myPaymentsIncomeRepository->find($parameters['id']);
+        $entity_id      = trim($parameters['id']);
+
+        $entity         = $this->controllers->getMyPaymentsIncomeController()->findOneById($entity_id);
         $response       = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -94,7 +103,7 @@ class MyPaymentsIncomeAction extends AbstractController {
         $currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/income.html.twig', [
-            "records"                        => $this->app->repositories->myPaymentsIncomeRepository->findBy(['deleted' => 0]),
+            "records"                        => $this->controllers->getMyPaymentsIncomeController()->getAllNotDeleted(),
             'ajax_render'                    => $ajax_render,
             'form'                           => $form->createView(),
             'currencies_dtos'                => $currencies_dtos,

@@ -4,8 +4,10 @@ namespace App\Action\Modules\Passwords;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Passwords\MyPasswords;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,9 +28,15 @@ class MyPasswordsAction extends AbstractController {
      */
     private $encryptor;
 
-    public function __construct(Application $app, EncryptorInterface $encryptor) {
-        $this->app       = $app;
-        $this->encryptor = $encryptor;
+    /**
+     * @var Controllers $controller
+     */
+    private Controllers $controller;
+
+    public function __construct(Application $app, EncryptorInterface $encryptor, Controllers $controllers) {
+        $this->app        = $app;
+        $this->controller = $controllers;
+        $this->encryptor  = $encryptor;
     }
 
 
@@ -78,11 +86,13 @@ class MyPasswordsAction extends AbstractController {
      * @Route("my-passwords/update/" ,name="my-passwords-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws MappingException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myPasswordsRepository->find($parameters['id']);
+        $entity_id  = $parameters['id'];
+
+        $entity     = $this->controller->getMyPasswordsController()->findPasswordEntityById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -97,8 +107,8 @@ class MyPasswordsAction extends AbstractController {
 
         $password_form  = $this->app->forms->myPasswordForm();
         $form_view      = $password_form->createView();
-        $passwords      = $this->app->repositories->myPasswordsRepository->findBy(['deleted' => 0]);
-        $groups         = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
+        $passwords      = $this->controller->getMyPasswordsController()->findAllNotDeleted();
+        $groups         = $this->controller->getMyPasswordsGroupsController()->findAllNotDeleted();
 
         return $this->render('modules/my-passwords/my-passwords.html.twig', [
             'form'                           => $form_view,
@@ -114,10 +124,12 @@ class MyPasswordsAction extends AbstractController {
      * @Route("/my-passwords/get-password/{id}" ,name="my-passwords-get-password")
      * @param $id
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     public function getPasswordForId($id) {
         try {
-            $encrypted_password = $this->app->repositories->myPasswordsRepository->getPasswordForId($id);
+            $encrypted_password = $this->controller->getMyPasswordsController()->getPasswordForId($id);
             $decrypted_password = $this->encryptor->decrypt($encrypted_password);
             return AjaxResponse::buildJsonResponseForAjaxCall(200, "", null, $decrypted_password);
         } catch (\Exception $e) {

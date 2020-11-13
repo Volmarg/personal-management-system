@@ -7,6 +7,8 @@ use App\Entity\System\LockedResource;
 use App\Entity\User;
 use App\Services\Session\UserRolesSessionService;
 use Doctrine\DBAL\Statement;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -110,6 +112,47 @@ class LockedResourceController extends AbstractController {
             $this->app->addDangerFlash($message);
         }
         return false;
+    }
+
+    /**
+     * @param string $old_path
+     * @param string $new_path
+     */
+    public function updatePath(string $old_path, string $new_path): void
+    {
+        $this->app->repositories->lockedResourceRepository->updatePath($old_path, $new_path);
+    }
+
+    /**
+     * Gets the LockedResource for entity name and record id
+     * @param string $record
+     * @param string $type
+     * @param string $target
+     * @return LockedResource|null
+     */
+    public function findOneEntity(string $record, string $type, string $target):? LockedResource
+    {
+        return $this->app->repositories->lockedResourceRepository->findOneEntity($record, $type, $target);
+    }
+
+    /**
+     * @param LockedResource $locked_resource
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(LockedResource $locked_resource): void
+    {
+        $this->app->repositories->lockedResourceRepository->remove($locked_resource);
+    }
+
+    /**
+     * @param LockedResource $locked_resource
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function add(LockedResource $locked_resource): void
+    {
+        $this->app->repositories->lockedResourceRepository->add($locked_resource);
     }
 
 }

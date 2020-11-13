@@ -33,4 +33,15 @@ class MyTodoElementRepository extends ServiceEntityRepository
         $this->_em->flush();
     }
 
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MyTodoElement|null
+     */
+    public function findOneById(int $id): ?MyTodoElement
+    {
+        return $this->find($id);
+    }
+
 }

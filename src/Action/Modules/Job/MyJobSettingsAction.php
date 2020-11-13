@@ -6,6 +6,8 @@ namespace App\Action\Modules\Job;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,8 +21,14 @@ class MyJobSettingsAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers  $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -47,7 +55,7 @@ class MyJobSettingsAction extends AbstractController {
      */
     public function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
-        $all_holidays_pools      = $this->app->repositories->myJobHolidaysPoolRepository->findBy(['deleted' => 0]);
+        $all_holidays_pools      = $this->controllers->getMyJobHolidaysPoolController()->getAllNotDeleted();
         $job_holidays_pool_form  = $this->app->forms->jobHolidaysPoolForm();
 
         $twig_data = [

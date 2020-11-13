@@ -108,4 +108,25 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
         return $dates;
     }
 
+    /**
+     * Will return all not deleted entities
+     *
+     * @return array
+     */
+    public function getAllNotDeleted(): array
+    {
+        return $this->findBy(['deleted' => '0'], ['date' => 'ASC']);
+    }
+
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param int $id
+     * @return MyPaymentsMonthly|null
+     */
+    public function findOneById(int $id): ?MyPaymentsMonthly
+    {
+        return $this->find($id);
+    }
+
 }

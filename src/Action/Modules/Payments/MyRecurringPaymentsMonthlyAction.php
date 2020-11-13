@@ -86,7 +86,9 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myRecurringPaymentMonthlyRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyRecurringPaymentsMonthlyController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();

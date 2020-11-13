@@ -66,4 +66,25 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
 
         return $categories;
     }
+
+    /**
+     * Will return one entity for id, if none is found then null is returned
+     *
+     * @param int $id
+     * @return MyTravelsIdeas|null
+     */
+    public function findOneById(int $id): ?MyTravelsIdeas
+    {
+        return $this->find($id);
+    }
+
+    /**
+     * Will return all not deleted entities
+     *
+     * @return MyTravelsIdeas[]
+     */
+    public function getAllNotDeleted(): array
+    {
+        return $this->findBy(['deleted' => 0]);
+    }
 }

@@ -17,4 +17,15 @@ class MyShoppingPlansRepository extends ServiceEntityRepository {
         parent::__construct($registry, MyShoppingPlans::class);
     }
 
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MyShoppingPlans|null
+     */
+    public function findOneById(int $id): ?MyShoppingPlans
+    {
+        return $this->find($id);
+    }
+
 }

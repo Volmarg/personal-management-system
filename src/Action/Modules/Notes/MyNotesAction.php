@@ -93,7 +93,7 @@ class MyNotesAction extends AbstractController {
 
         $parameters = $request->request->all();
         $id         = $parameters[AbstractRepository::FIELD_ID];
-        $entity     = $this->app->repositories->myNotesRepository->find($id);
+        $entity     = $this->controllers->getMyNotesController()->getOneById($id);
 
         $response   = $this->app->repositories->update($parameters, $entity);
 
@@ -132,7 +132,7 @@ class MyNotesAction extends AbstractController {
         /**
          * @var MyNotesCategories $requested_category
          */
-        $requested_category = $this->app->repositories->myNotesCategoriesRepository->find($category_id);
+        $requested_category = $this->controllers->getMyNotesCategoriesController()->findOneById($category_id);
 
         if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY) ){
             return $this->redirect('/');
@@ -144,7 +144,7 @@ class MyNotesAction extends AbstractController {
             return $this->redirect($this->generateUrl('my-notes-create'));
         }
 
-        $notes = $this->app->repositories->myNotesRepository->getNotesByCategory([$category_id]);
+        $notes = $this->controllers->getMyNotesController()->getNotesByCategoriesIds([$category_id]);
 
         foreach( $notes as $index => $note ){
             $note_id = $note->getId();

@@ -96,4 +96,16 @@ class MyScheduleRepository extends ServiceEntityRepository {
 
         return $results;
     }
+
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MySchedule|null
+     */
+    public function findOneById(int $id): ?MySchedule
+    {
+        return $this->find($id);
+    }
+
 }

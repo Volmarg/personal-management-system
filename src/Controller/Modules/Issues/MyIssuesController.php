@@ -9,6 +9,8 @@ use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
 use App\Entity\Modules\Todo\MyTodo;
 use DateTime;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -106,6 +108,55 @@ class MyIssuesController extends AbstractController {
         }
 
         return $issues_cards_dtos;
+    }
+
+    /**
+     * Returns one Entity or null for given id
+     * @param int $entity_id
+     * @return MyIssue|null
+     */
+    public function findIssueById(int $entity_id): ?MyIssue
+    {
+        return $this->app->repositories->myIssueRepository->findIssueById($entity_id);
+    }
+
+    /**
+     * @param int|null $order_by_field_entity_id
+     * @return MyIssue[]
+     */
+    public function findAllNotDeletedAndNotResolved(int $order_by_field_entity_id = null): array
+    {
+        return $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($order_by_field_entity_id);
+    }
+
+    /**
+     * @param MyIssue $issue
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveIssue(MyIssue $issue)
+    {
+        $this->app->repositories->myIssueRepository->saveIssue($issue);
+    }
+
+    /**
+     * @param MyIssueProgress $my_issue_progress
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveIssueProgress(MyIssueProgress $my_issue_progress): void
+    {
+        $this->app->repositories->myIssueRepository->saveIssueProgress($my_issue_progress);
+    }
+
+    /**
+     * @param MyIssueContact $my_issue_contact
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveIssueContact(MyIssueContact $my_issue_contact): void
+    {
+        $this->app->repositories->myIssueRepository->saveIssueContact($my_issue_contact);
     }
 
 }

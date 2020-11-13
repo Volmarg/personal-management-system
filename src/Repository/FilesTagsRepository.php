@@ -20,6 +20,12 @@ class FilesTagsRepository extends ServiceEntityRepository
         parent::__construct($registry, FilesTags::class);
     }
 
+    /**
+     * Will return tags entity for given file path if exists, or null if does not
+     *
+     * @param string $file_full_path
+     * @return FilesTags|null
+     */
     public function getFileTagsEntityByFileFullPath(string $file_full_path): ?FilesTags {
         $files_tags     = $this->_em->getRepository(FilesTags::class)->findBy(['fullFilePath' => $file_full_path]);
 

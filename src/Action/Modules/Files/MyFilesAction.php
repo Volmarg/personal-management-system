@@ -91,7 +91,7 @@ class MyFilesAction extends AbstractController {
         $update_file_path = function ($curr_relative_filepath, $new_relative_file_path) use($tags_string) {
             $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
             $this->controllers->getFilesTagsController()->updateTags($tags_string, $new_relative_file_path);
-            $this->app->repositories->lockedResourceRepository->updatePath($curr_relative_filepath, $new_relative_file_path);
+            $this->controllers->getLockedResourceController()->updatePath($curr_relative_filepath, $new_relative_file_path);
         };
 
         $this->files_handler->renameFileViaRequest($request, $update_file_path);
@@ -105,7 +105,8 @@ class MyFilesAction extends AbstractController {
      * @param string|null $encoded_subdirectory_path
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws Exception
      */
     public function displayFiles(? string $encoded_subdirectory_path, Request $request): Response
     {

@@ -50,7 +50,7 @@ class MyIssuesContactsAction extends AbstractController
         $parameters = $request->request->all();
         $id         = $parameters[self::PARAMETER_ID];
 
-        $entity     = $this->app->repositories->myIssueContactRepository->find($id);
+        $entity     = $this->controllers->getMyIssueContactController()->findOneById($id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();

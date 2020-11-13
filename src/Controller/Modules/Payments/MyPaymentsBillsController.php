@@ -54,4 +54,22 @@ class MyPaymentsBillsController extends AbstractController
         return $summary;
     }
 
+    /**
+     * @return MyPaymentsBills[]
+     */
+    public function getAllNotDeleted(): array
+    {
+        return $this->app->repositories->myPaymentsBillsRepository->getAllNotDeleted();
+    }
+
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param int $id
+     * @return MyPaymentsBills|null
+     */
+    public function findOneById(int $id): ?MyPaymentsBills
+    {
+        return $this->app->repositories->myPaymentsBillsRepository->findOneById($id);
+    }
 }

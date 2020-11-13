@@ -4,6 +4,7 @@ namespace App\Action\Modules\Shopping;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,14 +20,21 @@ class MyShoppingPlansAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
      * @Route("/my-shopping/plans", name="my-shopping-plans")
      * @param Request $request
      * @return Response
+     * @throws \Exception
      */
     public function display(Request $request) {
         $shopping_plan_form = $this->app->forms->myShoppingPlanForm();
@@ -84,7 +92,9 @@ class MyShoppingPlansAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myShoppingPlansRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyShoppingPlansController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();

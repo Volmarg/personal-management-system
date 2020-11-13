@@ -45,4 +45,16 @@ class MyTodoElementController extends AbstractController {
     {
         $this->app->repositories->myTodoElementRepository->save($todo_element);
     }
+
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MyTodoElement|null
+     */
+    public function findOneById(int $id): ?MyTodoElement
+    {
+        return $this->app->repositories->myTodoElementRepository->findOneById($id);
+    }
+
 }

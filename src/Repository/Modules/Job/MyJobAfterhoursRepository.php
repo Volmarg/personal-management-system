@@ -111,4 +111,15 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         return $entities;
     }
 
+    /**
+     * Will return one entity for given id, if such does not exist then null will be returned
+     *
+     * @param int $id
+     * @return MyJobAfterhours|null
+     */
+    public function findOneById(int $id): ?MyJobAfterhours
+    {
+        return $this->find($id);
+    }
+
 }

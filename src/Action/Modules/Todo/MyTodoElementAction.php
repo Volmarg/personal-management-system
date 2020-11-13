@@ -85,7 +85,7 @@ class MyTodoElementAction extends AbstractController {
 
         try{
             $id     = $parameters[self::KEY_ID];
-            $entity = $this->app->repositories->myTodoElementRepository->find($id);
+            $entity = $this->controllers->getMyTodoElementController()->findOneById($id);
 
             $update_response = $this->app->repositories->update($parameters, $entity);
             $message         = $update_response->getContent();

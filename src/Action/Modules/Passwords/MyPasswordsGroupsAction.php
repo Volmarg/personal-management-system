@@ -4,8 +4,10 @@ namespace App\Action\Modules\Passwords;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
+use Doctrine\ORM\Mapping\MappingException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,8 +22,14 @@ class MyPasswordsGroupsAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -70,11 +78,14 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @Route("/my-passwords-groups/update",name="my-passwords-groups-update")
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws MappingException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myPasswordsGroupsRepository->find($parameters['id']);
+        $entity_id  = $parameters['id'];
+
+        $entity     = $this->controllers->getMyPasswordsGroupsController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -87,7 +98,7 @@ class MyPasswordsGroupsAction extends AbstractController {
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $password_group_form = $this->app->forms->passwordGroupForm();
-        $groups              = $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]);
+        $groups              = $this->controllers->getMyPasswordsGroupsController()->findAllNotDeleted();
 
         return $this->render('modules/my-passwords/settings.html.twig', [
             'ajax_render'                    => $ajax_render,
@@ -110,7 +121,10 @@ class MyPasswordsGroupsAction extends AbstractController {
          */
         $form_data = $form->getData();
 
-        if (!is_null($form_data) && $this->app->repositories->myPasswordsGroupsRepository->findBy(['name' => $form_data->getName()])) {
+        if (
+                !is_null($form_data)
+            &&  !is_null($this->controllers->getMyPasswordsGroupsController()->findOneByName($form_data->getName()))
+        ) {
             $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
             return new JsonResponse($record_with_this_name_exist, 409);
         }

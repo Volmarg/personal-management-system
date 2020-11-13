@@ -171,4 +171,15 @@ class MyTodoRepository extends ServiceEntityRepository
         return $result;
     }
 
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MyTodo|null
+     */
+    public function findOneById(int $id): ?MyTodo
+    {
+        return $this->find($id);
+    }
+
 }

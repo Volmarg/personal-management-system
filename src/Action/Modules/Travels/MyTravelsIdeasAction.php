@@ -72,7 +72,7 @@ class MyTravelsIdeasAction extends AbstractController {
         $columns_names = $this->app->em->getClassMetadata(MyTravelsIdeas::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($columns_names);
 
-        $all_ideas  = $this->app->repositories->myTravelsIdeasRepository->findBy(['deleted' => 0]);
+        $all_ideas  = $this->controllers->getMyTravelsIdeasController()->getAllNotDeleted();
         $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories();
 
         $data = [
@@ -112,8 +112,9 @@ class MyTravelsIdeasAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myTravelsIdeasRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
 
+        $entity     = $this->controllers->getMyTravelsIdeasController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();

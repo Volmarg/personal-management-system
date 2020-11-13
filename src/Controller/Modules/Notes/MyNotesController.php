@@ -5,6 +5,7 @@ namespace App\Controller\Modules\Notes;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\Core\Application;
+use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\System\LockedResource;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Statement;
@@ -65,7 +66,7 @@ class MyNotesController extends AbstractController {
 
                 if( $have_categories_notes ){
 
-                    $notes = $this->app->repositories->myNotesRepository->getNotesByCategory($categories_ids);
+                    $notes = $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categories_ids);
 
                     # 2. Check lock and make sure that there are some notes visible
                     foreach( $notes as $index => $note ){
@@ -101,4 +102,22 @@ class MyNotesController extends AbstractController {
         return false;
     }
 
+    /**
+     * Returns one note for given id or null if nothing was found
+     * @param int $id
+     * @return MyNotes|null
+     */
+    public function getOneById(int $id): ?MyNotes
+    {
+        return $this->app->repositories->myNotesRepository->getOneById($id);
+    }
+
+    /**
+     * @param array $categories_ids
+     * @return MyNotes[]
+     */
+    public function getNotesByCategoriesIds(array $categories_ids): array
+    {
+        return $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categories_ids);
+    }
 }

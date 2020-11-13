@@ -86,10 +86,10 @@ class MyTodoListAction extends AbstractController {
             $element_id = $parameters[self::KEY_ID];
             $todo_id    = $parameters[self::KEY_TODO][self::KEY_ID];
 
-            $entity = $this->app->repositories->myTodoElementRepository->find($element_id);
+            $entity = $this->controllers->getMyTodoElementController()->findOneById($element_id);
 
             $this->app->repositories->update($parameters, $entity);
-            $todo = $this->app->repositories->myTodoRepository->find($todo_id);
+            $todo = $this->controllers->getMyTodoController()->findOneById($todo_id);
 
             $this->app->em->persist($todo);
             $this->app->em->flush();

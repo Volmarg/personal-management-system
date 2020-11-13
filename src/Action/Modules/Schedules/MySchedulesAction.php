@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Schedules\MySchedule;
 use App\Form\Modules\Schedules\MyScheduleType;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -104,7 +103,9 @@ class MySchedulesAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->getDoctrine()->getRepository(MySchedule::class)->find($parameters['id']);
+        $entity_id  = $parameters['id'];
+
+        $entity     = $this->controllers->getMySchedulesController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -119,7 +120,7 @@ class MySchedulesAction extends AbstractController {
     public function removeScheduleById(Request $request): Response {
 
         $id             = $request->request->get('id');
-        $schedule       = $this->app->repositories->myScheduleRepository->find($id);
+        $schedule       = $this->controllers->getMySchedulesController()->findOneById($id);
         $schedules_type = $schedule->getScheduleType()->getName();
 
         $response = $this->app->repositories->deleteById(Repositories::MY_SCHEDULE_REPOSITORY, $id);

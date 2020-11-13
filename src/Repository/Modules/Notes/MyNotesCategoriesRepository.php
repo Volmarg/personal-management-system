@@ -196,4 +196,15 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
         return $results;
     }
 
+    /**
+     * Will return one entity for given id, otherwise returns null if nothing is found
+     *
+     * @param int $id
+     * @return MyNotesCategories|null
+     */
+    public function findOneById(int $id): ?MyNotesCategories
+    {
+        return $this->find($id);
+    }
+
 }

@@ -240,7 +240,7 @@ class DialogsAction extends AbstractController
             }
 
             $this->file_tagger->prepare([],$file_current_path);
-            $file_tags = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_current_path);
+            $file_tags = $this->controllers->getFilesTagsController()->getFileTagsEntityByFileFullPath($file_current_path);
             $tags_json = ( !is_null($file_tags) ? $file_tags->getTags() : '');
 
             $form_data  = [
@@ -403,7 +403,7 @@ class DialogsAction extends AbstractController
         $success       = true;
 
         try{
-            $note = $this->app->repositories->myNotesRepository->find($note_id);
+            $note = $this->controllers->getMyNotesController()->getOneById($note_id);
 
             if( is_null($note) ){
                 $message = $this->app->translator->translate('responses.notes.couldNotFindNoteForId') . $note_id;
@@ -565,7 +565,7 @@ class DialogsAction extends AbstractController
             }
 
             $entity_id      = $request->request->get(self::KEY_ENTITY_ID);
-            $contact        = $this->app->repositories->myContactRepository->findOneById($entity_id);
+            $contact        = $this->controllers->getMyContactController()->findOneById($entity_id);
             $forms_renders  = [];
 
             if( is_null($contact) ){
@@ -640,7 +640,7 @@ class DialogsAction extends AbstractController
             }
 
             $entity_id = $request->request->get(self::KEY_ENTITY_ID);
-            $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+            $issue     = $this->controllers->getMyIssuesController()->findIssueById($entity_id);
 
             if( is_null($issue) ){
                 $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
@@ -699,7 +699,7 @@ class DialogsAction extends AbstractController
             }
 
             $entity_id = $request->request->get(self::KEY_ENTITY_ID);
-            $issue     = $this->app->repositories->myIssueRepository->find($entity_id);
+            $issue     = $this->controllers->getMyIssuesController()->findIssueById($entity_id);
 
             if( is_null($issue) ){
                 $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
@@ -816,7 +816,7 @@ class DialogsAction extends AbstractController
 
             $todo = null;
             if( !empty($entity_id) ){
-                $todo = $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId($module_name, $entity_id);
+                $todo = $this->controllers->getMyTodoController()->getTodoByModuleNameAndEntityId($module_name, $entity_id);
             }
 
             $todo_form = $this->app->forms->todoForm([

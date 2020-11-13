@@ -6,6 +6,7 @@ namespace App\Action\Modules\Schedules;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,8 +24,14 @@ class MySchedulesSettingsAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -76,7 +83,9 @@ class MySchedulesSettingsAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myScheduleTypeRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyScheduleTypeController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -90,7 +99,7 @@ class MySchedulesSettingsAction extends AbstractController {
     private function renderTemplate($ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
         $form   = $this->app->forms->scheduleTypeForm();
-        $types  = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
+        $types  = $this->controllers->getMyScheduleTypeController()->getAllNonDeletedTypes();
 
         return $this->render(self::TWIG_TEMPLATE,
             [
@@ -114,7 +123,10 @@ class MySchedulesSettingsAction extends AbstractController {
         $form_data = $form->getData();
 
         // info: i can make general util with this
-        if (!is_null($form_data) && $this->app->repositories->myScheduleTypeRepository->findBy(['name' => $form_data->getName()])) {
+        if (
+                !is_null($form_data)
+            &&  !is_null($this->controllers->getMyScheduleTypeController()->findOneByName($form_data->getName()))
+        ) {
             $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
             return new JsonResponse($record_with_this_name_exist, 409);
         }

@@ -601,10 +601,8 @@ class Repositories extends AbstractController {
             $validation_result = $this->entity_validator->handleValidation($entity, EntityValidator::ACTION_UPDATE);
 
             if( !$validation_result->isValid() ){
-                // todo: temporary solution
-                // todo: need to rework ajax + response to support AjaxResponse + validation errors message + js logic
-                $message = $this->translator->translate('responses.repositories.recordUpdateFail');
-                return new Response($message, 500);
+                $failed_validation_messages = $validation_result->getAllFailedValidationMessagesAsSingleString();
+                return new Response($failed_validation_messages, 500);
             }
 
             $em = $this->getDoctrine()->getManager();

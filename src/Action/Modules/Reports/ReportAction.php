@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Utils\Utils;
-use App\Repository\AbstractRepository;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -137,7 +136,7 @@ class ReportAction extends AbstractController {
      */
     private function renderChartTotalPaymentsAmountForTypes(): Response {
 
-        $total_payments_amount_for_types = $this->app->repositories->reportsRepository->fetchTotalPaymentsAmountForTypes();
+        $total_payments_amount_for_types = $this->controllers->getReportsControllers()->fetchTotalPaymentsAmountForTypes();
         $chart_labels = [];
         $chart_values = [];
 
@@ -164,8 +163,8 @@ class ReportAction extends AbstractController {
      * @return Response
      */
     private function renderTemplateHistoricalMoneyOwed(bool $ajax_render): Response {
-        $historical_money_owed_by_me     = $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy(true);
-        $historical_money_owed_by_others = $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy(false);
+        $historical_money_owed_by_me     = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(true);
+        $historical_money_owed_by_others = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(false);
 
         $template_data = [
             'ajax_render'                     => $ajax_render,
@@ -183,7 +182,7 @@ class ReportAction extends AbstractController {
      */
     private function renderChartPaymentsForTypesEachMonth(): Response {
 
-        $payments_for_types_each_month = $this->app->repositories->reportsRepository->fetchPaymentsForTypesEachMonth();
+        $payments_for_types_each_month = $this->controllers->getReportsControllers()->fetchPaymentsForTypesEachMonth();
 
         $chart_values        = [];
         $chart_x_axis_values = [];
@@ -226,7 +225,7 @@ class ReportAction extends AbstractController {
      */
     private function renderChartPaymentsTotalAmountForEachMonth(): Response {
 
-        $payments_total_for_each_month = $this->app->repositories->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
+        $payments_total_for_each_month = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
 
         $chart_values        = [];
         $chart_x_axis_values = [];
@@ -279,8 +278,8 @@ class ReportAction extends AbstractController {
      */
     private function renderChartSavingsEachMonth(): Response {
 
-        $payments_total_for_each_month = $this->app->repositories->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
-        $all_incomes                   = $this->app->repositories->myPaymentsIncomeRepository->findBy([AbstractRepository::FIELD_DELETED => 0]);
+        $payments_total_for_each_month = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
+        $all_incomes                   = $this->controllers->getMyPaymentsIncomeController()->getAllNotDeleted();
         $custom_color                  = Utils::randomHexColor();
         $group_name                    = $this->app->translator->translate("reports.saviingsCharts.group");
 
@@ -345,7 +344,7 @@ class ReportAction extends AbstractController {
      * @throws DBALException
      */
     private function renderTemplateMonthlyPaymentsSummaries(bool $ajax_render): Response {
-        $data = $this->app->repositories->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
+        $data = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
 
         $template_data = [
             'ajax_render' => $ajax_render,

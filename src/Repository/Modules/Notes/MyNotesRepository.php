@@ -28,7 +28,7 @@ class MyNotesRepository extends ServiceEntityRepository {
      * @param array $categories_ids
      * @return MyNotes[]
      */
-    public function getNotesByCategory(array $categories_ids): array
+    public function getNotesByCategoriesIds(array $categories_ids): array
     {
         $results = $this->findBy([
             'category' => $categories_ids,
@@ -55,6 +55,16 @@ class MyNotesRepository extends ServiceEntityRepository {
         $results = $statement->fetchColumn();
 
         return $results;
+    }
+
+    /**
+     * Returns one note for given id or null if nothing was found
+     * @param int $id
+     * @return MyNotes|null
+     */
+    public function getOneById(int $id): ?MyNotes
+    {
+        return $this->find($id);
     }
 
 }

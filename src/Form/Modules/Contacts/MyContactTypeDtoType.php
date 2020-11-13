@@ -43,7 +43,7 @@ class MyContactTypeDtoType extends AbstractType {
 
         if( array_key_exists(self::KEY_TYPE, $options)){
             $type_name = $options[self::KEY_TYPE];
-            $selected_entity = $this->app->repositories->myContactTypeRepository->getOneNonDeletedByName($type_name);
+            $selected_entity = $this->app->repositories->myContactTypeRepository->getOneByName($type_name); //todo: this should go to controller
         }
 
         $builder

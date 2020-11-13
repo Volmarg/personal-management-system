@@ -3,6 +3,7 @@
 namespace App\Controller\Modules\Payments;
 
 use App\Controller\Core\Application;
+use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,6 +39,52 @@ class MyPaymentsSettingsController extends AbstractController {
             }
             $this->createRecord($form_data);
         }
+    }
+
+    /**
+     * @return string|null
+     */
+    public function fetchCurrencyMultiplier(): ?string
+    {
+        return $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
+    }
+
+    /**
+     * @return array
+     */
+    public function fetchCurrencyMultiplierRecord(): array
+    {
+        return $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplierRecord();
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllPaymentsTypes(): array
+    {
+        return $this->app->repositories->myPaymentsSettingsRepository->getAllPaymentsTypes();
+    }
+
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param int $id
+     * @return MyPaymentsSettings|null
+     */
+    public function findOneById(int $id): ?MyPaymentsSettings
+    {
+        return $this->app->repositories->myPaymentsSettingsRepository->findOneById($id);
+    }
+
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param string $value
+     * @return MyPaymentsSettings | null
+     */
+    public function findOneByValue(string $value): ?MyPaymentsSettings
+    {
+        return $this->app->repositories->myPaymentsSettingsRepository->findOneByValue($value);
     }
 
     private function updateCurrencyMultiplierRecord($form_data) {

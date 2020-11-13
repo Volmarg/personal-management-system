@@ -8,6 +8,8 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,15 +44,17 @@ class MyJobHolidaysPoolAction extends AbstractController {
      * @Route("/my-job/holidays-pool/update/",name="my-job-holidays-pool-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws MappingException
+     * @throws NonUniqueResultException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myJobHolidaysPoolRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyJobHolidaysPoolController()->findOneEntityById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-
     }
 
     /**

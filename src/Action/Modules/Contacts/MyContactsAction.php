@@ -4,6 +4,7 @@ namespace App\Action\Modules\Contacts;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Controller\Utils\Utils;
 use App\DTO\Modules\Contacts\ContactsTypesDTO;
@@ -35,8 +36,14 @@ class MyContactsAction extends AbstractController
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers  $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -155,8 +162,8 @@ class MyContactsAction extends AbstractController
                 $type_details   = $form[MyContactTypeDtoType::KEY_NAME];
                 $type_id        = $form[MyContactTypeDtoType::KEY_TYPE];
 
-                $icon_path   = $this->app->repositories->myContactTypeRepository->getImagePathForTypeById($type_id);
-                $type_name   = $this->app->repositories->myContactTypeRepository->getTypeNameTypeById($type_id);
+                $icon_path   = $this->controllers->getMyContactTypeController()->getImagePathForById($type_id);
+                $type_name   = $this->controllers->getMyContactTypeController()->getTypeNameById($type_id);
 
                 if( empty($icon_path) ){
                     $message = '';
@@ -195,7 +202,7 @@ class MyContactsAction extends AbstractController
             $my_contact->setNameBackgroundColor($normalized_description_color);
             $my_contact->setDescriptionBackgroundColor($normalized_name_color);
 
-            $this->app->repositories->myContactRepository->saveEntity($my_contact, true);
+            $this->controllers->getMyContactController()->saveEntity($my_contact, true);
         }
 
     }
@@ -207,7 +214,7 @@ class MyContactsAction extends AbstractController
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
-        $contacts = $this->app->repositories->myContactRepository->findAllNotDeleted();
+        $contacts = $this->controllers->getMyContactController()->findAllNotDeleted();
 
         $data = [
             self::KEY_AJAX_RENDER            => $ajax_render,

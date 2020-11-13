@@ -61,7 +61,7 @@ class MyIssuesAction extends AbstractController
     public function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false)
     {
 
-        $all_ongoing_issues = $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved();
+        $all_ongoing_issues = $this->controllers->getMyIssuesController()->findAllNotDeletedAndNotResolved();
         $issues_cards_dtos  = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($all_ongoing_issues);
 
         $data = [
@@ -85,7 +85,7 @@ class MyIssuesAction extends AbstractController
 
         if( $form->isSubmitted() && $form->isValid() ){
             $issue = $form->getData();
-            $this->app->repositories->myIssueRepository->saveIssue($issue);
+            $this->controllers->getMyIssuesController()->saveIssue($issue);
         }
 
     }
@@ -101,8 +101,8 @@ class MyIssuesAction extends AbstractController
         $form->handleRequest($request);
 
         if( $form->isSubmitted() && $form->isValid() ){
-            $issue = $form->getData();
-            $this->app->repositories->myIssueProgressRepository->saveIssueProgress($issue);
+            $issue_progress = $form->getData();
+            $this->controllers->getMyIssuesController()->saveIssueProgress($issue_progress);
         }
     }
 
@@ -117,8 +117,8 @@ class MyIssuesAction extends AbstractController
         $form->handleRequest($request);
 
         if( $form->isSubmitted() && $form->isValid() ){
-            $issue = $form->getData();
-            $this->app->repositories->myIssueContactRepository->saveIssueContact($issue);
+            $issue_contact = $form->getData();
+            $this->controllers->getMyIssuesController()->saveIssueContact($issue_contact);;
         }
     }
 

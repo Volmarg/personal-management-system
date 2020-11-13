@@ -4,6 +4,7 @@ namespace App\Repository\Modules\Passwords;
 
 use App\Entity\Modules\Passwords\MyPasswords;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,7 +21,8 @@ class MyPasswordsRepository extends ServiceEntityRepository {
     /**
      * @param int $id
      * @return string
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     public function getPasswordForId(int $id) {
 
@@ -44,4 +46,22 @@ class MyPasswordsRepository extends ServiceEntityRepository {
         return $returned;
     }
 
+    /**
+     * Will return one entity for given id, or null otherwise
+     *
+     * @param int $id
+     * @return MyPasswords|null
+     */
+    public function findPasswordEntityById(int $id): ?MyPasswords
+    {
+        return $this->find($id);
+    }
+
+    /**
+     * @return MyPasswords[]
+     */
+    public function findAllNotDeleted(): array
+    {
+        return $this->findBy(['deleted' => 0]);
+    }
 }

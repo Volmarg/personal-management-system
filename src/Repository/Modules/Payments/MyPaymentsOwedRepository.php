@@ -23,7 +23,8 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
      * @param bool $owed_by_me
      * @throws DBALException
      */
-    public function getMoneyOwedSummaryForTargetsAndOwningSide(bool $owed_by_me){
+    public function getMoneyOwedSummaryForTargetsAndOwningSide(bool $owed_by_me)
+    {
 
         $connection = $this->_em->getConnection();
 
@@ -88,4 +89,30 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
 
         return $results;
     }
+
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param int $id
+     * @return MyPaymentsOwed|null
+     */
+    public function findOneById(int $id): ?MyPaymentsOwed
+    {
+        return $this->find($id);
+    }
+
+    /**
+     * Will return all not deleted entities but filtered by the owed column
+     *
+     * @param bool $owed_by_me
+     * @return array
+     */
+    public function findAllNotDeletedFilteredByOwedStatus(bool $owed_by_me): array
+    {
+        return $this->findBy([
+            'deleted'  => 0,
+            'owedByMe' => $owed_by_me,
+        ]);
+    }
+
 }

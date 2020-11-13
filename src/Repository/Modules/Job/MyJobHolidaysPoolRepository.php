@@ -5,6 +5,7 @@ namespace App\Repository\Modules\Job;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -58,10 +59,12 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @return false|mixed
+     * @return string
      * @throws DBALException
+     * @throws Exception
      */
-    public function getAvailableDaysTotally(){
+    public function getAvailableDaysTotally(): string
+    {
 
         $connection = $this->_em->getConnection();
 
@@ -86,7 +89,7 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
 
         $statement = $connection->prepare($sql);
         $statement->execute();
-        $result = $statement->fetchColumn();
+        $result = $statement->fetchOne();
 
         return $result;
     }
@@ -205,5 +208,15 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         $days_left = (int) $result['daysLeft'];
 
         return $days_left;
+    }
+
+    /**
+     * Will return all not deleted entities
+     *
+     * @return MyJobHolidaysPool[]
+     */
+    public function getAllNotDeleted(): array
+    {
+        return $this->findBy(['deleted' => 0]);
     }
 }

@@ -31,4 +31,16 @@ class MyIssueProgressRepository extends ServiceEntityRepository
         $this->_em->persist($issueProgress);
         $this->_em->flush($issueProgress);
     }
+
+    /**
+     * Will return entity for given id, otherwise null if nothing was found
+     *
+     * @param int $id
+     * @return MyIssueProgress|null
+     */
+    public function findOneById(int $id): ?MyIssueProgress
+    {
+        return $this->find($id);
+    }
+
 }

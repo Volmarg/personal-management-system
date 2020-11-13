@@ -6,11 +6,12 @@ namespace App\Action\Modules\Goals;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use App\Entity\Modules\Goals\MyGoalsPayments;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,8 +27,15 @@ class GoalsSettingsAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app  = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers $controllers)
+    {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -65,7 +73,9 @@ class GoalsSettingsAction extends AbstractController {
      */
     public function updateGoalPayment(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myGoalsPaymentsRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getGoalsPaymentsController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -100,7 +110,7 @@ class GoalsSettingsAction extends AbstractController {
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $goals_payments_form  = $this->app->forms->goalPaymentForm();
-        $all_goals_payments   = $this->app->repositories->myGoalsPaymentsRepository->findBy(['deleted' => 0]);
+        $all_goals_payments   = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
 
         $data = [
             'ajax_render'           => $ajax_render,
@@ -119,9 +129,16 @@ class GoalsSettingsAction extends AbstractController {
      */
     private function addRecord(FormInterface $form, Request $request) {
         $form->handleRequest($request);
+
+        /**
+         * @var MyGoalsPayments|null $form_data
+         */
         $form_data = $form->getData();
 
-        if (!is_null($form_data) && $this->app->repositories->myGoalsPaymentsRepository->findBy(['name' => $form_data->getName()])) {
+        if (
+                    !is_null($form_data)
+                &&  !is_null($this->controllers->getGoalsPaymentsController()->getOneByName($form_data->getName()))
+        ) {
             $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
             return new Response($record_with_this_name_exist, 409);
         }

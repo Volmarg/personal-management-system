@@ -8,6 +8,7 @@ use App\Entity\Interfaces\Relational\RelatesToMyTodoInterface;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Services\Core\Logger;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -147,6 +148,30 @@ class MyTodoController extends AbstractController {
             ]);
             return;
         }
+    }
+
+    /**
+     * Will return one module entity for given name or null if no matching module with this name was found
+     *
+     * @param string $module_name
+     * @param int $entity_id
+     * @return MyTodo|null
+     * @throws NonUniqueResultException
+     */
+    public function getTodoByModuleNameAndEntityId(string $module_name, int $entity_id): ?MyTodo
+    {
+        return $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId($module_name, $entity_id);
+    }
+
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MyTodo|null
+     */
+    public function findOneById(int $id): ?MyTodo
+    {
+        return $this->app->repositories->myTodoRepository->findOneById($id);
     }
 
 }

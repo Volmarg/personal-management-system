@@ -3,6 +3,9 @@
 namespace App\Controller\Modules\Contacts;
 
 use App\Controller\Core\Application;
+use App\Entity\Modules\Contacts\MyContact;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyContactsController extends AbstractController {
@@ -16,4 +19,33 @@ class MyContactsController extends AbstractController {
         $this->app = $app;
     }
 
+    /**
+     * This function will search for single (not deleted) entity with given id
+     * @param int $id
+     * @return MyContact|null
+     */
+    public function findOneById(int $id):?MyContact {
+        return $this->app->repositories->myContactRepository->findOneById($id);
+    }
+
+    /**
+     * @return MyContact[]
+     */
+    public function findAllNotDeleted():array
+    {
+        return $this->app->repositories->myContactRepository->findAllNotDeleted();
+    }
+
+    /**
+     * This function flushes the $entity
+     * @param MyContact $my_contact
+     * @param bool $search_and_rebuild_entity - this flag is needed in case of persisting entity built from form data (even if the id is the same)
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws Exception
+     */
+    public function saveEntity(MyContact $my_contact, bool $search_and_rebuild_entity = false)
+    {
+        $this->app->repositories->myContactRepository->saveEntity($my_contact, $search_and_rebuild_entity);
+    }
 }

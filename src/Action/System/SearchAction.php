@@ -5,8 +5,8 @@ namespace App\Action\System;
 
 
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
-use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
 use App\Repository\FilesSearchRepository;
 use App\Services\Files\FilesHandler;
@@ -23,13 +23,13 @@ class SearchAction extends AbstractController {
     private $app;
 
     /**
-     * @var LockedResourceController $locked_resource_controller
+     * @var Controllers $controllers
      */
-    private $locked_resource_controller;
+    private Controllers $controllers;
 
-    public function __construct(Application $app, LockedResourceController $locked_resource_controller) {
-        $this->app                        = $app;
-        $this->locked_resource_controller = $locked_resource_controller;
+    public function __construct(Application $app, Controllers  $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -48,8 +48,8 @@ class SearchAction extends AbstractController {
         $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
         $tags_array   = explode(',', $tags_string);
 
-        $files_search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_FILES, true);
-        $notes_search_results = $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_NOTES, true);
+        $files_search_results = $this->controllers->getFilesSearchController()->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_FILES, true);
+        $notes_search_results = $this->controllers->getFilesSearchController()->getSearchResultsDataForTag($tags_array, FilesSearchRepository::SEARCH_TYPE_NOTES, true);
 
         foreach( $files_search_results as $index => $file_search_result ){
             $full_file_path      = $file_search_result['fullFilePath'];
@@ -57,10 +57,10 @@ class SearchAction extends AbstractController {
 
             if(
                 (
-                        $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_FILES)
-                    ||  $this->locked_resource_controller->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_IMAGES)
+                        $this->controllers->getLockedResourceController()->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_FILES)
+                    ||  $this->controllers->getLockedResourceController()->isResourceLocked($file_directory_path, LockedResource::TYPE_DIRECTORY, ModulesController::MODULE_NAME_IMAGES)
                 )
-                &&  $this->locked_resource_controller->isSystemLocked()
+                &&  $this->controllers->getLockedResourceController()->isSystemLocked()
             ){
                 unset($files_search_results[$index]);
             }
@@ -73,10 +73,10 @@ class SearchAction extends AbstractController {
 
             if(
                 (
-                        $this->locked_resource_controller->isResourceLocked($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES)
-                    ||  $this->locked_resource_controller->isResourceLocked($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY)
+                        $this->controllers->getLockedResourceController()->isResourceLocked($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES)
+                    ||  $this->controllers->getLockedResourceController()->isResourceLocked($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY)
                 )
-                &&  $this->locked_resource_controller->isSystemLocked()
+                &&  $this->controllers->getLockedResourceController()->isSystemLocked()
             ){
                 unset($notes_search_results[$index]);
             }

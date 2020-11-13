@@ -14,6 +14,8 @@ use App\Form\Modules\Job\MyJobHolidaysType;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Mapping\MappingException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -100,14 +102,17 @@ class MyJobHolidaysAction extends AbstractController {
      * @return JsonResponse
      *
      * @throws MappingException
+     * @throws NonUniqueResultException
+     * @throws ORMException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myJobHolidaysRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyJobHolidaysController()->findOneEntityByIdOrNull($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-
     }
 
     /**
@@ -143,7 +148,7 @@ class MyJobHolidaysAction extends AbstractController {
      */
     private function add(Request $request): ?ValidationResultVO {
 
-        $all_pools_years = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
+        $all_pools_years = $this->controllers->getMyJobHolidaysPoolController()->getAllPoolsYears();
 
         $form = $this->app->forms->jobHolidaysForm([
             static::KEY_CHOICES => $all_pools_years
@@ -179,10 +184,10 @@ class MyJobHolidaysAction extends AbstractController {
      */
     private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
 
-        $all_pools_years                    = $this->app->repositories->myJobHolidaysPoolRepository->getAllPoolsYears();
-        $all_holidays_spent                 = $this->app->repositories->myJobHolidaysRepository->findBy(['deleted' => 0]);
-        $job_holidays_summary               = $this->app->repositories->myJobHolidaysPoolRepository->getHolidaysSummaryGroupedByYears();
-        $job_holidays_available_totally     = $this->app->repositories->myJobHolidaysPoolRepository->getAvailableDaysTotally();
+        $all_pools_years                    = $this->controllers->getMyJobHolidaysPoolController()->getAllPoolsYears();
+        $all_holidays_spent                 = $this->controllers->getMyJobHolidaysController()->getAllNotDeleted();
+        $job_holidays_summary               = $this->controllers->getMyJobHolidaysPoolController()->getHolidaysSummaryGroupedByYears();
+        $job_holidays_available_totally     = $this->controllers->getMyJobHolidaysPoolController()->getAvailableDaysTotally();
 
         $job_holidays_form  = $this->app->forms->jobHolidaysForm([
             static::KEY_CHOICES => $all_pools_years

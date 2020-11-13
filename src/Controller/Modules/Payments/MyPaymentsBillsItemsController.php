@@ -3,10 +3,10 @@
 namespace App\Controller\Modules\Payments;
 
 use App\Controller\Core\Application;
-use App\Entity\Modules\Payments\MyPaymentsIncome;
+use App\Entity\Modules\Payments\MyPaymentsBillsItems;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MyPaymentsIncomeController extends AbstractController
+class MyPaymentsBillsItemsController extends AbstractController
 {
 
     /**
@@ -15,28 +15,26 @@ class MyPaymentsIncomeController extends AbstractController
     private $app;
 
     public function __construct(Application $app) {
-
         $this->app = $app;
     }
 
     /**
-     * Returns all not deleted entities
-     *
-     * @return MyPaymentsIncome[]
+     * @return MyPaymentsBillsItems[]
      */
     public function getAllNotDeleted(): array
     {
-        return $this->app->repositories->myPaymentsIncomeRepository->getAllNotDeleted();
+        return $this->app->repositories->myPaymentsBillsItemsRepository->getAllNotDeleted();
     }
 
     /**
      * Will return one record or null if nothing was found
      *
      * @param int $id
-     * @return MyPaymentsIncome|null
+     * @return MyPaymentsBillsItems|null
      */
-    public function findOneById(int $id): ?MyPaymentsIncome
+    public function findOneById(int $id): ?MyPaymentsBillsItems
     {
-        return $this->app->repositories->myPaymentsIncomeRepository->findOneById($id);
+        return $this->app->repositories->myPaymentsBillsItemsRepository->findOneById($id);
     }
+
 }

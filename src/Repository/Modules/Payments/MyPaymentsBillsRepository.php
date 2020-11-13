@@ -28,4 +28,15 @@ class MyPaymentsBillsRepository extends ServiceEntityRepository
         return $entities;
     }
 
+    /**
+     * Will return one record or null if nothing was found
+     *
+     * @param int $id
+     * @return MyPaymentsBills|null
+     */
+    public function findOneById(int $id): ?MyPaymentsBills
+    {
+        return $this->find($id);
+    }
+
 }

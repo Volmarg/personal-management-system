@@ -165,4 +165,13 @@ class MyIssueRepository extends ServiceEntityRepository
         return $query_builder;
     }
 
+    /**
+     * Returns one Entity or null for given id
+     * @param int $entity_id
+     * @return MyIssue|null
+     */
+    public function findIssueById(int $entity_id): ?MyIssue
+    {
+        return $this->find($entity_id);
+    }
 }

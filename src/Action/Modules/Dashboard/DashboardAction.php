@@ -5,18 +5,13 @@ namespace App\Action\Modules\Dashboard;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
-use App\Controller\Modules\ModulesController;
 use App\DTO\Settings\SettingsDashboardDTO;
-use App\Entity\Modules\Issues\MyIssue;
-use App\Entity\Modules\Todo\MyTodo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardAction extends AbstractController {
-
-    const SCHEDULES_DEFAULT_DAYS_INTERVAL = 60;
 
     /**
      * @var Application
@@ -65,11 +60,11 @@ class DashboardAction extends AbstractController {
             $dashboard_widgets_visibility_dtos   = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $schedules      = $this->getIncomingSchedules();
-        $all_too        = $this->getGoalsTodoForWidget();
-        $goals_payments = $this->getGoalsPayments();
+        $schedules      = $this->controllers->getDashboardController()->getIncomingSchedules();
+        $all_too        = $this->controllers->getDashboardController()->getGoalsTodoForWidget();
+        $goals_payments = $this->controllers->getDashboardController()->getGoalsPayments();
 
-        $pending_issues    = $this->getPendingIssues();
+        $pending_issues    = $this->controllers->getDashboardController()->getPendingIssues();
         $issues_cards_dtos = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($pending_issues);
 
         $data = [
@@ -82,29 +77,6 @@ class DashboardAction extends AbstractController {
         ];
 
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);
-    }
-
-    private function getIncomingSchedules() {
-        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(static::SCHEDULES_DEFAULT_DAYS_INTERVAL);
-    }
-
-    /**
-     * @return MyTodo[]
-     */
-    private function getGoalsTodoForWidget(){
-        return $this->app->repositories->myTodoRepository->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
-    }
-
-    private function getGoalsPayments(){
-        return $this->app->repositories->myGoalsPaymentsRepository->getGoalsPayments();
-    }
-
-    /**
-     * @return MyIssue[]
-     */
-    private function getPendingIssues(): array
-    {
-        return $this->app->repositories->myIssueRepository->getPendingIssuesForDashboard();
     }
 
 }

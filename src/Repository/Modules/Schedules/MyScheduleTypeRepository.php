@@ -24,4 +24,31 @@ class MyScheduleTypeRepository extends ServiceEntityRepository {
         return $this->findBy([MyScheduleType::FIELD_NAME => 0]);
     }
 
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return MyScheduleType|null
+     */
+    public function findOneById(int $id): ?MyScheduleType
+    {
+        return $this->find($id);
+    }
+
+    /**
+     * Returns one entity for given name or null otherwise
+     *
+     * @param string $name
+     * @return MyScheduleType|null
+     */
+    public function findOneByName(string $name): ?MyScheduleType
+    {
+        $results = $this->findBy(['name' => $name]);
+
+        if( empty($results) ){
+            return null;
+        }
+
+        return $results[0];
+    }
 }

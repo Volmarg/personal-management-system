@@ -46,4 +46,14 @@ class MyJobHolidaysRepository extends ServiceEntityRepository {
 
         return $result;
     }
+
+    /**
+     * Returns all not deleted entities
+     *
+     * @return MyJobHolidays[]
+     */
+    public function getAllNotDeleted(): array
+    {
+        return $this->findBy(['deleted' => 0]);
+    }
 }

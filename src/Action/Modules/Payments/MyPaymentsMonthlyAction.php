@@ -6,6 +6,7 @@ namespace App\Action\Modules\Payments;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Form\Modules\Payments\MyPaymentsMonthlyType;
@@ -23,9 +24,14 @@ class MyPaymentsMonthlyAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
 
-        $this->app = $app;
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->controllers = $controllers;
+        $this->app         = $app;
     }
 
     /**
@@ -56,10 +62,10 @@ class MyPaymentsMonthlyAction extends AbstractController {
         $columns_names              = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsMonthly::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($columns_names);
 
-        $all_payments               = $this->app->repositories->myPaymentsMonthlyRepository->findBy(['deleted' => '0'], ['date' => 'ASC']);
-        $dates_groups               = $this->app->repositories->myPaymentsMonthlyRepository->fetchAllDateGroups();
-        $payments_by_type_and_date  = $this->app->repositories->myPaymentsMonthlyRepository->getPaymentsByTypes();
-        $payments_types             = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => '0', 'name' => 'type']);
+        $all_payments               = $this->controllers->getMyPaymentsMonthlyController()->getAllNotDeleted();
+        $dates_groups               = $this->controllers->getMyPaymentsMonthlyController()->fetchAllDateGroups();
+        $payments_by_type_and_date  = $this->controllers->getMyPaymentsMonthlyController()->getPaymentsByTypes();
+        $payments_types             = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
 
         return $this->render('modules/my-payments/monthly.html.twig', [
@@ -121,7 +127,9 @@ class MyPaymentsMonthlyAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters     = $request->request->all();
-        $entity         = $this->app->repositories->myPaymentsMonthlyRepository->find($parameters['id']);
+        $entity_id      = trim($parameters['id']);
+
+        $entity         = $this->controllers->getMyPaymentsMonthlyController()->findOneById($entity_id);
         $response       = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();

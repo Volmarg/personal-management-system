@@ -6,6 +6,7 @@ namespace App\Action\Modules\Payments;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
 use Exception;
@@ -24,8 +25,14 @@ class MyPaymentsProductsAction extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->app         = $app;
+        $this->controllers = $controllers;
     }
 
     /**
@@ -76,7 +83,9 @@ class MyPaymentsProductsAction extends AbstractController {
      */
     public function updateDataInDB(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myPaymentsProductRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyPaymentsProductsController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -115,8 +124,8 @@ class MyPaymentsProductsAction extends AbstractController {
         $column_names           = $this->reorderPriceColumn($column_names);
         Repositories::removeHelperColumnsFromView($column_names);
 
-        $products_all_data      = $this->app->repositories->myPaymentsProductRepository->findBy(['deleted' => 0]);
-        $currency_multiplier    = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
+        $products_all_data      = $this->controllers->getMyPaymentsProductsController()->getAllNotDeleted();
+        $currency_multiplier    = $this->controllers->getMyPaymentsSettingsController()->fetchCurrencyMultiplier();
 
         return $this->render('modules/my-payments/products.html.twig',
             compact('column_names', 'products_all_data', 'products_form_view', 'currency_multiplier', 'ajax_render', 'skip_rewriting_twig_vars_to_js')

@@ -227,4 +227,15 @@ class MyNotesCategoriesController extends AbstractController {
         return $categories_depths;
     }
 
+    /**
+     * Will return one entity for given id, otherwise returns null if nothing is found
+     *
+     * @param int $id
+     * @return MyNotesCategories|null
+     */
+    public function findOneById(int $id): ?MyNotesCategories
+    {
+        return $this->app->repositories->myNotesCategoriesRepository->findOneById($id);
+    }
+
 }

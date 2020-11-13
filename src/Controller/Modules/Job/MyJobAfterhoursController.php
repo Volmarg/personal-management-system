@@ -52,4 +52,23 @@ class MyJobAfterhoursController extends AbstractController {
         return $entities;
     }
 
+    /**
+     * Will return one entity for given id, if such does not exist then null will be returned
+     *
+     * @param int $id
+     * @return MyJobAfterhours|null
+     */
+    public function findOneById(int $id): ?MyJobAfterhours
+    {
+        return $this->app->repositories->myJobAfterhoursRepository->findOneById($id);
+    }
+
+    /**
+     * @return array
+     */
+    public function getGoalsWithTime(): array
+    {
+        return $this->app->repositories->myJobAfterhoursRepository->getGoalsWithTime();
+    }
+
 }

@@ -52,6 +52,7 @@ class MyPaymentsSettingsAction extends AbstractController {
             $setting_type = reset($request_bag)['name'];
         }
 
+        // todo: handle codes from responses
         switch ($setting_type) {
             case self::KEY_SETTING_NAME_TYPE:
 
@@ -104,7 +105,9 @@ class MyPaymentsSettingsAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myPaymentsSettingsRepository->find($parameters['id']);
+        $entity_id  = $parameters['id'];
+
+        $entity     = $this->controllers->getMyPaymentsSettingsController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -124,7 +127,10 @@ class MyPaymentsSettingsAction extends AbstractController {
          */
         $form_data = $payments_types_form->getData();
 
-        if (!is_null($form_data) && $this->app->repositories->myPaymentsSettingsRepository->findBy(['value' => $form_data->getValue()])) {
+        if (
+                !is_null($form_data)
+            &&  !is_null($this->controllers->getMyPaymentsSettingsController()->findOneByValue($form_data->getValue()))
+        ) {
             $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
             return new JsonResponse($record_with_this_name_exist, 409);
         }
@@ -147,7 +153,7 @@ class MyPaymentsSettingsAction extends AbstractController {
      */
     public function renderSettingsTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
         $recurring_payments_template_view = $this->renderRecurringPaymentTemplate();
-        $payments_types                   = $this->app->repositories->myPaymentsSettingsRepository->getAllPaymentsTypes();
+        $payments_types                   = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
         return $this->render('modules/my-payments/settings.html.twig', [
             'recurring_payments_template_view'  => $recurring_payments_template_view->getContent(),
@@ -166,8 +172,8 @@ class MyPaymentsSettingsAction extends AbstractController {
     private function renderRecurringPaymentTemplate($ajax_render = false) {
         $recurring_payments_form    = $this->app->forms->recurringPaymentsForm();
 
-        $all_recurring__payments    = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => '0'], ['date' => 'ASC']);
-        $payments_types             = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => '0', 'name' => 'type']);
+        $all_recurring__payments    = $this->controllers->getMyRecurringPaymentsMonthlyController()->getAllNotDeleted("date");
+        $payments_types             = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
         return $this->render(self::TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS, [
             'form'               => $recurring_payments_form->createView(),

@@ -8,7 +8,6 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Form\Modules\Achievements\AchievementType;
-use App\Repository\AbstractRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -72,9 +71,9 @@ class AchievementAction extends AbstractController {
     public function update(Request $request) {
 
         $parameters = $request->request->all();
-        $id         = $parameters[self::PARAMETER_ID];
+        $id         = trim($parameters[self::PARAMETER_ID]);
 
-        $entity     = $this->app->repositories->achievementRepository->find($id);
+        $entity     = $this->controllers->getAchievementController()->getOneById($id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -113,7 +112,7 @@ class AchievementAction extends AbstractController {
         $achievement_form_view = $achievement_form->createView();
 
         $columns_names    = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
-        $all_achievements = $this->app->repositories->achievementRepository->findBy([AbstractRepository::FIELD_DELETED => 0]);
+        $all_achievements = $this->controllers->getAchievementController()->getAllNotDeleted();
 
         return $this->render('modules/my-achievements/index.html.twig', [
             'ajax_render'       => $ajax_render,

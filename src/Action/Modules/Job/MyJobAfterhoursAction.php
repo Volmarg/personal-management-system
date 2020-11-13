@@ -128,7 +128,9 @@ class MyJobAfterhoursAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity     = $this->app->repositories->myJobAfterhoursRepository->find($parameters['id']);
+        $entity_id  = trim($parameters['id']);
+
+        $entity     = $this->controllers->getMyJobAfterhoursController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -163,7 +165,7 @@ class MyJobAfterhoursAction extends AbstractController {
      * @return FormInterface
      */
     private function getForm() {
-        $goalsWithTimes = $this->app->repositories->myJobAfterhoursRepository->getGoalsWithTime();
+        $goalsWithTimes = $this->controllers->getMyJobAfterhoursController()->getGoalsWithTime();
         $goals          = [];
 
         foreach ($goalsWithTimes as $goalWithTime) {

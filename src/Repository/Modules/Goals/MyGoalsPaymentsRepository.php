@@ -19,11 +19,56 @@ class MyGoalsPaymentsRepository extends ServiceEntityRepository
         parent::__construct($registry, MyGoalsPayments::class);
     }
 
-    public function getGoalsPayments(){
+    /**
+     * Returns entities explicitly for dashboard
+     * @return MyGoalsPayments[]
+     */
+    public function getGoalsPaymentsForDashboard(){
         $results = $this->findBy([
             'displayOnDashboard' => 1,
             'deleted'            => 0
         ]);
         return $results;
     }
+
+    /**
+     * Will return all not deleted entities
+     *
+     * @return MyGoalsPayments[]
+     */
+    public function getAllNotDeleted()
+    {
+        return $this->findBy(['deleted' => 0]);
+    }
+
+    /**
+     * Will return single entity for given id, if none was found then null will be returned
+     *
+     * @param int $id
+     * @return MyGoalsPayments|null
+     */
+    public function findOneById(int $id): ?MyGoalsPayments
+    {
+        return $this->find($id);
+    }
+
+    /**
+     * Will return one entity for given name if such exist, otherwise null is returned
+     *
+     * @param string $name
+     * @return MyGoalsPayments|null
+     */
+    public function getOneByName(string $name): ?MyGoalsPayments
+    {
+        $all_entities = $this->findBy(['name' => $name]);
+
+        if( empty($all_entities) ){
+            return null;
+        }
+
+        $first_key = array_key_first($all_entities);
+
+        return $all_entities[$first_key];
+    }
+
 }
