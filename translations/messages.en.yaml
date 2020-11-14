@@ -46,7 +46,7 @@ forms:
     MyPaymentsTypesType: { labels: { name: Name, value: 'Type name' } }
     UserAvatarType: { labels: { avatar: 'Avatar url' }, placeholders: { avatar: 'Internal or external url to some image' } }
     UserNicknameType: { labels: { nickname: Nickname }, placeholder: { nickname: 'This will be displayed on page but login will not change.' } }
-    UserPasswordType: { labels: { password: Password } }
+    UserPasswordType: { labels: { password: Password }, placeholders: { password: 'Enter password' } }
     AchievementType: { labels: { name: Name, description: Description, type: Type } }
     MyJobAfterhoursType: { labels: { date: Date, description: Description, minutes: Minutes, goal: Goal, type: Type } }
     MyShoppingPlansType: { labels: { name: Name, information: Informatipn, example: Example } }
@@ -63,7 +63,7 @@ forms:
     MyContactType: { labels: { name: Name, description: Description, image_path: 'Image path', name_background_color: 'Name background color', description_background_color: 'Description background color', contacts: Contacts, addType: 'Add type', group: Group } }
     MyContactTypeDtoType: { labels: { name: Name, type: Type } }
     general: { submit: Submit, save: Save, add: Add, errors: { couldNotLoadFormForGivenNamespace: 'Could not load form for given namespace' }, success: 'Form was submitted successfully' }
-    systemLockPassword: { labels: { password: Password }, placeholders: { password: 'Enter lock password' } }
+    systemLockPassword: { labels: { password: 'Lock Password' }, placeholders: { password: 'Enter lock password' } }
     MyIssueType: { resolved: Resolved, dashboard: 'Show on dashboard', name: Name, information: Information }
     MyIssueTypeProgress: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
     MyIssueContactType: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
@@ -80,8 +80,8 @@ dialogs:
     addIssueProgress: { header: 'Add issue progress' }
     addIssueContact: { header: 'Add issue contact' }
     addOrModifyTodo: { add: 'Add todo', modify: 'Modify todo' }
-    filesTransfer: { confirm: 'Do You really want to move this/these file/s.' }
-    removeFiles: { confirm: 'Do You really want to remove this/these file/s.' }
+    filesTransfer: { confirm: 'Do You really want to move these files?' }
+    removeFiles: { confirm: 'Do You really want to remove these files?' }
 exceptions:
     general: { missingRequiredParameter: 'Missing request parameter named: ', providedEntityIsNotAnObject: 'Provided entity is not an object', thisEntityIsNotSoftDeletable: 'This entity is not soft deletable!' }
     files: { subdirectoryLocationMissingInRequest: 'Subdirectory location is missing in request.', cannotRemoveMainFolder: 'Cannot remove main folder!' }

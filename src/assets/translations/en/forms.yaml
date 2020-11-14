@@ -171,6 +171,8 @@ forms:
   UserPasswordType:
     labels:
       password: Password
+    placeholders:
+      password: "Enter password"
   AchievementType:
     labels:
       name: Name
@@ -275,7 +277,7 @@ forms:
     success: Form was submitted successfully
   systemLockPassword:
     labels:
-      password: "Password"
+      password: "Lock Password"
     placeholders:
       password: "Enter lock password"
   MyIssueType:

@@ -1547,12 +1547,10 @@ export default class Entity extends AbstractDataProcessor {
             return dataProcessorsDto;
         },
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let subdirectory        = $($baseElement).find('input[name^="file_full_path"]').attr('data-subdirectory');
-            let file_full_path      = $($baseElement).find('input[name^="file_full_path"]').val();
+            let file_full_path      = $($baseElement).find('.mass-action-remove-file-path').text();
             let url                 = '/my-files/remove-file';
             let ajaxData            = {
-                'file_full_path'    : file_full_path,
-                'subdirectory'      : subdirectory
+                'file_full_path' : file_full_path,
             };
 
             let successMessage     = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyFiles.processorName);

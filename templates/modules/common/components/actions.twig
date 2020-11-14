@@ -80,7 +80,12 @@
  {% endif %}
 
 {% if download is defined and download %}
-    <a href="/{{ download_file_path }}" download style="color: #72777a;">
+
+    {% if download_file_subdirectory is not defined %}
+        {% set download_file_subdirectory = "" %}
+    {% endif %}
+
+    <a href="/{{ download_file_path }}" download style="color: #72777a;" class="file-download-link" data-subdirectory="{{ download_file_subdirectory }}">
         <button class="file-download">
             <span aria-hidden="true"
                   data-toggle-popover="true"                                    {# popover attr #}
