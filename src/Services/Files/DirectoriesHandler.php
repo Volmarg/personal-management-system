@@ -6,8 +6,12 @@ use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
+use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Utils;
+use App\Entity\System\LockedResource;
 use DirectoryIterator;
+use Doctrine\DBAL\Driver\Exception as DbalException;
+use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\File;
@@ -49,12 +53,19 @@ class DirectoriesHandler {
      */
     private $files_tags_controller;
 
-    public function __construct(Application $application, LoggerInterface $logger,  FileTagger $file_tagger, FilesTagsController $files_tags_controller) {
-        $this->application           = $application;
-        $this->logger                = $logger;
-        $this->finder                = new Finder();
-        $this->file_tagger           = $file_tagger;
-        $this->files_tags_controller = $files_tags_controller;
+    /**
+     * Info: must remain static due to the static methods requiring this logic
+     * @var LockedResourceController $locked_resource_controller
+     */
+    private static LockedResourceController $locked_resource_controller;
+
+    public function __construct(Application $application, LoggerInterface $logger,  FileTagger $file_tagger, FilesTagsController $files_tags_controller, LockedResourceController $locked_resource_controller) {
+        self::$locked_resource_controller = $locked_resource_controller;
+        $this->application                = $application;
+        $this->logger                     = $logger;
+        $this->finder                     = new Finder();
+        $this->file_tagger                = $file_tagger;
+        $this->files_tags_controller      = $files_tags_controller;
     }
 
     /**
@@ -328,19 +339,31 @@ class DirectoriesHandler {
     /**
      * @param DirectoryIterator $dir
      * @param bool $use_foldername
-     * @param bool $flatten        - if true then returns tree in single dimension array
+     * @param bool $flatten         - if true then returns tree in single dimension array
+     * @param bool $include_locked  - if true then includes also the locked directories (via LockMechanism)
      * @return array
+     * @throws Exception
+     * @throws DbalException
+     * @throws \Exception
      */
-    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $use_foldername = false, bool $flatten = false): array
+    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $use_foldername = false, bool $flatten = false, bool $include_locked = false): array
     {
         $data = [];
         foreach ( $dir as $node )
         {
             if ( $node->isDir() && !$node->isDot() )
             {
-                $pathname        = $node->getPathname();
-                $foldername      = $node->getFilename();
-                $key             = ( $use_foldername ? $foldername : $pathname);
+                $pathname    = $node->getPathname();
+                $module_name = FileUploadController::getUploadModuleNameForFilePath($pathname);
+                $foldername  = $node->getFilename();
+                $key         = ( $use_foldername ? $foldername : $pathname);
+
+                if(
+                        !$include_locked
+                    &&  !self::$locked_resource_controller->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $module_name, false)
+                ) {
+                    continue; // skip that folder
+                }
 
                 if( !$flatten ){
                     $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
@@ -355,17 +378,6 @@ class DirectoriesHandler {
 
         }
         return $data;
-    }
-
-    public static function buildFoldersTreeForDirectories(array $directories, bool $use_foldername = false): array {
-        $directories_trees = [];
-
-        foreach ($directories as $directory) {
-            $directory_tree                 = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $directory ), $use_foldername );
-            $directories_trees[$directory]  = $directory_tree;
-        }
-
-        return $directories_trees;
     }
 
     /**

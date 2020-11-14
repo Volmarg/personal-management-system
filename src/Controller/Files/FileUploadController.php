@@ -39,6 +39,9 @@ class FileUploadController extends AbstractController {
     const KEY_EXTENSION     = 'fileExtension';
     const KEY_UPLOAD_TABLE  = 'upload_table';
 
+    const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH         = "^[\/]?upload\/(?<" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME . ">[a-zA-z]+)\/";
+    const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME = "DIR_NAME";
+
     const MODULES_UPLOAD_DIRS = [
         self::MODULE_UPLOAD_DIR_FOR_IMAGES => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
         self::MODULE_UPLOAD_DIR_FOR_VIDEO  => self::MODULE_UPLOAD_DIR_FOR_VIDEO,
@@ -164,4 +167,25 @@ class FileUploadController extends AbstractController {
         return $folders_trees;
     }
 
+    /**
+     * Will return the upload module name for file path
+     *
+     * @param string $filepath
+     * @return string
+     * @throws Exception
+     */
+    public static function getUploadModuleNameForFilePath(string $filepath): string
+    {
+        preg_match("#" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH . "#", $filepath, $matches);
+        $upload_module_dir = $matches[self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME];
+
+        if( !array_key_exists($upload_module_dir,FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME) ){
+            $message = "Given upload_module_dir is not an upload module dir";
+            throw new Exception($message);
+        }
+
+        $module_name = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$upload_module_dir];
+
+        return $module_name;
+    }
 }
