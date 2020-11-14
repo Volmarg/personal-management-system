@@ -92,7 +92,7 @@ export default class Sidebars {
         let currActiveMenuLink = $('.sidebar-menu li.nav-item a.active');
 
         if( !DomElements.doElementsExists(currMenuLink) ){
-            throw("Could not find menu link for currently visited page. (currUrl: " + currUrl + ")");
+            return;
         }
 
         // first find curr active and deactivate it

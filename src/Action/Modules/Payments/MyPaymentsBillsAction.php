@@ -139,7 +139,7 @@ class MyPaymentsBillsAction extends AbstractController {
      */
     public function updateBill(Request $request) {
         $parameters     = $request->request->all();
-        $entity_id      = trim($parameters['id']);
+        $entity_id      = trim(trim($parameters['id']));
 
         $entity         = $this->controllers->getMyPaymentsBillsController()->findOneById($entity_id);
         $response       = $this->app->repositories->update($parameters, $entity);
@@ -156,7 +156,7 @@ class MyPaymentsBillsAction extends AbstractController {
      */
     public function updateBillItem(Request $request) {
         $parameters = $request->request->all();
-        $entity_id  = $parameters['id'];
+        $entity_id  = trim($parameters['id']);
 
         $entity     = $this->controllers->getMyPaymentsBillsItemsController()->findOneById($entity_id);
         $response   = $this->app->repositories->update($parameters, $entity);

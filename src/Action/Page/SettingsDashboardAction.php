@@ -2,6 +2,7 @@
 
 namespace App\Action\Page;
 
+use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
@@ -50,7 +51,8 @@ class SettingsDashboardAction extends AbstractController {
 
         if (!$request->request->has(self::KEY_ALL_ROWS_DATA)) {
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ALL_ROWS_DATA;
-            throw new Exception($message);
+            $this->app->logger->warning($message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         $all_rows_data                      = $request->request->get(self::KEY_ALL_ROWS_DATA);
@@ -60,12 +62,14 @@ class SettingsDashboardAction extends AbstractController {
 
             if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE, $row_data)){
                 $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE;
-                throw new Exception($message);
+                $this->app->logger->warning($message);
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
             if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_NAME, $row_data)){
                 $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_NAME;
-                throw new Exception($message);
+                $this->app->logger->warning($message);
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
             $is_visible = filter_var($row_data[SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE], FILTER_VALIDATE_BOOLEAN);;
@@ -79,8 +83,9 @@ class SettingsDashboardAction extends AbstractController {
         }
 
         $this->app->settings->settings_saver->saveSettingsForDashboardWidgetsVisibility($widgets_visibilities_settings_dtos);
+        $template_content = $this->settings_view_action->renderSettingsTemplate(false)->getContent();
 
-        return $this->settings_view_action->renderSettingsTemplate(false);
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $template_content);
     }
 
 }
