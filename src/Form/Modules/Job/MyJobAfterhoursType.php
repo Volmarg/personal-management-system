@@ -77,6 +77,12 @@ class MyJobAfterhoursType extends AbstractType {
                     DatalistLogicOverride::preSubmit($event, ['Goal'], static::$choices);
                 });
 
+            /**
+             * INFO: this is VERY IMPORTANT to use it here due to S5 validation of data integrity between events
+             * This enforce skipping validation for such case - for given field
+             */
+            $builder->get('Goal')->resetViewTransformers();
+
         }else{
             $builder
                 ->add('Goal', TextType::class, [
