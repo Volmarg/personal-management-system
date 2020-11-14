@@ -9,6 +9,7 @@ import Navigation           from "../../Navigation";
 import StringUtils          from "../../utils/StringUtils";
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import Ui                   from "../Ui";
+import DataProcessorDto from "../../../DTO/DataProcessorDto";
 
 export default class RemoveAction extends AbstractAction {
 
@@ -56,6 +57,10 @@ export default class RemoveAction extends AbstractAction {
             let paramEntityName = $baseElement.attr('data-type');
 
             let dataProcessorDto = DataProcessorLoader.getRemoveDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, $baseElement);
+
+            if( !(dataProcessorDto instanceof DataProcessorDto) ){
+                dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, paramEntityName, $baseElement);
+            }
 
             let removalMessage = ( dataProcessorDto.isConfirmMessageSet()
                     ? dataProcessorDto.confirmMessage
