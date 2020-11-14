@@ -203,7 +203,7 @@ forms:
       currentSubdirectoryInModuleUploadDir: Target folder
       targetUploadModuleDir: Upload module
       targetSubdirectoryInModuleUploadDir: Target folder
-      moveInsteadOfCopying: Move instead of copying
+      moveInsteadOfCopying: Move entire folder instead of copying files
   UploadSubdirectoryCreateType:
     labels:
       uploadModuleDir: Upload module

@@ -5,7 +5,10 @@ namespace App\Action\Files;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
+use App\Controller\Utils\Utils;
+use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
@@ -16,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use TypeError;
 
 class FilesAction extends AbstractController {
 
@@ -381,6 +385,81 @@ class FilesAction extends AbstractController {
         $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
 
         $response = $this->controllers->getFilesUploadSettingsController()->renameSubdirectory($upload_module_dir, $current_directory_path_in_module_upload_dir, $new_name);
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+    }
+
+    /**
+     * @Route("/files/actions/move-or-copy-data-between-folders", name="actions_move_or_copy_data_between_folders", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws \Exception
+     */
+    public function moveOrCopyDataBetweenFoldersViaPostRequest(Request $request): JsonResponse
+    {
+        if ( !$request->request->has(FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        if ( !$request->request->has(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
+        }
+
+        $current_upload_module_dir          = $request->request->get(FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR);
+        $target_upload_module_dir           = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+
+        $current_directory_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+        $target_directory_path_in_module_upload_dir   = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+
+        $do_move_entire_folder = Utils::getBoolRepresentationOfBoolString($request->request->get(UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER, false));
+
+        try{
+            if( $do_move_entire_folder ){
+
+                $upload_dirs         = Env::getUploadDirs();
+                $current_folder_path = $current_directory_path_in_module_upload_dir;
+                $target_folder_path  = $target_directory_path_in_module_upload_dir;
+
+                //if not main folder then add upload dir
+                if( !in_array($current_directory_path_in_module_upload_dir, $upload_dirs) ){
+                    $current_folder_path =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $current_upload_module_dir . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
+                }
+
+                //if not main folder then add upload dir
+                if( !in_array($target_directory_path_in_module_upload_dir, $upload_dirs) ){
+                    $target_folder_path  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $target_upload_module_dir . DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
+                }
+
+                $response = $this->directories_handler->moveDirectory($current_folder_path, $target_folder_path);
+            }else{
+                $response = $this->files_handler->copyData(
+                    $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
+                );
+            }
+
+        }catch(\Exception | TypeError $e ){
+
+            $this->app->logger->critical("Exception was thrown while calling folders data transfer logic", [
+                "exceptionMessage" => $e->getMessage(),
+                "exceptionCode"    => $e->getCode(),
+                "exceptionTrace"   => $e->getTraceAsString(),
+            ]);
+
+            $message = $this->app->translator->translate('messages.general.internalServerError');
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
+        }
+
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 

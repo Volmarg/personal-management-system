@@ -1,8 +1,12 @@
 {# moving files between folders form #}
 
-    <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
+    <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12 handle-single-form-via-ajax update-record-form">
         <h4 class="c-grey-900 mB-20 align-self-center">{{ 'upload.settings.copyFolderData.label' | trans }}</h4>
-        {{ form_start(copy_data_form) }}
+        {{ form_start(copy_data_form, {
+            attr: {
+                'data-form-target': "CopyDataBetweenFolders"
+            }
+        })}}
 
         <section class="d-flex justify-content-around flex-row">
 
@@ -22,7 +26,7 @@
                             }
                         ) }}
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 current-upload-module-dir">
                         {{ form_widget(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR]) }}
                     </div>
                 </div>
@@ -41,7 +45,7 @@
                             }
                         ) }}
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 subdirectory-current-path-in-module-upload-dir">
                         {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR]) }}
                     </div>
                 </div>
@@ -64,7 +68,7 @@
                             }
                         ) }}
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 target-upload-module-dir">
                         {{ form_widget(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
                     </div>
                 </div>
@@ -83,7 +87,7 @@
                             }
                         ) }}
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-6 subdirectory-target-path-in-module-upload-dir">
                         {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
                     </div>
                 </div>
@@ -94,7 +98,9 @@
         <br/>
 
         <section class="d-flex justify-content-center flex-column align-items-center">
-            {{ form_widget(copy_data_form[KEY_MOVE_FOLDER]) }}
+            <span class="move-folder-checkbox-wrapper">
+                {{ form_widget(copy_data_form[KEY_MOVE_FOLDER]) }}
+            </span>
 
             {{ form_widget(copy_data_form['submit']) }}
         </section>

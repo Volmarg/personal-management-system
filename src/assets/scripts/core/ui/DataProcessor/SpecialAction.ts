@@ -465,4 +465,68 @@ export default class SpecialAction extends AbstractDataProcessor {
         processorName: "Tags"
     };
 
+    public static CopyDataBetweenFolders: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        }, makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        }, makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url             = '/files/actions/move-or-copy-data-between-folders';
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(SpecialAction.RenameFolder.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.RenameFolder.processorName);
+
+            let currentUploadModuleDir                   = $baseElement.find('.current-upload-module-dir select').val();
+            let targetUploadModuleDir                    = $baseElement.find('.target-upload-module-dir select').val();
+            let subdirectoryCurrentPathInModuleUploadDir = $baseElement.find('.subdirectory-current-path-in-module-upload-dir select').val();
+            let subdirectoryTargetPathInModuleUploadDir  = $baseElement.find('.subdirectory-target-path-in-module-upload-dir select').val();
+            let moveFolder                               = $baseElement.find('.move-folder-checkbox-wrapper input').prop('checked');
+
+            let ajaxData = {
+                current_upload_module_dir                      : currentUploadModuleDir,
+                target_upload_module_dir                       : targetUploadModuleDir,
+                subdirectory_current_path_in_module_upload_dir : subdirectoryCurrentPathInModuleUploadDir,
+                subdirectory_target_path_in_module_upload_dir  : subdirectoryTargetPathInModuleUploadDir,
+                move_folder                                    : moveFolder
+            };
+
+            let callback = (dataCallbackParams) => {
+                let ajax       = new Ajax();
+                let ajaxEvents = new AjaxEvents();
+
+                if(
+                    null !== dataCallbackParams
+                    &&  "undefined" !== typeof dataCallbackParams
+                ){
+                    let menuNodeModuleName           = dataCallbackParams.menuNodeModuleName;
+                    let menuNodeModulesNamesToReload = dataCallbackParams.menuNodeModulesNamesToReload;
+
+                    if( !StringUtils.isEmptyString(menuNodeModuleName)){
+                        ajax.singleMenuNodeReload(menuNodeModuleName);
+                    }else if( !StringUtils.isEmptyString(menuNodeModulesNamesToReload) ){
+                        let arrayOfMenuNodeModuleNames = JSON.parse(menuNodeModulesNamesToReload);
+                        $.each(arrayOfMenuNodeModuleNames, function(index, menuNodeModuleName){
+                            ajax.singleMenuNodeReload(menuNodeModuleName);
+                        })
+                    }
+                }
+
+                BootboxWrapper.hideAll();
+                ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.callback       = callback;
+            dataProcessorsDto.ajaxData       = ajaxData;
+
+            return dataProcessorsDto;
+        },
+        makeCreateData: function (): DataProcessorDto | null {
+            return null
+        },
+        processorName: "Rename folder"
+    };
+
 }

@@ -74,21 +74,15 @@ class FilesUploadSettingsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
-     * @param Request $request
      * @return Response
      * @throws Exception
      */
-    private function renderSettingsPage(bool $ajax_render, Request $request){
+    private function renderSettingsPage(bool $ajax_render){
 
-        $rename_form    = $this->app->forms->renameSubdirectoryForm();
-        $rename_form->handleRequest($request);
-
-        $copy_data_form = $this->app->forms->copyUploadSubdirectoryDataForm();
-        $copy_data_form->handleRequest($request);
-
+        $rename_form        = $this->app->forms->renameSubdirectoryForm();
         $create_subdir_form = $this->app->forms->createSubdirectoryForm();
 
-        $this->handleForms($rename_form, $copy_data_form);
+        $copy_data_form = $this->app->forms->copyUploadSubdirectoryDataForm();
 
         $menu_node_modules_names_to_reload = [
             ModulesController::MODULE_NAME_IMAGES,
@@ -105,64 +99,6 @@ class FilesUploadSettingsAction extends AbstractController {
         ];
 
         return $this->render(static::TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS, $data);
-    }
-
-    /**
-     * @param FormInterface $rename_form
-     * @param FormInterface $copy_data_form
-     * @throws Exception
-     */
-    private function handleForms(FormInterface $rename_form, FormInterface $copy_data_form){
-
-        if($rename_form->isSubmitted() && $rename_form->isValid()) {
-            $form_data      = $rename_form->getData();
-            $new_name       = $form_data[FileUploadController::KEY_SUBDIRECTORY_NEW_NAME];
-            $upload_module_dir    = $form_data[FileUploadController::KEY_UPLOAD_MODULE_DIR];
-            $current_directory_path_in_module_upload_dir = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR];
-
-            $response = $this->controllers->getFilesUploadSettingsController()->renameSubdirectory($upload_module_dir, $current_directory_path_in_module_upload_dir, $new_name);
-        }
-
-        if($copy_data_form->isSubmitted() && $copy_data_form->isValid()) {
-            $form_data                          = $copy_data_form->getData();
-            $current_upload_module_dir          = $form_data[FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR];
-            $target_upload_module_dir           = $form_data[FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR];
-
-            $current_directory_path_in_module_upload_dir  = $form_data[FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR];
-            $target_directory_path_in_module_upload_dir   = $form_data[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
-
-            if( $form_data[UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER] ){
-
-                $upload_dirs         = Env::getUploadDirs();
-                $current_folder_path = $current_directory_path_in_module_upload_dir;
-                $target_folder_path  = $target_directory_path_in_module_upload_dir;
-
-                //if not main folder then add upload dir
-                if( !in_array($current_directory_path_in_module_upload_dir, $upload_dirs) ){
-                    $current_folder_path =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $current_upload_module_dir . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
-                }
-
-                //if not main folder then add upload dir
-                if( !in_array($target_directory_path_in_module_upload_dir, $upload_dirs) ){
-                    $target_folder_path  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $target_upload_module_dir . DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
-                }
-
-                $response = $this->directories_handler->moveDirectory($current_folder_path, $target_folder_path);
-            }else{
-                $response = $this->files_handler->copyData(
-                    $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
-                );
-            }
-
-        }
-
-        if( isset($response) ){
-            $flashType  = Utils::getFlashTypeForRequest($response);
-            $message    = $response->getContent();
-
-            $this->addFlash($flashType, $message);
-        }
-
     }
 
 }
