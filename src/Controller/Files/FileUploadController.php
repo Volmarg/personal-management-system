@@ -19,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FileUploadController extends AbstractController {
 
     const MODULE_UPLOAD_DIR_FOR_IMAGES  = 'images';
-    const MODULE_UPLOAD_DIR_FOR_VIDEO   = 'video';
+    const MODULE_UPLOAD_DIR_FOR_VIDEO   = 'videos';
     const MODULE_UPLOAD_DIR_FOR_FILES   = 'files';
 
     const KEY_SUBDIRECTORY_NEW_NAME       = 'subdirectory_new_name';
