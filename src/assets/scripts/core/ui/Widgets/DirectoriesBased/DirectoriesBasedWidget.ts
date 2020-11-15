@@ -32,7 +32,7 @@ export default class DirectoriesBasedWidget {
         } else if( route === RouterStructure.MODULES_MY_IMAGES_PATH ){
             moduleToSelect = ModulesStructure.MODULE_UPLOAD_DIR_FOR_IMAGES;
         }else if( route === RouterStructure.MODULES_MY_VIDEO_PATH ){
-            moduleToSelect = ModulesStructure.MODULE_UPLOAD_DIR_FOR_VIDEO;
+            moduleToSelect = ModulesStructure.MODULE_UPLOAD_DIR_FOR_VIDEOS;
         } else{
             Application.abort(`Unhandled route ${route}`);
         }

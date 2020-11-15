@@ -93,7 +93,7 @@ class FilesSearchRepository
             CONCAT(  '/', -- to have absolute path  
                     CASE -- here add part of url pointing to the module name
                         WHEN full_file_path LIKE '%images%' THEN 'my-images'
-                        WHEN full_file_path LIKE '%video%' THEN 'my-video'
+                        WHEN full_file_path LIKE '%videos%' THEN 'my-video'
                         WHEN full_file_path LIKE '%files%' THEN 'my-files'
                     END,
                     '/dir/', 
@@ -117,7 +117,7 @@ class FilesSearchRepository
                                      ),
                                     ''
                             )
-                        WHEN full_file_path LIKE '%video%' THEN 
+                        WHEN full_file_path LIKE '%videos%' THEN 
                             REPLACE(
                                 REPLACE(
                                     ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
@@ -139,7 +139,7 @@ class FilesSearchRepository
                 CASE
                     WHEN full_file_path LIKE '%images%' THEN '{$my_images_module_name}'
                     WHEN full_file_path LIKE '%files%' THEN '{$my_files_module_name}'
-                    WHEN full_file_path LIKE '%video%' THEN '{$my_video_module_name}'
+                    WHEN full_file_path LIKE '%videos%' THEN '{$my_video_module_name}'
                 END AS module
                 
                 FROM files_tags
