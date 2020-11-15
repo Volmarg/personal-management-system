@@ -396,7 +396,7 @@ class AutoInstaller{
             $upload_dir         = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR;
             $upload_files_dir   = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_FILES;
             $upload_images_dir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_IMAGES;
-            $upload_videos_dir   = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_VIDEOS;
+            $upload_videos_dir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_VIDEOS;
 
             if( !file_exists($upload_dir) ){
                 mkdir($upload_dir);

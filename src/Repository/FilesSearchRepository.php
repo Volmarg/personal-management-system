@@ -122,7 +122,7 @@ class FilesSearchRepository
                                 REPLACE(
                                     ft.full_file_path, CONCAT('/', files_tags_filename.filename) , ''),
                                     IF( -- if main dir then strip is different
-                                        LOCATE('upload/video/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/video', 'upload/video/'
+                                        LOCATE('upload/videos/', REPLACE( ft.full_file_path, CONCAT('/', files_tags_filename.filename) , '')) = 0 , 'upload/videos', 'upload/videos/'
                                      ),
                                     ''
                             )                        
