@@ -31,6 +31,7 @@ class AutoInstaller{
     const UPLOAD_DIR            = 'upload';
     const UPLOAD_DIR_IMAGES     = 'upload/images';
     const UPLOAD_DIR_FILES      = 'upload/files';
+    const UPLOAD_DIR_VIDEOS     = 'upload/videos';
     const UPLOAD_DIR_MINIATURES = 'upload/miniatures';
 
     const APP_SECRET        = 'b9abc19ae10d53eb7cf5b5684ec6511f';
@@ -47,6 +48,7 @@ class AutoInstaller{
     const ENV_KEY_UPLOAD_DIR            = 'UPLOAD_DIR';
     const ENV_KEY_IMAGES_UPLOAD_DIR     = 'IMAGES_UPLOAD_DIR';
     const ENV_KEY_FILES_UPLOAD_DIR      = 'FILES_UPLOAD_DIR';
+    const ENV_KEY_VIDEOS_UPLOAD_DIR     = 'VIDEOS_UPLOAD_DIR';
     const ENV_KEY_MINIATURES_UPLOAD_DIR = 'MINIATURES_UPLOAD_DIR';
     const ENV_KEY_PUBLIC_ROOT_DIR       = 'PUBLIC_ROOT_DIR';
 
@@ -315,6 +317,7 @@ class AutoInstaller{
             fwrite($file_handler,self::ENV_KEY_UPLOAD_DIR   . "="  . self::UPLOAD_DIR  . PHP_EOL);
             fwrite($file_handler,self::ENV_KEY_IMAGES_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_IMAGES      . PHP_EOL);
             fwrite($file_handler,self::ENV_KEY_FILES_UPLOAD_DIR      . "="  . self::UPLOAD_DIR_FILES       . PHP_EOL);
+            fwrite($file_handler,self::ENV_KEY_VIDEOS_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_VIDEOS      . PHP_EOL);
             fwrite($file_handler,self::ENV_KEY_MINIATURES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_MINIATURES  . PHP_EOL);
             fwrite($file_handler,self::ENV_KEY_PUBLIC_ROOT_DIR       . "="  . self::PUBLIC_DIR             . PHP_EOL);
         }
@@ -393,6 +396,7 @@ class AutoInstaller{
             $upload_dir         = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR;
             $upload_files_dir   = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_FILES;
             $upload_images_dir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_IMAGES;
+            $upload_videos_dir   = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_VIDEOS;
 
             if( !file_exists($upload_dir) ){
                 mkdir($upload_dir);
@@ -402,6 +406,9 @@ class AutoInstaller{
             }
             if( !file_exists($upload_images_dir) ){
                 mkdir($upload_images_dir);
+            }
+            if( !file_exists($upload_videos_dir) ){
+                mkdir($upload_videos_dir);
             }
         }
         CliHandler::infoText("Finished creating folders.");

@@ -30,7 +30,7 @@ class Env extends AbstractController {
     }
 
     public static function getVideoUploadDir() {
-        return $_ENV['VIDEO_UPLOAD_DIR'];
+        return $_ENV['VIDEOS_UPLOAD_DIR'];
     }
 
     public static function getMiniaturesUploadDir() {
