@@ -37,7 +37,8 @@ export default abstract class AbstractAction {
         'entity-remove-action'      : '.entity-remove-action',
         'accordion'                 : '.ui-accordion',
         'accordionContent'          : '.ui-accordion-content',
-        'contentEditableText'       : 'content-editable-text'
+        'contentEditableText'       : 'content-editable-text',
+        'actions'                   : '.actions'
     };
 
     protected otherSelectors = {
@@ -57,6 +58,7 @@ export default abstract class AbstractAction {
         baseParentElementSelector           : "data-base-parent-element-selector",
         tinymceElementSelector              : "data-tiny-mce-selector",
         tinymceElementInstanceSelector      : "data-tiny-mce-instance-selector", // must be id name without `#`
+        tinymceWrapperClasses               : "data-tiny-mce-wrapper-classes",
     };
 
     /**

@@ -1992,4 +1992,47 @@ export default class Entity extends AbstractDataProcessor {
         processorName: "User"
     };
 
+    public static ModuleData: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id               = $($baseElement).data('record-id');
+            let recordType       = $($baseElement).data('record-type');
+            let module           = $($baseElement).data('module');
+            let recordIdentifier = $($baseElement).data('record-identifier');
+
+            let tinyMceSelector = $($baseElement).find('[data-tiny-mce-instance-selector]').data('tiny-mce-instance-selector');
+            let description     = TinyMce.getTextContentForTinymceIdSelector(tinyMceSelector);
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.ModuleData.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.ModuleData.processorName);
+
+            let url      = Ajax.getUrlForPathName("module-data-update");
+            let ajaxData = {
+                'id'                : id,
+                'record_type'       : recordType,
+                'module'            : module,
+                'record_identifier' : recordIdentifier,
+                'description'       : description,
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        processorName: "ModuleData"
+    };
+
 }

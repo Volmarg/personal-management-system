@@ -50,6 +50,13 @@
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
                             <h4 class="c-grey-900 mB-20 align-self-center">{{ 'video.labels.headers.main' | trans }}</h4>
+                            {% include "page-elements/components/editable-module-content.twig" with {
+                                id                : (module_data is not null ? module_data.getId() : null),
+                                record_type       : "directory",
+                                module            : constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_VIDEO'),
+                                record_identifier : upload_path,
+                                description       : (module_data is not null ? module_data.getDescription() : "")
+                            }%}
                             <div style="margin-left: 20px;">
 
                                 {# Topbar #}

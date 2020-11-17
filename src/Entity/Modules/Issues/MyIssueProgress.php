@@ -26,7 +26,7 @@ class MyIssueProgress implements SoftDeletableEntityInterface, EntityInterface
 
     /**
      * @var string $information
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private $information;
 

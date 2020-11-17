@@ -7,6 +7,8 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Env;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Services\Files\FileDownloader;
 use App\Services\Files\FilesHandler;
@@ -23,6 +25,7 @@ class MyFilesAction extends AbstractController {
 
     const TWIG_TEMPLATE_MY_FILES          = 'modules/my-files/my-files.html.twig';
     const TWIG_TEMPLATE_MY_FILES_SETTINGS = 'modules/my-files/settings.html.twig';
+    const BASE_URL                        = 'my-files/dir';
 
     /**
      * @var Finder $finder
@@ -255,6 +258,13 @@ class MyFilesAction extends AbstractController {
         }
 
         $is_main_dir = ( empty($subdirectory_path) );
+        $upload_path = Env::getFilesUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
+
+        $module_data = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
+            ModuleData::RECORD_TYPE_DIRECTORY,
+            ModulesController::MODULE_NAME_FILES,
+            $upload_path
+        );
 
         $data = [
             'ajax_render'           => $ajax_render,
@@ -263,6 +273,8 @@ class MyFilesAction extends AbstractController {
             'files_count_in_tree'   => $files_count_in_tree,
             'upload_module_dir'     => MyFilesController::TARGET_UPLOAD_DIR,
             'is_main_dir'           => $is_main_dir,
+            'module_data'           => $module_data,
+            'upload_path'           => $upload_path,
             'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
         ];
 

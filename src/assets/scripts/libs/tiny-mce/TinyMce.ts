@@ -37,7 +37,8 @@ export default class TinyMce {
         'modal-shadow'               : '.modal-backdrop',
         'note-button'                : '.note-button',
         'note-modal-close-button'    : 'button.close',
-         prefixless: {
+        'tinyMceWrapper'             : ".tox-tinymce",
+        prefixless: {
             'hidden': 'd-none'
         }
     };
@@ -54,10 +55,12 @@ export default class TinyMce {
     };
 
     /**
+     *@description will return the default(common) configuration for tinymce
      *
      * @param selector {string}
+     * @param tinyMceWrapperClasses
      */
-    public static getDefaultTinyMceConfig(selector: string): object
+    public static getDefaultTinyMceConfig(selector: string, tinyMceWrapperClasses: string = null): object
     {
         return {
             menubar: false,
@@ -86,6 +89,13 @@ export default class TinyMce {
                 ed.on('init', function () {
                     this.getDoc().body.style.fontSize = '12';
                     this.getDoc().body.style.fontFamily = 'Arial';
+
+                    if(
+                            !StringUtils.isEmptyString(selector)
+                        &&  !StringUtils.isEmptyString(tinyMceWrapperClasses)
+                    ){
+                        TinyMce.setTinyMceWrapperClasses(selector, tinyMceWrapperClasses);
+                    }
                 });
                 ed.on('change', function () {
                     //@ts-ignore
@@ -98,13 +108,13 @@ export default class TinyMce {
     /**
      * @description Main initialization logic
      */
-    public init(tinyMceSelector: string = null) {
+    public init(tinyMceSelector: string = null, tinyMceWrapperClasses: string = null) {
 
         if( StringUtils.isEmptyString(tinyMceSelector) ){
             tinyMceSelector = TinyMce.classes["tiny-mce-selector"];
         }
 
-        let config = TinyMce.getDefaultTinyMceConfig(tinyMceSelector);
+        let config = TinyMce.getDefaultTinyMceConfig(tinyMceSelector, tinyMceWrapperClasses);
         TinyMce.remove(TinyMce.classes["tiny-mce-selector"]);
 
         //@ts-ignore
@@ -132,7 +142,7 @@ export default class TinyMce {
             }
         }
 
-        let tinymceContent  = tinymceInstance.getContent();
+        let tinymceContent  = tinymceInstance.getContent({format : 'raw'});
         return tinymceContent;
     };
 
@@ -205,5 +215,17 @@ export default class TinyMce {
             }
         });
     };
+
+    /**
+     * @description will set additional classes on the whole (top) wrapper of tinymce
+     *              this allows to for example add some padding etc.
+     *
+     * @private
+     */
+    private static setTinyMceWrapperClasses(tinyMceSelector: string, tinyMceWrapperClasses: string): void
+    {
+        let $tinyMceDomElement = $(tinyMceSelector).parent().find(TinyMce.classes.tinyMceWrapper);
+        $tinyMceDomElement.addClass(tinyMceWrapperClasses);
+    }
 
 }

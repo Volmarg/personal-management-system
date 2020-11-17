@@ -17,7 +17,6 @@ use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\Modules\Todo\MyTodo;
-use App\Entity\System\Module;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Achievements\AchievementRepository;
@@ -32,6 +31,7 @@ use App\Repository\Modules\Job\MyJobAfterhoursRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
 use App\Repository\Modules\Job\MyJobSettingsRepository;
+use App\Repository\Modules\ModuleDataRepository;
 use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
@@ -66,6 +66,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use TypeError;
 
 class Repositories extends AbstractController {
 
@@ -106,6 +107,7 @@ class Repositories extends AbstractController {
     const MY_TODO_REPOSITORY                            = "MyTodoRepository";
     const MY_TODO_ELEMENT_REPOSITORY                    = "MyTodoElementRepository";
     const MODULE_REPOSITORY                             = "ModuleRepository";
+    const MODULE_DATA_REPOSITORY                        = "ModuleDataRepository";
 
     const PASSWORD_FIELD        = 'password';
     const PARENT_ID_FIELD       = 'parent_id';
@@ -326,6 +328,11 @@ class Repositories extends AbstractController {
     public $moduleRepository;
 
     /**
+     * @var ModuleDataRepository $moduleDataRepository
+     */
+    public $moduleDataRepository;
+
+    /**
      * @var EntityValidator $entity_validator
      */
     private $entity_validator;
@@ -374,6 +381,7 @@ class Repositories extends AbstractController {
         MyTodoRepository                    $myTodoRepository,
         MyTodoElementRepository             $myTodoElementRepository,
         ModuleRepository                    $moduleRepository,
+        ModuleDataRepository                $moduleDataRepository,
         EntityManagerInterface              $entity_manager,
         EntityValidator                     $entity_validator,
         LoggerInterface                     $logger
@@ -418,6 +426,7 @@ class Repositories extends AbstractController {
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;
         $this->moduleRepository                     = $moduleRepository;
+        $this->moduleDataRepository                 = $moduleDataRepository;
         $this->logger                               = $logger;
     }
 
@@ -528,74 +537,7 @@ class Repositories extends AbstractController {
         try {
             unset($parameters['id']);
 
-            foreach ($parameters as $parameter => $value) {
-
-                /**
-                 * The only situation where this will be array is entity type parameter - does not need to be trimmed
-                 */
-                if(!is_array($value)){
-                    $value = trim($value);
-                }
-
-                if ($value === "true") {
-                    $value = true;
-                }
-                if ($value === "false") {
-                    $value = false;
-                }
-
-                $is_parameter_valid = $this->isParameterValid($parameter, $value, $entity);
-
-                if (!$is_parameter_valid) {
-                    $response = $this->decideResponseForInvalidUpdateParameter($parameter, $value, $entity);
-                    return $response;
-                }
-
-                if (is_array($value)) {
-                    if (array_key_exists('type', $value) && $value['type'] == 'entity') {
-                        $value = $this->getEntity($value);
-                    }
-                }
-                $record_class_name  = get_class($entity);
-                $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
-
-                $ucFirstParameter = ucfirst($parameter);
-
-                // this is needed to detect the type of field as doctrine sometimes want objects for it's internal mapping
-                if( $class_meta->hasField($parameter) ){
-                    $field_mapping = $class_meta->getFieldMapping($parameter);
-                    $field_type    = $field_mapping['type'];
-                }elseif( $class_meta->hasField($ucFirstParameter) ){
-                    $field_mapping = $class_meta->getFieldMapping($ucFirstParameter);
-                    $field_type    = $field_mapping['type'];
-                }elseif( $class_meta->hasAssociation($parameter)){
-                    $field_type = self::FIELD_TYPE_ENTITY;
-                }elseif( $class_meta->hasAssociation($ucFirstParameter) ){
-                    $field_type = self::FIELD_TYPE_ENTITY;
-                }else{
-                    throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
-                }
-
-                $methodName  = 'set' . $ucFirstParameter;
-                $hasRelation = strstr($methodName, '_id');
-                $methodName  = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
-
-                $value       = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
-
-                // we need to check some type of field in which we insert value and ew. adjust it
-                switch( $field_type ){
-                    case self::DOCTRINE_FIELD_MAPPING_TYPE_DATETIME:
-                        {
-                            $value = new \DateTime($value);
-                        }
-                    break;
-
-                    default:
-                        // nothing
-                }
-
-                $entity->$methodName($value);
-            }
+            $entity = $this->setEntityPropertiesFromArrayOfFieldsParameters($entity, $parameters);
 
             // check constraints now that the entity is updated
             $validation_result = $this->entity_validator->handleValidation($entity, EntityValidator::ACTION_UPDATE);
@@ -632,6 +574,53 @@ class Repositories extends AbstractController {
             }
 
         }
+    }
+
+    /**
+     * Will attempt to create entity for given class and array of parameters
+     * for each parameter - setter method is being searched for and if found sets the value of property,
+     * if property does not exist - exception is thrown/catched
+     * Not provided properties values (from parameters) are skipped which means that if field is required - will cause
+     * Doctrine Exception
+     *
+     * It's required that field for which You want to get entity has this example format in js ajax request:
+     * 'category': {
+     * "type": "entity",
+     * 'namespace': 'App\\Entity\\MyNotesCategories',
+     * 'id': $(noteCategoryId).val(),
+     * },
+     *
+     * @param string $entity_class
+     * @param array $parameters
+     * @return Response
+     */
+    public function createAndSaveEntityForEntityClassAndArrayOfParameters(string $entity_class, array $parameters): Response
+    {
+        /**
+         * Id cannot be served as parameter because new entity is being created, therefore the auto_increment
+         * must by applied by doctrine itself. Setting id is not allowed
+         */
+        if( key_exists("id", $parameters) ){
+            unset($parameters["id"]);
+        }
+
+        try{
+            $entity = new $entity_class();
+            $entity = $this->setEntityPropertiesFromArrayOfFieldsParameters($entity, $parameters);
+
+            $this->entity_manager->persist($entity);;
+            $this->entity_manager->flush();
+        }catch(Exception | TypeError $e ){
+            $message = $this->translator->translate('responses.repositories.recordUpdateFail');
+
+            $this->logger->critical($message, [
+                "exceptionMessage" => $e->getMessage(),
+                "exceptionCode"    => $e->getCode(),
+            ]);
+            return new Response($message, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new Response("", Response::HTTP_OK);
     }
 
     /**
@@ -1060,6 +1049,94 @@ class Repositories extends AbstractController {
             $this->entity_manager->flush();
         }
         $this->entity_manager->commit();
+
+        return $entity;
+    }
+
+    /**
+     * This method will set properties of entity for each parameter provided in array
+     *
+     * @param EntityInterface $entity
+     * @param array $parameters
+     * @return EntityInterface
+     * @throws MappingException
+     * @throws Exception
+     */
+    private function setEntityPropertiesFromArrayOfFieldsParameters(EntityInterface $entity, array $parameters): EntityInterface
+    {
+        foreach ($parameters as $parameter => $value) {
+
+            /**
+             * The only situation where this will be array is entity type parameter - does not need to be trimmed
+             */
+            if(!is_array($value)){
+                $value = trim($value);
+            }
+
+            if ($value === "true") {
+                $value = true;
+            }
+            if ($value === "false") {
+                $value = false;
+            }
+
+            $is_parameter_valid = $this->isParameterValid($parameter, $value, $entity);
+
+            if (!$is_parameter_valid) {
+                $response = $this->decideResponseForInvalidUpdateParameter($parameter, $value, $entity);
+                return $response;
+            }
+
+            if (is_array($value)) {
+                if (array_key_exists('type', $value) && $value['type'] == 'entity') {
+                    $value = $this->getEntity($value);
+                }
+            }
+            $record_class_name  = get_class($entity);
+            $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
+
+            $uc_first_parameter = ucfirst($parameter);
+
+            // this is needed to detect the type of field as doctrine sometimes want objects for it's internal mapping
+            if( $class_meta->hasField($parameter) ){
+                $field_mapping = $class_meta->getFieldMapping($parameter);
+                $field_type    = $field_mapping['type'];
+            }elseif( $class_meta->hasField($uc_first_parameter) ){
+                $field_mapping = $class_meta->getFieldMapping($uc_first_parameter);
+                $field_type    = $field_mapping['type'];
+            }elseif( $class_meta->hasAssociation($parameter)){
+                $field_type = self::FIELD_TYPE_ENTITY;
+            }elseif( $class_meta->hasAssociation($uc_first_parameter) ){
+                $field_type = self::FIELD_TYPE_ENTITY;
+            }else{
+                throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
+            }
+
+            $methodName  = 'set' . $uc_first_parameter;
+
+            if( !property_exists($record_class_name, $methodName) ){
+                $methodName = 'set' . ucfirst(Application::snakeCaseToCamelCaseConverter($parameter));
+            }
+
+            $hasRelation = strstr($methodName, '_id');
+            $methodName  = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
+
+            $value       = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
+
+            // we need to check some type of field in which we insert value and ew. adjust it
+            switch( $field_type ){
+                case self::DOCTRINE_FIELD_MAPPING_TYPE_DATETIME:
+                    {
+                        $value = new \DateTime($value);
+                    }
+                    break;
+
+                default:
+                    // nothing
+            }
+
+            $entity->$methodName($value);
+        }
 
         return $entity;
     }

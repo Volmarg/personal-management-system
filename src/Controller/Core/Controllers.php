@@ -22,6 +22,7 @@ use App\Controller\Modules\Job\MyJobAfterhoursController;
 use App\Controller\Modules\Job\MyJobHolidaysController;
 use App\Controller\Modules\Job\MyJobHolidaysPoolController;
 use App\Controller\Modules\Job\MyJobSettingsController;
+use App\Controller\Modules\ModuleDataController;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Modules\Passwords\MyPasswordsController;
@@ -305,6 +306,11 @@ class Controllers extends AbstractController {
      * @var MyPaymentsBillsItemsController $my_payments_bills_items_controller
      */
     private MyPaymentsBillsItemsController $my_payments_bills_items_controller;
+
+    /**
+     * @var ModuleDataController $module_data_controller
+     */
+    private ModuleDataController $module_data_controller;
 
     /**
      * @return MyIssuesController
@@ -668,6 +674,14 @@ class Controllers extends AbstractController {
         return $this->my_payments_bills_items_controller;
     }
 
+    /**
+     * @return ModuleDataController
+     */
+    public function getModuleDataController(): ModuleDataController
+    {
+        return $this->module_data_controller;
+    }
+
     public function __construct(
         AchievementController         $achievement_controller,
         ReportsController             $reports_controller,
@@ -716,6 +730,7 @@ class Controllers extends AbstractController {
         MyPaymentsProductsController  $my_payments_products_controller,
         MyPaymentsOwedController      $my_payments_owed_controller,
         MyPaymentsMonthlyController   $my_payments_monthly_controller,
+        ModuleDataController          $module_data_controller,
 
         MyRecurringPaymentsMonthlyController $my_recurring_payments_monthly_controller,
         MyPaymentsBillsItemsController       $my_payments_bills_items_controller
@@ -767,6 +782,7 @@ class Controllers extends AbstractController {
         $this->my_payments_products_controller  = $my_payments_products_controller;
         $this->my_payments_owed_controller      = $my_payments_owed_controller;
         $this->my_payments_monthly_controller   = $my_payments_monthly_controller;
+        $this->module_data_controller           = $module_data_controller;
 
         $this->my_recurring_payments_monthly_controller = $my_recurring_payments_monthly_controller;
         $this->my_payments_bills_items_controller       = $my_payments_bills_items_controller;

@@ -42,11 +42,12 @@ export default class EditViaTinyMceAction extends AbstractAction {
 
                 let tinyMceSelector         = $button.attr(_this.data.tinymceElementSelector);
                 let tinyMceInstanceSelector = $button.attr(_this.data.tinymceElementInstanceSelector);
+                let tinyMceWrapperClasses   = $button.attr(_this.data.tinymceWrapperClasses);
                 let tinyMceInstance         = TinyMce.getTinyMceInstanceForSelector(tinyMceInstanceSelector);
 
                 // prevent reinitializing and make it removable when closing edit
                 if( tinyMceInstance === null ){
-                    _this.tinyMce.init(tinyMceSelector);
+                    _this.tinyMce.init(tinyMceSelector, tinyMceWrapperClasses);
                 }else{
                     TinyMce.remove(tinyMceSelector);
                     _this.prismHighlight.highlightCode();
@@ -68,12 +69,12 @@ export default class EditViaTinyMceAction extends AbstractAction {
         let $allActionButtons = $('.edit-record-with-tiny-mce');
 
         $.each($allActionButtons, function(index, button){
-            let $button    = $(button);
-            let $accordion = $button.closest(_this.classes.accordion);
+            let $button         = $(button);
+            let $actionsWrapper = $button.closest(_this.classes.accordion + ', ' + _this.classes.actions);
 
             $button.off('click'); // prevent stacking - also keep in mind that might remove other events attached before
             $button.on('click', function(event){
-                _this.toggleActionIconsVisibility($accordion);
+                _this.toggleActionIconsVisibility($actionsWrapper);
             });
         });
 

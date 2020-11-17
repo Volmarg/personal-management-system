@@ -46,15 +46,17 @@
 
 {% if editWithTinyMce is defined and editWithTinyMce %}
     <span
-            class="edit-record-with-tiny-mce transform-to-tiny-mce"
+            class="edit-record-with-tiny-mce transform-to-tiny-mce pointer"
             data-tiny-mce-selector="{{ tinyMceSelector }}"
             data-tiny-mce-instance-selector="{% if tinyMceInstanceSelector is defined  %}{{ tinyMceInstanceSelector }}{% endif %}"
+            data-tiny-mce-wrapper-classes="{% if tinyMceWrapperClasses is defined  %}{{ tinyMceWrapperClasses }}{% endif %}"
             data-content-editable="false"
             data-toggle-popover="true"                                          {# popover attr #}
             data-html="true"                                                    {# popover attr #}
             data-trigger="hover"                                                {# popover attr #}
             data-content="{{ 'actions.popover.editWithTinyMce' | trans }}"      {# popover attr #}
             data-placement="top"                                                {# popover attr #}
+            style="{{ editWithTinyMce_style is defined ? editWithTinyMce_style : '' }}"
             {% if editWithTinyMce_attr is defined and editWithTinyMce_attr is not empty %}
                 {{ editWithTinyMce_attr }}
             {% endif %}
@@ -72,8 +74,8 @@
          data-content="{{ 'actions.popover.copy' | trans }}"       {# popover attr #}
          data-placement="top"                                      {# popover attr #}
          {% if copy_attr is defined and copy_attr is not empty %}
-        {{ copy_attr }}
-    {% endif %}
+            {{ copy_attr }}
+        {% endif %}
  >
     <i class="far far fa-copy"></i>
  </span>
@@ -109,9 +111,10 @@
         data-trigger="hover"                                      {# popover attr #}
         data-content="{{ 'actions.popover.save' | trans }}"       {# popover attr #}
         data-placement="top"                                      {# popover attr #}
+        style="{{ saveStyle is defined ? saveStyle : '' }}"
         {% if save_attr is defined and save_attr is not empty %}
-        {{ save_attr }}
-    {% endif %}
+            {{ save_attr }}
+        {% endif %}
     >
     {% if save_icon is not defined or save_icon is empty %}
         {% set save_icon =  'far fa-save' %}
@@ -131,8 +134,8 @@
         data-content="{{ 'actions.popover.fontawesome' | trans }}"      {# popover attr #}
         data-placement="top"                                            {# popover attr #}
         {% if fontawesome_attr is defined and fontawesome_attr is not empty %}
-        {{ fontawesome_attr }}
-    {% endif %}
+            {{ fontawesome_attr }}
+        {% endif %}
     >
     <i class="far fa-smile"></i>
     </span>
@@ -151,8 +154,8 @@
         data-content="{{ 'actions.popover.lockRecord' | trans }}"       {# popover attr #}
         data-placement="top"                                            {# popover attr #}
         {% if lock_record_attr is defined and lock_record_attr is not empty %}
-        {{ lock_record_attr }}
-    {% endif %}
+            {{ lock_record_attr }}
+        {% endif %}
     >
     <i class="fas fa-lock"></i>
     </span>

@@ -3,6 +3,7 @@
 namespace App\Twig\Core;
 
 use App\Controller\Utils\Utils as CoreUtils;
+use Symfony\Component\HttpFoundation\Request;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -13,6 +14,7 @@ class Utils extends AbstractExtension {
         return [
             new TwigFunction('roundDownToAny', [$this, 'roundDownToAny']),
             new TwigFunction('secondsToTimeFormat', [$this, 'secondsToTimeFormat']),
+            new TwigFunction('getCurrUri', [$this, 'getCurrUri']),
         ];
     }
 
@@ -38,5 +40,16 @@ class Utils extends AbstractExtension {
     public function secondsToTimeFormat(int $seconds): string
     {
        return CoreUtils::secondsToTimeFormat($seconds);
+    }
+
+    /**
+     * Returns current URI
+     *
+     * @return string
+     */
+    public function getCurrUri(): string
+    {
+        $request = Request::createFromGlobals();
+        return $request->getUri();
     }
 }

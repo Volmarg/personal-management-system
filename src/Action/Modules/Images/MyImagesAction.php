@@ -12,6 +12,8 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Action\Core\DialogsAction;
 use App\Controller\Core\Env;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
@@ -142,12 +144,21 @@ class MyImagesAction extends AbstractController {
         $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
 
         $is_main_dir = ( empty($decoded_subdirectory_path) );
+        $upload_path = Env::getImagesUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
+
+        $module_data = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
+            ModuleData::RECORD_TYPE_DIRECTORY,
+            ModulesController::MODULE_NAME_IMAGES,
+            $upload_path
+        );
 
         $data = [
             'ajax_render'                    => $ajax_render,
             'all_images'                     => $all_images,
             'subdirectory_path'              => $decoded_subdirectory_path,
             'files_count_in_tree'            => $files_count_in_tree,
+            'module_data'                    => $module_data,
+            'upload_path'                    => $upload_path,
             'upload_module_dir'              => MyImagesController::TARGET_UPLOAD_DIR,
             'is_main_dir'                    => $is_main_dir,
             'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
