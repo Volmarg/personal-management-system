@@ -25,7 +25,6 @@ class MyFilesAction extends AbstractController {
 
     const TWIG_TEMPLATE_MY_FILES          = 'modules/my-files/my-files.html.twig';
     const TWIG_TEMPLATE_MY_FILES_SETTINGS = 'modules/my-files/settings.html.twig';
-    const BASE_URL                        = 'my-files/dir';
 
     /**
      * @var Finder $finder

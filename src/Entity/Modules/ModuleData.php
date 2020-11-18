@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Index;
 
 /**
-
+ *
  * This entity contain overall data that can be supplied for given modules / entries
  * Should contain mostly things like descriptions, headers, etc.
  *

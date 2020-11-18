@@ -32,12 +32,14 @@ class ModuleDataAction extends AbstractController
     }
 
     /**
+     * todo: rename to create or update + change path/url in js entity + recompile
+     *
      * @Route("/module-data-update", name="module-data-update")
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
      */
-    public function update(Request $request): JsonResponse
+    public function createOrUpdate(Request $request): JsonResponse
     {
         $parameters = $request->request->all();
         $entity_id  = trim($parameters['id']);

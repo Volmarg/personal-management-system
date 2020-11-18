@@ -19,7 +19,7 @@
 
                 {% include "page-elements/components/editable-module-content.twig" with {
                     id                : (module_data is not null ? module_data.getId() : null),
-                    record_type       : "directory",
+                    record_type       : constant('App\\Entity\\Modules\\ModuleData::RECORD_TYPE_DIRECTORY'),
                     module            : constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_IMAGES'),
                     record_identifier : upload_path,
                     description       : (module_data is not null ? module_data.getDescription() : "")

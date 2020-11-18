@@ -2,15 +2,19 @@
 
 namespace App\Services\Files;
 
+use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
+use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Utils;
+use App\Entity\Modules\ModuleData;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * This service is responsible for handling files in terms of internal usage, like moving/renaming/etc...
@@ -63,12 +67,18 @@ class FilesHandler {
      */
     private $image_handler;
 
-    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger, ImageHandler $image_handler) {
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $application, DirectoriesHandler $directories_handler, LoggerInterface $logger, FileTagger $file_tagger, ImageHandler $image_handler, Controllers $controllers) {
         $this->application          = $application;
         $this->directories_handle   = $directories_handler;
         $this->image_handler        = $image_handler;
         $this->logger               = $logger;
         $this->file_tagger          = $file_tagger;
+        $this->controllers          = $controllers;
     }
 
     /**

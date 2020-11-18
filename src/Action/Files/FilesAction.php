@@ -8,6 +8,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Utils;
+use App\Entity\Modules\ModuleData;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\Files\DirectoriesHandler;
@@ -443,6 +444,10 @@ class FilesAction extends AbstractController {
 
                 $response = $this->directories_handler->moveDirectory($current_folder_path, $target_folder_path);
             }else{
+                /**
+                 * In this case files are copied between directories, some actions are skipped here, for example:
+                 * - moduleData is not being copied
+                 */
                 $response = $this->files_handler->copyData(
                     $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
                 );

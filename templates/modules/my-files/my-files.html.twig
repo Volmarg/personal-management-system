@@ -35,7 +35,7 @@
                             <h4 class="c-grey-900 mB-20 align-self-center">{{ 'files.label' | trans }}</h4>
                             {% include "page-elements/components/editable-module-content.twig" with {
                                 id                : (module_data is not null ? module_data.getId() : null),
-                                record_type       : "directory",
+                                record_type       : constant('App\\Entity\\Modules\\ModuleData::RECORD_TYPE_DIRECTORY'),
                                 module            : constant('App\\Controller\\Modules\\ModulesController::MODULE_NAME_FILES'),
                                 record_identifier : upload_path,
                                 description       : (module_data is not null ? module_data.getDescription() : "")

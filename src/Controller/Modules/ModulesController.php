@@ -2,6 +2,7 @@
 
 namespace App\Controller\Modules;
 
+use App\Controller\Core\Env;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Issues\MyIssue;
@@ -10,6 +11,7 @@ use App\Entity\Modules\Passwords\MyPasswords;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
+use App\Services\Files\FilesHandler;
 use App\Twig\Modules\Schedules\Schedules;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -91,5 +93,40 @@ class ModulesController extends AbstractController {
     public static function isModuleDefined(string $module_name): bool
     {
         return in_array($module_name, self::ALL_MODULES);
+    }
+
+    /**
+     * Returns the file based module name for full file path
+     *
+     * @param string $file_full_path
+     * @return string|null
+     */
+    public static function getUploadModuleNameForFileFullPath(string $file_full_path): ?string
+    {
+        $trimmed_file_full_path = FilesHandler::trimFirstAndLastSlash($file_full_path);
+
+        switch(true)
+        {
+            case preg_match("#^" . Env::getImagesUploadDir() . "#", $trimmed_file_full_path):
+            {
+                return self::MODULE_NAME_IMAGES;
+            }
+
+            case preg_match("#^" . Env::getFilesUploadDir() . "#", $trimmed_file_full_path):
+            {
+                return self::MODULE_NAME_FILES;
+            }
+
+            case preg_match("#^" . Env::getVideoUploadDir() . "#", $trimmed_file_full_path):
+            {
+                return self::MODULE_NAME_VIDEO;
+            }
+
+            default:
+            {
+                return null;
+            }
+        }
+
     }
 }

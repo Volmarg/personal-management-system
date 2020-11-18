@@ -6,8 +6,11 @@ use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
+use App\Controller\Modules\ModuleDataController;
+use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Utils;
+use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
@@ -59,13 +62,26 @@ class DirectoriesHandler {
      */
     private static LockedResourceController $locked_resource_controller;
 
-    public function __construct(Application $application, LoggerInterface $logger,  FileTagger $file_tagger, FilesTagsController $files_tags_controller, LockedResourceController $locked_resource_controller) {
+    /**
+     * @var ModuleDataController $module_data_controller
+     */
+    private ModuleDataController $module_data_controller;
+
+    public function __construct(
+        Application              $application,
+        LoggerInterface          $logger,
+        FileTagger               $file_tagger,
+        FilesTagsController      $files_tags_controller,
+        LockedResourceController $locked_resource_controller,
+        ModuleDataController     $module_data_controller
+    ) {
         self::$locked_resource_controller = $locked_resource_controller;
         $this->application                = $application;
         $this->logger                     = $logger;
         $this->finder                     = new Finder();
         $this->file_tagger                = $file_tagger;
         $this->files_tags_controller      = $files_tags_controller;
+        $this->module_data_controller     = $module_data_controller;
     }
 
     /**
@@ -156,12 +172,12 @@ class DirectoriesHandler {
     public function renameSubdirectoryByPostRequest(string $upload_type, Request $request) {
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME) ) {
-            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NEW_NAME;
+            $message = $this->application->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NEW_NAME;
             return new Response($message, 500);
         }
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME) ) {
-            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME;
+            $message = $this->application->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME;
             return new Response($message, 500);
         }
 
@@ -174,9 +190,9 @@ class DirectoriesHandler {
     }
 
     /**
-     * @param string $upload_type
-     * @param string $current_directory_path_in_module_upload_dir
-     * @param string $subdirectory_new_name
+     * @param string|null $upload_type
+     * @param string|null $current_directory_path_in_module_upload_dir
+     * @param string|null $subdirectory_new_name
      * @return Response
      * @throws \Exception
      */
@@ -265,6 +281,14 @@ class DirectoriesHandler {
         try{
             rename($current_directory_path, $new_directory_path);
             $this->file_tagger->updateFilePathByFolderPathChange($current_directory_path, $new_directory_path);
+
+            $module      = ModulesController::getUploadModuleNameForFileFullPath($current_directory_path);
+            $module_data = $this->module_data_controller->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $current_directory_path);
+
+            if( !is_null($module_data) ){
+                $this->module_data_controller->updateRecordIdentifier($module_data, $new_directory_path);
+            }
+
         }catch(\Exception $e){
             $message = $this->application->translator->translate('logs.directories.thereWasAnErrorWhileRenamingFolder');
             $this->logger->info($message, [
@@ -444,6 +468,12 @@ class DirectoriesHandler {
             rename($current_folder_path, $new_folder_path);
             $this->application->repositories->lockedResourceRepository->updatePath($current_folder_path, $new_folder_path);
 
+            $module      = ModulesController::getUploadModuleNameForFileFullPath($current_folder_path);
+            $module_data = $this->module_data_controller->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $current_folder_path);
+
+            if( !is_null($module_data) ){
+                $this->module_data_controller->updateRecordIdentifier($module_data, $new_folder_path);
+            }
         }catch(\Exception $e){
             return new Response($e->getMessage(), $e->getCode());
         }
