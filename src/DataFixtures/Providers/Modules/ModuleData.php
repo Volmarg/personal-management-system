@@ -15,7 +15,7 @@ class ModuleData
     const ALL_ENTRIES = [
         # Files
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-files/dir',
+            self::KEY_RECORD_IDENTIFIER => 'upload/files',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_FILES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -23,7 +23,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-files/dir/Documents',
+            self::KEY_RECORD_IDENTIFIER => 'upload/files/Documents',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_FILES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -31,7 +31,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-files/dir/Documents%252FManuals',
+            self::KEY_RECORD_IDENTIFIER => 'upload/files/Documents/Manuals',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_FILES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -39,7 +39,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-files/dir/Documents%252FTemplates',
+            self::KEY_RECORD_IDENTIFIER => 'upload/files/Documents/Templates',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_FILES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -49,7 +49,7 @@ class ModuleData
 
         # Videos
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-video/dir',
+            self::KEY_RECORD_IDENTIFIER => 'upload/videos',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_VIDEO,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -59,7 +59,7 @@ class ModuleData
 
         # Images
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-images/dir/system%252FcontactIcons',
+            self::KEY_RECORD_IDENTIFIER => 'upload/images/system/contactIcons',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_IMAGES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -67,7 +67,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-images/dir',
+            self::KEY_RECORD_IDENTIFIER => 'upload/images',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_IMAGES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -75,7 +75,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-images/dir/Funny',
+            self::KEY_RECORD_IDENTIFIER => 'upload/images/Funny',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_IMAGES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -83,7 +83,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-images/dir/Wallpapers%252FAnime',
+            self::KEY_RECORD_IDENTIFIER => 'upload/images/Wallpapers/Anime',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_IMAGES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -91,7 +91,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'my-images/dir/Wallpapers%252FLandscapes',
+            self::KEY_RECORD_IDENTIFIER => 'upload/images/Wallpapers/Landscapes',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_IMAGES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '

@@ -39,7 +39,8 @@ class FileUploadController extends AbstractController {
     const KEY_EXTENSION     = 'fileExtension';
     const KEY_UPLOAD_TABLE  = 'upload_table';
 
-    const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH         = "^[\/]?upload\/(?<" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME . ">[a-zA-z]+)\/";
+    // info: might cause issue upon creating subdirectory named `upload`
+    const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH         = "[\/]?upload\/(?<" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME . ">[a-zA-z]+)\/";
     const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME = "DIR_NAME";
 
     const MODULES_UPLOAD_DIRS = [
