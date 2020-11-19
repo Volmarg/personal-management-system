@@ -32,9 +32,7 @@ class ModuleDataAction extends AbstractController
     }
 
     /**
-     * todo: rename to create or update + change path/url in js entity + recompile
-     *
-     * @Route("/module-data-update", name="module-data-update")
+     * @Route("/module-data-create-or-update", name="module-data-create-or-update")
      * @param Request $request
      * @return JsonResponse
      * @throws Exception

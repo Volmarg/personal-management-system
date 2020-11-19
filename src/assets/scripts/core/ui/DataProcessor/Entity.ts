@@ -2008,7 +2008,7 @@ export default class Entity extends AbstractDataProcessor {
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.ModuleData.processorName);
             let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.ModuleData.processorName);
 
-            let url      = Ajax.getUrlForPathName("module-data-update");
+            let url      = Ajax.getUrlForPathName("module-data-create-or-update");
             let ajaxData = {
                 'id'                : id,
                 'record_type'       : recordType,
