@@ -15,7 +15,7 @@ class ModuleData
     const ALL_ENTRIES = [
         # Files
         [
-            self::KEY_RECORD_IDENTIFIER => 'upload/files',
+            self::KEY_RECORD_IDENTIFIER => 'upload/files/',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_FILES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -49,7 +49,7 @@ class ModuleData
 
         # Videos
         [
-            self::KEY_RECORD_IDENTIFIER => 'upload/videos',
+            self::KEY_RECORD_IDENTIFIER => 'upload/videos/',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_VIDEO,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
@@ -67,7 +67,7 @@ class ModuleData
             ',
         ],
         [
-            self::KEY_RECORD_IDENTIFIER => 'upload/images',
+            self::KEY_RECORD_IDENTIFIER => 'upload/images/',
             self::KEY_MODULE            => ModulesController::MODULE_NAME_IMAGES,
             self::KEY_RECORD_TYPE       => ModuleDataEntity::RECORD_TYPE_DIRECTORY,
             self::KEY_DESCRIPTION       => '
