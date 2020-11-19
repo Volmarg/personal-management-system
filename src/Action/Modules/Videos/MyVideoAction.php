@@ -133,7 +133,7 @@ class MyVideoAction extends AbstractController {
         $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
 
         $is_main_dir = ( empty($decoded_subdirectory_path) );
-        $upload_path = Env::getImagesUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
+        $upload_path = Env::getVideoUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
 
         $module_data = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
             ModuleData::RECORD_TYPE_DIRECTORY,
