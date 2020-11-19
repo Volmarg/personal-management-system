@@ -23,7 +23,7 @@ final class Version20201115052559 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('
-            CREATE TABLE module_data (
+            CREATE TABLE IF NOT EXISTS module_data (
                 id INT AUTO_INCREMENT NOT NULL, 
                 record_type VARCHAR(50) NOT NULL, 
                 module VARCHAR(75) NOT NULL, 
