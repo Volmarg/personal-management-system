@@ -1,7 +1,27 @@
 import BackendStructureLoader   from "../ui/BackendStructure/BackendStructureLoader";
 import Ajax                     from "../ajax/Ajax";
+import ArrayUtils               from "./ArrayUtils";
+import StringUtils from "./StringUtils";
 
 export default class DomElements {
+
+    /**
+     *@type Object
+     */
+    private dataAttributes = {
+        hideDomElement                         : 'data-hide-dom-element',
+        hideDomElementTargetSelector           : 'data-hide-dom-element-target-selector',
+        hideDomElementForOptionsValues         : 'data-hide-dom-element-for-options-values',
+        hideDomElementForOptionsParentSelector : 'data-hide-dom-element-target-parent-selector'
+    };
+
+    /**
+     * @description will initialize logic for dom elements
+     */
+    public init(): void
+    {
+        this.showDomElementForSelectedOptionInSelect();
+    }
 
     /**
      * @description Checks if there are existing elements for domElements selected with $();
@@ -87,4 +107,65 @@ export default class DomElements {
         let parentToRemove = $($element).closest(selector);
         parentToRemove.remove();
     }
+
+    /**
+     * @description this function will show given DOM element (by target selector) only when the target select
+     *              has explicit options selected
+     */
+    private showDomElementForSelectedOptionInSelect()
+    {
+        let $allSelectorsWithHidingLogic = $("[" + this.dataAttributes.hideDomElement + "]");
+        let _this                        = this;
+
+        $.each($allSelectorsWithHidingLogic, (index, element) => {
+            let $element = $(element);
+
+            $element.on('change', function(event){
+                let $changedSelectElement = $(event.currentTarget);
+                let selectedOptionValue   = $changedSelectElement.val() as string;
+
+                try {
+                    var targetDomElementSelectorToHide       = $changedSelectElement.attr(_this.dataAttributes.hideDomElementTargetSelector);
+                    var targetDomElementParentSelectorToHide = $changedSelectElement.attr(_this.dataAttributes.hideDomElementForOptionsParentSelector);
+                    var $targetDomElementToHide              = $(targetDomElementSelectorToHide);
+
+                    var optionsValuesToHideDomElementFor = JSON.parse($changedSelectElement.attr(_this.dataAttributes.hideDomElementForOptionsValues));
+                }catch(Exception){
+                    throw {
+                        "message"   : "Could not read/parse data attributes for showing dom elements depending on selected option",
+                        "exception" : Exception
+                    }
+                }
+
+                if( 0 === optionsValuesToHideDomElementFor.length ){
+                    throw{
+                        "message": "No options were provided for which dom element should be shown"
+                    }
+                }
+
+                // if parent selector is defined then closest parent of target element will be searched and that element will be toggled
+                if( !StringUtils.isEmptyString(targetDomElementParentSelectorToHide) ){
+                    $targetDomElementToHide = $targetDomElementToHide.closest(targetDomElementParentSelectorToHide)
+                }
+
+                if( !DomElements.doElementsExists($targetDomElementToHide) ){
+                    throw{
+                        "message"  : "No dom element was found for given selector",
+                        "selector" : targetDomElementSelectorToHide
+                    }
+                }
+
+                if( ArrayUtils.inArray(selectedOptionValue, optionsValuesToHideDomElementFor) ){
+                    $targetDomElementToHide.show();
+                }else{
+                    $targetDomElementToHide.hide();
+                }
+
+            })
+        })
+
+        // this trigger is required to initially hide/show DOM Elements
+        $allSelectorsWithHidingLogic.trigger('change');
+    }
+
 }

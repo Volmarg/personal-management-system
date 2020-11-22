@@ -4,6 +4,8 @@ namespace App\Form\Modules\Todo;
 
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Utils\Utils;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
@@ -55,6 +57,11 @@ class MyTodoType extends AbstractType
             $is_module_predefined = false;
         }
 
+        $display_on_dashboard_id                     = Utils::fieldIdForSymfonyForm($options['data_class'], MyTodo::FIELD_DISPLAY_ON_DASHBOARD);
+        $toggle_display_on_dashboard_for_modules_ids = json_encode([
+            $this->controllers->getModuleController()->getOneByName(ModulesController::MODULE_NAME_GOALS)->getId()
+        ]);
+
         $builder
             ->add(MyTodo::FIELD_NAME, null, [
                 'label' => $this->app->translator->translate('forms.MyTodoType.name'),
@@ -74,6 +81,10 @@ class MyTodoType extends AbstractType
                     'class'                                          => 'selectpicker',
                     'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
                     'data-append-classes-to-bootstrap-select-button' => 'm-0',
+                    'data-hide-dom-element'                          => '',
+                    'data-hide-dom-element-target-selector'          => '#' . $display_on_dashboard_id,
+                    'data-hide-dom-element-target-parent-selector'   => '.row',
+                    'data-hide-dom-element-for-options-values'       => $toggle_display_on_dashboard_for_modules_ids
                 ]
             ])
             ->add(MyTodo::FIELD_DISPLAY_ON_DASHBOARD,RoundcheckboxType::class,[

@@ -88,6 +88,7 @@
                                                 {% if
                                                         constant("App\\Controller\\Modules\\ModulesController::MODULE_NAME_ISSUES") == module.name
                                                     and todo.module     is not null
+                                                    and todo.myIssue    is not null
                                                     and module.name     == todo.module.name
                                                     and todo.myIssue.id == entity_data_dto.getId()
                                                 %}

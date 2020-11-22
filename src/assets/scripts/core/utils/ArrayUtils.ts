@@ -21,7 +21,20 @@ export default class ArrayUtils {
      */
     public static inArray(needle: string|number|boolean, haystack: Array<any>): boolean
     {
-       return $.inArray(needle, haystack) !== -1;
+        let inArray = ($.inArray(needle, haystack) !== -1);
+
+        if(
+                !inArray
+            &&  !Number.isNaN(needle)
+            &&  ("string" === typeof needle)
+        ){
+
+            let numericNeedle = parseInt(needle);
+            inArray           = ($.inArray(numericNeedle, haystack) !== -1);
+
+        }
+
+       return inArray;
     }
 
     /**

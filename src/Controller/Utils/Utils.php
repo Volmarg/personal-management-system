@@ -160,6 +160,18 @@ class Utils extends AbstractController {
     }
 
     /**
+     * Will return the string formatted in the way that symfony does it for fields
+     *
+     * @param string $data_class - the class used in `configureOptions` method of Form
+     * @param string $field_name
+     * @return string
+     */
+    public static function fieldIdForSymfonyForm(string $data_class, string $field_name): string
+    {
+        return self::formClassToFormPrefix($data_class) . '_' . $field_name;
+    }
+
+    /**
      * @return string
      */
     public static function randomHexColor() {

@@ -84,6 +84,7 @@ export default class Initializer {
         let widgetsDialogs         = new WidgetsDialogs();
         let modal                  = new Modal();
         let dialog                 = new Dialog();
+        let domElements            = new DomElements();
 
         // modules
         let todoChecklist       = new TodoChecklist();
@@ -123,6 +124,8 @@ export default class Initializer {
         monthlyPayments.init();
         uploadBasedModules.init();
         JsColor.init();
+
+        domElements.init();
 
         modal.init();
         dialog.init();
