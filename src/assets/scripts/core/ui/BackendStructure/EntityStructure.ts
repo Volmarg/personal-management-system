@@ -32,21 +32,21 @@ export default class EntityStructure {
         }
     };
 
-    public static MyGoals: BackendStructureInterface = {
-        getCallback(): Function {
-            return ()=>{};
-        },
-        getNamespace: function() :string{
-            return 'App\\Entity\\Modules\\Goals\\MyGoals';
-        }
-    };
-
     public static MyTodo: BackendStructureInterface = {
         getCallback(): Function {
             return ()=>{};
         },
         getNamespace: function() :string{
             return 'App\\Entity\\Modules\\Todo\\MyTodo';
+        }
+    };
+
+    public static MyIssue: BackendStructureInterface = {
+        getCallback(): Function {
+            return ()=>{};
+        },
+        getNamespace: function() :string{
+            return 'App\\Entity\\Modules\\Issues\\MyIssue';
         }
     };
 

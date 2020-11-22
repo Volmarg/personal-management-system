@@ -3,6 +3,8 @@ import ArrayUtils   from "./ArrayUtils";
 
 export default class DomAttributes {
 
+    static readonly ATTRIBUTE_DISABLED = "disabled";
+
     public static actions = {
         set     : "set",
         unset   : "unset"
@@ -223,12 +225,12 @@ export default class DomAttributes {
     };
 
     /**
-     * @description Will check if checkbox is checked
+     * @description Will check if `disabled` class is present on element
      *
      * @param element {object}
      * @return {boolean}
      */
-    public static isDisabled(element): boolean
+    public static isDisabledClass(element): boolean
     {
         let isDisabled = $(element).hasClass('disabled');
         return isDisabled;
@@ -239,7 +241,7 @@ export default class DomAttributes {
      *
      * @param element {object}
      */
-    public static setDisabled(element): void
+    public static setDisabledClass(element): void
     {
         $(element).addClass("disabled");
     };
@@ -249,9 +251,41 @@ export default class DomAttributes {
      *
      * @param element {object}
      */
-    public static unsetDisabled(element): void
+    public static unsetDisabledClass(element): void
     {
         $(element).removeClass("disabled");
+    };
+
+    /**
+     * @description Will check if element has present/set `disabled property
+     *
+     * @param element {object}
+     * @return {boolean}
+     */
+    public static isDisabledAttribute(element: JQuery<HTMLElement>): boolean
+    {
+        let isDisabled = (true == $(element).prop(DomAttributes.ATTRIBUTE_DISABLED));
+        return isDisabled;
+    };
+
+    /**
+     * @description Will set `disabled` property
+     *
+     * @param element {object}
+     */
+    public static setDisabledAttribute(element: JQuery<HTMLElement>): void
+    {
+        $(element).attr(DomAttributes.ATTRIBUTE_DISABLED, DomAttributes.ATTRIBUTE_DISABLED);
+    };
+
+    /**
+     * @description Will unset `disabled` property
+     *
+     * @param element {object}
+     */
+    public static unsetDisabledAttribute(element: JQuery<HTMLElement>): void
+    {
+        $(element).removeAttr(DomAttributes.ATTRIBUTE_DISABLED);
     };
 
     /**

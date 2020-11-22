@@ -1852,6 +1852,7 @@ export default class Entity extends AbstractDataProcessor {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;
         },
+        // todo: check if its used at all and remove, the url is invalid anyway...
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id                          = $($baseElement).find('.id').html();
             let name                        = $($baseElement).find('.name').html();

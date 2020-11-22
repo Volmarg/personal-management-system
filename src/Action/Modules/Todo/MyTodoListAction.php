@@ -5,6 +5,7 @@ namespace App\Action\Modules\Todo;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use App\Entity\Modules\Todo\MyTodo;
 use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -17,8 +18,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MyTodoListAction extends AbstractController {
 
-    const KEY_TODO = "myTodo";
-    const KEY_ID   = "id";
+    const KEY_TODO        = "myTodo";
+    const KEY_MODULE_NAME = "moduleName";
+    const KEY_ID          = "id";
 
     /**
      * @var Application
@@ -55,65 +57,69 @@ class MyTodoListAction extends AbstractController {
     }
 
     /**
-     * @Route("/admin/todo/update/",name="my-todo-update")
+     * Called when updating the @see MyTodo
+     *
+     * @Route("/admin/todo/update", name="my-todo-update")
      * @param Request $request
      * @return JsonResponse
-     * @throws MappingException
      * @throws Exception
      */
     public function updateTodo(Request $request): JsonResponse
     {
-        if( !$request->request->has(self::KEY_ID) )
-        {
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ID;
-            $this->app->logger->error("Request is missing `id` key");
-            return AjaxResponse::buildJsonResponseForAjaxCall(400, $message);
-        }
-
-        if( !$request->request->has(self::KEY_TODO) )
-        {
+        if( !$request->request->has(self::KEY_ID) ){
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_TODO;
             $this->app->logger->error("Request is missing `todo` key");
-            return AjaxResponse::buildJsonResponseForAjaxCall(400, $message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
         $ajax_response = new AjaxResponse();
+        $message       = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
         $code          = Response::HTTP_OK;
 
         $parameters = $request->request->all();
 
+        $module_name = $request->request->get(self::KEY_MODULE_NAME, null);
+        $todo_id     = $request->request->get(self::KEY_ID);
+
         try{
-            $element_id = $parameters[self::KEY_ID];
-            $todo_id    = $parameters[self::KEY_TODO][self::KEY_ID];
+            /**
+             * Some parameters are passed only to build final entity, must be unset before passing to repository update
+             */
+            if( array_key_exists(self::KEY_MODULE_NAME, $parameters) ){
+                unset($parameters[self::KEY_MODULE_NAME]);
+            }
 
-            $entity = $this->controllers->getMyTodoElementController()->findOneById($element_id);
+            $module_entity = null;
+            if( !empty($module_name) ){
+                $module_entity = $this->controllers->getModuleController()->getOneByName($module_name);
 
-            $this->app->repositories->update($parameters, $entity);
+                if( empty($module_entity) ){
+                    $message = $this->app->translator->translate('responses.todo.moduleWithSuchNameDoesNotExist' . $module_name);
+
+                    $this->app->logger->critical($message);;
+                    return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+                }
+            }
+
             $todo = $this->controllers->getMyTodoController()->findOneById($todo_id);
+            $todo->setModule($module_entity);
 
-            $this->app->em->persist($todo);
-            $this->app->em->flush();
+            $update_response = $this->app->repositories->update($parameters, $todo);
 
-            $are_all_todo_done = $this->controllers->getMyTodoController()->areAllElementsDone($todo_id);
-
-            if($are_all_todo_done){
-                $message = $this->app->translator->translate('responses.todo.allTodoElementsAreDoneTodoIsCompleted');
-                $todo->setCompleted(true);
-            }else{
-                $message = $this->app->translator->translate('responses.todo.todoElementStatusHasBeenChanged');
-                $todo->setCompleted(false);
+            if( Response::HTTP_OK != $update_response->getStatusCode() ){
+                return AjaxResponse::initializeFromResponse($update_response)->buildJsonResponse();
             }
 
         }catch(Exception $e){
-            $message = $this->app->translator->translate('responses.todo.todoElementStatusCouldNotBeenChanged');
+            $message = $this->app->translator->translate('responses.todo.elementCouldNotBeUpdated'); //todo: add trans.
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $this->app->logExceptionWasThrown($e);
         }
 
         $ajax_response->setMessage($message);
         $ajax_response->setCode($code);
 
-        return $ajax_response->buildJsonResponse();
-
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
     /**
@@ -128,13 +134,16 @@ class MyTodoListAction extends AbstractController {
         $todo_element_form = $this->app->forms->todoElementForm();
         $all_modules       = $this->controllers->getModuleController()->getAllActive();
 
+        $all_relatable_entities_data_dtos_for_modules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
+
         $data = [
-            'all_grouped_todo'               => $all_grouped_todo,
-            'todo_form'                      => $todo_form,
-            'todo_element_form'              => $todo_element_form, // direct object must be passed to render form multiple time
-            'ajax_render'                    => $ajax_render,
-            'all_modules'                    => $all_modules,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'all_grouped_todo'                             => $all_grouped_todo,
+            'todo_form'                                    => $todo_form,
+            'todo_element_form'                            => $todo_element_form, // direct object must be passed to render form multiple time
+            'ajax_render'                                  => $ajax_render,
+            'all_modules'                                  => $all_modules,
+            'all_relatable_entities_data_dtos_for_modules' => $all_relatable_entities_data_dtos_for_modules,
+            'skip_rewriting_twig_vars_to_js'               => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-todo/list.html.twig', $data);

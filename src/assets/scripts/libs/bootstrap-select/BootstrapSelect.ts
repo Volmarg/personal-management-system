@@ -42,6 +42,7 @@ export default class BootstrapSelect
 
             $.each($allSelectpickers, (index, element) => {
                 let $element = $(element);
+                BootstrapSelect.handleDisabledProperty($element);
                 BootstrapSelect.applyClassesToElement($element);
                 BootstrapSelect.afterInit($element);
             })
@@ -70,6 +71,7 @@ export default class BootstrapSelect
         //@ts-ignore
         $element.selectpicker('refresh');
 
+        BootstrapSelect.handleDisabledProperty($element);
         BootstrapSelect.applyClassesToElement($element);
         BootstrapSelect.afterInit($element);
     }
@@ -114,5 +116,19 @@ export default class BootstrapSelect
         }
         // @ts-ignore
         $element.selectpicker('setStyle', classesToAdd);
+    }
+
+    /**
+     * @description This will set the disabled property for bootstrapselect if the select is disabled
+     *              this is required due to the fact that the way bootstrapselect that is doing this
+     *              is not fully correct, it does set the disabled state for `div` but this causes
+     *              issues when toggling programmatically
+     */
+    private static handleDisabledProperty($element: JQuery<HTMLElement>): void
+    {
+        // the confusing part to understand here is that Select in DOM uses `attr` but bootstrapselect uses `prop`
+        if ( DomAttributes.isDisabledAttribute($element) ) {
+            $element.prop('disabled', true)
+        }
     }
 }

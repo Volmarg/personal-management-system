@@ -3,6 +3,7 @@
 namespace App\Controller\Modules;
 
 use App\Controller\Core\Env;
+use App\Controller\System\ModuleController;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Issues\MyIssue;
@@ -15,6 +16,12 @@ use App\Services\Files\FilesHandler;
 use App\Twig\Modules\Schedules\Schedules;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * Todo: merge with @see ModuleController
+ *
+ * Class ModulesController
+ * @package App\Controller\Modules
+ */
 class ModulesController extends AbstractController {
 
     const MODULE_NAME_ACHIEVEMENTS              = "Achievements";

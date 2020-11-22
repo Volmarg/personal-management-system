@@ -220,7 +220,10 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
 
         // set (or unset) the owning side of the relation if necessary
         $newTodo = null === $myIssue ? null : $this;
-        if ($myIssue->getTodo() !== $newTodo) {
+        if (
+                !is_null($myIssue)
+            &&  $myIssue->getTodo() !== $newTodo
+        ) {
             $myIssue->setTodo($newTodo);
         }
 

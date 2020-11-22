@@ -1,8 +1,8 @@
 import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import Ajax             from "../../core/ajax/Ajax";
 import DomElements      from "../../core/utils/DomElements";
-import AjaxResponseDto from "../../DTO/AjaxResponseDto";
-import DomAttributes from "../../core/utils/DomAttributes";
+import AjaxResponseDto  from "../../DTO/AjaxResponseDto";
+import DomAttributes    from "../../core/utils/DomAttributes";
 
 export default class TodoChecklist {
 
@@ -53,8 +53,7 @@ export default class TodoChecklist {
                 let clickedCheckbox = event.target;
 
                 //deny changing anything if any of the contents is being edited
-                if( DomAttributes.isContentEditable($(clickedCheckbox).closest('.checkbox'), '.toggle-content-editable') )
-                {
+                if( DomAttributes.isContentEditable($(clickedCheckbox).closest('.checkbox'), '.toggle-content-editable') ){
                     event.preventDefault();
                     return;
                 }
@@ -94,7 +93,7 @@ export default class TodoChecklist {
 
                 $.ajax({
                     method  : Ajax.REQUEST_TYPE_POST,
-                    url     : '/admin/todo/update/',
+                    url     : '/admin/todo/element/update/',
                     data    : requestData,
                 }).always((data) => {
 

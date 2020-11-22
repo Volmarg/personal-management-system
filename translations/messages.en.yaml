@@ -52,7 +52,7 @@ forms:
     MyShoppingPlansType: { labels: { name: Name, information: Informatipn, example: Example } }
     MoveSingleFileType: { labels: { targetUploadModuleDir: 'Target module', targetUploadSubdirectoryInModuleDir: 'Target folder' } }
     UpdateTagsType: { labels: { tags: Tags } }
-    UploadSubdirectoryCopyDataType: { labels: { currentUploadModuleDir: 'Upload module', currentSubdirectoryInModuleUploadDir: 'Target folder', targetUploadModuleDir: 'Upload module', targetSubdirectoryInModuleUploadDir: 'Target folder', moveInsteadOfCopying: 'Move whole folder instead of copying files' } }
+    UploadSubdirectoryCopyDataType: { labels: { currentUploadModuleDir: 'Upload module', currentSubdirectoryInModuleUploadDir: 'Target folder', targetUploadModuleDir: 'Upload module', targetSubdirectoryInModuleUploadDir: 'Target folder', moveInsteadOfCopying: 'Move entire folder instead of copying files' } }
     UploadSubdirectoryCreateType: { labels: { uploadModuleDir: 'Upload module', subdirectoryName: 'Folder name', subdirectoryInModuleUploadDir: 'Parent folder' }, placeholders: { subdirectoryName: 'Enter name of the new folder' } }
     UploadSubdirectoryRenameType: { labels: { uploadModuleDir: 'Upload module', subdirectoryNewName: 'Folder new name', subdirectoryInModuleUploadDir: 'Target folder' }, placeholders: { subdirectoryNewName: 'Enter new name for selected folder' } }
     UploadFormType: { labels: { subdirectory: Subdirectory, file: File, uploadModuleDir: 'Upload module' } }
@@ -102,7 +102,7 @@ goals:
     payments: { timeElapsed: 'time elapsed', daysLeft: 'days left', days: days, paymentStartsIn: 'Payment starts in' }
     settings: { headers: { addGoal: 'Add goal', addSubgoal: 'Add subgoal', addPaymentGoal: 'Add payment goal' }, goalsSection: { table: { name: Name, description: Description, displayOnDashboard: 'Display on Dashboard' } }, subGoalsSection: { table: { name: Name, goal: Goal } }, goalsPaymentsSection: { table: { name: Name, collectionStartDate: 'Collection start date', deadline: Deadline, moneyGoal: 'Money goal', moneyCollected: 'Money collected', displayOnDashboard: 'Display on dashboard' } } }
 todo:
-    list: { headers: { label: 'Todo list', addTodo: 'Add todo', addElement: 'Add element' }, relatedModules: { issues: { singular: Issue } }, info: { notRelatedToAnySpecificRecord: 'Not related to any specific record', description: Description } }
+    list: { headers: { label: 'Todo list', addTodo: 'Add todo', addElement: 'Add element' }, relatedModules: { issues: { singular: Issue } }, info: { notRelatedToAnySpecificRecord: 'Not related to any specific record', description: Description }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     widget: { add: { label: Add } }
 notes:
     create: { headers: { newNote: 'Add new note' } }
@@ -202,7 +202,7 @@ responses:
     notes: { couldNotFindNoteForId: 'Could not find note for id: ' }
     menu: { nodeHasBeenRendered: 'Menu has been rendered', menuNodeWithNameWasNotFound: 'Menu node with given name was not found', thisModuleNameIsNotMappedToMenuNodePath: 'This module name is not mapped to menu node path: ' }
     lockResource: { invalidPassword: 'Invalid password', passwordIsMissing: 'Password is missing', youAreNotAllowedToSeeThisResource: 'You are not allowed to see this resource', passwordHasBeenCreated: 'Password has been created', passwordHasBeenUpdated: 'Password has been updated', failedToSetLockPassword: 'Failed to set lock password' }
-    todo: { todoElementStatusHasBeenChanged: 'Todo element status has been changed', todoElementStatusCouldNotBeenChanged: 'Todo element status could not been changed', allTodoElementsAreDoneTodoIsCompleted: 'All todo elements are done, todo has been marked as completed', todoElementUncheckedTodoNoLongerCompleted: 'You have unchecked one of todo elements therefore todo status has been marked as not completed' }
+    todo: { todoElementStatusHasBeenChanged: 'Todo element status has been changed', todoElementStatusCouldNotBeenChanged: 'Todo element status could not been changed', allTodoElementsAreDoneTodoIsCompleted: 'All todo elements are done, todo has been marked as completed', todoElementUncheckedTodoNoLongerCompleted: 'You have unchecked one of todo elements therefore todo status has been marked as not completed', moduleWithSuchNameDoesNotExist: 'Module witch such name does not exist: ' }
 login:
     header: { pageName: 'Personal Management System', login: Login }
     labels: { username: 'Username:', password: 'Password:', remember: 'Remember Me' }
@@ -241,5 +241,6 @@ buttons:
     edit: Edit
     delete: Delete
     saveChanges: 'Save changes'
+    save: Save
     submit: Submit
     toggle: { 'yes': 'Yes', 'no': 'No', 'on': 'On', 'off': 'Off' }

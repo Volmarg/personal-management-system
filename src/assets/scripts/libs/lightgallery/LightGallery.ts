@@ -288,7 +288,7 @@ export default class LightGallery {
 
                 $.each(enabledElements, (index, element) => {
                     //@ts-ignore
-                    DomAttributes.unsetDisabled($(element));
+                    DomAttributes.unsetDisabledClass($(element));
                 });
 
                 if( $(galleryMainWrapper).hasClass('blurred') ){
@@ -578,11 +578,11 @@ export default class LightGallery {
             let massActionButtons = $(_this.selectors.classes.massActionButtons);
 
             if( DomElements.doElementsExists(checkedCheckboxes) ){
-                DomAttributes.unsetDisabled(massActionButtons);
+                DomAttributes.unsetDisabledClass(massActionButtons);
                 return false;
             }
 
-            DomAttributes.setDisabled(massActionButtons);
+            DomAttributes.setDisabledClass(massActionButtons);
         })
 
     };

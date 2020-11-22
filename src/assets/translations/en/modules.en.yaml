@@ -50,6 +50,8 @@ todo:
     info:
       notRelatedToAnySpecificRecord: Not related to any specific record
       description: Description
+    ajaxCallMessages:
+      dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"
   widget:
     add:
       label: Add

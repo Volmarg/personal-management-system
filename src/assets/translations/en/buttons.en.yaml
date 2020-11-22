@@ -3,6 +3,7 @@ buttons:
   edit: Edit
   delete: Delete
   saveChanges: Save changes
+  save: Save
   submit: Submit
   toggle:
     yes: Yes

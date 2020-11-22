@@ -47,6 +47,7 @@ import VideoJs                      from "./libs/video-js/VideoJs";
 import MassActions                  from "./core/ui/Actions/MassActions";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
+import TodoModal from "./modules/Todo/TodoModal";
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
  *              that might eventually be needed on given page is being triggered or reinitialized
@@ -86,6 +87,7 @@ export default class Initializer {
 
         // modules
         let todoChecklist       = new TodoChecklist();
+        let todoModal           = new TodoModal();
         let filesTransfer       = new FilesTransfer();
         let monthlyPayments     = new MonthlyPayments();
         let uploadBasedModules  = new UploadBasedModules();
@@ -104,6 +106,7 @@ export default class Initializer {
         loadingBar.init();
         tinymce.init();
         todoChecklist.init();
+        todoModal.init();
         lightGallery.init();
         shuffler.init();
         bootstrapToogle.init();

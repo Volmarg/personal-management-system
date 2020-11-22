@@ -3,7 +3,10 @@
 namespace App\Controller\Modules\Todo;
 
 use App\Controller\Core\Application;
+use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\ModuleController;
+use App\DTO\EntityDataDto;
 use App\Entity\Interfaces\Relational\RelatesToMyTodoInterface;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Services\Core\Logger;
@@ -20,9 +23,21 @@ class MyTodoController extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app)
+    /**
+     * @var ModuleController $module_controller
+     */
+    private ModuleController $module_controller;
+
+    /**
+     * @var MyIssuesController $issues_controller
+     */
+    private MyIssuesController $issues_controller;
+
+    public function __construct(Application $app, ModuleController $module_controller, MyIssuesController $issues_controller)
     {
-        $this->app = $app;
+        $this->app               = $app;
+        $this->issues_controller = $issues_controller;
+        $this->module_controller = $module_controller;
     }
 
     /**
@@ -172,6 +187,43 @@ class MyTodoController extends AbstractController {
     public function findOneById(int $id): ?MyTodo
     {
         return $this->app->repositories->myTodoRepository->findOneById($id);
+    }
+
+    /**
+     * Will return all entities which can relate with `todo` for given modules
+     * @return EntityDataDto[]
+     */
+    public function getAllRelatableEntitiesDataDtosForModulesNames(): array
+    {
+        $all_modules                          = $this->module_controller->getAllActive();
+        $relatable_entities_for_modules_names = [];
+
+        foreach( $all_modules as $module ){
+            $module_name = $module->getName();
+
+            switch( $module_name ){
+                case ModulesController::MODULE_NAME_ISSUES:
+                {
+                    $all_not_deleted_issues = $this->issues_controller->findAllNotDeletedAndNotResolved();
+
+                    foreach( $all_not_deleted_issues as $issue_entity ){
+                        $entity_data_dto = new EntityDataDto();
+                        $entity_data_dto->setId($issue_entity->getId());
+                        $entity_data_dto->setName($issue_entity->getName());
+
+                        if( !empty($issue_entity->getTodo()) ){
+                            $entity_data_dto->setActive(false);;
+                        }
+
+                        $relatable_entities_for_modules_names[$module_name][] = $entity_data_dto;
+                    }
+                }
+                break;
+            }
+
+        }
+
+        return $relatable_entities_for_modules_names;
     }
 
 }

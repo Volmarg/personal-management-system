@@ -52,7 +52,7 @@ export default class MassActions {
      */
     public enableAllMassActions(): void {
         let $allElements = this.getAllMassActionButtons();
-        DomAttributes.unsetDisabled($allElements);
+        DomAttributes.unsetDisabledClass($allElements);
     }
 
     /**
@@ -60,7 +60,7 @@ export default class MassActions {
      */
     public disableAllMassActions(): void {
         let $allElements = this.getAllMassActionButtons();
-        DomAttributes.setDisabled($allElements);
+        DomAttributes.setDisabledClass($allElements);
     }
 
     /**

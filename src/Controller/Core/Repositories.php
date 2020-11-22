@@ -9,6 +9,7 @@
 namespace App\Controller\Core;
 
 
+use App\Controller\Utils\Utils;
 use App\Controller\Validators\Entities\EntityValidator;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
@@ -100,13 +101,11 @@ class Repositories extends AbstractController {
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
     const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
-    const LOCKED_RESOURCE_REPOSITORY                    = "LockedResourceRepository";
     const MY_ISSUES_REPOSITORY                          = "MyIssueRepository";
     const MY_ISSUES_CONTACT_REPOSITORY                  = "MyIssueContactRepository";
     const MY_ISSUES_PROGRESS_REPOSITORY                 = "MyIssueProgressRepository";
     const MY_TODO_REPOSITORY                            = "MyTodoRepository";
     const MY_TODO_ELEMENT_REPOSITORY                    = "MyTodoElementRepository";
-    const MODULE_REPOSITORY                             = "ModuleRepository";
     const MODULE_DATA_REPOSITORY                        = "ModuleDataRepository";
 
     const PASSWORD_FIELD        = 'password';
@@ -118,10 +117,13 @@ class Repositories extends AbstractController {
     const KEY_REPOSITORY        = "repository";
     const KEY_ID                = "id";
 
+    const KEY_ENTITY_DATA_IS_NULL = "isNull";
+    const KEY_ENTITY_DATA_TYPE    = "type";
+    const ENTITY_DATA_TYPE_ENTITY = "entity";
+
     const KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME          = "fieldName";
     const KEY_CLASS_META_RELATED_ENTITY_FIELD_TARGET_ENTITY = "targetEntity";
     const KEY_CLASS_META_RELATED_ENTITY_MAPPED_BY           = "mappedBy";
-    const KEY_CLASS_META_RELATED_ENTITY_TARGET_ENTITY       = "targetEntity";
 
     const ENTITY_PROPERTY_DELETED = "deleted";
     const ENTITY_PROXY_KEY        = "Proxies";
@@ -1087,8 +1089,21 @@ class Repositories extends AbstractController {
                 return $response;
             }
 
-            if (is_array($value)) {
-                if (array_key_exists('type', $value) && $value['type'] == 'entity') {
+            // here the value of parameter sent from front can be `entity` representation object
+            if (
+                    is_array($value)
+                &&  array_key_exists(self::KEY_ENTITY_DATA_TYPE, $value)
+                &&  $value[self::KEY_ENTITY_DATA_TYPE] == self::ENTITY_DATA_TYPE_ENTITY
+            ) {
+                //todo: need to check if updating entities for example in notes also works fine
+                $is_entity_force_null = (
+                        array_key_exists(self::KEY_ENTITY_DATA_IS_NULL, $value)
+                    &&  Utils::getBoolRepresentationOfBoolString($value[self::KEY_ENTITY_DATA_IS_NULL])
+                );
+
+                if( $is_entity_force_null ){
+                    $value = null;
+                }else{
                     $value = $this->getEntity($value);
                 }
             }

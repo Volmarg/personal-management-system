@@ -46,7 +46,7 @@ export default class UploadBasedModules {
 
                 let clickedButton = $(event.target);
 
-                if( DomAttributes.isDisabled($(clickedButton)) ){
+                if( DomAttributes.isDisabledClass($(clickedButton)) ){
                     return;
                 }
 

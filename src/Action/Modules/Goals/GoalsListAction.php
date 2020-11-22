@@ -55,15 +55,20 @@ class GoalsListAction extends AbstractController {
         $all_todo          = $this->controllers->getGoalsListController()->getGoals();
         $goal_module       = $this->controllers->getModuleController()->getOneByName(ModulesController::MODULE_NAME_GOALS);
         $todo_element_form = $this->app->forms->todoElementForm();
+        $all_modules       = $this->controllers->getModuleController()->getAllActive();
+
+        $all_relatable_entities_data_dtos_for_modules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
 
         $data = [
-            'all_modules'                    => [$goal_module],
-            'all_todo'                       => $all_todo,
-            'ajax_render'                    => $ajax_render,
-            'show_add_todo_widget'           => true,
-            'todo_element_form'              => $todo_element_form,
-            'data_template_url'              => $this->generateUrl('goals_list'),
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'all_modules'                                  => [$goal_module],
+            'all_todo'                                     => $all_todo,
+            'ajax_render'                                  => $ajax_render,
+            'show_add_todo_widget'                         => true,
+            'todo_element_form'                            => $todo_element_form,
+            'data_template_url'                            => $this->generateUrl('goals_list'),
+            'all_modules'                                  => $all_modules,
+            'all_relatable_entities_data_dtos_for_modules' => $all_relatable_entities_data_dtos_for_modules,
+            'skip_rewriting_twig_vars_to_js'               => $skip_rewriting_twig_vars_to_js,
         ];
 
         return $this->render('modules/my-todo/list.html.twig', $data);
