@@ -279,7 +279,7 @@ class ReportAction extends AbstractController {
     private function renderChartSavingsEachMonth(): Response {
 
         $payments_total_for_each_month = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
-        $all_incomes                   = $this->controllers->getMyPaymentsIncomeController()->getAllNotDeleted();
+        $all_incomes                   = $this->controllers->getMyPaymentsIncomeController()->getAllNotDeletedSummedByYearAndMonth();
         $custom_color                  = Utils::randomHexColor();
         $group_name                    = $this->app->translator->translate("reports.saviingsCharts.group");
 
@@ -294,16 +294,12 @@ class ReportAction extends AbstractController {
             $date   = $payment_total_for_each_month[self::KEY_YEAR_AND_MONTH];
             $saving = 0;
 
-            foreach( $all_incomes as $income ){
+            foreach( $all_incomes as $year_and_month => $income_amount ){
 
-                $income_date = $income->getDate()->format('Y-m');
-
-                if( $income_date === $date ){
+                if( $year_and_month === $date ){
 
                     $money_spent  = round((float) $payment_total_for_each_month[self::KEY_MONEY] , 2);
-                    $income       = $income->getAmount();
-
-                    $saving       = $income - $money_spent;
+                    $saving       = $income_amount - $money_spent;
                     $saving       = ( $saving < 0 ? 0 : $saving );
 
                 }

@@ -5,6 +5,7 @@ namespace App\Repository\Modules\Payments;
 use App\Entity\Modules\Payments\MyPaymentsIncome;
 use App\Repository\AbstractRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -27,6 +28,41 @@ class MyPaymentsIncomeRepository extends ServiceEntityRepository {
     public function getAllNotDeleted(): array
     {
         return $this->findBy([AbstractRepository::FIELD_DELETED => 0]);
+    }
+
+    /**
+     * Returns all incomes summed up for each month in year
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getAllNotDeletedSummedByYearAndMonth(): array
+    {
+        $sql = '
+            SELECT 
+            DATE_FORMAT(date, "%Y-%m") AS `date`,
+            SUM(amount)                AS `amount` 
+            
+            FROM my_payment_income
+            
+            WHERE 1
+            AND `deleted` = 0
+            
+            GROUP BY DATE_FORMAT(`date`, "%Y-%m");        
+        ';
+
+        $results = $this->_em->getConnection()->fetchAllAssociative($sql);
+
+        $returned_result = [];
+        foreach($results as $result){
+
+            $date   =       $result['date'];
+            $amount = (int) $result['amount'];
+
+            $returned_result[$date] = $amount;
+        }
+
+        return $returned_result;
     }
 
     /**
