@@ -54,6 +54,10 @@ export default class TinyMce {
         'note-save-fail'      : 'Cannot save note changes without editing it first!',
     };
 
+    public static dataAttributes = {
+      styleCopy: "data-style-copy"
+    };
+
     /**
      *@description will return the default(common) configuration for tinymce
      *
@@ -115,7 +119,12 @@ export default class TinyMce {
         }
 
         let config = TinyMce.getDefaultTinyMceConfig(tinyMceSelector, tinyMceWrapperClasses);
-        TinyMce.remove(TinyMce.classes["tiny-mce-selector"]);
+
+        if( StringUtils.isEmptyString(tinyMceSelector) ){
+            TinyMce.remove(TinyMce.classes["tiny-mce-selector"]);
+        }else{
+            TinyMce.remove(tinyMceSelector);
+        }
 
         //@ts-ignore
         window.tinymce.init(config);
@@ -165,8 +174,41 @@ export default class TinyMce {
      */
     public static remove(tinyMceInstanceSelector)
     {
+        /**
+         * @description there is some issue in TinyMCE itself - it removes pretty much like all tags upon removing/destroying
+         *              instance, that's why this workaround is needed (save all styles, then revert them)
+         */
+        let $contentWrapper = $(tinyMceInstanceSelector);
+        let $allElements    = $contentWrapper.find("*");
+
+        let arrayOfSaveStylesForElementIndex = [];
+        $.each($allElements, (index, element) => {
+            let $element     = $(element);
+            let elementStyle = $element.attr('style');
+
+            if( StringUtils.isEmptyString(elementStyle) ){
+                elementStyle = "";
+            }
+
+            arrayOfSaveStylesForElementIndex.push(elementStyle);
+        });
+
         //@ts-ignore
         window.tinymce.remove(tinyMceInstanceSelector);
+
+        /**
+         * @description even if these are still the same elements - the ones above have different `grip/state` so
+         *              these above still have tags and thus these are not reapplied, new state must be used
+         */
+        $allElements = $contentWrapper.find("*");
+        $.each($allElements, (index, element) => {
+            let $element     = $(element);
+            let elementStyle = arrayOfSaveStylesForElementIndex[index];
+
+            if( !StringUtils.isEmptyString(elementStyle) ){
+                $element.attr('style', elementStyle);
+            }
+        });
     }
 
     /**
@@ -177,7 +219,7 @@ export default class TinyMce {
         //@ts-ignore
         while ( window.tinymce.editors.length > 0) {
             //@ts-ignore
-            tinymce.remove(window.tinymce.editors[0]);
+            TinyMce.remove(window.tinymce.editors[0]);
         }
     }
 
