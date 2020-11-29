@@ -6,6 +6,8 @@ use App\Entity\Modules\Travels\MyTravelsIdeas;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -86,5 +88,18 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
     public function getAllNotDeleted(): array
     {
         return $this->findBy(['deleted' => 0]);
+    }
+
+    /**
+     * Will save the entity in the database
+     *
+     * @param MyTravelsIdeas $entity
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function save(MyTravelsIdeas $entity): void
+    {
+        $this->_em->persist($entity);;
+        $this->_em->flush();;
     }
 }

@@ -49,7 +49,7 @@ class Utils {
         } elseif (property_exists($modified_data, static::$lc_property)) {
             $modified_data->{'set' . static::$lc_property}($new_value);
         } else {
-            static::throwExceptionMissingProperty();
+            static::throwExceptionMissingProperty([static::$uc_property, static::$lc_property]);
         }
 
         return $modified_data;
@@ -79,10 +79,12 @@ class Utils {
     }
 
     /**
+     * @param array $properties
      * @throws \Exception
      */
-    private static function throwExceptionMissingProperty() {
-        throw new \Exception('For some reason the object is missing the property that You try to modify');
+    private static function throwExceptionMissingProperty(array $properties) {
+        $properties_string = json_encode($properties);
+        throw new \Exception("For some reason the object is missing the property that You try to modify ({$properties_string})");
     }
 
 }

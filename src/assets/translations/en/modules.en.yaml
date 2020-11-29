@@ -146,6 +146,11 @@ travels:
   headers:
     ideasForTraveling: Ideas for traveling
     addIdea: Add idea
+  popovers:
+    remove: Remove record
+    edit: Edit record
+  buttons:
+    map: Map
 
 payments:
   productsPrices:

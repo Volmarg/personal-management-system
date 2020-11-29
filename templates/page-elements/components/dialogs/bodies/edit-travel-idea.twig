@@ -1,0 +1,73 @@
+<main class='main-content bgc-grey-100'>
+    <div id='mainContent'>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bgc-white bd bdrs-3 p-10 mB-20">
+                        <h4 class="c-grey-900 mB-20 text-center">
+                            {{ 'dialogs.editTravelIdea.header' | trans }}
+                        </h4>
+                        <section class="p-20 update-record-form save-parent" data-type="MyTravelsIdeas">
+
+                            {{ form_start(idea_form,{'attr':{'class':'MyTravelsIdeas', 'data-form-target':"MyTravelsIdeas"}}) }}
+                            <input type="hidden" class="id" value="{{ entity_id }}" disabled/>
+
+                            <div class="row mT-10">
+                                <div class="col-md-4">
+                                    {{ form_label(idea_form['location']) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form_widget(idea_form['location']) }}
+                                </div>
+                            </div>
+
+                            <div class="row mT-10">
+                                <div class="col-md-4">
+                                    {{ form_label(idea_form['country']) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form_widget(idea_form['country']) }}
+                                </div>
+                            </div>
+
+                            <div class="row mT-10">
+                                <div class="col-md-4">
+                                    {{ form_label(idea_form['image']) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form_widget(idea_form['image']) }}
+                                </div>
+                            </div>
+
+                            <div class="row mT-10">
+                                <div class="col-md-4">
+                                    {{ form_label(idea_form['map']) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form_widget(idea_form['map']) }}
+                                </div>
+                            </div>
+
+                            <div class="row mT-10">
+                                <div class="col-md-4">
+                                    {{ form_label(idea_form['category']) }}
+                                </div>
+                                <div class="col-md-8">
+                                    {{ form_widget(idea_form['category']) }}
+                                </div>
+                            </div>
+
+                            <div class="row mT-10 d-flex flex-row flex-nowrap justify-content-end">
+                                <div>
+                                    {{ form_widget(idea_form['submit']) }}
+                                </div>
+                            </div>
+                            {{ form_end(idea_form) }}
+                        </section>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

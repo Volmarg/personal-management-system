@@ -3,6 +3,7 @@ namespace App\Controller\Core;
 
 use App\Action\Core\FormsAction;
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
@@ -148,8 +149,8 @@ class Forms extends AbstractController {
         return $this->createForm(MyShoppingPlansType::class, null, $params);
     }
 
-    public function travelIdeasForm(array $params = []): FormInterface {
-        return $this->createForm(MyTravelsIdeasType::class, null, $params);
+    public function travelIdeasForm(array $params = [], ?MyTravelsIdeas $travel_idea = null): FormInterface {
+        return $this->createForm(MyTravelsIdeasType::class, $travel_idea, $params);
     }
 
     public function userAvatarForm(array $params = []): FormInterface {

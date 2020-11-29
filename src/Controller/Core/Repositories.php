@@ -117,6 +117,8 @@ class Repositories extends AbstractController {
     const KEY_REPOSITORY        = "repository";
     const KEY_ID                = "id";
 
+    const KEY_SERIALIZED_FORM_DATA = "serializedFormData";
+
     const KEY_ENTITY_DATA_IS_NULL = "isNull";
     const KEY_ENTITY_DATA_TYPE    = "type";
     const ENTITY_DATA_TYPE_ENTITY = "entity";

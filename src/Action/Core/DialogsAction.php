@@ -46,6 +46,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD             = 'page-elements/components/dialogs/bodies/upload.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_ADD_OR_MODIFY_TODO       = 'page-elements/components/dialogs/bodies/add-or-modify-todo.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION  = 'page-elements/components/dialogs/bodies/first-login-information.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_EDIT_TRAVEL_IDEA         = 'page-elements/components/dialogs/bodies/edit-travel-idea.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
@@ -902,6 +903,56 @@ class DialogsAction extends AbstractController
             ];
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_REMOVE_FILES, $template_data)->getContent();
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajax_response->setCode($code);
+        $ajax_response->setTemplate($template);
+        $ajax_response->setSuccess($success);
+
+        $jsonResponse = $ajax_response->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/edit-travel-idea", name="dialog_body_edit_travel_idea", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function buildEditTravelIdeaDialogBody(Request $request): JsonResponse
+    {
+        $ajax_response = new AjaxResponse();
+        $code          = Response::HTTP_OK;
+        $template      = "";
+        $success       = true;
+
+        try{
+            if( !$request->request->has(self::KEY_ENTITY_ID) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+
+                $ajax_response->setMessage($message);
+                $ajax_response->setSuccess(false);
+                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajax_response->buildJsonResponse();
+                return $jsonResponse;
+            }
+            $categories  = $this->controllers->getMyTravelsIdeasController()->getAllCategories(true);
+            $entity_id   = $request->request->get(self::KEY_ENTITY_ID);
+            $travel_idea = $this->controllers->getMyTravelsIdeasController()->findOneById($entity_id);
+
+            $idea_form = $this->app->forms->travelIdeasForm(['categories' => $categories], $travel_idea);
+
+            $template_data = [
+                'idea_form' => $idea_form->createView(),
+                'entity_id' => $entity_id
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_TRAVEL_IDEA, $template_data)->getContent();
+
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;

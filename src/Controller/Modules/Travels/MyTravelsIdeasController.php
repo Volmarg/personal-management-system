@@ -5,6 +5,8 @@ namespace App\Controller\Modules\Travels;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyTravelsIdeasController extends AbstractController {
@@ -46,6 +48,18 @@ class MyTravelsIdeasController extends AbstractController {
     public function getAllNotDeleted(): array
     {
         return $this->app->repositories->myTravelsIdeasRepository->getAllNotDeleted();
+    }
+
+    /**
+     * Will save the entity in the database
+     *
+     * @param MyTravelsIdeas $entity
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function save(MyTravelsIdeas $entity): void
+    {
+        $this->app->repositories->myTravelsIdeasRepository->save($entity);;
     }
 
 }

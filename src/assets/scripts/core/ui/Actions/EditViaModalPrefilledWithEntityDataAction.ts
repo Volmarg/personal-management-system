@@ -5,6 +5,7 @@ import FormAppendAction             from "./FormAppendAction";
 import UpdateAction                 from "./UpdateAction";
 import CallableViaDataAttrsDialogs  from "../Dialogs/CallableViaDataAttrsDialogs";
 import BootstrapSelect              from "../../../libs/bootstrap-select/BootstrapSelect";
+import Ajax                         from "../../ajax/Ajax";
 
 export default class EditViaModalPrefilledWithEntityDataAction extends AbstractAction {
 
@@ -40,6 +41,13 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
                     BootstrapSelect.init();
                 }
             },
+            MyTravelsIdeasRepository: {
+                url     : "/dialog/body/edit-travel-idea",
+                method  : Ajax.REQUEST_TYPE_POST,
+                callback: () => {
+                    this.updateAction.init();
+                }
+            },
             /**
              * Each dialog method should have target repository
              * @param entityId
@@ -66,6 +74,7 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
             return false;
         }
 
+        $(element).off('click');
         $(element).on('click', function() {
             let clickedElement  = $(this);
             let entityId        = $(clickedElement).attr('data-entity-id');

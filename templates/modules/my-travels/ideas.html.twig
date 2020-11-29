@@ -21,11 +21,21 @@
                                     <div class="accordin-section">
                                         <h3 class="c-grey-900 mB-10">{{ category }}</h3>
                                         <section class="justify-content-around">
-                                            {% for idea in all_ideas %}
-                                                {%  if idea.category == category %}
-                                                    {% include 'modules/my-travels/components/ideas.table.html.twig' %}
-                                                {% endif %}
-                                            {% endfor %}
+
+                                            <div id="MyTravelsIdeas">
+                                                <div class="trash-parent monthly-single-data editable-parent save-parent d-flex flex-column" data-type="MyTravelsIdeas">
+                                                    <ul class="justify-content-around">
+                                                        {% for idea in all_ideas %}
+                                                            {%  if idea.category == category %}
+                                                                {% include 'modules/my-travels/components/single-card.html.twig' with {
+                                                                    idea: idea
+                                                                }%}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+
                                         </section>
                                     </div>
                                 {% endfor %}

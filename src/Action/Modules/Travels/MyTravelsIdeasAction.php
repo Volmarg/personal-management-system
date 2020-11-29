@@ -6,7 +6,9 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use App\Controller\Utils\Utils;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
+use App\Form\Modules\Travels\MyTravelsIdeasType;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -108,16 +110,73 @@ class MyTravelsIdeasAction extends AbstractController {
      * @Route("/my-travels/ideas/update/",name="my-travels-ideas-update")
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws Exception
      */
-    public function update(Request $request) {
-        $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+    public function update(Request $request)
+    {
+        $response_code = Response::HTTP_OK;
+        $message       = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
 
-        $entity     = $this->controllers->getMyTravelsIdeasController()->findOneById($entity_id);
-        $response   = $this->app->repositories->update($parameters, $entity);
+        try{
+            $id = trim($request->request->get('id', null));
 
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+            if( empty($id) ){
+                $message = "Parameter `id` is either missing or is malformed";
+                $this->app->logger->critical($message, [
+                    "id" => $id
+                ]);
+                throw new Exception($message);
+            }
+
+            $existing_entity = $this->controllers->getMyTravelsIdeasController()->findOneById($id);
+            if( empty($existing_entity) ){
+                $message = "There is no entity for given entity id: {$id}";
+                $this->app->logger->critical($message);
+                throw new Exception($message);
+            }
+
+            // Whole form is being sent as serialized data - must be turned back to array
+            $travel_idea_form = $this->getForm();
+            $all_request_data = $request->request->all();
+
+            if( !array_key_exists(Repositories::KEY_SERIALIZED_FORM_DATA, $all_request_data) ){
+                $message = "Data from request does not belong to processed form - wrong prefix has been used, probably incorrect form is being used on backend";
+                $this->app->logger->critical($message);
+                throw new Exception($message);
+            }
+
+            $travel_idea_form_serialized_data = $all_request_data[Repositories::KEY_SERIALIZED_FORM_DATA];
+            parse_str($travel_idea_form_serialized_data, $form_data_array_with_form_prefix);
+
+            // set data back to request to return entity from form
+            $travel_idea_form_prefix = Utils::formClassToFormPrefix(MyTravelsIdeas::class);
+            $travel_idea_form_data   = $form_data_array_with_form_prefix[$travel_idea_form_prefix];
+
+            $request->request->set($travel_idea_form_prefix, $travel_idea_form_data);
+
+            /**
+             * @var MyTravelsIdeas $modified_entity
+             */
+            $modified_entity = $travel_idea_form->handleRequest($request)->getData();
+
+            // set new properties to existing entity to prevent saving new one upon submitting form
+            $existing_entity->setMap($modified_entity->getMap());
+            $existing_entity->setLocation($modified_entity->getLocation());
+            $existing_entity->setImage($modified_entity->getImage());
+            $existing_entity->setCountry($modified_entity->getCountry());
+            $existing_entity->setCategory($modified_entity->getCategory());
+
+            $this->controllers->getMyTravelsIdeasController()->save($existing_entity);
+        }catch(Exception $e){
+            $message       = $this->app->translator->translate('responses.repositories.recordUpdateFail');
+            $response_code = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $rendered_template = $this->renderTemplate(true)->getContent();
+
+        return AjaxResponse::buildJsonResponseForAjaxCall($response_code, $message, $rendered_template);
     }
 
     /**

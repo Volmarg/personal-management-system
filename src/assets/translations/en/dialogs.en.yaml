@@ -16,3 +16,5 @@ dialogs:
     confirm: "Do You really want to move these files?"
   removeFiles:
     confirm: "Do You really want to remove these files?"
+  editTravelIdea:
+    header: Edit travel idea

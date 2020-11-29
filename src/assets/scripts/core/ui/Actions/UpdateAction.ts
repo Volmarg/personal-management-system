@@ -7,7 +7,7 @@ import BootstrapNotify      from "../../../libs/bootstrap-notify/BootstrapNotify
 import DataProcessorLoader  from "../DataProcessor/DataProcessorLoader";
 import DataProcessorDto     from "../../../DTO/DataProcessorDto";
 import BootboxWrapper       from "../../../libs/bootbox/BootboxWrapper";
-import                      Ui from "../Ui";
+import Ui                   from "../Ui";
 
 export default class UpdateAction extends AbstractAction {
 
@@ -52,14 +52,22 @@ export default class UpdateAction extends AbstractAction {
         let _this = this;
 
         $('.update-record-form form').submit(function (event) {
-            let $form      = $(event.target);
+            let $form = $(event.target);
+
+            //@ts-ignore
+            if( !$form[0].checkValidity() ){
+                //@ts-ignore
+                $form[0].reportValidity();
+                return;
+            }
+
             let formTarget = $form.attr('data-form-target');
 
             let $submitButton        = $($form).find('button[type="submit"]');
             let callbackParamsJson   = $($submitButton).attr('data-params');
             let dataCallbackParams   = ( "undefined" != typeof callbackParamsJson ? JSON.parse(callbackParamsJson) : null );
 
-            let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, formTarget);
+            let dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, formTarget, $form);
 
             if( !(dataProcessorDto instanceof DataProcessorDto) ){
                 dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, formTarget, $form);

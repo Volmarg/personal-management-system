@@ -811,24 +811,17 @@ export default class Entity extends AbstractDataProcessor {
             return null;
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id          = $($baseElement).find('.id').html();
-            let location    = $($baseElement).find('.location span').html();
-            let country     = $($baseElement).find('.country span').html();
-            let image       = $($baseElement).find('.image img').attr('src');
-            let map         = $($baseElement).find('.map a').attr('href');
-            let category    = $($baseElement).find('.category i').html();
+            // in case of update the base element = form
+            let id                 = $($baseElement).find('.id').val();
+            let serializedFormData = $baseElement.serialize();
 
             let successMessage  = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyTravelsIdeas.processorName);
             let failMessage     = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyTravelsIdeas.processorName);
 
             let url      = '/my-travels/ideas/update/';
             let ajaxData = {
-                'location'  : location,
-                'country'   : country,
-                'image'     : image,
-                'map'       : map,
-                'category'  : category,
-                'id'        : id
+                serializedFormData : serializedFormData,
+                id                 : id
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
