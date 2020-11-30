@@ -502,8 +502,7 @@ class AutoInstaller{
         #    Modify parameters section, it should look like this now:                                                           #
         #                                                                                                                       #
         #    User register:                                                                                                     #
-        #    Run this command and follow all steps:                                                                             #
-        #    sudo bin/console fos:user:create --super-admin                                                                     #
+        #    Simply open the project in browser and if no user is registered, then You will see register button                 #
         #                                                                                                                       #
         #    Local Server                                                                                                       #
         #     Get the script from: https://symfony.com/download                                                                 #
@@ -512,7 +511,7 @@ class AutoInstaller{
         #    For more information visit: https://volmarg.github.io/ (if still works)                                            #
         #                                                                                                                       #    
         #    For more information about running the encore watcher for development mode - go to:                                #
-        #    https://volmarg.github.io/developer-mode/                                                                          #
+        #    https://volmarg.github.io/docs/technical/development-mode                                                          #
         #########################################################################################################################
         ");
 

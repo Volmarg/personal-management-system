@@ -95,11 +95,9 @@
           "echo -e '\\033[1;33m\n\nTesting if after-install-script can be called\n\\033[0m'; if test -f .env; then echo -e '\\033[1;33m\n\nRunning after-install-script\n\\033[0m'; bin/console cache:clear && bin/console cache:warmup && bin/console security:check; else echo -e '\\033[1;33m\n\n.env file does not exist\n\\033[0m'; fi"
         ],
         "post-install-cmd": [
-            "@after-install-script",
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "post-update-cmd": [
-            "@after-install-script",
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "pms-installer": "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",
