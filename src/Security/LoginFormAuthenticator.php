@@ -2,8 +2,10 @@
 
 namespace App\Security;
 
+use App\Controller\Core\ConfigLoaders;
 use App\Entity\User;
 use App\Services\Core\Translator;
+use App\Services\Session\ExpirableSessionsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +30,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 {
     use TargetPathTrait;
 
-    public const LOGIN_ROUTE = 'login';
+    public const LOGIN_ROUTE     = 'login';
+    public const LOGIN_CHECK_URI = "/login_check"; // this is part of symfony logic
 
     private $entityManager;
     private $urlGenerator;
@@ -36,13 +39,33 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     private $passwordEncoder;
     private Translator  $translator;
 
-    public function __construct(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator, CsrfTokenManagerInterface $csrfTokenManager, UserPasswordEncoderInterface $passwordEncoder, Translator  $translator)
+    /**
+     * @var ExpirableSessionsService $expirable_sessions_service
+     */
+    private ExpirableSessionsService $expirable_sessions_service;
+
+    /**
+     * @var ConfigLoaders $config_loaders
+     */
+    private ConfigLoaders $config_loaders;
+
+    public function __construct(
+        EntityManagerInterface       $entityManager,
+        UrlGeneratorInterface        $urlGenerator,
+        CsrfTokenManagerInterface    $csrfTokenManager,
+        UserPasswordEncoderInterface $passwordEncoder,
+        Translator                   $translator,
+        ExpirableSessionsService     $expirable_sessions_service,
+        ConfigLoaders                $config_loaders
+    )
     {
-        $this->entityManager    = $entityManager;
-        $this->urlGenerator     = $urlGenerator;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->passwordEncoder  = $passwordEncoder;
-        $this->translator       = $translator;
+        $this->entityManager              = $entityManager;
+        $this->urlGenerator               = $urlGenerator;
+        $this->csrfTokenManager           = $csrfTokenManager;
+        $this->passwordEncoder            = $passwordEncoder;
+        $this->translator                 = $translator;
+        $this->config_loaders             = $config_loaders;
+        $this->expirable_sessions_service = $expirable_sessions_service;
     }
 
     public function supports(Request $request)
@@ -103,8 +126,19 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         return $credentials['password'];
     }
 
+    /**
+     * @param Request $request
+     * @param TokenInterface $token
+     * @param string $providerKey
+     * @return RedirectResponse|Response|null
+     * @throws \Exception
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
+        // save expirable session to auto logout user once it expires
+        $user_login_session_lifetime = $this->config_loaders->getConfigLoaderSession()->getUserLoginLifetime();
+        $this->expirable_sessions_service->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME, $user_login_session_lifetime);
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);
         }

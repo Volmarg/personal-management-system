@@ -4,6 +4,7 @@ parameters:
     locale: 'en'
     encrypt_key: 'yJouvLW2cs-jfzMg5Mg52FiRU1YPBSjflcMgQTKqCt8r'
     session_data.lifetime.system_lock: 900 #in seconds
+    session_data.lifetime.user_login: '%env(APP_USER_LOGIN_SESSION_LIFETIME)%'
 
 # Resolving deprecation for moving from 4.4x to 5.x
 sensio_framework_extra:
@@ -53,6 +54,7 @@ services:
         public: true
         arguments:
           $system_lock_lifetime: '%session_data.lifetime.system_lock%'
+          $user_login_lifetime: '%session_data.lifetime.user_login%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

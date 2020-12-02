@@ -27,6 +27,7 @@ class ExpirableSessionsService extends SessionsService {
 
     const KEY_SESSIONS_KEYS_LIFETIMES      = "sessions_keys_lifetimes";
     const KEY_SESSION_SYSTEM_LOCK_LIFETIME = "system_lock_lifetime";
+    const KEY_SESSION_USER_LOGIN_LIFETIME  = "user_login_lifetime";
     const KEY_SESSION_ALL_SESSION_KEY      = '_sf2_attributes';
 
     /**
@@ -108,12 +109,9 @@ class ExpirableSessionsService extends SessionsService {
     {
         $sessions_lifetime_vo  = $this->getSessionsKeysLifetimes();
         $has_expirable_session = $sessions_lifetime_vo->hasSingleSessionKeyLifetime($key);
-        $is_session_for_key    = $this->session->has($key);
 
-        if( $has_expirable_session && $is_session_for_key ){
+        if( $has_expirable_session ){
             return true;
-        }elseif( $has_expirable_session && !$is_session_for_key ){
-            return null;
         }else{
             return false;
         }

@@ -2,15 +2,18 @@
 
 namespace App\Listeners;
 
+use App\Controller\Core\AjaxResponse;
+use App\Controller\Core\Application;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
-use App\Services\Core\Translator;
 use App\Services\Session\ExpirableSessionsService;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Security layer for logging every single page call
@@ -45,19 +48,25 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private $security_logger;
 
     /**
-     * @var Translator $translator
-     */
-    private $translator;
-
-    /**
      * @var ExpirableSessionsService $expirable_sessions_service
      */
     private $expirable_sessions_service;
 
-    public function __construct(Logger $security_logger, Translator $translator, ExpirableSessionsService $sessions_service) {
-        $this->security_logger  = $security_logger->getSecurityLogger();
+    /**
+     * @var UrlGeneratorInterface $url_generator
+     */
+    private UrlGeneratorInterface $url_generator;
+
+    /**
+     * @var Application $app
+     */
+    private Application $app;
+
+    public function __construct(Logger $security_logger, ExpirableSessionsService $sessions_service, UrlGeneratorInterface  $url_generator, Application $app) {
+        $this->security_logger            = $security_logger->getSecurityLogger();
         $this->expirable_sessions_service = $sessions_service;
-        $this->translator       = $translator;
+        $this->url_generator              = $url_generator;
+        $this->app                        = $app;
     }
 
     /**
@@ -68,10 +77,11 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     public function onRequest(RequestEvent $ev)
     {
+        $this->handleSessionsLifetimes($ev);
+        $this->handleLogoutUserOnExpiredLoginSession($ev);
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         //$this->blockIp($ev); #unlock for personal needs
-        $this->handleSessionsLifetimes($ev);
     }
 
     public static function getSubscribedEvents() {
@@ -123,8 +133,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             $event->stopPropagation();
             $event->setResponse($response);
 
-            $log_message       = $this->translator->translate("logs.security.visitedPageWithUnallowedMethod");
-            $exception_message = $this->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
+            $log_message       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedMethod");
+            $exception_message = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
 
             $this->security_logger->info($log_message);
             throw new SecurityException($exception_message);
@@ -150,8 +160,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             $event->stopPropagation();
             $event->setResponse($response);
 
-            $log_message       = $this->translator->translate("logs.security.visitedPageWithUnallowedIp");
-            $exception_message = $this->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
+            $log_message       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedIp");
+            $exception_message = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
 
             $this->security_logger->info($log_message);
             throw new SecurityException($exception_message);
@@ -169,4 +179,41 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $request = $event->getRequest();
         $this->expirable_sessions_service->handleSessionExpiration($request);
     }
+
+    /**
+     * Will force logout user if:
+     * - expirable user session lifetime has passed,
+     * - user is logged in
+     *
+     * @param RequestEvent $ev
+     * @throws Exception
+     */
+    private function handleLogoutUserOnExpiredLoginSession(RequestEvent $ev): void
+    {
+        $request = $ev->getRequest();
+
+        if(
+                !$this->expirable_sessions_service->hasExpirableSession(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME)
+            &&  !empty($this->app->getCurrentlyLoggedInUser())
+        ) {
+            $message = $this->app->translator->translate('messages.general.yourSessionHasExpiredYouWereLoggedOut');
+
+            $this->app->logoutCurrentlyLoggedInUser();
+            $logout_url = $this->url_generator->generate("login");
+
+            if( $request->isXmlHttpRequest() ){
+                $ajax_response = new AjaxResponse();
+                $ajax_response->setCode(Response::HTTP_TEMPORARY_REDIRECT);
+                $ajax_response->setReloadPage(true);;
+
+                $response = $ajax_response->buildJsonResponse();
+            }else{
+                $response = new RedirectResponse($logout_url);
+            }
+
+            $this->app->addDangerFlash($message);
+            $ev->setResponse($response);
+        }
+    }
+
 }

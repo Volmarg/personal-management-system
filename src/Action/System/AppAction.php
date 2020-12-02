@@ -430,6 +430,7 @@ class AppAction extends AbstractController {
      * @Route("/login", name="login")
      * @param AuthenticationUtils $authentication_utils
      * @return Response
+     * @throws Exception
      */
     public function login(AuthenticationUtils $authentication_utils)
     {
