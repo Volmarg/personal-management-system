@@ -44,7 +44,6 @@ class ExpirableSessionsService extends SessionsService {
     public function handleSessionExpiration(?Request $request = null)
     {
         $expired_single_session_key_lifetimes_vo = $this->unsetExpiredSessionsKeysLifetimesAndRefreshRemaining();
-        $this->storeDataInSessionForAjaxCall($request, $expired_single_session_key_lifetimes_vo);
         $this->removeExpiredSessionsKeysFromSession($expired_single_session_key_lifetimes_vo);
     }
 
@@ -212,33 +211,6 @@ class ExpirableSessionsService extends SessionsService {
     {
         $json = $all_sessions_keys_lifetimes->toJson();
         $this->session->set(self::KEY_SESSIONS_KEYS_LIFETIMES, $json);
-    }
-
-    /**
-     * @param Request|null $request
-     * @param SingleSessionKeyLifetimeVO[] $expired_single_session_key_lifetimes_vo
-     */
-    private function storeDataInSessionForAjaxCall(?Request $request, array $expired_single_session_key_lifetimes_vo): void
-    {
-
-        if( is_null($request) ){
-            return;
-        }
-
-        foreach($expired_single_session_key_lifetimes_vo as $single_session_lifetime_vo){
-            $session_key = $single_session_lifetime_vo->getSessionKey();
-
-            // force reload page after invalidating system unlock
-            if(
-                    $session_key === ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME
-                &&  UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES
-                ) ){
-                $message = $this->app->translator->translate('messages.lock.unlockExpiredReloadingPage');
-
-                AjaxCallsSessionService::setPageReloadAfterAjaxCall(true);
-                AjaxCallsSessionService::setPageReloadMessageAfterAjaxCall($message);
-            }
-        }
     }
 
 }

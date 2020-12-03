@@ -4,9 +4,11 @@ namespace App\Listeners;
 
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Entity\User;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
 use App\Services\Session\ExpirableSessionsService;
+use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -77,8 +79,11 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     public function onRequest(RequestEvent $ev)
     {
+        $is_system_lock_unlocked_before_handling_expiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+
         $this->handleSessionsLifetimes($ev);
         $this->handleLogoutUserOnExpiredLoginSession($ev);
+        $this->handleTurnLockOffOnExpiredUnlockSession($ev, $is_system_lock_unlocked_before_handling_expiration);
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         //$this->blockIp($ev); #unlock for personal needs
@@ -209,6 +214,36 @@ class OnKernelRequestListener implements EventSubscriberInterface {
                 $response = $ajax_response->buildJsonResponse();
             }else{
                 $response = new RedirectResponse($logout_url);
+            }
+
+            $this->app->addDangerFlash($message);
+            $ev->setResponse($response);
+        }
+    }
+
+    /**
+     * @param RequestEvent $ev
+     * @param bool $is_system_lock_unlocked_before_handling_expiration
+     */
+    private function handleTurnLockOffOnExpiredUnlockSession(RequestEvent $ev, bool $is_system_lock_unlocked_before_handling_expiration)
+    {
+        $request                                           = $ev->getRequest();
+        $is_system_lock_unlocked_after_handling_expiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+
+        if(
+                $is_system_lock_unlocked_before_handling_expiration
+            &&  !$is_system_lock_unlocked_after_handling_expiration
+        ){
+            $message = $this->app->translator->translate('messages.lock.unlockExpiredReloadingPage');
+
+            if( $request->isXmlHttpRequest() ){
+                $ajax_response = new AjaxResponse();
+                $ajax_response->setCode(Response::HTTP_TEMPORARY_REDIRECT);
+                $ajax_response->setReloadPage(true);;
+
+                $response = $ajax_response->buildJsonResponse();
+            }else{
+                $response = new RedirectResponse($request->getUri()); // the same page - just reload
             }
 
             $this->app->addDangerFlash($message);
