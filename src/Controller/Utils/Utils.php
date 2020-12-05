@@ -280,4 +280,33 @@ class Utils extends AbstractController {
 
         return $time_format;
     }
+
+    /**
+     * Will turn the string version of array into real array. The required syntax is:
+     * [\"127.0.0.1\", \"192.168.10.1\"]
+     *
+     * @param string $string_array
+     * @return array
+     * @throws Exception
+     */
+    public static function getRealArrayForStringArray(string $string_array): array
+    {
+        $real_array = json_decode($string_array);
+        if( empty($real_array) ){
+            return [];
+        }
+
+        if(
+            JSON_ERROR_NONE != json_last_error()
+            ||  (
+                    !empty($string_array)
+                &&  "[]" !== $string_array
+                &&  empty($real_array)
+            )
+        ){
+            throw new Exception("Incorrect syntax of array of restricted ips");
+        }
+
+        return $real_array;
+    }
 }

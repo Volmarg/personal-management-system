@@ -38,12 +38,6 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         "GET",
     ];
 
-    // adjust when needed
-    const ALLOWED_IPS = [
-        "127.0.0.1",
-        "192.168.43.100"
-    ];
-
     /**
      * @var Logger $security_logger
      */
@@ -86,7 +80,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $this->handleTurnLockOffOnExpiredUnlockSession($ev, $is_system_lock_unlocked_before_handling_expiration);
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
-        //$this->blockIp($ev); #unlock for personal needs
+        $this->blockIp($ev);
     }
 
     public static function getSubscribedEvents() {
@@ -150,15 +144,20 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     /**
      * @param RequestEvent $event
      * @throws SecurityException
-     * 
+     * @throws Exception
+     *
      */
     private function blockIp(RequestEvent $event): void
     {
-        $request = $event->getRequest();
-        $ip      = $request->getClientIp();
+        $restricted_ips = $this->app->config_loaders->getConfigLoaderSecurity()->getRestrictedIps();
+        $request        = $event->getRequest();
+        $ip             = $request->getClientIp();
 
-        if( !in_array($ip, self::ALLOWED_IPS) ){
+        if( empty($restricted_ips) ){
+            return;
+        }
 
+        if( !in_array($ip, $restricted_ips) ){
             $response = new Response();
             $response->setContent("");
 
@@ -168,7 +167,9 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             $log_message       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedIp");
             $exception_message = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
 
-            $this->security_logger->info($log_message);
+            $this->security_logger->info($log_message, [
+                "ip" => $ip,
+            ]);
             throw new SecurityException($exception_message);
         }
 
