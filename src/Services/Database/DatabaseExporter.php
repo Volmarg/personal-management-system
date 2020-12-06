@@ -14,7 +14,7 @@ use Monolog\Logger;
  */
 class DatabaseExporter {
 
-    const DUMP_EXTENSION_SQL = 'sql';
+    const DUMP_EXTENSION_SQL = '.sql';
 
     const EXPORT_MESSAGE_COULD_NOT_CREATE_FOLDER            = "Could not create folder for export.";
 
@@ -111,6 +111,15 @@ class DatabaseExporter {
     }
 
     /**
+     * Returns the full path containing exported file name (which is modified by exporter)
+     * @return string
+     */
+    public function getDumpedArchiveAbsolutePath(): string
+    {
+        return $this->dump_full_path;
+    }
+
+    /**
      * @return string
      */
     public function getDumpExtension(): string {
@@ -137,10 +146,10 @@ class DatabaseExporter {
     public function setDumpExtension(?string $dump_extension = null): void {
 
         if( empty($dump_extension )){
-            $this->dump_extension = DOT . self::DUMP_EXTENSION_SQL;
+            $this->dump_extension = self::DUMP_EXTENSION_SQL;
             return;
         }
-        $this->dump_extension = DOT . $dump_extension;
+        $this->dump_extension = $dump_extension;
     }
 
     /**
@@ -310,13 +319,13 @@ class DatabaseExporter {
      */
     private function checkDump(){
 
-        $is_dump_existing = file_exists($this->getDumpFullPath());
+        $is_dump_existing = file_exists($this->getDumpedArchiveAbsolutePath());
 
         if( !$is_dump_existing ){
             $this->setIsExportedSuccessfully(false);
             $this->setExportMessage(self::EXPORT_MESSAGE_EXPORT_FILE_DOES_NOT_EXIST);
         }else{
-            $dump_size = filesize($this->getDumpFullPath());
+            $dump_size = filesize($this->getDumpedArchiveAbsolutePath());
 
             if( self::MINIMUM_BACKUP_SIZE > $dump_size ){
                 $this->setIsExportedSuccessfully(false);
