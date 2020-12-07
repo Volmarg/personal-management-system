@@ -117,6 +117,8 @@ class CronMakeBackupCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+
+        $io->warning("This command must be called from the root of the project. It won't work from other locations!");
         $io->note("Started backup process");
         {
             $argument_backup_database_filename  = $input->getArgument(self::ARGUMENT_BACKUP_DATABASE_FILENAME);
