@@ -1,8 +1,8 @@
-import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
-import ArrayUtils       from "../../core/utils/ArrayUtils";
-import Loader           from "../../libs/loader/Loader";
-import Popover          from "../../libs/popover/Popover";
+import BootstrapNotify    from "../../libs/bootstrap-notify/BootstrapNotify";
+import ArrayUtils         from "../../core/utils/ArrayUtils";
+import Loader             from "../../libs/loader/Loader";
 import NotePreviewDialogs from "./Dialogs/NotePreviewDialogs";
+import Tippy              from "../../libs/tippy/Tippy";
 
 export default class Search {
 
@@ -11,8 +11,8 @@ export default class Search {
      */
     private selectors = {
         ids: {
-            searchInput             : "#search",
-            fileSearchResultWrapper : "#searchResultListWrapper"
+            searchInput         : "#search",
+            SearchResultWrapper : "#searchResultListWrapper"
         },
         classes: {
         },
@@ -67,7 +67,7 @@ export default class Search {
         searchInput.on('change', () => {
 
             let tags                = $(searchInput).val();
-            let searchResultWrapper = $(_this.selectors.ids.fileSearchResultWrapper);
+            let searchResultWrapper = $(_this.selectors.ids.SearchResultWrapper);
 
             if( ArrayUtils.isEmpty(tags)){
 
@@ -113,7 +113,10 @@ export default class Search {
 
                     $(searchResultWrapper).empty();
                     $(searchResultWrapper).append(filesSearchResultsList);
-                    Popover.init();
+                    $(searchResultWrapper).css({
+                        "overflow": "scroll"
+                    });
+                    Tippy.init();
 
                     _this.bootstrapNotify.notify("Found " + resultsCount + " matching result/s", 'success');
 
@@ -153,10 +156,13 @@ export default class Search {
         let _this = this;
         let ul    = $('<ul>');
         let li    = null;
+        ul.addClass('dropdown-list animated zoomIn list-unstyled');
 
         $.each(data, (index, result) => {
 
             let type:String = result['type'];
+            let $hr         = $("<hr>"); // must be created each time otherwise there are appending issues
+            $hr.addClass("m-0");
 
             switch(type){
                 case _this.resultTypes.file:
@@ -176,6 +182,7 @@ export default class Search {
             }
 
             $(ul).append(li);
+            $(ul).append($hr);
         });
 
         return ul;
@@ -188,7 +195,6 @@ export default class Search {
      */
    private buildFilesSearchResultsListElement(data: Array<string>): JQuery
    {
-
         let tagsJson        = data['tags'];
         let arrayOfTags     = JSON.parse(tagsJson);
         let tagsList        = '';
@@ -237,6 +243,10 @@ export default class Search {
         }
 
         let name = $('<span>');
+        name.css({
+            "margin-left": "7px"
+        });
+
         $(name).html(shortFilename);
         $(name).addClass("d-inline search-data-file-name");
 
@@ -246,30 +256,26 @@ export default class Search {
         $(link).append(moduleIcon);
         $(link).append(name);
 
-        //add popover to link
-        $(link).attr('data-trigger', "hover");
-
-        $(link).attr('data-html', "true");
-        $(link).attr('data-toggle-popover', 'true');
-
-        $(link).attr(
-            'data-content',
-            `<p style='display: flex;'>
-                    <span style='font-weight: bold; '>
-                        Tags:&nbsp;
-                    </span> 
-                    <span style='word-break: break-all;'>` + tagsList + `</span>
-                </p>`
-        );
         $(link).attr('title', filename);
 
-        // combine list elements
-        let li = $('<li>');
-        $(li).append(link);
-        $(li).append(downloadLink);
+       // combine all to final output list element
+       let $singleActionDownloadLink = this.buildSingleActionWrapper();
+       let $li                       = this.buildListElement("Tags", tagsList);
+       let $contentWrapper           = this.buildContentWrapperForListElement(link);
 
-        return li;
+        // build download action
+       $singleActionDownloadLink.append(downloadLink);
 
+        let allActions = [
+            $singleActionDownloadLink
+        ];
+
+       let $actionsWrapperWithActions = this.buildActionsWrapper(allActions);
+
+        $($li).append($contentWrapper);
+        $($li).append($actionsWrapperWithActions);
+
+        return $li;
     };
 
     /**
@@ -277,7 +283,8 @@ export default class Search {
      *
      * @param data
      */
-   private buildNotesSearchResultsListElement(data: Array<string>){
+   private buildNotesSearchResultsListElement(data: Array<string>): JQuery<HTMLElement>
+   {
         let title           = data['title'];
         let shortTitle      = title;
         let category        = data['category'];
@@ -290,14 +297,15 @@ export default class Search {
             shortTitle   = title.substr(0, shortLen) + '...';
         }
 
-        let button = $('<button>');
-        $(button).addClass('note-preview-search-result button-icon d-inline');
-        this.attachDialogCallOnTargetElement(button, noteId, categoryId);
+        // build note preview
+        let $notePreviewButton = $('<button>');
+        $notePreviewButton.addClass('note-preview-search-result button-icon d-inline');
+        this.attachDialogCallOnTargetElement($notePreviewButton, noteId, categoryId);
 
         let previewIcon = $('<i>');
         $(previewIcon).addClass('far fa-eye');
 
-        $(button).append(previewIcon);
+        $notePreviewButton.append(previewIcon);
 
         let moduleIcon = $('<span>');
         $(moduleIcon).addClass('search-data-module-icon');
@@ -306,6 +314,9 @@ export default class Search {
         let name = $('<span>');
         $(name).html(shortTitle);
         $(name).addClass("d-inline search-data-file-name");
+        name.css({
+           "margin-left": "7px"
+        });
 
         let link = $('<a>');
         $(link).attr('href', '/my-notes/category/' + category + '/' + categoryId);
@@ -313,29 +324,98 @@ export default class Search {
         $(link).append(moduleIcon);
         $(link).append(name);
 
-        //add popover to link
-        $(link).attr('data-trigger', "hover");
+        // combine all to final output list element
+        let $singleActionNotePreview  = this.buildSingleActionWrapper();
+        let $li                       = this.buildListElement("Title", title);
+        let $contentWrapper           = this.buildContentWrapperForListElement(link);
 
-        $(link).attr('data-html', "true");
-        $(link).attr('data-toggle-popover', 'true');
+        $singleActionNotePreview.append($notePreviewButton);
 
-        $(link).attr(
-            'data-content',
-            `<p style='display: flex;'>
-                    <span style='font-weight: bold; '>
-                        Title:&nbsp;
-                    </span> 
-                    <span style='word-break: break-all;'>` + title + `</span>
-                </p>`
-        );
-        $(link).attr('title', title);
+        let allActions = [
+            $singleActionNotePreview
+        ];
 
-        // combine list elements
-        let li = $('<li>');
-        $(li).append(link);
-        $(li).append(button);
+        let $actionsWrapperWithActions = this.buildActionsWrapper(allActions);
 
-        return li;
+        $($li).append($contentWrapper);
+        $($li).append($actionsWrapperWithActions);
+
+        return $li;
     };
+
+    /**
+     * @description will return single list element used in the search result
+     */
+   private buildListElement(popoverContentName: String, popoverContent: String): JQuery<HTMLElement>
+   {
+       let li = $('<li>');
+
+       //add popover to list element
+       $(li).attr(
+           'data-content',
+           `<p style='display: flex;'>
+                    <span style='font-weight: bold; '>
+                        ${popoverContentName}:&nbsp;
+                    </span> 
+                    <span style='word-break: break-all;'>${popoverContent}</span>
+                </p>`
+       );
+
+       $(li).attr('data-html', "true");
+       $(li).attr('data-toggle-popover', 'true');
+       $(li).attr('data-placement', 'right');
+       $(li).attr('data-offset', "0 -25%");
+       $(li).attr('data-offset', "0 -25%");
+
+       li.addClass('option d-flex justify-content-around');
+       li.css({
+           "padding": "10px !important"
+       });
+
+       return li;
+   }
+
+    /**
+     * @description will return content wrapper element used to contain the link to page
+     */
+   private buildContentWrapperForListElement($link: JQuery<HTMLElement>): JQuery<HTMLElement>
+   {
+       let contentWrapper = $('<SPAN>');
+       contentWrapper.css({
+           "width": "100%"
+       })
+       contentWrapper.append($link);
+       return contentWrapper;
+   }
+
+    /**
+     * @description will return single element used as a wrapper for action
+     */
+   private buildSingleActionWrapper(): JQuery<HTMLElement>
+   {
+       let $actionWrapperElement = $('<SPAN>');
+       $actionWrapperElement.addClass("text-center pointer");
+       $actionWrapperElement.css({
+           "width"  : "50px",
+           "display": "block"
+       })
+
+       return $actionWrapperElement;
+   }
+
+    /**
+     * @description will return the actions wrapper filled up with actions
+     * @param actionsWrappers
+     */
+   private buildActionsWrapper(actionsWrappers: Array<JQuery<HTMLElement>>): JQuery<HTMLElement>
+   {
+       let $actionsWrapper = $('<SPAN>')
+
+       $.each(actionsWrappers, (index, $element) => {
+           $actionsWrapper.append($element);
+       })
+
+       return $actionsWrapper;
+   }
 
 }

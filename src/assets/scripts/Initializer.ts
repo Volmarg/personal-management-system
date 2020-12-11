@@ -5,7 +5,6 @@ import WindowEvents                 from "./core/ui/WindowEvents";
 import DocumentEvents               from "./core/ui/DocumentEvents";
 import ApexChartsHandler            from "./libs/apexcharts/ApexChartsHandler";
 import Selectize                    from "./libs/selectize/Selectize";
-import Popover                      from "./libs/popover/Popover";
 import TinyMce                      from "./libs/tiny-mce/TinyMce";
 import PrismHighlight               from "./libs/prism/PrismHighlight";
 import FlatPicker                   from "./libs/datetimepicker/FlatPicker";
@@ -45,9 +44,11 @@ import Loader                       from "./libs/loader/Loader";
 import DomElements                  from "./core/utils/DomElements";
 import VideoJs                      from "./libs/video-js/VideoJs";
 import MassActions                  from "./core/ui/Actions/MassActions";
+import Tippy                        from "./libs/tippy/Tippy";
+import TodoModal                    from "./modules/Todo/TodoModal";
+
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
-import TodoModal from "./modules/Todo/TodoModal";
 /**
  * @description The entry point of whole project, this is where the entire logic is being triggered on, every single thing
  *              that might eventually be needed on given page is being triggered or reinitialized
@@ -97,7 +98,7 @@ export default class Initializer {
         // inits
         BootstrapSelect.init();
         this.initializeActions();
-        Popover.init();
+        Tippy.init();
         Sidebars.init();
         selectize.init();
         formsUtils.init();

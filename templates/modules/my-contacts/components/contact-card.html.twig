@@ -3,8 +3,6 @@
     {% if contact.getGroup() is not null %}
         <section style="margin-top: 10px; background-color: white; opacity: .5;"
                  data-toggle-popover="true"
-                 data-html="true"                               {# popover attr #}
-                 data-trigger="hover"                           {# popover attr #}
                  data-content="                                 {# popover attr #}
                  <p style='display: flex;'>
                     <span style='font-weight: bold; '>
@@ -22,8 +20,6 @@
     <section class="contact-card-actions">
         <div class="action"
              data-toggle-popover="true"                                {# popover attr #}
-             data-html="true"                                          {# popover attr #}
-             data-trigger="hover"                                      {# popover attr #}
              data-content="{{ 'actions.popover.edit' | trans }}"       {# popover attr #}
              data-placement="top"                                      {# popover attr #}
              data-entity-id="{{ contact.getId() }}"
@@ -33,8 +29,6 @@
         </div>
         <div class="action"
              data-toggle-popover="true"                                {# popover attr #}
-             data-html="true"                                          {# popover attr #}
-             data-trigger="hover"                                      {# popover attr #}
              data-content="{{ 'actions.popover.remove' | trans }}"     {# popover attr #}
              data-placement="top"                                      {# popover attr #}
              data-entity-id="{{ contact.getId() }}"

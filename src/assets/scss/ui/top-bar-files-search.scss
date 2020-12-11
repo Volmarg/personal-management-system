@@ -8,11 +8,15 @@
 }
 
 /* List with found files */
+#searchResultListWrapper{
+  transition: linear 300ms;
+  max-height: 0;
+}
 
 #searchResultListWrapper ul {
   max-height: 0 !important;
   overflow: hidden;
-  transition: linear 700ms;
+  transition: linear 100ms;
 
   background-color: white;
   list-style-type: none;
@@ -21,7 +25,7 @@
 }
 
 #searchResultListWrapper li {
-  padding: 5px !important;
+  padding: 7px !important;
 }
 
 /* Links to directories */
@@ -35,8 +39,16 @@
 .selectize-control:focus + #searchResultListWrapper ul, .selectize-control:hover + #searchResultListWrapper ul, #searchResultListWrapper ul:hover {
   height: auto !important;
   max-height: 500px !important;
-  transition: linear 1s;
+  transition: linear 500ms;
+}
 
+.search-input:hover > #searchResultListWrapper {
+  display: block;
+}
+
+#searchResultListWrapper ul {
+  max-height: 0 !important;
+  transition: linear 500ms;
 }
 
 #searchResultListWrapper ul li:hover {
@@ -69,4 +81,10 @@
 /* File name */
 #searchResultListWrapper ul li .search-result-file-name {
   padding-right: 5px;
+}
+
+/* Fix the small bar below search */
+.search-input:hover #searchResultListWrapper, #searchResultListWrapper:hover, {
+  max-height: 250px;
+  transition: linear 300ms;
 }

@@ -18,7 +18,7 @@ import './lightgallery/LightGallery';
 import './loader/Loader';
 import './loading-bar/LoadingBar';
 import './masonry/MasonryGallery';
-import './popover/Popover';
+import './tippy/Tippy';
 import './prism/PrismHighlight';
 import './scrollbar/Scrollbar';
 import './selectize/Selectize';

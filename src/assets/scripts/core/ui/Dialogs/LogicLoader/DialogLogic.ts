@@ -4,7 +4,6 @@ import FlatPicker           from "../../../../libs/datetimepicker/FlatPicker";
 import TinyMce              from "../../../../libs/tiny-mce/TinyMce";
 import Accordion            from "../../../../libs/accordion/Accordion";
 import DataTable            from "../../../../libs/datatable/DataTable";
-import Popover              from "../../../../libs/popover/Popover";
 import EditViaTinyMceAction from "../../Actions/EditViaTinyMceAction";
 import FontawesomeAction    from "../../Actions/FontawesomeAction";
 import UpdateAction         from "../../Actions/UpdateAction";
@@ -14,11 +13,10 @@ import TodoChecklist        from "../../../../modules/Todo/TodoChecklist";
 import Selectize            from "../../../../libs/selectize/Selectize";
 import MassActions          from "../../Actions/MassActions";
 import Navigation           from "../../../Navigation";
-import BootboxWrapper       from "../../../../libs/bootbox/BootboxWrapper";
 import AjaxEvents           from "../../../ajax/AjaxEvents";
-import LightGallery         from "../../../../libs/lightgallery/LightGallery";
 import BootstrapSelect      from "../../../../libs/bootstrap-select/BootstrapSelect";
 import DataTransferDialogs  from "../DataTransferDialogs";
+import Tippy                from "../../../../libs/tippy/Tippy";
 
 import * as $ from "jquery";
 
@@ -49,7 +47,7 @@ export default class DialogLogic {
 
             datatable.init();
             accordion.applyAccordion();
-            Popover.init();
+            Tippy.init();
             prism.init();
             dateTimePicker.init();
             tinymce.init();
@@ -84,7 +82,7 @@ export default class DialogLogic {
 
             datatable.init();
             accordion.applyAccordion();
-            Popover.init();
+            Tippy.init();
             editViaTinyMceAction.init();
             prism.init();
             dateTimePicker.init();
@@ -115,7 +113,7 @@ export default class DialogLogic {
             todoChecklist.init();
             removeAction.init();
             updateAction.init();
-            Popover.init();
+            Tippy.init();
         };
 
         let dialogDataDto = new DialogDataDto();

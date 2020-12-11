@@ -5,7 +5,6 @@
             data-content-editable="false"
             data-toggle-popover="true"                                {# popover attr #}
             data-html="true"                                          {# popover attr #}
-            data-trigger="hover"                                      {# popover attr #}
             data-content="{{ 'actions.popover.remove' | trans }}"     {# popover attr #}
             data-placement="top"                                      {# popover attr #}
 
@@ -28,8 +27,6 @@
             class="edit-record"
             data-content-editable="false"
             data-toggle-popover="true"                                {# popover attr #}
-            data-html="true"                                          {# popover attr #}
-            data-trigger="hover"                                      {# popover attr #}
             data-content="{{ 'actions.popover.edit' | trans }}"       {# popover attr #}
             data-placement="top"                                      {# popover attr #}
         {% if edit_attr is defined and edit_attr is not empty %}
@@ -52,8 +49,6 @@
             data-tiny-mce-wrapper-classes="{% if tinyMceWrapperClasses is defined  %}{{ tinyMceWrapperClasses }}{% endif %}"
             data-content-editable="false"
             data-toggle-popover="true"                                          {# popover attr #}
-            data-html="true"                                                    {# popover attr #}
-            data-trigger="hover"                                                {# popover attr #}
             data-content="{{ 'actions.popover.editWithTinyMce' | trans }}"      {# popover attr #}
             data-placement="top"                                                {# popover attr #}
             style="{{ editWithTinyMce_style is defined ? editWithTinyMce_style : '' }}"
@@ -69,8 +64,6 @@
      <span
          class="copy-record"
          data-toggle-popover="true"                                {# popover attr #}
-         data-html="true"                                          {# popover attr #}
-         data-trigger="hover"                                      {# popover attr #}
          data-content="{{ 'actions.popover.copy' | trans }}"       {# popover attr #}
          data-placement="top"                                      {# popover attr #}
          {% if copy_attr is defined and copy_attr is not empty %}
@@ -91,8 +84,6 @@
         <button class="file-download">
             <span aria-hidden="true"
                   data-toggle-popover="true"                                    {# popover attr #}
-                  data-html="true"                                              {# popover attr #}
-                  data-trigger="hover"                                          {# popover attr #}
                   data-content="{{ 'actions.popover.download' | trans }}"       {# popover attr #}
                   data-placement="top"                                          {# popover attr #}
             >
@@ -107,8 +98,6 @@
         class="save-record d-none"
         data-content-editable="false"
         data-toggle-popover="true"                                {# popover attr #}
-        data-html="true"                                          {# popover attr #}
-        data-trigger="hover"                                      {# popover attr #}
         data-content="{{ 'actions.popover.save' | trans }}"       {# popover attr #}
         data-placement="top"                                      {# popover attr #}
         style="{{ saveStyle is defined ? saveStyle : '' }}"
@@ -129,8 +118,6 @@
         class="action-fontawesome d-none"
         data-content-editable="false"
         data-toggle-popover="true"                                      {# popover attr #}
-        data-html="true"                                                {# popover attr #}
-        data-trigger="hover"                                            {# popover attr #}
         data-content="{{ 'actions.popover.fontawesome' | trans }}"      {# popover attr #}
         data-placement="top"                                            {# popover attr #}
         {% if fontawesome_attr is defined and fontawesome_attr is not empty %}
@@ -149,8 +136,6 @@
         data-lock-resource-type       ="{{ lock_type }}"
         data-lock-resource-target     ="{{ lock_target }}"
         data-toggle-popover="true"                                      {# popover attr #}
-        data-html="true"                                                {# popover attr #}
-        data-trigger="hover"                                            {# popover attr #}
         data-content="{{ 'actions.popover.lockRecord' | trans }}"       {# popover attr #}
         data-placement="top"                                            {# popover attr #}
         {% if lock_record_attr is defined and lock_record_attr is not empty %}

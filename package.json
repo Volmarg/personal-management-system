@@ -114,6 +114,7 @@
     "shufflejs": "^5.2.3",
     "skycons": "^1.0.0",
     "tinymce": "^5.5.1",
+    "tippy.js": "^6.2.7",
     "trumbowyg": "^2.21.0",
     "twig": "^1.15.2",
     "video.js": "^7.10.1"
