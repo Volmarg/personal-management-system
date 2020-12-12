@@ -76,6 +76,7 @@ export default class Search {
                 }
 
                 $(searchResultWrapper).empty();
+                $(searchResultWrapper).attr('style', "");
                 return;
             }
 
