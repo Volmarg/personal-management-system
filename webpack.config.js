@@ -1,6 +1,7 @@
 var Encore                  = require('@symfony/webpack-encore');
 var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 var CopyPlugin              = require('copy-webpack-plugin');
+var BundleAnalyzerPlugin    = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 /**
  * This is the standard configuration of Personal Management System UI
@@ -55,6 +56,9 @@ Encore
              */
             {from: './src/assets/scripts/libs/fontawesome-picker/src/iconpicker-1.5.0.json',      to: 'libs/iconpicker-1.5.0.json'}, // required for fontawesome picker
         ])
+    ).addPlugin(
+        // see: https://digitalfortress.tech/debug/how-to-use-webpack-analyzer-bundle/
+        new BundleAnalyzerPlugin()
     )
     .enableBuildNotifications()
     .enableSingleRuntimeChunk();
