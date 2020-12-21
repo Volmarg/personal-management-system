@@ -56,10 +56,13 @@ Encore
              */
             {from: './src/assets/scripts/libs/fontawesome-picker/src/iconpicker-1.5.0.json',      to: 'libs/iconpicker-1.5.0.json'}, // required for fontawesome picker
         ])
-    ).addPlugin(
-        // see: https://digitalfortress.tech/debug/how-to-use-webpack-analyzer-bundle/
-        new BundleAnalyzerPlugin()
     )
+    // Turn on to analyse the weight of files, why the finall bundle is so big etc
+    // This is turned off by default as it uses way to much resources upon each compliation
+    // .addPlugin(
+    //     // see: https://digitalfortress.tech/debug/how-to-use-webpack-analyzer-bundle/
+    //     new BundleAnalyzerPlugin()
+    // )
     .enableBuildNotifications()
     .enableSingleRuntimeChunk();
 
@@ -70,10 +73,15 @@ app_js_build.resolve = {
     extensions: [ '.tsx', '.ts', '.js' ],
 };
 app_js_build.stats                      = {};
-app_js_build.stats.errors                = true;
+app_js_build.stats.errors                = !Encore.isProduction();
 app_js_build.optimization               = {}; // this reset is needed
-app_js_build.optimization.namedModules  = true;
-app_js_build.devtool                    = 'inline-source-map';
+app_js_build.optimization.namedModules  = !Encore.isProduction();
+
+// this must be set only for the development, otherwise production mode compiles the assets like in the dev
+if( !Encore.isProduction() ){
+    app_js_build.devtool = 'inline-source-map';
+}
+
 
 // export the final configuration
 module.exports = [app_js_build];
