@@ -59,19 +59,17 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @return string
+     * @return int
      * @throws DBALException
      * @throws Exception
      */
-    public function getAvailableDaysTotally(): string
+    public function getAvailableDaysTotally(): int
     {
 
         $connection = $this->_em->getConnection();
 
         $sql = "
             SELECT 
-                -- SUM(mjhp.days_in_pool)                                     AS daysAvailableForAllYears,
-                -- daysSpent.daysSpentForAllYears                          AS daysSpentForAllYears,
                 SUM(mjhp.days_in_pool) - daysSpent.daysSpentForAllYears    AS daysAvailableTotally
             
             FROM my_job_holiday_pool mjhp
@@ -90,6 +88,10 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         $statement = $connection->prepare($sql);
         $statement->execute();
         $result = $statement->fetchOne();
+
+        if( is_null($result) ){
+            return 0;
+        }
 
         return $result;
     }

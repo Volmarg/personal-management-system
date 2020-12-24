@@ -31,11 +31,11 @@ class MyJobHolidaysPoolController extends AbstractController
     }
 
     /**
-     * @return string
+     * @return int
      * @throws DBALException
      * @throws Exception
      */
-    public function getAvailableDaysTotally(): string
+    public function getAvailableDaysTotally(): int
     {
         return $this->app->repositories->myJobHolidaysPoolRepository->getAvailableDaysTotally();
     }
