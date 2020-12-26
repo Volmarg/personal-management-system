@@ -28,7 +28,11 @@ export default class Tippy {
             let content   = $element.data(Tippy.popoverAttributes.content)
             let placement = $element.data(Tippy.popoverAttributes.placement)
 
-            if( !StringUtils.isEmptyString(content) ){
+            if(
+                    !StringUtils.isEmptyString(content)
+                // @ts-ignore
+                &&  !element._tippy
+            ){
                 tippy(element, {
                     allowHTML : true,
                     theme     : 'light',
