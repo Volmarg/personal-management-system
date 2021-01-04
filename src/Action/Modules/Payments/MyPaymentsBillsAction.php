@@ -38,9 +38,6 @@ class MyPaymentsBillsAction extends AbstractController {
      * @throws Exception
      */
     public function display(Request $request) {
-        $this->addBill($request);
-        $this->addBillItem($request);
-
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
@@ -50,10 +47,14 @@ class MyPaymentsBillsAction extends AbstractController {
     }
 
     /**
+     * Handles the fronted ajax call for adding bill
+     *
      * @Route("/my-payments-bills/add-bill", name="my-payments-bills-add")
      * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function addBill(Request $request) {
+    public function addBill(Request $request): JsonResponse {
         $form = $this->app->forms->paymentsBillsForm();
         $form->handleRequest($request);
 
@@ -62,14 +63,25 @@ class MyPaymentsBillsAction extends AbstractController {
             $em = $this->getDoctrine()->getManager();
             $em->persist($form_data);
             $em->flush();
+
+            $rendered_template = $this->renderTemplate(true, true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $template_content);
         }
+
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST);
     }
 
     /**
+     * Handles the fronted ajax call for adding bill item
+     *
      * @Route("/my-payments-bills/add-bill-item", name="my-payments-bills-items-add")
      * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function addBillItem(Request $request) {
+    public function addBillItem(Request $request): JsonResponse {
         $form = $this->app->forms->paymentsBillsItemsForm();
         $form->handleRequest($request);
 
@@ -78,7 +90,14 @@ class MyPaymentsBillsAction extends AbstractController {
             $em = $this->getDoctrine()->getManager();
             $em->persist($form_data);
             $em->flush();
+
+            $rendered_template = $this->renderTemplate(true, true);
+            $template_content  = $rendered_template->getContent();
+
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $template_content);
         }
+
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST);
     }
 
     /**
