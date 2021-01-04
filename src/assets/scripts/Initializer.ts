@@ -46,7 +46,7 @@ import VideoJs                      from "./libs/video-js/VideoJs";
 import MassActions                  from "./core/ui/Actions/MassActions";
 import Tippy                        from "./libs/tippy/Tippy";
 import TodoModal                    from "./modules/Todo/TodoModal";
-
+import FineUploaderService          from "./libs/fine-uploader/FineUploaderService";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -75,6 +75,7 @@ export default class Initializer {
         let formsUtils        = new FormsUtils();
         let accordion         = new Accordion();
         let videoJs           = new VideoJs();
+        let fineUploadService = new FineUploaderService();
 
         // core
         let search                 = new Search();
@@ -132,6 +133,7 @@ export default class Initializer {
         dialog.init();
 
         videoJs.init();
+        fineUploadService.init();
     }
 
     /**

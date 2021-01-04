@@ -113,6 +113,35 @@ class FileUploadAction extends AbstractController {
     }
 
     /**
+     * Handles the upload call from FineUploader `js package`
+     * @Route("/upload/test-fine-upload", name="upload_test_fine_upload")
+     */
+    public function testFineUpload()
+    {
+        $a = 1;
+    }
+
+    /**
+     * @Route("/upload/fine-upload", name="upload_fine_upload", methods={"GET"})
+     * @param Request $request
+     * @return Response
+     * @throws Exception
+     */
+    public function displayFineUploadPage(Request $request): Response
+    {
+        if (!$request->isXmlHttpRequest()) {
+            return $this->render('core/upload/upload-page-fine-upload.html.twig', [
+                'ajax_render' => false,
+            ]);
+        }
+
+        $template_content = $this->render('core/upload/upload-page-fine-upload.html.twig', [
+            'ajax_render' => true,
+        ])->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+    }
+
+    /**
      * @param Request $request
      * @throws Exception
      */
