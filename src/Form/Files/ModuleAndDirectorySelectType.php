@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Files;
 
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
+use App\Services\Core\Translator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -13,7 +14,15 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UploadFormType extends AbstractType {
+/**
+ * This is special `form` which consist only of 2 selects (module and directories)
+ * Can be used for example just to show options on the frontend and process the selection via js
+ * No submit is provided and it should remain this way
+ *
+ * Class ModuleAndDirectorySelectType
+ * @package App\Form
+ */
+class ModuleAndDirectorySelectType extends AbstractType {
 
     /**
      * @var Application
@@ -30,7 +39,8 @@ class UploadFormType extends AbstractType {
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class,[
                 'choices'       => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
                 'attr'          => [
-                    'data-dependent-list-selector' => '#upload_form_subdirectory'
+                    'data-dependent-list-selector'                 => '#module_and_directory_select_subdirectory',
+                    'data-module-and-directory-select-form-module' => "", // this attribute can be used in js / should never be changed
                 ],
                 'label' => $this->app->translator->translate('forms.UploadFormType.labels.uploadModuleDir')
             ])
@@ -44,28 +54,11 @@ class UploadFormType extends AbstractType {
                 'choices'     => [], //this is not used anyway but parent ChoiceType requires it,
                 'required'    => false,
                 'attr' => [
-                    'class' => 'form-control align-self-center',
-                    'style' => 'height:50px;',
+                    'data-module-and-directory-select-form-subdirectory' => "", // this attribute can be used in js / should never be changed
+                    'class'                                              => 'form-control align-self-center',
+                    'style'                                              => 'height:50px;',
                 ],
                 'label' => $this->app->translator->translate('forms.UploadFormType.labels.subdirectory')
-            ]);
-
-        $builder
-            ->add('submit', SubmitType::class, [
-                'attr' => [
-                    'class' => 'upload-submit btn btn-sm btn-primary',
-                    'style' => 'width:100%; margin: 6px 0 0 6px;'
-                ],
-                'label' => $this->app->translator->translate('forms.general.submit')
-            ]);
-
-        $builder
-            ->add('resetSelectedFiles', ButtonType::class, [
-                'attr' => [
-                    'class' => 'btn btn-sm btn-primary clear-selection col-1',
-                    'style' => 'width:100%; margin: 6px 0 6px 0;'
-                ],
-                "label" => " "
             ]);
 
         /**

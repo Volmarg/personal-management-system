@@ -29,6 +29,7 @@ class UploadrecursiveoptionsType extends AbstractType {
         'upload_subdirectory_create',
         'upload_form',
         'move_single_file',
+        'module_and_directory_select',
     ];
 
     public function getParent() {

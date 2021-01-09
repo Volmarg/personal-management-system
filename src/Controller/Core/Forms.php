@@ -9,6 +9,7 @@ use App\Form\Files\UpdateTagsType;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Form\Files\UploadSubdirectoryRenameType;
+use App\Form\Files\ModuleAndDirectorySelectType;
 use App\Form\Modules\Achievements\AchievementType;
 use App\Form\Modules\Contacts\MyContactGroupType;
 use App\Form\Modules\Contacts\MyContactType;
@@ -211,6 +212,10 @@ class Forms extends AbstractController {
 
     public function userRegisterForm(array $params = []): FormInterface {
         return $this->createForm(UserRegisterType::class, null, $params);
+    }
+
+    public function getModuleAndDirectorySelectForm(array $params = []): FormInterface{
+        return $this->createForm(ModuleAndDirectorySelectType::class, null, $params);
     }
 
     /**

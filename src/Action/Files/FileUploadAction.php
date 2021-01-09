@@ -115,10 +115,12 @@ class FileUploadAction extends AbstractController {
     /**
      * Handles the upload call from FineUploader `js package`
      * @Route("/upload/test-fine-upload", name="upload_test_fine_upload")
+     * @param Request $request
      */
-    public function testFineUpload()
+    public function testFineUpload(Request $request)
     {
-        $a = 1;
+
+        dump($request->files->all());
     }
 
     /**
@@ -129,15 +131,22 @@ class FileUploadAction extends AbstractController {
      */
     public function displayFineUploadPage(Request $request): Response
     {
+        // todo: make the same functions like in other cases (render / show etc)
+
+        $module_and_directory_select_form = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
+
         if (!$request->isXmlHttpRequest()) {
             return $this->render('core/upload/upload-page-fine-upload.html.twig', [
                 'ajax_render' => false,
+                'module_and_directory_select_form' => $module_and_directory_select_form,
             ]);
         }
 
         $template_content = $this->render('core/upload/upload-page-fine-upload.html.twig', [
-            'ajax_render' => true,
+            'ajax_render'                      => true,
+            'module_and_directory_select_form' => $module_and_directory_select_form,
         ])->getContent();
+
         return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
     }
 
