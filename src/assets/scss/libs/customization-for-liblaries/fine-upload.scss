@@ -1,3 +1,15 @@
 .qq-upload-button-selector, .qq-upload-button, .qq-upload-button-selector:hover, .qq-upload-button:hover {
   background: #4285f4 !important
 }
+
+.qq-upload-list li{
+  background-color: white !important;
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}
+
+.qq-edit-filename {
+  display: inline !important;
+  opacity: 1 !important;
+  z-index: 1 !important;
+  position: relative !important;
+}
