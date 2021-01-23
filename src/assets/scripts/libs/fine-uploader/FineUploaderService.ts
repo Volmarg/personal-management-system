@@ -1,5 +1,7 @@
 import {FineUploader, UIOptions} from 'fine-uploader';
 import DomElements               from "../../core/utils/DomElements";
+import Selectize                 from "../selectize/Selectize";
+import Tippy                     from "../tippy/Tippy";
 
 require('fine-uploader/fine-uploader/fine-uploader.min.css');
 
@@ -7,9 +9,12 @@ require('fine-uploader/fine-uploader/fine-uploader.min.css');
  * @description this class handles the upload via jquery by using the package:
  * @link https://www.npmjs.com/package/fine-uploader
  * @link https://docs.fineuploader.com/quickstart/03-setting_up_server.html
+ * @link https://docs.fineuploader.com/api/events.html
  */
 export default class FineUploaderService
 {
+
+    private selectize = new Selectize();
 
     public static readonly selectors = {
         fineUploadPanelSelector       : '[data-is-fine-upload]',
@@ -17,7 +22,8 @@ export default class FineUploaderService
         filenameEditButton            : '.qq-edit-filename-icon-selector',
         uploadList                    : '.qq-upload-list',
         fontawesomeUploadCancelButton : '.qq-upload-cancel-icon',
-        fineUploadCancelButton        : '.qq-upload-cancel-selector'
+        fineUploadCancelButton        : '.qq-upload-cancel-selector',
+        tagsInputSelector             : 'input.tags'
     }
 
     public static readonly attributes = {
@@ -66,7 +72,7 @@ export default class FineUploaderService
 
             })
 
-            this.handleInitialFilenamesShowingInTheEditInputs();
+            this.observerFilesList();
         }
 
     }
@@ -97,13 +103,20 @@ export default class FineUploaderService
     }
 
     /**
-     * @description the plugin itself works the way that the name is being shown only when we first click
-     *              on the edit button but since the input fields is now constantly visible and the edit
-     *              button remains hidden - it needs to be `clicked` for each uploaded file
-     *
-     * @private
+     * @description there is an issue where fontawesome icon steals the click for FineUpload action
+     *              this method handles such case and passes the click further to the proper removal button
      */
-    private handleInitialFilenamesShowingInTheEditInputs(): void
+    private bindRemoveFileFromQueueListOnIconRemovalClick($cancelButtonFontawesome: JQuery, $fineUploadCancelButton: JQuery)
+    {
+        $cancelButtonFontawesome.on('click', (event) => {
+            $fineUploadCancelButton.trigger('click');
+        })
+    }
+
+    /**
+     * @description will observer the uploaded files list, allows to react on adding/changing element etc.
+     */
+    private observerFilesList(): void
     {
         let $uploadedFilesList = $(FineUploaderService.selectors.uploadList);
         let _this              = this;
@@ -123,8 +136,10 @@ export default class FineUploaderService
                 $nameEditButton.trigger('click');
                 $inputElements.blur(); // escape the focus as plugin itself keeps focus upon clicking edit
 
-                console.log({$cancelButtonFontawesome, $fineUploadCancelButton});
+                _this.handleInitialFilenamesShowingInTheEditInputsByObservingMutations($listElement);
+                _this.handleAddingSelectizeTagsForNewInputsByObservingMutations($listElement);
                 _this.bindRemoveFileFromQueueListOnIconRemovalClick($cancelButtonFontawesome, $fineUploadCancelButton)
+                Tippy.init();
             }
         });
 
@@ -134,17 +149,32 @@ export default class FineUploaderService
     }
 
     /**
-     * @description there is an issue where fontawesome icon steals the click for FineUpload action
-     *              this method handles such case and passes the click further to the proper removal button
-     * @private
+     * @description the plugin itself works the way that the name is being shown only when we first click
+     *              on the edit button but since the input fields is now constantly visible and the edit
+     *              button remains hidden - it needs to be `clicked` for each uploaded file
+     *
      */
-    private bindRemoveFileFromQueueListOnIconRemovalClick($cancelButtonFontawesome: JQuery, $fineUploadCancelButton: JQuery)
+    private handleInitialFilenamesShowingInTheEditInputsByObservingMutations(listElement: JQuery<HTMLElement>): void
     {
-        // todo: fix it - fontawesome is stealing focus
-        $cancelButtonFontawesome.on('click', (event) => {
-            event.preventDefault();
-            $fineUploadCancelButton.trigger('click');
-        })
+        let $listElement    = $(listElement);
+        let $nameEditButton = $listElement.find(FineUploaderService.selectors.filenameEditButton);
+        let $inputElements  = $listElement.find('input');
+
+        $nameEditButton.trigger('click');
+        $inputElements.blur(); // escape the focus as plugin itself keeps focus upon clicking edit
+    }
+
+    /**
+     * @description upon adding new file the new DOM row is inserted, but each new element need to have selectize tag logic initalized
+     *
+     */
+    private handleAddingSelectizeTagsForNewInputsByObservingMutations(listElement: JQuery<HTMLElement>): void
+    {
+        let $listElement     = $(listElement);
+        let $tagsInput       = $listElement.find(FineUploaderService.selectors.tagsInputSelector);
+        let inputHtmlElement = $tagsInput[0];
+
+        this.selectize.applyTagsSelectizeForSingleInput(inputHtmlElement);
     }
 
 }

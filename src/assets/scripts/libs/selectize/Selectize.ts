@@ -8,6 +8,10 @@ import DomElements  from "../../core/utils/DomElements";
 
 export default class Selectize {
 
+    private static attributes = {
+        dataInlineCss: 'data-inline-css', // if present - will add inline rule to the selectize input (is block by default)
+    }
+
     /**
      * @description Main initialization logic
      */
@@ -22,29 +26,35 @@ export default class Selectize {
      */
     public applyTagsSelectize(): void
     {
-
         let allTagsInputsFields = $('input.tags');
         let _this               = this;
 
         // init tags with data from server
         $.each(allTagsInputsFields, (index, input) => {
-
-            let jsonValues   = $(input).attr('data-value');
-            let objectValues = [];
-            if( !StringUtils.isEmptyString(jsonValues) ){
-                objectValues = JSON.parse(jsonValues);
-            }
-            // @ts-ignore
-            let selectize = $(input).selectize({
-                persist     : false,
-                createOnBlur: true,
-                create      : true,
-            });
-
-            _this.addTagsToSelectize(selectize, objectValues);
-
+            _this.applyTagsSelectizeForSingleInput(input);
         });
     };
+
+    /**
+     * @description will apply tags selectize to single input element
+     */
+    public applyTagsSelectizeForSingleInput(input: HTMLElement)
+    {
+        let jsonValues   = $(input).attr('data-value');
+        let objectValues = [];
+        if( !StringUtils.isEmptyString(jsonValues) ){
+            objectValues = JSON.parse(jsonValues);
+        }
+        // @ts-ignore
+        let selectize = $(input).selectize({
+            persist     : false,
+            createOnBlur: true,
+            create      : true,
+        });
+
+        this.addTagsToSelectize(selectize, objectValues);
+        this.applyStylingAndManipulationForSelectizedInput(input);
+    }
 
     /**
      * Adds array of tags to selectize instance
@@ -67,7 +77,28 @@ export default class Selectize {
     };
 
     /**
-     * Will set given selectize inputs to disable by addig class
+     * @description will handle any kind of logic related to styling the selectized input element
+     *
+     * @param originalDomElement {HTMLElement}
+     */
+    private applyStylingAndManipulationForSelectizedInput(originalDomElement: HTMLElement): void
+    {
+        let $originalElement = $(originalDomElement);
+        let isInlineCss      = (0 !== $originalElement.filter("[" + Selectize.attributes.dataInlineCss + "]").length);
+
+        if(isInlineCss){
+            let $selectizeWrapper    = $originalElement.parent().find('.selectize-control');
+            let $selectizeSubWrapper = $originalElement.parent().find('.selectize-input');
+
+            $selectizeWrapper.addClass('d-inline-block');
+            $selectizeSubWrapper.css({
+               "overflow": "visible",
+            });
+        }
+    }
+
+    /**
+     * Will set given selectize inputs to disable by adding class
      */
     public disableTagsInputsForSelectorsOnPage(): void
     {
@@ -78,8 +109,8 @@ export default class Selectize {
         $.each(disableForSelectorsOnPage, (index, selector) => {
             if ( DomElements.doElementsExists($(selector)) )
             {
-                let allSelectizeRenderdInputWrappers = $(selector);
-                $(allSelectizeRenderdInputWrappers).addClass('disabled');
+                let allSelectizeRenderedInputWrappers = $(selector);
+                $(allSelectizeRenderedInputWrappers).addClass('disabled');
 
                 return false;
             }

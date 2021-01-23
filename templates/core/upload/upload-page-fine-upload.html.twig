@@ -61,11 +61,22 @@
                             <span class="qq-edit-filename-icon-selector d-none" aria-label="Edit filename"></span>
 
                             {#Filename edit input#}
-                            <input class="qq-edit-filename-selector qq-edit-filename form-control col-4" tabindex="0" type="text">
+                            <div class="col-3 d-inline-block">
+                                <small class="d-block">Filename</small>
+                                <input class="qq-edit-filename-selector qq-edit-filename form-control d-inline-block" tabindex="0" type="text" name="filename">
+                            </div>
+
+                            {#Tags edit input#}
+                            <div class="col-3 d-inline-block">
+                                <small class="d-block">Tags</small>
+                                <input class="form-control tags" type="text" name="tags" data-inline-css="true">
+                            </div>
 
                             {#Remove file from queue#}
                             <span type="button" class="qq-upload-cancel-selector qq-upload-cancel">
-                                <i class="fa fa-lg fa-trash qq-upload-cancel-icon"></i>
+                                <span class="qq-upload-cancel-icon" data-toggle-popover="true" data-content="Remove">
+                                    <i class="fa fa-lg fa-trash"></i>
+                                </span>
                             </span>
 
                             {#Retry upload on fail#}
