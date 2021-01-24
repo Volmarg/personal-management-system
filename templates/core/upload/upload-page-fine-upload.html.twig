@@ -5,7 +5,7 @@
 {% endif %}
     {% extends template %}
 {% block body %}
-
+{# todo: translations for all the strings in this script #}
     <script type="text/template" id="qq-template">
         <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
 
@@ -52,7 +52,7 @@
                     <span class="qq-upload-spinner-selector qq-upload-spinner"></span>
 
                     {# single uploaded file row content#}
-                    <div class="qq-file-info">
+                    <div class="qq-file-info" id="test-stuff">
 
                         <div class="qq-file-name">
 
@@ -152,7 +152,7 @@
 
                             <section
                                     data-is-fine-upload
-                                    data-upload-endpoint-url="{{ path('upload_test_fine_upload') }}"
+                                    data-upload-endpoint-url="{{ path('upload_files_via_fine_upload_plugin') }}"
                                     data-success-file-upload-url=""
                             >
                             </section>

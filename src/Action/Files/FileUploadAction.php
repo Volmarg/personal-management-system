@@ -11,16 +11,22 @@ use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Utils;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
+use App\Services\Files\FileTagger;
 use App\Services\Files\FileUploader;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use TypeError;
 
 class FileUploadAction extends AbstractController {
 
-    const UPLOAD_PAGE_TWIG_TEMPLATE     = 'core/upload/upload-page.html.twig';
+    const UPLOAD_PAGE_TWIG_TEMPLATE      = 'core/upload/upload-page.html.twig';
+    const FINE_UPLOAD_PAGE_TWIG_TEMPLATE = 'core/upload/upload-page-fine-upload.html.twig';
+    const FINE_UPLOAD_ALLOWED_COUNT_OF_UPLOADED_FILES_PER_CALL = 1;
 
     /**
      * @var Application $app
@@ -113,14 +119,59 @@ class FileUploadAction extends AbstractController {
     }
 
     /**
-     * Handles the upload call from FineUploader `js package`
-     * @Route("/upload/test-fine-upload", name="upload_test_fine_upload")
+     * Handles the upload call from FineUploader `js package`, is called each time for every file in upload list
+     *
+     * @Route("/upload/upload-files-via-fine-upload-plugin", name="upload_files_via_fine_upload_plugin", methods={"POST"})
      * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function testFineUpload(Request $request)
+    public function uploadFilesViaFineUploadPlugin(Request $request): JsonResponse
     {
+        if ( !$request->request->has(FileUploadController::KEY_UPLOAD_MODULE_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_UPLOAD_MODULE_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+        }
 
-        dump($request->files->all());
+        if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+        }
+
+        if ( !$request->request->has(FileTagger::KEY_TAGS) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . FileTagger::KEY_TAGS;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+        }
+
+        try{
+            $upload_module_dir                              = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+            $tags                                           = $request->request->get(FileTagger::KEY_TAGS);
+            $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+
+            $uploaded_files          = $request->files->all();
+            $count_of_uploaded_files = count($uploaded_files);
+            if(self::FINE_UPLOAD_ALLOWED_COUNT_OF_UPLOADED_FILES_PER_CALL != $count_of_uploaded_files){
+                throw new Exception("Called fine upload method for files upload, expected 1 file to handle, got : {$count_of_uploaded_files} files");
+            }
+
+            /** @var UploadedFile $uploaded_file */
+            $uploaded_file = reset($uploaded_files);
+            $response = $this->file_uploader->upload(
+                $uploaded_file,
+                $request,
+                $upload_module_dir,
+                $subdirectory_target_path_in_module_upload_dir,
+                $uploaded_file->getFilename(),
+                $uploaded_file->getExtension(),
+                $tags
+            );
+
+        }catch(Exception| TypeError $e){
+            $this->app->logExceptionWasThrown($e);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
@@ -131,23 +182,31 @@ class FileUploadAction extends AbstractController {
      */
     public function displayFineUploadPage(Request $request): Response
     {
-        // todo: make the same functions like in other cases (render / show etc)
-
-        $module_and_directory_select_form = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
-
         if (!$request->isXmlHttpRequest()) {
-            return $this->render('core/upload/upload-page-fine-upload.html.twig', [
-                'ajax_render' => false,
-                'module_and_directory_select_form' => $module_and_directory_select_form,
-            ]);
+            return $this->renderFineUploadTemplate(false);
         }
 
-        $template_content = $this->render('core/upload/upload-page-fine-upload.html.twig', [
-            'ajax_render'                      => true,
-            'module_and_directory_select_form' => $module_and_directory_select_form,
-        ])->getContent();
-
+        $template_content = $this->renderFineUploadTemplate(true)->getContent();
         return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+    }
+
+    /**
+     * This function is also used for generating content for dialog (quick upload widget)
+     *
+     * @param bool $ajax_render
+     * @return Response
+     * @throws Exception
+     */
+    private function renderFineUploadTemplate(bool $ajax_render): Response
+    {
+        $module_and_directory_select_form = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
+
+        $data = [
+            'ajax_render'                      => $ajax_render,
+            'module_and_directory_select_form' => $module_and_directory_select_form,
+        ];
+
+        return $this->render(self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE, $data);
     }
 
     /**

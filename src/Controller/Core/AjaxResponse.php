@@ -265,7 +265,7 @@ class AjaxResponse extends AbstractController {
      */
     public static function buildJsonResponseForAjaxCall(
         int     $code,
-        string  $message,
+        string  $message               = "",
         ?string $template              = null,
         ?string $password              = null,
         ?bool   $reload_page           = false,
