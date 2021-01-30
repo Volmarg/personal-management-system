@@ -3,12 +3,20 @@
     so instead of duplicating logic I just reuse the main body template for all use cases
 #}
 
+{% if inputColSize is not defined %}
+    {% set inputColSize = 3 %}
+{% endif %}
+
+{% if formSize is not defined %}
+    {% set formSize = 4 %}
+{% endif %}
+
 <script type="text/template" id="qq-template">
     <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
 
         {# File select and upload #}
         <div class="col-md-12 d-flex justify-content-center mt-1" style="padding-left: 10px;">
-            <div class="col-md-{{ formSize is defined ? formSize : 4 }} align-self-center">
+            <div class="col-md-{{ formSize }} align-self-center">
                 <section class="d-flex">
                     <section id="file-upload-file-select" class=" btn btn-sm btn-primary d-flex mL-0" style="width:50px; height:50px; padding: 0; ">
                         <div class="custom-file d-flex justify-content-center flex-column align-items-center h-100 hoverable-pointer qq-upload-button-selector qq-upload-button">
@@ -47,13 +55,13 @@
                         <span class="qq-edit-filename-icon-selector d-none" aria-label="Edit filename"></span>
 
                         {#Filename edit input#}
-                        <div class="col-3 d-inline-block">
+                        <div class="col-{{ inputColSize }} d-inline-block">
                             <small class="d-block floating-label">{{ 'fineUpload.uploadedRow.filename.label' | trans }}</small>
                             <input class="qq-edit-filename-selector qq-edit-filename form-control d-inline-block" tabindex="0" type="text" name="filename">
                         </div>
 
                         {#Tags edit input#}
-                        <div class="col-3 d-inline-block">
+                        <div class="col-{{ inputColSize }} d-inline-block">
                             <small class="d-block floating-label">{{ 'fineUpload.uploadedRow.tags.label' | trans }}</small>
                             <input class="form-control tags" type="text" name="tags" data-inline-css="true">
                         </div>
@@ -120,7 +128,7 @@
                         {% endif %}
 
                         {# Selects #}
-                        <div class="col-md-{{ formSize is defined ? formSize : 4 }} justify-content-center align-self-center file-upload-form">
+                        <div class="col-md-{{ formSize }} justify-content-center align-self-center file-upload-form">
                             <section>
                                 {{ form_widget(module_and_directory_select_form.upload_module_dir, {'attr': {
                                     'class'                                          : 'form-control upload-type listFilterer selectpicker',

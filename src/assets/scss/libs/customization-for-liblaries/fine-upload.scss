@@ -1,10 +1,29 @@
+/*
+  Most of the styles must be `!important` otherwise are not being applied even if this stylesheet is added on the end
+ */
 .qq-upload-button-selector, .qq-upload-button, .qq-upload-button-selector:hover, .qq-upload-button:hover {
   background: #4285f4 !important
 }
 
+.qq-uploader-selector {
+  display: flex !important;
+  justify-content: center !important;
+  flex-direction: column !important;
+}
+
+.qq-upload-list-selector{
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  overflow-y: scroll !important;
+  max-height: 414px !important;
+  max-width: 1400px !important;
+  align-self: center !important;
+  width: 100% !important;
+}
+
 .qq-upload-list li{
-  background-color: white !important;
-  border: 1px solid rgba(0,0,0,0.1) !important;
+  background-color: rgba(0,0,0,0.008) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
 .qq-edit-filename {
@@ -24,4 +43,15 @@
 
 INPUT.qq-edit-filename.qq-editing {
   margin-top: 0 !important;
+}
+
+.qq-upload-cancel-selector, .qq-upload-retry-selector {
+  align-self: flex-end !important;
+  padding-bottom: 5px !important;
+}
+
+.qq-file-name {
+  display: flex !important;
+  justify-content: space-around !important;
+  flex-direction: row !important;
 }

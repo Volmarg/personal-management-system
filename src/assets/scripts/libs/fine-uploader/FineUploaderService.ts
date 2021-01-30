@@ -106,32 +106,36 @@ export default class FineUploaderService
                     autoUpload: false,
                     callbacks: {
                         /**
+                         * @description called when the item becomes a candidate to the queue, is not yet in queue
+                         *              returning false will reject the item from adding it to the queue, else true
+                         *              files validations should be added explicitly here
+                         */
+                       onSubmit: (uploadedFileId) => {
+                            let uploadedFileData           = _this.fineUploaderInstance.getUploads({id: uploadedFileId});
+                            let uploadedFileName           = uploadedFileData['name'];
+                            let uploadedFileSizeInBytes    = uploadedFileData['size'];
+                            let maxUploadSizeBytes         = Number.parseInt($("[" + FineUploaderService.attributes.maxUploadFilesSizeBytes + "]").attr(FineUploaderService.attributes.maxUploadFilesSizeBytes));
+
+                            if( this.uploadedFilesNames.includes(uploadedFileName) ){
+                                this.bootstrapNotify.showRedNotification(`Duplicate: ${uploadedFileName}!`);
+                                return false;
+                            }
+
+                            if( uploadedFileSizeInBytes > maxUploadSizeBytes ){
+                                this.bootstrapNotify.showRedNotification(`Filesize is to big: ${uploadedFileName}!`);
+                                return false;
+                            }
+
+                            return true;
+                        },
+                        /**
                          * @description triggered when file is added to the upload queue
                          */
                         onSubmitted: (uploadedFileId) => {
                             let uploadedFileData           = _this.fineUploaderInstance.getUploads({id: uploadedFileId});
                             let uploadedFileName           = uploadedFileData['name'];
-                            let uploadedFileSizeInBytes    = uploadedFileData['size'];
                             let uniqueFileIdentifier       = uploadedFileData['uuid'];
                             let $listElementForCurrentFile = $('[title^="' + uploadedFileName + '"]').closest('li');
-                            let maxUploadSizeBytes         = Number.parseInt($("[" + FineUploaderService.attributes.maxUploadFilesSizeBytes + "]").attr(FineUploaderService.attributes.maxUploadFilesSizeBytes));
-
-                            // todo: there is still some problem when selecting more files and the duplicate is among them
-                            //  this might also happen with drag n drop multiple files
-                            // todo: handle the issue when lot of files, this causes
-                            //  - also for the dialog / maybe just make the container max-height ?
-                            //  - make the inputs in modal bigger, col-6?
-                            if( this.uploadedFilesNames.includes(uploadedFileName) ){
-                                _this.fineUploaderInstance.cancel(uploadedFileId);
-                                this.bootstrapNotify.showRedNotification(`Duplicate: ${uploadedFileName}!`);
-                                return;
-                            }
-
-                            if( uploadedFileSizeInBytes > maxUploadSizeBytes ){
-                                _this.fineUploaderInstance.cancel(uploadedFileId);
-                                this.bootstrapNotify.showRedNotification(`Filesize is to big: ${uploadedFileName}!`);
-                                return;
-                            }
 
                             this.uploadedFilesNames.push(uploadedFileName);
 
