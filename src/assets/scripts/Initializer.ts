@@ -17,7 +17,6 @@ import FormsUtils                   from "./core/utils/FormsUtils";
 import Accordion                    from "./libs/accordion/Accordion";
 import JsColor                      from "./libs/jscolor/JsColor";
 import Search                       from "./core/ui/Search";
-import Upload                       from "./modules/Files/Upload";
 import UploadSettings               from "./modules/Files/UploadSettings";
 import LockedResource               from "./core/locked-resource/LockedResource";
 import CallableViaDataAttrsDialogs  from "./core/ui/Dialogs/CallableViaDataAttrsDialogs";
@@ -79,7 +78,6 @@ export default class Initializer {
 
         // core
         let search                 = new Search();
-        let upload                 = new Upload();
         let uploadSettings         = new UploadSettings();
         let lockedResource         = new LockedResource();
         let callableViaAttrDialogs = new CallableViaDataAttrsDialogs();
@@ -103,7 +101,6 @@ export default class Initializer {
         Sidebars.init();
         selectize.init();
         formsUtils.init();
-        upload.init();
         uploadSettings.init();
         datatable.init();
         loadingBar.init();

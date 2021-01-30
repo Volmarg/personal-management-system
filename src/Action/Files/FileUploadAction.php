@@ -24,7 +24,6 @@ use TypeError;
 
 class FileUploadAction extends AbstractController {
 
-    const UPLOAD_PAGE_TWIG_TEMPLATE      = 'core/upload/upload-page.html.twig';
     const FINE_UPLOAD_PAGE_TWIG_TEMPLATE = 'core/upload/upload-page-fine-upload.html.twig';
     const FINE_UPLOAD_ALLOWED_COUNT_OF_UPLOADED_FILES_PER_CALL = 1;
 
@@ -54,72 +53,6 @@ class FileUploadAction extends AbstractController {
         $this->app           = $app;
         $this->controllers   = $controllers;
         $this->file_uploader = $fileUploader;
-    }
-
-    // todo: remove the old upload methods, also adjust the dialog for new logic
-    /**
-     * @Route("/upload/", name="upload")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function displayUploadPage(Request $request) {
-        $this->sendData($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
-        }
-
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
-    }
-
-    /**
-     * @Route("/upload/send", name="upload_send")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function sendData(Request $request){
-        $this->handleFileUpload($request);
-
-        $referer_url     = $request->server->get('HTTP_REFERER');
-        $upload_page_url = $this->generateUrl('upload');
-
-        if( $referer_url === $upload_page_url || empty($referer_url) ) {
-            return $this->renderTemplate(false);
-        }
-
-        return $this->redirect($referer_url);
-    }
-
-    /**
-     * This function is also used for generating content for dialog (quick upload widget)
-     * @param bool $ajax_render
-     * @param string|null $twig_template
-     * @return Response
-     * @throws Exception
-     */
-    public function renderTemplate(bool $ajax_render, ?string $twig_template = null)
-    {
-        $upload_max_filesize        = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
-        $post_max_size              = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
-        $max_allowed_files_count    = ini_get('max_file_uploads');
-
-        $max_upload_size_mb  = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize );
-
-        $form = $this->app->forms->uploadForm();
-
-        $data = [
-            'ajax_render'               => $ajax_render,
-            'form'                      => $form->createView(),
-            'max_upload_size_mb'        => $max_upload_size_mb,
-            'max_allowed_files_count'   => $max_allowed_files_count
-        ];
-
-        $template = $twig_template ?? static::UPLOAD_PAGE_TWIG_TEMPLATE;
-
-        return $this->render($template, $data);
     }
 
     /**
@@ -208,7 +141,7 @@ class FileUploadAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    private function renderFineUploadTemplate(bool $ajax_render): Response
+    public function renderFineUploadTemplate(bool $ajax_render, ?string $twig_template = null): Response
     {
         $module_and_directory_select_form = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
         $upload_max_filesize              = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
@@ -223,7 +156,9 @@ class FileUploadAction extends AbstractController {
             'max_upload_size_bytes'            => $max_upload_size_bytes,
         ];
 
-        return $this->render(self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE, $data);
+        $template = $twig_template ?? self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE;
+
+        return $this->render($template, $data);
     }
 
     /**

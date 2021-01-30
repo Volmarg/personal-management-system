@@ -3,7 +3,6 @@ import FormAppendAction         from "../../Actions/FormAppendAction";
 import JsColor                  from "../../../../libs/jscolor/JsColor";
 import TinyMce                  from "../../../../libs/tiny-mce/TinyMce";
 import NotesTinyMce             from "../../../../modules/Notes/NotesTinyMce";
-import Upload                   from "../../../../modules/Files/Upload";
 import FormsUtils               from "../../../utils/FormsUtils";
 import WidgetDataDto            from "../../../../DTO/WidgetDataDto";
 import Ajax                     from "../../../ajax/Ajax";
@@ -13,6 +12,7 @@ import DirectoriesBasedWidget   from "../DirectoriesBased/DirectoriesBasedWidget
 import Navigation               from "../../../Navigation";
 import CreateAction             from "../../Actions/CreateAction";
 import BootstrapSelect          from "../../../../libs/bootstrap-select/BootstrapSelect";
+import FineUploaderService      from "../../../../libs/fine-uploader/FineUploaderService";
 
 /**
  * @description this class contains definitions of logic used for given widget
@@ -100,17 +100,15 @@ export default class WidgetData {
     public static filesUpload(): WidgetDataDto
     {
         let callback = () => {
-            let upload                  = new Upload();
             let forms                   = new FormsUtils();
             let directoriesBasedWidget  = new DirectoriesBasedWidget();
-            let moduleSelectSelector    = 'select#upload_form_upload_module_dir';
-            let directorySelectSelector = 'select#upload_form_subdirectory';
+            let fineUploaderService     = new FineUploaderService();
 
             BootstrapSelect.init();
-            upload.init();
             forms.init();
+            fineUploaderService.init(true);
 
-            directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
+            directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);
 
             let $mainContentInModal = $('.bootbox-body main.main-content');
             $mainContentInModal.css({
@@ -173,7 +171,6 @@ export default class WidgetData {
         let moduleName = Ajax.getConstantValueFromBackend(ControllerStructure.ModulesController.getNamespace(), moduleNameBackendConstant);
 
         let callback = () => {
-            let upload                  = new Upload();
             let forms                   = new FormsUtils();
             let directoriesBasedWidget  = new DirectoriesBasedWidget();
             let createAction            = new CreateAction();
@@ -182,7 +179,6 @@ export default class WidgetData {
             let directorySelectSelector = 'select#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir';
 
             createAction.init(false);  // dont reinitialize logic
-            upload.init();
             forms.init();
             BootstrapSelect.init();
             directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);

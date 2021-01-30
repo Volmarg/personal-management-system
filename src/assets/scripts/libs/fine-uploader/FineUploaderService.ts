@@ -4,6 +4,9 @@ import Selectize                 from "../selectize/Selectize";
 import Tippy                     from "../tippy/Tippy";
 import BootstrapNotify           from "../bootstrap-notify/BootstrapNotify";
 import Loader                    from "../loader/Loader";
+import Navigation                from "../../core/Navigation";
+import AjaxEvents                from "../../core/ajax/AjaxEvents";
+import DirectoriesBasedWidget    from "../../core/ui/Widgets/DirectoriesBased/DirectoriesBasedWidget";
 
 require('fine-uploader/fine-uploader/fine-uploader.min.css');
 
@@ -24,11 +27,15 @@ export default class FineUploaderService
     /**
      * @type FineUploader
      */
-    private fineUploaderInstance;
+    private fineUploaderInstance = null;
+
+    private bootstrapNotify = new BootstrapNotify();
 
     private selectize = new Selectize();
 
-    private bootstrapNotify = new BootstrapNotify();
+    private ajaxEvents = new AjaxEvents();
+
+    private directoriesBasedWidget = new DirectoriesBasedWidget();
 
     private uploadedFilesNames = [];
 
@@ -42,6 +49,8 @@ export default class FineUploaderService
         fineUploadRetryButton         : '.qq-upload-retry-selector',
         fontawesomeUploadRetryButton  : '.qq-retry-icon',
         tagsInputSelector             : 'input.tags',
+        moduleSelectSelector          : 'select#module_and_directory_select_upload_module_dir',
+        directorySelectSelector       : 'select#module_and_directory_select_subdirectory',
     }
 
     public static readonly attributes = {
@@ -49,12 +58,13 @@ export default class FineUploaderService
         successFileUploadUrl    : 'data-success-file-upload-url',
         uniqueFileIdentifier    : 'data-unique-file-identifier',
         maxUploadFilesSizeBytes : 'data-max-upload-size-bytes',
+        isInstanceInitialized   : 'data-fine-upload-is-initialized',
     }
 
     /**
      * @description will initialize the logic of the file uploader
      */
-    public init(): void
+    public init(reloadPageAfterSuccessfulUpload = false): void
     {
         let _this                = this;
         let $allFineUploadPanels = $(FineUploaderService.selectors.fineUploadPanelSelector);
@@ -63,6 +73,15 @@ export default class FineUploaderService
             $.each($allFineUploadPanels, (index, element) => {
 
                 let $element = $(element);
+
+                /**
+                 * @description the instance is already active, prevent reactivating it
+                 *              might block initializing multiple instances on the same page,
+                 *              however such case should never ever happen,
+                 */
+                if( $element.is("[" + FineUploaderService.attributes.isInstanceInitialized + "]") ){
+                    return;
+                }
 
                 let uploadEndpointUrl     = $element.attr(FineUploaderService.attributes.uploadEndpointUrl);
                 let successFileUploadUrl  = $element.attr(FineUploaderService.attributes.successFileUploadUrl);
@@ -97,7 +116,12 @@ export default class FineUploaderService
                             let $listElementForCurrentFile = $('[title^="' + uploadedFileName + '"]').closest('li');
                             let maxUploadSizeBytes         = Number.parseInt($("[" + FineUploaderService.attributes.maxUploadFilesSizeBytes + "]").attr(FineUploaderService.attributes.maxUploadFilesSizeBytes));
 
-                            if(this.uploadedFilesNames.includes(uploadedFileName)){
+                            // todo: there is still some problem when selecting more files and the duplicate is among them
+                            //  this might also happen with drag n drop multiple files
+                            // todo: handle the issue when lot of files, this causes
+                            //  - also for the dialog / maybe just make the container max-height ?
+                            //  - make the inputs in modal bigger, col-6?
+                            if( this.uploadedFilesNames.includes(uploadedFileName) ){
                                 _this.fineUploaderInstance.cancel(uploadedFileId);
                                 this.bootstrapNotify.showRedNotification(`Duplicate: ${uploadedFileName}!`);
                                 return;
@@ -153,6 +177,10 @@ export default class FineUploaderService
 
                             for(let fileId of successfullyUploadedFilesIds){
                                 let $listElementForCurrentFile = _this.getListElementForUploadedFileId(fileId);
+                                let uploadedFileData           = _this.fineUploaderInstance.getUploads({id: fileId});
+                                let uploadedFileName           = uploadedFileData['name'];
+
+                                this.uploadedFilesNames.splice(uploadedFileName);
                                 $listElementForCurrentFile.fadeToggle(400);
                                 setTimeout(() => {
                                     $listElementForCurrentFile.remove();
@@ -160,6 +188,12 @@ export default class FineUploaderService
                             }
 
                             Loader.hideLoader();
+                            if(reloadPageAfterSuccessfulUpload){
+                                let afterReinitializeCallback = () => {
+                                    _this.directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);
+                                };
+                                _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri(), undefined, false, afterReinitializeCallback);
+                            }
 
                             if( 0 === failedUploadedFilesIds.length ){
                                 this.bootstrapNotify.showGreenNotification("Upload finished with success");
@@ -174,6 +208,7 @@ export default class FineUploaderService
                 // the order is very important here, some logic must be added after the uploader has been initialized
                 this.fineUploaderInstance = new FineUploader(options);
                 this.handleManualUploadButton();
+                $element.attr(FineUploaderService.attributes.isInstanceInitialized, "");
             })
 
             this.observerFilesList();

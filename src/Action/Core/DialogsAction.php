@@ -336,7 +336,7 @@ class DialogsAction extends AbstractController
 
         try{
 
-            $template = $this->file_upload_action->renderTemplate(false, self::TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD)->getContent();
+            $template = $this->file_upload_action->renderFineUploadTemplate(false, self::TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD)->getContent();
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;
@@ -865,8 +865,7 @@ class DialogsAction extends AbstractController
         $success       = true;
 
         try{
-
-            $template = $this->file_upload_action->renderTemplate(false, self::TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION)->getContent();
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION)->getContent();
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;

@@ -17,9 +17,6 @@ export default class DirectoriesBasedWidget {
         let moduleSelect            = $(moduleSelectSelector);
         let directorySelect         = $(directorySelectSelector);
 
-        let moduleSelectOptions     = moduleSelect.find('option');
-        let directorySelectOptions  = document.querySelectorAll("select#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir option");
-
         let getAttrs                = JSON.parse(Navigation.getCurrentGetAttrs());
         let directoryPath           = unescape(getAttrs.encoded_subdirectory_path);
         let route                   = Navigation.getCurrentRoute();
@@ -38,12 +35,6 @@ export default class DirectoriesBasedWidget {
         }
 
         moduleSelect.val(moduleToSelect);
-        $.each(moduleSelectOptions, (index, option) => {
-            let $option = $(option);
-            if ($option.val() == moduleToSelect) {
-                $option.attr("selected", "true");
-            }
-        });
 
         //swap dir
         let allOptgroups = $("optgroup");
@@ -57,17 +48,6 @@ export default class DirectoriesBasedWidget {
 
         optgroupForModule.attr('class', '');
 
-        // first remove "selected" attr from currently auto selected option
-        $.each(directorySelectOptions, (index, option) => {
-            let $option    = $(option);
-            let isSelected = $option.attr('selected');
-
-            if( isSelected ){
-                $option.removeAttr("selected");
-                return false;
-            }
-        });
-
         if( StringUtils.isEmptyString(directoryPath) ){ // main dir
             // main dir is always first on list so I just select it
             let $firstOption = $(options[0]);
@@ -75,15 +55,6 @@ export default class DirectoriesBasedWidget {
         }
 
         directorySelect.val(directoryPath);
-        $.each(options, (index, option) => {
-            let $option = $(option);
-
-            $option.attr('class','');
-
-            if ($option.val() == directoryPath) {
-                $option.attr("selected", "true");
-            }
-        });
 
         //handle bootstrap-select
         if( BootstrapSelect.isSelectpicter(directorySelect) ){

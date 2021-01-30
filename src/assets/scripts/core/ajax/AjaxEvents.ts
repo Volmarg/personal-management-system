@@ -84,12 +84,13 @@ export default class AjaxEvents extends AbstractAjax {
     }
 
     /**
-     * @param url           {string}
-     * @param callbackAfter {function}
-     * @param showMessages  {boolean}
+     * @param url                            {string}
+     * @param callbackAfterInsertingTemplate {function}
+     * @param showMessages                   {boolean}
+     * @param callbackAfterReinitialize      {function}
      * @description This method will fetch module template and load it into mainBody, not showing message here on purpose
      */
-    public loadModuleContentByUrl(url:string, callbackAfter:Function = undefined, showMessages:boolean = false): void
+    public loadModuleContentByUrl(url:string, callbackAfterInsertingTemplate:Function = undefined, showMessages:boolean = false, callbackAfterReinitialize:Function = undefined): void
     {
         let _this = this;
 
@@ -117,8 +118,8 @@ export default class AjaxEvents extends AbstractAjax {
                 Ui.insertIntoMainContent(ajaxResponseDto.template);
             }
 
-            if( $.isFunction(callbackAfter) ){
-                callbackAfter();
+            if( $.isFunction(callbackAfterInsertingTemplate) ){
+                callbackAfterInsertingTemplate();
             }
 
             /**
@@ -132,6 +133,9 @@ export default class AjaxEvents extends AbstractAjax {
                 history.pushState({}, null, url);
                 Sidebars.markCurrentMenuElementAsActive();
                 MasonryGallery.init();
+                if( $.isFunction(callbackAfterReinitialize) ){
+                    callbackAfterReinitialize();
+                }
             });
 
             if( ajaxResponseDto.reloadPage ){
