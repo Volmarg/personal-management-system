@@ -373,6 +373,37 @@ upload:
   errors:
     thereWasAnErrorWhileUploadingFiles: There was an error while uploading files
 
+# todo: remove the `upload` section, copy necessary translations
+fineUpload:
+  buttons:
+    upload:
+      label: Upload
+  uploadedRow:
+    filename:
+      label: Filename
+    tags:
+      label: Tags
+  tippy:
+    actions:
+      remove:
+        label: Remove
+      retry:
+        label: Retry
+  texts:
+    generalInfo: >
+      You can either select files manually via form or just use the Drag&Drop.
+    information:
+      maxUploadedFileSize: "Max uploaded file size:"
+    demoText: >
+      For security reason (Demo instance) - some file types upload has been disabled.<br/>
+      You won't be informed about wrong file upload - that file will just be skipped.<br/>
+      All uploaded data will be removed couple of times a day.
+  mb: Mb
+  headers:
+    uploadFiles: Upload files
+
+
+
 issues:
   card:
     lastContactDate: "Last contact date: "

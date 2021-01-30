@@ -28,6 +28,9 @@ class FileUploadAction extends AbstractController {
     const FINE_UPLOAD_PAGE_TWIG_TEMPLATE = 'core/upload/upload-page-fine-upload.html.twig';
     const FINE_UPLOAD_ALLOWED_COUNT_OF_UPLOADED_FILES_PER_CALL = 1;
 
+    // this is a key name used internally by the FineUpload JS plugin
+    const KEY_FILE_NAME = "qqfilename";
+
     /**
      * @var Application $app
      */
@@ -53,6 +56,7 @@ class FileUploadAction extends AbstractController {
         $this->file_uploader = $fileUploader;
     }
 
+    // todo: remove the old upload methods, also adjust the dialog for new logic
     /**
      * @Route("/upload/", name="upload")
      * @param Request $request
@@ -143,10 +147,17 @@ class FileUploadAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
+        if ( !$request->request->has(self::KEY_FILE_NAME) ) {
+            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_FILE_NAME;
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+        }
+
         try{
             $upload_module_dir                              = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
             $tags                                           = $request->request->get(FileTagger::KEY_TAGS);
             $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+            $file_name_with_extension                       = $request->request->get(self::KEY_FILE_NAME);
+            $file_name                                      = pathinfo($file_name_with_extension, PATHINFO_FILENAME);
 
             $uploaded_files          = $request->files->all();
             $count_of_uploaded_files = count($uploaded_files);
@@ -161,7 +172,7 @@ class FileUploadAction extends AbstractController {
                 $request,
                 $upload_module_dir,
                 $subdirectory_target_path_in_module_upload_dir,
-                $uploaded_file->getFilename(),
+                $file_name,
                 $uploaded_file->getExtension(),
                 $tags
             );
@@ -200,10 +211,16 @@ class FileUploadAction extends AbstractController {
     private function renderFineUploadTemplate(bool $ajax_render): Response
     {
         $module_and_directory_select_form = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
+        $upload_max_filesize              = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
+        $post_max_size                    = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
+        $max_upload_size_mb               = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize );
+        $max_upload_size_bytes            = $max_upload_size_mb * 1024 * 1024;
 
         $data = [
             'ajax_render'                      => $ajax_render,
             'module_and_directory_select_form' => $module_and_directory_select_form,
+            'max_upload_size_mb'               => $max_upload_size_mb,
+            'max_upload_size_bytes'            => $max_upload_size_bytes,
         ];
 
         return $this->render(self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE, $data);

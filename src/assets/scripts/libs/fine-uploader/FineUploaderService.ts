@@ -2,12 +2,17 @@ import {FineUploader, UIOptions} from 'fine-uploader';
 import DomElements               from "../../core/utils/DomElements";
 import Selectize                 from "../selectize/Selectize";
 import Tippy                     from "../tippy/Tippy";
-import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+import BootstrapNotify           from "../bootstrap-notify/BootstrapNotify";
+import Loader                    from "../loader/Loader";
 
 require('fine-uploader/fine-uploader/fine-uploader.min.css');
 
 /**
  * @description this class handles the upload via jquery by using the package:
+ *              keep in mind that some of the strings/texts are hardcoded
+ *              this is due to the fact that there is no logic to load translations from within js
+ *              also the FineUpload uses it's own internal hardcoded translations
+ *
  * @link https://www.npmjs.com/package/fine-uploader
  * @link https://docs.fineuploader.com/quickstart/03-setting_up_server.html
  * @link https://docs.fineuploader.com/api/events.html
@@ -25,8 +30,6 @@ export default class FineUploaderService
 
     private bootstrapNotify = new BootstrapNotify();
 
-    // todo: this will be used to track unique files in upload
-    //  needs to be updated with MutationObserver or something - that is when user renames the filename then this must be also updated
     private uploadedFilesNames = [];
 
     public static readonly selectors = {
@@ -36,13 +39,16 @@ export default class FineUploaderService
         uploadList                    : '.qq-upload-list',
         fontawesomeUploadCancelButton : '.qq-upload-cancel-icon',
         fineUploadCancelButton        : '.qq-upload-cancel-selector',
-        tagsInputSelector             : 'input.tags'
+        fineUploadRetryButton         : '.qq-upload-retry-selector',
+        fontawesomeUploadRetryButton  : '.qq-retry-icon',
+        tagsInputSelector             : 'input.tags',
     }
 
     public static readonly attributes = {
-        uploadEndpointUrl    : 'data-upload-endpoint-url',
-        successFileUploadUrl : 'data-success-file-upload-url',
-        uniqueFileIdentifier : 'data-unique-file-identifier',
+        uploadEndpointUrl       : 'data-upload-endpoint-url',
+        successFileUploadUrl    : 'data-success-file-upload-url',
+        uniqueFileIdentifier    : 'data-unique-file-identifier',
+        maxUploadFilesSizeBytes : 'data-max-upload-size-bytes',
     }
 
     /**
@@ -67,9 +73,9 @@ export default class FineUploaderService
                         endpoint: uploadEndpointUrl
                     },
                     chunking: {
-                        enabled: true,
+                        enabled: false,
                             concurrent: {
-                            enabled: true
+                            enabled: false
                         },
                         success: {
                             endpoint: successFileUploadUrl
@@ -84,12 +90,26 @@ export default class FineUploaderService
                          * @description triggered when file is added to the upload queue
                          */
                         onSubmitted: (uploadedFileId) => {
-                            // todo: add logic to deny uploading images with the same name otherwise this won't work
-                            //  add warning about not unique name
                             let uploadedFileData           = _this.fineUploaderInstance.getUploads({id: uploadedFileId});
                             let uploadedFileName           = uploadedFileData['name'];
+                            let uploadedFileSizeInBytes    = uploadedFileData['size'];
                             let uniqueFileIdentifier       = uploadedFileData['uuid'];
                             let $listElementForCurrentFile = $('[title^="' + uploadedFileName + '"]').closest('li');
+                            let maxUploadSizeBytes         = Number.parseInt($("[" + FineUploaderService.attributes.maxUploadFilesSizeBytes + "]").attr(FineUploaderService.attributes.maxUploadFilesSizeBytes));
+
+                            if(this.uploadedFilesNames.includes(uploadedFileName)){
+                                _this.fineUploaderInstance.cancel(uploadedFileId);
+                                this.bootstrapNotify.showRedNotification(`Duplicate: ${uploadedFileName}!`);
+                                return;
+                            }
+
+                            if( uploadedFileSizeInBytes > maxUploadSizeBytes ){
+                                _this.fineUploaderInstance.cancel(uploadedFileId);
+                                this.bootstrapNotify.showRedNotification(`Filesize is to big: ${uploadedFileName}!`);
+                                return;
+                            }
+
+                            this.uploadedFilesNames.push(uploadedFileName);
 
                             /**
                              * @description binding the unique record identifier (generated by fine-upload) to the list
@@ -98,12 +118,22 @@ export default class FineUploaderService
                             $listElementForCurrentFile.attr(FineUploaderService.attributes.uniqueFileIdentifier, uniqueFileIdentifier);
                         },
                         /**
+                         * @description id of the file that is removed from the upload queue
+                         */
+                        onCancel: (deletedFileId) => {
+                            let uploadedFileData = _this.fineUploaderInstance.getUploads({id: deletedFileId});
+                            let uploadedFileName = uploadedFileData['name'];
+
+                            // remove that file from queue
+                            this.uploadedFilesNames.splice(uploadedFileName);
+                        },
+                        /**
                          * @description triggered right a moment before when the `upload` process has started for single file
                          */
                         onUpload: (uploadedFileId) => {
-                            let uploadedFileData           = _this.fineUploaderInstance.getUploads({id: uploadedFileId});
-                            let uniqueFileIdentifier       = uploadedFileData['uuid'];
-                            let $listElementForCurrentFile = $("[" + FineUploaderService.attributes.uniqueFileIdentifier + "^='" + uniqueFileIdentifier + "']");
+                            Loader.showLoader();
+
+                            let $listElementForCurrentFile = _this.getListElementForUploadedFileId(uploadedFileId);
                             let tags                       = $listElementForCurrentFile.find('.tags').val();
 
                             let uploadModuleDir                = $('#module_and_directory_select_upload_module_dir').val();
@@ -120,12 +150,21 @@ export default class FineUploaderService
                          * @description triggered when all of the files in upload queue are handled
                          */
                         onAllComplete: (successfullyUploadedFilesIds, failedUploadedFilesIds) => {
+
+                            for(let fileId of successfullyUploadedFilesIds){
+                                let $listElementForCurrentFile = _this.getListElementForUploadedFileId(fileId);
+                                $listElementForCurrentFile.fadeToggle(400);
+                                setTimeout(() => {
+                                    $listElementForCurrentFile.remove();
+                                }, 600);
+                            }
+
+                            Loader.hideLoader();
+
                             if( 0 === failedUploadedFilesIds.length ){
-                                // todo: success message here
-                                this.bootstrapNotify.showGreenNotification("yay");
+                                this.bootstrapNotify.showGreenNotification("Upload finished with success");
                             }else{
-                                // todo: fail message, could not handle all files
-                                this.bootstrapNotify.showRedNotification("nope");
+                                this.bootstrapNotify.showRedNotification("Some of the files could not be uploaded");
                             }
                         }
 
@@ -177,6 +216,17 @@ export default class FineUploaderService
     }
 
     /**
+     * @description there is an issue where fontawesome icon steals the click for FineUpload action
+     *              this method handles such case and passes the click further to the proper removal button
+     */
+    private bindRetryFileUploadInQueueListOnIconRetryClick($retryButtonFontawesome: JQuery, $fineUploadRetryButton: JQuery)
+    {
+        $retryButtonFontawesome.on('click', (event) => {
+            $fineUploadRetryButton.trigger('click');
+        })
+    }
+
+    /**
      * @description will observer the uploaded files list, allows to react on adding/changing element etc.
      */
     private observerFilesList(): void
@@ -194,7 +244,10 @@ export default class FineUploaderService
                 let $inputElements  = $listElement.find('input');
 
                 let $cancelButtonFontawesome = $listElement.find(FineUploaderService.selectors.fontawesomeUploadCancelButton);
+                let $retryButtonFontawesome = $listElement.find(FineUploaderService.selectors.fontawesomeUploadRetryButton);
+
                 let $fineUploadCancelButton  = $listElement.find(FineUploaderService.selectors.fineUploadCancelButton);
+                let $fineUploadRetryButton   = $listElement.find(FineUploaderService.selectors.fineUploadRetryButton);
 
                 $nameEditButton.trigger('click');
                 $inputElements.blur(); // escape the focus as plugin itself keeps focus upon clicking edit
@@ -202,6 +255,7 @@ export default class FineUploaderService
                 _this.handleInitialFilenamesShowingInTheEditInputsByObservingMutations($listElement);
                 _this.handleAddingSelectizeTagsForNewInputsByObservingMutations($listElement);
                 _this.bindRemoveFileFromQueueListOnIconRemovalClick($cancelButtonFontawesome, $fineUploadCancelButton)
+                _this.bindRetryFileUploadInQueueListOnIconRetryClick($retryButtonFontawesome, $fineUploadRetryButton)
                 Tippy.init();
             }
         });
@@ -228,7 +282,7 @@ export default class FineUploaderService
     }
 
     /**
-     * @description upon adding new file the new DOM row is inserted, but each new element need to have selectize tag logic initalized
+     * @description upon adding new file the new DOM row is inserted, but each new element need to have selectize tag logic initialized
      *
      */
     private handleAddingSelectizeTagsForNewInputsByObservingMutations(listElement: JQuery<HTMLElement>): void
@@ -247,6 +301,18 @@ export default class FineUploaderService
     private handleAdditionalParamsInRequest(additionalParams: Object)
     {
         this.fineUploaderInstance.setParams(additionalParams);
+    }
+
+    /**
+     * @description will return DOM <li> element for uploaded file id
+     */
+    private getListElementForUploadedFileId(fileId: number): JQuery<HTMLElement>
+    {
+        let uploadedFileData           = this.fineUploaderInstance.getUploads({id: fileId});
+        let uniqueFileIdentifier       = uploadedFileData['uuid'];
+        let $listElementForCurrentFile = $("[" + FineUploaderService.attributes.uniqueFileIdentifier + "^='" + uniqueFileIdentifier + "']");
+
+        return $listElementForCurrentFile;
     }
 
 }

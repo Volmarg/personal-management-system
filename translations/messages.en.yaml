@@ -173,6 +173,13 @@ upload:
     mb: Mb
     uploadTable: { fileName: 'File name', fileExtension: 'File extension', tags: Tags }
     errors: { thereWasAnErrorWhileUploadingFiles: 'There was an error while uploading files' }
+fineUpload:
+    buttons: { upload: { label: Upload } }
+    uploadedRow: { filename: { label: Filename }, tags: { label: Tags } }
+    tippy: { actions: { remove: { label: Remove }, retry: { label: Retry } } }
+    texts: { generalInfo: "You can either select files manually via form or just use the Drag&Drop.\n", information: { maxUploadedFileSize: 'Max uploaded file size:' }, demoText: "For security reason (Demo instance) - some file types upload has been disabled.<br/> You won't be informed about wrong file upload - that file will just be skipped.<br/> All uploaded data will be removed couple of times a day.\n" }
+    mb: Mb
+    headers: { uploadFiles: 'Upload files' }
 issues:
     card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { headers: { contacts: Contacts, progress: Progress } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', addOrModifyExistingTodo: 'Add or modify existing todo', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     contactsTable: { icon: Icon, date: Date, information: Information, actions: Actions }
