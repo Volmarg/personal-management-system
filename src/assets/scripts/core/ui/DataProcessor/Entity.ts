@@ -1564,7 +1564,17 @@ export default class Entity extends AbstractDataProcessor {
 
     public static MyPaymentsBillsItems: DataProcessorInterface = {
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            return null;
+            let url = '/my-payments-bills/add-bill-item';
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsBillsItems.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsBillsItems.processorName);
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
         },
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;
@@ -1617,7 +1627,17 @@ export default class Entity extends AbstractDataProcessor {
 
     public static MyPaymentsBills: DataProcessorInterface = {
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            return undefined;
+            let url = '/my-payments-bills/add-bill';
+            let successMessage = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyPaymentsBills.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyPaymentsBills.processorName);
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
         },
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;
@@ -1683,7 +1703,7 @@ export default class Entity extends AbstractDataProcessor {
             let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueContact.processorName);
             let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueContact.processorName);
             let callbackAfter      = () => {
-                BootboxWrapper.hideAll();;
+                BootboxWrapper.hideAll();
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
