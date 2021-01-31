@@ -152,8 +152,10 @@ export default class FineUploaderService
                             let uploadedFileData = _this.fineUploaderInstance.getUploads({id: deletedFileId});
                             let uploadedFileName = uploadedFileData['name'];
 
-                            // remove that file from queue
-                            this.uploadedFilesNames.splice(uploadedFileName);
+                            this.uploadedFilesNames = this.uploadedFilesNames.filter( (alreadyUploadedFileName) => {
+                                return !(alreadyUploadedFileName === uploadedFileName);
+                            })
+
                         },
                         /**
                          * @description triggered right a moment before when the `upload` process has started for single file

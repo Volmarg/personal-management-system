@@ -55,6 +55,15 @@ export default class DirectoriesBasedWidget {
         }
 
         directorySelect.val(directoryPath);
+        $.each(options, (index, option) => {
+            let $option = $(option);
+
+            $option.attr('class','');
+
+            if ($option.val() == directoryPath) {
+                $option.attr("selected", "true");
+            }
+        });
 
         //handle bootstrap-select
         if( BootstrapSelect.isSelectpicter(directorySelect) ){

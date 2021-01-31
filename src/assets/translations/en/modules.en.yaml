@@ -354,26 +354,7 @@ upload:
       label: Rename folder
     createFolder:
       label: Create folder for module
-  headers:
-    uploadFiles: Upload files
-  demoText: >
-    For security reason (Demo instance) - some file types upload has been disabled.<br/>
-    You won't be informed about wrong file upload - that file will just be skipped.<br/>
-    All uploaded data will be removed couple of times a day.
-  securityTexts:
-    currentFileSize: "Selected files size:"
-    maxUploadSize: "Max upload size:"
-    currentUploadedFilesCount: "Selected files count:"
-    maxAllowedFilesUploadCount: "Max allowed files count:"
-  mb: Mb
-  uploadTable:
-    fileName: File name
-    fileExtension: File extension
-    tags: Tags
-  errors:
-    thereWasAnErrorWhileUploadingFiles: There was an error while uploading files
 
-# todo: remove the `upload` section, copy necessary translations
 fineUpload:
   buttons:
     upload:
@@ -401,8 +382,6 @@ fineUpload:
   mb: Mb
   headers:
     uploadFiles: Upload files
-
-
 
 issues:
   card:
