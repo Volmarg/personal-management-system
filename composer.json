@@ -18,7 +18,7 @@
     ],
     "type": "project",
     "require": {
-      "php": "^7.4.0",
+        "php": "^7.4.0",
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -54,7 +54,8 @@
         "symfony/webpack-encore-pack": "^1.0",
         "symfony/yaml": "^5.0",
         "tinymce/tinymce": "^5.0",
-        "twig/extensions": "^1.5"
+        "twig/extensions": "^1.5",
+        "volmarg/notifier-proxy-logger-bridge": "dev-master"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.2",
@@ -121,5 +122,10 @@
         "copy-file": {
             "vendor_fixes/full_file_copy/specsharper/encrypt-bundle/" : "vendor/specsharper/encrypt-bundle/"
         }
+    },
+  "repositories": [{
+      "type": "vcs",
+      "url": "https://github.com/volmarg/notifier-proxy-logger-bridge"
     }
+  ]
 }

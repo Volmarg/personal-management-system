@@ -6,6 +6,7 @@ parameters:
     session_data.lifetime.system_lock: '%env(APP_SYSTEM_LOCK_SESSION_LIFETIME)%'
     session_data.lifetime.user_login: '%env(APP_USER_LOGIN_SESSION_LIFETIME)%'
     security.restricted_ips: '%env(APP_IPS_ACCESS_RESTRICTION)%'
+    system.from_email: 'no-reply@personal-management-system.localhost'
 
 # Resolving deprecation for moving from 4.4x to 5.x
 sensio_framework_extra:
@@ -60,6 +61,24 @@ services:
     App\Services\ConfigLoaders\ConfigLoaderSecurity:
         calls:
             - setRestrictedIps: ['%security.restricted_ips%']
+
+    App\Services\ConfigLoaders\ConfigLoaderSystem:
+        calls:
+            - setSystemFromEmail: ['%system.from_email%']
+
+    notifier_proxy_logger_bridge:
+        alias: App\NotifierProxyLoggerBridge
+
+    App\NotifierProxyLoggerBridge:
+        public: true
+        arguments:
+            $logFilePath: '%kernel.logs_dir%/notifier-proxy-logger-bridge.log'
+            $loggerName: 'NotifierProxyLogger'
+            $baseUrl: 'http://127.0.0.1:8010/'
+
+    App\Services\External\NotifierProxyLoggerService:
+        arguments:
+            $notifier_proxy_logger_bridge: '@notifier_proxy_logger_bridge'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

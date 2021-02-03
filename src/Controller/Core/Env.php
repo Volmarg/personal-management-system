@@ -9,7 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Env extends AbstractController {
 
-    const APP_ENV_TEST = "test";
+    const APP_ENV_TEST                = "test";
+    const APP_DEFAULT_RECEIVER_EMAILS = "APP_DEFAULT_RECEIVER_EMAILS";
 
     public static function getUploadDirs() {
         $dirs = [
@@ -47,6 +48,18 @@ class Env extends AbstractController {
 
     public static function getDatabaseUrl() {
         return $_ENV['DATABASE_URL'];
+    }
+
+    /**
+     * Will return the default emails receivers for all emails sent in NPL
+     *
+     * @return array
+     * @throws Exception
+     */
+    public static function getNotifierProxyLoggerDefaultReceiversEmails(): array
+    {
+        $emails_string = Utils::getRealArrayForStringArray($_ENV['APP_DEFAULT_RECEIVER_EMAILS']);
+        return $emails_string;
     }
 
     /**
