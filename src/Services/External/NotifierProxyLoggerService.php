@@ -24,9 +24,6 @@ use GuzzleHttp\Exception\GuzzleException;
 class NotifierProxyLoggerService
 {
 
-    const WEBHOOK_NAME_ALL_NOTIFICATIONS = "allNotifications"; // todo - move to bridge
-    const SOURCE_PMS = "PMS"; // todo - move to bridge
-
     /**
      * @var NotifierProxyLoggerBridge $notifier_proxy_logger_bridge
      */
@@ -63,10 +60,10 @@ class NotifierProxyLoggerService
             $discord_message_dto = new DiscordMessageDTO();
             $request             = new InsertDiscordMessageRequest();
 
-            $discord_message_dto->setWebhookName(self::WEBHOOK_NAME_ALL_NOTIFICATIONS);
+            $discord_message_dto->setWebhookName(NotifierProxyLoggerBridge::WEBHOOK_NAME_ALL_NOTIFICATIONS);
             $discord_message_dto->setMessageTitle($schedule->getName());
             $discord_message_dto->setMessageContent($schedule->getInformation());
-            $discord_message_dto->setSource(self::SOURCE_PMS);
+            $discord_message_dto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
 
             $request->setDiscordMessageDto($discord_message_dto);
             $response = $this->notifier_proxy_logger_bridge->insertDiscordMessage($request);
@@ -90,10 +87,10 @@ class NotifierProxyLoggerService
     {
         try{
             $mail_dto = new MailDTO();
-            $request             = new InsertMailRequest();
+            $request  = new InsertMailRequest();
 
             $mail_dto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
-            $mail_dto->setSource(self::SOURCE_PMS);
+            $mail_dto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
             $mail_dto->setFromEmail($this->app->config_loaders->getConfigLoaderSystem()->getSystemFromEmail());
             $mail_dto->setSubject($schedule->getName());
             $mail_dto->setBody($schedule->getInformation());
