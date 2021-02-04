@@ -6,6 +6,7 @@ use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
+use Doctrine\DBAL\Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DashboardController extends AbstractController {
@@ -24,9 +25,10 @@ class DashboardController extends AbstractController {
 
     /**
      * @return array
+     * @throws Exception
      */
-    public function getIncomingSchedules() {
-        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL);
+    public function getIncomingSchedulesInformation() {
+        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL);
     }
 
     /**

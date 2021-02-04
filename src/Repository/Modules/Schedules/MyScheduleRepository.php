@@ -3,7 +3,9 @@
 namespace App\Repository\Modules\Schedules;
 
 use App\Entity\Modules\Schedules\MySchedule;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -25,8 +27,40 @@ class MyScheduleRepository extends ServiceEntityRepository {
         parent::__construct($registry, MySchedule::class);
     }
 
-    public function getIncomingSchedulesInDays(int $days, bool $include_past = true){
+    /**
+     * Will return schedules entities incoming in days
+     *
+     * @param int $days
+     * @return MySchedule[]
+     */
+    public function getIncomingSchedulesEntitiesInDays(int $days): array
+    {
+        $query_builder = $this->_em->createQueryBuilder();
+        $now    = new DateTime();
+        $future = (new DateTime())->modify("+{$days} DAYS");
 
+        $query_builder->select("mch")
+            ->from(MySchedule::class, "mch")
+            ->where("mch.deleted = 0")
+            ->andWhere("mch.Date BETWEEN :now AND :future")
+            ->setParameter("now", $now)
+            ->setParameter("future", $future);
+
+        $result = $query_builder->getQuery()->execute();
+
+        return $result;
+    }
+
+    /**
+     * Will return incoming schedules information array
+     *
+     * @param int $days
+     * @param bool $include_past
+     * @return array
+     * @throws Exception
+     */
+    public function getIncomingSchedulesInformationInDays(int $days, bool $include_past = true): array
+    {
         $connection = $this->getEntityManager()->getConnection();
 
         if( $include_past ){

@@ -60,7 +60,7 @@ class DashboardAction extends AbstractController {
             $dashboard_widgets_visibility_dtos   = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $schedules      = $this->controllers->getDashboardController()->getIncomingSchedules();
+        $schedules      = $this->controllers->getDashboardController()->getIncomingSchedulesInformation();
         $all_too        = $this->controllers->getDashboardController()->getGoalsTodoForWidget();
         $goals_payments = $this->controllers->getDashboardController()->getGoalsPayments();
 

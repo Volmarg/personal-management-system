@@ -55,4 +55,15 @@ class MySchedulesController extends AbstractController {
         return $this->app->repositories->myScheduleRepository->findOneById($id);
     }
 
+    /**
+     * Will return schedules entities incoming in days
+     *
+     * @param int $days
+     * @return MySchedule[]
+     */
+    public function getIncomingSchedulesEntitiesInDays(int $days): array
+    {
+        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesEntitiesInDays($days);
+    }
+
 }
