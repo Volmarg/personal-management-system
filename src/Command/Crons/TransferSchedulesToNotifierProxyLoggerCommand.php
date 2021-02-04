@@ -18,7 +18,6 @@ class TransferSchedulesToNotifierProxyLoggerCommand extends Command
 
     const OPTION_TRANSFER_CHANNEL          = "transfer-channel";
     const OPTION_DUE_DATE_DAYS_TO_TRANSFER = "due-date-days-to-transfer";
-    const OPTION_FORCE_SEND_NOW            = "force-send-now";
 
     const TRANSFER_CHANNEL_MAIL    = "mail";
     const TRANSFER_CHANNEL_DISCORD = "discord";
@@ -80,13 +79,12 @@ class TransferSchedulesToNotifierProxyLoggerCommand extends Command
              $due_days      = $input->getOption(self::OPTION_DUE_DATE_DAYS_TO_TRANSFER, null);
 
              if( empty($this->channel) ){
-                 throw new Exception("No transfer channels was provided");
+                 throw new Exception("No transfer channel was provided");
              }elseif( empty($due_days) ){
                  throw new Exception("No due days were provided");
              }
 
              $this->due_days = explode(",", $due_days);
-
              if( empty($this->due_days) ){
                  throw new Exception("Got due days parameter but could not build the array from provided value, maybe wrong separator?");
              }
