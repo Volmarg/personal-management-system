@@ -141,15 +141,6 @@ class MyNotesCategoriesController extends AbstractController {
     }
 
     /**
-     * @return array
-     * @throws DBALException
-     */
-    public function getAllNotesCategories(){
-        $all_categories = $this->app->repositories->myNotesCategoriesRepository->getCategories();
-        return $all_categories;
-    }
-
-    /**
      * @param string $name
      * @param string $category_id
      * @return bool

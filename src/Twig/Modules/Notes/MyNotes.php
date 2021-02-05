@@ -83,15 +83,6 @@ class MyNotes extends AbstractExtension {
     }
 
     /**
-     * @return array
-     * @throws DBALException
-     */
-    public function getAllNotesCategories(){
-        $all_categories = $this->my_notes_categories_controller->getAllNotesCategories();
-        return $all_categories;
-    }
-
-    /**
      * @return ParentChildDTO[]
      */
     public function buildParentsChildrenCategoriesHierarchy(): array {

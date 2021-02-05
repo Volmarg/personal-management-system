@@ -124,10 +124,11 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
                 mnc.id                 AS category_id,
                 mnc.parent_id          AS parent_id,
                 childrens.childrens_id AS childrens_id
-            FROM my_note mn
-                
-            JOIN my_note_category mnc
-            ON mnc.id = mn.category_id
+            FROM my_note_category mnc
+
+            LEFT JOIN my_note mn
+            ON  mn.category_id = mnc.id
+            AND mn.deleted     = 0
                 
             LEFT JOIN (
                 SELECT 
@@ -140,8 +141,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
             ) AS childrens
             ON childrens.category_id = mnc.id
             
-            WHERE mn.deleted = 0
-            AND mnc.deleted  = 0
+            WHERE mnc.deleted  = 0
         ";
 
         $statement = $connection->prepare($sql);
