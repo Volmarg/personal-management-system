@@ -27,7 +27,13 @@
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
             <div class="container-fluid">
-                {# DataTable#}
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'upload.settings.infoBlock.text.mainDescription',
+                    header_translation_string : 'upload.settings.infoBlock.header'
+                } %}
+
+                {# DataTable #}
 
                 <div class="row">
                     <div class="col-md-12">

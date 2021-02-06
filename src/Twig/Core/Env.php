@@ -15,6 +15,7 @@ class Env extends AbstractExtension {
             new TwigFunction('isDemo', [$this, 'isDemo']),
             new TwigFunction('isGuide', [$this, 'isGuide']),
             new TwigFunction('isMaintenance', [$this, 'isMaintenance']),
+            new TwigFunction('areInfoBlocksShown', [$this, 'areInfoBlocksShown']),
         ];
     }
 
@@ -51,6 +52,15 @@ class Env extends AbstractExtension {
     {
         $is_guide = EnvController::isGuide();
         return $is_guide;
+    }
+
+    /**
+     * @return bool
+     */
+    public function areInfoBlocksShown(): bool
+    {
+        $areInfoBlocksShown = EnvController::areInfoBlocksShown();
+        return $areInfoBlocksShown;
     }
 
 }

@@ -12,18 +12,11 @@
     <main class='main-content bgc-grey-100' id="MyReportsMonthlyPaymentsSummariesModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-12">
 
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'reports.headers.saviingsCharts' | trans }}</h4>
-                            <p class="text-center">
-                                {{ 'reports.saviingsCharts.information' | trans | raw }}
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'reports.savingsCharts.infoBlock.text.mainDescription',
+                    header_translation_string : 'reports.savingsCharts.infoBlock.header'
+                } %}
 
                 <div class="row">
                     <div class="col-md-12">

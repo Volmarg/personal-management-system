@@ -11,13 +11,12 @@
 <main class='main-content bgc-grey-100'>
     <div id='mainContent'>
         <div class="container-fluid">
-            {# Header achievements #}
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="bgc-white bd bdrs-3 p-10 mB-20 d-flex justify-content-center">
-                        <h4 class="c-grey-900 mB-20">{{ 'achievements.headers.label' | trans }}</h4>
-                    </div>
-                </div>
+
+            {% include "modules/common/components/info-block.twig" with {
+                text_translation_string   : 'achievements.infoBlock.text.mainDescription',
+                header_translation_string : 'achievements.infoBlock.header'
+            } %}
+
             </div>
             {# DataTable achievements #}
             <div class="row">

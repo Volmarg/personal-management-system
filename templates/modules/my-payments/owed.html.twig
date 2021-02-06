@@ -11,6 +11,12 @@
     <main class='main-content bgc-grey-100' id="MyPaymentsOwedModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'payments.moneyOwed.infoBlock.text.mainDescription',
+                    header_translation_string : 'payments.moneyOwed.infoBlock.header'
+                } %}
+
                 {# Owed by others #}
                 <div class="row">
                     <div class="col-md-12">

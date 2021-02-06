@@ -10,10 +10,15 @@
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'notes.infoBlock.text.mainDescription',
+                    header_translation_string : 'notes.create.headers.newNote'
+                } %}
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'notes.create.headers.newNote' | trans }}</h4>
                             <section id="tiny-mce-wrapper" class="p-20 add-record-form">
                                 {{ form_start(form,{'attr':{' data-entity':"MyNotes"}}) }}
                                 {{ form_end(form) }}

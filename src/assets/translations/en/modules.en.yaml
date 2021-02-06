@@ -15,11 +15,23 @@ goals:
     daysLeft: days left
     days: days
     paymentStartsIn: Payment starts in
+    infoBlock:
+      header: Goals list
+      text:
+        mainDescription: |
+          Overview (readonly) of all defined payments based goals. Contains information about the goal,
+          target amount, gathered cash, and deadline date.
   settings:
     headers:
       addGoal: Add goal
       addSubgoal: Add subgoal
       addPaymentGoal: Add payment goal
+      managePaymentGoals:  Manage payments goals
+    infoBlock:
+      header: Goals settings
+      text:
+        mainDescription: |
+          Goals management / settings panel. Create or process already existing entries of the <b>Payments Goals</b> submodule.
     goalsSection:
       table:
         name: Name
@@ -55,11 +67,24 @@ todo:
   widget:
     add:
       label: Add
+  infoBlock:
+    header: Todo list
+    text:
+      mainDescription: |
+        Each of the todo has managable subelements and can also be related to some of the allowed modules. Upon
+        implementing special functionallity the todo data can be accessed also in related module, like it's for example
+        solved for the issues module. This logic is also partially shared with the <b>Goals List</b> submodule.
 
 notes:
   create:
     headers:
       newNote: Add new note
+  infoBlock:
+    text:
+      mainDescription: |
+        The editor supports rich text formatting and special functionallity such as for example formatting the code
+        and pasting images from clipboard. Keep in mind that categories without notes are hidden, upon adding the note,
+        due to current implemen the page must be hard reloaded to make the category visible.
   category:
     table:
       category: Category
@@ -75,11 +100,17 @@ notes:
   settings:
     headers:
       settings:
-        label: My notes settings
+        label: Notes settings
       categories:
         label: Categories
         editCategory: Edit categories
         addCategory: Add category
+    text:
+      mainDescription: |
+        Mangement of categories to which the notes are assignable to. Allows to pick an icon, color and relation
+        between other categories (parent-child). Keep in mind that empty categories (without notes) are not being
+        shown in the navbar on left but are still visible in settigs / note creation panels. At this moment it's
+        required to reload the page upon adding the new category - this is not handled automatically.
 
 contact:
   headers:
@@ -99,6 +130,19 @@ contact:
       preview: Preview
       icon: Icon
       color: Color
+    infoBlock:
+      header: Contacts setttings
+      text:
+        mainDescription: |
+          Management of contacts types (the small icons visible on the list below the colored box) and contact groups
+          (icons shown in the upper left corner of the contact)
+  overview:
+    infoBlock:
+      header: Contacts
+      text:
+        mainDescription: |
+          Store variety information about personal contacts. Supports marking contacts with icons via grouping,
+          assigning multiple contacts types, adding image and coloring the boxes.
 
 passwords:
   headers:
@@ -109,17 +153,33 @@ passwords:
     url: Url
     description: Description
     group: Group
+  infoBlock:
+    header: Passwords
+    text:
+      mainDescription: |
+        Management of personal credentials. Support project-unique logic which is fetching, <br/>decrypting the password and
+        inserting it directly into the clipboard (just press <b>CTRL +V</b>).
   settings:
     headers:
       changeAddCredentialsGroup: Change/Add credentials group
     table:
       name: Name
+    infoBlock:
+      header: Passwords settings
+      text:
+        mainDescription: |
+          Management of the credentials groups
   hiddenPassword: '*****'
 
 achievements:
   headers:
-    label: Achievements
     addAchievement: Add achievements
+  infoBlock:
+    header: Achievements
+    text:
+      mainDescription: |
+        Track of personal achievements, both smaller and bigger ones - as it's always nice to remember
+        the successes toward personal goals and dreams.
 
 schedules:
   settings:
@@ -128,6 +188,12 @@ schedules:
     table:
       name: Name
       icon: Icon
+    infoBlock:
+      header: Schedules settings
+      text:
+        mainDescription: |
+          Each of the defined type results in showing additional submenu element in the <b>Schedules</b> menu element.
+          Defined schedules which are close to the deadline are shown on dashboard and in the notification bell list.
   headers:
     schedules: Schedules
     addSchedule: Add schedule
@@ -144,13 +210,18 @@ schedules:
 
 travels:
   headers:
-    ideasForTraveling: Ideas for traveling
     addIdea: Add idea
   popovers:
     remove: Remove record
     edit: Edit record
   buttons:
     map: Map
+    infoBlock:
+      header: Ideas for traveling
+      text:
+        mainDescription: |
+          Group Your traveling plans into categories, provide images, map and some location information
+          to never miss the postponed travels.
 
 payments:
   productsPrices:
@@ -159,6 +230,12 @@ payments:
       addProduct: Add product
     table:
       homeCurrency: Home currency
+    infoBlock:
+      header: Products prices
+      text:
+        mainDescription: |
+          Organizable lists of assortment allows to keep an eye of the products that should be avoided in case of the
+          need to manage the financial issues, where even shopping the basic goods matters.
   moneyOwed:
     headers:
       owedByOthers: Money owed by others
@@ -175,26 +252,41 @@ payments:
       owe: Owe
       owesMe: Owes me
       to: To
+    infoBlock:
+      header: Money owed
+      text:
+        mainDescription: |
+          Track of the money owed to other people and owed by yourself. Consist of separate management groups,
+          yields the summaries of financial debts with separation of the target (person / company etc.)
   incomes:
     headers:
-      monthlyIncomes: Monthly incomes
+      manage: Manage records
       addRecord: Add record
     table:
       amount: Amount
       date: Date
       currency: Currency
       information: Information
+    infoBlock:
+      header: Monthly incomes
+      text:
+        mainDescription: |
+          Organizable monthly incomes sources, used later on in the reporting
   monthlyPayments:
     headers:
-      monthlyPayments: Monthly payments
       addPayment: Add payment
     summary: 'Monthly payments summary:'
     table:
       type: Type
+    infoBlock:
+      header: Monthly payments
+      text:
+        mainDescription: |
+          Lists of the money spent in each month with separate summary per month and per payment type.
   bills:
     headers:
       billsSummaries: Bills summaries
-      bills: Bills
+      billsItemsManagement: Management items
     forms:
       bills: Add bill
     table:
@@ -203,6 +295,12 @@ payments:
       name: Name
       information: Information
       plannedAmount: Planned amount
+    infoBlock:
+      header: Bills
+      text:
+        mainDescription: |
+          Track of money spent on unpredicted or planned things, but not related to the standard monthly payments, like
+          renting, electricity etc.
   bills_items:
     forms:
       bills_items: Add bill item
@@ -226,30 +324,43 @@ payments:
         money: Money
         description: Description
         type: Type
+  infoBlock:
+    header: Payments settings
+    text:
+      mainDescription: |
+        Management of payments types visible in the <b>Monthly Payments</b> submodule and the recurring payments which are
+        used by the cron to insert certain payments each month automatically (like for example constant renting fee)
 
 reports:
   monthlyPaymentsSummaries:
-    information: >
-      <i>This report contains summary of payments from "<b>Monthly Payments</b>" and "<b>Bills</b>" for each month.</i>
+    infoBlock:
+      header: Monthly payments summaries
+      text:
+        mainDescription: |
+          This report contains summary of payments from "<b>Monthly Payments</b>" and "<b>Bills</b>" for each month.
     table:
       monthAndYear: Month and year
       money: Money
   paymentsCharts:
-    information: >
-      <i>Charts based on data from payments modules</i>
-  saviingsCharts:
-    information: >
-      <i>Charts based on data from incomes/payments modules</i>
-    group: Saved
+    infoBlock:
+      header: Payments charts
+      text:
+        mainDescription: |
+          Charts based on data from payments modules
+  savingsCharts:
+    infoBlock:
+      header: Savings charts
+      text:
+        mainDescription: |
+          Charts based on data from incomes/payments modules
   historicalMoneyOwed:
-    information: >
-      <i>Historical records of owed money by others and by me</i>
+    infoBlock:
+      header: Historical money owed
+      text:
+        mainDescription: |
+          Historical records of owed money by others and by me
   headers:
-    monthlyPaymentsSummaries: Monthly payments summaries
-    paymentsCharts: Payments charts
-    saviingsCharts: Savings charts
     historicalMoneyOwed:
-      main: Historical money owed
       owedByMe: Owed by me
       owedByOthers: Owed by others
 
@@ -281,6 +392,11 @@ shopping:
   headers:
     plannedShoppingItems: Planned shopping items
     addPlannedItem: Add planned item
+  infoBlock:
+    header: Shopping plans
+    text:
+      mainDescription: |
+        Wanted or planned items - when there is a goal to buy something but the finances might not allow to do so at given point
 
 job:
   afterhours:
@@ -300,11 +416,31 @@ job:
       days: "day/s"
       for: for
       leftToSpend: left to spend
+    infoBlock:
+      header: Afterhours
+      text:
+        mainDescription: |
+          List of collected and spent job afterhours. Contains summaries of afterhours,
+          calculated automatically into days that can be spent as additional free days.
   holidays:
     headers:
       summary: Holidays summary
       spent: Holidays spent
       spend: Spend holidays
+    infoBlock:
+      header: Holidays
+      text:
+        mainDescription: |
+          Track of monthly available / spend holidays days in job
+  settings:
+    headers:
+      manageHolidaysPool: Manage holidays pool
+      addHolidaysPool: Add holidays pool
+    infoBlock:
+      header: Job settings
+      text:
+        mainDescription: |
+          Settings for job based modules, contains definitions of holidays available for given year in given company
 
 files:
   label: Files
@@ -321,6 +457,12 @@ files:
   massActions:
     remove: Remove files
     transferFiles: Transfer files
+  settings:
+    infoBlock:
+      header: Files settings
+      text:
+        mainDescription: |
+          Show or hide the directories from the menu by using the <b>System lock</b>
 
 images:
   popover:
@@ -329,6 +471,12 @@ images:
     addFolder: Add folder
     removeFiles: Remove files
     transferFiles: Transfer files
+  settings:
+    infoBlock:
+      header: Images settings
+      text:
+        mainDescription: |
+          Show or hide the directories from the menu by using the <b>System lock</b>
 
 video:
   popover:
@@ -343,6 +491,12 @@ video:
     tags: Tags
     headers:
       main: Video
+  settings:
+    infoBlock:
+      header: Video settings
+      text:
+        mainDescription: |
+          Show or hide the directories from the menu by using the <b>System lock</b>
 
 upload:
   settings:
@@ -354,6 +508,12 @@ upload:
       label: Rename folder
     createFolder:
       label: Create folder for module
+    infoBlock:
+      header: Upload management
+      text:
+        mainDescription: |
+          Management of uploaded data. Allows to rename folders, create new ones or copy / move data between directories
+          in modules
 
 fineUpload:
   buttons:
@@ -406,6 +566,13 @@ issues:
     actions: Actions
   popover:
     createIssue: Create issue
+  infoBlock:
+    header: Pending issues
+    text:
+      mainDescription: |
+        Management of the issues that are about to be resolved one day. Allows to track down the contacts and adding
+        notes based information about current progress in given case. Each entry can also contain an <b>Todo list</b> due
+        to the fact typically some personal cases require set of actions to be resolved in the process.
 
 other:
   summary: Summary
@@ -422,3 +589,13 @@ actions:
     lockRecord: Toggle lock
     download_file_subdirectory: Download
     download: Download
+
+common:
+  filesModules:
+    settings:
+      lockTables:
+        columns:
+          path:
+            label: Path
+          lock:
+            label: Lock

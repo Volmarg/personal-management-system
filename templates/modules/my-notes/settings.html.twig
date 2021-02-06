@@ -12,22 +12,18 @@
         <div id='mainContent'>
             <div class="container-fluid">
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'notes.settings.headers.settings.label' | trans }}</h4>
-                        </div>
-                    </div>
-                </div>
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'notes.settings.text.mainDescription',
+                    header_translation_string : 'notes.settings.headers.settings.label'
+                } %}
 
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-10 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'notes.settings.headers.categories.label' | trans }}</h4>
-                            <h3>{{ 'notes.settings.headers.categories.editCategory' | trans }}</h3>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'notes.settings.headers.categories.editCategory' | trans }}</h4>
                             {% include 'modules/my-notes/components/categories-settings.table.html.twig' %}
 
-                            <h3>{{ 'notes.settings.headers.categories.addCategory' | trans }}</h3>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'notes.settings.headers.categories.addCategory' | trans }}</h4>
                             <div class="add-record-form">
                                 {{ form_start(form,{'attr':{' data-entity':"MyNotesCategories"}}) }}
                                 {{ form_end(form) }}

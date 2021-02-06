@@ -11,6 +11,7 @@ class Env extends AbstractController {
 
     const APP_ENV_TEST                    = "test";
     const APP_DEFAULT_NPL_RECEIVER_EMAILS = "APP_DEFAULT_NPL_RECEIVER_EMAILS";
+    const APP_SHOW_INFO_BLOCKS            = 'APP_SHOW_INFO_BLOCKS';
 
     public static function getUploadDirs() {
         $dirs = [
@@ -146,5 +147,17 @@ class Env extends AbstractController {
         return $is_maintenance;
     }
 
+    /**
+     * @return bool
+     */
+    public static function areInfoBlocksShown(): bool
+    {
+        try {
+            $are_info_blocks_shown = Utils::getBoolRepresentationOfBoolString($_ENV[self::APP_SHOW_INFO_BLOCKS]);
+        } catch (\Exception $e) {
+            $are_info_blocks_shown = false;
+        }
+        return $are_info_blocks_shown;
+    }
 
 }

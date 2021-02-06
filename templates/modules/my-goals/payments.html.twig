@@ -15,6 +15,12 @@
             <div class="masonry-sizer col-md-12"></div>
 
             <div class="masonry-item col-md-12 payments-container">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'goals.payments.infoBlock.text.mainDescription',
+                    header_translation_string : 'goals.payments.infoBlock.header'
+                } %}
+
                 <div class="bgc-white p-20 bd d-flex justify-content-around payments-wrapper"
                      style="flex-wrap:wrap">
 

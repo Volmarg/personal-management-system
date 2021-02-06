@@ -60,6 +60,11 @@ settings:
           labels:
             name: Name
             displayWidget: Display widget
+  infoBlock:
+    header: Settings
+    text:
+      mainDescription: |
+        Contains either system wide or special settings not related explicitly to any module
   guide:
     label: Guide
   finances:

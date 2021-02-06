@@ -11,6 +11,12 @@
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'payments.productsPrices.infoBlock.text.mainDescription',
+                    header_translation_string : 'payments.productsPrices.infoBlock.header'
+                } %}
+
                 {% set products_types = ['non_rejected','rejected'] %}
                 {# Datatables #}
                 {% for product_type in products_types %}

@@ -10,8 +10,13 @@
 
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
-
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'contact.overview.infoBlock.text.mainDescription',
+                    header_translation_string : 'contact.overview.infoBlock.header'
+                } %}
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bdrs-3 p-20 mB-20 d-flex flex-wrap justify-content-around">

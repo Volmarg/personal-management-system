@@ -12,16 +12,16 @@
     <main class='main-content bgc-grey-100' id="MyReportsMonthlyPaymentsSummariesModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'reports.monthlyPaymentsSummaries.infoBlock.text.mainDescription',
+                    header_translation_string : 'reports.monthlyPaymentsSummaries.infoBlock.header'
+                } %}
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'reports.headers.monthlyPaymentsSummaries' | trans }}</h4>
-                            <p class="text-center">
-                                {{ 'reports.monthlyPaymentsSummaries.information' | trans | raw }}
-                            </p>
-
                                 {% include 'modules/my-reports/components/monthly-payments-summaries-table.html.twig' %}
-
                         </div>
                     </div>
                 </div>

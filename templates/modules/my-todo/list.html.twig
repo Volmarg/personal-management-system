@@ -14,6 +14,11 @@
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
 
+            {% include "modules/common/components/info-block.twig" with {
+                text_translation_string   : 'todo.infoBlock.text.mainDescription',
+                header_translation_string : 'todo.infoBlock.header'
+            } %}
+
             {% if all_grouped_todo is defined %}
                 {% for module_name, all_todo in all_grouped_todo %}
                     {%  include 'modules/my-todo/components/single-todo-group.html.twig' with {

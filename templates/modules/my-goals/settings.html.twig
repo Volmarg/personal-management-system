@@ -11,15 +11,22 @@
     <main class='main-content bgc-grey-100'>
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'goals.settings.infoBlock.text.mainDescription',
+                    header_translation_string : 'goals.settings.infoBlock.header'
+                } %}
+
                 {# Forms #}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
 
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'goals.settings.headers.addPaymentGoal' | trans }}</h5>
+                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'goals.settings.headers.managePaymentGoals' | trans }}</h5>
 
                             {% include('modules/my-goals/components/goals-payments.table.html.twig') %}
 
+                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'goals.settings.headers.addPaymentGoal' | trans }}</h5>
                             <div class="col-md-6 align-self-center add-record-form">
                                 {{ form_start(goals_payments_form,{'attr':{'data-entity':"MyGoalsPayments"}}) }}
                                 {{ form_end(goals_payments_form) }}

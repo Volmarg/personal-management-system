@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="bgc-white bd bdrs-3 p-10 mB-20">
+
+            {# The header should always be visible, thus not wrapped in the conditional check #}
+            <h4 class="c-grey-900 mB-20 text-center">{{ header_translation_string | trans }}</h4>
+            {% if areInfoBlocksShown() %}
+                <section class="d-flex justify-content-center w-100">
+                    <div class="description text-center text-justify module-description-text-wrapper">
+                        <i>
+                            {{ text_translation_string | trans | raw }}
+                        </i>
+                    </div>
+                </section>
+            {% endif %}
+        </div>
+    </div>
+</div>

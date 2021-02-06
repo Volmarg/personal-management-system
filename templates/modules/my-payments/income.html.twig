@@ -11,11 +11,17 @@
     <main class='main-content bgc-grey-100' id="MyPaymentsIncomeModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'payments.incomes.infoBlock.text.mainDescription',
+                    header_translation_string : 'payments.incomes.infoBlock.header'
+                } %}
+
                 {# Table #}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.incomes.headers.monthlyIncomes' | trans }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.incomes.headers.manage' | trans }}</h4>
                             {% include 'modules/my-payments/components/income/table.html.twig' %}
                         </div>
                     </div>

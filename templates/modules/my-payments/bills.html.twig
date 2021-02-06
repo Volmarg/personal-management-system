@@ -14,11 +14,17 @@
     <main class='main-content bgc-grey-100' id="MyPaymentsBillsModuleBody">
         <div id='mainContent'>
             <div class="container-fluid">
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'payments.bills.infoBlock.text.mainDescription',
+                    header_translation_string : 'payments.bills.infoBlock.header'
+                } %}
+
                 {# Bills items #}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.bills.headers.billsSummaries' | trans }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.bills.headers.billsItemsManagement' | trans }}</h4>
 
                             <div id="accordion">
                                 {% for bill in bills %}
@@ -62,7 +68,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.bills.headers.bills' | trans }}</h4>
+                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.bills.headers.management' | trans }}</h4>
                                 {% include 'modules/my-payments/components/bills-table.html.twig' %}
                         </div>
                     </div>
