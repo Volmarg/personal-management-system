@@ -17,24 +17,24 @@ class CronAddRecurringPaymentsCommand extends Command
     protected static $defaultName = 'cron:set-recurring-payments';
 
     /**
-     * @var int $count_of_payments_to_add
+     * @var int $countOfPaymentsToAdd
      */
-    private $count_of_payments_to_add = 0;
+    private $countOfPaymentsToAdd = 0;
 
     /**
-     * @var int $count_of_already_existing_payments
+     * @var int $countOfAlreadyExistingPayments
      */
-    private $count_of_already_existing_payments = 0;
+    private $countOfAlreadyExistingPayments = 0;
 
     /**
-     * @var int $count_of_filtered_payments
+     * @var int $countOfFilteredPayments
      */
-    private $count_of_filtered_payments = 0;
+    private $countOfFilteredPayments = 0;
 
     /**
-     * @var int $count_of_added_payments
+     * @var int $countOfAddedPayments
      */
-    private $count_of_added_payments = 0;
+    private $countOfAddedPayments = 0;
 
     /**
      * @var Application $app
@@ -42,14 +42,14 @@ class CronAddRecurringPaymentsCommand extends Command
     private $app;
 
     /**
-     * @var string $curr_year_month
+     * @var string $currYearMonth
      */
-    private $curr_year_month;
+    private $currYearMonth;
 
     public function __construct(Application $app, string $name = null) {
         parent::__construct($name);
-        $this->app             = $app;
-        $this->curr_year_month = (new DateTime())->format('Y-m');
+        $this->app           = $app;
+        $this->currYearMonth = (new DateTime())->format('Y-m');
     }
 
     protected function configure()
@@ -68,17 +68,17 @@ class CronAddRecurringPaymentsCommand extends Command
     {
 
         $io = new SymfonyStyle($input, $output);
-        $io->success("Started setting recurring payments for month and year: " . $this->curr_year_month);
+        $io->success("Started setting recurring payments for month and year: " . $this->currYearMonth);
         {
             try{
-                $recurring_payments_to_set = $this->getRecurringPaymentsAndFilterExistingRecords();
+                $recurringPaymentsToSet = $this->getRecurringPaymentsAndFilterExistingRecords();
 
-                if( !$this->count_of_filtered_payments ){
+                if( !$this->countOfFilteredPayments ){
                     $io->note("No entries were found to process. Stopping here");
                     return Command::SUCCESS;
                 }
 
-                $this->addRecurringPaymentsToDatabase($recurring_payments_to_set);
+                $this->addRecurringPaymentsToDatabase($recurringPaymentsToSet);
                 $this->report($io);
 
             }catch(Exception $e){
@@ -99,47 +99,47 @@ class CronAddRecurringPaymentsCommand extends Command
      * @return array
      */
     private function getRecurringPaymentsAndFilterExistingRecords():array {
-        $recurring_payments             = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => 0]);
-        $this->count_of_payments_to_add = count($recurring_payments);
+        $recurringPayments          = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => 0]);
+        $this->countOfPaymentsToAdd = count($recurringPayments);
 
-        foreach($recurring_payments as $index => $recurring_payment){
+        foreach($recurringPayments as $index => $recurringPayment){
 
-            $used_day_of_month          = $this->getDayOfMonthForInsertion($recurring_payment);
-            $hash                       = $this->calculateHashForAttemptedInsertion($recurring_payment, $used_day_of_month);
-            $recurring_payment_for_hash = $this->app->repositories->myPaymentsMonthlyRepository->findByDateAndDescriptionHash($hash, $used_day_of_month);
+            $usedDayOfMonth          = $this->getDayOfMonthForInsertion($recurringPayment);
+            $hash                    = $this->calculateHashForAttemptedInsertion($recurringPayment, $usedDayOfMonth);
+            $recurringPaymentForHash = $this->app->repositories->myPaymentsMonthlyRepository->findByDateAndDescriptionHash($hash, $usedDayOfMonth);
 
-            $this->count_of_already_existing_payments += count($recurring_payment_for_hash);
+            $this->countOfAlreadyExistingPayments += count($recurringPaymentForHash);
 
-            if( !empty($recurring_payment_for_hash) ){
-                unset($recurring_payments[$index]);
+            if( !empty($recurringPaymentForHash) ){
+                unset($recurringPayments[$index]);
             }
 
         }
-        $this->count_of_filtered_payments = count($recurring_payments);
+        $this->countOfFilteredPayments = count($recurringPayments);
 
-        return $recurring_payments;
+        return $recurringPayments;
     }
 
     /**
-     * @param MyRecurringPaymentMonthly[] $recurring_payments_to_set
+     * @param MyRecurringPaymentMonthly[] $recurringPaymentsToSet
      * @throws Exception
      */
-    private function addRecurringPaymentsToDatabase(array $recurring_payments_to_set):void {
+    private function addRecurringPaymentsToDatabase(array $recurringPaymentsToSet):void {
 
-        foreach($recurring_payments_to_set as $recurring_payment){
-            $used_day_of_month              = $this->getDayOfMonthForInsertion($recurring_payment);
-            $date_time_string_for_insertion = (new DateTime())->format("Y-m-") . $used_day_of_month;
-            $date_time_for_insertion        = DateTime::createFromFormat("Y-m-d", $date_time_string_for_insertion);
+        foreach($recurringPaymentsToSet as $recurringPayment){
+            $usedDayOfMonth             = $this->getDayOfMonthForInsertion($recurringPayment);
+            $dateTimeStringForInsertion = (new DateTime())->format("Y-m-") . $usedDayOfMonth;
+            $dateTimeForInsertion       = DateTime::createFromFormat("Y-m-d", $dateTimeStringForInsertion);
 
             $payment = new MyPaymentsMonthly();
-            $payment->setDescription($recurring_payment->getDescription());
-            $payment->setDate($date_time_for_insertion);
-            $payment->setMoney($recurring_payment->getMoney());
-            $payment->setType($recurring_payment->getType());
+            $payment->setDescription($recurringPayment->getDescription());
+            $payment->setDate($dateTimeForInsertion);
+            $payment->setMoney($recurringPayment->getMoney());
+            $payment->setType($recurringPayment->getType());
 
             $this->app->em->persist($payment);
             $this->app->em->flush();
-            $this->count_of_added_payments++;
+            $this->countOfAddedPayments++;
         }
 
     }
@@ -149,24 +149,24 @@ class CronAddRecurringPaymentsCommand extends Command
      * @param SymfonyStyle $io
      */
     private function report(SymfonyStyle $io){
-        $io->note("Number of recurring payments found to add: "         . $this->count_of_payments_to_add);
-        $io->note("Number of already existing recurring payments: "     . $this->count_of_already_existing_payments);
-        $io->note("Number of recurring payments that will be added: "   . $this->count_of_filtered_payments);
-        $io->note("Number of added recurring payments: "                . $this->count_of_added_payments);
+        $io->note("Number of recurring payments found to add: "         . $this->countOfPaymentsToAdd);
+        $io->note("Number of already existing recurring payments: "     . $this->countOfAlreadyExistingPayments);
+        $io->note("Number of recurring payments that will be added: "   . $this->countOfFilteredPayments);
+        $io->note("Number of added recurring payments: "                . $this->countOfAddedPayments);
     }
 
     /**
      * Will calculate hash for given entity - this value is used to determine if given entry
      * exists already in database or not
      *
-     * @param MyRecurringPaymentMonthly $recurring_payment
-     * @param string $used_day_of_month
+     * @param MyRecurringPaymentMonthly $recurringPayment
+     * @param string $usedDayOfMonth
      * @return string
      */
-    private function calculateHashForAttemptedInsertion(MyRecurringPaymentMonthly $recurring_payment, string $used_day_of_month): string
+    private function calculateHashForAttemptedInsertion(MyRecurringPaymentMonthly $recurringPayment, string $usedDayOfMonth): string
     {
-        $date_time_string_for_insertion = (new DateTime())->format("Y-m-") . $used_day_of_month;
-        $string                         = $date_time_string_for_insertion . $recurring_payment->getDescription();
+        $dateTimeStringForInsertion = (new DateTime())->format("Y-m-") . $usedDayOfMonth;
+        $string                     = $dateTimeStringForInsertion . $recurringPayment->getDescription();
 
         $hash = md5($string);
         return $hash;
@@ -177,19 +177,19 @@ class CronAddRecurringPaymentsCommand extends Command
      * due to the fact that there might be case where user inserted day of month `31` in the form
      * but given month might have on 28 days, so the last day of given month will be used instead
      *
-     * @param MyRecurringPaymentMonthly $recurring_payment
+     * @param MyRecurringPaymentMonthly $recurringPayment
      * @return string
      */
-    private function getDayOfMonthForInsertion(MyRecurringPaymentMonthly $recurring_payment): string
+    private function getDayOfMonthForInsertion(MyRecurringPaymentMonthly $recurringPayment): string
     {
-        $used_day_of_month     = $recurring_payment->getDayOfMonth();
-        $days_in_current_month = (new DateTime())->format("t");
+        $usedDayOfMonth     = $recurringPayment->getDayOfMonth();
+        $daysInCurrentMonth = (new DateTime())->format("t");
 
-        if($days_in_current_month <= $used_day_of_month){
-            $used_day_of_month = $days_in_current_month;
+        if($daysInCurrentMonth <= $usedDayOfMonth){
+            $usedDayOfMonth = $daysInCurrentMonth;
         }
 
-        return $used_day_of_month;
+        return $usedDayOfMonth;
     }
 
 }

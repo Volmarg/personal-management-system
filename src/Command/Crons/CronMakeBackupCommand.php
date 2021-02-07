@@ -44,19 +44,19 @@ class CronMakeBackupCommand extends Command
     protected static $defaultName = 'cron:make-backup';
 
     /**
-     * @var DatabaseExporter $database_exporter
+     * @var DatabaseExporter $databaseExporter
      */
-    private $database_exporter;
+    private $databaseExporter;
 
     /**
      * @var ZipArchivizer $archivizer
      */
     private ZipArchivizer $archivizer;
 
-    public function __construct(DatabaseExporter $database_exporter, ZipArchivizer $archivizer, string $name = null) {
+    public function __construct(DatabaseExporter $databaseExporter, ZipArchivizer $archivizer, string $name = null) {
         parent::__construct($name);
-        $this->database_exporter = $database_exporter;
-        $this->archivizer        = $archivizer;
+        $this->databaseExporter = $databaseExporter;
+        $this->archivizer       = $archivizer;
     }
 
     protected function configure()
@@ -87,23 +87,23 @@ class CronMakeBackupCommand extends Command
      */
     function initialize(InputInterface $input, OutputInterface $output)
     {
-        $argument_backup_directory = $input->getArgument(self::ARGUMENT_BACKUP_DIRECTORY_MODULE);
+        $argumentBackupDirectory = $input->getArgument(self::ARGUMENT_BACKUP_DIRECTORY_MODULE);
 
-        $this->database_exporter->setBackupDirectory($argument_backup_directory);
-        $this->archivizer->setTargetDirectory($argument_backup_directory);
+        $this->databaseExporter->setBackupDirectory($argumentBackupDirectory);
+        $this->archivizer->setTargetDirectory($argumentBackupDirectory);
         $this->archivizer->setArchiveRecursively(true);
 
 
-        if( !file_exists($argument_backup_directory) ){
-            mkdir($argument_backup_directory, 0777, true);
+        if( !file_exists($argumentBackupDirectory) ){
+            mkdir($argumentBackupDirectory, 0777, true);
         }
 
         // the directory still doesn't exists after attempt of crating such
-        if( !file_exists($argument_backup_directory) ){
+        if( !file_exists($argumentBackupDirectory) ){
             throw new Exception("Target backup directory does not exist, even after attempt to create it");
         }
 
-        if( !is_writable($argument_backup_directory) ){
+        if( !is_writable($argumentBackupDirectory) ){
             throw new Exception("Folder does exist but it's not writable");
         }
     }
@@ -121,30 +121,30 @@ class CronMakeBackupCommand extends Command
         $io->warning("This command must be called from the root of the project. It won't work from other locations!");
         $io->note("Started backup process");
         {
-            $argument_backup_database_filename  = $input->getArgument(self::ARGUMENT_BACKUP_DATABASE_FILENAME);
-            $argument_backup_files_filename     = $input->getArgument(self::ARGUMENT_BACKUP_FILES_FILENAME);
-            $option_skip_files                  = $input->getOption(self::OPTION_SKIP_FILES);
-            $option_skip_database               = $input->getOption(self::OPTION_SKIP_DATABASE);
+            $argumentBackupDatabaseFilename  = $input->getArgument(self::ARGUMENT_BACKUP_DATABASE_FILENAME);
+            $argumentBackupFilesFilename     = $input->getArgument(self::ARGUMENT_BACKUP_FILES_FILENAME);
+            $optionSkipFiles                 = $input->getOption(self::OPTION_SKIP_FILES);
+            $optionSkipDatabase              = $input->getOption(self::OPTION_SKIP_DATABASE);
 
-            if ($option_skip_files) {
+            if ($optionSkipFiles) {
                 $io->note(sprintf("Files backup will be skipped"));
             }
-            if ($option_skip_database) {
+            if ($optionSkipDatabase) {
                 $io->note(sprintf("Database backup will be skipped"));
             }
 
-            if( !$option_skip_files ){
+            if( !$optionSkipFiles ){
                 $io->note("Now making files backup");
-                $this->backupFiles($io, $argument_backup_files_filename);
+                $this->backupFiles($io, $argumentBackupFilesFilename);
 
                 if( !$this->archivizer->isArchivedSuccessfully() ){
                     $io->warning("Finished creating files backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
                 }
             }
 
-            if( !$option_skip_database ){
+            if( !$optionSkipDatabase ){
                 $io->note("Now making database backup");
-                $this->backupDatabase($io, $argument_backup_database_filename);
+                $this->backupDatabase($io, $argumentBackupDatabaseFilename);
                 if( !$this->archivizer->isArchivedSuccessfully() ){
                     $io->warning("Finished creating sql backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
                 }
@@ -162,27 +162,27 @@ class CronMakeBackupCommand extends Command
      * @param string $backup_database_filename
      */
     private function backupDatabase(SymfonyStyle $io, string $backup_database_filename ){
-        $this->database_exporter->setFileName($backup_database_filename);
-        $this->database_exporter->runInternalDatabaseExport();
-        $export_message = $this->database_exporter->getExportMessage();
+        $this->databaseExporter->setFileName($backup_database_filename);
+        $this->databaseExporter->runInternalDatabaseExport();
+        $exportMessage = $this->databaseExporter->getExportMessage();
 
-        if( !$this->database_exporter->isExportedSuccessfully() ){
-            $io->warning($export_message);
+        if( !$this->databaseExporter->isExportedSuccessfully() ){
+            $io->warning($exportMessage);
             return;
         }
 
-        $sql_backup_filename = $this->database_exporter->getFileName() . $this->database_exporter->getDumpExtension();
-        $sql_backup_path     = $this->database_exporter->getDumpedArchiveAbsolutePath();
+        $sqlBackupFilename = $this->databaseExporter->getFileName() . $this->databaseExporter->getDumpExtension();
+        $sqlBackupPath     = $this->databaseExporter->getDumpedArchiveAbsolutePath();
 
-        $this->archivizer->setArchiveName($sql_backup_filename);
+        $this->archivizer->setArchiveName($sqlBackupFilename);
         $this->archivizer->setDirectoriesToArchive([]);
-        $this->archivizer->setFilesToArchive([$sql_backup_path]);
+        $this->archivizer->setFilesToArchive([$sqlBackupPath]);
         $this->archivizer->handleArchivizing();
 
         $message = $this->archivizer->getArchivingStatus();
         if( $this->archivizer->isArchivedSuccessfully() ){
             $io->success($message);
-            unlink($sql_backup_path);
+            unlink($sqlBackupPath);
         }else{
             $io->warning($message);
         }
@@ -192,18 +192,18 @@ class CronMakeBackupCommand extends Command
     /**
      * This function creates zip archive
      * @param SymfonyStyle $io
-     * @param string $backup_files_filename
+     * @param string $backupFilesFilename
      */
-    private function backupFiles(SymfonyStyle $io, string $backup_files_filename){
+    private function backupFiles(SymfonyStyle $io, string $backupFilesFilename){
 
-        $upload_dirs_for_modules = [
+        $uploadDirsForModules = [
           MyImagesController::MODULE_NAME       => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
           MyFilesController::MODULE_NAME        => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
           ModulesController::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getVideoUploadDir(),
         ];
 
-        $this->archivizer->setArchiveName($backup_files_filename);
-        $this->archivizer->setDirectoriesToArchive($upload_dirs_for_modules);
+        $this->archivizer->setArchiveName($backupFilesFilename);
+        $this->archivizer->setDirectoriesToArchive($uploadDirsForModules);
         $this->archivizer->handleArchivizing();
 
         $message = $this->archivizer->getArchivingStatus();

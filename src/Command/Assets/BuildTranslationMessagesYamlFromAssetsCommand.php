@@ -33,17 +33,17 @@ class BuildTranslationMessagesYamlFromAssetsCommand extends Command
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var SymfonyStyle $io
      */
-    private $io = null;
+    private SymfonyStyle $io;
 
     /**
      * @var Parser $yamlParser
      */
-    private $yamlParser;
+    private Parser $yamlParser;
 
     public function __construct(Application $app, string $name = null) {
         parent::__construct($name);
@@ -73,11 +73,11 @@ class BuildTranslationMessagesYamlFromAssetsCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->note("Starting building translation messages Yaml file");
         {
-            $translation_files_data = $this->getTranslationFilesData();
+            $translationFilesData = $this->getTranslationFilesData();
 
-            if( !empty($translation_files_data) ){
-                $output_files_paths = $this->buildBundleTranslationFiles($translation_files_data);
-                $this->validateOutputTranslationFiles($output_files_paths);
+            if( !empty($translationFilesData) ){
+                $outputFilesPaths = $this->buildBundleTranslationFiles($translationFilesData);
+                $this->validateOutputTranslationFiles($outputFilesPaths);
             }else{
                 $message = "Translation data array is empty - does Your asset files even exist and are located in correct directory?";
                 $io->warning($message);
@@ -87,15 +87,15 @@ class BuildTranslationMessagesYamlFromAssetsCommand extends Command
         $io->newLine();
         $io->success("Finished building translation messages Yaml file");
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function getTranslationFilesData()
     {
         $this->app->logger->info("Started getting translation files data");
 
-        $translations_assets_directory_exist = file_exists(self::TRANSLATION_ASSETS_FOLDER);
-        if( !$translations_assets_directory_exist ){
+        $translationsAssetsDirectoryExist = file_exists(self::TRANSLATION_ASSETS_FOLDER);
+        if( !$translationsAssetsDirectoryExist ){
             $this->app->logger->critical("Translations assets directory does not exist: ",[
                 "directory" => self::TRANSLATION_ASSETS_FOLDER,
             ]);
@@ -105,79 +105,79 @@ class BuildTranslationMessagesYamlFromAssetsCommand extends Command
         $finder = new Finder();
         $finder->in(self::TRANSLATION_ASSETS_FOLDER);
 
-        $translation_files_data = [];
+        $translationFilesData = [];
 
         /**
          * Iterate over all files for all languages
          * @var SplFileInfo $file
          */
         foreach( $finder->files() as $file ){
-            $language         = $file->getRelativePath();
-            $translation_file = $file->getRealPath();
+            $language        = $file->getRelativePath();
+            $translationFile = $file->getRealPath();
 
-            $this->app->logger->info("Found file ({$translation_file}) for language ({$language})");
+            $this->app->logger->info("Found file ({$translationFile}) for language ({$language})");
 
-            $output_bundle_file_name = self::TRANSLATION_FILE_NAME . '.' . $language . '.' . self::TRANSLATION_FILE_EXTENSION_YAML;
-            $output_bundle_file_path = self::TRANSLATION_FOLDER_RELATIVE_PATH . DIRECTORY_SEPARATOR . $output_bundle_file_name;
+            $outputBundleFileName = self::TRANSLATION_FILE_NAME . '.' . $language . '.' . self::TRANSLATION_FILE_EXTENSION_YAML;
+            $outputBundleFilePath = self::TRANSLATION_FOLDER_RELATIVE_PATH . DIRECTORY_SEPARATOR . $outputBundleFileName;
 
-            if( !key_exists($output_bundle_file_path, $translation_files_data) ){
-                $translation_files_data[$output_bundle_file_path] = [];
+            if( !key_exists($outputBundleFilePath, $translationFilesData) ){
+                $translationFilesData[$outputBundleFilePath] = [];
             }
 
-            $translation_file_data = Yaml::parseFile($translation_file);
+            $translationFileData = Yaml::parseFile($translationFile);
 
             // file might be empty, we must skip these or final parser will add invalid empty {}
-            if( is_null($translation_file_data) ){
+            if( is_null($translationFileData) ){
                 continue;
             }
 
-            $translation_files_data[$output_bundle_file_path][] = $translation_file_data;
+            $translationFilesData[$outputBundleFilePath][] = $translationFileData;
         }
 
-        return $translation_files_data;
+        return $translationFilesData;
     }
 
     /**
-     * @param array $translation_files_data
+     * @param array $translationFilesData
      * @return array
      */
-    private function buildBundleTranslationFiles(array $translation_files_data): array
+    private function buildBundleTranslationFiles(array $translationFilesData): array
     {
         $this->app->logger->info("Started building output messages file");
 
-        $output_files_paths = [];
+        $outputFilesPaths = [];
 
         // iterate over all language directories
-        foreach( $translation_files_data as $file_path => $assets_data_arrays ){
+        foreach($translationFilesData as $filePath => $assetsDataArrays ){
 
             // with this if there is duplicated key, parser will not cut it so we can validate duplicates
-            $string_data = '';
+            $stringData = '';
 
             // iterate over array data created for each yaml file for given language
-            foreach( $assets_data_arrays as $data_array ){
-                $yaml_dumped_data = Yaml::dump($data_array);
-                $string_data     .= $yaml_dumped_data;
+            foreach( $assetsDataArrays as $data_array ){
+                $yamlDumpedData = Yaml::dump($data_array);
+                $stringData    .= $yamlDumpedData;
             }
 
-            file_put_contents($file_path, $string_data);
-            $output_files_paths[] = $file_path;
+            file_put_contents($filePath, $stringData);
+            $outputFilesPaths[] = $filePath;
         }
         $this->app->logger->info("Finished building output messages file");
 
-        return $output_files_paths;
+        return $outputFilesPaths;
     }
 
     /**
-     * @param array $output_files_paths
+     * @param array $outputFilesPaths
      */
-    private function validateOutputTranslationFiles(array $output_files_paths): void
+    private function validateOutputTranslationFiles(array $outputFilesPaths): void
     {
-        foreach( $output_files_paths as $file_path){
+        foreach($outputFilesPaths as $filePath){
 
             try{
-                $this->yamlParser->parseFile($file_path, Yaml::PARSE_CONSTANT);
+                $this->yamlParser->parseFile($filePath, Yaml::PARSE_CONSTANT);
             }catch(Exception $e){
-                $message = "File: {$file_path} is not valid - might contain duplicated keys, check it.";
+                $message = "File: {$filePath} is not valid - might contain duplicated keys, check it.";
                 $this->io->error($message);
                 $this->app->logger->critical($message);
             }

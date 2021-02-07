@@ -9,6 +9,7 @@ use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\ImageHandler;
 use DirectoryIterator;
+use Doctrine\DBAL\Driver\Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,28 +30,28 @@ class GenerateMiniaturesForImagesCommand extends Command
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var SymfonyStyle $io
      */
-    private $io;
+    private SymfonyStyle $io;
 
     /**
-     * @var FilesHandler $files_handler
+     * @var FilesHandler $filesHandler
      */
-    private $files_handler;
+    private FilesHandler $filesHandler;
 
     /**
-     * @var ImageHandler $image_handler
+     * @var ImageHandler $imageHandler
      */
-    private $image_handler;
+    private ImageHandler $imageHandler;
 
-    public function __construct(Application $app, FilesHandler $files_handler, ImageHandler $image_handler, string $name = null) {
+    public function __construct(Application $app, FilesHandler $filesHandler, ImageHandler $imageHandler, string $name = null) {
         parent::__construct($name);
-        $this->files_handler = $files_handler;
-        $this->image_handler = $image_handler;
-        $this->app           = $app;
+        $this->filesHandler = $filesHandler;
+        $this->imageHandler = $imageHandler;
+        $this->app          = $app;
     }
 
     protected function configure(): void
@@ -73,72 +74,72 @@ class GenerateMiniaturesForImagesCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Exception
+     * @throws \Exception|Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $processed_upload_directories = [
+        $processedUploadDirectories = [
             Env::getImagesUploadDir(),
         ];
 
         $this->io->success("Started");
         {
             try{
-                foreach($processed_upload_directories as $upload_directory){
+                foreach($processedUploadDirectories as $uploadDirectory){
 
-                    $upload_directory_absolute_path = getcwd() . DIRECTORY_SEPARATOR . Env::getPublicRootDir() . DIRECTORY_SEPARATOR . $upload_directory;
-                    $absolute_folders_list          = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator($upload_directory_absolute_path), false, true);
+                    $uploadDirectoryAbsolutePath = getcwd() . DIRECTORY_SEPARATOR . Env::getPublicRootDir() . DIRECTORY_SEPARATOR . $uploadDirectory;
+                    $absoluteFoldersList         = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator($uploadDirectoryAbsolutePath), false, true);
 
-                    $absolute_folders_list[]   = $upload_directory_absolute_path;
-                    $files_list_in_directories = $this->files_handler->listAllFilesInDirectories($absolute_folders_list);
+                    $absoluteFoldersList[]  = $uploadDirectoryAbsolutePath;
+                    $filesListInDirectories = $this->filesHandler->listAllFilesInDirectories($absoluteFoldersList);
 
-                    foreach($files_list_in_directories as $directory => $files){
+                    foreach($filesListInDirectories as $directory => $files){
                         foreach($files as $filename){
 
-                            $file_absolute_path = $directory . DIRECTORY_SEPARATOR . $filename;
-                            $file_object        = new File($file_absolute_path);
+                            $fileAbsolutePath = $directory . DIRECTORY_SEPARATOR . $filename;
+                            $fileObject       = new File($fileAbsolutePath);
 
                             preg_match('#\/upload\/(.*)#', $directory, $matches);
 
-                            $upload_directory_structure = $matches[1];
+                            $uploadDirectoryStructure = $matches[1];
 
                             if( !array_key_exists(1, $matches) ){
                                 $this->io->error("There is something wrong with this file, it's not in the upload directory? ");
                             }
 
-                            $target_miniature_file_absolute_path = getcwd() .
+                            $targetMiniatureFileAbsolutePath = getcwd() .
                                 DIRECTORY_SEPARATOR .
                                 Env::getPublicRootDir() .
                                 DIRECTORY_SEPARATOR .
                                 Env::getMiniaturesUploadDir() .
                                 DIRECTORY_SEPARATOR .
-                                $upload_directory_structure .
+                                $uploadDirectoryStructure .
                                 DIRECTORY_SEPARATOR .
                                 $filename;
 
-                            if( file_exists($target_miniature_file_absolute_path) ){
+                            if( file_exists($targetMiniatureFileAbsolutePath) ){
                                 continue;
                             }
 
                             $this->io->note("Creating miniature for file");
                             $this->io->listing([
-                               "from: " . $file_absolute_path,
-                               "to : "  . $target_miniature_file_absolute_path,
+                               "from: " . $fileAbsolutePath,
+                               "to : "  . $targetMiniatureFileAbsolutePath,
                             ]);
 
-                            if( !FileValidator::isFileImage($file_object) ){
+                            if( !FileValidator::isFileImage($fileObject) ){
                                 $this->io->warning("File is not an image");
                                 continue;
                             }
 
-                            if( !FileValidator::isImageResizable($file_object) ){
+                            if( !FileValidator::isImageResizable($fileObject) ){
                                 $this->io->warning("Image type is not resizable");
                                 continue;
                             }
 
-                            $this->image_handler->createMiniature($file_absolute_path, true, $target_miniature_file_absolute_path);
+                            $this->imageHandler->createMiniature($fileAbsolutePath, true, $targetMiniatureFileAbsolutePath);
                             $this->io->listing([
-                                "status: " . $this->image_handler->getLastStatus(),
+                                "status: " . $this->imageHandler->getLastStatus(),
                             ]);
                         }
                     }

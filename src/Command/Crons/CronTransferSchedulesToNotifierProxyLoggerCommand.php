@@ -33,9 +33,9 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     private string $channel;
 
     /**
-     * @var array $due_days
+     * @var array $dueDays
      */
-    private array $due_days;
+    private array $dueDays;
 
     /**
      * @var Application $app
@@ -43,16 +43,16 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     private Application $app;
 
     /**
-     * @var NotifierProxyLoggerService $notifier_proxy_logger_service
+     * @var NotifierProxyLoggerService $notifierProxyLoggerService
      */
-    private NotifierProxyLoggerService $notifier_proxy_logger_service;
+    private NotifierProxyLoggerService $notifierProxyLoggerService;
 
-    public function __construct(Application $app, NotifierProxyLoggerService $notifier_proxy_logger_service)
+    public function __construct(Application $app, NotifierProxyLoggerService $notifierProxyLoggerService)
     {
         parent::__construct(self::$defaultName);
 
-        $this->app                           = $app;
-        $this->notifier_proxy_logger_service = $notifier_proxy_logger_service;
+        $this->app                        = $app;
+        $this->notifierProxyLoggerService = $notifierProxyLoggerService;
     }
 
 
@@ -76,20 +76,20 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
              $this->channel = $input->getOption(self::OPTION_TRANSFER_CHANNEL, null);
-             $due_days      = $input->getOption(self::OPTION_DUE_DATE_DAYS_TO_TRANSFER, null);
+             $dueDays       = $input->getOption(self::OPTION_DUE_DATE_DAYS_TO_TRANSFER, null);
 
              if( empty($this->channel) ){
                  throw new Exception("No transfer channel was provided");
-             }elseif( empty($due_days) ){
+             }elseif( empty($dueDays) ){
                  throw new Exception("No due days were provided");
              }
 
-             $this->due_days = explode(",", $due_days);
-             if( empty($this->due_days) ){
+             $this->dueDays = explode(",", $dueDays);
+             if( empty($this->dueDays) ){
                  throw new Exception("Got due days parameter but could not build the array from provided value, maybe wrong separator?");
              }
 
-             foreach($this->due_days as $days){
+             foreach($this->dueDays as $days){
                  if( !is_numeric($days) ){
                      throw new Exception("One of the days for the due days parameter is not numeric.");
                  }
@@ -107,15 +107,15 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         try{
             $this->app->logger->info("Started transferring the schedules to npl");
             {
-                foreach($this->due_days as $days){
-                    $schedules_to_handle = $this->app->repositories->myScheduleRepository->getIncomingSchedulesEntitiesInDays($days);
+                foreach($this->dueDays as $days){
+                    $schedulesToHandle = $this->app->repositories->myScheduleRepository->getIncomingSchedulesEntitiesInDays($days);
 
-                    if( empty($schedules_to_handle) ){
+                    if( empty($schedulesToHandle) ){
                         $this->app->logger->info("No results to find for due days: {$days}");
                         continue;
                     }
 
-                    foreach($schedules_to_handle as $schedule){
+                    foreach($schedulesToHandle as $schedule){
                         $this->app->logger->info("Now handling schedule with id {$schedule->getId()}");
                         $this->handleTransferForChannel($schedule);
                     }
@@ -143,13 +143,13 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         {
             case self::TRANSFER_CHANNEL_DISCORD:
             {
-                $response = $this->notifier_proxy_logger_service->insertDiscordMessageForSchedule($schedule);
+                $response = $this->notifierProxyLoggerService->insertDiscordMessageForSchedule($schedule);
             }
             break;
 
             case self::TRANSFER_CHANNEL_MAIL:
             {
-                $response = $this->notifier_proxy_logger_service->insertEmailForSchedule($schedule);
+                $response = $this->notifierProxyLoggerService->insertEmailForSchedule($schedule);
             }
             break;
 
