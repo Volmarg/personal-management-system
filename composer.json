@@ -104,12 +104,14 @@
         "pms-installer": "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",
         "pms-installer-docker": "php -r \"include_once 'src//AutoInstaller.php'; use App\\AutoInstaller; AutoInstaller::runDocker();\" < /dev/tty",
         "pms-frontend-validate-circular-reference": "./node_modules/.bin/madge ./src/assets/scripts --webpack-config ./webpack.config.js --ts-config ./tsconfig.json  --circular --extensions ts,js",
-        "pms-frontend-generate-production-css-js-assets": "./node_modules/.bin/encore production"
+        "pms-frontend-generate-production-css-js-assets": "./node_modules/.bin/encore production",
+        "pms-rebuild-backend": "php7.4 bin/console assets:build-translation-messages-yaml; chmod 777 translations -R; php7.4 bin/console cache:clear; php7.4 bin/console cache:warmup;"
     },
     "scripts-descriptions": {
         "pms-installer": "Script for easier project installation",
         "pms-frontend-validate-circular-reference": "Checks if there are some circular references in javascript scripts",
-        "pms-frontend-generate-production-css-js-assets": "Generates bundle js/css files for production - can take up to 3 min to compile"
+        "pms-frontend-generate-production-css-js-assets": "Generates bundle js/css files for production - can take up to 3 min to compile",
+        "pms-rebuild-backend": "Handles rebuilding the assets, caching etc. for backend"
     },
     "conflict": {
         "symfony/symfony": "*"

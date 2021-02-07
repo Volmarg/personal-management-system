@@ -336,7 +336,7 @@ export default class Entity extends AbstractDataProcessor {
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             let id          = $($baseElement).find('.id').html();
-            let date        = $($baseElement).find('.date input').val();
+            let dayOfMonth  = $($baseElement).find('.dayOfMonth input').val();
             let money       = $($baseElement).find('.money').html();
             let description = $($baseElement).find('.description').html();
             let paymentType = $($baseElement).find('.type :selected');
@@ -347,7 +347,7 @@ export default class Entity extends AbstractDataProcessor {
             let url      = 'my-recurring-payments-monthly/update/';
             let ajaxData = {
                 'id'            : id,
-                'date'          : date,
+                'dayOfMonth'    : dayOfMonth,
                 'money'         : money,
                 'description'   : description,
                 'type'          : {

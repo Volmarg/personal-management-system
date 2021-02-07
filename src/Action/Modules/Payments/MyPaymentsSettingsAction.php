@@ -172,7 +172,7 @@ class MyPaymentsSettingsAction extends AbstractController {
     private function renderRecurringPaymentTemplate($ajax_render = false) {
         $recurring_payments_form    = $this->app->forms->recurringPaymentsForm();
 
-        $all_recurring__payments    = $this->controllers->getMyRecurringPaymentsMonthlyController()->getAllNotDeleted("date");
+        $all_recurring__payments    = $this->controllers->getMyRecurringPaymentsMonthlyController()->getAllNotDeleted();
         $payments_types             = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
         return $this->render(self::TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS, [

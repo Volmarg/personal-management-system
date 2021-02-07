@@ -1,5 +1,5 @@
 {% set my_recurring_payments_class = 'App\\Form\\Modules\\Payments\\MyRecurringPaymentsMonthlyType::' %}
-{% set KEY_DATE          = constant(my_recurring_payments_class ~ 'KEY_DATE' ) %}
+{% set KEY_DAY_OF_MONTH  = constant(my_recurring_payments_class ~ 'KEY_DAY_OF_MONTH' ) %}
 {% set KEY_MONEY         = constant(my_recurring_payments_class ~ 'KEY_MONEY' ) %}
 {% set KEY_DESCRIPTION   = constant(my_recurring_payments_class ~ 'KEY_DESCRIPTION' ) %}
 {% set KEY_TYPE          = constant(my_recurring_payments_class ~ 'KEY_TYPE' ) %}
@@ -12,7 +12,7 @@
         <thead>
         <tr>
             <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
-            <td>{{ 'payments.settings.recurring.table.date' | trans }}</td>
+            <td>{{ 'payments.settings.recurring.table.dayOfMonth' | trans }}</td>
             <td>{{ 'payments.settings.recurring.table.money' | trans }}</td>
             <td>{{ 'payments.settings.recurring.table.description' | trans }}</td>
             <td>{{ 'payments.settings.recurring.table.type' | trans }}</td>
@@ -23,16 +23,16 @@
         {% for recurring_payment in recurring_payments %}
             <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="MyRecurringPaymentsMonthly">
 
-                {% set timestamp = date( recurring_payment.date | date('m/d/yyyy') ).timestamp %}
-
-                <td class="d-none id">              {{ recurring_payment.id }}            </td>
-                <td>
-                <span class="{{ KEY_DATE }}">
-                    {% include 'page-elements/components/forms/input-datepicker.twig' with {
-                        "value"     : recurring_payment.date | date('Y-m-d'),
-                        "disabled"  : true
-                    } %}
-                </span>
+                <td class="d-none id">  {{ recurring_payment.id }} </td>
+                <td class="{{ KEY_DAY_OF_MONTH }}">
+                    {% include 'page-elements/components/forms/input-standard-value.twig' with {
+                        type     : "number",
+                        value    : recurring_payment.dayOfMonth,
+                        disabled : true,
+                        attrs    : "data-validate-form-element=true",
+                        min      : constant('App\\Entity\\Modules\\Payments\\MyRecurringPaymentMonthly::MIN_DAY_OF_MONTH'),
+                        max      : constant('App\\Entity\\Modules\\Payments\\MyRecurringPaymentMonthly::MAX_DAY_OF_MONTH'),
+                    }%}
                 </td>
                 <td class="{{ KEY_MONEY }}">        {{ recurring_payment.money}}          </td>
                 <td class="{{ KEY_DESCRIPTION }}">  {{ recurring_payment.description}}    </td>

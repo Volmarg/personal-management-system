@@ -4,14 +4,20 @@ namespace App\Entity\Modules\Payments;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
+use App\Entity\Interfaces\ValidateEntityForCreateInterface;
+use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
+use App\Entity\Interfaces\ValidateEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository")
  * @ORM\HasLifecycleCallbacks()
  */
-class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityInterface
+class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityInterface, ValidateEntityInterface, ValidateEntityForUpdateInterface, ValidateEntityForCreateInterface
 {
+    const FIELD_DAYS_OF_MONTH = "dayOfMonth";
+    const MIN_DAY_OF_MONTH    = 1;
+    const MAX_DAY_OF_MONTH    = 31;
 
     /**
      * @ORM\Id()
@@ -21,9 +27,9 @@ class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityI
     private $id;
 
     /**
-     * @ORM\Column(type="date", length=255, nullable=true)
+     * @ORM\Column(type="integer", length=255, nullable=false)
      */
-    private $date;
+    private int $dayOfMonth;
 
     /**
      * @ORM\Column(type="float")
@@ -46,38 +52,25 @@ class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityI
      */
     private $deleted = 0;
 
-    /**
-     * This field is used with cron to check if the hash value for given month is already in database
-     * @ORM\Column(type="string")
-     */
-    private $hash;
-
     public function getId(): ?int {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getDate() {
-        return $this->date;
+    public function getDayOfMonth(): int {
+        return $this->dayOfMonth;
     }
 
     /**
-     * @param mixed $date
+     * @param int $dayOfMonth
      * @return MyRecurringPaymentMonthly
-     * @throws \Exception
      */
-    public function setDate($date): self {
-
-        if (is_string($date)) {
-            $date = new \DateTime($date);
-        }
-
-        $this->date = $date;
+    public function setDayOfMonth(int $dayOfMonth): self {
+        $this->dayOfMonth = $dayOfMonth;
 
         return $this;
-
     }
 
     public function getMoney(): ?float {
@@ -118,43 +111,6 @@ class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityI
         $this->deleted = $deleted;
 
         return $this;
-    }
-
-    public function getHash(): ?string {
-        return $this->hash;
-    }
-
-    /**
-     * This function will be called after entity is persisted
-     * Must be public for CallbackEvent
-     * We set hash based on description and date to ensure that data of given description and date is in DB (cron use)
-     * @ORM\PreFlush
-     */
-    public function setHash(): self {
-
-        $hash = $this->calculateHash();
-
-        $this->hash = $hash;
-
-        return $this;
-    }
-
-    public function isHashEqual($hash): bool {
-        return ($this->hash === $hash);
-    }
-
-    public function calculateHash(){
-        if( $this->date instanceof \DateTime ){
-            $date = $this->date->format('Y-m-d');
-        }else{
-            $date = $this->date;
-        }
-
-        $string = $date . $this->description;
-
-        $hash = sha1($string);
-
-        return $hash;
     }
 
 }

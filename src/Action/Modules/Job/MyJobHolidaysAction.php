@@ -10,7 +10,6 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Controller\Validators\Entities\EntityValidator;
 use App\Entity\Modules\Job\MyJobHolidays;
-use App\Form\Modules\Job\MyJobHolidaysType;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Mapping\MappingException;
@@ -54,29 +53,32 @@ class MyJobHolidaysAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request) {
-
+    public function display(Request $request): Response
+    {
+        $all_pools_years   = $this->controllers->getMyJobHolidaysPoolController()->getAllPoolsYears();
         $ajax_response     = new AjaxResponse();
-        $validation_result = $this->add($request);
+        $validation_result = $this->add($request, $all_pools_years);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
         try{
             $template_content = $this->renderTemplate(true)->getContent();
 
-            if( !is_null($validation_result) && !$validation_result->isValid() ){
-                $message = $this->app->translator->translate('messages.general.couldNotHandleTheRequest');
+            if( !$validation_result->isValid() ){
+                 $form = $this->app->forms->jobHolidaysForm([
+                    self::KEY_CHOICES => $all_pools_years,
+                 ]);
 
-                $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
-                $ajax_response->setSuccess(false);
-                $ajax_response->setMessage($message);
-                $ajax_response->setTemplate($template_content);
-                $ajax_response->setInvalidFormFields($validation_result->getInvalidFieldsMessages());
-                $ajax_response->setValidatedFormPrefix(MyJobHolidaysType::getFormPrefix());
+                $ajax_response_for_validation = AjaxResponse::buildAjaxResponseForValidationResult(
+                    $validation_result,
+                    $form,
+                    $this->app->translator,
+                    $template_content
+                );
 
-                return $ajax_response->buildJsonResponse();
+                return $ajax_response_for_validation->buildJsonResponse();
             }
         }catch (Exception $e){
             $this->app->logExceptionWasThrown($e);
@@ -142,13 +144,12 @@ class MyJobHolidaysAction extends AbstractController {
 
     /**
      * @param Request $request
+     * @param array $all_pools_years
      * @return ValidationResultVO
-     * @throws DBALException
      * @throws Exception
      */
-    private function add(Request $request): ?ValidationResultVO {
-
-        $all_pools_years = $this->controllers->getMyJobHolidaysPoolController()->getAllPoolsYears();
+    private function add(Request $request, array $all_pools_years): ValidationResultVO
+    {
 
         $form = $this->app->forms->jobHolidaysForm([
             static::KEY_CHOICES => $all_pools_years
@@ -173,7 +174,7 @@ class MyJobHolidaysAction extends AbstractController {
             return $validation_result;
         }
 
-        return null;
+        return ValidationResultVO::buildValidResult();
     }
 
     /**

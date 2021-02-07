@@ -182,13 +182,14 @@ export default abstract class AbstractAction {
      */
     protected toggleDisabledClassForTableRow(tr_parent_element) {
         let color_pickers   = $(tr_parent_element).find('.color-picker');
+        let input_field     = $(tr_parent_element).find('.input-field');
         let toggle_buttons  = $(tr_parent_element).find('.toggle-button');
         let option_pickers  = $(tr_parent_element).find('.option-picker');
         let date_pickers    = $(tr_parent_element).find('.date-picker');
         let checkbox        = $(tr_parent_element).find('.checkbox-disabled');
         let selectize       = $(tr_parent_element).find('.selectize-control');
         let dataPreview     = $(tr_parent_element).find('.data-preview');
-        let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, dataPreview, toggle_buttons];
+        let elements_to_toggle = [color_pickers, option_pickers, date_pickers, checkbox, selectize, dataPreview, toggle_buttons, input_field];
         let _this = this;
 
         $(elements_to_toggle).each((index, element_type) => {

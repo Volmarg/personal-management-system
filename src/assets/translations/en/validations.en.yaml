@@ -3,3 +3,7 @@ validations:
   myJobHolidaysValidator:
     greaterThan: "Amount of days to spend must be bigger than %value%"
     lessThanOrEqual: "You don't have this amount of days left to spend for this year. Days left: %daysLeft%"
+  myRecurringPaymentsValidator:
+    dayOfMonth:
+      greaterThanOrEqual: "Given day of month must be bigger or equal than %value%"
+      lessThanOrEqual: "Provided day of month must be lesser or equal than %value%"

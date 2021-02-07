@@ -2,9 +2,13 @@
 
 namespace App\Controller\Core;
 
+use App\Form\Interfaces\ValidableFormInterface;
+use App\Services\Core\Translator;
 use App\Services\Session\AjaxCallsSessionService;
+use App\VO\Validators\ValidationResultVO;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -362,6 +366,41 @@ class AjaxResponse extends AbstractController {
 
         $response = new JsonResponse($response_data, 200);
         return $response;
+    }
+
+    /**
+     * Will build the ajax response for invalid validation result
+     *
+     * @param ValidationResultVO    $validation_result
+     * @param FormInterface         $used_form
+     * @param Translator            $translator
+     * @param string                $reloaded_template_content
+     * @return AjaxResponse
+     * @throws Exception
+     */
+    public static function buildAjaxResponseForValidationResult(ValidationResultVO $validation_result, FormInterface $used_form, Translator $translator, string $reloaded_template_content = ""): AjaxResponse
+    {
+        $used_form_type = $used_form->getConfig()->getType()->getInnerType();
+
+        if( $validation_result->isValid() ){
+            throw new Exception("The validation result is valid! Add check in caller before calling this method!");
+        }
+
+        if( !($used_form_type instanceof ValidableFormInterface) ){
+            throw new Exception("Provided form does not implement: " . ValidableFormInterface::class);
+        }
+
+        $message       = $translator->translate('messages.general.couldNotHandleTheRequest');
+        $ajax_response = new AjaxResponse();
+
+        $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+        $ajax_response->setSuccess(false);
+        $ajax_response->setMessage($message);
+        $ajax_response->setTemplate($reloaded_template_content);
+        $ajax_response->setInvalidFormFields($validation_result->getInvalidFieldsMessages());
+        $ajax_response->setValidatedFormPrefix($used_form_type::getFormPrefix());
+
+        return $ajax_response;
     }
 
     /**

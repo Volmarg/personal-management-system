@@ -17,6 +17,7 @@ guide:
     firstTimeLogin: { global: { description: "Hello, <br/><br/>\n\nSeems like this is the first time that You are logging into the project.\nPlease keep in mind that the <b>Guide</b> mode is turned on, therefore You will see\npopups when hovering upon certain elements. <br/><br/>\n\nIn order to turn this off You need to edit the <code>.env</code> file and replace the <code>APP_GUIDE=true</code>\nto <code>APP_GUIDE=false</code><br/><br/>\n\nThis popup is shown only upon first login.\n\nHave a nice day,\n" }, demo: { description: "Hello, <br/><br/>\n\nSeems like this is the first time that You are logging into the project.\nPlease keep in mind that the <b>Guide</b> mode is turned on, therefore You will see\npopups when hovering upon certain elements. <br/><br/>\n\nYou are on the demo right now. Beware that some functionality has been disabled for demo,\nfor example: changing password, registering users, etc. <br/><br/>\n\nThis popup is shown only upon first login.\n\nHave a nice day," } }
 validations:
     myJobHolidaysValidator: { greaterThan: 'Amount of days to spend must be bigger than %value%', lessThanOrEqual: 'You don''t have this amount of days left to spend for this year. Days left: %daysLeft%' }
+    myRecurringPaymentsValidator: { dayOfMonth: { greaterThanOrEqual: 'Given day of month must be bigger or equal than %value%', lessThanOrEqual: 'Provided day of month must be lesser or equal than %value%' } }
 forms:
     MyGoalsPaymentsType: { collectionStartDate: 'Collection start date', displayOnDashboard: 'Display on dashboard', deadline: Deadline, name: Name, moneyGoal: 'Money goal', moneyCollected: 'Money collected' }
     MyGoalsType: { displayOnDashboard: 'Display on dashboard', name: Name, description: Description }
@@ -38,7 +39,7 @@ forms:
     MyPasswordsGroupsType: { labels: { name: Name } }
     MyPasswordsType: { labels: { login: Login, password: Password, url: Url, description: Description, group: Group, submit: Submit } }
     MyPaymentsMonthlyType: { labels: { date: Date, money: Money, description: Description, type: Type } }
-    MyRecurringPaymentMonthlyType: { labels: { date: Date, money: Money, description: Description, type: Type } }
+    MyRecurringPaymentMonthlyType: { labels: { dayOfMonth: 'Day of month', money: Money, description: Description, type: Type } }
     MyPaymentsOwedType: { labels: { target: Target, information: Information, date: Date, amount: Amount, owedByMe: 'Owed by me', currency: Currency }, placeholders: { target: 'Who owes the money', information: 'Information about this borrow', date: yyyy-mm-dd, amount: 'Amount of money owed' } }
     MyPaymentsIncomeType: { labels: { information: Information, date: Date, amount: Amount, currency: Currency }, placeholders: { information: 'Short income summary', date: Date, amount: Amount, currency: Currency } }
     MyPaymentsProductsType: { labels: { name: Name, price: Price, market: Market, products: Products, information: Information, rejected: Rejected } }
@@ -141,7 +142,7 @@ payments:
     monthlyPayments: { headers: { addPayment: 'Add payment' }, summary: 'Monthly payments summary:', table: { type: Type }, infoBlock: { header: 'Monthly payments', text: { mainDescription: "Lists of the money spent in each month with separate summary per month and per payment type.\n" } } }
     bills: { headers: { billsSummaries: 'Bills summaries', billsItemsManagement: 'Management items' }, forms: { bills: 'Add bill' }, table: { startDate: 'Start date', endDate: 'End date', name: Name, information: Information, plannedAmount: 'Planned amount' }, infoBlock: { header: Bills, text: { mainDescription: "Track of money spent on unpredicted or planned things, but not related to the standard monthly payments, like\nrenting, electricity etc.\n" } } }
     bills_items: { forms: { bills_items: 'Add bill item' }, table: { amount: Amount, name: Name, bill: Bill, date: Date } }
-    settings: { headers: { changeAddSetting: 'Change/Add settings', currencyMultiplier: 'Currency multiplier', paymentsTypes: 'Payments types', recurringPayments: 'Recurring payments' }, types: { table: { name: Name } }, recurring: { table: { date: Date, money: Money, description: Description, type: Type } } }
+    settings: { headers: { changeAddSetting: 'Change/Add settings', currencyMultiplier: 'Currency multiplier', paymentsTypes: 'Payments types', recurringPayments: 'Recurring payments' }, types: { table: { name: Name } }, recurring: { table: { dayOfMonth: 'Day of month', money: Money, description: Description, type: Type } } }
     infoBlock: { header: 'Payments settings', text: { mainDescription: "Management of payments types visible in the <b>Monthly Payments</b> submodule and the recurring payments which are\nused by the cron to insert certain payments each month automatically (like for example constant renting fee)\n" } }
 reports:
     monthlyPaymentsSummaries: { infoBlock: { header: 'Monthly payments summaries', text: { mainDescription: "This report contains summary of payments from \"<b>Monthly Payments</b>\" and \"<b>Bills</b>\" for each month.\n" } }, table: { monthAndYear: 'Month and year', money: Money } }

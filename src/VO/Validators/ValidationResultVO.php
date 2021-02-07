@@ -104,4 +104,15 @@ class ValidationResultVO {
         return $messages;
     }
 
+    /**
+     * Will yield valid validation result
+     * 
+     * @return ValidationResultVO
+     */
+    public static function buildValidResult(): ValidationResultVO
+    {
+        $validation_result = new ValidationResultVO();
+        $validation_result->setValid(true);
+        return $validation_result;
+    }
 }

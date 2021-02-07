@@ -320,7 +320,7 @@ payments:
         name: Name
     recurring:
       table:
-        date: Date
+        dayOfMonth: Day of month
         money: Money
         description: Description
         type: Type

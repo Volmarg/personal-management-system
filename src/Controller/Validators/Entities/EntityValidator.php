@@ -7,6 +7,7 @@ use App\Entity\Interfaces\ValidateEntityForCreateInterface;
 use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Entity\Modules\Job\MyJobHolidays;
+use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\Services\Core\Translator;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,7 +21,8 @@ class EntityValidator extends AbstractController {
     const ACTION_CREATE = "create";
 
     const MAP_ENTITY_TO_VALIDATOR = [
-      MyJobHolidays::class => MyJobHolidaysValidator::class
+        MyJobHolidays::class             => MyJobHolidaysValidator::class,
+        MyRecurringPaymentMonthly::class => MyRecurringPaymentsValidator::class,
     ];
 
     /**

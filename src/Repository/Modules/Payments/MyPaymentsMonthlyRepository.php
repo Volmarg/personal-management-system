@@ -63,18 +63,21 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
 
     /**
      * @param string $hash
+     * @param string $day_of_month
      * @return MyPaymentsMonthly[]
      */
-    public function findByDateAndDescriptionHash(string $hash){
-
-        $queryBuilder = $this->createQueryBuilder('pm');
+    public function findByDateAndDescriptionHash(string $hash, string $day_of_month): array
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
 
         $queryBuilder
-            ->where("SHA1(CONCAT(pm.date, pm.description)) = :hash")
-            ->setParameter('hash', $hash);
+            ->select("pm")
+            ->from(MyPaymentsMonthly::class, "pm")
+            ->where("MD5(CONCAT(DATE_FORMAT(pm.date, '%Y-%m-'), :dayOfMonth, pm.description)) = :hash")
+            ->setParameter('hash', $hash)
+            ->setParameter("dayOfMonth", $day_of_month);
 
-        $query = $queryBuilder->getQuery();
-
+        $query   = $queryBuilder->getQuery();
         $results = $query->getResult();
 
         return $results;

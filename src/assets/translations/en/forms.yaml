@@ -114,7 +114,7 @@ forms:
       type: Type
   MyRecurringPaymentMonthlyType:
     labels:
-      date: Date
+      dayOfMonth: Day of month
       money: Money
       description: Description
       type: Type

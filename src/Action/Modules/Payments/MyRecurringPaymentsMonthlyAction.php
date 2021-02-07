@@ -8,6 +8,8 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use App\Controller\Validators\Entities\EntityValidator;
+use App\VO\Validators\ValidationResultVO;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,8 +34,14 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      */
     private $my_payments_settings_action;
 
-    public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $my_payments_settings_action) {
+    /**
+     * @var EntityValidator $entity_validator
+     */
+    private EntityValidator $entity_validator;
+
+    public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $my_payments_settings_action, EntityValidator $entity_validator) {
         $this->my_payments_settings_action = $my_payments_settings_action;
+        $this->entity_validator            = $entity_validator;
         $this->controllers                 = $controllers;
         $this->app                         = $app;
     }
@@ -42,16 +50,46 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      * @Route("/my-recurring-payments-monthly-settings", name="my-recurring-payments-monthly-settings")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function displaySettings(Request $request) {
-        $this->add($request);
+    public function displaySettings(Request $request): Response
+    {
+        $validation_result = $this->add($request);
+        $ajax_response     = new AjaxResponse();
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->my_payments_settings_action->renderSettingsTemplate(false);
+            return $this->my_payments_settings_action->renderSettingsTemplate();
         }
 
-        $template_content  = $this->my_payments_settings_action->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        try{
+            $template_content = $this->my_payments_settings_action->renderSettingsTemplate(true)->getContent();
+
+            if( !$validation_result->isValid() ){
+                $ajax_response_for_validation = AjaxResponse::buildAjaxResponseForValidationResult(
+                    $validation_result,
+                    $this->app->forms->recurringPaymentsForm(),
+                    $this->app->translator,
+                    $template_content
+                );
+
+                return $ajax_response_for_validation->buildJsonResponse();
+            }
+        }catch (Exception $e){
+            $this->app->logExceptionWasThrown($e);
+            $message = $this->app->translator->translate('messages.general.internalServerError');
+
+            $ajax_response->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $ajax_response->setSuccess(false);
+            $ajax_response->setMessage($message);
+
+            return $ajax_response->buildJsonResponse();
+        }
+
+        $ajax_response->setCode(Response::HTTP_OK);
+        $ajax_response->setSuccess(true);
+        $ajax_response->setTemplate($template_content);
+
+        return $ajax_response->buildJsonResponse();
     }
 
     /**
@@ -96,16 +134,29 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
 
     /**
      * @param $request
+     * @return ValidationResultVO
+     * @throws Exception
      */
-    private function add($request) {
+    private function add($request): ValidationResultVO
+    {
 
         $recurring_payments_form = $this->app->forms->recurringPaymentsForm();
         $recurring_payments_form->handleRequest($request);
 
         if ($recurring_payments_form->isSubmitted() && $recurring_payments_form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($recurring_payments_form->getData());
+
+            $recurring_payment = $recurring_payments_form->getData();
+            $validation_result = $this->entity_validator->handleValidation($recurring_payment, EntityValidator::ACTION_CREATE);
+
+            if( !$validation_result->isValid() ){
+                return $validation_result;
+            }
+
+            $em->persist($recurring_payment);
             $em->flush();
         }
+
+        return ValidationResultVO::buildValidResult();
     }
 }

@@ -32,13 +32,11 @@ class MyRecurringPaymentMonthlyRepository extends ServiceEntityRepository {
     /**
      * Will return all not deleted records
      *
-     * @param string $sort_by_column
-     * @param string $sort_direction
      * @return MyRecurringPaymentMonthly[]
      */
-    public function getAllNotDeleted(string $sort_by_column, string $sort_direction = "ASC")
+    public function getAllNotDeleted(): array
     {
-        return $this->findBy(['deleted' => '0'], [$sort_by_column => $sort_direction]);
+        return $this->findBy(['deleted' => '0']);
     }
 
 }
