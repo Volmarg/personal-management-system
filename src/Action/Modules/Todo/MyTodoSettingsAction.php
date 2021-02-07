@@ -12,7 +12,7 @@ class MyTodoSettingsAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     public function __construct(Application $app) {
 

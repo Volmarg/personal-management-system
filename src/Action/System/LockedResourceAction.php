@@ -23,7 +23,7 @@ class LockedResourceAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -65,21 +65,21 @@ class LockedResourceAction extends AbstractController {
         $target = $request->request->get(self::KEY_TARGET);
 
         //first check if the record exists if not then we create new, otherwise we have removal
-        $locked_resource = $this->controllers->getLockedResourceController()->findOneEntity($record, $type, $target);
-        $code            = 200;
+        $lockedResource = $this->controllers->getLockedResourceController()->findOneEntity($record, $type, $target);
+        $code           = 200;
 
         try{
 
-            if( !empty($locked_resource) ){
-                $this->controllers->getLockedResourceController()->remove($locked_resource);;
+            if( !empty($lockedResource) ){
+                $this->controllers->getLockedResourceController()->remove($lockedResource);;
                 $message = $this->app->translator->translate("messages.lock.resourceHasBeenUnlocked");
             }else{
-                $locked_resource = new LockedResource();
-                $locked_resource->setRecord($record);
-                $locked_resource->setType($type);
-                $locked_resource->setTarget($target);
+                $lockedResource = new LockedResource();
+                $lockedResource->setRecord($record);
+                $lockedResource->setType($type);
+                $lockedResource->setTarget($target);
 
-                $this->controllers->getLockedResourceController()->add($locked_resource);
+                $this->controllers->getLockedResourceController()->add($lockedResource);
                 $message = $this->app->translator->translate("messages.lock.resourceHasBeenLocked");
             }
 

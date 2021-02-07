@@ -21,12 +21,12 @@ class FilesTagsAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
 
     public function __construct(Controllers $controllers, Application $app) {
@@ -54,16 +54,16 @@ class FilesTagsAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
-        $tags_string    = $request->request->get(FileTagger::KEY_TAGS);
-        $file_full_path = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
+        $tagsString   = $request->request->get(FileTagger::KEY_TAGS);
+        $fileFullPath = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
 
-        if( empty($file_full_path) ){
+        if( empty($fileFullPath) ){
             $message = $this->app->translator->translate('responses.files.filePathIsAnEmptyString');
             $this->app->logger->critical($message);
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
-        $response = $this->controllers->getFilesTagsController()->updateTags($tags_string, $file_full_path);
+        $response = $this->controllers->getFilesTagsController()->updateTags($tagsString, $fileFullPath);
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 

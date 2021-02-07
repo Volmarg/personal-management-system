@@ -9,6 +9,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +23,7 @@ class MyPaymentsOwedAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -39,16 +40,17 @@ class MyPaymentsOwedAction extends AbstractController {
      * @param Request $request
      * @return Response
      * @throws DBALException
+     * @throws Exception
      */
     public function display(Request $request) {
         $this->add($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -57,20 +59,19 @@ class MyPaymentsOwedAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
-
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_OWED_REPOSITORY_NAME,
             $request->request->get('id')
         );
 
         $message = $response->getContent();
-
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -79,62 +80,65 @@ class MyPaymentsOwedAction extends AbstractController {
      * @Route("my-payments-owed/update/" ,name="my-payments-owed-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     *
+     * @throws MappingException
      */
     public function update(Request $request) {
-        $parameters     = $request->request->all();
-        $entity_id      = trim($parameters['id']);
+        $parameters    = $request->request->all();
+        $entityId      = trim($parameters['id']);
 
-        $entity         = $this->controllers->getMyPaymentsOwedController()->findOneById($entity_id);
+        $entity         = $this->controllers->getMyPaymentsOwedController()->findOneById($entityId);
         $response       = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      * @throws DBALException
+     * @throws Exception
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $form           = $this->app->forms->moneyOwedForm();
-        $owed_by_me     = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(true);
-        $owed_by_others = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(false);
+        $form         = $this->app->forms->moneyOwedForm();
+        $owedByMe     = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(true);
+        $owedByOthers = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(false);
 
-        $summary_owed_by_others = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(false);
-        $summary_owed_by_me     = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(true);
+        $summaryOwedByOthers = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(false);
+        $summaryOwedByMe     = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(true);
 
-        $summary_overall        = $this->controllers->getMyPaymentsOwedController()->fetchSummaryWhoOwesHowMuch();
+        $summaryOverall        = $this->controllers->getMyPaymentsOwedController()->fetchSummaryWhoOwesHowMuch();
 
-        $summary_overall_owed_by_me     = [];
-        $summary_overall_owed_by_others = [];
+        $summaryOverallOwedByMe     = [];
+        $summaryOverallOwedByOthers = [];
 
-        foreach( $summary_overall as $summary ){
-            $is_summary_owed_by_me = $summary['summaryOwedByMe'];
+        foreach( $summaryOverall as $summary ){
+            $isSummaryOwedByMe = $summary['summaryOwedByMe'];
 
-            if($is_summary_owed_by_me){
-                $summary_overall_owed_by_me[] = $summary;
+            if($isSummaryOwedByMe){
+                $summaryOverallOwedByMe[] = $summary;
                 continue;
             }
 
-            $summary_overall_owed_by_others[] = $summary;
+            $summaryOverallOwedByOthers[] = $summary;
         }
 
-        $currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesDtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/owed.html.twig', [
-            'ajax_render'       => $ajax_render,
+            'ajax_render'       => $ajaxRender,
             'form'              => $form->createView(),
-            'owed_by_me'        => $owed_by_me,
-            'owed_by_others'    => $owed_by_others,
-            'summary_owed_by_others' => $summary_owed_by_others,
-            'summary_owed_by_me'     => $summary_owed_by_me,
-            'currencies_dtos'        => $currencies_dtos,
-            'summary_overall_owed_by_me'     => $summary_overall_owed_by_me,
-            'summary_overall_owed_by_others' => $summary_overall_owed_by_others,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'owed_by_me'        => $owedByMe,
+            'owed_by_others'    => $owedByOthers,
+            'summary_owed_by_others' => $summaryOwedByOthers,
+            'summary_owed_by_me'     => $summaryOwedByMe,
+            'currencies_dtos'        => $currenciesDtos,
+            'summary_overall_owed_by_me'     => $summaryOverallOwedByMe,
+            'summary_overall_owed_by_others' => $summaryOverallOwedByOthers,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
     }
 
@@ -146,9 +150,9 @@ class MyPaymentsOwedAction extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form_data = $form->getData();
+            $formData = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
         }
 

@@ -34,7 +34,7 @@ class MyContactsAction extends AbstractController
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -52,12 +52,13 @@ class MyContactsAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate( false);
+            return $this->renderTemplate( );
         }
-        $template_content  = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate( true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -66,23 +67,22 @@ class MyContactsAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
-
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_CONTACT_REPOSITORY,
             $request->request->get('id')
         );
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
-            $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
+            $message          = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
-
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
@@ -95,24 +95,25 @@ class MyContactsAction extends AbstractController
      * @throws DBALException
      * @throws ORMException
      * @throws OptimisticLockException
+     * @throws Exception
      */
     public function update(Request $request) {
-        $contact_form_data = [];
+        $contactFormData = [];
 
         // transform js serialized form back to array
-        $contact_form_prefix          = Utils::formClassToFormPrefix(MyContactType::class);
-        $contact_form_serialized_data = $request->request->get($contact_form_prefix);
+        $contactFormPrefix         = Utils::formClassToFormPrefix(MyContactType::class);
+        $contactFormSerializedData = $request->request->get($contactFormPrefix);
 
-        parse_str($contact_form_serialized_data, $contact_form_data);
+        parse_str($contactFormSerializedData, $contactFormData);
 
         // and replace it for form handling
-        $request->request->set($contact_form_prefix, $contact_form_data);
+        $request->request->set($contactFormPrefix, $contactFormData);
 
         $this->handleForms($request);
-        $template_content = $this->renderTemplate( true)->getContent();
-        $message          = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+        $templateContent = $this->renderTemplate( true)->getContent();
+        $message         = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
     }
 
     /**
@@ -124,102 +125,93 @@ class MyContactsAction extends AbstractController
      */
     private function handleForms(Request $request){
 
-        $contact_form_prefix   = Utils::formClassToFormPrefix(MyContactType::class);
-        $all_request_params    = $request->request->all();
+        $contactFormPrefix = Utils::formClassToFormPrefix(MyContactType::class);
+        $allRequestParams  = $request->request->all();
 
-        if( empty($all_request_params) ){
+        if( empty($allRequestParams) ){
             return;
         }
 
-        $forms             = $all_request_params[$contact_form_prefix];
-        $contact_form_data = $forms[$contact_form_prefix];
+        $forms           = $allRequestParams[$contactFormPrefix];
+        $contactFormData = $forms[$contactFormPrefix];
 
-        $filtered_types_forms = Utils::filterRequestForms([$contact_form_prefix], $forms);
+        $filteredTypesForms = Utils::filterRequestForms([$contactFormPrefix], $forms);
 
         // build request for processing the main form
         $request = new Request();
-        $request->request->set($contact_form_prefix, $contact_form_data);
+        $request->request->set($contactFormPrefix, $contactFormData);
 
-        $contact_form = $this->app->forms->contactForm()->handleRequest($request);
-        $contact_form->submit($contact_form_data);
+        $contactForm = $this->app->forms->contactForm()->handleRequest($request);
+        $contactForm->submit($contactFormData);
 
-        if( $contact_form->isSubmitted() && $contact_form->isValid() ){
+        if( $contactForm->isSubmitted() && $contactForm->isValid() ){
 
-            $array_of_contacts_types_dtos = [];
+            $arrayOfContactsTypesDtos = [];
 
             // Build contacts from all passed in forms
-
-            foreach( $filtered_types_forms as $uuid => $form ){
+            foreach( $filteredTypesForms as $uuid => $form ){
 
                 if( !array_key_exists(MyContactTypeDtoType::KEY_NAME, $form) ){
-                    $message = '';
-                    throw new Exception($message);
+                    throw new Exception("");
                 }elseif( !array_key_exists(MyContactTypeDtoType::KEY_TYPE, $form) ){
-                    $message = '';
-                    throw new Exception($message);
+                    throw new Exception("");
                 }
 
-                $type_details   = $form[MyContactTypeDtoType::KEY_NAME];
-                $type_id        = $form[MyContactTypeDtoType::KEY_TYPE];
+                $typeDetails = $form[MyContactTypeDtoType::KEY_NAME];
+                $typeId      = $form[MyContactTypeDtoType::KEY_TYPE];
 
-                $icon_path   = $this->controllers->getMyContactTypeController()->getImagePathForById($type_id);
-                $type_name   = $this->controllers->getMyContactTypeController()->getTypeNameById($type_id);
+                $iconPath = $this->controllers->getMyContactTypeController()->getImagePathForById($typeId);
+                $typeName = $this->controllers->getMyContactTypeController()->getTypeNameById($typeId);
 
-                if( empty($icon_path) ){
-                    $message = '';
-                    throw new Exception($message);
+                if( empty($iconPath) ){
+                    throw new Exception("");
                 }
 
-                $contact_type_dto = new ContactTypeDTO();
-                $contact_type_dto->setDetails($type_details);
-                $contact_type_dto->setName($type_name);
-                $contact_type_dto->setIconPath($icon_path);
-                $contact_type_dto->setUuid($uuid);
+                $contactTypeDto = new ContactTypeDTO();
+                $contactTypeDto->setDetails($typeDetails);
+                $contactTypeDto->setName($typeName);
+                $contactTypeDto->setIconPath($iconPath);
+                $contactTypeDto->setUuid($uuid);
 
-                $array_of_contacts_types_dtos[] = $contact_type_dto;
+                $arrayOfContactsTypesDtos[] = $contactTypeDto;
 
             }
 
-            $contacts_types_dto = new ContactsTypesDTO();
-            $contacts_types_dto->setContactTypeDtos($array_of_contacts_types_dtos);
-            $contacts_json = $contacts_types_dto->toJson();
+            $contactsTypesDto = new ContactsTypesDTO();
+            $contactsTypesDto->setContactTypeDtos($arrayOfContactsTypesDtos);
+            $contactsJson = $contactsTypesDto->toJson();
 
-            /**
-             * @var MyContact $my_contact
-             */
-            $my_contact = $contact_form->getData();
-
-            if( !$my_contact instanceof MyContact ){
-                $message = '';
-                throw new Exception($message);
+            $myContact = $contactForm->getData();
+            if( !$myContact instanceof MyContact ){
+                throw new Exception('');
             }
 
-            $my_contact->setContacts($contacts_json);
+            $myContact->setContacts($contactsJson);
 
-            $normalized_description_color = str_replace("#", "", $my_contact->getDescriptionBackgroundColor());
-            $normalized_name_color        = str_replace("#", "", $my_contact->getNameBackgroundColor());
+            $normalizedDescriptionColor = str_replace("#", "", $myContact->getDescriptionBackgroundColor());
+            $normalizedNameColor        = str_replace("#", "", $myContact->getNameBackgroundColor());
 
-            $my_contact->setNameBackgroundColor($normalized_description_color);
-            $my_contact->setDescriptionBackgroundColor($normalized_name_color);
+            $myContact->setNameBackgroundColor($normalizedDescriptionColor);
+            $myContact->setDescriptionBackgroundColor($normalizedNameColor);
 
-            $this->controllers->getMyContactController()->saveEntity($my_contact, true);
+            $this->controllers->getMyContactController()->saveEntity($myContact, true);
         }
 
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return mixed
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
         $contacts = $this->controllers->getMyContactController()->findAllNotDeleted();
 
         $data = [
-            self::KEY_AJAX_RENDER            => $ajax_render,
+            self::KEY_AJAX_RENDER            => $ajaxRender,
             self::KEY_CONTACTS               => $contacts,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);

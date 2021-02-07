@@ -33,26 +33,26 @@ class FileUploadAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var FileUploader $file_uploader
+     * @var FileUploader $fileUploader
      */
-    private $file_uploader;
+    private FileUploader $fileUploader;
 
     public function __construct(
         Controllers  $controllers,
         Application  $app,
         FileUploader $fileUploader
     ) {
-        $this->app           = $app;
-        $this->controllers   = $controllers;
-        $this->file_uploader = $fileUploader;
+        $this->app          = $app;
+        $this->controllers  = $controllers;
+        $this->fileUploader = $fileUploader;
     }
 
     /**
@@ -86,27 +86,27 @@ class FileUploadAction extends AbstractController {
         }
 
         try{
-            $upload_module_dir                              = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
-            $tags                                           = $request->request->get(FileTagger::KEY_TAGS);
-            $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
-            $file_name_with_extension                       = $request->request->get(self::KEY_FILE_NAME);
-            $file_name                                      = pathinfo($file_name_with_extension, PATHINFO_FILENAME);
+            $uploadModuleDir                          = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+            $tags                                     = $request->request->get(FileTagger::KEY_TAGS);
+            $subdirectoryTargetPathInModuleUploadDir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+            $fileNameWithExtension                    = $request->request->get(self::KEY_FILE_NAME);
+            $fileName                                 = pathinfo($fileNameWithExtension, PATHINFO_FILENAME);
 
-            $uploaded_files          = $request->files->all();
-            $count_of_uploaded_files = count($uploaded_files);
-            if(self::FINE_UPLOAD_ALLOWED_COUNT_OF_UPLOADED_FILES_PER_CALL != $count_of_uploaded_files){
-                throw new Exception("Called fine upload method for files upload, expected 1 file to handle, got : {$count_of_uploaded_files} files");
+            $uploadedFiles        = $request->files->all();
+            $countOfUploadedFiles = count($uploadedFiles);
+            if(self::FINE_UPLOAD_ALLOWED_COUNT_OF_UPLOADED_FILES_PER_CALL != $countOfUploadedFiles){
+                throw new Exception("Called fine upload method for files upload, expected 1 file to handle, got : {$countOfUploadedFiles} files");
             }
 
-            /** @var UploadedFile $uploaded_file */
-            $uploaded_file = reset($uploaded_files);
-            $response = $this->file_uploader->upload(
-                $uploaded_file,
+            /** @var UploadedFile $uploadedFile */
+            $uploadedFile = reset($uploadedFiles);
+            $response = $this->fileUploader->upload(
+                $uploadedFile,
                 $request,
-                $upload_module_dir,
-                $subdirectory_target_path_in_module_upload_dir,
-                $file_name,
-                $uploaded_file->getExtension(),
+                $uploadModuleDir,
+                $subdirectoryTargetPathInModuleUploadDir,
+                $fileName,
+                $uploadedFile->getExtension(),
                 $tags
             );
 
@@ -137,26 +137,26 @@ class FileUploadAction extends AbstractController {
     /**
      * This function is also used for generating content for dialog (quick upload widget)
      *
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
+     * @param string|null $twigTemplate
      * @return Response
-     * @throws Exception
      */
-    public function renderFineUploadTemplate(bool $ajax_render, ?string $twig_template = null): Response
+    public function renderFineUploadTemplate(bool $ajaxRender, ?string $twigTemplate = null): Response
     {
-        $module_and_directory_select_form = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
-        $upload_max_filesize              = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
-        $post_max_size                    = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
-        $max_upload_size_mb               = ( $post_max_size < $upload_max_filesize ? $post_max_size : $upload_max_filesize );
-        $max_upload_size_bytes            = $max_upload_size_mb * 1024 * 1024;
+        $moduleAndDirectorySelectForm = $this->app->forms->getModuleAndDirectorySelectForm()->createView();
+        $uploadMaxFilesize            = preg_replace("/[^0-9]/","", ini_get('upload_max_filesize'));
+        $postMaxSize                  = preg_replace("/[^0-9]/","", ini_get('post_max_size'));
+        $maxUploadSizeMb              = ( $postMaxSize < $uploadMaxFilesize ? $postMaxSize : $uploadMaxFilesize );
+        $maxUploadSizeBytes           = $maxUploadSizeMb * 1024 * 1024;
 
         $data = [
-            'ajax_render'                      => $ajax_render,
-            'module_and_directory_select_form' => $module_and_directory_select_form,
-            'max_upload_size_mb'               => $max_upload_size_mb,
-            'max_upload_size_bytes'            => $max_upload_size_bytes,
+            'ajax_render'                      => $ajaxRender,
+            'module_and_directory_select_form' => $moduleAndDirectorySelectForm,
+            'max_upload_size_mb'               => $maxUploadSizeMb,
+            'max_upload_size_bytes'            => $maxUploadSizeBytes,
         ];
 
-        $template = $twig_template ?? self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE;
+        $template = $twigTemplate ?? self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE;
 
         return $this->render($template, $data);
     }
@@ -174,39 +174,39 @@ class FileUploadAction extends AbstractController {
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $form_data         = $form->getData();
-            $upload_table_data = $request->request->get(FileUploadController::KEY_UPLOAD_TABLE);
+            $formData        = $form->getData();
+            $uploadTableData = $request->request->get(FileUploadController::KEY_UPLOAD_TABLE);
 
-            $subdirectory       = $form_data[DirectoriesHandler::SUBDIRECTORY_KEY];
-            $upload_module_dir  = $form_data[FileUploadController::KEY_UPLOAD_MODULE_DIR];
-            $uploaded_files     = $form_data[FilesHandler::FILE_KEY];
-            $max_file_uploads   = (int)ini_get('max_file_uploads');
+            $subdirectory    = $formData[DirectoriesHandler::SUBDIRECTORY_KEY];
+            $uploadModuleDir = $formData[FileUploadController::KEY_UPLOAD_MODULE_DIR];
+            $uploadedFiles   = $formData[FilesHandler::FILE_KEY];
+            $maxFileUploads  = (int)ini_get('max_file_uploads');
 
-            foreach ($uploaded_files as $index => $uploaded_file) {
+            foreach ($uploadedFiles as $index => $uploadedFile) {
 
-                $file_extension_key  = FileUploadController::KEY_EXTENSION . $index;
-                $filename_key        = FileUploadController::KEY_FILENAME . $index;
-                $tag_key             = FileUploadController::KEY_TAG . $index;
+                $fileExtensionKey = FileUploadController::KEY_EXTENSION . $index;
+                $filenameKey      = FileUploadController::KEY_FILENAME . $index;
+                $tagKey           = FileUploadController::KEY_TAG . $index;
 
-                $filename   = $upload_table_data[$filename_key];
-                $extension  = $upload_table_data[$file_extension_key];
-                $tags       = $upload_table_data[$tag_key];
+                $filename   = $uploadTableData[$filenameKey];
+                $extension  = $uploadTableData[$fileExtensionKey];
+                $tags       = $uploadTableData[$tagKey];
 
-                $uploaded_files_count = count($uploaded_files);
+                $uploadedFilesCount = count($uploadedFiles);
 
-                if( $uploaded_files_count > $max_file_uploads){
+                if( $uploadedFilesCount > $maxFileUploads){
                     $message  = $this->app->translator->translate('responses.upload.tryingToUploadMoreFilesThanAllowedTo');
                     $response = new Response($message);
                     break;
                 }
 
-                $response = $this->file_uploader->upload($uploaded_file, $request, $upload_module_dir, $subdirectory, $filename, $extension, $tags);
+                $response = $this->fileUploader->upload($uploadedFile, $request, $uploadModuleDir, $subdirectory, $filename, $extension, $tags);
             }
 
-            $flash_type  = Utils::getFlashTypeForRequest($response);
+            $flashType  = Utils::getFlashTypeForRequest($response);
             $message    = $response->getContent();
 
-            $this->addFlash($flash_type, $message);
+            $this->addFlash($flashType, $message);
         }
     }
 

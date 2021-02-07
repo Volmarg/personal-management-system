@@ -21,12 +21,12 @@ class MyPasswordsAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var EncryptorInterface
      */
-    private $encryptor;
+    private EncryptorInterface $encryptor;
 
     /**
      * @var Controllers $controller
@@ -47,15 +47,15 @@ class MyPasswordsAction extends AbstractController {
      * @throws Exception
      */
     public function display(Request $request) {
-        $password_form = $this->app->forms->myPasswordForm();
-        $this->addFormDataToDB($password_form, $request);
+        $passwordForm = $this->app->forms->myPasswordForm();
+        $this->addFormDataToDB($passwordForm, $request);
 
         if (!$request->isXmlHttpRequest()) {
             return $this->renderTemplate(false);
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -64,7 +64,8 @@ class MyPasswordsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PASSWORDS_REPOSITORY_NAME,
@@ -74,10 +75,10 @@ class MyPasswordsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -88,34 +89,36 @@ class MyPasswordsAction extends AbstractController {
      * @return JsonResponse
      * @throws MappingException
      */
-    public function update(Request $request) {
+    public function update(Request $request): JsonResponse
+    {
         $parameters = $request->request->all();
-        $entity_id  = $parameters['id'];
+        $entityId   = $parameters['id'];
 
-        $entity     = $this->controller->getMyPasswordsController()->findPasswordEntityById($entity_id);
-        $response   = $this->app->repositories->update($parameters, $entity);
+        $entity   = $this->controller->getMyPasswordsController()->findPasswordEntityById($entityId);
+        $response = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
      * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    protected function renderTemplate(bool $ajax_render = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $password_form  = $this->app->forms->myPasswordForm();
-        $form_view      = $password_form->createView();
-        $passwords      = $this->controller->getMyPasswordsController()->findAllNotDeleted();
-        $groups         = $this->controller->getMyPasswordsGroupsController()->findAllNotDeleted();
+        $passwordForm  = $this->app->forms->myPasswordForm();
+        $formView      = $passwordForm->createView();
+        $passwords     = $this->controller->getMyPasswordsController()->findAllNotDeleted();
+        $groups        = $this->controller->getMyPasswordsGroupsController()->findAllNotDeleted();
 
         return $this->render('modules/my-passwords/my-passwords.html.twig', [
-            'form'                           => $form_view,
+            'form'                           => $formView,
             'ajax_render'                    => $ajax_render,
             'passwords'                      => $passwords,
             'groups'                         => $groups,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
 
     }
@@ -127,14 +130,15 @@ class MyPasswordsAction extends AbstractController {
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws Exception
      */
-    public function getPasswordForId($id) {
+    public function getPasswordForId($id): JsonResponse
+    {
         try {
-            $encrypted_password = $this->controller->getMyPasswordsController()->getPasswordForId($id);
-            $decrypted_password = $this->encryptor->decrypt($encrypted_password);
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, "", null, $decrypted_password);
-        } catch (\Exception $e) {
-            $exception_message = $e->getMessage();
-            return AjaxResponse::buildJsonResponseForAjaxCall(500, $exception_message);
+            $encryptedPassword = $this->controller->getMyPasswordsController()->getPasswordForId($id);
+            $decryptedPassword = $this->encryptor->decrypt($encryptedPassword);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, "", null, $decryptedPassword);
+        } catch (Exception $e) {
+            $exceptionMessage = $e->getMessage();
+            return AjaxResponse::buildJsonResponseForAjaxCall(500, $exceptionMessage);
         }
     }
 
@@ -146,13 +150,9 @@ class MyPasswordsAction extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted($request) && $form->isValid()) {
-
-            /**
-             * @var $form_data MyPasswords
-             */
-            $form_data = $form->getData();
+            $formData = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
         }
 

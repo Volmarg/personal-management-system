@@ -8,6 +8,8 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Entity\User;
 use App\Form\System\SystemLockResourcesPasswordType;
+use Doctrine\ORM\Mapping\MappingException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,34 +22,37 @@ class SettingsAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var UserPasswordEncoderInterface $encoder
      */
-    private $encoder;
+    private UserPasswordEncoderInterface $encoder;
 
     /**
-     * @var User $current_user
+     * @var User $currentUser
      */
-    private $current_user;
+    private $currentUser;
 
-    public function __construct(Application $app, UserPasswordEncoderInterface $encoder, Security $security) {
+    public function __construct(Application $app, UserPasswordEncoderInterface $encoder, Security $security)
+    {
 
-        $this->app          = $app;
-        $this->encoder      = $encoder;
-        $this->current_user = $security->getUser();
+        $this->app         = $app;
+        $this->encoder     = $encoder;
+        $this->currentUser = $security->getUser();
     }
 
     /**
      * @Route("/user/profile/settings", name="user_profile_settings")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
         $template_content  = $this->renderTemplate(true)->getContent();
@@ -58,41 +63,47 @@ class SettingsAction extends AbstractController {
      * @Route("/user/profile/settings/update", name="user_profile_settings_update")
      * @param Request $request
      * @return Response
-     * 
+     * @throws MappingException
      */
-    public function update(Request $request) {
+    public function update(Request $request): Response
+    {
         $parameters = $request->request->all();
 
         if (array_key_exists(User::PASSWORD_FIELD, $parameters)) {
-            $parameters[User::PASSWORD_FIELD] = $this->encoder->encodePassword($this->current_user, $parameters[User::PASSWORD_FIELD]);
+            $parameters[User::PASSWORD_FIELD] = $this->encoder->encodePassword($this->currentUser, $parameters[User::PASSWORD_FIELD]);
         }
 
-        $response   = $this->app->repositories->update($parameters, $this->current_user);
-        $template   = $this->renderTemplate(true)->getContent();
+        $response = $this->app->repositories->update($parameters, $this->currentUser);
+        $template = $this->renderTemplate(true)->getContent();
 
-        $ajax_response = AjaxResponse::initializeFromResponse($response);
-        $ajax_response->setTemplate($template);
+        $ajaxResponse = AjaxResponse::initializeFromResponse($response);
+        $ajaxResponse->setTemplate($template);
 
-        return $ajax_response->buildJsonResponse();
+        return $ajaxResponse->buildJsonResponse();
     }
 
-    private function renderTemplate($ajax_render = false) {
-        $avatar   = $this->current_user->getAvatar();
-        $nickname = $this->current_user->getNickname();
+    /**
+     * @param false $ajaxRender
+     * @return Response
+     */
+    private function renderTemplate($ajaxRender = false): Response
+    {
+        $avatar   = $this->currentUser->getAvatar();
+        $nickname = $this->currentUser->getNickname();
 
-        $avatar_form        = $this->app->forms->userAvatarForm(['avatar' => $avatar]);
-        $password_form      = $this->app->forms->userPasswordForm();
-        $nickname_form      = $this->app->forms->userNicknameForm(['nickname' => $nickname]);
-        $lock_password_form = $this->app->forms->systemLockResourcesPasswordForm([
+        $avatarForm       = $this->app->forms->userAvatarForm(['avatar' => $avatar]);
+        $passwordForm     = $this->app->forms->userPasswordForm();
+        $nicknameForm     = $this->app->forms->userNicknameForm(['nickname' => $nickname]);
+        $lockPasswordForm = $this->app->forms->systemLockResourcesPasswordForm([
             SystemLockResourcesPasswordType::RESOLVER_OPTION_IS_CREATE_PASSWORD => true
         ]);
 
         $data = [
-            'ajax_render'        => $ajax_render,
-            'avatar_form'        => $avatar_form->createView(),
-            'password_form'      => $password_form->createView(),
-            'nickname_form'      => $nickname_form->createView(),
-            'lock_password_form' => $lock_password_form->createView(),
+            'ajax_render'        => $ajaxRender,
+            'avatar_form'        => $avatarForm->createView(),
+            'password_form'      => $passwordForm->createView(),
+            'nickname_form'      => $nicknameForm->createView(),
+            'lock_password_form' => $lockPasswordForm->createView(),
         ];
 
         return $this->render('page-elements/user/settings.html.twig', $data);

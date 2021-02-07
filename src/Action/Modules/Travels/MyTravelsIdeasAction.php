@@ -8,7 +8,6 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
-use App\Form\Modules\Travels\MyTravelsIdeasType;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,12 +21,12 @@ class MyTravelsIdeasAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -39,9 +38,9 @@ class MyTravelsIdeasAction extends AbstractController {
      * @throws DBALException
      */
     private function getForm() {
-        $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories(true);
-        $travel_ideas_form = $this->app->forms->travelIdeasForm(['categories' => $categories]);
-        return $travel_ideas_form;
+        $categories      = $this->controllers->getMyTravelsIdeasController()->getAllCategories(true);
+        $travelIdeasForm = $this->app->forms->travelIdeasForm(['categories' => $categories]);
+        return $travelIdeasForm;
     }
 
     /**
@@ -50,40 +49,41 @@ class MyTravelsIdeasAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         $this->addFormDataToDB($request);
-
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      * @throws DBALException
      */
-    protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $form      = $this->getForm();
-        $form_view = $form->createView();
+    protected function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $form     = $this->getForm();
+        $formView = $form->createView();
 
-        $columns_names = $this->app->em->getClassMetadata(MyTravelsIdeas::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columns_names);
+        $columnsNames = $this->app->em->getClassMetadata(MyTravelsIdeas::class)->getColumnNames();
+        Repositories::removeHelperColumnsFromView($columnsNames);
 
-        $all_ideas  = $this->controllers->getMyTravelsIdeasController()->getAllNotDeleted();
+        $allIdeas   = $this->controllers->getMyTravelsIdeasController()->getAllNotDeleted();
         $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories();
 
         $data = [
-            'form_view'     => $form_view,
-            'columns_names' => $columns_names,
-            'all_ideas'     => $all_ideas,
-            'ajax_render'   => $ajax_render,
+            'form_view'     => $formView,
+            'columns_names' => $columnsNames,
+            'all_ideas'     => $allIdeas,
+            'ajax_render'   => $ajaxRender,
             'categories'    => $categories,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render('modules/my-travels/ideas.html.twig', $data);
@@ -92,6 +92,7 @@ class MyTravelsIdeasAction extends AbstractController {
     /**
      * @param $request
      * @return void
+     * @throws DBALException
      */
     protected function addFormDataToDB(Request $request): void {
 
@@ -99,9 +100,9 @@ class MyTravelsIdeasAction extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $travel_idea = $form->getData();
+            $travelIdea = $form->getData();
 
-            $this->app->em->persist($travel_idea);
+            $this->app->em->persist($travelIdea);
             $this->app->em->flush();
         }
     }
@@ -113,10 +114,10 @@ class MyTravelsIdeasAction extends AbstractController {
      *
      * @throws Exception
      */
-    public function update(Request $request)
+    public function update(Request $request): Response
     {
-        $response_code = Response::HTTP_OK;
-        $message       = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+        $responseCode = Response::HTTP_OK;
+        $message      = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
 
         try{
             $id = trim($request->request->get('id', null));
@@ -129,54 +130,54 @@ class MyTravelsIdeasAction extends AbstractController {
                 throw new Exception($message);
             }
 
-            $existing_entity = $this->controllers->getMyTravelsIdeasController()->findOneById($id);
-            if( empty($existing_entity) ){
+            $existingEntity = $this->controllers->getMyTravelsIdeasController()->findOneById($id);
+            if( empty($existingEntity) ){
                 $message = "There is no entity for given entity id: {$id}";
                 $this->app->logger->critical($message);
                 throw new Exception($message);
             }
 
             // Whole form is being sent as serialized data - must be turned back to array
-            $travel_idea_form = $this->getForm();
-            $all_request_data = $request->request->all();
+            $travelIdeaForm = $this->getForm();
+            $allRequestData = $request->request->all();
 
-            if( !array_key_exists(Repositories::KEY_SERIALIZED_FORM_DATA, $all_request_data) ){
+            if( !array_key_exists(Repositories::KEY_SERIALIZED_FORM_DATA, $allRequestData) ){
                 $message = "Data from request does not belong to processed form - wrong prefix has been used, probably incorrect form is being used on backend";
                 $this->app->logger->critical($message);
                 throw new Exception($message);
             }
 
-            $travel_idea_form_serialized_data = $all_request_data[Repositories::KEY_SERIALIZED_FORM_DATA];
-            parse_str($travel_idea_form_serialized_data, $form_data_array_with_form_prefix);
+            $travelIdeaFormSerializedData = $allRequestData[Repositories::KEY_SERIALIZED_FORM_DATA];
+            parse_str($travelIdeaFormSerializedData, $formDataArrayWithFormPrefix);
 
             // set data back to request to return entity from form
-            $travel_idea_form_prefix = Utils::formClassToFormPrefix(MyTravelsIdeas::class);
-            $travel_idea_form_data   = $form_data_array_with_form_prefix[$travel_idea_form_prefix];
+            $travelIdeaFormPrefix = Utils::formClassToFormPrefix(MyTravelsIdeas::class);
+            $travelIdeaFormData   = $formDataArrayWithFormPrefix[$travelIdeaFormPrefix];
 
-            $request->request->set($travel_idea_form_prefix, $travel_idea_form_data);
+            $request->request->set($travelIdeaFormPrefix, $travelIdeaFormData);
 
             /**
-             * @var MyTravelsIdeas $modified_entity
+             * @var MyTravelsIdeas $modifiedEntity
              */
-            $modified_entity = $travel_idea_form->handleRequest($request)->getData();
+            $modifiedEntity = $travelIdeaForm->handleRequest($request)->getData();
 
             // set new properties to existing entity to prevent saving new one upon submitting form
-            $existing_entity->setMap($modified_entity->getMap());
-            $existing_entity->setLocation($modified_entity->getLocation());
-            $existing_entity->setImage($modified_entity->getImage());
-            $existing_entity->setCountry($modified_entity->getCountry());
-            $existing_entity->setCategory($modified_entity->getCategory());
+            $existingEntity->setMap($modifiedEntity->getMap());
+            $existingEntity->setLocation($modifiedEntity->getLocation());
+            $existingEntity->setImage($modifiedEntity->getImage());
+            $existingEntity->setCountry($modifiedEntity->getCountry());
+            $existingEntity->setCategory($modifiedEntity->getCategory());
 
-            $this->controllers->getMyTravelsIdeasController()->save($existing_entity);
+            $this->controllers->getMyTravelsIdeasController()->save($existingEntity);
         }catch(Exception $e){
             $message       = $this->app->translator->translate('responses.repositories.recordUpdateFail');
-            $response_code = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             $this->app->logExceptionWasThrown($e);
         }
 
-        $rendered_template = $this->renderTemplate(true)->getContent();
+        $renderedTemplate = $this->renderTemplate(true)->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall($response_code, $message, $rendered_template);
+        return AjaxResponse::buildJsonResponseForAjaxCall($responseCode, $message, $renderedTemplate);
     }
 
     /**
@@ -185,7 +186,8 @@ class MyTravelsIdeasAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
         $id         = trim($request->request->get('id'));
         $response   = $this->app->repositories->deleteById(
             Repositories::MY_TRAVELS_IDEAS_REPOSITORY_NAME,
@@ -195,10 +197,10 @@ class MyTravelsIdeasAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }

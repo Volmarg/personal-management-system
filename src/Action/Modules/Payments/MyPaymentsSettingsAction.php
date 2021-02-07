@@ -26,12 +26,12 @@ class MyPaymentsSettingsAction extends AbstractController {
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -42,18 +42,19 @@ class MyPaymentsSettingsAction extends AbstractController {
      * @Route("/my-payments-settings", name="my-payments-settings")
      * @param Request $request
      * @return Response
-     * 
+     * @throws Exception
      */
-    public function display(Request $request) {
-        $request_bag = $request->request->all();
+    public function display(Request $request): Response
+    {
+        $requestBag = $request->request->all();
 
-        $setting_type = null;
-        if( !empty($request_bag) ){
-            $setting_type = reset($request_bag)['name'];
+        $settingType = null;
+        if( !empty($requestBag) ){
+            $settingType = reset($requestBag)['name'];
         }
 
         // todo: handle codes from responses
-        switch ($setting_type) {
+        switch ($settingType) {
             case self::KEY_SETTING_NAME_TYPE:
 
                 $this->addPaymentType($request);
@@ -67,11 +68,11 @@ class MyPaymentsSettingsAction extends AbstractController {
         }
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderSettingsTemplate(false);
+            return $this->renderSettingsTemplate();
         }
 
-        $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -80,7 +81,8 @@ class MyPaymentsSettingsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_SETTINGS_REPOSITORY_NAME,
             $request->request->get('id')
@@ -89,10 +91,10 @@ class MyPaymentsSettingsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderSettingsTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderSettingsTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -103,11 +105,12 @@ class MyPaymentsSettingsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function update(Request $request) {
+    public function update(Request $request): Response
+    {
         $parameters = $request->request->all();
-        $entity_id  = $parameters['id'];
+        $entityId   = $parameters['id'];
 
-        $entity     = $this->controllers->getMyPaymentsSettingsController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyPaymentsSettingsController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -118,68 +121,66 @@ class MyPaymentsSettingsAction extends AbstractController {
      * @return JsonResponse
      * 
      */
-    public function addPaymentType(Request $request) {
-        $payments_types_form = $this->app->forms->paymentsTypesForm();
-        $payments_types_form->handleRequest($request);
+    public function addPaymentType(Request $request): JsonResponse
+    {
+        $paymentsTypesForm = $this->app->forms->paymentsTypesForm();
+        $paymentsTypesForm->handleRequest($request);
 
-        /**
-         * @var MyPaymentsSettings $form_data
-         */
-        $form_data = $payments_types_form->getData();
-
+        $formData = $paymentsTypesForm->getData();
         if (
-                !is_null($form_data)
-            &&  !is_null($this->controllers->getMyPaymentsSettingsController()->findOneByValue($form_data->getValue()))
+                !is_null($formData)
+            &&  !is_null($this->controllers->getMyPaymentsSettingsController()->findOneByValue($formData->getValue()))
         ) {
-            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new JsonResponse($record_with_this_name_exist, 409);
+            $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new JsonResponse($recordWithThisNameExist, 409);
         }
 
-        if ($payments_types_form->isSubmitted() && $payments_types_form->isValid()) {
+        if ($paymentsTypesForm->isSubmitted() && $paymentsTypesForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message, 200);
-
+        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($formSubmittedMessage, 200);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    public function renderSettingsTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $recurring_payments_template_view = $this->renderRecurringPaymentTemplate();
-        $payments_types                   = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
+    public function renderSettingsTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $recurringPaymentsTemplateView = $this->renderRecurringPaymentTemplate();
+        $paymentsTypes                   = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
         return $this->render('modules/my-payments/settings.html.twig', [
-            'recurring_payments_template_view'  => $recurring_payments_template_view->getContent(),
+            'recurring_payments_template_view'  => $recurringPaymentsTemplateView->getContent(),
             'currency_multiplier_form'          => $this->app->forms->currencyMultiplierForm()->createView(),
             'payments_types_form'               => $this->app->forms->paymentsTypesForm()->createView(),
-            'payments_types'                    => $payments_types,
-            'ajax_render'                       => $ajax_render,
-            'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js,
+            'payments_types'                    => $paymentsTypes,
+            'ajax_render'                       => $ajaxRender,
+            'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
         ]);
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderRecurringPaymentTemplate($ajax_render = false) {
-        $recurring_payments_form    = $this->app->forms->recurringPaymentsForm();
+    private function renderRecurringPaymentTemplate($ajaxRender = false): Response
+    {
+        $recurringPaymentsForm = $this->app->forms->recurringPaymentsForm();
 
-        $all_recurring__payments    = $this->controllers->getMyRecurringPaymentsMonthlyController()->getAllNotDeleted();
-        $payments_types             = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
+        $allRecurringPayments = $this->controllers->getMyRecurringPaymentsMonthlyController()->getAllNotDeleted();
+        $paymentsTypes        = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
         return $this->render(self::TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS, [
-            'form'               => $recurring_payments_form->createView(),
-            'ajax_render'        => $ajax_render,
-            'recurring_payments' => $all_recurring__payments,
-            'payments_types'     => $payments_types
+            'form'               => $recurringPaymentsForm->createView(),
+            'ajax_render'        => $ajaxRender,
+            'recurring_payments' => $allRecurringPayments,
+            'payments_types'     => $paymentsTypes
         ]);
     }
 

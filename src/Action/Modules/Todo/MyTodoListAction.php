@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Entity\Modules\Todo\MyTodo;
-use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
@@ -25,15 +24,14 @@ class MyTodoListAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
-
         $this->app         = $app;
         $this->controllers = $controllers;
     }
@@ -44,16 +42,16 @@ class MyTodoListAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request) {
-
+    public function display(Request $request): Response
+    {
         $this->handleForms($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -72,14 +70,14 @@ class MyTodoListAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
-        $ajax_response = new AjaxResponse();
-        $message       = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-        $code          = Response::HTTP_OK;
+        $ajaxResponse = new AjaxResponse();
+        $message      = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+        $code         = Response::HTTP_OK;
 
         $parameters = $request->request->all();
 
-        $module_name = $request->request->get(self::KEY_MODULE_NAME, null);
-        $todo_id     = $request->request->get(self::KEY_ID);
+        $moduleName = $request->request->get(self::KEY_MODULE_NAME, null);
+        $todoId     = $request->request->get(self::KEY_ID);
 
         try{
             /**
@@ -89,25 +87,25 @@ class MyTodoListAction extends AbstractController {
                 unset($parameters[self::KEY_MODULE_NAME]);
             }
 
-            $module_entity = null;
-            if( !empty($module_name) ){
-                $module_entity = $this->controllers->getModuleController()->getOneByName($module_name);
+            $moduleEntity = null;
+            if( !empty($moduleName) ){
+                $moduleEntity = $this->controllers->getModuleController()->getOneByName($moduleName);
 
-                if( empty($module_entity) ){
-                    $message = $this->app->translator->translate('responses.todo.moduleWithSuchNameDoesNotExist' . $module_name);
+                if( empty($moduleEntity) ){
+                    $message = $this->app->translator->translate('responses.todo.moduleWithSuchNameDoesNotExist' . $moduleName);
 
                     $this->app->logger->critical($message);;
                     return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
                 }
             }
 
-            $todo = $this->controllers->getMyTodoController()->findOneById($todo_id);
-            $todo->setModule($module_entity);
+            $todo = $this->controllers->getMyTodoController()->findOneById($todoId);
+            $todo->setModule($moduleEntity);
 
-            $update_response = $this->app->repositories->update($parameters, $todo);
+            $updateResponse = $this->app->repositories->update($parameters, $todo);
 
-            if( Response::HTTP_OK != $update_response->getStatusCode() ){
-                return AjaxResponse::initializeFromResponse($update_response)->buildJsonResponse();
+            if( Response::HTTP_OK != $updateResponse->getStatusCode() ){
+                return AjaxResponse::initializeFromResponse($updateResponse)->buildJsonResponse();
             }
 
         }catch(Exception $e){
@@ -116,34 +114,35 @@ class MyTodoListAction extends AbstractController {
             $this->app->logExceptionWasThrown($e);
         }
 
-        $ajax_response->setMessage($message);
-        $ajax_response->setCode($code);
+        $ajaxResponse->setMessage($message);
+        $ajaxResponse->setCode($code);
 
         return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $all_grouped_todo  = $this->controllers->getMyTodoController()->getAllGroupedByModuleName();
-        $todo_form         = $this->app->forms->todoForm()->createView();
-        $todo_element_form = $this->app->forms->todoElementForm();
-        $all_modules       = $this->controllers->getModuleController()->getAllActive();
+        $allGroupedTodo  = $this->controllers->getMyTodoController()->getAllGroupedByModuleName();
+        $todoForm        = $this->app->forms->todoForm()->createView();
+        $todoElementForm = $this->app->forms->todoElementForm();
+        $allModules      = $this->controllers->getModuleController()->getAllActive();
 
-        $all_relatable_entities_data_dtos_for_modules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
+        $allRelatableEntitiesDataDtosForModules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
 
         $data = [
-            'all_grouped_todo'                             => $all_grouped_todo,
-            'todo_form'                                    => $todo_form,
-            'todo_element_form'                            => $todo_element_form, // direct object must be passed to render form multiple time
-            'ajax_render'                                  => $ajax_render,
-            'all_modules'                                  => $all_modules,
-            'all_relatable_entities_data_dtos_for_modules' => $all_relatable_entities_data_dtos_for_modules,
-            'skip_rewriting_twig_vars_to_js'               => $skip_rewriting_twig_vars_to_js,
+            'all_grouped_todo'                             => $allGroupedTodo,
+            'todo_form'                                    => $todoForm,
+            'todo_element_form'                            => $todoElementForm, // direct object must be passed to render form multiple time
+            'ajax_render'                                  => $ajaxRender,
+            'all_modules'                                  => $allModules,
+            'all_relatable_entities_data_dtos_for_modules' => $allRelatableEntitiesDataDtosForModules,
+            'skip_rewriting_twig_vars_to_js'               => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render('modules/my-todo/list.html.twig', $data);
@@ -158,20 +157,20 @@ class MyTodoListAction extends AbstractController {
      */
     private function handleForms(Request $request)
     {
-        $todo_form         = $this->app->forms->todoForm();
-        $todo_element_form = $this->app->forms->todoElementForm();
+        $todoForm        = $this->app->forms->todoForm();
+        $todoElementForm = $this->app->forms->todoElementForm();
 
-        $todo_form->handleRequest($request);
-        $todo_element_form->handleRequest($request);
+        $todoForm->handleRequest($request);
+        $todoElementForm->handleRequest($request);
 
-        if($todo_form->isSubmitted() && $todo_form->isValid()){
-            $todo = $todo_form->getData();
+        if($todoForm->isSubmitted() && $todoForm->isValid()){
+            $todo = $todoForm->getData();
             $this->controllers->getMyTodoController()->save($todo);
         }
 
-        if($todo_element_form->isSubmitted() && $todo_element_form->isValid()){
-            $todo_element = $todo_element_form->getData();
-            $this->controllers->getMyTodoElementController()->save($todo_element);
+        if($todoElementForm->isSubmitted() && $todoElementForm->isValid()){
+            $todoElement = $todoElementForm->getData();
+            $this->controllers->getMyTodoElementController()->save($todoElement);
         }
     }
 

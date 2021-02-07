@@ -9,6 +9,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,7 +24,7 @@ class MyPaymentsProductsAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -39,17 +40,18 @@ class MyPaymentsProductsAction extends AbstractController {
      * @Route("/my-payments-products", name="my-payments-products")
      * @param Request $request
      * @return Response
-     * 
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -58,19 +60,19 @@ class MyPaymentsProductsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_PRODUCTS_REPOSITORY_NAME,
             $request->request->get('id')
         );
 
         $message = $response->getContent();
-
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -79,13 +81,15 @@ class MyPaymentsProductsAction extends AbstractController {
      * @Route("my-payments-products/update/",name="my-payments-products-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     *
+     * @throws MappingException
      */
-    public function updateDataInDB(Request $request) {
+    public function updateDataInDB(Request $request): JsonResponse
+    {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyPaymentsProductsController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyPaymentsProductsController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -95,40 +99,43 @@ class MyPaymentsProductsAction extends AbstractController {
      * Todo: check later why is this done this strange way....
      * @param $column_names
      * @return array
-     * 
+     *
+     * @throws Exception
      */
-    private function reorderPriceColumn($column_names) {
-        $price_key = array_search(static::PRICE_COLUMN_NAME, $column_names);
+    private function reorderPriceColumn($column_names): array
+    {
+        $priceKey = array_search(static::PRICE_COLUMN_NAME, $column_names);
 
         if (!array_key_exists(static::PRICE_COLUMN_NAME, $column_names)) {
             $message = $this->app->translator->translate('exceptions.MyPaymentsProductsController.keyPriceNotFoundInProductsColumnsArray');
-            new Exception($message);
+            throw new Exception($message);
         }
 
-        unset($column_names[$price_key]);
+        unset($column_names[$priceKey]);
         $column_names[] = static::PRICE_COLUMN_NAME;
 
         return $column_names;
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
+     * @throws Exception
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $form               = $this->app->forms->paymentsProductsForm();
-        $products_form_view = $form->createView();
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
+        $form             = $this->app->forms->paymentsProductsForm();
+        $productsFormView = $form->createView();
 
-        $column_names           = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsProduct::class)->getColumnNames();
-        $column_names           = $this->reorderPriceColumn($column_names);
-        Repositories::removeHelperColumnsFromView($column_names);
+        $columnNames = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsProduct::class)->getColumnNames();
+        $columnNames = $this->reorderPriceColumn($columnNames);
+        Repositories::removeHelperColumnsFromView($columnNames);
 
-        $products_all_data      = $this->controllers->getMyPaymentsProductsController()->getAllNotDeleted();
-        $currency_multiplier    = $this->controllers->getMyPaymentsSettingsController()->fetchCurrencyMultiplier();
+        $productsAllData    = $this->controllers->getMyPaymentsProductsController()->getAllNotDeleted();
+        $currencyMultiplier = $this->controllers->getMyPaymentsSettingsController()->fetchCurrencyMultiplier();
 
         return $this->render('modules/my-payments/products.html.twig',
-            compact('column_names', 'products_all_data', 'products_form_view', 'currency_multiplier', 'ajax_render', 'skip_rewriting_twig_vars_to_js')
+            compact('columnNames', 'productsAllData', 'productsFormView', 'currencyMultiplier', 'ajaxRender', 'skipRewritingTwigVarsToJs')
         );
     }
 
@@ -136,12 +143,12 @@ class MyPaymentsProductsAction extends AbstractController {
      * @param $request
      */
     private function addFormDataToDB($request) {
-        $products_form = $this->app->forms->paymentsProductsForm();
-        $products_form->handleRequest($request);
+        $productsForm = $this->app->forms->paymentsProductsForm();
+        $productsForm->handleRequest($request);
 
-        if ($products_form->isSubmitted() && $products_form->isValid()) {
+        if ($productsForm->isSubmitted() && $productsForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($products_form->getData());
+            $em->persist($productsForm->getData());
             $em->flush();
         }
 

@@ -22,22 +22,22 @@ class MyJobHolidaysPoolAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
-     * @var MyJobSettingsAction $my_job_settings_action
+     * @var MyJobSettingsAction $myJobSettingsAction
      */
-    private $my_job_settings_action;
+    private MyJobSettingsAction $myJobSettingsAction;
 
     /**
      * @var Controllers $controllerss
      */
-    private $controllers;
+    private Controllers $controllers;
 
-    public function __construct(Application $app, Controllers $controllers, MyJobSettingsAction $my_job_settings_action) {
-        $this->app                    = $app;
-        $this->controllers            = $controllers;
-        $this->my_job_settings_action = $my_job_settings_action;
+    public function __construct(Application $app, Controllers $controllers, MyJobSettingsAction $myJobSettingsAction) {
+        $this->app                 = $app;
+        $this->controllers         = $controllers;
+        $this->myJobSettingsAction = $myJobSettingsAction;
     }
 
     /**
@@ -49,9 +49,9 @@ class MyJobHolidaysPoolAction extends AbstractController {
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyJobHolidaysPoolController()->findOneEntityById($entity_id);
+        $entity     = $this->controllers->getMyJobHolidaysPoolController()->findOneEntityById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -63,8 +63,8 @@ class MyJobHolidaysPoolAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
-
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME,
             $request->request->get('id')
@@ -74,10 +74,10 @@ class MyJobHolidaysPoolAction extends AbstractController {
 
         if ($response->getStatusCode() == 200) {
 
-            $rendered_template = $this->my_job_settings_action->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->myJobSettingsAction->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);

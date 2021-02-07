@@ -6,6 +6,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\DTO\Settings\SettingsDashboardDTO;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +17,12 @@ class DashboardAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -32,48 +33,49 @@ class DashboardAction extends AbstractController {
      * @Route("/dashboard", name="dashboard")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderTemplate( true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function renderTemplate($ajax_render = false) {
+    protected function renderTemplate($ajaxRender = false): Response
+    {
+        $dashboardSettings               = $this->app->settings->settings_loader->getSettingsForDashboard();
+        $dashboardWidgetsVisibilityDtos  = null;
 
-        $dashboard_settings                 = $this->app->settings->settings_loader->getSettingsForDashboard();
-        $dashboard_widgets_visibility_dtos  = null;
-
-        if( !empty($dashboard_settings) ){
-            $dashboard_settings_json             = $dashboard_settings->getValue();
-            $dashboard_settings_dto              = SettingsDashboardDTO::fromJson($dashboard_settings_json);
-            $dashboard_widgets_visibility_dtos   = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
+        if( !empty($dashboardSettings) ){
+            $dashboardSettingsJson            = $dashboardSettings->getValue();
+            $dashboardSettingsDto             = SettingsDashboardDTO::fromJson($dashboardSettingsJson);
+            $dashboardWidgetsVisibilityDtos   = $dashboardSettingsDto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $schedules      = $this->controllers->getDashboardController()->getIncomingSchedulesInformation();
-        $all_too        = $this->controllers->getDashboardController()->getGoalsTodoForWidget();
-        $goals_payments = $this->controllers->getDashboardController()->getGoalsPayments();
+        $schedules     = $this->controllers->getDashboardController()->getIncomingSchedulesInformation();
+        $allTodo       = $this->controllers->getDashboardController()->getGoalsTodoForWidget();
+        $goalsPayments = $this->controllers->getDashboardController()->getGoalsPayments();
 
-        $pending_issues    = $this->controllers->getDashboardController()->getPendingIssues();
-        $issues_cards_dtos = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($pending_issues);
+        $pendingIssues   = $this->controllers->getDashboardController()->getPendingIssues();
+        $issuesCardsDtos = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($pendingIssues);
 
         $data = [
-            'dashboard_widgets_visibility_dtos'  => $dashboard_widgets_visibility_dtos,
+            'dashboard_widgets_visibility_dtos'  => $dashboardWidgetsVisibilityDtos,
             'schedules'                          => $schedules,
-            'all_todo'                           => $all_too,
-            'goals_payments'                     => $goals_payments,
-            'issues_cards_dtos'                  => $issues_cards_dtos,
-            'ajax_render'                        => $ajax_render,
+            'all_todo'                           => $allTodo,
+            'goals_payments'                     => $goalsPayments,
+            'issues_cards_dtos'                  => $issuesCardsDtos,
+            'ajax_render'                        => $ajaxRender,
         ];
 
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);

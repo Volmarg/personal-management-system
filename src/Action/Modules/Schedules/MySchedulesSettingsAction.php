@@ -8,6 +8,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +23,7 @@ class MySchedulesSettingsAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -38,17 +39,17 @@ class MySchedulesSettingsAction extends AbstractController {
      * @Route("/my-schedules-settings", name="my_schedules_settings")
      * @param Request $request
      * @return Response
-     * 
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         $this->addRecord($request);
-
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -57,20 +58,19 @@ class MySchedulesSettingsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
-
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_SCHEDULE_TYPE_REPOSITORY,
             $request->request->get('id')
         );
 
         $message = $response->getContent();
-
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -79,34 +79,36 @@ class MySchedulesSettingsAction extends AbstractController {
      * @Route("/my-schedule-settings/schedule-type/update",name="my_schedule_settings_schedule_update")
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws MappingException
      */
-    public function update(Request $request) {
+    public function update(Request $request): Response
+    {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyScheduleTypeController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyScheduleTypeController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate($ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-
+    private function renderTemplate($ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
         $form   = $this->app->forms->scheduleTypeForm();
         $types  = $this->controllers->getMyScheduleTypeController()->getAllNonDeletedTypes();
 
         return $this->render(self::TWIG_TEMPLATE,
             [
-                'ajax_render'                    => $ajax_render,
+                'ajax_render'                    => $ajaxRender,
                 'types'                          => $types,
                 'form'                           => $form->createView(),
-                'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+                'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
             ]
         );
     }
@@ -116,28 +118,29 @@ class MySchedulesSettingsAction extends AbstractController {
      * @return JsonResponse
      * 
      */
-    private function addRecord(Request $request) {
+    private function addRecord(Request $request): JsonResponse
+    {
         $form=$this->app->forms->scheduleTypeForm();
         $form->handleRequest($request);
 
-        $form_data = $form->getData();
+        $formData = $form->getData();
 
         // info: i can make general util with this
         if (
-                !is_null($form_data)
-            &&  !is_null($this->controllers->getMyScheduleTypeController()->findOneByName($form_data->getName()))
+                !is_null($formData)
+            &&  !is_null($this->controllers->getMyScheduleTypeController()->findOneByName($formData->getName()))
         ) {
-            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new JsonResponse($record_with_this_name_exist, 409);
+            $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new JsonResponse($recordWithThisNameExist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->app->em->persist($form_data);
+            $this->app->em->persist($formData);
             $this->app->em->flush();
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message, 200);
+        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($formSubmittedMessage, 200);
     }
 
 }

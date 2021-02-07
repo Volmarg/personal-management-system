@@ -29,12 +29,12 @@ class MyContactsSettingsAction extends AbstractController
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers = null;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -47,7 +47,8 @@ class MyContactsSettingsAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function removeContactGroup(Request $request) {
+    public function removeContactGroup(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_CONTACT_GROUP_REPOSITORY,
@@ -55,12 +56,11 @@ class MyContactsSettingsAction extends AbstractController
         );
 
         $message = $response->getContent();
-
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderSettingsTemplate(true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderSettingsTemplate(true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
@@ -73,11 +73,12 @@ class MyContactsSettingsAction extends AbstractController
      *
      * @throws MappingException
      */
-    public function updateContactGroup(Request $request) {
+    public function updateContactGroup(Request $request): Response
+    {
         $parameters = $request->request->all();
-        $entity_id  = $parameters['id'];
+        $entityId   = $parameters['id'];
 
-        $entity     = $this->controllers->getMyContactGroupController()->getOneById($entity_id);
+        $entity     = $this->controllers->getMyContactGroupController()->getOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -89,21 +90,20 @@ class MyContactsSettingsAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function removeContactType(Request $request) {
-
-        $record_id = $request->request->get('id');
-        $response  = $this->app->repositories->deleteById(
+    public function removeContactType(Request $request): Response
+    {
+        $recordId = $request->request->get('id');
+        $response = $this->app->repositories->deleteById(
             Repositories::MY_CONTACT_TYPE_REPOSITORY,
-            $record_id
+            $recordId
         );
 
         $message = $response->getContent();
-
         if ($response->getStatusCode() == 200) {
             $rendered_template = $this->renderSettingsTemplate(true);
-            $template_content  = $rendered_template->getContent();
+            $templateContent  = $rendered_template->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
@@ -113,21 +113,21 @@ class MyContactsSettingsAction extends AbstractController
      * @Route("/my-contacts-types/update",name="my-contacts-types-update")
      * @param Request $request
      * @return Response
-     * 
      * @throws Exception
      */
-    public function updateContactType(Request $request) {
+    public function updateContactType(Request $request): Response
+    {
         $parameters = $request->request->all();
 
-        $entity_after_update  = $this->controllers->getMyContactTypeController()->findOneById($parameters['id']);
-        $entity_before_update = clone($entity_after_update); // because doctrine will overwrite the data we got to clone it
+        $entityAfterUpdate  = $this->controllers->getMyContactTypeController()->findOneById($parameters['id']);
+        $entityBeforeUpdate = clone($entityAfterUpdate); // because doctrine will overwrite the data we got to clone it
 
         $this->app->em->beginTransaction(); //all or nothing
         {
-            $response = $this->app->repositories->update($parameters, $entity_after_update);
+            $response = $this->app->repositories->update($parameters, $entityAfterUpdate);
 
             try{
-                $this->controllers->getMyContactSettingsController()->updateContactsForUpdatedType($entity_before_update, $entity_after_update);
+                $this->controllers->getMyContactSettingsController()->updateContactsForUpdatedType($entityBeforeUpdate, $entityAfterUpdate);
             }catch (Exception $e){
                 $response = new Response("Could not update the contacts for updated contact type", Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -142,32 +142,34 @@ class MyContactsSettingsAction extends AbstractController
      * @Route("/my-contacts-settings", name="my-contacts-settings")
      * @param Request $request
      * @return Response
-     * 
+     * @throws Exception
      */
-    public function displaySettingsPage(Request $request) {
+    public function displaySettingsPage(Request $request): Response
+    {
         $this->submitContactTypeForm($request);
         $this->submitContactGroupForm($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderSettingsTemplate(false);
+            return $this->renderSettingsTemplate();
         }
 
-        $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
      * @param bool $ajax_render
      * @return Response
      */
-    private function renderSettingsTemplate($ajax_render = false) {
+    private function renderSettingsTemplate($ajax_render = false): Response
+    {
 
-        $type_form  = $this->app->forms->contactTypeForm();
-        $group_form = $this->app->forms->contactGroupForm();
+        $typeForm  = $this->app->forms->contactTypeForm();
+        $groupForm = $this->app->forms->contactGroupForm();
 
         $data = [
-            'type_form'            => $type_form->createView(),
-            'group_form'           => $group_form->createView(),
+            'type_form'            => $typeForm->createView(),
+            'group_form'           => $groupForm->createView(),
             'ajax_render'          => $ajax_render,
             'contact_types_table'  => $this->renderContactTypeTemplate()->getContent(),
             'contact_groups_table' => $this->renderContactGroupTemplate()->getContent()
@@ -180,7 +182,8 @@ class MyContactsSettingsAction extends AbstractController
      * @param bool $ajax_render
      * @return Response
      */
-    private function renderContactTypeTemplate($ajax_render = false) {
+    private function renderContactTypeTemplate($ajax_render = false): Response
+    {
 
         $types = $this->controllers->getMyContactTypeController()->getAllNotDeleted();
 
@@ -196,7 +199,8 @@ class MyContactsSettingsAction extends AbstractController
      * @param bool $ajax_render
      * @return Response
      */
-    private function renderContactGroupTemplate($ajax_render = false) {
+    private function renderContactGroupTemplate($ajax_render = false): Response
+    {
 
         $groups = $this->controllers->getMyContactGroupController()->getAllNotDeleted();
 
@@ -213,72 +217,67 @@ class MyContactsSettingsAction extends AbstractController
      * @return Response
      * 
      */
-    private function submitContactTypeForm(Request $request):Response {
+    private function submitContactTypeForm(Request $request): Response
+    {
         $form = $this->app->forms->contactTypeForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /**
-             * @var MyContactType $contact_type
-             */
-            $contact_type = $form->getData();
-            $name         = $contact_type->getName();
+            $contactType = $form->getData();
+            $name        = $contactType->getName();
 
             if (
-                        !is_null($contact_type)
+                        !is_null($contactType)
                     &&  !is_null($this->controllers->getMyContactTypeController()->getOneByName($name))
             ) {
-                $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-                return new JsonResponse($record_with_this_name_exist, 409);
+                $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
+                return new JsonResponse($recordWithThisNameExist, 409);
             }
 
-            $original_image_path = $contact_type->getImagePath();
-            $image_path          = FilesHandler::addTrailingSlashIfMissing($original_image_path, true);
-            $contact_type->setImagePath($image_path);
+            $originalImagePath = $contactType->getImagePath();
+            $imagePath         = FilesHandler::addTrailingSlashIfMissing($originalImagePath, true);
+            $contactType->setImagePath($imagePath);
 
-            $this->app->em->persist($contact_type);
+            $this->app->em->persist($contactType);
             $this->app->em->flush();
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message, 200);
+        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($formSubmittedMessage, 200);
     }
 
     /**
      * @param Request $request
      * @return Response
-     * 
      */
-    private function submitContactGroupForm(Request $request):Response {
+    private function submitContactGroupForm(Request $request): Response
+    {
         $form = $this->app->forms->contactGroupForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /**
-             * @var MyContactGroup $form_data
-             */
-            $form_data        = $form->getData();
-            $name             = $form_data->getName();
-            $normalized_color = str_replace("#", "", $form_data->getColor());
+            $formData        = $form->getData();
+            $name            = $formData->getName();
+            $normalizedColor = str_replace("#", "", $formData->getColor());
 
-            $form_data->setColor($normalized_color);
+            $formData->setColor($normalizedColor);
 
             if (
-                        !is_null($form_data)
+                        !is_null($formData)
                     &&  $this->controllers->getMyContactGroupController()->getOneByName($name)
             ) {
-                $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-                return new Response($record_with_this_name_exist, 409);
+                $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
+                return new Response($recordWithThisNameExist, 409);
             }
 
-            $this->app->em->persist($form_data);
+            $this->app->em->persist($formData);
             $this->app->em->flush();
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new Response($form_submitted_message, 200);
+        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
+        return new Response($formSubmittedMessage, 200);
     }
 
 }

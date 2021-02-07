@@ -44,7 +44,8 @@ class GoalsSettingsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function removeGoalPayment(Request $request) {
+    public function removeGoalPayment(Request $request): Response
+    {
         $id = trim($request->request->get('id'));
 
         $response = $this->app->repositories->deleteById(
@@ -53,11 +54,11 @@ class GoalsSettingsAction extends AbstractController {
         );
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
-            $message           = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
+            $message          = $this->app->translator->translate('messages.ajax.success.recordHasBeenRemoved');
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         $message = $this->app->translator->translate('messages.ajax.failure.couldNotRemoveRecord');
@@ -71,11 +72,12 @@ class GoalsSettingsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function updateGoalPayment(Request $request) {
+    public function updateGoalPayment(Request $request): Response
+    {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getGoalsPaymentsController()->findOneById($entity_id);
+        $entity     = $this->controllers->getGoalsPaymentsController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -88,35 +90,36 @@ class GoalsSettingsAction extends AbstractController {
      * @throws Exception
      */
     public function display(Request $request) {
-        $form                = $this->app->forms->goalPaymentForm();
-        $add_record_response = $this->addRecord($form, $request);
+        $form              = $this->app->forms->goalPaymentForm();
+        $addRecordResponse = $this->addRecord($form, $request);
 
-        if( Response::HTTP_OK !== $add_record_response->getStatusCode() ){
-            return AjaxResponse::buildJsonResponseForAjaxCall($add_record_response->getStatusCode(), $add_record_response->getContent());
+        if( Response::HTTP_OK !== $addRecordResponse->getStatusCode() ){
+            return AjaxResponse::buildJsonResponseForAjaxCall($addRecordResponse->getStatusCode(), $addRecordResponse->getContent());
         }
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $goals_payments_form  = $this->app->forms->goalPaymentForm();
-        $all_goals_payments   = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $goalsPaymentsForm = $this->app->forms->goalPaymentForm();
+        $allGoalsPayments  = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
 
         $data = [
-            'ajax_render'           => $ajax_render,
-            'goals_payments_form'   => $goals_payments_form->createView(),
-            'all_goals_payments'    => $all_goals_payments,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'ajax_render'           => $ajaxRender,
+            'goals_payments_form'   => $goalsPaymentsForm->createView(),
+            'all_goals_payments'    => $allGoalsPayments,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render('modules/my-goals/settings.html.twig', $data);
@@ -127,30 +130,27 @@ class GoalsSettingsAction extends AbstractController {
      * @param Request $request
      * @return Response
      */
-    private function addRecord(FormInterface $form, Request $request) {
+    private function addRecord(FormInterface $form, Request $request): Response
+    {
         $form->handleRequest($request);
 
-        /**
-         * @var MyGoalsPayments|null $form_data
-         */
-        $form_data = $form->getData();
-
+        $formData = $form->getData();
         if (
-                    !is_null($form_data)
-                &&  !is_null($this->controllers->getGoalsPaymentsController()->getOneByName($form_data->getName()))
+                    !is_null($formData)
+                &&  !is_null($this->controllers->getGoalsPaymentsController()->getOneByName($formData->getName()))
         ) {
-            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new Response($record_with_this_name_exist, 409);
+            $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new Response($recordWithThisNameExist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new Response($form_submitted_message,200);
+        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
+        return new Response($formSubmittedMessage,200);
     }
 
 

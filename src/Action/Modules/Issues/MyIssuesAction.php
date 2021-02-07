@@ -21,17 +21,16 @@ class MyIssuesAction extends AbstractController
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
         $this->controllers = $controllers;
-
     }
 
     /**
@@ -40,34 +39,34 @@ class MyIssuesAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    public function displayPendingIssues(Request $request) {
+    public function displayPendingIssues(Request $request): Response
+    {
         $this->handleIssueForm($request);
         $this->handleIssueContactForm($request);
         $this->handleIssueProgressForm($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate( false);
+            return $this->renderTemplate( );
         }
-        $template_content = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate( true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      * @throws Exception
      */
-    public function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false)
+    public function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
-
-        $all_ongoing_issues = $this->controllers->getMyIssuesController()->findAllNotDeletedAndNotResolved();
-        $issues_cards_dtos  = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($all_ongoing_issues);
+        $allOngoingIssues = $this->controllers->getMyIssuesController()->findAllNotDeletedAndNotResolved();
+        $issuesCardsDtos  = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($allOngoingIssues);
 
         $data = [
-            'ajax_render'                    => $ajax_render,
-            'issues_cards_dtos'              => $issues_cards_dtos,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
+            'ajax_render'                    => $ajaxRender,
+            'issues_cards_dtos'              => $issuesCardsDtos,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
         ];
 
         return $this->render(self::TWIG_TEMPLATE_PENDING_ISSUES, $data);
@@ -101,8 +100,8 @@ class MyIssuesAction extends AbstractController
         $form->handleRequest($request);
 
         if( $form->isSubmitted() && $form->isValid() ){
-            $issue_progress = $form->getData();
-            $this->controllers->getMyIssuesController()->saveIssueProgress($issue_progress);
+            $issueProgress = $form->getData();
+            $this->controllers->getMyIssuesController()->saveIssueProgress($issueProgress);
         }
     }
 
@@ -117,8 +116,8 @@ class MyIssuesAction extends AbstractController
         $form->handleRequest($request);
 
         if( $form->isSubmitted() && $form->isValid() ){
-            $issue_contact = $form->getData();
-            $this->controllers->getMyIssuesController()->saveIssueContact($issue_contact);;
+            $issueContact = $form->getData();
+            $this->controllers->getMyIssuesController()->saveIssueContact($issueContact);;
         }
     }
 

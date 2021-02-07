@@ -41,12 +41,12 @@ class ReportAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers = null;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -57,19 +57,21 @@ class ReportAction extends AbstractController {
      * @param Request $request
      * @return Response
      * @throws DBALException
+     * @throws Exception
      * @Route("/reports/monthly-payments-summaries", name="reports-monthly-payments-summaries", methods="GET")
      */
-    public function monthlyPaymentsSummaries(Request $request){
+    public function monthlyPaymentsSummaries(Request $request): Response
+    {
 
         if (!$request->isXmlHttpRequest()) {
-            $rendered_template = $this->renderTemplateMonthlyPaymentsSummaries(false);
-            return $rendered_template;
+            $renderedTemplate = $this->renderTemplateMonthlyPaymentsSummaries(false);
+            return $renderedTemplate;
         }
 
-        $rendered_template = $this->renderTemplateMonthlyPaymentsSummaries(true);
-        $template_content  = $rendered_template->getContent();
+        $renderedTemplate = $this->renderTemplateMonthlyPaymentsSummaries(true);
+        $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
 
@@ -78,19 +80,20 @@ class ReportAction extends AbstractController {
      * @Route("/reports/payments_charts", name="reports-payments-charts", methods="GET")
      * @return JsonResponse|Response
      * @throws DBALException
-     * 
+     * @throws Exception
+     *
      */
     public function paymentsCharts(Request $request) {
 
         if (!$request->isXmlHttpRequest()) {
-            $rendered_template = $this->renderTemplatePaymentsCharts(false);
-            return $rendered_template;
+            $renderedTemplate = $this->renderTemplatePaymentsCharts(false);
+            return $renderedTemplate;
         }
 
-        $rendered_template = $this->renderTemplatePaymentsCharts(true);
-        $template_content  = $rendered_template->getContent();
+        $renderedTemplate = $this->renderTemplatePaymentsCharts(true);
+        $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -98,36 +101,38 @@ class ReportAction extends AbstractController {
      * @Route("/reports/savings_charts", name="reports-savings-charts", methods="GET")
      * @return JsonResponse|Response
      * @throws DBALException
+     * @throws Exception
      */
     public function savingsCharts(Request $request) {
 
         if (!$request->isXmlHttpRequest()) {
-            $rendered_template = $this->renderTemplateSavingsCharts(false);
-            return $rendered_template;
+            $renderedTemplate = $this->renderTemplateSavingsCharts(false);
+            return $renderedTemplate;
         }
 
-        $rendered_template = $this->renderTemplateSavingsCharts(true);
-        $template_content  = $rendered_template->getContent();
+        $renderedTemplate = $this->renderTemplateSavingsCharts(true);
+        $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
      * @param Request $request
      * @return JsonResponse|Response
      * @Route("/reports/historical-money-owed", name="reports-historical-money-owed", methods="GET")
+     * @throws Exception
      */
     public function historicalMoneyOWed(Request $request) {
 
         if (!$request->isXmlHttpRequest()) {
-            $rendered_template = $this->renderTemplateHistoricalMoneyOwed(false);
-            return $rendered_template;
+            $renderedTemplate = $this->renderTemplateHistoricalMoneyOwed(false);
+            return $renderedTemplate;
         }
 
-        $rendered_template = $this->renderTemplateHistoricalMoneyOwed(true);
-        $template_content  = $rendered_template->getContent();
+        $renderedTemplate = $this->renderTemplateHistoricalMoneyOwed(true);
+        $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -136,25 +141,25 @@ class ReportAction extends AbstractController {
      */
     private function renderChartTotalPaymentsAmountForTypes(): Response {
 
-        $total_payments_amount_for_types = $this->controllers->getReportsControllers()->fetchTotalPaymentsAmountForTypes();
-        $chart_labels = [];
-        $chart_values = [];
+        $totalPaymentsAmountForTypes = $this->controllers->getReportsControllers()->fetchTotalPaymentsAmountForTypes();
+        $chartLabels = [];
+        $chartValues = [];
 
-        foreach($total_payments_amount_for_types as $total_payments_amount_for_type){
-            $chart_label = $total_payments_amount_for_type[self::KEY_TYPE];
-            $chart_value = $total_payments_amount_for_type[self::KEY_AMOUNT_FOR_TYPE];
+        foreach($totalPaymentsAmountForTypes as $totalPaymentsAmountForType){
+            $chartLabel = $totalPaymentsAmountForType[self::KEY_TYPE];
+            $chartValue = $totalPaymentsAmountForType[self::KEY_AMOUNT_FOR_TYPE];
 
-            $chart_labels[] = $chart_label;
-            $chart_values[] = $chart_value;
+            $chartLabels[] = $chartLabel;
+            $chartValues[] = $chartValue;
         }
 
-        $template_data = [
-            'chart_labels' => $chart_labels,
-            'chart_values' => $chart_values,
+        $templateData = [
+            'chart_labels' => $chartLabels,
+            'chart_values' => $chartValues,
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_FOR_TYPES, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_FOR_TYPES, $templateData);
+        return $renderedTemplate;
     }
 
 
@@ -163,17 +168,17 @@ class ReportAction extends AbstractController {
      * @return Response
      */
     private function renderTemplateHistoricalMoneyOwed(bool $ajax_render): Response {
-        $historical_money_owed_by_me     = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(true);
-        $historical_money_owed_by_others = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(false);
+        $historicalMoneyOwedByMe     = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(true);
+        $historicalMoneyOwedByOthers = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(false);
 
-        $template_data = [
+        $templateData = [
             'ajax_render'                     => $ajax_render,
-            'historical_money_owed_by_me'     => $historical_money_owed_by_me,
-            'historical_money_owed_by_others' => $historical_money_owed_by_others,
+            'historical_money_owed_by_me'     => $historicalMoneyOwedByMe,
+            'historical_money_owed_by_others' => $historicalMoneyOwedByOthers,
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_HISTORICAL_MONEY_OWED, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_HISTORICAL_MONEY_OWED, $templateData);
+        return $renderedTemplate;
     }
 
     /**
@@ -182,40 +187,40 @@ class ReportAction extends AbstractController {
      */
     private function renderChartPaymentsForTypesEachMonth(): Response {
 
-        $payments_for_types_each_month = $this->controllers->getReportsControllers()->fetchPaymentsForTypesEachMonth();
+        $paymentsForTypesEachMonth = $this->controllers->getReportsControllers()->fetchPaymentsForTypesEachMonth();
 
-        $chart_values        = [];
-        $chart_x_axis_values = [];
-        $chart_colors        = [];
+        $chartValues      = [];
+        $ChartXAxisValues = [];
+        $chartColors      = [];
 
-        foreach( $payments_for_types_each_month as $payments_for_type_each_month){
+        foreach( $paymentsForTypesEachMonth as $paymentsForTypeEachMonth){
 
-            $date   = $payments_for_type_each_month[self::KEY_DATE];
-            $type   = $payments_for_type_each_month[self::KEY_TYPE];
-            $amount = $payments_for_type_each_month[self::KEY_AMOUNT];
+            $date   = $paymentsForTypeEachMonth[self::KEY_DATE];
+            $type   = $paymentsForTypeEachMonth[self::KEY_TYPE];
+            $amount = $paymentsForTypeEachMonth[self::KEY_AMOUNT];
 
-            $chart_x_axis_values[] = $date;
-            $chart_colors[]        = Utils::randomHexColor();
+            $ChartXAxisValues[] = $date;
+            $chartColors[]        = Utils::randomHexColor();
 
-            if( !array_key_exists($type, $chart_values) ){
-                $chart_values[$type] = [];
+            if( !array_key_exists($type, $chartValues) ){
+                $chartValues[$type] = [];
             }
-            $chart_values[$type][] = $amount;
+            $chartValues[$type][] = $amount;
         }
 
-        $chart_x_axis_values = array_unique($chart_x_axis_values);
-        usort($chart_x_axis_values, function ($a, $b) {
+        $ChartXAxisValues = array_unique($ChartXAxisValues);
+        usort($ChartXAxisValues, function ($a, $b) {
             return strtotime($a) - strtotime($b);
         });
 
-        $template_data = [
-            'chart_colors'        => $chart_colors,
-            'chart_values'        => $chart_values,
-            'chart_x_axis_values' => $chart_x_axis_values,
+        $templateData = [
+            'chart_colors'        => $chartColors,
+            'chart_values'        => $chartValues,
+            'chart_x_axis_values' => $ChartXAxisValues,
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_EACH_TYPE_EACH_MONTH, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_EACH_TYPE_EACH_MONTH, $templateData);
+        return $renderedTemplate;
     }
 
     /**
@@ -225,50 +230,50 @@ class ReportAction extends AbstractController {
      */
     private function renderChartPaymentsTotalAmountForEachMonth(): Response {
 
-        $payments_total_for_each_month = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
+        $paymentsTotalForEachMonth = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
 
-        $chart_values        = [];
-        $chart_x_axis_values = [];
-        $chart_colors        = [];
+        $chartValues      = [];
+        $chartXAxisValues = [];
+        $chartColors      = [];
 
-        $type_without_bills = $this->app->translator->translate("charts.paymentsTotalAmountForEachMonth.types.withoutBills");
-        $type_with_bills    = $this->app->translator->translate("charts.paymentsTotalAmountForEachMonth.types.withBills");
+        $typeWithoutBills = $this->app->translator->translate("charts.paymentsTotalAmountForEachMonth.types.withoutBills");
+        $typeWithBills    = $this->app->translator->translate("charts.paymentsTotalAmountForEachMonth.types.withBills");
 
-        foreach( $payments_total_for_each_month as $payment_total_for_each_month){
+        foreach( $paymentsTotalForEachMonth as $paymentTotalForEachMonth){
 
-            $date                = $payment_total_for_each_month[self::KEY_YEAR_AND_MONTH];
-            $money               = $payment_total_for_each_month[self::KEY_MONEY];
-            $money_without_bills = $payment_total_for_each_month[self::KEY_MONEY_WITHOUT_BILLS];
+            $date              = $paymentTotalForEachMonth[self::KEY_YEAR_AND_MONTH];
+            $money             = $paymentTotalForEachMonth[self::KEY_MONEY];
+            $MoneyWithoutBills = $paymentTotalForEachMonth[self::KEY_MONEY_WITHOUT_BILLS];
 
-            $chart_x_axis_values[] = $date;
-            $chart_colors[]        = Utils::randomHexColor();
+            $chartXAxisValues[] = $date;
+            $chartColors[]      = Utils::randomHexColor();
 
-            if( !array_key_exists($type_without_bills, $chart_values) ){
-                $chart_values[$type_without_bills] = [];
-                $chart_values[$type_without_bills] = [];
+            if( !array_key_exists($typeWithoutBills, $chartValues) ){
+                $chartValues[$typeWithoutBills] = [];
+                $chartValues[$typeWithoutBills] = [];
             }
 
-            if( !array_key_exists($type_with_bills, $chart_values) ){
-                $chart_values[$type_with_bills] = [];
-                $chart_values[$type_with_bills] = [];
+            if( !array_key_exists($typeWithBills, $chartValues) ){
+                $chartValues[$typeWithBills] = [];
+                $chartValues[$typeWithBills] = [];
             }
 
-            $chart_values[$type_without_bills][] = $money_without_bills;
-            $chart_values[$type_with_bills][]    = $money;
+            $chartValues[$typeWithoutBills][] = $MoneyWithoutBills;
+            $chartValues[$typeWithBills][]    = $money;
         }
 
-        usort($chart_x_axis_values, function ($a, $b) {
+        usort($chartXAxisValues, function ($a, $b) {
             return strtotime($a) - strtotime($b);
         });
 
         $template_data = [
-            'chart_colors'        => $chart_colors,
-            'chart_values'        => $chart_values,
-            'chart_x_axis_values' => $chart_x_axis_values,
+            'chart_colors'        => $chartColors,
+            'chart_values'        => $chartValues,
+            'chart_x_axis_values' => $chartXAxisValues,
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_EACH_MONTH, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_EACH_MONTH, $template_data);
+        return $renderedTemplate;
     }
 
     /**
@@ -278,60 +283,60 @@ class ReportAction extends AbstractController {
      */
     private function renderChartSavingsEachMonth(): Response {
 
-        $payments_total_for_each_month = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
-        $all_incomes                   = $this->controllers->getMyPaymentsIncomeController()->getAllNotDeletedSummedByYearAndMonth();
-        $custom_color                  = Utils::randomHexColor();
-        $group_name                    = $this->app->translator->translate("reports.saviingsCharts.group");
+        $paymentsTotalForEachMonth = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
+        $allIncomes                = $this->controllers->getMyPaymentsIncomeController()->getAllNotDeletedSummedByYearAndMonth();
+        $customColor               = Utils::randomHexColor();
+        $groupName                 = $this->app->translator->translate("reports.saviingsCharts.group");
 
-        $chart_values        = [
-            $group_name => [] // required by front js lib - shown on amount box hover
+        $chartValues = [
+            $groupName => [] // required by front js lib - shown on amount box hover
         ];
-        $chart_x_axis_values = [];
-        $chart_colors        = [$custom_color];
+        $chartXAxisValues = [];
+        $chartColors      = [$customColor];
 
-        foreach( $payments_total_for_each_month as $payment_total_for_each_month){
+        foreach($paymentsTotalForEachMonth as $paymentTotalForEachMonth){
 
-            $date   = $payment_total_for_each_month[self::KEY_YEAR_AND_MONTH];
+            $date   = $paymentTotalForEachMonth[self::KEY_YEAR_AND_MONTH];
             $saving = 0;
 
-            foreach( $all_incomes as $year_and_month => $income_amount ){
+            foreach($allIncomes as $yearAndMonth => $incomeAmount){
 
-                if( $year_and_month === $date ){
+                if( $yearAndMonth === $date ){
 
-                    $money_spent  = round((float) $payment_total_for_each_month[self::KEY_MONEY] , 2);
-                    $saving       = $income_amount - $money_spent;
-                    $saving       = ( $saving < 0 ? 0 : $saving );
+                    $moneySpent = round((float) $paymentTotalForEachMonth[self::KEY_MONEY] , 2);
+                    $saving     = $incomeAmount - $moneySpent;
+                    $saving     = ( $saving < 0 ? 0 : $saving );
 
                 }
             }
 
-            $chart_x_axis_values[] = $date;
-            $chart_values[$group_name][] = ceil($saving);
+            $chartXAxisValues[] = $date;
+            $chartValues[$groupName][] = ceil($saving);
         }
 
         // second foreach is required as the one above eliminates the risk of having 3 inputs for same month
-        $monthly_saving_summary = 0;
-        $months_count           = count($chart_values[$group_name]);
+        $monthlySavingSummary = 0;
+        $monthsCount          = count($chartValues[$groupName]);
 
-        foreach( $chart_values[$group_name] as $saving ){
-            $monthly_saving_summary += $saving;
+        foreach( $chartValues[$groupName] as $saving ){
+            $monthlySavingSummary += $saving;
         }
 
-        $average_monthly_saving = ( empty($monthly_saving_summary) ? 0 : $monthly_saving_summary/$months_count );
+        $averageMonthlySaving = ( empty($monthlySavingSummary) ? 0 : $monthlySavingSummary/$monthsCount );
 
-        usort($chart_x_axis_values, function ($a, $b) {
+        usort($chartXAxisValues, function ($a, $b) {
             return strtotime($a) - strtotime($b);
         });
 
-        $template_data = [
-            'chart_colors'           => $chart_colors,
-            'chart_values'           => $chart_values,
-            'chart_x_axis_values'    => $chart_x_axis_values,
-            'average_monthly_saving' => round($average_monthly_saving, 2, PHP_ROUND_HALF_DOWN),
+        $templateData = [
+            'chart_colors'           => $chartColors,
+            'chart_values'           => $chartValues,
+            'chart_x_axis_values'    => $chartXAxisValues,
+            'average_monthly_saving' => round($averageMonthlySaving, 2, PHP_ROUND_HALF_DOWN),
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHART_AMOUNT_EACH_MONTH, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHART_AMOUNT_EACH_MONTH, $templateData);
+        return $renderedTemplate;
     }
 
     /**
@@ -339,55 +344,55 @@ class ReportAction extends AbstractController {
      * @return Response
      * @throws DBALException
      */
-    private function renderTemplateMonthlyPaymentsSummaries(bool $ajax_render): Response {
+    private function renderTemplateMonthlyPaymentsSummaries(bool $ajax_render): Response
+    {
         $data = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
-
-        $template_data = [
+        $templateData = [
             'ajax_render' => $ajax_render,
             'data'        => $data
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENT_SUMMARIES, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENT_SUMMARIES, $templateData);
+        return $renderedTemplate;
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      * @throws DBALException
-     * 
      */
-    private function renderTemplatePaymentsCharts(bool $ajax_render): Response {
-        $rendered_chart_total_payments_amount_for_types = $this->renderChartTotalPaymentsAmountForTypes();
-        $rendered_chart_payment_for_type_each_month     = $this->renderChartPaymentsForTypesEachMonth();
-        $rendered_chart_payment_total_for_each_month    = $this->renderChartPaymentsTotalAmountForEachMonth();
+    private function renderTemplatePaymentsCharts(bool $ajaxRender): Response
+    {
+        $renderedChartTotalPaymentsAmountForTypes = $this->renderChartTotalPaymentsAmountForTypes();
+        $renderedChartPaymentForTypeEachMonth     = $this->renderChartPaymentsForTypesEachMonth();
+        $renderedChartPaymentTotalForEachMonth    = $this->renderChartPaymentsTotalAmountForEachMonth();
 
-        $template_data = [
-            'ajax_render'                                 => $ajax_render,
-            'chart_total_payments_amount_for_types'       => $rendered_chart_total_payments_amount_for_types->getContent(),
-            'rendered_chart_payment_for_type_each_month'  => $rendered_chart_payment_for_type_each_month->getContent(),
-            'rendered_chart_payment_total_for_each_month' => $rendered_chart_payment_total_for_each_month->getContent(),
+        $templateData = [
+            'ajax_render'                                 => $ajaxRender,
+            'chart_total_payments_amount_for_types'       => $renderedChartTotalPaymentsAmountForTypes->getContent(),
+            'rendered_chart_payment_for_type_each_month'  => $renderedChartPaymentForTypeEachMonth->getContent(),
+            'rendered_chart_payment_total_for_each_month' => $renderedChartPaymentTotalForEachMonth->getContent(),
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHARTS, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHARTS, $templateData);
+        return $renderedTemplate;
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      * @throws DBALException
      */
-    private function renderTemplateSavingsCharts(bool $ajax_render): Response {
-        $rendered_chart_savings_each_month = $this->renderChartSavingsEachMonth();
+    private function renderTemplateSavingsCharts(bool $ajaxRender): Response {
+        $renderedChartSavingsEachMonth = $this->renderChartSavingsEachMonth();
 
-        $template_data = [
-            'ajax_render'              => $ajax_render,
-            'chart_savings_each_month' => $rendered_chart_savings_each_month->getContent(),
+        $templateData = [
+            'ajax_render'              => $ajaxRender,
+            'chart_savings_each_month' => $renderedChartSavingsEachMonth->getContent(),
         ];
 
-        $rendered_template = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHARTS, $template_data);
-        return $rendered_template;
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHARTS, $templateData);
+        return $renderedTemplate;
     }
 
 }

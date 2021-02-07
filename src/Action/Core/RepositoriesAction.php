@@ -42,17 +42,17 @@ class RepositoriesAction extends AbstractController {
     }
 
     /**
-     * @Route("/api/repository/remove/entity/{repository_name}/{id}", name="api_repository_remove_entity")
-     * @param string $repository_name
+     * @Route("/api/repository/remove/entity/{repositoryName}/{id}", name="api_repository_remove_entity")
+     * @param string $repositoryName
      * @param $id
      * @param array $findByParams
      * @param Request|null $request
      * @return JsonResponse
      * @throws Exception
      */
-    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): JsonResponse
+    public function deleteById(string $repositoryName, $id, array $findByParams = [], ?Request $request = null ): JsonResponse
     {
-        $response = $this->app->repositories->deleteById($repository_name, $id, $findByParams, $request);
+        $response = $this->app->repositories->deleteById($repositoryName, $id, $findByParams, $request);
         return $response;
     }
 
@@ -64,101 +64,101 @@ class RepositoriesAction extends AbstractController {
      */
     public function updateByRequest(Request $request): JsonResponse
     {
-        $ajax_response = new AjaxResponse();
+        $ajaxResponse = new AjaxResponse();
 
         if( !$request->request->has(self::KEY_PARAMETERS) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_PARAMETERS;
 
-            $ajax_response->setMessage($message);
-            $ajax_response->setSuccess(false);
-            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
-            return $ajax_response->buildJsonResponse();
+            $ajaxResponse->setMessage($message);
+            $ajaxResponse->setSuccess(false);
+            $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+            return $ajaxResponse->buildJsonResponse();
         }
 
         if( !$request->request->has(self::KEY_ENTITY_ID) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_ENTITY_ID;
 
-            $ajax_response->setMessage($message);
-            $ajax_response->setSuccess(false);
-            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
-            return $ajax_response->buildJsonResponse();
+            $ajaxResponse->setMessage($message);
+            $ajaxResponse->setSuccess(false);
+            $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+            return $ajaxResponse->buildJsonResponse();
         }
 
         if( !$request->request->has(self::KEY_REPOSITORY_NAME) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_REPOSITORY_NAME;
 
-            $ajax_response->setMessage($message);
-            $ajax_response->setSuccess(false);
-            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
-            return $ajax_response->buildJsonResponse();
+            $ajaxResponse->setMessage($message);
+            $ajaxResponse->setSuccess(false);
+            $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+            return $ajaxResponse->buildJsonResponse();
         }
 
         $parameters      = $request->request->get(self::KEY_PARAMETERS);
         $id              = $request->request->get(self::KEY_ENTITY_ID);
-        $repository_name = $request->request->get(self::KEY_REPOSITORY_NAME);
+        $repositoryName = $request->request->get(self::KEY_REPOSITORY_NAME);
 
         try{
             $id         = $this->app->repositories->trimAndCheckId($id);
-            $repository = $this->{lcfirst($repository_name)};
+            $repository = $this->{lcfirst($repositoryName)};
             $entity     = $repository->find($id);
 
-            $response      = $this->app->repositories->update($parameters, $entity);
-            $json_response = AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+            $response     = $this->app->repositories->update($parameters, $entity);
+            $jsonResponse = AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
 
             $message = $this->translator->translate('messages.general.internalServerError');
 
-            $ajax_response->setMessage($message);
-            $ajax_response->setSuccess(false);
-            $ajax_response->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            return $ajax_response->buildJsonResponse();
+            $ajaxResponse->setMessage($message);
+            $ajaxResponse->setSuccess(false);
+            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            return $ajaxResponse->buildJsonResponse();
         }
 
-        return $json_response;
+        return $jsonResponse;
     }
 
     /**
      * This function is used to toggle value of bool column in DB
      *  can be used for example with data attr for actions
-     * @Route("/api/repository/toggle-boolval/{entity_id}/{repository_name}/{field_name}", name="api_repository_toggle_boolval", methods="GET")
-     * @param string $entity_id
-     * @param string $repository_name
-     * @param string $field_name
+     * @Route("/api/repository/toggle-boolval/{entityId}/{repositoryName}/{fieldName}", name="api_repository_toggle_boolval", methods="GET")
+     * @param string $entityId
+     * @param string $repositoryName
+     * @param string $fieldName
      * @param Request $request
      * @return JsonResponse
      *
      * @throws MappingException
      * @throws Exception
      */
-    public function toggleBool(string $entity_id, string $repository_name, string $field_name, Request $request)
+    public function toggleBool(string $entityId, string $repositoryName, string $fieldName, Request $request)
     {
-        if( empty($entity_id) ){
+        if( empty($entityId) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_ENTITY_ID;
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        if( empty($repository_name) ){
+        if( empty($repositoryName) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_REPOSITORY_NAME;
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        if( empty($field_name) ){
+        if( empty($fieldName) ){
             $message = $this->translator->translate('missingRequiredParameter') . self::KEY_FIELD_NAME;
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        $normalizedRepositoryNameForProperty = lcfirst($repository_name);
+        $normalizedRepositoryNameForProperty = lcfirst($repositoryName);
 
         if( !property_exists($this->app->repositories, $normalizedRepositoryNameForProperty) ){
-            $message = $this->translator->translate('messages.general.noSuchRepositoryWasFound') . $repository_name;
+            $message = $this->translator->translate('messages.general.noSuchRepositoryWasFound') . $repositoryName;
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         /**
          * @var ServiceEntityRepository $repository
          */
-        $id         = $this->app->repositories->trimAndCheckId($entity_id);
+        $id         = $this->app->repositories->trimAndCheckId($entityId);
         $repository = $this->app->repositories->$normalizedRepositoryNameForProperty;
         $entity     = $repository->find($id);
 
@@ -167,37 +167,37 @@ class RepositoriesAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        $record_class_name  = get_class($entity);
-        $class_meta         = $this->app->em->getClassMetadata($record_class_name);
+        $recordClassName  = get_class($entity);
+        $classMeta        = $this->app->em->getClassMetadata($recordClassName);
 
-        $table_name         = $class_meta->getTableName();
-        $field_mapping      = $class_meta->getFieldMapping($field_name);
-        $field_type         = $field_mapping['type'];
+        $tableName        = $classMeta->getTableName();
+        $fieldMapping     = $classMeta->getFieldMapping($fieldName);
+        $fieldType        = $fieldMapping['type'];
 
-        $column_name        = Application::camelCaseToSnakeCaseConverter($field_name);
+        $columnName       = Application::camelCaseToSnakeCaseConverter($fieldName);
 
-        $columns_names      = $this->app->repositories->getColumnsNamesForTableName($table_name);
-        $is_record_entity   = Repositories::isEntity($entity);
+        $columnsNames     = $this->app->repositories->getColumnsNamesForTableName($tableName);
+        $isRecordEntity   = Repositories::isEntity($entity);
 
-        $class_name         = get_class($entity);
+        $className        = get_class($entity);
 
-        if( !$is_record_entity ){
-            $message = $this->translator->translate('messages.general.givenClassIsNotEntity') . $class_name;
+        if( !$isRecordEntity ){
+            $message = $this->translator->translate('messages.general.givenClassIsNotEntity') . $className;
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        if( !in_array($column_name, $columns_names) ){
-            $message = $this->translator->translate('messages.general.noColumnWithThisNameWasFoundInGivenTable') . "{$column_name} ({$table_name})";
+        if( !in_array($columnName, $columnsNames) ){
+            $message = $this->translator->translate('messages.general.noColumnWithThisNameWasFoundInGivenTable') . "{$columnName} ({$tableName})";
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        if( Repositories::DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN !== $field_type ){
-            $message = $this->translator->translate('messages.general.thisFieldIsNotBoolean') . "{$field_name} ({$table_name})";
+        if( Repositories::DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN !== $fieldType ){
+            $message = $this->translator->translate('messages.general.thisFieldIsNotBoolean') . "{$fieldName} ({$tableName})";
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
         try{
-            $normalizedFieldNameForMethod = ucfirst($field_name);
+            $normalizedFieldNameForMethod = ucfirst($fieldName);
             $getterMethodName             = "get{$normalizedFieldNameForMethod}";
             $isserMethodName              = "is{$normalizedFieldNameForMethod}";
             $setterMethodName             = "set{$normalizedFieldNameForMethod}";
@@ -209,7 +209,7 @@ class RepositoriesAction extends AbstractController {
             }elseif( method_exists($entity, $isserMethodName) ){
                 $usedMethod = $isserMethodName;
             }else{
-                $message = $this->translator->translate('messages.general.noSuchGetterAndIsserAvailableForClass') . "{$normalizedFieldNameForMethod} ({$class_name})";
+                $message = $this->translator->translate('messages.general.noSuchGetterAndIsserAvailableForClass') . "{$normalizedFieldNameForMethod} ({$className})";
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
             }
 
@@ -217,7 +217,7 @@ class RepositoriesAction extends AbstractController {
             $invertedBoolVal = !$boolVal;
 
             if( !method_exists($entity, $setterMethodName)){
-                $message = $this->translator->translate('messages.general.noSuchMethodExistsForGivenClass') . "{$setterMethodName} ({$class_name})";
+                $message = $this->translator->translate('messages.general.noSuchMethodExistsForGivenClass') . "{$setterMethodName} ({$className})";
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
             }
 

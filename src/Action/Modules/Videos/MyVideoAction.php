@@ -28,17 +28,17 @@ class MyVideoAction extends AbstractController {
     /**
      * @var FilesTagsController $files_tags_controller
      */
-    private $files_tags_controller;
+    private FilesTagsController $files_tags_controller;
 
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(FilesTagsController $files_tags_controller, Application $app, Controllers $controllers) {
 
@@ -61,8 +61,8 @@ class MyVideoAction extends AbstractController {
             return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
         }
 
-        $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -75,11 +75,11 @@ class MyVideoAction extends AbstractController {
     {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderSettingsTemplate(false);
+            return $this->renderSettingsTemplate();
         }
 
-        $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -95,62 +95,62 @@ class MyVideoAction extends AbstractController {
     }
 
     /**
-     * @param string|null $encoded_subdirectory_path
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param string|null $encodedSubdirectoryPath
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return array|RedirectResponse|Response
      *
      * @throws Exception|\Doctrine\DBAL\Driver\Exception
      */
-    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderCategoryTemplate(? string $encodedSubdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
 
-        $module_upload_dir                      = Env::getVideoUploadDir();
-        $decoded_subdirectory_path              = FilesHandler::trimFirstAndLastSlash(urldecode($encoded_subdirectory_path));
-        $subdirectory_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $decoded_subdirectory_path);
+        $moduleUploadDir                   = Env::getVideoUploadDir();
+        $decodedSubdirectoryPath           = FilesHandler::trimFirstAndLastSlash(urldecode($encodedSubdirectoryPath));
+        $subdirectoryPathInModuleUploadDir = FileUploadController::getSubdirectoryPath($moduleUploadDir, $decodedSubdirectoryPath);
 
-        $module_upload_dir_name = FilesHandler::getModuleUploadDirForUploadPath($module_upload_dir);
-        $module_name            = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$module_upload_dir_name];
+        $moduleUploadDirName = FilesHandler::getModuleUploadDirForUploadPath($moduleUploadDir);
+        $moduleName          = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$moduleUploadDirName];
 
-        if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($subdirectory_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name) ){
+        if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($subdirectoryPathInModuleUploadDir, LockedResource::TYPE_DIRECTORY, $moduleName) ){
             return $this->redirect('/');
         }
 
-        if( !file_exists($subdirectory_path_in_module_upload_dir) ){
-            $subdirectory_name = basename($decoded_subdirectory_path);
-            $this->addFlash('danger', "Folder '{$subdirectory_name} does not exist.");
+        if( !file_exists($subdirectoryPathInModuleUploadDir) ){
+            $subdirectoryName = basename($decodedSubdirectoryPath);
+            $this->addFlash('danger', "Folder '{$subdirectoryName} does not exist.");
             return $this->redirectToRoute('upload');
         }
 
-        if (empty($decoded_subdirectory_path)) {
-            $all_video                  = $this->controllers->getMyVideoController()->getMainFolderVideos();
+        if (empty($decodedSubdirectoryPath)) {
+            $allVideo = $this->controllers->getMyVideoController()->getMainFolderVideos();
         } else {
-            $decoded_subdirectory_path   = urldecode($decoded_subdirectory_path);
-            $all_video                  = $this->controllers->getMyVideoController()->getVideosInCategory($decoded_subdirectory_path);
+            $decodedSubdirectoryPath = urldecode($decodedSubdirectoryPath);
+            $allVideo = $this->controllers->getMyVideoController()->getVideosInCategory($decodedSubdirectoryPath);
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($decoded_subdirectory_path) ? $module_upload_dir : $subdirectory_path_in_module_upload_dir);
-        $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
+        $searchDir              = (empty($decodedSubdirectoryPath) ? $moduleUploadDir : $subdirectoryPathInModuleUploadDir);
+        $filesCountInTree    = FilesHandler::countFilesInTree($searchDir);
 
-        $is_main_dir = ( empty($decoded_subdirectory_path) );
-        $upload_path = Env::getVideoUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
+        $isMainDir  = ( empty($decodedSubdirectoryPath) );
+        $uploadPath = Env::getVideoUploadDir() . DIRECTORY_SEPARATOR . $decodedSubdirectoryPath;
 
-        $module_data = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
+        $moduleData = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
             ModuleData::RECORD_TYPE_DIRECTORY,
             ModulesController::MODULE_NAME_VIDEO,
-            $upload_path
+            $uploadPath
         );
 
         $data = [
-            'ajax_render'                    => $ajax_render,
-            'module_data'                    => $module_data,
-            'upload_path'                    => $upload_path,
-            'all_video'                      => $all_video,
-            'subdirectory_path'              => $decoded_subdirectory_path,
-            'files_count_in_tree'            => $files_count_in_tree,
+            'ajax_render'                    => $ajaxRender,
+            'module_data'                    => $moduleData,
+            'upload_path'                    => $uploadPath,
+            'all_video'                      => $allVideo,
+            'subdirectory_path'              => $decodedSubdirectoryPath,
+            'files_count_in_tree'            => $filesCountInTree,
             'upload_module_dir'              => MyVideoController::getTargetUploadDir(),
-            'is_main_dir'                    => $is_main_dir,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
+            'is_main_dir'                    => $isMainDir,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_VIDEO, $data);

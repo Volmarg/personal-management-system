@@ -6,16 +6,12 @@ namespace App\Action\Files;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
-use App\Controller\Core\Env;
-use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Utils;
-use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,33 +23,33 @@ class FilesUploadSettingsAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var DirectoriesHandler $directories_handler
+     * @var DirectoriesHandler $directoriesHandler
      */
-    private $directories_handler;
+    private DirectoriesHandler $directoriesHandler;
 
     /**
-     * @var FilesHandler $files_handler
+     * @var FilesHandler $filesHandler
      */
-    private $files_handler;
+    private FilesHandler $filesHandler;
 
     public function __construct(
         Controllers         $controllers,
         Application         $app,
-        DirectoriesHandler  $directories_handler,
-        FilesHandler        $files_handler
+        DirectoriesHandler  $directoriesHandler,
+        FilesHandler        $filesHandler
     ) {
-        $this->app                 = $app;
-        $this->controllers         = $controllers;
-        $this->directories_handler = $directories_handler;
-        $this->files_handler       = $files_handler;
+        $this->app                = $app;
+        $this->controllers        = $controllers;
+        $this->directoriesHandler = $directoriesHandler;
+        $this->filesHandler       = $filesHandler;
     }
 
     /**
@@ -68,8 +64,8 @@ class FilesUploadSettingsAction extends AbstractController {
             return $this->renderSettingsPage(false, $request);
         }
 
-        $template_content = $this->renderSettingsPage(true, $request)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderSettingsPage(true, $request)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -79,12 +75,12 @@ class FilesUploadSettingsAction extends AbstractController {
      */
     private function renderSettingsPage(bool $ajax_render){
 
-        $rename_form        = $this->app->forms->renameSubdirectoryForm();
-        $create_subdir_form = $this->app->forms->createSubdirectoryForm();
+        $renameForm       = $this->app->forms->renameSubdirectoryForm();
+        $createSubdirForm = $this->app->forms->createSubdirectoryForm();
 
-        $copy_data_form = $this->app->forms->copyUploadSubdirectoryDataForm();
+        $copyDataForm = $this->app->forms->copyUploadSubdirectoryDataForm();
 
-        $menu_node_modules_names_to_reload = [
+        $menuNodeModulesNamesToReload = [
             ModulesController::MODULE_NAME_IMAGES,
             ModulesController::MODULE_NAME_FILES,
             ModulesController::MODULE_NAME_VIDEO,
@@ -92,10 +88,10 @@ class FilesUploadSettingsAction extends AbstractController {
 
         $data = [
             'ajax_render'                       => $ajax_render,
-            'rename_form'                       => $rename_form->createView(),
-            'copy_data_form'                    => $copy_data_form->createView(),
-            'create_subdir_form'                => $create_subdir_form->createView(),
-            "menu_node_modules_names_to_reload" => Utils::escapedDoubleQuoteJsonEncode($menu_node_modules_names_to_reload),
+            'rename_form'                       => $renameForm->createView(),
+            'copy_data_form'                    => $copyDataForm->createView(),
+            'create_subdir_form'                => $createSubdirForm->createView(),
+            "menu_node_modules_names_to_reload" => Utils::escapedDoubleQuoteJsonEncode($menuNodeModulesNamesToReload),
         ];
 
         return $this->render(static::TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS, $data);

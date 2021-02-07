@@ -7,7 +7,7 @@ namespace App\Action\Modules\Job;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
-use Doctrine\DBAL\DBALException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ class MyJobSettingsAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -35,8 +35,10 @@ class MyJobSettingsAction extends AbstractController {
      * @Route("/my-job/settings", name="my-job-settings")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
 
         $this->addJobHolidayPool($request);
 
@@ -44,25 +46,26 @@ class MyJobSettingsAction extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    public function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    public function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
         $all_holidays_pools      = $this->controllers->getMyJobHolidaysPoolController()->getAllNotDeleted();
         $job_holidays_pool_form  = $this->app->forms->jobHolidaysPoolForm();
 
         $twig_data = [
-            'ajax_render'                       => $ajax_render,
+            'ajax_render'                       => $ajaxRender,
             'all_holidays_pools'                => $all_holidays_pools,
             'job_holidays_pool_form'            => $job_holidays_pool_form->createView(),
-            'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js
+            'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs
         ];
 
         return $this->render(static::SETTINGS_TWIG_TEMPLATE, $twig_data);

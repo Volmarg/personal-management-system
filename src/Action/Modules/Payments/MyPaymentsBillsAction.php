@@ -19,12 +19,12 @@ class MyPaymentsBillsAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -37,13 +37,14 @@ class MyPaymentsBillsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -54,20 +55,21 @@ class MyPaymentsBillsAction extends AbstractController {
      * @return JsonResponse
      * @throws Exception
      */
-    public function addBill(Request $request): JsonResponse {
+    public function addBill(Request $request): JsonResponse
+    {
         $form = $this->app->forms->paymentsBillsForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form_data = $form->getData();
+            $formData = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
 
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST);
@@ -81,20 +83,21 @@ class MyPaymentsBillsAction extends AbstractController {
      * @return JsonResponse
      * @throws Exception
      */
-    public function addBillItem(Request $request): JsonResponse {
+    public function addBillItem(Request $request): JsonResponse
+    {
         $form = $this->app->forms->paymentsBillsItemsForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form_data = $form->getData();
+            $formData = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
 
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST);
@@ -106,7 +109,8 @@ class MyPaymentsBillsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function removeBill(Request $request) {
+    public function removeBill(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_BILLS_REPOSITORY_NAME,
@@ -116,10 +120,10 @@ class MyPaymentsBillsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -131,8 +135,8 @@ class MyPaymentsBillsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function removeBillItem(Request $request) {
-
+    public function removeBillItem(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME,
             $request->request->get('id')
@@ -141,10 +145,10 @@ class MyPaymentsBillsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -157,10 +161,10 @@ class MyPaymentsBillsAction extends AbstractController {
      * @throws MappingException
      */
     public function updateBill(Request $request) {
-        $parameters     = $request->request->all();
-        $entity_id      = trim(trim($parameters['id']));
+        $parameters    = $request->request->all();
+        $entityId      = trim(trim($parameters['id']));
 
-        $entity         = $this->controllers->getMyPaymentsBillsController()->findOneById($entity_id);
+        $entity         = $this->controllers->getMyPaymentsBillsController()->findOneById($entityId);
         $response       = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -173,39 +177,41 @@ class MyPaymentsBillsAction extends AbstractController {
      *
      * @throws MappingException
      */
-    public function updateBillItem(Request $request) {
+    public function updateBillItem(Request $request): JsonResponse
+    {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyPaymentsBillsItemsController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyPaymentsBillsItemsController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $bills_form         = $this->app->forms->paymentsBillsForm();
-        $bills_items_form   = $this->app->forms->paymentsBillsItemsForm();
+        $billsForm        = $this->app->forms->paymentsBillsForm();
+        $billsItemsForm   = $this->app->forms->paymentsBillsItemsForm();
 
-        $bills              = $this->controllers->getMyPaymentsBillsController()->getAllNotDeleted();
-        $bills_items        = $this->controllers->getMyPaymentsBillsItemsController()->getAllNotDeleted();
+        $bills             = $this->controllers->getMyPaymentsBillsController()->getAllNotDeleted();
+        $billsItems        = $this->controllers->getMyPaymentsBillsItemsController()->getAllNotDeleted();
 
-        $bills_amounts_summaries = $this->controllers->getMyPaymentsBillsController()->buildAmountSummaries($bills, $bills_items);
+        $billsAmountsSummaries = $this->controllers->getMyPaymentsBillsController()->buildAmountSummaries($bills, $billsItems);
 
         $data = [
-            'bills_form'                     => $bills_form->createView(),
-            'bills_items_form'               => $bills_items_form->createView(),
-            'bills_amounts_summaries'        => $bills_amounts_summaries,
-            'ajax_render'                    => $ajax_render,
+            'bills_form'                     => $billsForm->createView(),
+            'bills_items_form'               => $billsItemsForm->createView(),
+            'bills_amounts_summaries'        => $billsAmountsSummaries,
+            'ajax_render'                    => $ajaxRender,
             'bills'                          => $bills,
-            'bills_items'                    => $bills_items,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'bills_items'                    => $billsItems,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
         $template = 'modules/my-payments/bills.html.twig';

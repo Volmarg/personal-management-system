@@ -23,12 +23,12 @@ class MyTodoElementAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
 
@@ -40,9 +40,10 @@ class MyTodoElementAction extends AbstractController {
      * @Route("/admin/todo/element/remove/",name="todo-element-remove")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_TODO_ELEMENT_REPOSITORY,
@@ -86,42 +87,41 @@ class MyTodoElementAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
-        $ajax_response = new AjaxResponse();
-        $message       = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-        $code          = Response::HTTP_OK;
+        $ajaxResponse = new AjaxResponse();
+        $message      = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+        $code         = Response::HTTP_OK;
 
         $parameters = $request->request->all();
 
         try{
-            $element_id = $parameters[self::KEY_ID];
-            $todo_id    = $parameters[self::KEY_TODO][self::KEY_ID];
+            $elementId = $parameters[self::KEY_ID];
+            $todoId    = $parameters[self::KEY_TODO][self::KEY_ID];
 
-            $are_all_todo_done_before_update = $this->controllers->getMyTodoController()->areAllElementsDone($todo_id);
+            $areAllTodoDoneBeforeUpdate = $this->controllers->getMyTodoController()->areAllElementsDone($todoId);
 
-            $element_entity = $this->controllers->getMyTodoElementController()->findOneById($element_id);
-            $todo_entity    = $this->controllers->getMyTodoController()->findOneById($todo_id);
+            $elementEntity = $this->controllers->getMyTodoElementController()->findOneById($elementId);
+            $todoEntity    = $this->controllers->getMyTodoController()->findOneById($todoId);
 
-            $update_response = $this->app->repositories->update($parameters, $element_entity);
-
-            if( Response::HTTP_OK != $update_response->getStatusCode() ){
-                return AjaxResponse::initializeFromResponse($update_response)->buildJsonResponse();
+            $updateResponse = $this->app->repositories->update($parameters, $elementEntity);
+            if( Response::HTTP_OK != $updateResponse->getStatusCode() ){
+                return AjaxResponse::initializeFromResponse($updateResponse)->buildJsonResponse();
             }
 
             /**
              * When updating the elements, the overall `completed` status should also be updated for the `todo`,
              */
-            $are_all_todo_done_after_done = $this->controllers->getMyTodoController()->areAllElementsDone($todo_id);
+            $areAllTodoDoneAfterDone = $this->controllers->getMyTodoController()->areAllElementsDone($todoId);
 
-            if( $are_all_todo_done_before_update !== $are_all_todo_done_after_done ){
-                if($are_all_todo_done_after_done){
+            if( $areAllTodoDoneBeforeUpdate !== $areAllTodoDoneAfterDone ){
+                if($areAllTodoDoneAfterDone){
                     $message = $this->app->translator->translate('responses.todo.allTodoElementsAreDoneTodoIsCompleted');
-                    $todo_entity->setCompleted(true);
+                    $todoEntity->setCompleted(true);
                 }else{
                     $message = $this->app->translator->translate('responses.todo.todoElementStatusHasBeenChanged');
-                    $todo_entity->setCompleted(false);
+                    $todoEntity->setCompleted(false);
                 }
 
-                $this->controllers->getMyTodoController()->save($todo_entity);
+                $this->controllers->getMyTodoController()->save($todoEntity);
             }
         }catch(Exception $e){
             $message = $this->app->translator->translate('responses.todo.todoElementStatusCouldNotBeenChanged');
@@ -129,10 +129,10 @@ class MyTodoElementAction extends AbstractController {
             $this->app->logExceptionWasThrown($e);
         }
 
-        $ajax_response->setMessage($message);
-        $ajax_response->setCode($code);
+        $ajaxResponse->setMessage($message);
+        $ajaxResponse->setCode($code);
 
-        return $ajax_response->buildJsonResponse();
+        return $ajaxResponse->buildJsonResponse();
     }
 
 

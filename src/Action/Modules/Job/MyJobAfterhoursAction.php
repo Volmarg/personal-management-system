@@ -9,6 +9,8 @@ use App\Controller\Core\Repositories;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Form\Modules\Job\MyJobAfterhoursType;
 use App\Repository\Modules\Job\MyJobAfterhoursRepository;
+use Doctrine\ORM\Mapping\MappingException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,26 +21,26 @@ use Symfony\Component\HttpFoundation\Response;
 class MyJobAfterhoursAction extends AbstractController {
 
     /**
-     * @var array $entity_enums
+     * @var array $entityEnums
      */
-    private $entity_enums = [];
+    private array $entityEnums = [];
 
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
-        $entity_enums       = [MyJobAfterhours::TYPE_MADE, MyJobAfterhours::TYPE_SPENT];
+        $entityEnums = [MyJobAfterhours::TYPE_MADE, MyJobAfterhours::TYPE_SPENT];
 
-        $this->entity_enums = array_combine(
-            array_map('ucfirst', array_values($entity_enums)),
-            $entity_enums
+        $this->entityEnums = array_combine(
+            array_map('ucfirst', array_values($entityEnums)),
+            $entityEnums
         );
 
         $this->app         = $app;
@@ -50,70 +52,73 @@ class MyJobAfterhoursAction extends AbstractController {
      * @Route("/my-job/afterhours", name="my-job-afterhours")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true, false)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $form                 = $this->getForm();
-        $afterhours_form_view = $form->createView();
+        $form               = $this->getForm();
+        $afterhoursFormView = $form->createView();
 
-        $column_names       = $this->getDoctrine()->getManager()->getClassMetadata(MyJobAfterhours::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($column_names);
+        $columnNames = $this->getDoctrine()->getManager()->getClassMetadata(MyJobAfterhours::class)->getColumnNames();
+        Repositories::removeHelperColumnsFromView($columnNames);
 
-        $afterhours_all = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
+        $afterhoursAll = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
             MyJobAfterhours::TYPE_SPENT,
             MyJobAfterhours::TYPE_MADE
         ]);
 
-        $afterhours_spent = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
+        $afterhoursSpent = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
             MyJobAfterhours::TYPE_SPENT
         ]);
 
-        $afterhours_made = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
+        $afterhoursMade = $this->controllers->getMyJobAfterhoursController()->findAllNotDeletedByType([
             MyJobAfterhours::TYPE_MADE
         ]);
 
-        $days_all    = 0;
-        $seconds_all = 0;
-        foreach($afterhours_all as $afterhour)
+        $daysAll    = 0;
+        $secondsAll = 0;
+        foreach($afterhoursAll as $afterhour)
         {
             if( MyJobAfterhours::TYPE_MADE === $afterhour->getType() ){
-                $seconds_all += $afterhour->getSeconds();
-                $days_all    += $afterhour->getDays();
+                $secondsAll += $afterhour->getSeconds();
+                $daysAll    += $afterhour->getDays();
             }else{
-                $seconds_all -= $afterhour->getSeconds();
-                $days_all    -= $afterhour->getDays();
+                $secondsAll -= $afterhour->getSeconds();
+                $daysAll    -= $afterhour->getDays();
             }
         }
 
-        $remaining_time_to_spend_per_goal = $this->controllers->getMyJobAfterhoursController()->getTimeToSpend();
+        $remainingTimeToSpendPerGoal = $this->controllers->getMyJobAfterhoursController()->getTimeToSpend();
 
         $twig_data = [
-            'afterhours_form_view'              => $afterhours_form_view,
-            'column_names'                      => $column_names,
-            'afterhours_all'                    => $afterhours_all,
-            'afterhours_spent'                  => $afterhours_spent,
-            'afterhours_made'                   => $afterhours_made,
-            'seconds_all'                       => $seconds_all,
-            'days_all'                          => $days_all,
-            'remaining_time_to_spend_per_goal'  => $remaining_time_to_spend_per_goal,
-            'ajax_render'                       => $ajax_render,
-            'skip_rewriting_twig_vars_to_js'    => $skip_rewriting_twig_vars_to_js,
+            'afterhours_form_view'              => $afterhoursFormView,
+            'column_names'                      => $columnNames,
+            'afterhours_all'                    => $afterhoursAll,
+            'afterhours_spent'                  => $afterhoursSpent,
+            'afterhours_made'                   => $afterhoursMade,
+            'seconds_all'                       => $secondsAll,
+            'days_all'                          => $daysAll,
+            'remaining_time_to_spend_per_goal'  => $remainingTimeToSpendPerGoal,
+            'ajax_render'                       => $ajaxRender,
+            'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render('modules/my-job/afterhours.html.twig', $twig_data);
@@ -124,14 +129,15 @@ class MyJobAfterhoursAction extends AbstractController {
      * @Route("/my-job/afterhours/update/",name="my-job-afterhours-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws MappingException
      */
-    public function update(Request $request) {
+    public function update(Request $request): JsonResponse
+    {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId  = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyJobAfterhoursController()->findOneById($entity_id);
-        $response   = $this->app->repositories->update($parameters, $entity);
+        $entity   = $this->controllers->getMyJobAfterhoursController()->findOneById($entityId);
+        $response = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
@@ -140,9 +146,10 @@ class MyJobAfterhoursAction extends AbstractController {
      * @Route("/my-job/afterhours/remove/",name="my-job-afterhours-remove")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_JOB_AFTERHOURS_REPOSITORY_NAME,
@@ -152,10 +159,10 @@ class MyJobAfterhoursAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
@@ -164,7 +171,8 @@ class MyJobAfterhoursAction extends AbstractController {
     /**
      * @return FormInterface
      */
-    private function getForm() {
+    private function getForm(): FormInterface
+    {
         $goalsWithTimes = $this->controllers->getMyJobAfterhoursController()->getGoalsWithTime();
         $goals          = [];
 
@@ -173,7 +181,7 @@ class MyJobAfterhoursAction extends AbstractController {
         }
 
         return $this->createForm(MyJobAfterhoursType::class, null, [
-            'entity_enums' => $this->entity_enums,
+            'entity_enums' => $this->entityEnums,
             'goals'        => $goals,
         ]);
     }
@@ -182,7 +190,8 @@ class MyJobAfterhoursAction extends AbstractController {
      * @param Request $request
      * @return void
      */
-    private function addFormDataToDB(Request $request): void {
+    private function addFormDataToDB(Request $request): void
+    {
 
         $form = $this->getForm();
         $form->handleRequest($request);

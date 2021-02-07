@@ -19,33 +19,33 @@ class SettingsAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var SettingsFinancesAction $settings_finances_action
+     * @var SettingsFinancesAction $settingsFinancesAction
      */
-    private $settings_finances_action;
+    private SettingsFinancesAction $settingsFinancesAction;
 
     /**
-     * @var SettingsViewAction $settings_view_action
+     * @var SettingsViewAction $settingsViewAction
      */
-    private $settings_view_action;
+    private SettingsViewAction $settingsViewAction;
 
     public function __construct(
         Controllers             $controllers,
         Application             $app,
-        SettingsFinancesAction  $settings_finances_action,
-        SettingsViewAction      $settings_view_action
+        SettingsFinancesAction  $settingsFinancesAction,
+        SettingsViewAction      $settingsViewAction
     ) {
-        $this->app = $app;
-        $this->controllers = $controllers;
-        $this->settings_view_action = $settings_view_action;
-        $this->settings_finances_action = $settings_finances_action;
+        $this->app                    = $app;
+        $this->controllers            = $controllers;
+        $this->settingsViewAction     = $settingsViewAction;
+        $this->settingsFinancesAction = $settingsFinancesAction;
     }
 
     /**
@@ -54,16 +54,17 @@ class SettingsAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request): Response {
-        $call_status_dto = $this->handleForms($request);
+    public function display(Request $request): Response
+    {
+        $callStatusDto = $this->handleForms($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->settings_view_action->renderSettingsTemplate(false);
+            return $this->settingsViewAction->renderSettingsTemplate();
         }
 
-        $template = $this->settings_view_action->renderSettingsTemplate(true)->getContent();
-        $code     = $call_status_dto->getCode();
-        $message  = $call_status_dto->getMessage();
+        $template = $this->settingsViewAction->renderSettingsTemplate(true)->getContent();
+        $code     = $callStatusDto->getCode();
+        $message  = $callStatusDto->getMessage();
 
         $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $template);
         return $response;
@@ -74,9 +75,10 @@ class SettingsAction extends AbstractController {
      * @return CallStatusDTO
      * @throws Exception
      */
-    private function handleForms(Request $request): CallStatusDTO{
-        $call_status_dto = $this->settings_finances_action->handleFinancesCurrencyForm($request);
-        return $call_status_dto;
+    private function handleForms(Request $request): CallStatusDTO
+    {
+        $callStatusDto = $this->settingsFinancesAction->handleFinancesCurrencyForm($request);
+        return $callStatusDto;
     }
 
 }

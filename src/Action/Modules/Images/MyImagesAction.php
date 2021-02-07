@@ -31,137 +31,139 @@ class MyImagesAction extends AbstractController {
     const TWIG_TEMPLATE_MY_FILES_SETTINGS = 'modules/my-images/settings.html.twig';
 
     /**
-     * @var FilesTagsController $files_tags_controller
+     * @var FilesTagsController $filesTagsController
      */
-    private $files_tags_controller;
+    private FilesTagsController $filesTagsController;
 
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(FilesTagsController $files_tags_controller, Application $app, Controllers $controllers) {
 
-        $this->controllers                = $controllers;
-        $this->files_tags_controller      = $files_tags_controller;
+        $this->controllers         = $controllers;
+        $this->filesTagsController = $files_tags_controller;
 
         $this->app = $app;
     }
 
     /**
-     * @Route("my-images/dir/{encoded_subdirectory_path?}", name="modules_my_images")
-     * @param string|null $encoded_subdirectory_path
+     * @Route("my-images/dir/{encodedSubdirectoryPath?}", name="modules_my_images")
+     * @param string|null $encodedSubdirectoryPath
      * @param Request $request
      * @return Response
-     * 
+     *
+     * @throws Exception
      */
-    public function displayImages(? string $encoded_subdirectory_path, Request $request) {
+    public function displayImages(? string $encodedSubdirectoryPath, Request $request) {
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
+            return $this->renderCategoryTemplate($encodedSubdirectoryPath);
         }
 
-        $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderCategoryTemplate($encodedSubdirectoryPath, true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
      * @Route("my-images/settings", name="modules_my_images_settings")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function displaySettings(Request $request): Response
     {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderSettingsTemplate(false);
+            return $this->renderSettingsTemplate();
         }
 
-        $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderSettingsTemplate(bool $ajax_render = false): Response
+    private function renderSettingsTemplate(bool $ajaxRender = false): Response
     {
         $data = [
-            'ajax_render' => $ajax_render,
+            'ajax_render' => $ajaxRender,
         ];
         return $this->render(static::TWIG_TEMPLATE_MY_FILES_SETTINGS, $data);
     }
 
     /**
-     * @param string|null $encoded_subdirectory_path
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param string|null $encodedSubdirectoryPath
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return array|RedirectResponse|Response
      *
-     * @throws Exception
+     * @throws Exception|\Doctrine\DBAL\Driver\Exception
      */
-    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderCategoryTemplate(? string $encodedSubdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
 
-        $module_upload_dir                      = Env::getImagesUploadDir();
-        $decoded_subdirectory_path              = FilesHandler::trimFirstAndLastSlash(urldecode($encoded_subdirectory_path));
-        $subdirectory_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($module_upload_dir, $decoded_subdirectory_path);
+        $moduleUploadDir                   = Env::getImagesUploadDir();
+        $decodedSubdirectoryPath           = FilesHandler::trimFirstAndLastSlash(urldecode($encodedSubdirectoryPath));
+        $subdirectoryPathInModuleUploadDir = FileUploadController::getSubdirectoryPath($moduleUploadDir, $decodedSubdirectoryPath);
 
-        $module_upload_dir_name = FilesHandler::getModuleUploadDirForUploadPath($module_upload_dir);
-        $module_name            = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$module_upload_dir_name];
+        $moduleUploadDirName = FilesHandler::getModuleUploadDirForUploadPath($moduleUploadDir);
+        $moduleName          = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$moduleUploadDirName];
 
-        if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($subdirectory_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name)         ){
+        if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($subdirectoryPathInModuleUploadDir, LockedResource::TYPE_DIRECTORY, $moduleName)         ){
             return $this->redirect('/');
         }
 
-        if( !file_exists($subdirectory_path_in_module_upload_dir) ){
-            $subdirectory_name = basename($decoded_subdirectory_path);
+        if( !file_exists($subdirectoryPathInModuleUploadDir) ){
+            $subdirectory_name = basename($decodedSubdirectoryPath);
             $this->addFlash('danger', "Folder '{$subdirectory_name} does not exist.");
             return $this->redirectToRoute('upload');
         }
 
-        if (empty($decoded_subdirectory_path)) {
-            $all_images                  = $this->controllers->getMyImagesController()->getMainFolderImages();
+        if (empty($decodedSubdirectoryPath)) {
+            $allImages                  = $this->controllers->getMyImagesController()->getMainFolderImages();
         } else {
-            $decoded_subdirectory_path   = urldecode($decoded_subdirectory_path);
-            $all_images                  = $this->controllers->getMyImagesController()->getImagesFromCategory($decoded_subdirectory_path);
+            $decodedSubdirectoryPath   = urldecode($decodedSubdirectoryPath);
+            $allImages                  = $this->controllers->getMyImagesController()->getImagesFromCategory($decodedSubdirectoryPath);
         }
 
-        foreach($all_images as $index => $image){
-            $corresponding_miniature_path = Env::getMiniaturesUploadDir() . DIRECTORY_SEPARATOR . FilesController::stripUploadDirectoryFromFilePathFront($image[MyFilesController::KEY_FILE_FULL_PATH]);
-            if( file_exists($corresponding_miniature_path) ){
-                $all_images[$index][ImageHandler::KEY_MINIATURE_PATH] = $corresponding_miniature_path;
+        foreach($allImages as $index => $image){
+            $correspondingMiniaturePath = Env::getMiniaturesUploadDir() . DIRECTORY_SEPARATOR . FilesController::stripUploadDirectoryFromFilePathFront($image[MyFilesController::KEY_FILE_FULL_PATH]);
+            if( file_exists($correspondingMiniaturePath) ){
+                $allImages[$index][ImageHandler::KEY_MINIATURE_PATH] = $correspondingMiniaturePath;
                 continue;
             }
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($decoded_subdirectory_path) ? $module_upload_dir : $subdirectory_path_in_module_upload_dir);
-        $files_count_in_tree    = FilesHandler::countFilesInTree($searchDir);
+        $searchDir           = (empty($decodedSubdirectoryPath) ? $moduleUploadDir : $subdirectoryPathInModuleUploadDir);
+        $filesCountInTree    = FilesHandler::countFilesInTree($searchDir);
 
-        $is_main_dir = ( empty($decoded_subdirectory_path) );
-        $upload_path = Env::getImagesUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
+        $isMainDir  = ( empty($decodedSubdirectoryPath) );
+        $uploadPath = Env::getImagesUploadDir() . DIRECTORY_SEPARATOR . $decodedSubdirectoryPath;
 
-        $module_data = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
+        $moduleData = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
             ModuleData::RECORD_TYPE_DIRECTORY,
             ModulesController::MODULE_NAME_IMAGES,
-            $upload_path
+            $uploadPath
         );
 
         $data = [
-            'ajax_render'                    => $ajax_render,
-            'all_images'                     => $all_images,
-            'subdirectory_path'              => $decoded_subdirectory_path,
-            'files_count_in_tree'            => $files_count_in_tree,
-            'module_data'                    => $module_data,
-            'upload_path'                    => $upload_path,
+            'ajax_render'                    => $ajaxRender,
+            'all_images'                     => $allImages,
+            'subdirectory_path'              => $decodedSubdirectoryPath,
+            'files_count_in_tree'            => $filesCountInTree,
+            'module_data'                    => $moduleData,
+            'upload_path'                    => $uploadPath,
             'upload_module_dir'              => MyImagesController::TARGET_UPLOAD_DIR,
-            'is_main_dir'                    => $is_main_dir,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
+            'is_main_dir'                    => $isMainDir,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_IMAGES, $data);
@@ -175,7 +177,8 @@ class MyImagesAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function update(Request $request){
+    public function update(Request $request): Response
+    {
 
         if (!$request->request->has(DialogsAction::KEY_FILE_CURRENT_PATH)) {
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . DialogsAction::KEY_FILE_CURRENT_PATH;
@@ -187,12 +190,12 @@ class MyImagesAction extends AbstractController {
             throw new Exception($message);
         }
 
-        $file_current_path = $request->request->get(DialogsAction::KEY_FILE_CURRENT_PATH);
-        $tags_string       = $request->request->get(FileTagger::KEY_TAGS);
+        $fileCurrentPath = $request->request->get(DialogsAction::KEY_FILE_CURRENT_PATH);
+        $tagsString      = $request->request->get(FileTagger::KEY_TAGS);
 
 
         try{
-            $this->files_tags_controller->updateTags($tags_string, $file_current_path);
+            $this->filesTagsController->updateTags($tagsString, $fileCurrentPath);
             $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
             $code    = Response::HTTP_OK;
         } catch (Exception $e){

@@ -8,6 +8,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +21,7 @@ class MyPaymentsIncomeAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -39,15 +40,16 @@ class MyPaymentsIncomeAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         $this->add($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -56,7 +58,8 @@ class MyPaymentsIncomeAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_INCOME_REPOSITORY_NAME,
@@ -66,10 +69,10 @@ class MyPaymentsIncomeAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -78,36 +81,37 @@ class MyPaymentsIncomeAction extends AbstractController {
      * @Route("my-payments-income/update/" ,name="my-payments-income-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws MappingException
      */
-    public function update(Request $request) {
-        $parameters     = $request->request->all();
-        $entity_id      = trim($parameters['id']);
+    public function update(Request $request): JsonResponse
+    {
+        $parameters    = $request->request->all();
+        $entityId      = trim($parameters['id']);
 
-        $entity         = $this->controllers->getMyPaymentsIncomeController()->findOneById($entity_id);
+        $entity         = $this->controllers->getMyPaymentsIncomeController()->findOneById($entityId);
         $response       = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
-
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      * @throws Exception
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $form            = $this->app->forms->moneyIncomeForm();
-        $currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $form           = $this->app->forms->moneyIncomeForm();
+        $currenciesDtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/income.html.twig', [
             "records"                        => $this->controllers->getMyPaymentsIncomeController()->getAllNotDeleted(),
-            'ajax_render'                    => $ajax_render,
+            'ajax_render'                    => $ajaxRender,
             'form'                           => $form->createView(),
-            'currencies_dtos'                => $currencies_dtos,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'currencies_dtos'                => $currenciesDtos,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
     }
 
@@ -119,9 +123,9 @@ class MyPaymentsIncomeAction extends AbstractController {
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $form_data = $form->getData();
+            $formData = $form->getData();
             $em = $this->getDoctrine()->getManager();
-            $em->persist($form_data);
+            $em->persist($formData);
             $em->flush();
         }
 

@@ -8,7 +8,6 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Utils\Utils;
-use App\Entity\Modules\ModuleData;
 use App\Form\Files\UploadSubdirectoryCopyDataType;
 use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\Files\DirectoriesHandler;
@@ -32,22 +31,22 @@ class FilesAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
-     * @var FilesHandler $files_handler
+     * @var FilesHandler $filesHandler
      */
-    private $files_handler;
+    private FilesHandler $filesHandler;
 
     /**
-     * @var FileTagger $file_tagger
+     * @var FileTagger $fileTagger
      */
-    private $file_tagger;
+    private FileTagger $fileTagger;
 
     /**
-     * @var DirectoriesHandler $directories_handler
+     * @var DirectoriesHandler $directoriesHandler
      */
-    private $directories_handler;
+    private DirectoriesHandler $directoriesHandler;
 
     /**
      * @var Controllers $controllers
@@ -56,16 +55,16 @@ class FilesAction extends AbstractController {
 
     public function __construct(
         Application        $app,
-        FilesHandler       $files_handler,
-        FileTagger         $file_tagger,
-        DirectoriesHandler $directories_handler,
+        FilesHandler       $filesHandler,
+        FileTagger         $fileTagger,
+        DirectoriesHandler $directoriesHandler,
         Controllers        $controllers
     ) {
-        $this->app                 = $app;
-        $this->files_handler       = $files_handler;
-        $this->file_tagger         = $file_tagger;
-        $this->directories_handler = $directories_handler;
-        $this->controllers         = $controllers;
+        $this->app                = $app;
+        $this->filesHandler       = $filesHandler;
+        $this->fileTagger         = $fileTagger;
+        $this->directoriesHandler = $directoriesHandler;
+        $this->controllers        = $controllers;
     }
 
     /**
@@ -75,7 +74,7 @@ class FilesAction extends AbstractController {
      * @throws \Exception
      */
     public function removeFileViaPost(Request $request) {
-        $response = $this->files_handler->removeFile($request);
+        $response = $this->filesHandler->removeFile($request);
 
         $code    = $response->getStatusCode();
         $message = $response->getContent();
@@ -91,12 +90,12 @@ class FilesAction extends AbstractController {
      */
     public function renameFileViaPost(Request $request) {
 
-        $update_file_path = function ($curr_relative_filepath, $new_relative_file_path) {
-            $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
-            $this->controllers->getLockedResourceController()->updatePath($curr_relative_filepath, $new_relative_file_path);
+        $updateFilePath = function ($currRelativeFilepath, $newRelativeFilePath) {
+            $this->fileTagger->updateFilePath($currRelativeFilepath, $newRelativeFilePath);
+            $this->controllers->getLockedResourceController()->updatePath($currRelativeFilepath, $newRelativeFilePath);
         };
 
-        $response = $this->files_handler->renameFileViaRequest($request, $update_file_path);
+        $response = $this->filesHandler->renameFileViaRequest($request, $updateFilePath);
         return $response;
     }
 
@@ -127,19 +126,19 @@ class FilesAction extends AbstractController {
         }
 
         /** @info: this will be used to build single file transfer for each path */
-        $files_current_paths = $request->request->get(FilesHandler::KEY_FILES_CURRENT_PATHS);
+        $filesCurrentPaths = $request->request->get(FilesHandler::KEY_FILES_CURRENT_PATHS);
 
-        $response_errors_data  = [];
-        $response_success_data = [];
+        $responseErrorsData  = [];
+        $responseSuccessData = [];
 
-        foreach($files_current_paths as $file_current_path){
-            $target_module_upload_dir                      = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
-            $subdirectory_target_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+        foreach($filesCurrentPaths as $fileCurrentPath){
+            $targetModuleUploadDir                   = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+            $subdirectoryTargetPathInModuleUploadDir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
 
             $request = new Request();
-            $request->request->set(FilesHandler::KEY_FILE_CURRENT_PATH, $file_current_path);
-            $request->request->set(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, $target_module_upload_dir);
-            $request->request->set(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, $subdirectory_target_path_in_module_upload_dir);
+            $request->request->set(FilesHandler::KEY_FILE_CURRENT_PATH, $fileCurrentPath);
+            $request->request->set(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR, $targetModuleUploadDir);
+            $request->request->set(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR, $subdirectoryTargetPathInModuleUploadDir);
 
             try{
                 $response = $this->moveSingleFileViaPost($request);
@@ -150,17 +149,17 @@ class FilesAction extends AbstractController {
                 $this->app->logger->warning($message);;
                 return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
             }
-            $response_data = json_decode($response->getContent(), true);
+            $responseData = json_decode($response->getContent(), true);
 
-            if( array_key_exists(self::KEY_RESPONSE_CODE, $response_data) ){
+            if( array_key_exists(self::KEY_RESPONSE_CODE, $responseData) ){
 
                 if( $response->getStatusCode() >= 300){
-                    $response_errors_data[] = [
-                        self:: KEY_RESPONSE_DATA            => $response_data,
-                        FilesHandler::KEY_FILE_CURRENT_PATH => $file_current_path,
+                    $responseErrorsData[] = [
+                        self:: KEY_RESPONSE_DATA            => $responseData,
+                        FilesHandler::KEY_FILE_CURRENT_PATH => $fileCurrentPath,
                     ];
                 }else{
-                    $response_success_data = $response_data;
+                    $responseSuccessData = $responseData;
                 }
 
             }
@@ -168,7 +167,7 @@ class FilesAction extends AbstractController {
         }
 
         //all files copied
-        if( empty($response_errors_data) ){
+        if( empty($responseErrorsData) ){
             $message = $this->app->translator->translate('responses.files.filesHasBeenSuccesfullyMoved');
             $code    = Response::HTTP_OK;
         }else{
@@ -178,13 +177,13 @@ class FilesAction extends AbstractController {
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
 
             // some failed
-            if( !empty($response_success_data) && !empty($response_errors_data) ) {
+            if( !empty($responseSuccessData) && !empty($responseErrorsData) ) {
                 $message = $this->app->translator->translate('responses.files.couldNotMoveSomeFiles');
                 $code    = Response::HTTP_ACCEPTED;
             }
 
             $this->app->logger->warning($message, [
-                self::KEY_RESPONSE_ERRORS_DATA => $response_errors_data
+                self::KEY_RESPONSE_ERRORS_DATA => $responseErrorsData
             ]);
         }
 
@@ -215,23 +214,23 @@ class FilesAction extends AbstractController {
             throw new \Exception($message);
         }
 
-        $subdirectory_target_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
-        $current_file_location                          = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
-        $target_module_upload_dir                       = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+        $subdirectoryTargetPathInModuleUploadDir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+        $currentFileLocation                      = $request->request->get(FilesHandler::KEY_FILE_CURRENT_PATH);
+        $targetModuleUploadDir                    = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
 
-        $target_directory_in_upload_dir   = FileUploadController::getTargetDirectoryForUploadModuleDir($target_module_upload_dir);
+        $targetDirectoryInUploadDir = FileUploadController::getTargetDirectoryForUploadModuleDir($targetModuleUploadDir);
 
         #checks if selected folder is the main upload dir (Main Folder)
-        if ( $subdirectory_target_path_in_module_upload_dir === $target_directory_in_upload_dir ){
-            $subdirectory_path_in_upload_dir = $target_directory_in_upload_dir;
+        if ( $subdirectoryTargetPathInModuleUploadDir === $targetDirectoryInUploadDir ){
+            $subdirectoryPathInUploadDir = $targetDirectoryInUploadDir;
         }else{
-            $subdirectory_path_in_upload_dir  = $target_directory_in_upload_dir.DIRECTORY_SEPARATOR.$subdirectory_target_path_in_module_upload_dir;
+            $subdirectoryPathInUploadDir  = $targetDirectoryInUploadDir.DIRECTORY_SEPARATOR.$subdirectoryTargetPathInModuleUploadDir;
         }
 
-        $filename               = basename($current_file_location);
-        $target_file_location   = FilesHandler::buildFileFullPathFromDirLocationAndFileName($subdirectory_path_in_upload_dir, $filename);
+        $filename           = basename($currentFileLocation);
+        $targetFileLocation = FilesHandler::buildFileFullPathFromDirLocationAndFileName($subdirectoryPathInUploadDir, $filename);
 
-        $response = $this->files_handler->moveSingleFile($current_file_location, $target_file_location);
+        $response = $this->filesHandler->moveSingleFile($currentFileLocation, $targetFileLocation);
 
         $response_data = [
             self::KEY_RESPONSE_MESSAGE => $response->getContent(),
@@ -242,45 +241,44 @@ class FilesAction extends AbstractController {
     }
 
     /**
-     * @Route("/files/{upload_module_dir}/remove-subdirectory", name="upload_remove_subdirectory", methods="POST")
-     * @param string $upload_module_dir
+     * @Route("/files/{uploadModuleDir}/remove-subdirectory", name="upload_remove_subdirectory", methods="POST")
+     * @param string $uploadModuleDir
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function removeFolderByPostRequest(string $upload_module_dir, Request $request) {
+    public function removeFolderByPostRequest(string $uploadModuleDir, Request $request) {
 
-        $block_removal = false;
+        $blockRemoval = false;
 
         if ( !$request->request->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
             $message  = $this->app->translator->translate('exceptions.files.subdirectoryLocationMissingInRequest');
             $response = new Response($message, 500);
         }else{
 
-            $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-
-            if( in_array($current_directory_path_in_module_upload_dir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
+            $currentDirectoryPathInModuleUploadDir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+            if( in_array($currentDirectoryPathInModuleUploadDir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
                 $message = $this->app->translator->translate('exceptions.files.cannotRemoveMainFolder');
                 $response = new Response($message, 500);
             }
             else {
 
                 if ( $request->request->has(DirectoriesHandler::KEY_BLOCK_REMOVAL) ) {
-                    $block_removal = true;
+                    $blockRemoval = true;
                 }
 
-                $response = $this->directories_handler->removeFolder($upload_module_dir, $current_directory_path_in_module_upload_dir, $block_removal);
+                $response = $this->directoriesHandler->removeFolder($uploadModuleDir, $currentDirectoryPathInModuleUploadDir, $blockRemoval);
 
             }
 
         }
 
-        $response_data = [
+        $responseData = [
             'message' => $response->getContent(),
             'code'    => $response->getStatusCode()
         ];
 
-        return new JsonResponse($response_data);
+        return new JsonResponse($responseData);
     }
 
     /**
@@ -316,9 +314,9 @@ class FilesAction extends AbstractController {
                     return new Response($message, 500);
                 }
 
-                $subdirectory_name  = $form[FileUploadController::KEY_SUBDIRECTORY_NAME];
-                $upload_module_dir  = $form[FileUploadController::KEY_UPLOAD_MODULE_DIR];
-                $target_directory_path_in_module_upload_dir = $form[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
+                $subdirectoryName = $form[FileUploadController::KEY_SUBDIRECTORY_NAME];
+                $uploadModuleDir  = $form[FileUploadController::KEY_UPLOAD_MODULE_DIR];
+                $targetDirectoryPathInModuleUploadDir = $form[FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR];
 
                 break;
             case false:
@@ -338,21 +336,21 @@ class FilesAction extends AbstractController {
                     return new Response($message, 500);
                 }
 
-                $subdirectory_name  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NAME);
-                $upload_module_dir  = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
-                $target_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+                $subdirectoryName  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NAME);
+                $uploadModuleDir  = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+                $targetDirectoryPathInModuleUploadDir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
 
                 break;
         }
 
-        $response = $this->directories_handler->createFolder($upload_module_dir, $subdirectory_name, $target_directory_path_in_module_upload_dir);
+        $response = $this->directoriesHandler->createFolder($uploadModuleDir, $subdirectoryName, $targetDirectoryPathInModuleUploadDir);
 
-        $response_data = [
+        $responseData = [
             'message' => $response->getContent(),
             'code'    => $response->getStatusCode()
         ];
 
-        return new JsonResponse($response_data);
+        return new JsonResponse($responseData);
     }
 
     /**
@@ -381,11 +379,11 @@ class FilesAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
         }
 
-        $new_name             = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
-        $upload_module_dir    = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
-        $current_directory_path_in_module_upload_dir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+        $newName         = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
+        $uploadModuleDir = $request->request->get(FileUploadController::KEY_UPLOAD_MODULE_DIR);
+        $currentDirectoryPathInModuleUploadDir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
 
-        $response = $this->controllers->getFilesUploadSettingsController()->renameSubdirectory($upload_module_dir, $current_directory_path_in_module_upload_dir, $new_name);
+        $response = $this->controllers->getFilesUploadSettingsController()->renameSubdirectory($uploadModuleDir, $currentDirectoryPathInModuleUploadDir, $newName);
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
@@ -417,39 +415,39 @@ class FilesAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall($message, Response::HTTP_BAD_REQUEST);
         }
 
-        $current_upload_module_dir          = $request->request->get(FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR);
-        $target_upload_module_dir           = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
+        $currentUploadModuleDir = $request->request->get(FilesHandler::KEY_CURRENT_UPLOAD_MODULE_DIR);
+        $targetUploadModuleDir  = $request->request->get(FilesHandler::KEY_TARGET_MODULE_UPLOAD_DIR);
 
-        $current_directory_path_in_module_upload_dir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-        $target_directory_path_in_module_upload_dir   = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
+        $currentDirectoryPathInModuleUploadDir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+        $targetDirectoryPathInModuleUploadDir  = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR);
 
-        $do_move_entire_folder = Utils::getBoolRepresentationOfBoolString($request->request->get(UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER, false));
+        $doMoveEntireFolder = Utils::getBoolRepresentationOfBoolString($request->request->get(UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER, false));
 
         try{
-            if( $do_move_entire_folder ){
+            if( $doMoveEntireFolder ){
 
-                $upload_dirs         = Env::getUploadDirs();
-                $current_folder_path = $current_directory_path_in_module_upload_dir;
-                $target_folder_path  = $target_directory_path_in_module_upload_dir;
+                $uploadDirs        = Env::getUploadDirs();
+                $currentFolderPath = $currentDirectoryPathInModuleUploadDir;
+                $targetFolderPath  = $targetDirectoryPathInModuleUploadDir;
 
                 //if not main folder then add upload dir
-                if( !in_array($current_directory_path_in_module_upload_dir, $upload_dirs) ){
-                    $current_folder_path =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $current_upload_module_dir . DIRECTORY_SEPARATOR . $current_directory_path_in_module_upload_dir;
+                if( !in_array($currentDirectoryPathInModuleUploadDir, $uploadDirs) ){
+                    $currentFolderPath =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $currentUploadModuleDir . DIRECTORY_SEPARATOR . $currentDirectoryPathInModuleUploadDir;
                 }
 
                 //if not main folder then add upload dir
-                if( !in_array($target_directory_path_in_module_upload_dir, $upload_dirs) ){
-                    $target_folder_path  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $target_upload_module_dir . DIRECTORY_SEPARATOR . $target_directory_path_in_module_upload_dir;
+                if( !in_array($targetDirectoryPathInModuleUploadDir, $uploadDirs) ){
+                    $targetFolderPath  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $targetUploadModuleDir . DIRECTORY_SEPARATOR . $targetDirectoryPathInModuleUploadDir;
                 }
 
-                $response = $this->directories_handler->moveDirectory($current_folder_path, $target_folder_path);
+                $response = $this->directoriesHandler->moveDirectory($currentFolderPath, $targetFolderPath);
             }else{
                 /**
                  * In this case files are copied between directories, some actions are skipped here, for example:
                  * - moduleData is not being copied
                  */
-                $response = $this->files_handler->copyData(
-                    $current_upload_module_dir, $target_upload_module_dir, $current_directory_path_in_module_upload_dir, $target_directory_path_in_module_upload_dir
+                $response = $this->filesHandler->copyData(
+                    $currentUploadModuleDir, $targetUploadModuleDir, $currentDirectoryPathInModuleUploadDir, $targetDirectoryPathInModuleUploadDir
                 );
             }
 

@@ -10,6 +10,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Controller\Validators\Entities\EntityValidator;
 use App\VO\Validators\ValidationResultVO;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,28 +23,28 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var MyPaymentsSettingsAction $my_payments_settings_action
+     * @var MyPaymentsSettingsAction $myPaymentsSettingsAction
      */
-    private $my_payments_settings_action;
+    private MyPaymentsSettingsAction $myPaymentsSettingsAction;
 
     /**
      * @var EntityValidator $entity_validator
      */
     private EntityValidator $entity_validator;
 
-    public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $my_payments_settings_action, EntityValidator $entity_validator) {
-        $this->my_payments_settings_action = $my_payments_settings_action;
-        $this->entity_validator            = $entity_validator;
-        $this->controllers                 = $controllers;
-        $this->app                         = $app;
+    public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $myPaymentsSettingsAction, EntityValidator $entityValidator) {
+        $this->myPaymentsSettingsAction = $myPaymentsSettingsAction;
+        $this->entity_validator         = $entityValidator;
+        $this->controllers              = $controllers;
+        $this->app                      = $app;
     }
 
     /**
@@ -54,42 +55,42 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      */
     public function displaySettings(Request $request): Response
     {
-        $validation_result = $this->add($request);
-        $ajax_response     = new AjaxResponse();
+        $validationResult = $this->add($request);
+        $ajaxResponse     = new AjaxResponse();
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->my_payments_settings_action->renderSettingsTemplate();
+            return $this->myPaymentsSettingsAction->renderSettingsTemplate();
         }
 
         try{
-            $template_content = $this->my_payments_settings_action->renderSettingsTemplate(true)->getContent();
+            $templateContent = $this->myPaymentsSettingsAction->renderSettingsTemplate(true)->getContent();
 
-            if( !$validation_result->isValid() ){
-                $ajax_response_for_validation = AjaxResponse::buildAjaxResponseForValidationResult(
-                    $validation_result,
+            if( !$validationResult->isValid() ){
+                $ajaxResponseForValidation = AjaxResponse::buildAjaxResponseForValidationResult(
+                    $validationResult,
                     $this->app->forms->recurringPaymentsForm(),
                     $this->app->translator,
-                    $template_content
+                    $templateContent
                 );
 
-                return $ajax_response_for_validation->buildJsonResponse();
+                return $ajaxResponseForValidation->buildJsonResponse();
             }
         }catch (Exception $e){
             $this->app->logExceptionWasThrown($e);
             $message = $this->app->translator->translate('messages.general.internalServerError');
 
-            $ajax_response->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            $ajax_response->setSuccess(false);
-            $ajax_response->setMessage($message);
+            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $ajaxResponse->setSuccess(false);
+            $ajaxResponse->setMessage($message);
 
-            return $ajax_response->buildJsonResponse();
+            return $ajaxResponse->buildJsonResponse();
         }
 
-        $ajax_response->setCode(Response::HTTP_OK);
-        $ajax_response->setSuccess(true);
-        $ajax_response->setTemplate($template_content);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setSuccess(true);
+        $ajaxResponse->setTemplate($templateContent);
 
-        return $ajax_response->buildJsonResponse();
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -98,8 +99,8 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
-
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_RECURRING_PAYMENT_MONTHLY_REPOSITORY_NAME,
             $request->request->get('id')
@@ -108,10 +109,10 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->my_payments_settings_action->renderSettingsTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->myPaymentsSettingsAction->renderSettingsTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -120,13 +121,14 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
      * @Route("/my-recurring-payments-monthly/update/" ,name="my-recurring-payments-monthly-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws MappingException
      */
-    public function update(Request $request) {
+    public function update(Request $request): JsonResponse
+    {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyRecurringPaymentsMonthlyController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyRecurringPaymentsMonthlyController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -140,20 +142,20 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
     private function add($request): ValidationResultVO
     {
 
-        $recurring_payments_form = $this->app->forms->recurringPaymentsForm();
-        $recurring_payments_form->handleRequest($request);
+        $recurringPaymentsForm = $this->app->forms->recurringPaymentsForm();
+        $recurringPaymentsForm->handleRequest($request);
 
-        if ($recurring_payments_form->isSubmitted() && $recurring_payments_form->isValid()) {
+        if ($recurringPaymentsForm->isSubmitted() && $recurringPaymentsForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
 
-            $recurring_payment = $recurring_payments_form->getData();
-            $validation_result = $this->entity_validator->handleValidation($recurring_payment, EntityValidator::ACTION_CREATE);
+            $recurringPayment = $recurringPaymentsForm->getData();
+            $validationResult = $this->entity_validator->handleValidation($recurringPayment, EntityValidator::ACTION_CREATE);
 
-            if( !$validation_result->isValid() ){
-                return $validation_result;
+            if( !$validationResult->isValid() ){
+                return $validationResult;
             }
 
-            $em->persist($recurring_payment);
+            $em->persist($recurringPayment);
             $em->flush();
         }
 

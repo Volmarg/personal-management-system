@@ -29,48 +29,48 @@ class MyFilesAction extends AbstractController {
     /**
      * @var Finder $finder
      */
-    private $finder;
+    private Finder $finder;
 
     /**
-     * @var FileDownloader $file_downloader
+     * @var FileDownloader $fileDownloader
      */
-    private $file_downloader;
+    private FileDownloader $fileDownloader;
 
     /**
-     * @var FilesHandler $files_handler
+     * @var FilesHandler $filesHandler
      */
-    private $files_handler;
+    private FilesHandler $filesHandler;
 
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
-     * @var FileTagger $file_tagger
+     * @var FileTagger $fileTagger
      */
-    private $file_tagger;
+    private FileTagger $fileTagger;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(
-        FileDownloader $file_downloader,
-        FilesHandler   $files_handler,
+        FileDownloader $fileDownloader,
+        FilesHandler   $filesHandler,
         Application    $app,
-        FileTagger     $file_tagger,
+        FileTagger     $fileTagger,
         Controllers    $controllers
     ) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
 
-        $this->file_downloader = $file_downloader;
-        $this->files_handler   = $files_handler;
-        $this->app             = $app;
-        $this->file_tagger     = $file_tagger;
-        $this->controllers     = $controllers;
+        $this->fileDownloader = $fileDownloader;
+        $this->filesHandler   = $filesHandler;
+        $this->app            = $app;
+        $this->fileTagger     = $fileTagger;
+        $this->controllers    = $controllers;
     }
 
     /**
@@ -79,6 +79,7 @@ class MyFilesAction extends AbstractController {
      * @param Request $request
      * @return Response|JsonResponse
      * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function update(Request $request){
 
@@ -88,54 +89,56 @@ class MyFilesAction extends AbstractController {
         }
 
         $subdirectory = $request->request->get(MyFilesController::KEY_SUBDIRECTORY);
-        $tags_string  = $request->request->get(FileTagger::KEY_TAGS);
+        $tagsString   = $request->request->get(FileTagger::KEY_TAGS);
 
-        $update_file_path = function ($curr_relative_filepath, $new_relative_file_path) use($tags_string) {
-            $this->file_tagger->updateFilePath($curr_relative_filepath, $new_relative_file_path);
-            $this->controllers->getFilesTagsController()->updateTags($tags_string, $new_relative_file_path);
-            $this->controllers->getLockedResourceController()->updatePath($curr_relative_filepath, $new_relative_file_path);
+        $updateFilePath = function ($currRelativeFilepath, $newRelativeFilePath) use($tagsString) {
+            $this->fileTagger->updateFilePath($currRelativeFilepath, $newRelativeFilePath);
+            $this->controllers->getFilesTagsController()->updateTags($tagsString, $newRelativeFilePath);
+            $this->controllers->getLockedResourceController()->updatePath($currRelativeFilepath, $newRelativeFilePath);
         };
 
-        $this->files_handler->renameFileViaRequest($request, $update_file_path);
+        $this->filesHandler->renameFileViaRequest($request, $updateFilePath);
 
         // It's ok, further logic decides if that's ajax call or not and sends either json response or response
         return $this->displayFiles($subdirectory, $request);
     }
 
     /**
-     * @Route("my-files/dir/{encoded_subdirectory_path?}", name="modules_my_files")
-     * @param string|null $encoded_subdirectory_path
+     * @Route("my-files/dir/{encodedSubdirectoryPath?}", name="modules_my_files")
+     * @param string|null $encodedSubdirectoryPath
      * @param Request $request
      * @return Response
      *
      * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function displayFiles(? string $encoded_subdirectory_path, Request $request): Response
+    public function displayFiles(? string $encodedSubdirectoryPath, Request $request): Response
     {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
+            return $this->renderCategoryTemplate($encodedSubdirectoryPath);
         }
 
-        $template_content  = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
-        $message           = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+        $templateContent  = $this->renderCategoryTemplate($encodedSubdirectoryPath, true)->getContent();
+        $message          = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
     }
 
     /**
      * @Route("my-files/settings", name="modules_my_files_settings")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function displaySettings(Request $request): Response
     {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderSettingsTemplate(false);
+            return $this->renderSettingsTemplate();
         }
 
-        $template_content  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderSettingsTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -155,8 +158,8 @@ class MyFilesAction extends AbstractController {
             throw new Exception($message);
         }
 
-        $file_full_path = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
-        $file           = $this->file_downloader->download($file_full_path);
+        $fileFullPath = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
+        $file         = $this->fileDownloader->download($fileFullPath);
 
         $referer = $request->server->get('HTTP_REFERER');
 
@@ -179,19 +182,19 @@ class MyFilesAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function removeFileViaPost(Request $request) {
-        $response = $this->files_handler->removeFile($request);
+    public function removeFileViaPost(Request $request): Response
+    {
+        $response = $this->filesHandler->removeFile($request);
         $message  = $response->getContent();
 
-        $subdirectory     = $request->request->get(MyFilesController::KEY_SUBDIRECTORY);
-        $template_content = $this->renderCategoryTemplate($subdirectory, true, true)->getContent();
+        $subdirectory    = $request->request->get(MyFilesController::KEY_SUBDIRECTORY);
+        $templateContent = $this->renderCategoryTemplate($subdirectory, true, true)->getContent();
 
-        //todo: do the same with transfer
         if ($response->getStatusCode() == 200) {
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message, $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message, $templateContent);
     }
 
     /**
@@ -207,74 +210,75 @@ class MyFilesAction extends AbstractController {
     }
 
     /**
-     * @param string|null $encoded_subdirectory_path
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param string|null $encodedSubdirectoryPath
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      *
      * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
-    private function renderCategoryTemplate(? string $encoded_subdirectory_path, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false): Response
+    private function renderCategoryTemplate(? string $encodedSubdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
 
-        $upload_dir                       = Env::getFilesUploadDir();
-        $decoded_subdirectory_path        = urldecode($encoded_subdirectory_path);
-        $subdirectory_path                = FilesHandler::trimFirstAndLastSlash($decoded_subdirectory_path);
-        $subdir_path_in_module_upload_dir = FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory_path);
+        $uploadDir                   = Env::getFilesUploadDir();
+        $decodedSubdirectoryPath     = urldecode($encodedSubdirectoryPath);
+        $subdirectoryPath            = FilesHandler::trimFirstAndLastSlash($decodedSubdirectoryPath);
+        $subdirPathInModuleUploadDir = FileUploadController::getSubdirectoryPath($uploadDir, $subdirectoryPath);
 
-        $module_upload_dir_name = FilesHandler::getModuleUploadDirForUploadPath($upload_dir);
-        $module_name            = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$module_upload_dir_name];
+        $moduleUploadDirName = FilesHandler::getModuleUploadDirForUploadPath($uploadDir);
+        $moduleName          = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$moduleUploadDirName];
 
-        if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($subdir_path_in_module_upload_dir, LockedResource::TYPE_DIRECTORY, $module_name)         ){
+        if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($subdirPathInModuleUploadDir, LockedResource::TYPE_DIRECTORY, $moduleName)){
             return $this->redirect('/');
         }
 
-        if( !file_exists($subdir_path_in_module_upload_dir) ){
+        if( !file_exists($subdirPathInModuleUploadDir) ){
 
-            $message = $this->app->translator->translate('flash.filesController.folderDoesNotExist') . $subdirectory_path;
+            $message = $this->app->translator->translate('flash.filesController.folderDoesNotExist') . $subdirectoryPath;
             $this->addFlash('danger', $message );
 
             return $this->redirectToRoute('upload');
         }
 
-        if (empty($subdirectory_path)) {
+        if (empty($subdirectoryPath)) {
             $files = $this->controllers->getMyFilesController()->getMainFolderFiles();
         } else {
-            $files = $this->controllers->getMyFilesController()->getFilesFromSubdirectory($subdirectory_path);
+            $files = $this->controllers->getMyFilesController()->getFilesFromSubdirectory($subdirectoryPath);
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $search_dir          = (empty($subdirectory_path) ? $upload_dir : $subdir_path_in_module_upload_dir);
-        $files_count_in_tree = FilesHandler::countFilesInTree($search_dir);
+        $searchDir        = (empty($subdirectoryPath) ? $uploadDir : $subdirPathInModuleUploadDir);
+        $filesCountInTree = FilesHandler::countFilesInTree($searchDir);
 
         # null only when DirectoryNotFoundException was thrown
         if ( is_null($files) ) {
-            $message      = $this->app->translator->translate("responses.directories.subdirectoryDoesNotExistForThisModule");
-            $redirect_url = $this->generateUrl('modules_my_files');
+            $message     = $this->app->translator->translate("responses.directories.subdirectoryDoesNotExistForThisModule");
+            $redirectUrl = $this->generateUrl('modules_my_files');
 
             $this->app->addDangerFlash($message);
-            return $this->redirect($redirect_url);
+            return $this->redirect($redirectUrl);
         }
 
-        $is_main_dir = ( empty($subdirectory_path) );
-        $upload_path = Env::getFilesUploadDir() . DIRECTORY_SEPARATOR . $decoded_subdirectory_path;
+        $isMainDir = ( empty($subdirectoryPath) );
+        $uploadPath = Env::getFilesUploadDir() . DIRECTORY_SEPARATOR . $decodedSubdirectoryPath;
 
-        $module_data = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
+        $moduleData = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
             ModuleData::RECORD_TYPE_DIRECTORY,
             ModulesController::MODULE_NAME_FILES,
-            $upload_path
+            $uploadPath
         );
 
         $data = [
-            'ajax_render'           => $ajax_render,
+            'ajax_render'           => $ajaxRender,
             'files'                 => $files,
-            'subdirectory_path'     => $subdirectory_path,
-            'files_count_in_tree'   => $files_count_in_tree,
+            'subdirectory_path'     => $subdirectoryPath,
+            'files_count_in_tree'   => $filesCountInTree,
             'upload_module_dir'     => MyFilesController::TARGET_UPLOAD_DIR,
-            'is_main_dir'           => $is_main_dir,
-            'module_data'           => $module_data,
-            'upload_path'           => $upload_path,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'is_main_dir'           => $isMainDir,
+            'module_data'           => $moduleData,
+            'upload_path'           => $uploadPath,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);

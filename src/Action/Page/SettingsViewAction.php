@@ -19,16 +19,16 @@ class SettingsViewAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
 
     public function __construct(Controllers $controllers, Application $app) {
-        $this->app = $app;
+        $this->app         = $app;
         $this->controllers = $controllers;
     }
 
@@ -37,46 +37,48 @@ class SettingsViewAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function renderSettingsTemplate($ajax_render = false) {
+    public function renderSettingsTemplate($ajax_render = false): Response
+    {
 
-        $dashboard_settings_view = $this->renderSettingsDashboardTemplate($ajax_render)->getContent();
-        $finances_settings_view  = $this->renderSettingsFinancesTemplate($ajax_render)->getContent();
+        $dashboardSettingsView = $this->renderSettingsDashboardTemplate($ajax_render)->getContent();
+        $financesSettingsView  = $this->renderSettingsFinancesTemplate($ajax_render)->getContent();
 
         $data = [
             'ajax_render'             => $ajax_render,
-            'dashboard_settings_view' => $dashboard_settings_view,
-            'finances_settings_view'  => $finances_settings_view,
+            'dashboard_settings_view' => $dashboardSettingsView,
+            'finances_settings_view'  => $financesSettingsView,
         ];
 
         return $this->render(self::TWIG_SETTINGS_TEMPLATE, $data);
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      * @throws Exception
      */
-    private function renderSettingsDashboardTemplate($ajax_render = false) {
+    private function renderSettingsDashboardTemplate($ajaxRender = false): Response
+    {
 
-        $setting_for_dashboard = $this->app->settings->settings_loader->getSettingsForDashboard();
+        $settingForDashboard = $this->app->settings->settings_loader->getSettingsForDashboard();
 
-        $are_settings_in_db = !empty($setting_for_dashboard);
+        $areSettingsInDb = !empty($settingForDashboard);
 
-        if( $are_settings_in_db ){
-            $setting_json            = $setting_for_dashboard->getValue();
-            $dashboard_settings_dto  = SettingsDashboardDTO::fromJson($setting_json);
+        if( $areSettingsInDb ){
+            $settingJson           = $settingForDashboard->getValue();
+            $dashboardSettingsDto  = SettingsDashboardDTO::fromJson($settingJson);
         }else{
-            $array_of_widgets_visibility_dto = SettingsDashboardController::buildArrayOfWidgetsVisibilityDtoForInitialVisibility(true);
-            $dashboard_settings_dto          = SettingsDashboardController::buildDashboardSettingsDto($array_of_widgets_visibility_dto);
+            $arrayOfWidgetsVisibilityDto = SettingsDashboardController::buildArrayOfWidgetsVisibilityDtoForInitialVisibility(true);
+            $dashboardSettingsDto        = SettingsDashboardController::buildDashboardSettingsDto($arrayOfWidgetsVisibilityDto);
         }
 
-        $widgets_visibility_settings    = $dashboard_settings_dto->getWidgetSettings()->getWidgetsVisibility();
-        $widgets_names                  = SettingsDashboardController::getDashboardWidgetsNames($this->app->translator);
+        $widgetsVisibilitySettings = $dashboardSettingsDto->getWidgetSettings()->getWidgetsVisibility();
+        $widgetsNames              = SettingsDashboardController::getDashboardWidgetsNames($this->app->translator);
 
         $data = [
-            'ajax_render'                 => $ajax_render,
-            "widgets_names"               => $widgets_names,
-            "widgets_visibility_settings" => $widgets_visibility_settings
+            'ajax_render'                 => $ajaxRender,
+            "widgets_names"               => $widgetsNames,
+            "widgets_visibility_settings" => $widgetsVisibilitySettings
         ];
 
         return $this->render(SettingsDashboardController::TWIG_DASHBOARD_SETTINGS_TEMPLATE, $data);
@@ -87,14 +89,15 @@ class SettingsViewAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    private function renderSettingsFinancesTemplate(bool $ajax_render = false): Response {
-        $currencies_settings = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
-        $currency_form       = $this->app->forms->currencyTypeForm();
+    private function renderSettingsFinancesTemplate(bool $ajax_render = false): Response
+    {
+        $currenciesSettings = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currencyForm       = $this->app->forms->currencyTypeForm();
 
         $data = [
             'ajax_render'         => $ajax_render,
-            "currencies_settings" => $currencies_settings,
-            'currency_form'       => $currency_form->createView()
+            "currencies_settings" => $currenciesSettings,
+            'currency_form'       => $currencyForm->createView()
         ];
 
         return $this->render(SettingsFinancesAction::TWIG_FINANCES_SETTINGS_TEMPLATE, $data);

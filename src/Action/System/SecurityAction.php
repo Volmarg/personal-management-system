@@ -14,24 +14,25 @@ class SecurityAction extends AbstractController {
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
-    public function __construct(Controllers $controllers) {
+    public function __construct(Controllers $controllers)
+    {
         $this->controllers = $controllers;
     }
 
     /**
      * @Route("/api/system/validate-password", name="system_validate_password")
      * @param User $user
-     * @param string $user_password
-     * @param string $used_password
-     * @param string|null $salt_for_used_password
+     * @param string $userPassword
+     * @param string $usedPassword
+     * @param string|null $saltForUsedPassword
      * @return bool
      */
-    public function isPasswordValid(User $user, string $user_password, string $used_password, ?string $salt_for_used_password = null): bool
+    public function isPasswordValid(User $user, string $userPassword, string $usedPassword, ?string $saltForUsedPassword = null): bool
     {
-        $is_password_valid = $this->controllers->getSecurityController()->isPasswordValid($user, $user_password, $used_password, $salt_for_used_password);
-        return $is_password_valid;
+        $isPasswordValid = $this->controllers->getSecurityController()->isPasswordValid($user, $userPassword, $usedPassword, $saltForUsedPassword);
+        return $isPasswordValid;
     }
 
 }

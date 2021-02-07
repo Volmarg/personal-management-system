@@ -7,6 +7,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Form\Modules\Schedules\MyScheduleType;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,12 +23,12 @@ class MySchedulesAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -35,44 +36,44 @@ class MySchedulesAction extends AbstractController {
     }
 
     /**
-     * @Route("/my-schedules/{schedules_type}", name="my_schedules")
+     * @Route("/my-schedules/{schedulesType}", name="my_schedules")
      * @param Request $request
-     * @param string $schedules_type
+     * @param string $schedulesType
      * @return Response
      * @throws Exception
      */
-    public function display(Request $request, string $schedules_type):Response {
-        $this->controllers->getMySchedulesController()->validateSchedulesType($schedules_type);
+    public function display(Request $request, string $schedulesType):Response {
+        $this->controllers->getMySchedulesController()->validateSchedulesType($schedulesType);
 
-        $this->addFormDataToDB($request, $schedules_type);
-
+        $this->addFormDataToDB($request, $schedulesType);
         if ( !$request->isXmlHttpRequest() ) {
-            return $this->renderTemplate($schedules_type, false);
+            return $this->renderTemplate($schedulesType);
         }
 
-        $template_content  = $this->renderTemplate($schedules_type, true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate($schedulesType, true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param string $schedules_type
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param string $schedulesType
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    protected function renderTemplate(string $schedules_type, bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    protected function renderTemplate(string $schedulesType, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $form = $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
+        $form = $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedulesType]);
 
-        $schedules       = $this->app->repositories->myScheduleRepository->getSchedulesByScheduleTypeName($schedules_type);
-        $schedules_types = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
+        $schedules      = $this->app->repositories->myScheduleRepository->getSchedulesByScheduleTypeName($schedulesType);
+        $schedulesTypes = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
 
         $data = [
             'form'                           => $form->createView(),
-            'ajax_render'                    => $ajax_render,
+            'ajax_render'                    => $ajaxRender,
             'schedules'                      => $schedules,
-            'schedules_types'                => $schedules_types,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'schedules_types'                => $schedulesTypes,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);
@@ -80,11 +81,12 @@ class MySchedulesAction extends AbstractController {
 
     /**
      * @param Request $request
-     * @param string $schedules_type
+     * @param string $schedulesType
      */
-    private function addFormDataToDB(Request $request, string $schedules_type): void {
+    private function addFormDataToDB(Request $request, string $schedulesType): void
+    {
 
-        $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedules_type]);
+        $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedulesType]);
 
         $form->handleRequest($request);
 
@@ -99,13 +101,14 @@ class MySchedulesAction extends AbstractController {
      * @Route("/my-schedule/update/",name="my-schedule-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     *
+     * @throws MappingException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity_id  = $parameters['id'];
+        $entityId   = $parameters['id'];
 
-        $entity     = $this->controllers->getMySchedulesController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMySchedulesController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -117,21 +120,21 @@ class MySchedulesAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function removeScheduleById(Request $request): Response {
+    public function removeScheduleById(Request $request): Response
+    {
 
-        $id             = $request->request->get('id');
-        $schedule       = $this->controllers->getMySchedulesController()->findOneById($id);
-        $schedules_type = $schedule->getScheduleType()->getName();
+        $id            = $request->request->get('id');
+        $schedule      = $this->controllers->getMySchedulesController()->findOneById($id);
+        $schedulesType = $schedule->getScheduleType()->getName();
 
         $response = $this->app->repositories->deleteById(Repositories::MY_SCHEDULE_REPOSITORY, $id);
-
-        $message = $response->getContent();
+        $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate($schedules_type, true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate($schedulesType, true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }

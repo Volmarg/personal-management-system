@@ -7,6 +7,8 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
+use Doctrine\ORM\Mapping\MappingException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +20,7 @@ class MyShoppingPlansAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -34,52 +36,54 @@ class MyShoppingPlansAction extends AbstractController {
      * @Route("/my-shopping/plans", name="my-shopping-plans")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function display(Request $request) {
-        $shopping_plan_form = $this->app->forms->myShoppingPlanForm();
-        $this->addFormDataToDB($shopping_plan_form, $request);
+    public function display(Request $request): Response
+    {
+        $shoppingPlanForm = $this->app->forms->myShoppingPlanForm();
+        $this->addFormDataToDB($shoppingPlanForm, $request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    protected function renderTemplate($ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $form               = $this->app->forms->myShoppingPlanForm();
-        $plans_form_view    = $form->createView();
-        $columns_names      = $this->getDoctrine()->getManager()->getClassMetadata(MyShoppingPlans::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columns_names);
+    protected function renderTemplate($ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $form          = $this->app->forms->myShoppingPlanForm();
+        $plansFormView = $form->createView();
+        $columnsNames  = $this->getDoctrine()->getManager()->getClassMetadata(MyShoppingPlans::class)->getColumnNames();
+        Repositories::removeHelperColumnsFromView($columnsNames);
 
-        $all_plans = $this->app->repositories->myShoppingPlansRepository->findBy(['deleted' => 0]);
+        $allPlans = $this->app->repositories->myShoppingPlansRepository->findBy(['deleted' => 0]);
 
         return $this->render('modules/my-shopping/plans.html.twig', [
-            'plans_form_view'                => $plans_form_view,
-            'columns_names'                  => $columns_names,
-            'all_plans'                      => $all_plans,
-            'ajax_render'                    => $ajax_render,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'plans_form_view'                => $plansFormView,
+            'columns_names'                  => $columnsNames,
+            'all_plans'                      => $allPlans,
+            'ajax_render'                    => $ajaxRender,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
     }
 
     /**
-     * @param $plans_form
+     * @param $plansForm
      * @param Request $request
      */
-    protected function addFormDataToDB($plans_form, Request $request): void {
-        $plans_form->handleRequest($request);
+    protected function addFormDataToDB($plansForm, Request $request): void {
+        $plansForm->handleRequest($request);
 
-        if ($plans_form->isSubmitted() && $plans_form->isValid()) {
+        if ($plansForm->isSubmitted() && $plansForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($plans_form->getData());
+            $em->persist($plansForm->getData());
             $em->flush();
         }
     }
@@ -88,13 +92,14 @@ class MyShoppingPlansAction extends AbstractController {
      * @Route("/my-shopping/plans/update/",name="my-shopping-plans-update")
      * @param Request $request
      * @return JsonResponse|Response
-     * 
+     *
+     * @throws MappingException
      */
     public function update(Request $request) {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        $entity     = $this->controllers->getMyShoppingPlansController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyShoppingPlansController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -104,12 +109,13 @@ class MyShoppingPlansAction extends AbstractController {
      * @Route("/my-shopping/plans/remove/",name="my-shopping-plans-remove")
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function remove(Request $request) {
-        $id         = $request->request->get('id');
+    public function remove(Request $request): Response
+    {
+        $id = $request->request->get('id');
 
-        $response   = $this->app->repositories->deleteById(
+        $response = $this->app->repositories->deleteById(
             Repositories::MY_SHOPPING_PLANS_REPOSITORY_NAME,
             $id
         );
@@ -117,10 +123,10 @@ class MyShoppingPlansAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }

@@ -23,22 +23,22 @@ class SettingsFinancesAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var SettingsViewAction $settings_view_action
+     * @var SettingsViewAction $settingsViewAction
      */
-    private $settings_view_action;
+    private SettingsViewAction $settingsViewAction;
 
-    public function __construct(Controllers $controllers, Application $app, SettingsViewAction $settings_view_action) {
-        $this->app = $app;
-        $this->controllers = $controllers;
-        $this->settings_view_action = $settings_view_action;
+    public function __construct(Controllers $controllers, Application $app, SettingsViewAction $settingsViewAction) {
+        $this->app                = $app;
+        $this->controllers        = $controllers;
+        $this->settingsViewAction = $settingsViewAction;
     }
 
     /**
@@ -47,10 +47,10 @@ class SettingsFinancesAction extends AbstractController {
      * @Route("/api/settings-finances/update-currencies", name="settings_finances_update_currencies", methods="POST")
      * @param Request $request
      * @return Response
-     * 
      * @throws Exception
      */
-    public function updateFinancesCurrenciesSetting(Request $request): Response {
+    public function updateFinancesCurrenciesSetting(Request $request): Response
+    {
 
         if( !$request->request->has(SettingsCurrencyDTO::KEY_NAME) ){
             $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsCurrencyDTO::KEY_NAME;
@@ -85,31 +85,31 @@ class SettingsFinancesAction extends AbstractController {
         $code    = 200;
         $message = $this->app->translator->translate('settings.finances.type.messages.success');
 
-        $is_default          = filter_var($request->request->get(SettingsCurrencyDTO::KEY_IS_DEFAULT), FILTER_VALIDATE_BOOLEAN);;
-        $name                = trim($request->request->get(SettingsCurrencyDTO::KEY_NAME));
-        $symbol              = trim($request->request->get(SettingsCurrencyDTO::KEY_SYMBOL));
-        $multiplier          = (float) trim($request->request->get(SettingsCurrencyDTO::KEY_MULTIPLIER));
-        $before_update_state = trim($request->request->get(SettingsController::KEY_BEFORE_UPDATE_STATE));
+        $isDefault         = filter_var($request->request->get(SettingsCurrencyDTO::KEY_IS_DEFAULT), FILTER_VALIDATE_BOOLEAN);;
+        $name              = trim($request->request->get(SettingsCurrencyDTO::KEY_NAME));
+        $symbol            = trim($request->request->get(SettingsCurrencyDTO::KEY_SYMBOL));
+        $multiplier        = (float) trim($request->request->get(SettingsCurrencyDTO::KEY_MULTIPLIER));
+        $beforeUpdateState = trim($request->request->get(SettingsController::KEY_BEFORE_UPDATE_STATE));
 
-        $before_update_currency_setting_dto = SettingsCurrencyDTO::fromJson($before_update_state);
+        $beforeUpdateCurrencySettingDto = SettingsCurrencyDTO::fromJson($beforeUpdateState);
 
-        $new_currency_setting_dto = new SettingsCurrencyDTO();
-        $new_currency_setting_dto->setName($name);
-        $new_currency_setting_dto->setSymbol($symbol);
-        $new_currency_setting_dto->setMultiplier($multiplier);
-        $new_currency_setting_dto->setIsDefault($is_default);
+        $newCurrencySettingDto = new SettingsCurrencyDTO();
+        $newCurrencySettingDto->setName($name);
+        $newCurrencySettingDto->setSymbol($symbol);
+        $newCurrencySettingDto->setMultiplier($multiplier);
+        $newCurrencySettingDto->setIsDefault($isDefault);
 
-        $currencies_settings_dtos       = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
-        $array_index_of_updated_setting = null;
+        $currenciesSettingsDtos     = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $arrayIndexOfUpdatedSetting = null;
 
-        foreach( $currencies_settings_dtos as $index => $currency_setting_dto_from_db ){
-            if( $currency_setting_dto_from_db->getName() === $before_update_currency_setting_dto->getName() ){
-                $array_index_of_updated_setting = $index;
+        foreach( $currenciesSettingsDtos as $index => $currencySettingDtoFromDb ){
+            if( $currencySettingDtoFromDb->getName() === $beforeUpdateCurrencySettingDto->getName() ){
+                $arrayIndexOfUpdatedSetting = $index;
             }
 
             if(
-                    $currency_setting_dto_from_db->getName()        === $new_currency_setting_dto->getName()
-                &&  $before_update_currency_setting_dto->getName()  !== $new_currency_setting_dto->getName()
+                    $currencySettingDtoFromDb->getName()        === $newCurrencySettingDto->getName()
+                &&  $beforeUpdateCurrencySettingDto->getName()  !== $newCurrencySettingDto->getName()
             ){
 
                 $code    = 500;
@@ -118,14 +118,14 @@ class SettingsFinancesAction extends AbstractController {
             }
         }
 
-        if( is_null($array_index_of_updated_setting) ){
+        if( is_null($arrayIndexOfUpdatedSetting) ){
             $code    = 500;
             $message = $this->app->translator->translate("settings.finances.type.messages.couldNotFindSettingWithThisName");
         }
 
         if(
-                $before_update_currency_setting_dto->isDefault()
-            &&  !$new_currency_setting_dto->isDefault()
+                $beforeUpdateCurrencySettingDto->isDefault()
+            &&  !$newCurrencySettingDto->isDefault()
         ){
             $code    = 400;
             $message = $this->app->translator->translate("settings.finances.type.messages.canNotUnsetTheTheDefaultPropertyForDefaultCurrency");
@@ -133,12 +133,12 @@ class SettingsFinancesAction extends AbstractController {
 
         if( 200 === $code ){
 
-            if( $new_currency_setting_dto->isDefault() ){
-                $currencies_settings_dtos = $this->controllers->getSettingsFinancesController()->handleDefaultCurrencyChange($currencies_settings_dtos, $new_currency_setting_dto, $array_index_of_updated_setting);
+            if( $newCurrencySettingDto->isDefault() ){
+                $currenciesSettingsDtos = $this->controllers->getSettingsFinancesController()->handleDefaultCurrencyChange($currenciesSettingsDtos, $newCurrencySettingDto, $arrayIndexOfUpdatedSetting);
             }
 
-            $currencies_settings_dtos = $this->controllers->getSettingsFinancesController()->handleCurrencyUpdate($currencies_settings_dtos, $new_currency_setting_dto, $array_index_of_updated_setting);
-            $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currencies_settings_dtos);
+            $currenciesSettingsDtos = $this->controllers->getSettingsFinancesController()->handleCurrencyUpdate($currenciesSettingsDtos, $newCurrencySettingDto, $arrayIndexOfUpdatedSetting);
+            $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
@@ -154,35 +154,35 @@ class SettingsFinancesAction extends AbstractController {
      */
     public function removeFinancesCurrencySetting(Request $request, string $name){
 
-        $currencies_settings_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
-        $currency_existed        = false;
-        $name                    = trim($name);
+        $currenciesSettingsDtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currencyExisted        = false;
+        $name                   = trim($name);
 
-        foreach( $currencies_settings_dtos as $index => $currency_setting_dto ){
+        foreach( $currenciesSettingsDtos as $index => $currencySettingDto ){
 
-            if( $currency_setting_dto->getName() === $name ){
+            if( $currencySettingDto->getName() === $name ){
 
-                if( $currency_setting_dto->isDefault() ){
+                if( $currencySettingDto->isDefault() ){
                     $message = $this->app->translator->translate("settings.finances.type.messages.defaultCurrencyCanNotBeRemove");
                     return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
                 }
 
-                unset($currencies_settings_dtos[$index]);
-                $currency_existed = true;
+                unset($currenciesSettingsDtos[$index]);
+                $currencyExisted = true;
                 break;
             }
 
         }
 
-        if( !$currency_existed ){
+        if( !$currencyExisted ){
             $message = $this->app->translator->translate("settings.finances.type.messages.couldNotFindCurrencyForGivenName");
             return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
         }
 
-        $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currencies_settings_dtos);
+        $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
 
-        $rendered_view = $this->settings_view_action->renderSettingsTemplate(true);
-        return $rendered_view;
+        $renderedView = $this->settingsViewAction->renderSettingsTemplate(true);
+        return $renderedView;
     }
 
     /**
@@ -191,83 +191,82 @@ class SettingsFinancesAction extends AbstractController {
      * @throws Exception
      */
     public function handleFinancesCurrencyForm(Request $request): CallStatusDTO {
-        $currency_type_form = $this->createForm(CurrencyType::class);
-        $currency_type_form->handleRequest($request);
+        $currencyTypeForm = $this->createForm(CurrencyType::class);
+        $currencyTypeForm->handleRequest($request);
 
-        $call_status_dto = new CallStatusDTO();
-
-        if( $currency_type_form->isSubmitted() && !$currency_type_form->isValid() ){
-            $call_status_dto->setFailureReason(CallStatusDTO::KEY_FAILURE_REASON_FORM_VALIDATION);
-            return $call_status_dto;
+        $callStatusDto = new CallStatusDTO();
+        if( $currencyTypeForm->isSubmitted() && !$currencyTypeForm->isValid() ){
+            $callStatusDto->setFailureReason(CallStatusDTO::KEY_FAILURE_REASON_FORM_VALIDATION);
+            return $callStatusDto;
         }
 
-        if( !$currency_type_form->isSubmitted() ) {
-            $call_status_dto->setCode(200);
-            return $call_status_dto;
+        if( !$currencyTypeForm->isSubmitted() ) {
+            $callStatusDto->setCode(200);
+            return $callStatusDto;
         }
 
-        $form_data  = $currency_type_form->getData();
-        $name       = $form_data[SettingsCurrencyDTO::KEY_NAME]       ?? "";
-        $symbol     = $form_data[SettingsCurrencyDTO::KEY_SYMBOL]     ?? "";
-        $multiplier = $form_data[SettingsCurrencyDTO::KEY_MULTIPLIER] ?? "";
-        $is_default = $form_data[SettingsCurrencyDTO::KEY_IS_DEFAULT] ?? "";
+        $formData   = $currencyTypeForm->getData();
+        $name       = $formData[SettingsCurrencyDTO::KEY_NAME]       ?? "";
+        $symbol     = $formData[SettingsCurrencyDTO::KEY_SYMBOL]     ?? "";
+        $multiplier = $formData[SettingsCurrencyDTO::KEY_MULTIPLIER] ?? "";
+        $isDefault  = $formData[SettingsCurrencyDTO::KEY_IS_DEFAULT] ?? "";
 
-        $settings_currency_dto = new SettingsCurrencyDTO();
-        $settings_currency_dto->setName($name);
-        $settings_currency_dto->setSymbol($symbol);
-        $settings_currency_dto->setMultiplier($multiplier);
-        $settings_currency_dto->setIsDefault($is_default);
+        $settingsCurrencyDto = new SettingsCurrencyDTO();
+        $settingsCurrencyDto->setName($name);
+        $settingsCurrencyDto->setSymbol($symbol);
+        $settingsCurrencyDto->setMultiplier($multiplier);
+        $settingsCurrencyDto->setIsDefault($isDefault);
 
-        $currencies_settings_dtos_in_db = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesSettingsDtosInDb = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
 
         // handle adding currency with the same name
-        foreach( $currencies_settings_dtos_in_db as $index => $currency_setting_dto_from_db ){
-            if( $currency_setting_dto_from_db->getName() === $settings_currency_dto->getName() ){
+        foreach( $currenciesSettingsDtosInDb as $index => $currencySettingDtoFromDb ){
+            if( $currencySettingDtoFromDb->getName() === $settingsCurrencyDto->getName() ){
                 $message = $this->app->translator->translate("settings.finances.type.messages.currencyWithThisNameAlreadyExist");
-                $call_status_dto->setCode(400);
-                $call_status_dto->setMessage($message);
-                return $call_status_dto;
+                $callStatusDto->setCode(400);
+                $callStatusDto->setMessage($message);
+                return $callStatusDto;
             }
         }
 
         // handle checking if default value already exist and if so then unset all and set new
-        if( $is_default ){
-            $array_index_of_updated_setting = null;
+        if( $isDefault ){
+            $arrayIndexOfUpdatedSetting = null;
 
             try{
 
-                foreach( $currencies_settings_dtos_in_db as $index => &$currency_setting_dto_from_db ){
-                    $currency_setting_dto_from_db->setIsDefault(false);
+                foreach( $currenciesSettingsDtosInDb as $index => &$currencySettingDtoFromDb ){
+                    $currencySettingDtoFromDb->setIsDefault(false);
                 }
 
-                $currencies_settings_dtos_in_db[] = $settings_currency_dto;
-                $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currencies_settings_dtos_in_db);
+                $currenciesSettingsDtosInDb[] = $settingsCurrencyDto;
+                $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtosInDb);
 
-                $call_status_dto->setCode(200);
-                $call_status_dto->setIsSuccess(true);
+                $callStatusDto->setCode(200);
+                $callStatusDto->setIsSuccess(true);
             }catch(Exception $e){
                 $message = $this->app->translator->translate("settings.finances.type.messages.couldNotHandleAddingNewCurrencyBeingDefaultValue");
-                $call_status_dto->setCode(500);
-                $call_status_dto->setMessage($message);
+                $callStatusDto->setCode(500);
+                $callStatusDto->setMessage($message);
             }
         }
 
         // just add new record
-        if( !$is_default ){
+        if( !$isDefault ){
 
-            $setting_validation_dto = $this->controllers->getSettingsFinancesController()->addCurrencyToFinancesCurrencySettings($settings_currency_dto);
+            $settingValidationDto = $this->controllers->getSettingsFinancesController()->addCurrencyToFinancesCurrencySettings($settingsCurrencyDto);
 
-            $call_status_dto->setIsSuccess($setting_validation_dto->isValid());
+            $callStatusDto->setIsSuccess($settingValidationDto->isValid());
 
-            if( !$setting_validation_dto->isValid() ){
-                $call_status_dto->setMessage($setting_validation_dto->getMessage());
-                $call_status_dto->setCode(400);
+            if( !$settingValidationDto->isValid() ){
+                $callStatusDto->setMessage($settingValidationDto->getMessage());
+                $callStatusDto->setCode(400);
             }else {
-                $call_status_dto->setCode(200);
+                $callStatusDto->setCode(200);
             }
         }
 
-        return $call_status_dto;
+        return $callStatusDto;
     }
 
 }

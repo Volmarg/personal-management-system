@@ -10,6 +10,7 @@ use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\Mapping\MappingException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,12 +24,12 @@ class MyNotesCategoriesAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
         $this->app         = $app;
@@ -39,30 +40,32 @@ class MyNotesCategoriesAction extends AbstractController {
      * @Route("/my-notes/settings", name="my-notes-settings")
      * @param Request $request
      * @return Response
-     * @throws DBALException
+     * @throws Exception
      * 
      */
-    public function display(Request $request) {
-        $json_response = $this->submitForm($request);
+    public function display(Request $request): Response
+    {
+        $jsonResponse = $this->submitForm($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $message           = $json_response->getContent();
-        $code              = $json_response->getStatusCode();
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $template_content);
+        $message          = $jsonResponse->getContent();
+        $code             = $jsonResponse->getStatusCode();
+        $templateContent  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $templateContent);
     }
 
     /**
      * @Route("/my-notes/settings/remove/", name="my-notes-settings-remove")
      * @param Request $request
      * @return Response
-     * @throws DBALException
+     * @throws Exception
      * 
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
 
         $id = $request->request->get(self::PARAMETER_ID);
 
@@ -70,10 +73,10 @@ class MyNotesCategoriesAction extends AbstractController {
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -83,8 +86,10 @@ class MyNotesCategoriesAction extends AbstractController {
      * @param Request $request
      * @return Response
      * @throws MappingException
+     * @throws Exception
      */
-    public function update(Request $request) {
+    public function update(Request $request): Response
+    {
         $parameters = $request->request->all();
         $id         = $parameters[self::PARAMETER_ID];
 
@@ -98,27 +103,28 @@ class MyNotesCategoriesAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $form         = $this->app->forms->noteCategoryForm();
-        $column_names = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($column_names);
+        $form        = $this->app->forms->noteCategoryForm();
+        $columnNames = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
+        Repositories::removeHelperColumnsFromView($columnNames);
 
-        $categories            = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
-        $parents_children_dtos = $this->controllers->getMyNotesCategoriesController()->buildParentsChildrenCategoriesHierarchy();
+        $categories          = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
+        $parentsChildrenDtos = $this->controllers->getMyNotesCategoriesController()->buildParentsChildrenCategoriesHierarchy();
 
         return $this->render('modules/my-notes/settings.html.twig',
             [
-                'ajax_render'                    => $ajax_render,
+                'ajax_render'                    => $ajaxRender,
                 'categories'                     => $categories,
-                'parents_children_dtos'          => $parents_children_dtos,
-                'column_names'                   => $column_names,
+                'parents_children_dtos'          => $parentsChildrenDtos,
+                'column_names'                   => $columnNames,
                 'form'                           => $form->createView(),
-                'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+                'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
             ]
         );
     }

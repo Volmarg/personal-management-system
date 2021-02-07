@@ -24,17 +24,17 @@ class SettingsDashboardAction extends AbstractController {
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var SettingsViewAction $settings_view_action
+     * @var SettingsViewAction $settingsViewAction
      */
-    private $settings_view_action;
+    private SettingsViewAction $settingsViewAction;
 
-    public function __construct(Controllers $controllers, Application $app, SettingsViewAction $settings_view_action) {
-        $this->app = $app;
-        $this->controllers = $controllers;
-        $this->settings_view_action = $settings_view_action;
+    public function __construct(Controllers $controllers, Application $app, SettingsViewAction $settingsViewAction) {
+        $this->app                = $app;
+        $this->controllers        = $controllers;
+        $this->settingsViewAction = $settingsViewAction;
     }
 
     /**
@@ -47,7 +47,8 @@ class SettingsDashboardAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function updateWidgetsVisibility(Request $request){
+    public function updateWidgetsVisibility(Request $request): Response
+    {
 
         if (!$request->request->has(self::KEY_ALL_ROWS_DATA)) {
             $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ALL_ROWS_DATA;
@@ -55,37 +56,37 @@ class SettingsDashboardAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
         }
 
-        $all_rows_data                      = $request->request->get(self::KEY_ALL_ROWS_DATA);
-        $widgets_visibilities_settings_dtos = [];
+        $allRowsData                     = $request->request->get(self::KEY_ALL_ROWS_DATA);
+        $widgetsVisibilitiesSettingsDtos = [];
 
-        foreach($all_rows_data as $row_data){
+        foreach($allRowsData as $rowData){
 
-            if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE, $row_data)){
+            if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE, $rowData)){
                 $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE;
                 $this->app->logger->warning($message);
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
-            if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_NAME, $row_data)){
+            if( !array_key_exists(SettingsWidgetVisibilityDTO::KEY_NAME, $rowData)){
                 $message = $this->app->translator->translate('responses.general.arrayInResponseIsMissingParameterNamed') . SettingsWidgetVisibilityDTO::KEY_NAME;
                 $this->app->logger->warning($message);
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
-            $is_visible = filter_var($row_data[SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE], FILTER_VALIDATE_BOOLEAN);;
-            $name       = trim($row_data[SettingsWidgetVisibilityDTO::KEY_NAME]);
+            $isVisible = filter_var($rowData[SettingsWidgetVisibilityDTO::KEY_IS_VISIBLE], FILTER_VALIDATE_BOOLEAN);;
+            $name      = trim($rowData[SettingsWidgetVisibilityDTO::KEY_NAME]);
 
-            $widgets_visibility_settings_dto = new SettingsWidgetVisibilityDTO();
-            $widgets_visibility_settings_dto->setName($name);
-            $widgets_visibility_settings_dto->setIsVisible($is_visible);
+            $widgetsVisibilitySettingsDto = new SettingsWidgetVisibilityDTO();
+            $widgetsVisibilitySettingsDto->setName($name);
+            $widgetsVisibilitySettingsDto->setIsVisible($isVisible);
 
-            $widgets_visibilities_settings_dtos[] = $widgets_visibility_settings_dto;
+            $widgetsVisibilitiesSettingsDtos[] = $widgetsVisibilitySettingsDto;
         }
 
-        $this->app->settings->settings_saver->saveSettingsForDashboardWidgetsVisibility($widgets_visibilities_settings_dtos);
-        $template_content = $this->settings_view_action->renderSettingsTemplate(false)->getContent();
+        $this->app->settings->settings_saver->saveSettingsForDashboardWidgetsVisibility($widgetsVisibilitiesSettingsDtos);
+        $templateContent = $this->settingsViewAction->renderSettingsTemplate()->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $template_content);
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $templateContent);
     }
 
 }

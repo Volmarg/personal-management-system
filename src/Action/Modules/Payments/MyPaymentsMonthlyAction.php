@@ -10,8 +10,10 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Form\Modules\Payments\MyPaymentsMonthlyType;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +24,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -38,45 +40,48 @@ class MyPaymentsMonthlyAction extends AbstractController {
      * @Route("/my-payments-monthly", name="my-payments-monthly")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
         $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    protected function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $form                       = $this->getForm();
-        $monthly_form_view          = $form->createView();
+    protected function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $form            = $this->getForm();
+        $monthlyFormView = $form->createView();
 
-        $columns_names              = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsMonthly::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columns_names);
+        $columnsNames = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsMonthly::class)->getColumnNames();
+        Repositories::removeHelperColumnsFromView($columnsNames);
 
-        $all_payments               = $this->controllers->getMyPaymentsMonthlyController()->getAllNotDeleted();
-        $dates_groups               = $this->controllers->getMyPaymentsMonthlyController()->fetchAllDateGroups();
-        $payments_by_type_and_date  = $this->controllers->getMyPaymentsMonthlyController()->getPaymentsByTypes();
-        $payments_types             = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
+        $allPayments           = $this->controllers->getMyPaymentsMonthlyController()->getAllNotDeleted();
+        $datesGroups           = $this->controllers->getMyPaymentsMonthlyController()->fetchAllDateGroups();
+        $paymentsByTypeAndDate = $this->controllers->getMyPaymentsMonthlyController()->getPaymentsByTypes();
+        $paymentsTypes         = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
 
 
         return $this->render('modules/my-payments/monthly.html.twig', [
-            'form'                           => $monthly_form_view,
-            'all_payments'                   => $all_payments,
-            'columns_names'                  => $columns_names,
-            'dates_groups'                   => $dates_groups,
-            'ajax_render'                    => $ajax_render,
-            'payments_by_type_and_date'      => $payments_by_type_and_date,
-            'payments_types'                 => $payments_types,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js
+            'form'                           => $monthlyFormView,
+            'all_payments'                   => $allPayments,
+            'columns_names'                  => $columnsNames,
+            'dates_groups'                   => $datesGroups,
+            'ajax_render'                    => $ajaxRender,
+            'payments_by_type_and_date'      => $paymentsByTypeAndDate,
+            'payments_types'                 => $paymentsTypes,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
         ]);
     }
 
@@ -84,12 +89,12 @@ class MyPaymentsMonthlyAction extends AbstractController {
      * @param $request
      */
     protected function addFormDataToDB($request) {
-        $payments_form = $this->getForm();
-        $payments_form->handleRequest($request);
+        $paymentsForm = $this->getForm();
+        $paymentsForm->handleRequest($request);
 
-        if ($payments_form->isSubmitted() && $payments_form->isValid()) {
+        if ($paymentsForm->isSubmitted() && $paymentsForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($payments_form->getData());
+            $em->persist($paymentsForm->getData());
             $em->flush();
         }
 
@@ -101,7 +106,8 @@ class MyPaymentsMonthlyAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function remove(Request $request) {
+    public function remove(Request $request): Response
+    {
 
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PAYMENTS_MONTHLY_REPOSITORY_NAME,
@@ -111,10 +117,10 @@ class MyPaymentsMonthlyAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -123,19 +129,24 @@ class MyPaymentsMonthlyAction extends AbstractController {
      * @Route("my-payments-monthly/update/" ,name="my-payments-monthly-update")
      * @param Request $request
      * @return JsonResponse
-     * 
+     * @throws MappingException
      */
-    public function update(Request $request) {
-        $parameters     = $request->request->all();
-        $entity_id      = trim($parameters['id']);
+    public function update(Request $request): JsonResponse
+    {
+        $parameters = $request->request->all();
+        $entityId   = trim($parameters['id']);
 
-        $entity         = $this->controllers->getMyPaymentsMonthlyController()->findOneById($entity_id);
-        $response       = $this->app->repositories->update($parameters, $entity);
+        $entity     = $this->controllers->getMyPaymentsMonthlyController()->findOneById($entityId);
+        $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
-    private function getForm() {
+    /**
+     * @return FormInterface
+     */
+    private function getForm(): FormInterface
+    {
         return $this->createForm(MyPaymentsMonthlyType::class);
     }
 

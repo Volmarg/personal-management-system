@@ -8,6 +8,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use Doctrine\ORM\Mapping\MappingException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,7 +21,7 @@ class MyPasswordsGroupsAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
@@ -36,28 +37,29 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @Route("/my-passwords-settings", name="my-passwords-settings")
      * @param Request $request
      * @return Response
-     * 
+     * @throws Exception
      */
-    public function display(Request $request) {
-        $password_group_form = $this->app->forms->passwordGroupForm();
-        $this->submitForm($password_group_form , $request);
+    public function display(Request $request): Response
+    {
+        $passwordGroupForm = $this->app->forms->passwordGroupForm();
+        $this->submitForm($passwordGroupForm , $request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
-        $template_content  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent  = $this->renderTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
      * @Route("/my-passwords-groups/remove", name="my-passwords-groups-remove")
      * @param Request $request
      * @return Response
-     * 
+     * @throws Exception
      */
-    public function remove(Request $request) {
-
+    public function remove(Request $request): Response
+    {
         $response = $this->app->repositories->deleteById(
             Repositories::MY_PASSWORDS_GROUPS_REPOSITORY_NAME,
             $request->request->get('id')
@@ -66,10 +68,10 @@ class MyPasswordsGroupsAction extends AbstractController {
         $message = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderTemplate(true, true);
-            $template_content  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
 
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
@@ -78,14 +80,14 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @Route("/my-passwords-groups/update",name="my-passwords-groups-update")
      * @param Request $request
      * @return Response
-     *
      * @throws MappingException
      */
-    public function update(Request $request) {
+    public function update(Request $request): Response
+    {
         $parameters = $request->request->all();
-        $entity_id  = $parameters['id'];
+        $entityId   = $parameters['id'];
 
-        $entity     = $this->controllers->getMyPasswordsGroupsController()->findOneById($entity_id);
+        $entity     = $this->controllers->getMyPasswordsGroupsController()->findOneById($entityId);
         $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
@@ -93,18 +95,19 @@ class MyPasswordsGroupsAction extends AbstractController {
 
     /**
      * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $password_group_form = $this->app->forms->passwordGroupForm();
-        $groups              = $this->controllers->getMyPasswordsGroupsController()->findAllNotDeleted();
+    private function renderTemplate(bool $ajax_render = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $passwordGroupForm = $this->app->forms->passwordGroupForm();
+        $groups            = $this->controllers->getMyPasswordsGroupsController()->findAllNotDeleted();
 
         return $this->render('modules/my-passwords/settings.html.twig', [
             'ajax_render'                    => $ajax_render,
             'groups'                         => $groups,
-            'groups_form'                    => $password_group_form->createView(),
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'groups_form'                    => $passwordGroupForm->createView(),
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
     }
 
@@ -114,19 +117,17 @@ class MyPasswordsGroupsAction extends AbstractController {
      * @return JsonResponse
      * 
      */
-    private function submitForm(FormInterface $form, Request $request) {
+    private function submitForm(FormInterface $form, Request $request): JsonResponse
+    {
         $form->handleRequest($request);
-        /**
-         * @var MyPasswordsGroups $form_data
-         */
         $form_data = $form->getData();
 
         if (
                 !is_null($form_data)
             &&  !is_null($this->controllers->getMyPasswordsGroupsController()->findOneByName($form_data->getName()))
         ) {
-            $record_with_this_name_exist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new JsonResponse($record_with_this_name_exist, 409);
+            $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
+            return new JsonResponse($recordWithThisNameExist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -134,8 +135,8 @@ class MyPasswordsGroupsAction extends AbstractController {
             $this->app->em->flush();
         }
 
-        $form_submitted_message = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($form_submitted_message, 200);
+        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
+        return new JsonResponse($formSubmittedMessage, 200);
     }
 
 }

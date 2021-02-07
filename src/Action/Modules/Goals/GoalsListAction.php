@@ -6,6 +6,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +17,13 @@ class GoalsListAction extends AbstractController {
     /**
      * @var Application
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers
      *
      */
-    private $controllers;
+    private Controllers $controllers;
 
     public function __construct(Application $app, Controllers $controllers) {
 
@@ -34,11 +35,13 @@ class GoalsListAction extends AbstractController {
      * @Route("admin/goals/list", name="goals_list")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function display(Request $request) {
+    public function display(Request $request): Response
+    {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
         $template_content  = $this->renderTemplate(true)->getContent();
@@ -46,29 +49,30 @@ class GoalsListAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
 
-        $all_todo          = $this->controllers->getGoalsListController()->getGoals();
-        $goal_module       = $this->controllers->getModuleController()->getOneByName(ModulesController::MODULE_NAME_GOALS);
-        $todo_element_form = $this->app->forms->todoElementForm();
-        $all_modules       = $this->controllers->getModuleController()->getAllActive();
+        $allTodo         = $this->controllers->getGoalsListController()->getGoals();
+        $goalModule      = $this->controllers->getModuleController()->getOneByName(ModulesController::MODULE_NAME_GOALS);
+        $todoElementForm = $this->app->forms->todoElementForm();
+        $allModules      = $this->controllers->getModuleController()->getAllActive();
 
-        $all_relatable_entities_data_dtos_for_modules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
+        $allRelatableEntitiesDataDtosForModules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
 
         $data = [
-            'all_modules'                                  => [$goal_module],
-            'all_todo'                                     => $all_todo,
-            'ajax_render'                                  => $ajax_render,
+            'all_modules'                                  => [$goalModule],
+            'all_todo'                                     => $allTodo,
+            'ajax_render'                                  => $ajaxRender,
             'show_add_todo_widget'                         => true,
-            'todo_element_form'                            => $todo_element_form,
+            'todo_element_form'                            => $todoElementForm,
             'data_template_url'                            => $this->generateUrl('goals_list'),
-            'all_modules'                                  => $all_modules,
-            'all_relatable_entities_data_dtos_for_modules' => $all_relatable_entities_data_dtos_for_modules,
-            'skip_rewriting_twig_vars_to_js'               => $skip_rewriting_twig_vars_to_js,
+            'all_modules'                                  => $allModules,
+            'all_relatable_entities_data_dtos_for_modules' => $allRelatableEntitiesDataDtosForModules,
+            'skip_rewriting_twig_vars_to_js'               => $skipRewritingTwigVarsToJs,
         ];
 
         return $this->render('modules/my-todo/list.html.twig', $data);

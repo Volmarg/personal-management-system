@@ -40,10 +40,10 @@ class ModuleDataAction extends AbstractController
     public function createOrUpdate(Request $request): JsonResponse
     {
         $parameters = $request->request->all();
-        $entity_id  = trim($parameters['id']);
+        $entityId   = trim($parameters['id']);
 
-        if( !empty($entity_id) ){
-            $entity     = $this->controllers->getModuleDataController()->findOneById($entity_id);
+        if( !empty($entityId) ){
+            $entity     = $this->controllers->getModuleDataController()->findOneById($entityId);
             $response   = $this->app->repositories->update($parameters, $entity);
         }else{
             $response = $this->app->repositories->createAndSaveEntityForEntityClassAndArrayOfParameters(ModuleData::class, $parameters);

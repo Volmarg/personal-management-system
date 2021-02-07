@@ -8,9 +8,9 @@ use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Form\Modules\Achievements\AchievementType;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,23 +22,28 @@ class AchievementAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app = null;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers = null;
+    private Controllers $controllers;
 
     /**
-     * @var array $enum_types
+     * @var array $enumTypes
      */
-    private $enum_types = [];
+    private array $enumTypes;
 
+    /**
+     * AchievementAction constructor.
+     * @param Application $app
+     * @param Controllers $controllers
+     */
     public function __construct(Application $app, Controllers $controllers) {
-        $enum_type        = [Achievement::ENUM_SIMPLE, Achievement::ENUM_MEDIUM, Achievement::ENUM_HARD, Achievement::ENUM_HARDCORE];
-        $this->enum_types = array_combine(
-            array_map('ucfirst', array_values($enum_type)),
-            $enum_type
+        $enumType        = [Achievement::ENUM_SIMPLE, Achievement::ENUM_MEDIUM, Achievement::ENUM_HARD, Achievement::ENUM_HARDCORE];
+        $this->enumTypes = array_combine(
+            array_map('ucfirst', array_values($enumType)),
+            $enumType
         );
 
         $this->app         = $app;
@@ -49,16 +54,17 @@ class AchievementAction extends AbstractController {
      * @Route("/achievement", name="achievement")
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
-    public function display(Request $request) {
-        $this->addFormDataToDB($request, $this->enum_types);
-
+    public function display(Request $request): Response
+    {
+        $this->addFormDataToDB($request, $this->enumTypes);
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderAchievementPageTemplate(false);
+            return $this->renderAchievementPageTemplate();
         }
 
-        $template_content  = $this->renderAchievementPageTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderAchievementPageTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
@@ -67,9 +73,10 @@ class AchievementAction extends AbstractController {
      * @return Response
      *
      * #todo: check if this works correct in case of edit and update
+     * @throws MappingException
      */
-    public function update(Request $request) {
-
+    public function update(Request $request): Response
+    {
         $parameters = $request->request->all();
         $id         = trim($parameters[self::PARAMETER_ID]);
 
@@ -93,51 +100,49 @@ class AchievementAction extends AbstractController {
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderAchievementPageTemplate(true, true);
-
-            $template_content  = $rendered_template->getContent();
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            $renderedTemplate = $this->renderAchievementPageTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
     }
 
     /**
-     * @param bool $ajax_render
-     * @param bool $skip_rewriting_twig_vars_to_js
+     * @param bool $ajaxRender
+     * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderAchievementPageTemplate(bool $ajax_render = false, bool $skip_rewriting_twig_vars_to_js = false) {
-        $achievement_form      = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $this->enum_types]);
-        $achievement_form_view = $achievement_form->createView();
+    private function renderAchievementPageTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    {
+        $achievementForm     = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $this->enumTypes]);
+        $achievementFormView = $achievementForm->createView();
 
-        $columns_names    = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
-        $all_achievements = $this->controllers->getAchievementController()->getAllNotDeleted();
+        $columnsNames    = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
+        $allAchievements = $this->controllers->getAchievementController()->getAllNotDeleted();
 
         return $this->render('modules/my-achievements/index.html.twig', [
-            'ajax_render'       => $ajax_render,
-            'achievement_form'  => $achievement_form_view,
-            'columns_names'     => $columns_names,
-            'all_achievements'  => $all_achievements,
-            'achievement_types' => $this->enum_types,
-            'skip_rewriting_twig_vars_to_js' => $skip_rewriting_twig_vars_to_js,
+            'ajax_render'       => $ajaxRender,
+            'achievement_form'  => $achievementFormView,
+            'columns_names'     => $columnsNames,
+            'all_achievements'  => $allAchievements,
+            'achievement_types' => $this->enumTypes,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
     }
 
     /**
      * @param Request $request
-     * @param array $enum_types
+     * @param array $enumTypes
      */
-    private function addFormDataToDB(Request $request, array $enum_types) {
-        /**
-         * @var FormInterface $achievement_form
-         */
-        $achievement_form = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $enum_types]);
-        $achievement_form->handleRequest($request);
+    private function addFormDataToDB(Request $request, array $enumTypes)
+    {
+        $achievementForm = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $enumTypes]);
+        $achievementForm->handleRequest($request);
 
-        if ($achievement_form->isSubmitted() && $achievement_form->isValid()) {
+        if ($achievementForm->isSubmitted() && $achievementForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($achievement_form->getData());
+            $em->persist($achievementForm->getData());
             $em->flush();
         }
     }

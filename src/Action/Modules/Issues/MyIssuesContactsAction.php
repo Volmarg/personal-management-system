@@ -20,22 +20,22 @@ class MyIssuesContactsAction extends AbstractController
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
      * @var Controllers $controllers
      */
-    private $controllers;
+    private Controllers $controllers;
 
     /**
-     * @var MyIssuesAction $my_issues_action
+     * @var MyIssuesAction $myIssuesAction
      */
-    private $my_issues_action;
+    private MyIssuesAction $myIssuesAction;
 
-    public function __construct(Application $app, Controllers $controllers, MyIssuesAction $my_issues_action) {
-        $this->app              = $app;
-        $this->controllers      = $controllers;
-        $this->my_issues_action = $my_issues_action;
+    public function __construct(Application $app, Controllers $controllers, MyIssuesAction $myIssuesAction) {
+        $this->app            = $app;
+        $this->controllers    = $controllers;
+        $this->myIssuesAction = $myIssuesAction;
 
     }
 
@@ -70,10 +70,9 @@ class MyIssuesContactsAction extends AbstractController
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->my_issues_action->renderTemplate(true, true);
-
-            $template_content  = $rendered_template->getContent();
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $template_content);
+            $renderedTemplate = $this->myIssuesAction->renderTemplate(true, true);
+            $templateContent  = $renderedTemplate->getContent();
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);

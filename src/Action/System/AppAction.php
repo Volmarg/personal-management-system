@@ -111,29 +111,30 @@ class AppAction extends AbstractController {
     /**
      * @var Application $app
      */
-    private $app;
+    private Application $app;
 
     /**
-     * @var ExpirableSessionsService $expirable_sessions_service
+     * @var ExpirableSessionsService $expirableSessionsService
      */
-    private $expirable_sessions_service;
+    private ExpirableSessionsService $expirableSessionsService;
 
     /**
      * @var Controllers $controllers
      */
     private Controllers $controllers;
 
-    public function __construct(Application $app, ExpirableSessionsService $sessions_service, Controllers $controllers) {
-        $this->app                        = $app;
-        $this->controllers                = $controllers;
-        $this->expirable_sessions_service = $sessions_service;
+    public function __construct(Application $app, ExpirableSessionsService $sessions_service, Controllers $controllers)
+    {
+        $this->app                      = $app;
+        $this->controllers              = $controllers;
+        $this->expirableSessionsService = $sessions_service;
     }
 
     /**
      * @Route("/", name="app_default")
      * This is also main redirect when user logs in
      */
-    public function index()
+    public function index(): Response
     {
         return $this->redirectToRoute('dashboard');
     }
@@ -142,32 +143,29 @@ class AppAction extends AbstractController {
      * @Route("/actions/render-menu-node-template", name="render_menu_node_template")
      * @param Request $request
      * @return Response
-     *
      * @throws Exception
      */
-    public function renderMenuNodeTemplate(Request $request)
+    public function renderMenuNodeTemplate(Request $request): Response
     {
         try{
             $message = $this->app->translator->translate('responses.menu.nodeHasBeenRendered');
-
             if ( !$request->request->has(static::KEY_MENU_NODE_MODULE_NAME) ) {
                 $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . static::KEY_MENU_NODE_MODULE_NAME;
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
-            $menu_node_module_name = $request->request->get(static::KEY_MENU_NODE_MODULE_NAME);
-
-            if ( !array_key_exists($menu_node_module_name, static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP) ) {
-                $message = $this->app->translator->translate('responses.menu.menuNodeWithNameWasNotFound') . $menu_node_module_name;
+            $menuNodeModuleName = $request->request->get(static::KEY_MENU_NODE_MODULE_NAME);
+            if ( !array_key_exists($menuNodeModuleName, static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP) ) {
+                $message = $this->app->translator->translate('responses.menu.menuNodeWithNameWasNotFound') . $menuNodeModuleName;
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
             $tpl_data = [
                 static::KEY_CURR_URL => $request->server->get('HTTP_REFERER'),
-                static::MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES[$menu_node_module_name] => $menu_node_module_name // because of constants used in tpl
+                static::MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES[$menuNodeModuleName] => $menuNodeModuleName // because of constants used in tpl
             ];
 
-            $template = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menu_node_module_name], $tpl_data)->getContent();
+            $template = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menuNodeModuleName], $tpl_data)->getContent();
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
 
@@ -189,7 +187,7 @@ class AppAction extends AbstractController {
      * @param string $pageName Page name
      * @return Response
      */
-    public function admin(string $pageName)
+    public function admin(string $pageName): Response
     {
         return $this->render(
             sprintf(
@@ -229,12 +227,12 @@ class AppAction extends AbstractController {
             return $response;
         }
 
-        $is_unlocked_on_front = Utils::getBoolRepresentationOfBoolString($request->request->get(self::KEY_SYSTEM_LOCK_IS_UNLOCKED));
-        $code                 = Response::HTTP_OK;
+        $isUnlockedOnFront = Utils::getBoolRepresentationOfBoolString($request->request->get(self::KEY_SYSTEM_LOCK_IS_UNLOCKED));
+        $code              = Response::HTTP_OK;
 
         try{
 
-            if( $is_unlocked_on_front ){
+            if( $isUnlockedOnFront ){
 
                 // the session has expired - force to reload gui
                 if( !UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ) {
@@ -249,12 +247,12 @@ class AppAction extends AbstractController {
                 /**
                  * @var User $user
                  */
-                $user              = $this->getUser();
-                $user_password     = $user->getLockPassword();
-                $password          = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
-                $is_password_valid = $security_controller->isPasswordValid($user, $user_password, $password);
+                $user            = $this->getUser();
+                $userPassword    = $user->getLockPassword();
+                $password        = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
+                $isPasswordValid = $security_controller->isPasswordValid($user, $userPassword, $password);
 
-                if( !$is_password_valid ){
+                if( !$isPasswordValid ){
                     $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
                     $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
                     return $response;
@@ -262,8 +260,8 @@ class AppAction extends AbstractController {
 
                 UserRolesSessionService::addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
 
-                $system_lock_session_lifetime = $this->app->config_loaders->getConfigLoaderSession()->getSystemLockLifetime();
-                $this->expirable_sessions_service->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME, $system_lock_session_lifetime, [User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
+                $systemLockSessionLifetime = $this->app->config_loaders->getConfigLoaderSession()->getSystemLockLifetime();
+                $this->expirableSessionsService->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME, $systemLockSessionLifetime, [User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
 
                 $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
 
@@ -283,10 +281,11 @@ class AppAction extends AbstractController {
 
     /**
      * @Route("/api/system/system-lock-set-password", name="system-lock-create-password", methods="POST")
-     * @param Request            $request
+     * @param Request $request
      * @param SecurityController $security_controller
      * @return JsonResponse
-     * 
+     *
+     * @throws Exception
      */
     public function systemLockCreatePassword(Request $request, SecurityController $security_controller): Response
     {
@@ -303,16 +302,16 @@ class AppAction extends AbstractController {
             /**
              * @var User $user
              */
-            $user            = $this->getUser();
-            $has_password    = $user->hasLockPassword();
+            $user           = $this->getUser();
+            $hasPassword    = $user->hasLockPassword();
 
-            $security_dto    = $security_controller->hashPassword($password);
-            $hashed_password = $security_dto->getHashedPassword();
+            $securityDto    = $security_controller->hashPassword($password);
+            $hashedPassword = $securityDto->getHashedPassword();
 
-            $user->setLockPassword($hashed_password);
+            $user->setLockPassword($hashedPassword);
             $this->controllers->getUserController()->saveUser($user);
 
-            if( $has_password ){
+            if( $hasPassword ){
                 $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenCreated');
             }else{
                 $message = $this->app->translator->translate('responses.lockResource.passwordHasBeenUpdated');
@@ -342,36 +341,34 @@ class AppAction extends AbstractController {
      */
     public function getUrlForPathName(Request $request): JsonResponse
     {
-        $bad_request_message = $this->app->translator->translate("messages.ajax.failure.badRequest");
-
+        $badRequestMessage = $this->app->translator->translate("messages.ajax.failure.badRequest");
         if ( !$request->request->has(self::KEY_PATH_NAME) ) {
             $this->app->logger->critical("Missing parameter in request", [self::KEY_PATH_NAME]);
-            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $bad_request_message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $badRequestMessage);
         }
 
-        $path_name = $request->request->get(self::KEY_PATH_NAME);
+        $pathName = $request->request->get(self::KEY_PATH_NAME);
 
-        $is_exception  = false;
-        $ajax_response = new AjaxResponse();
-        $ajax_response->setCode(Response::HTTP_OK);
+        $isException  = false;
+        $ajaxResponse = new AjaxResponse();
+        $ajaxResponse->setCode(Response::HTTP_OK);
 
         try{
-            $url = $this->generateUrl($path_name);
+            $url = $this->generateUrl($pathName);
         }catch(Exception $e){
-            $is_exception = true;
+            $isException = true;
         }
 
-        if( empty($url) || $is_exception ){
-            $this->app->logger->critical('No route with this name was found', [$path_name]);
-            $ajax_response->setMessage($bad_request_message);
-            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+        if( empty($url) || $isException ){
+            $this->app->logger->critical('No route with this name was found', [$pathName]);
+            $ajaxResponse->setMessage($badRequestMessage);
+            $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
 
-            return $ajax_response->buildJsonResponse();
+            return $ajaxResponse->buildJsonResponse();
         }
 
-        $ajax_response->setRouteUrl($url);
-
-        return $ajax_response->buildJsonResponse();
+        $ajaxResponse->setRouteUrl($url);
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -384,83 +381,81 @@ class AppAction extends AbstractController {
      */
     public function getConstantValueFromBackend(Request $request): JsonResponse
     {
-        $bad_request_message = $this->app->translator->translate("messages.ajax.failure.badRequest");
-
+        $badRequestMessage = $this->app->translator->translate("messages.ajax.failure.badRequest");
         if ( !$request->request->has(self::KEY_CONSTANT_NAME) ) {
             $this->app->logger->critical("Missing parameter in request", [self::KEY_CONSTANT_NAME]);
-            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $bad_request_message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $badRequestMessage);
         }
 
         if ( !$request->request->has(self::KEY_NAMESPACE) ) {
             $this->app->logger->critical("Missing parameter in request", [self::KEY_NAMESPACE]);
-            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $bad_request_message);
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $badRequestMessage);
         }
 
         $namespace = $request->request->get(self::KEY_NAMESPACE);
         $constant  = $request->request->get(self::KEY_CONSTANT_NAME);
 
-        $is_exception  = false;
-        $ajax_response = new AjaxResponse();
-        $ajax_response->setCode(Response::HTTP_OK);
+        $isException  = false;
+        $ajaxResponse = new AjaxResponse();
+        $ajaxResponse->setCode(Response::HTTP_OK);
 
         try{
-            $constant_value = constant("{$namespace}::{$constant}");
+            $constantValue = constant("{$namespace}::{$constant}");
         }catch(Exception $e){
-            $is_exception = true;
+            $isException = true;
         }
 
-        if( empty($constant_value) || $is_exception ){
+        if( empty($constantValue) || $isException ){
             $this->app->logger->critical("No such constant exists for given namespace", [
                 self::KEY_CONSTANT_NAME => $constant,
                 self::KEY_NAMESPACE     => $namespace,
             ]);
-            $ajax_response->setMessage($bad_request_message);
-            $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
+            $ajaxResponse->setMessage($badRequestMessage);
+            $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
 
-            return $ajax_response->buildJsonResponse();
+            return $ajaxResponse->buildJsonResponse();
         }
 
-        $ajax_response->setConstantValue($constant_value);
-
-        return $ajax_response->buildJsonResponse();
+        $ajaxResponse->setConstantValue($constantValue);
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
      * The login page
      * @Route("/login", name="login")
-     * @param AuthenticationUtils $authentication_utils
+     * @param AuthenticationUtils $authenticationUtils
      * @return Response
      * @throws Exception
      */
-    public function login(AuthenticationUtils $authentication_utils)
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        $error          = $authentication_utils->getLastAuthenticationError();
-        $error_message  = "";
+        $error        = $authenticationUtils->getLastAuthenticationError();
+        $errorMessage = "";
 
-        $all_users      = $this->controllers->getUserController()->getAllUsers();
-        $count_of_users = count($all_users);
+        $allUsers     = $this->controllers->getUserController()->getAllUsers();
+        $countOfUsers = count($allUsers);
 
-        $show_register_button = true;
-        if( empty($count_of_users) ){
-            $show_register_button = false;
+        $showRegisterButton = true;
+        if( empty($countOfUsers) ){
+            $showRegisterButton = false;
         }
 
         if(
                 empty($error)
-            &&  empty($count_of_users)
+            &&  empty($countOfUsers)
         ){
-            $error_message = $this->app->translator->translate('login.errors.noExistingUserWasFoundPleaseContinueWithRegistration');
+            $errorMessage = $this->app->translator->translate('login.errors.noExistingUserWasFoundPleaseContinueWithRegistration');
         }elseif(!empty($error)){
-            $error_message = $this->app->translator->translate($error->getMessage(), $error->getMessageData(), 'security');
+            $errorMessage = $this->app->translator->translate($error->getMessage(), $error->getMessageData(), 'security');
         }
 
-        $template      = "security/pages/login.html.twig";
-        $template_data = [
-            'error_message'         => $error_message,
-            'show_register_button'  => $show_register_button
+        $template     = "security/pages/login.html.twig";
+        $templateData = [
+            'error_message'         => $errorMessage,
+            'show_register_button'  => $showRegisterButton
         ];
 
-        return $this->render($template, $template_data);
+        return $this->render($template, $templateData);
     }
 
     /**
@@ -469,7 +464,7 @@ class AppAction extends AbstractController {
      * @param Request $request
      * @return Response
      */
-    public function register(Request $request)
+    public function register(Request $request): Response
     {
         if( !$this->controllers->getSecurityController()->canRegisterUser() ){
             $message = $this->app->translator->translate('register.messages.notAllowedToRegisterAdditionalUsers');
@@ -477,61 +472,61 @@ class AppAction extends AbstractController {
             return $this->redirectToRoute('login');
         }
 
-        $all_users                  = $this->controllers->getUserController()->getAllUsers();
-        $count_of_users             = count($all_users);
+        $allUsers     = $this->controllers->getUserController()->getAllUsers();
+        $countOfUsers = count($allUsers);
 
-        $allow_to_register = true;
-        if( !empty($count_of_users) ){
-            $allow_to_register = false;
+        $allowToRegister = true;
+        if( !empty($countOfUsers) ){
+            $allowToRegister = false;
         }
 
-        $user_register_form      = $this->app->forms->userRegisterForm();
-        $user_register_form_view = $user_register_form->createView();
+        $userRegisterForm     = $this->app->forms->userRegisterForm();
+        $userRegisterFormView = $userRegisterForm->createView();
 
         // happens only on form submission
         if( $request->isXmlHttpRequest() )
         {
-            $form_validation_violations = [];
-            $code                       = Response::HTTP_OK;
-            $success                    = true;
-            $route_url                  = $this->generateUrl('login');
-            $message                    = $this->app->translator->translate("");
+            $formValidationViolations = [];
+            $code                     = Response::HTTP_OK;
+            $success                  = true;
+            $routeUrl                 = $this->generateUrl('login');
+            $message                  = $this->app->translator->translate("");
 
             try{
-                $user_register_form->handleRequest($request);
+                $userRegisterForm->handleRequest($request);
 
                 if(
-                        $user_register_form->isSubmitted()
-                    &&  $user_register_form->isValid()
+                        $userRegisterForm->isSubmitted()
+                    &&  $userRegisterForm->isValid()
                 )
                 {
                     /**
-                     * @var User $user_entity
+                     * @var User $userEntity
                      */
-                    $user_entity = $user_register_form->getData();
+                    $userEntity = $userRegisterForm->getData();
 
-                    $raw_login_password     = $user_entity->getPassword();
-                    $raw_lock_password      = $user_entity->getLockPassword();
-                    $crypted_login_password = $this->controllers->getSecurityController()->hashPassword($raw_login_password)->getHashedPassword();
-                    $crypted_lock_password  = $this->controllers->getSecurityController()->hashPassword($raw_lock_password)->getHashedPassword();
+                    $rawLoginPassword     = $userEntity->getPassword();
+                    $rawLockPassword      = $userEntity->getLockPassword();
+                    $cryptedLoginPassword = $this->controllers->getSecurityController()->hashPassword($rawLoginPassword)->getHashedPassword();
+                    $cryptedLockPassword  = $this->controllers->getSecurityController()->hashPassword($rawLockPassword)->getHashedPassword();
 
-                    $user_entity->setRoles([User::ROLE_SUPER_ADMIN]);
-                    $user_entity->setPassword($crypted_login_password);
-                    $user_entity->setLockPassword($crypted_lock_password);;
-                    $user_entity->setUsernameCanonical($user_entity->getUsername());
-                    $user_entity->setEmailCanonical($user_entity->getEmail());
+                    $userEntity->setRoles([User::ROLE_SUPER_ADMIN]);
+                    $userEntity->setPassword($cryptedLoginPassword);
+                    $userEntity->setLockPassword($cryptedLockPassword);;
+                    $userEntity->setUsernameCanonical($userEntity->getUsername());
+                    $userEntity->setEmailCanonical($userEntity->getEmail());
 
-                    $this->controllers->getUserController()->saveUser($user_entity);
+                    $this->controllers->getUserController()->saveUser($userEntity);
                 }
 
             }catch(FormValidationException $exception){
-                $form_validation_violations = $exception->getFormValidationViolations(true);
-                $success                    = false;
-                $code                       = Response::HTTP_BAD_REQUEST;
-                $route_url                  = "";
-                $message                    = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
+                $formValidationViolations = $exception->getFormValidationViolations(true);
+                $success                  = false;
+                $code                     = Response::HTTP_BAD_REQUEST;
+                $routeUrl                 = "";
+                $message                  = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
 
-                $this->app->logger->error("Some of the UserRegistration form inputs are invalid", $form_validation_violations);
+                $this->app->logger->error("Some of the UserRegistration form inputs are invalid", $formValidationViolations);
             }catch(Exception | TypeError $e){
                 $this->app->logger->critical("Exception was thrown while registering new user", [
                     "message" => $e->getMessage(),
@@ -542,21 +537,21 @@ class AppAction extends AbstractController {
                 $message = $this->app->translator->translate('messages.general.internalServerError');
             }
 
-            $ajax_response = new AjaxResponse();
-            $ajax_response->setInvalidFormFields($form_validation_violations);
-            $ajax_response->setMessage($message);
-            $ajax_response->setCode($code);
-            $ajax_response->setSuccess($success);;
-            $ajax_response->setValidatedFormPrefix(UserRegisterType::getFormPrefix());
-            $ajax_response->setRouteUrl($route_url);
+            $ajaxResponse = new AjaxResponse();
+            $ajaxResponse->setInvalidFormFields($formValidationViolations);
+            $ajaxResponse->setMessage($message);
+            $ajaxResponse->setCode($code);
+            $ajaxResponse->setSuccess($success);;
+            $ajaxResponse->setValidatedFormPrefix(UserRegisterType::getFormPrefix());
+            $ajaxResponse->setRouteUrl($routeUrl);
 
-            return $ajax_response->buildJsonResponse();
+            return $ajaxResponse->buildJsonResponse();
         }
 
         $template      = "security/pages/register.html.twig";
         $template_data = [
-            'allow_to_register'  => $allow_to_register,
-            'user_register_form' => $user_register_form_view,
+            'allow_to_register'  => $allowToRegister,
+            'user_register_form' => $userRegisterFormView,
         ];
 
         return $this->render($template, $template_data);

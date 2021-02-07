@@ -42,11 +42,11 @@ class FormsAction extends AbstractController {
      */
     public function getFormViewByClassName(Request $request): JsonResponse
     {
-        $ajaxResponse  = new AjaxResponse();
-        $code          = Response::HTTP_OK;
-        $form_template = "";
-        $message       = "";
-        $success       = true;
+        $ajaxResponse = new AjaxResponse();
+        $code         = Response::HTTP_OK;
+        $formTemplate = "";
+        $message      = "";
+        $success      = true;
 
         try{
             if( !$request->request->has(self::KEY_FORM_NAMESPACE) ){
@@ -59,9 +59,9 @@ class FormsAction extends AbstractController {
                 return $jsonResponse;
             }
 
-            $form_namespace = $request->request->get(self::KEY_FORM_NAMESPACE);
-            $form           = $this->createForm($form_namespace)->createView();
-            $form_template  = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form] )->getContent();
+            $formNamespace = $request->request->get(self::KEY_FORM_NAMESPACE);
+            $form          = $this->createForm($formNamespace)->createView();
+            $formTemplate  = $this->render(self::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form] )->getContent();
 
         }catch(Exception $e){
             $message = $this->translator->translate('forms.general.error.couldNotLoadFormForGivenNamespace');
@@ -72,7 +72,7 @@ class FormsAction extends AbstractController {
 
         $ajaxResponse->setCode($code);
         $ajaxResponse->setMessage($message);
-        $ajaxResponse->setFormTemplate($form_template);
+        $ajaxResponse->setFormTemplate($formTemplate);
         $ajaxResponse->setSuccess($success);
 
         $jsonResponse = $ajaxResponse->buildJsonResponse();
