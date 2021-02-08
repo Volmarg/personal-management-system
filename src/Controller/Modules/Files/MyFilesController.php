@@ -48,43 +48,43 @@ class MyFilesController extends AbstractController
      */
     public function getFilesFromSubdirectory(string $subdirectory):? array
     {
-        $upload_dir = Env::getFilesUploadDir();
-        $all_files  = [];
-        $search_dir = ( empty($subdirectory) ? $upload_dir : FileUploadController::getSubdirectoryPath($upload_dir, $subdirectory));
+        $uploadDir = Env::getFilesUploadDir();
+        $allFiles  = [];
+        $searchDir = ( empty($subdirectory) ? $uploadDir : FileUploadController::getSubdirectoryPath($uploadDir, $subdirectory));
 
         try{
-            $this->finder->files()->in($search_dir);
+            $this->finder->files()->in($searchDir);
         }catch(DirectoryNotFoundException $de){
             return null;
         }
 
         foreach ($this->finder as $index => $file) {
 
-            $file_full_path = $file->getPath() . '/' . $file->getFilename();
-            $file_tags      = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_full_path);
-            $tags_json      = ( $file_tags instanceof FilesTags ? $file_tags->getTags() : "" );
+            $fileFullPath = $file->getPath() . '/' . $file->getFilename();
+            $fileTags     = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
+            $tagsJson     = ( $fileTags instanceof FilesTags ? $fileTags->getTags() : "" );
 
-            $all_files[$index] = [
+            $allFiles[$index] = [
                 static::KEY_FILE_NAME           => $file->getFilenameWithoutExtension(),
                 static::KEY_FILE_SIZE           => $file->getSize(),
                 static::KEY_FILE_EXTENSION      => $file->getExtension(),
-                static::KEY_FILE_FULL_PATH      => $file_full_path,
+                static::KEY_FILE_FULL_PATH      => $fileFullPath,
                 static::KEY_FILE_MODIFIED_DATE  => (new DateTime())->setTimestamp($file->getMTime())->format("Y-m-d H:i:s"),
-                FileTagger::KEY_TAGS            => $tags_json,
+                FileTagger::KEY_TAGS            => $tagsJson,
             ];
 
         }
 
-        return $all_files;
+        return $allFiles;
     }
 
     /**
      * @return array|null
      */
     public function getMainFolderFiles() {
-        $all_files = $this->getFilesFromSubdirectory('');
+        $allFiles = $this->getFilesFromSubdirectory('');
 
-        return $all_files;
+        return $allFiles;
     }
 
 }

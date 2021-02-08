@@ -23,19 +23,19 @@ class MyNotesCategoriesController extends AbstractController {
     private $app;
 
     /**
-     * @var MyNotesController $my_notes_controller
+     * @var MyNotesController $myNotesController
      */
-    private $my_notes_controller;
+    private $myNotesController;
 
     /**
-     * @var LockedResourceController $locked_resource_controller
+     * @var LockedResourceController $lockedResourceController
      */
-    private LockedResourceController  $locked_resource_controller;
+    private LockedResourceController  $lockedResourceController;
 
-    public function __construct(Application $app, MyNotesController $my_notes_controller, LockedResourceController  $locked_resource_controller) {
-        $this->app                        = $app;
-        $this->my_notes_controller        = $my_notes_controller;
-        $this->locked_resource_controller = $locked_resource_controller;
+    public function __construct(Application $app, MyNotesController $myNotesController, LockedResourceController  $lockedResourceController) {
+        $this->app                      = $app;
+        $this->myNotesController        = $myNotesController;
+        $this->lockedResourceController = $lockedResourceController;
     }
 
     /**
@@ -44,29 +44,29 @@ class MyNotesCategoriesController extends AbstractController {
      */
     public function buildParentsChildrenCategoriesHierarchy(): array
     {
-        $categories_depths      = $this->buildCategoriesDepths();
-        $parents_children_dtos  = [];
-        $skipped_categories_ids = [];
+        $categoriesDepths     = $this->buildCategoriesDepths();
+        $parentsChildrenDtos  = [];
+        $skippedCategoriesIds = [];
 
-        foreach( $categories_depths as $category_id => $depth ){
+        foreach( $categoriesDepths as $categoryId => $depth ){
 
-            $category     = $this->app->repositories->myNotesCategoriesRepository->find($category_id);
-            $category_id  = $category->getId();
+            $category   = $this->app->repositories->myNotesCategoriesRepository->find($categoryId);
+            $categoryId = $category->getId();
 
-            $child_categories_ids = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesIdsForCategoriesIds([$category_id]);
-            $parent_child_dto     = $this->buildParentChildDtoForHierarchy($category, $depth);
+            $childCategoriesIds = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesIdsForCategoriesIds([$categoryId]);
+            $parentChildDto     = $this->buildParentChildDtoForHierarchy($category, $depth);
 
             //if we have a children then we already added it to parent so we don't want it as separated being
-            $skipped_categories_ids = array_merge($skipped_categories_ids, $child_categories_ids);
+            $skippedCategoriesIds = array_merge($skippedCategoriesIds, $childCategoriesIds);
 
-            if( in_array($category_id, $skipped_categories_ids) ){
+            if( in_array($categoryId, $skippedCategoriesIds) ){
                 continue;
             }
 
-            $parents_children_dtos[] = $parent_child_dto;
+            $parentsChildrenDtos[] = $parentChildDto;
         }
 
-        return $parents_children_dtos;
+        return $parentsChildrenDtos;
     }
 
     /**
@@ -84,73 +84,72 @@ class MyNotesCategoriesController extends AbstractController {
      */
     public function getAccessibleCategories(): array
     {
-        $is_allowed_to_see_resource_stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
-        $have_categories_notes_stmt      = $this->app->repositories->myNotesCategoriesRepository->buildHaveCategoriesNotesStatement();
+        $isAllowedToSeeResourceStmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
+        $haveCategoriesNotesStmt    = $this->app->repositories->myNotesCategoriesRepository->buildHaveCategoriesNotesStatement();
 
-        $all_categories                  = $this->app->repositories->myNotesCategoriesRepository->getCategories();
-        $accessible_categories           = [];
+        $allCategories                  = $this->app->repositories->myNotesCategoriesRepository->getCategories();
+        $accessibleCategories           = [];
 
-        foreach ($all_categories as $key => $result) {
-            $category_id = $result[self::CATEGORY_ID];
+        foreach ($allCategories as $key => $result) {
+            $categoryId = $result[self::CATEGORY_ID];
 
             // check if this category is accessible
-            if( !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id, $is_allowed_to_see_resource_stmt, $have_categories_notes_stmt)){
-                unset($all_categories[$key]);
+            if( !$this->myNotesController->hasCategoryFamilyVisibleNotes($categoryId, $isAllowedToSeeResourceStmt, $haveCategoriesNotesStmt)){
+                unset($allCategories[$key]);
                 continue;
             }
 
             // check if category is locked (parent)
-            if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $is_allowed_to_see_resource_stmt) ){
-                unset($all_categories[$key]);
+            if( !$this->lockedResourceController->isAllowedToSeeResource($categoryId, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $isAllowedToSeeResourceStmt) ){
+                unset($allCategories[$key]);
                 continue;
             }
 
-            $accessible_categories[$category_id] = $result;
+            $accessibleCategories[$categoryId] = $result;
 
-            if (!is_null($all_categories[$key][self::CHILDRENS_ID])) {
-                $accessible_categories[$category_id][self::CHILDRENS_ID] = explode(',', $all_categories[$key][self::CHILDRENS_ID]);
+            if (!is_null($allCategories[$key][self::CHILDRENS_ID])) {
+                $accessibleCategories[$categoryId][self::CHILDRENS_ID] = explode(',', $allCategories[$key][self::CHILDRENS_ID]);
             }
 
             // check if children categories are accessible
-            if( !array_key_exists(self::CHILDRENS_ID, $accessible_categories[$category_id]) ) {
+            if( !array_key_exists(self::CHILDRENS_ID, $accessibleCategories[$categoryId]) ) {
                 continue;
             }
 
-            $children_ids = $accessible_categories[$category_id][self::CHILDRENS_ID];
-
-            if( is_null($children_ids) ){
+            $childrenIds = $accessibleCategories[$categoryId][self::CHILDRENS_ID];
+            if( is_null($childrenIds) ){
                 continue;
             }
 
-            foreach( $children_ids as $index => $child_id ){
-                $is_child_accessible = true;
+            foreach( $childrenIds as $index => $childId ){
+                $isChildAccessible = true;
                 if(
-                        !$this->my_notes_controller->hasCategoryFamilyVisibleNotes($child_id, $is_allowed_to_see_resource_stmt, $have_categories_notes_stmt)
-                    ||  !$this->locked_resource_controller->isAllowedToSeeResource($child_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $is_allowed_to_see_resource_stmt)
+                        !$this->myNotesController->hasCategoryFamilyVisibleNotes($childId, $isAllowedToSeeResourceStmt, $haveCategoriesNotesStmt)
+                    ||  !$this->lockedResourceController->isAllowedToSeeResource($childId, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $isAllowedToSeeResourceStmt)
                 ){
-                    $is_child_accessible = false;
+                    $isChildAccessible = false;
                 }
 
-                if( !$is_child_accessible ){
-                    unset($accessible_categories[$category_id][self::CHILDRENS_ID][$index]);
+                if( !$isChildAccessible ){
+                    unset($accessibleCategories[$categoryId][self::CHILDRENS_ID][$index]);
                 }
             }
         }
 
-        return $accessible_categories;
+        return $accessibleCategories;
     }
 
     /**
      * @param string $name
-     * @param string $category_id
+     * @param string $categoryId
      * @return bool
      */
-    public function hasCategoryChildWithThisName(string $name, ?string $category_id): bool
+    public function hasCategoryChildWithThisName(string $name, ?string $categoryId): bool
     {
-        $found_corresponding_notes_categories    = $this->app->repositories->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($name, $category_id);
-        $category_with_this_name_exist_in_parent = !empty($found_corresponding_notes_categories);
+        $foundCorrespondingNotesCategories = $this->app->repositories->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($name, $categoryId);
+        $categoryWithThisNameExistInParent = !empty($foundCorrespondingNotesCategories);
 
-        return $category_with_this_name_exist_in_parent;
+        return $categoryWithThisNameExistInParent;
     }
 
     /**
@@ -161,27 +160,27 @@ class MyNotesCategoriesController extends AbstractController {
      */
     private function buildParentChildDtoForHierarchy(MyNotesCategories $category, int $depth): ParentChildDTO
     {
-        $parent_child_dtos = [];
+        $parentChildDtos = [];
 
-        $category_id   = $category->getId();
-        $category_name = $category->getName();
+        $categoryId   = $category->getId();
+        $categoryName = $category->getName();
 
-        $child_categories = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesForCategoriesIds([$category_id]);
+        $childCategories = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesForCategoriesIds([$categoryId]);
 
-        foreach($child_categories as $child_category){
-            $child_depth         = $depth +1;
-            $parent_child_dto    = $this->buildParentChildDtoForHierarchy($child_category, $child_depth);
-            $parent_child_dtos[] = $parent_child_dto;
+        foreach($childCategories as $childCategory){
+            $childDepth        = $depth +1;
+            $parentChildDto    = $this->buildParentChildDtoForHierarchy($childCategory, $childDepth);
+            $parentChildDtos[] = $parentChildDto;
         }
 
-        $parent_child_dto = new ParentChildDTO();
-        $parent_child_dto->setType(ModulesController::MODULE_ENTITY_NOTES_CATEGORY);
-        $parent_child_dto->setId($category_id);
-        $parent_child_dto->setName($category_name);
-        $parent_child_dto->setDepth($depth);
-        $parent_child_dto->setChildren($parent_child_dtos);
+        $parentChildDto = new ParentChildDTO();
+        $parentChildDto->setType(ModulesController::MODULE_ENTITY_NOTES_CATEGORY);
+        $parentChildDto->setId($categoryId);
+        $parentChildDto->setName($categoryName);
+        $parentChildDto->setDepth($depth);
+        $parentChildDto->setChildren($parentChildDtos);
 
-        return $parent_child_dto;
+        return $parentChildDto;
     }
 
     /**
@@ -190,32 +189,32 @@ class MyNotesCategoriesController extends AbstractController {
      */
     private function buildCategoriesDepths(): array
     {
-        $notes_categories  = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
-        $categories_depths = [];
+        $notesCategories  = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
+        $categoriesDepths = [];
 
-        foreach( $notes_categories as $category ){
-            $depth       = 0;
-            $category_id = $category->getId();
+        foreach( $notesCategories as $category ){
+            $depth      = 0;
+            $categoryId = $category->getId();
 
-            $has_parent                 = !empty($category->getParentId());
-            $currently_checked_category = $category;
-            while( $has_parent ){
-                $parent_id = $currently_checked_category->getParentId();
+            $hasParent                = !empty($category->getParentId());
+            $currentlyCheckedCategory = $category;
+            while( $hasParent ){
+                $parentId = $currentlyCheckedCategory->getParentId();
 
-                if( empty($parent_id) ){
+                if( empty($parentId) ){
                     break;
                 }
 
-                $parent_category            = $this->app->repositories->myNotesCategoriesRepository->find($parent_id);
-                $currently_checked_category = $parent_category;
+                $parentCategory           = $this->app->repositories->myNotesCategoriesRepository->find($parentId);
+                $currentlyCheckedCategory = $parentCategory;
 
                 $depth++;
             }
 
-            $categories_depths[$category_id] = $depth;
+            $categoriesDepths[$categoryId] = $depth;
         }
 
-        return $categories_depths;
+        return $categoriesDepths;
     }
 
     /**

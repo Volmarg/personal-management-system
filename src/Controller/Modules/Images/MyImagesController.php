@@ -38,35 +38,35 @@ class MyImagesController extends AbstractController {
      * @return array
      */
     public function getImagesFromCategory(string $subdirectory): array {
-        $upload_dir       = Env::getImagesUploadDir();
-        $all_images       = [];
-        $search_dir       = ( empty($subdirectory) ? $upload_dir : $upload_dir . '/' . $subdirectory);
+        $uploadDir = Env::getImagesUploadDir();
+        $allImages = [];
+        $searchDir = ( empty($subdirectory) ? $uploadDir : $uploadDir . '/' . $subdirectory);
 
-        $this->finder->files()->in($search_dir);
+        $this->finder->files()->in($searchDir);
 
         foreach ($this->finder as $image) {
 
-            $file_full_path = $image->getPath() . DIRECTORY_SEPARATOR . $image->getFilename();
-            $file_tags      = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_full_path);
-            $tags_json      = ( $file_tags instanceof FilesTags ? $file_tags->getTags() : "" );
+            $fileFullPath = $image->getPath() . DIRECTORY_SEPARATOR . $image->getFilename();
+            $fileTags     = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
+            $tagsJson     = ( $fileTags instanceof FilesTags ? $fileTags->getTags() : "" );
 
-            $all_images[] = [
+            $allImages[] = [
                 static::KEY_FILE_FULL_PATH => $image->getPathname(),
                 static::KEY_FILE_NAME      => $image->getFilename(),
-                FileTagger::KEY_TAGS       => $tags_json
+                FileTagger::KEY_TAGS       => $tagsJson
             ];
         }
 
-        return $all_images;
+        return $allImages;
     }
 
     /**
      * @return array
      */
     public function getMainFolderImages(): array {
-        $all_images_paths = $this->getImagesFromCategory('');
+        $allImagesPaths = $this->getImagesFromCategory('');
 
-        return $all_images_paths;
+        return $allImagesPaths;
     }
 
 }

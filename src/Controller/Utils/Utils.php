@@ -43,10 +43,10 @@ class Utils extends AbstractController {
      *
      * @param string $source
      * @param string $destination
-     * @param FileTagger|null $file_tagger
+     * @param FileTagger|null $fileTagger
      * @throws Exception
      */
-    public static function copyFiles(string $source, string $destination, ?FileTagger $file_tagger = null) {
+    public static function copyFiles(string $source, string $destination, ?FileTagger $fileTagger = null) {
         $finder = new Finder();
         $finder->depth('==0');
 
@@ -58,23 +58,23 @@ class Utils extends AbstractController {
              * @var $file SplFileInfo
              */
             foreach( $finder->files() as $file ){
-                $filepath                   = $file->getPathname();
-                $file_extension             = $file->getExtension();
-                $filename_without_extension = $file->getFilenameWithoutExtension();
+                $filepath                 = $file->getPathname();
+                $fileExtension            = $file->getExtension();
+                $filenameWithoutExtension = $file->getFilenameWithoutExtension();
 
-                $file_path_in_destination_folder = "{$destination}/{$filename_without_extension}.{$file_extension}";
+                $filePathInDestinationFolder = "{$destination}/{$filenameWithoutExtension}.{$fileExtension}";
 
-                if( file_exists($file_path_in_destination_folder) ){
-                    $curr_date_time     = new \DateTime();
-                    $filename_date_time = $curr_date_time->format('Y_m_d_h_i_s');
+                if( file_exists($filePathInDestinationFolder) ){
+                    $currDateTime     = new \DateTime();
+                    $filenameDateTime = $currDateTime->format('Y_m_d_h_i_s');
 
-                    $file_path_in_destination_folder = "{$destination}/{$filename_without_extension}.{$filename_date_time}.{$file_extension}";
+                    $filePathInDestinationFolder = "{$destination}/{$filenameWithoutExtension}.{$filenameDateTime}.{$fileExtension}";
                 }
 
-                copy($filepath, $file_path_in_destination_folder);
+                copy($filepath, $filePathInDestinationFolder);
 
-                if( !is_null($file_tagger) ){
-                    $file_tagger->copyTagsFromPathToNewPath($filepath, $file_path_in_destination_folder);
+                if( !is_null($fileTagger) ){
+                    $fileTagger->copyTagsFromPathToNewPath($filepath, $filePathInDestinationFolder);
                 }
             }
 
@@ -116,10 +116,10 @@ class Utils extends AbstractController {
 
         for($x = 0; $x <= $count; $x++) {
 
-            $array_index = array_rand($data);
-            $randoms[]   = $data[$array_index];
+            $arrayIndex = array_rand($data);
+            $randoms[]  = $data[$arrayIndex];
 
-            unset($data[$array_index]);
+            unset($data[$arrayIndex]);
 
             if( empty ($data) ) {
                 break;
@@ -131,24 +131,24 @@ class Utils extends AbstractController {
     }
 
     /**
-     * This function will search for forms with names in @param array $keys_to_filter
+     * This function will search for forms with names in @param array $keysToFilter
      * This function should be used only when there are more than one forms in the request
      *  otherwise it will filter unwanted data
-     * @param array $request_arrays
+     * @param array $requestArrays
      * @return array
      * @see $keysToFilter and unset them in $request arrays
      */
-    public static function filterRequestForms(array $keys_to_filter, array $request_arrays):array {
+    public static function filterRequestForms(array $keysToFilter, array $requestArrays):array {
 
-        foreach($keys_to_filter as $key){
+        foreach($keysToFilter as $key){
 
-            if( array_key_exists($key, $request_arrays) ){
-                unset($request_arrays[$key]);
+            if( array_key_exists($key, $requestArrays) ){
+                unset($requestArrays[$key]);
             }
 
         }
 
-        return $request_arrays;
+        return $requestArrays;
     }
 
     /**
@@ -162,13 +162,13 @@ class Utils extends AbstractController {
     /**
      * Will return the string formatted in the way that symfony does it for fields
      *
-     * @param string $data_class - the class used in `configureOptions` method of Form
-     * @param string $field_name
+     * @param string $dataClass - the class used in `configureOptions` method of Form
+     * @param string $fieldName
      * @return string
      */
-    public static function fieldIdForSymfonyForm(string $data_class, string $field_name): string
+    public static function fieldIdForSymfonyForm(string $dataClass, string $fieldName): string
     {
-        return self::formClassToFormPrefix($data_class) . '_' . $field_name;
+        return self::formClassToFormPrefix($dataClass) . '_' . $fieldName;
     }
 
     /**
@@ -203,10 +203,10 @@ class Utils extends AbstractController {
      */
     public static function escapedDoubleQuoteJsonEncode(array $array): string
     {
-        $json              = \GuzzleHttp\json_encode($array);
-        $single_quote_json = str_replace('"','\"' , $json);
+        $json            = \GuzzleHttp\json_encode($array);
+        $singleQuoteJson = str_replace('"','\"' , $json);
 
-        return $single_quote_json;
+        return $singleQuoteJson;
     }
 
     /**
@@ -220,11 +220,11 @@ class Utils extends AbstractController {
             return $value;
         }elseif( is_string($value) ){
 
-            $allowed_values = [
+            $allowedValues = [
                 self::TRUE_AS_STRING, self::FALSE_AS_STRING
             ];
 
-            if( !in_array($value, $allowed_values) ){
+            if( !in_array($value, $allowedValues) ){
                 throw new Exception("Not a bool string");
             }
 
@@ -237,30 +237,30 @@ class Utils extends AbstractController {
 
     /**
      * Returns the class name without namespace
-     * @param string $class_with_namespace
+     * @param string $classWithNamespace
      * @return string
      */
-    public static function getClassBasename(string $class_with_namespace): string
+    public static function getClassBasename(string $classWithNamespace): string
     {
-        $class_parts             = explode('\\', $class_with_namespace);
-        $class_without_namespace = end($class_parts);
-        return $class_without_namespace;
+        $classParts            = explode('\\', $classWithNamespace);
+        $classWithoutNamespace = end($classParts);
+        return $classWithoutNamespace;
     }
 
     /**
      * Will round the given value to the nearest (LOWER/DOWN) value provided as second parameter, for example nearest 0.25
      * 1.0, 1.25, 1.5, 1,75 ....
      *
-     * @param float $actual_value
-     * @param float $round_to_repentance_of
+     * @param float $actualValue
+     * @param float $roundToRepentanceOf
      * @return float|int
      */
-    public static function roundDownToAny(float $actual_value, float $round_to_repentance_of) {
-        if( 0 === $actual_value ){
+    public static function roundDownToAny(float $actualValue, float $roundToRepentanceOf) {
+        if( 0 === $actualValue ){
             return 0;
         }
 
-        return floor($actual_value/$round_to_repentance_of) * $round_to_repentance_of;
+        return floor($actualValue/$roundToRepentanceOf) * $roundToRepentanceOf;
     }
 
     /**
@@ -276,37 +276,37 @@ class Utils extends AbstractController {
         $mins  = floor($seconds / 60 % 60);
         $secs  = floor($seconds % 60);
 
-        $time_format = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
+        $timeFormat = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
 
-        return $time_format;
+        return $timeFormat;
     }
 
     /**
      * Will turn the string version of array into real array. The required syntax is:
      * [\"127.0.0.1\", \"192.168.10.1\"]
      *
-     * @param string $string_array
+     * @param string $stringArray
      * @return array
      * @throws Exception
      */
-    public static function getRealArrayForStringArray(string $string_array): array
+    public static function getRealArrayForStringArray(string $stringArray): array
     {
-        $real_array = json_decode($string_array);
-        if( empty($real_array) ){
+        $realArray = json_decode($stringArray);
+        if( empty($realArray) ){
             return [];
         }
 
         if(
             JSON_ERROR_NONE != json_last_error()
             ||  (
-                    !empty($string_array)
-                &&  "[]" !== $string_array
-                &&  empty($real_array)
+                    !empty($stringArray)
+                &&  "[]" !== $stringArray
+                &&  empty($realArray)
             )
         ){
             throw new Exception("Incorrect syntax of array of restricted ips");
         }
 
-        return $real_array;
+        return $realArray;
     }
 }

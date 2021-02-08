@@ -19,20 +19,20 @@ abstract class AbstractValidator {
     /**
      * This will check if Violations list is empty,
      * this must be handled this way as Validator returns also empty array (single element) if no violation was present
-     * @param ConstraintViolationListInterface $violation_list
+     * @param ConstraintViolationListInterface $violationList
      * @return bool
      */
-    public static function areViolations(ConstraintViolationListInterface $violation_list): bool
+    public static function areViolations(ConstraintViolationListInterface $violationList): bool
     {
-        $all_violations = [];
+        $allViolations = [];
 
-        foreach($violation_list as $violation ){
+        foreach($violationList as $violation ){
             if( !empty($violation) ){
-                $all_violations[] = $violation;
+                $allViolations[] = $violation;
             }
         }
 
-        if( empty($all_violations) ){
+        if( empty($allViolations) ){
             return true;
         }
 

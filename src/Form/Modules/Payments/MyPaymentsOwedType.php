@@ -36,7 +36,7 @@ class MyPaymentsOwedType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $finances_currencies_dtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $finances_currencies_dtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
         $choices                  = $this->buildCurrencyChoices($finances_currencies_dtos);
 
         $builder

@@ -8,7 +8,6 @@ use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Video\MyVideoController;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Core\Translator;
@@ -62,9 +61,9 @@ class FileUploadController extends AbstractController {
     ];
 
     /**
-     * @var FilesHandler $files_handler
+     * @var FilesHandler $filesHandler
      */
-    private $files_handler;
+    private $filesHandler;
 
     /**
      * @var Application $app
@@ -72,25 +71,25 @@ class FileUploadController extends AbstractController {
     private $app;
 
     /**
-     * @var DirectoriesHandler $directories_handler
+     * @var DirectoriesHandler $directoriesHandler
      */
-    private $directories_handler;
+    private $directoriesHandler;
 
     public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app) {
-        $this->app                 = $app;
-        $this->files_handler       = $filesHandler;
-        $this->directories_handler = $directoriesHandler;
+        $this->app                = $app;
+        $this->filesHandler       = $filesHandler;
+        $this->directoriesHandler = $directoriesHandler;
     }
 
     /**
-     * @param string $upload_module_dir
+     * @param string $uploadModuleDir
      * @return mixed
      * @throws Exception
      */
-    public static function getTargetDirectoryForUploadModuleDir(string $upload_module_dir){
+    public static function getTargetDirectoryForUploadModuleDir(string $uploadModuleDir){
         $translator = new Translator();
 
-        switch ($upload_module_dir) {
+        switch ($uploadModuleDir) {
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
                 $targetDirectory = Env::getFilesUploadDir();
                 break;
@@ -109,41 +108,41 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param string $target_directory
-     * @param string $subdirectory_name
+     * @param string $targetDirectory
+     * @param string $subdirectoryName
      * @return bool
      */
-    public static function isSubdirectoryForModuleDirExisting(string $target_directory, string $subdirectory_name): bool {
-        $subdirectory_path = static::getSubdirectoryPath($target_directory, $subdirectory_name);
-        return file_exists($subdirectory_path);
+    public static function isSubdirectoryForModuleDirExisting(string $targetDirectory, string $subdirectoryName): bool {
+        $subdirectoryPath = static::getSubdirectoryPath($targetDirectory, $subdirectoryName);
+        return file_exists($subdirectoryPath);
     }
 
     /**
-     * @param string $target_directory
-     * @param string $subdirectory_name
+     * @param string $targetDirectory
+     * @param string $subdirectoryName
      * @return string
      */
-    public static function getSubdirectoryPath(string $target_directory, string $subdirectory_name){
-        return $target_directory . '/' . $subdirectory_name;
+    public static function getSubdirectoryPath(string $targetDirectory, string $subdirectoryName){
+        return $targetDirectory . '/' . $subdirectoryName;
     }
 
     /**
-     * @param bool $grouped_by_module_upload_dirs
-     * @param bool $include_main_folder
+     * @param bool $groupedByModuleUploadDirs
+     * @param bool $includeMainFolder
      * @return array
      * @throws Exception
      */
-    public static function getFoldersTreesForAllUploadModulesDirs($grouped_by_module_upload_dirs = false, $include_main_folder = false){
+    public static function getFoldersTreesForAllUploadModulesDirs($groupedByModuleUploadDirs = false, $includeMainFolder = false){
 
         $subdirectories = [];
 
-        if( !$grouped_by_module_upload_dirs ){
-            foreach(static::MODULES_UPLOAD_DIRS as $module_upload_dir){
-                $subdirectories = array_merge($subdirectories, static::getFoldersTreesForUploadModuleDir($module_upload_dir, $include_main_folder) );
+        if( !$groupedByModuleUploadDirs ){
+            foreach(static::MODULES_UPLOAD_DIRS as $moduleUploadDir){
+                $subdirectories = array_merge($subdirectories, static::getFoldersTreesForUploadModuleDir($moduleUploadDir, $includeMainFolder) );
             }
         }else{
-            foreach(static::MODULES_UPLOAD_DIRS as $module_upload_dir){
-                $subdirectories[$module_upload_dir] = static::getFoldersTreesForUploadModuleDir($module_upload_dir, $include_main_folder);
+            foreach(static::MODULES_UPLOAD_DIRS as $moduleUploadDir){
+                $subdirectories[$moduleUploadDir] = static::getFoldersTreesForUploadModuleDir($moduleUploadDir, $includeMainFolder);
             }
         }
 
@@ -151,21 +150,21 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param string $upload_module_dir
-     * @param bool $include_main_folder
+     * @param string $uploadModuleDir
+     * @param bool $includeMainFolder
      * @return array|false
      * @throws Exception
      */
-    public static function getFoldersTreesForUploadModuleDir(string $upload_module_dir, $include_main_folder = false)
+    public static function getFoldersTreesForUploadModuleDir(string $uploadModuleDir, $includeMainFolder = false)
     {
-        $target_directory_for_module_upload_dir = static::getTargetDirectoryForUploadModuleDir($upload_module_dir);
-        $folders_trees                          = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory_for_module_upload_dir ), true );
+        $targetDirectoryForModuleUploadDir = static::getTargetDirectoryForUploadModuleDir($uploadModuleDir);
+        $foldersTrees                      = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $targetDirectoryForModuleUploadDir ), true );
 
-        if( $include_main_folder ){
+        if( $includeMainFolder ){
             $subdirectories[static::KEY_MAIN_FOLDER] = "";
         }
 
-        return $folders_trees;
+        return $foldersTrees;
     }
 
     /**
@@ -178,15 +177,15 @@ class FileUploadController extends AbstractController {
     public static function getUploadModuleNameForFilePath(string $filepath): string
     {
         preg_match("#" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH . "#", $filepath, $matches);
-        $upload_module_dir = $matches[self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME];
+        $uploadModuleDir = $matches[self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME];
 
-        if( !array_key_exists($upload_module_dir,FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME) ){
+        if( !array_key_exists($uploadModuleDir,FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME) ){
             $message = "Given upload_module_dir is not an upload module dir";
             throw new Exception($message);
         }
 
-        $module_name = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$upload_module_dir];
+        $moduleName = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$uploadModuleDir];
 
-        return $module_name;
+        return $moduleName;
     }
 }

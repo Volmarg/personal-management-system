@@ -20,39 +20,39 @@ class MyContactsSettingsController extends AbstractController {
     }
 
     /**
-     * @param MyContactType $entity_before_update
-     * @param MyContactType $entity_after_update
+     * @param MyContactType $entityBeforeUpdate
+     * @param MyContactType $entityAfterUpdate
      * @throws Exception
      */
-    public function updateContactsForUpdatedType(MyContactType $entity_before_update, MyContactType $entity_after_update)
+    public function updateContactsForUpdatedType(MyContactType $entityBeforeUpdate, MyContactType $entityAfterUpdate)
     {
-        $previous_contact_type_name = $entity_before_update->getName();
+        $previousContactTypeName = $entityBeforeUpdate->getName();
 
-        $new_contact_type_name       = $entity_after_update->getName();
-        $new_contact_type_image_path = $entity_after_update->getImagePath();
+        $newContactTypeName      = $entityAfterUpdate->getName();
+        $newContactTypeImagePath = $entityAfterUpdate->getImagePath();
 
-        $contacts_to_update = $this->app->repositories->myContactRepository->findContactsWithContactTypeByContactTypeName($previous_contact_type_name);
+        $contactsToUpdate = $this->app->repositories->myContactRepository->findContactsWithContactTypeByContactTypeName($previousContactTypeName);
 
-        foreach($contacts_to_update as $contact_to_update)
+        foreach($contactsToUpdate as $contactToUpdate)
         {
-            $contacts_types_dtos = $contact_to_update->getContacts()->getContactTypeDtos();
+            $contactsTypesDtos = $contactToUpdate->getContacts()->getContactTypeDtos();
 
-            foreach($contacts_types_dtos as $index => $contact_type_dto){
-                if( strtolower($contact_type_dto->getName()) === strtolower($previous_contact_type_name) )
+            foreach($contactsTypesDtos as $index => $contactTypeDto){
+                if( strtolower($contactTypeDto->getName()) === strtolower($previousContactTypeName) )
                 {
-                    $contact_type_dto->setName($new_contact_type_name);
-                    $contact_type_dto->setIconPath($new_contact_type_image_path);
-                    $contacts_types_dtos[$index] = $contact_type_dto;
+                    $contactTypeDto->setName($newContactTypeName);
+                    $contactTypeDto->setIconPath($newContactTypeImagePath);
+                    $contactsTypesDtos[$index] = $contactTypeDto;
                 }
             }
 
-            $contacts_types_dto = new ContactsTypesDTO();
-            $contacts_types_dto->setContactTypeDtos($contacts_types_dtos);
+            $contactsTypesDto = new ContactsTypesDTO();
+            $contactsTypesDto->setContactTypeDtos($contactsTypesDtos);
 
-            $json = $contacts_types_dto->toJson();
+            $json = $contactsTypesDto->toJson();
 
-            $contact_to_update->setContacts($json);
-            $this->app->repositories->myContactRepository->saveEntity($contact_to_update);
+            $contactToUpdate->setContacts($json);
+            $this->app->repositories->myContactRepository->saveEntity($contactToUpdate);
         }
     }
 

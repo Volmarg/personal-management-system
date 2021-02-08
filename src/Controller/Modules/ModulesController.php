@@ -79,52 +79,52 @@ class ModulesController extends AbstractController {
     /**
      * Will map module name to entity namespace
      *
-     * @param string $module_name
+     * @param string $moduleName
      * @return string|null
      */
-    public static function getEntityNamespaceForModuleName(string $module_name): ?string
+    public static function getEntityNamespaceForModuleName(string $moduleName): ?string
     {
-        if( !self::isModuleDefined($module_name) ){
+        if( !self::isModuleDefined($moduleName) ){
             return null;
         }
 
-        return self::MODULE_TO_ENTITY_NAMESPACE[$module_name];
+        return self::MODULE_TO_ENTITY_NAMESPACE[$moduleName];
     }
 
     /**
      * Will check weather given module name exists at all in the system
      *
-     * @param string $module_name
+     * @param string $moduleName
      * @return bool
      */
-    public static function isModuleDefined(string $module_name): bool
+    public static function isModuleDefined(string $moduleName): bool
     {
-        return in_array($module_name, self::ALL_MODULES);
+        return in_array($moduleName, self::ALL_MODULES);
     }
 
     /**
      * Returns the file based module name for full file path
      *
-     * @param string $file_full_path
+     * @param string $fileFullPath
      * @return string|null
      */
-    public static function getUploadModuleNameForFileFullPath(string $file_full_path): ?string
+    public static function getUploadModuleNameForFileFullPath(string $fileFullPath): ?string
     {
-        $trimmed_file_full_path = FilesHandler::trimFirstAndLastSlash($file_full_path);
+        $trimmedFileFullPath = FilesHandler::trimFirstAndLastSlash($fileFullPath);
 
         switch(true)
         {
-            case preg_match("#^" . Env::getImagesUploadDir() . "#", $trimmed_file_full_path):
+            case preg_match("#^" . Env::getImagesUploadDir() . "#", $trimmedFileFullPath):
             {
                 return self::MODULE_NAME_IMAGES;
             }
 
-            case preg_match("#^" . Env::getFilesUploadDir() . "#", $trimmed_file_full_path):
+            case preg_match("#^" . Env::getFilesUploadDir() . "#", $trimmedFileFullPath):
             {
                 return self::MODULE_NAME_FILES;
             }
 
-            case preg_match("#^" . Env::getVideoUploadDir() . "#", $trimmed_file_full_path):
+            case preg_match("#^" . Env::getVideoUploadDir() . "#", $trimmedFileFullPath):
             {
                 return self::MODULE_NAME_VIDEO;
             }

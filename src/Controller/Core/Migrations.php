@@ -90,8 +90,8 @@ class Migrations
      */
     public static function buildSqlExecutedIfTableNotExist(string $table_name, string $executed_sql): string
     {
-        $database_credentials_dto = Env::getDatabaseCredentials();
-        $database_name            = $database_credentials_dto->getDatabaseName();
+        $databaseCredentialsDto = Env::getDatabaseCredentials();
+        $databaseName           = $databaseCredentialsDto->getDatabaseName();
 
         $sql = "
             SET @preparedStatement  = (SELECT IF(
@@ -99,7 +99,7 @@ class Migrations
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
                 WHERE
                             table_name   = '{$table_name}'
-                        AND table_schema = '{$database_name}'
+                        AND table_schema = '{$databaseName}'
               ) > 0,
               'SELECT 1',
               '{$executed_sql}'
@@ -123,8 +123,8 @@ class Migrations
      */
     public static function buildSqlExecutedIfTableIsEmpty(string $table_name, string $executed_sql): string
     {
-        $database_credentials_dto = Env::getDatabaseCredentials();
-        $database_name            = $database_credentials_dto->getDatabaseName();
+        $databaseCredentialsDto = Env::getDatabaseCredentials();
+        $databaseName           = $databaseCredentialsDto->getDatabaseName();
 
         $sql = "
             SET @preparedStatement  = (SELECT IF(
@@ -132,7 +132,7 @@ class Migrations
                 SELECT IF(TABLE_ROWS !='', TABLE_ROWS, 1) -- add 1 to prevent executing if table does not exist 
                 FROM INFORMATION_SCHEMA.TABLES 
                 WHERE TABLE_NAME = '{$table_name}'
-                AND TABLE_SCHEMA = '{$database_name}'
+                AND TABLE_SCHEMA = '{$databaseName}'
               ) > 0,
               'SELECT 1',
               '{$executed_sql}'              

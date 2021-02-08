@@ -46,12 +46,12 @@ class FileValidator {
      */
     public static function isFileImage(File $file): bool
     {
-        $validator       = Validation::createValidator();
-        $violations_list = $validator->validate($file, new FileConstraint([
+        $validator      = Validation::createValidator();
+        $violationsList = $validator->validate($file, new FileConstraint([
             'mimeTypes' => self::IMAGES_MIME_TYPES,
         ]));
 
-        return AbstractValidator::areViolations($violations_list);
+        return AbstractValidator::areViolations($violationsList);
     }
 
     /**
@@ -63,12 +63,12 @@ class FileValidator {
      */
     public static function isImageResizable(File $file): bool
     {
-        $validator       = Validation::createValidator();
-        $violations_list = $validator->validate($file, new FileConstraint([
+        $validator      = Validation::createValidator();
+        $violationsList = $validator->validate($file, new FileConstraint([
             'mimeTypes' => self::RESIZABLE_MIME_TYPES,
         ]));
 
-        return AbstractValidator::areViolations($violations_list);
+        return AbstractValidator::areViolations($violationsList);
     }
 
 }

@@ -47,13 +47,13 @@ class AjaxResponse extends AbstractController {
      */
     private $password = null;
     /**
-     * @var bool $reload_page
+     * @var bool $reloadPage
      */
-    private $reload_page = false;
+    private $reloadPage = false;
     /**
-     * @var string $reload_message
+     * @var string $reloadMessage
      */
-    private $reload_message = "";
+    private $reloadMessage = "";
     /**
      * @var bool $success
      */
@@ -61,29 +61,29 @@ class AjaxResponse extends AbstractController {
 
     /**
      * Used on front to find the form fields
-     * @var string $validated_form_prefix
+     * @var string $validatedFormPrefix
      */
-    private $validated_form_prefix = "";
+    private $validatedFormPrefix = "";
 
     /**
-     * @var array $invalid_form_fields
+     * @var array $invalidFormFields
      */
-    private $invalid_form_fields = [];
+    private $invalidFormFields = [];
 
     /**
-     * @var string $form_template
+     * @var string $formTemplate
      */
-    private $form_template = "";
+    private $formTemplate = "";
 
     /**
-     * @var string $route_url
+     * @var string $routeUrl
      */
-    private $route_url = "";
+    private $routeUrl = "";
 
     /**
-     * @var string $constant_value
+     * @var string $constantValue
      */
-    private $constant_value = "";
+    private $constantValue = "";
 
     /**
      * @return int
@@ -145,28 +145,28 @@ class AjaxResponse extends AbstractController {
      * @return bool
      */
     public function isReloadPage(): bool {
-        return $this->reload_page;
+        return $this->reloadPage;
     }
 
     /**
-     * @param bool $reload_page
+     * @param bool $reloadPage
      */
-    public function setReloadPage(bool $reload_page): void {
-        $this->reload_page = $reload_page;
+    public function setReloadPage(bool $reloadPage): void {
+        $this->reloadPage = $reloadPage;
     }
 
     /**
      * @return string
      */
     public function getReloadMessage(): string {
-        return $this->reload_message;
+        return $this->reloadMessage;
     }
 
     /**
-     * @param string $reload_message
+     * @param string $reloadMessage
      */
-    public function setReloadMessage(string $reload_message): void {
-        $this->reload_message = $reload_message;
+    public function setReloadMessage(string $reloadMessage): void {
+        $this->reloadMessage = $reloadMessage;
     }
 
     /**
@@ -187,70 +187,70 @@ class AjaxResponse extends AbstractController {
      * @return string
      */
     public function getFormTemplate(): string {
-        return $this->form_template;
+        return $this->formTemplate;
     }
 
     /**
-     * @param string $form_template
+     * @param string $formTemplate
      */
-    public function setFormTemplate(string $form_template): void {
-        $this->form_template = $form_template;
+    public function setFormTemplate(string $formTemplate): void {
+        $this->formTemplate = $formTemplate;
     }
 
     /**
      * @return string
      */
     public function getValidatedFormPrefix(): string {
-        return $this->validated_form_prefix;
+        return $this->validatedFormPrefix;
     }
 
     /**
-     * @param string $validated_form_prefix
+     * @param string $validatedFormPrefix
      */
-    public function setValidatedFormPrefix(string $validated_form_prefix): void {
-        $this->validated_form_prefix = $validated_form_prefix;
+    public function setValidatedFormPrefix(string $validatedFormPrefix): void {
+        $this->validatedFormPrefix = $validatedFormPrefix;
     }
 
     /**
      * @return array
      */
     public function getInvalidFormFields(): array {
-        return $this->invalid_form_fields;
+        return $this->invalidFormFields;
     }
 
     /**
-     * @param array $invalid_form_fields
+     * @param array $invalidFormFields
      */
-    public function setInvalidFormFields(array $invalid_form_fields): void {
-        $this->invalid_form_fields = $invalid_form_fields;
+    public function setInvalidFormFields(array $invalidFormFields): void {
+        $this->invalidFormFields = $invalidFormFields;
     }
 
     /**
      * @return string
      */
     public function getRouteUrl(): string {
-        return $this->route_url;
+        return $this->routeUrl;
     }
 
     /**
-     * @param string $route_url
+     * @param string $routeUrl
      */
-    public function setRouteUrl(string $route_url): void {
-        $this->route_url = $route_url;
+    public function setRouteUrl(string $routeUrl): void {
+        $this->routeUrl = $routeUrl;
     }
 
     /**
      * @return string
      */
     public function getConstantValue(): string {
-        return $this->constant_value;
+        return $this->constantValue;
     }
 
     /**
-     * @param string $constant_value
+     * @param string $constantValue
      */
-    public function setConstantValue(string $constant_value): void {
-        $this->constant_value = $constant_value;
+    public function setConstantValue(string $constantValue): void {
+        $this->constantValue = $constantValue;
     }
 
     /**
@@ -258,57 +258,57 @@ class AjaxResponse extends AbstractController {
      * @param string $message
      * @param string|null $template
      * @param string|null $password
-     * @param bool|null $reload_page
-     * @param string $reload_message
+     * @param bool|null $reloadPage
+     * @param string $reloadMessage
      * @param bool $success
-     * @param string $form_template
-     * @param string $validated_form_prefix
-     * @param array $invalid_form_fields
+     * @param string $formTemplate
+     * @param string $validatedFormPrefix
+     * @param array $invalidFormFields
      * @return JsonResponse
      * @throws Exception
      */
     public static function buildJsonResponseForAjaxCall(
         int     $code,
-        string  $message               = "",
-        ?string $template              = null,
-        ?string $password              = null,
-        ?bool   $reload_page           = false,
-        string  $reload_message        = "",
-        bool    $success               = true,
-        string  $form_template         = "",
-        string  $validated_form_prefix = "",
-        array   $invalid_form_fields   = []
+        string  $message             = "",
+        ?string $template            = null,
+        ?string $password            = null,
+        ?bool   $reloadPage          = false,
+        string  $reloadMessage       = "",
+        bool    $success             = true,
+        string  $formTemplate        = "",
+        string  $validatedFormPrefix = "",
+        array   $invalidFormFields   = []
     ): JsonResponse {
 
-        $response_data = [
+        $responseData = [
             self::KEY_CODE    => $code,
             self::KEY_MESSAGE => $message,
         ];
 
         if( !empty($template) ){
-            $response_data[self::KEY_TEMPLATE] = $template;
+            $responseData[self::KEY_TEMPLATE] = $template;
         }
 
         if( !empty($password) ){
-            $response_data[self::KEY_PASSWORD] = $password;
+            $responseData[self::KEY_PASSWORD] = $password;
         }
 
-        if( !$reload_page ){
-            $reload_page = self::getPageReloadStateFromSession();
+        if( !$reloadPage ){
+            $reloadPage = self::getPageReloadStateFromSession();
         }
 
-        if( $reload_page ){
-            $reload_message = self::getPageReloadMessageFromSession();
+        if( $reloadPage ){
+            $reloadMessage = self::getPageReloadMessageFromSession();
         }
 
-        $response_data[self::KEY_RELOAD_PAGE]           = $reload_page;
-        $response_data[self::KEY_RELOAD_MESSAGE]        = $reload_message;
-        $response_data[self::KEY_SUCCESS]               = $success;
-        $response_data[self::KEY_FORM_TEMPLATE]         = $form_template;
-        $response_data[self::KEY_VALIDATED_FORM_PREFIX] = $validated_form_prefix;
-        $response_data[self::KEY_INVALID_FORM_FIELDS]   = $invalid_form_fields;
+        $responseData[self::KEY_RELOAD_PAGE]           = $reloadPage;
+        $responseData[self::KEY_RELOAD_MESSAGE]        = $reloadMessage;
+        $responseData[self::KEY_SUCCESS]               = $success;
+        $responseData[self::KEY_FORM_TEMPLATE]         = $formTemplate;
+        $responseData[self::KEY_VALIDATED_FORM_PREFIX] = $validatedFormPrefix;
+        $responseData[self::KEY_INVALID_FORM_FIELDS]   = $invalidFormFields;
 
-        $response = new JsonResponse($response_data, 200);
+        $response = new JsonResponse($responseData, 200);
         return $response;
     }
 
@@ -319,15 +319,15 @@ class AjaxResponse extends AbstractController {
      */
     public static function initializeFromResponse(Response $response): AjaxResponse
     {
-        $ajax_response_dto = new AjaxResponse();
+        $ajaxResponseDto = new AjaxResponse();
 
         $message = $response->getContent();
         $code    = $response->getStatusCode();
 
-        $ajax_response_dto->setMessage($message);
-        $ajax_response_dto->setCode($code);
+        $ajaxResponseDto->setMessage($message);
+        $ajaxResponseDto->setCode($code);
 
-        return $ajax_response_dto;
+        return $ajaxResponseDto;
     }
     
     /**
@@ -336,32 +336,19 @@ class AjaxResponse extends AbstractController {
      */
     public function buildJsonResponse(): JsonResponse
     {
-        $code                  = $this->getCode();
-        $message               = $this->getMessage();
-        $template              = $this->getTemplate();
-        $password              = $this->getPassword();
-        $reload_page           = $this->isReloadPage();
-        $reload_message        = $this->getReloadMessage();
-        $success               = $this->isSuccess();
-        $form_template         = $this->getFormTemplate();
-        $validated_form_prefix = $this->getValidatedFormPrefix();
-        $invalid_form_fields   = $this->getInvalidFormFields();
-        $route_url             = $this->getRouteUrl();
-        $constant_value        = $this->getConstantValue();
-
         $response_data = [
-            self::KEY_CODE                  => $code,
-            self::KEY_MESSAGE               => $message,
-            self::KEY_TEMPLATE              => $template,
-            self::KEY_PASSWORD              => $password,
-            self::KEY_RELOAD_PAGE           => $reload_page,
-            self::KEY_RELOAD_MESSAGE        => $reload_message,
-            self::KEY_SUCCESS               => $success,
-            self::KEY_FORM_TEMPLATE         => $form_template,
-            self::KEY_VALIDATED_FORM_PREFIX => $validated_form_prefix,
-            self::KEY_INVALID_FORM_FIELDS   => $invalid_form_fields,
-            self::KEY_ROUTE_URL             => $route_url,
-            self::KEY_CONSTANT_VALUE        => $constant_value,
+            self::KEY_CODE                  => $this->getCode(),
+            self::KEY_MESSAGE               => $this->getMessage(),
+            self::KEY_TEMPLATE              => $this->getTemplate(),
+            self::KEY_PASSWORD              => $this->getPassword(),
+            self::KEY_RELOAD_PAGE           => $this->isReloadPage(),
+            self::KEY_RELOAD_MESSAGE        => $this->getReloadMessage(),
+            self::KEY_SUCCESS               => $this->isSuccess(),
+            self::KEY_FORM_TEMPLATE         => $this->getFormTemplate(),
+            self::KEY_VALIDATED_FORM_PREFIX => $this->getValidatedFormPrefix(),
+            self::KEY_INVALID_FORM_FIELDS   => $this->getInvalidFormFields(),
+            self::KEY_ROUTE_URL             => $this->getRouteUrl(),
+            self::KEY_CONSTANT_VALUE        => $this->getConstantValue(),
         ];
 
         $response = new JsonResponse($response_data, 200);
@@ -371,36 +358,36 @@ class AjaxResponse extends AbstractController {
     /**
      * Will build the ajax response for invalid validation result
      *
-     * @param ValidationResultVO    $validation_result
-     * @param FormInterface         $used_form
+     * @param ValidationResultVO    $validationResult
+     * @param FormInterface         $usedForm
      * @param Translator            $translator
-     * @param string                $reloaded_template_content
+     * @param string                $reloadedTemplateContent
      * @return AjaxResponse
      * @throws Exception
      */
-    public static function buildAjaxResponseForValidationResult(ValidationResultVO $validation_result, FormInterface $used_form, Translator $translator, string $reloaded_template_content = ""): AjaxResponse
+    public static function buildAjaxResponseForValidationResult(ValidationResultVO $validationResult, FormInterface $usedForm, Translator $translator, string $reloadedTemplateContent = ""): AjaxResponse
     {
-        $used_form_type = $used_form->getConfig()->getType()->getInnerType();
+        $usedFormType = $usedForm->getConfig()->getType()->getInnerType();
 
-        if( $validation_result->isValid() ){
+        if( $validationResult->isValid() ){
             throw new Exception("The validation result is valid! Add check in caller before calling this method!");
         }
 
-        if( !($used_form_type instanceof ValidableFormInterface) ){
+        if( !($usedFormType instanceof ValidableFormInterface) ){
             throw new Exception("Provided form does not implement: " . ValidableFormInterface::class);
         }
 
-        $message       = $translator->translate('messages.general.couldNotHandleTheRequest');
-        $ajax_response = new AjaxResponse();
+        $message      = $translator->translate('messages.general.couldNotHandleTheRequest');
+        $ajaxResponse = new AjaxResponse();
 
-        $ajax_response->setCode(Response::HTTP_BAD_REQUEST);
-        $ajax_response->setSuccess(false);
-        $ajax_response->setMessage($message);
-        $ajax_response->setTemplate($reloaded_template_content);
-        $ajax_response->setInvalidFormFields($validation_result->getInvalidFieldsMessages());
-        $ajax_response->setValidatedFormPrefix($used_form_type::getFormPrefix());
+        $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+        $ajaxResponse->setSuccess(false);
+        $ajaxResponse->setMessage($message);
+        $ajaxResponse->setTemplate($reloadedTemplateContent);
+        $ajaxResponse->setInvalidFormFields($validationResult->getInvalidFieldsMessages());
+        $ajaxResponse->setValidatedFormPrefix($usedFormType::getFormPrefix());
 
-        return $ajax_response;
+        return $ajaxResponse;
     }
 
     /**
@@ -415,8 +402,8 @@ class AjaxResponse extends AbstractController {
             return false;
         }
 
-        $reload_page = AjaxCallsSessionService::getPageReloadAfterAjaxCall();
-        return $reload_page;
+        $reloadPage = AjaxCallsSessionService::getPageReloadAfterAjaxCall();
+        return $reloadPage;
     }
 
     /**

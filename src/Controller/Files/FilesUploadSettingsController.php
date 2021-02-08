@@ -19,30 +19,30 @@ class FilesUploadSettingsController extends AbstractController {
     private $finder;
 
     /**
-     * @var DirectoriesHandler $directories_handler
+     * @var DirectoriesHandler $directoriesHandler
      */
-    private $directories_handler;
+    private $directoriesHandler;
 
     /**
      * @var Application $app
      */
     private $app;
 
-    public function __construct(DirectoriesHandler $directories_handler, Application $app) {
-        $this->app                    = $app;
-        $this->finder                 = new Finder();
-        $this->directories_handler    = $directories_handler;
+    public function __construct(DirectoriesHandler $directoriesHandler, Application $app) {
+        $this->app                = $app;
+        $this->finder             = new Finder();
+        $this->directoriesHandler = $directoriesHandler;
     }
 
     /**
-     * @param string $upload_type
-     * @param string $current_directory_path_in_module_upload_dir
-     * @param string $new_name
+     * @param string $uploadType
+     * @param string $currentDirectoryPathInModuleUploadDir
+     * @param string $newName
      * @return Response
      * @throws Exception
      */
-    public function renameSubdirectory(?string $upload_type, ?string $current_directory_path_in_module_upload_dir, ?string $new_name){
-        $response = $this->directories_handler->renameSubdirectory($upload_type, $current_directory_path_in_module_upload_dir, $new_name);
+    public function renameSubdirectory(?string $uploadType, ?string $currentDirectoryPathInModuleUploadDir, ?string $newName){
+        $response = $this->directoriesHandler->renameSubdirectory($uploadType, $currentDirectoryPathInModuleUploadDir, $newName);
         return $response;
     }
 

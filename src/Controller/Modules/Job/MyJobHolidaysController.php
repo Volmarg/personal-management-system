@@ -32,14 +32,14 @@ class MyJobHolidaysController extends AbstractController
 
     /**
      * @param int $id
-     * @param bool $force_fetch - if true then will clear the cached result and get the data from DB
+     * @param bool $forceFetch - if true then will clear the cached result and get the data from DB
      * @return MyJobHolidays|null
      * @throws NonUniqueResultException
      * @throws ORMException
      */
-    public function findOneEntityByIdOrNull(int $id, bool $force_fetch = false):? MyJobHolidays
+    public function findOneEntityByIdOrNull(int $id, bool $forceFetch = false):? MyJobHolidays
     {
-        return $this->app->repositories->myJobHolidaysRepository->findOneEntityByIdOrNull($id, $force_fetch);
+        return $this->app->repositories->myJobHolidaysRepository->findOneEntityByIdOrNull($id, $forceFetch);
     }
 
 }

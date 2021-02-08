@@ -260,7 +260,7 @@ class AppAction extends AbstractController {
 
                 UserRolesSessionService::addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
 
-                $systemLockSessionLifetime = $this->app->config_loaders->getConfigLoaderSession()->getSystemLockLifetime();
+                $systemLockSessionLifetime = $this->app->configLoaders->getConfigLoaderSession()->getSystemLockLifetime();
                 $this->expirableSessionsService->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME, $systemLockSessionLifetime, [User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
 
                 $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");

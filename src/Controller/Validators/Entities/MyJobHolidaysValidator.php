@@ -18,30 +18,30 @@ use Symfony\Component\Validator\Constraints as Assert;
 class MyJobHolidaysValidator extends AbstractValidator {
 
     /**
-     * @var MyJobHolidaysPoolRepository $job_holidays_pool_repository
+     * @var MyJobHolidaysPoolRepository $jobHolidaysPoolRepository
      */
-    private $job_holidays_pool_repository = null;
+    private $jobHolidaysPoolRepository = null;
 
     /**
-     * @var MyJobHolidaysRepository $job_holidays_repository
+     * @var MyJobHolidaysRepository $jobHolidaysRepository
      */
-    private $job_holidays_repository = null;
+    private $jobHolidaysRepository = null;
 
     /**
      * Initialize logic
      *  must be overwritten by children
      */
     protected function init(): void {
-        $this->job_holidays_pool_repository = $this->em->getRepository(MyJobHolidaysPool::class);
-        $this->job_holidays_repository      = $this->em->getRepository(MyJobHolidays::class);
+        $this->jobHolidaysPoolRepository = $this->em->getRepository(MyJobHolidaysPool::class);
+        $this->jobHolidaysRepository     = $this->em->getRepository(MyJobHolidays::class);
     }
 
     /**
      * @inheritDoc
-     * @param string $supported_class
+     * @param string $supportedClass
      */
-    protected function setSupportedClass(string $supported_class): void {
-        $this->supported_class = $supported_class;
+    protected function setSupportedClass(string $supportedClass): void {
+        $this->supportedClass = $supportedClass;
     }
 
     /**
@@ -56,9 +56,9 @@ class MyJobHolidaysValidator extends AbstractValidator {
         parent::validate($entity);
 
         $this->validateDaysSpent($entity);
-        $validation_result = $this->processValidationResult();
+        $validationResult = $this->processValidationResult();
 
-        return $validation_result;
+        return $validationResult;
     }
 
     /**
@@ -69,33 +69,33 @@ class MyJobHolidaysValidator extends AbstractValidator {
      */
     private function validateDaysSpent($entity): void
     {
-        $pool_year          = $entity->getYear();
-        $days_left_for_year = $this->job_holidays_pool_repository->getDaysInPoolLeftForYear($pool_year);
-        $is_new_entity      = empty($entity->getId());
+        $poolYear        = $entity->getYear();
+        $daysLeftForYear = $this->jobHolidaysPoolRepository->getDaysInPoolLeftForYear($poolYear);
+        $isNewEntity     = empty($entity->getId());
 
-        if( $is_new_entity ){
-            $entity_days_spent = $entity->getDaysSpent();
+        if( $isNewEntity ){
+            $entityDaysSpent = $entity->getDaysSpent();
         }else{
-            $entity_days_spent_after_update  = $entity->getDaysSpent();
+            $entityDaysSpentAfterUpdate  = $entity->getDaysSpent();
 
-            $entity_before_update            = $this->job_holidays_repository->findOneEntityByIdOrNull($entity->getId(), true);
-            $entity_days_spent_before_update = $entity_before_update->getDaysSpent();
+            $entityBeforeUpdate          = $this->jobHolidaysRepository->findOneEntityByIdOrNull($entity->getId(), true);
+            $entityDaysSpentBeforeUpdate = $entityBeforeUpdate->getDaysSpent();
 
             // Entity was refreshed to get data from before update so this need be set again as doctrine sees now entity before update in memory
-            $entity->setDaysSpent($entity_days_spent_after_update);
+            $entity->setDaysSpent($entityDaysSpentAfterUpdate);
 
-            $days_left_for_year += $entity_days_spent_before_update;
-            $entity_days_spent   = $entity_days_spent_after_update;
+            $daysLeftForYear += $entityDaysSpentBeforeUpdate;
+            $entityDaysSpent   = $entityDaysSpentAfterUpdate;
         }
 
-        $this->constraint_violations_lists[MyJobHolidays::FIELD_DAYS_SPENT] = $this->validator->validate($entity_days_spent, [
+        $this->constraintViolationsLists[MyJobHolidays::FIELD_DAYS_SPENT] = $this->validator->validate($entityDaysSpent, [
             new Assert\GreaterThan([
                 "value"   => 0,
                 "message" => $this->translator->translate('validations.myJobHolidaysValidator.greaterThan', ["%value%" => 0])
             ]),
             new Assert\LessThanOrEqual([
-                "value"   => $days_left_for_year,
-                "message" => $this->translator->translate('validations.myJobHolidaysValidator.lessThanOrEqual', ["%daysLeft%" => $days_left_for_year])
+                "value"   => $daysLeftForYear,
+                "message" => $this->translator->translate('validations.myJobHolidaysValidator.lessThanOrEqual', ["%daysLeft%" => $daysLeftForYear])
             ])
         ]);
     }

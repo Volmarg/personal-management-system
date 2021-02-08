@@ -91,7 +91,7 @@ class NotifierProxyLoggerService
 
             $mail_dto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
             $mail_dto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
-            $mail_dto->setFromEmail($this->app->config_loaders->getConfigLoaderSystem()->getSystemFromEmail());
+            $mail_dto->setFromEmail($this->app->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
             $mail_dto->setSubject($schedule->getName());
             $mail_dto->setBody($schedule->getInformation());
 

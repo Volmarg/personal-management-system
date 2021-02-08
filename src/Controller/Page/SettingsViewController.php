@@ -19,18 +19,18 @@ class SettingsViewController extends AbstractController {
     private $translator;
 
     /**
-     * @var SettingsLoader $settings_loader
+     * @var SettingsLoader $settingsLoader
      */
-    private $settings_loader;
+    private $settingsLoader;
 
     /**
      * SettingsController constructor.
      * @param Translator $translator
-     * @param SettingsLoader $settings_loader
+     * @param SettingsLoader $settingsLoader
      */
-    public function __construct(Translator $translator, SettingsLoader $settings_loader) {
-        $this->settings_loader = $settings_loader;
-        $this->translator      = $translator;
+    public function __construct(Translator $translator, SettingsLoader $settingsLoader) {
+        $this->settingsLoader = $settingsLoader;
+        $this->translator     = $translator;
     }
 
 }

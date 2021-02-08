@@ -99,7 +99,7 @@ class SettingsFinancesAction extends AbstractController {
         $newCurrencySettingDto->setMultiplier($multiplier);
         $newCurrencySettingDto->setIsDefault($isDefault);
 
-        $currenciesSettingsDtos     = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesSettingsDtos     = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
         $arrayIndexOfUpdatedSetting = null;
 
         foreach( $currenciesSettingsDtos as $index => $currencySettingDtoFromDb ){
@@ -138,7 +138,7 @@ class SettingsFinancesAction extends AbstractController {
             }
 
             $currenciesSettingsDtos = $this->controllers->getSettingsFinancesController()->handleCurrencyUpdate($currenciesSettingsDtos, $newCurrencySettingDto, $arrayIndexOfUpdatedSetting);
-            $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
+            $this->app->settings->settingsSaver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
@@ -154,7 +154,7 @@ class SettingsFinancesAction extends AbstractController {
      */
     public function removeFinancesCurrencySetting(Request $request, string $name){
 
-        $currenciesSettingsDtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesSettingsDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
         $currencyExisted        = false;
         $name                   = trim($name);
 
@@ -179,7 +179,7 @@ class SettingsFinancesAction extends AbstractController {
             return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
         }
 
-        $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
+        $this->app->settings->settingsSaver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
 
         $renderedView = $this->settingsViewAction->renderSettingsTemplate(true);
         return $renderedView;
@@ -217,7 +217,7 @@ class SettingsFinancesAction extends AbstractController {
         $settingsCurrencyDto->setMultiplier($multiplier);
         $settingsCurrencyDto->setIsDefault($isDefault);
 
-        $currenciesSettingsDtosInDb = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesSettingsDtosInDb = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
 
         // handle adding currency with the same name
         foreach( $currenciesSettingsDtosInDb as $index => $currencySettingDtoFromDb ){
@@ -240,7 +240,7 @@ class SettingsFinancesAction extends AbstractController {
                 }
 
                 $currenciesSettingsDtosInDb[] = $settingsCurrencyDto;
-                $this->app->settings->settings_saver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtosInDb);
+                $this->app->settings->settingsSaver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtosInDb);
 
                 $callStatusDto->setCode(200);
                 $callStatusDto->setIsSuccess(true);

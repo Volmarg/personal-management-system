@@ -22,80 +22,77 @@ class MyNotesController extends AbstractController {
     private $app;
 
     /**
-     * @var LockedResourceController $locked_resource_controller
+     * @var LockedResourceController $lockedResourceController
      */
-    private $locked_resource_controller;
+    private $lockedResourceController;
 
-    public function __construct(Application $app, LockedResourceController $locked_resource_controller) {
+    public function __construct(Application $app, LockedResourceController $lockedResourceController) {
         $this->app = $app;
-        $this->locked_resource_controller = $locked_resource_controller;
+        $this->lockedResourceController = $lockedResourceController;
     }
 
     /**
      * Checks is the whole notes family has any active notes at all
      *
-     * @param string $checked_category_id
-     * @param Statement|null $is_allowed_to_see_resource_stmt
-     * @param null $have_categories_notes_stmt
+     * @param string $checkedCategoryId
+     * @param Statement|null $isAllowedToSeeResourceStmt
+     * @param null $haveCategoriesNotesStmt
      * @return bool
      * @throws Exception
      * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function hasCategoryFamilyVisibleNotes(string $checked_category_id, Statement $is_allowed_to_see_resource_stmt = null, $have_categories_notes_stmt = null): bool
+    public function hasCategoryFamilyVisibleNotes(string $checkedCategoryId, Statement $isAllowedToSeeResourceStmt = null, $haveCategoriesNotesStmt = null): bool
     {
-        if( is_null($have_categories_notes_stmt) ){
-            $have_categories_notes_stmt = $this->app->repositories->myNotesCategoriesRepository->buildHaveCategoriesNotesStatement();
+        if( is_null($haveCategoriesNotesStmt) ){
+            $haveCategoriesNotesStmt = $this->app->repositories->myNotesCategoriesRepository->buildHaveCategoriesNotesStatement();
         }
 
 
         # 1. Some notes might just be empty, but if they have children then it cannot be hidden if some child has active note
-        $has_category_family_active_note = false;
-        $categories_ids                  = [$checked_category_id];
+        $hasCategoryFamilyActiveNote = false;
+        $categoriesIds               = [$checkedCategoryId];
 
-        while( !$has_category_family_active_note ){
+        while( !$hasCategoryFamilyActiveNote ){
 
 
                 // it can be that the whole category itself is blocked, not only few notes inside
-                foreach($categories_ids as $idx => $category_id){
-                    if( !$this->locked_resource_controller->isAllowedToSeeResource($category_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $is_allowed_to_see_resource_stmt) ){
-                        unset($categories_ids[$idx]);
+                foreach($categoriesIds as $idx => $categoryId){
+                    if( !$this->lockedResourceController->isAllowedToSeeResource($categoryId, LockedResource::TYPE_ENTITY, ModulesController::MODULE_ENTITY_NOTES_CATEGORY, false, $isAllowedToSeeResourceStmt) ){
+                        unset($categoriesIds[$idx]);
                     }
                 }
 
-                $have_categories_notes = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($have_categories_notes_stmt, $categories_ids);
+                $haveCategoriesNotes = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($haveCategoriesNotesStmt, $categoriesIds);
+                if( $haveCategoriesNotes ){
 
-                if( $have_categories_notes ){
-
-                    $notes = $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categories_ids);
+                    $notes = $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
 
                     # 2. Check lock and make sure that there are some notes visible
                     foreach( $notes as $index => $note ){
-                        $note_id = $note->getId();
-                        if( !$this->locked_resource_controller->isAllowedToSeeResource($note_id, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false, $is_allowed_to_see_resource_stmt) ){
+                        $noteId = $note->getId();
+                        if( !$this->lockedResourceController->isAllowedToSeeResource($noteId, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_NOTES, false, $isAllowedToSeeResourceStmt) ){
                             unset($notes[$index]);
                         }
                     }
 
                     if( !empty($notes) ){
-                        $has_category_family_active_note = true;
+                        $hasCategoryFamilyActiveNote = true;
                     }
 
                 }
 
-                $have_categories_children = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($have_categories_notes_stmt, $categories_ids);
-
-                if( !$have_categories_children ){
+                $haveCategoriesChildren = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($haveCategoriesNotesStmt, $categoriesIds);
+                if( !$haveCategoriesChildren ){
                     break;
                 }
 
-                $categories_ids = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesIdsForCategoriesIds($categories_ids);
-
-                if( empty($categories_ids) ){
+                $categoriesIds = $this->app->repositories->myNotesCategoriesRepository->getChildrenCategoriesIdsForCategoriesIds($categoriesIds);
+                if( empty($categoriesIds) ){
                     break;
                 }
         }
 
-        if( $has_category_family_active_note ){
+        if( $hasCategoryFamilyActiveNote ){
             return true;
         }
 
@@ -113,11 +110,11 @@ class MyNotesController extends AbstractController {
     }
 
     /**
-     * @param array $categories_ids
+     * @param array $categoriesIds
      * @return MyNotes[]
      */
-    public function getNotesByCategoriesIds(array $categories_ids): array
+    public function getNotesByCategoriesIds(array $categoriesIds): array
     {
-        return $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categories_ids);
+        return $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
     }
 }

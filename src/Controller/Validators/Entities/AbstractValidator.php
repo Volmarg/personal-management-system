@@ -19,19 +19,19 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class AbstractValidator {
 
     /**
-     * @var bool $update_validation
+     * @var bool $updateValidation
      */
-    private $update_validation = false;
+    private $updateValidation = false;
 
     /**
-     * @var bool $create_validation
+     * @var bool $createValidation
      */
-    private $create_validation = false;
+    private $createValidation = false;
 
     /**
-     * @var string $supported_class
+     * @var string $supportedClass
      */
-    protected $supported_class = "";
+    protected $supportedClass = "";
 
     /**
      * @var EntityManagerInterface $em
@@ -49,9 +49,9 @@ abstract class AbstractValidator {
     protected $translator;
 
     /**
-     * @var array $constraint_violations_lists
+     * @var array $constraintViolationsLists
      */
-    protected $constraint_violations_lists = [];
+    protected $constraintViolationsLists = [];
 
     public function __construct(EntityManagerInterface $em, Translator $translator) {
         $this->translator = $translator;
@@ -63,21 +63,21 @@ abstract class AbstractValidator {
      * @return bool
      */
     public function isUpdateValidation(): bool {
-        return $this->update_validation;
+        return $this->updateValidation;
     }
 
     /**
      * @return bool
      */
     public function isCreateValidation(): bool {
-        return $this->create_validation;
+        return $this->createValidation;
     }
 
     /**
      * @return string
      */
     protected function getSupportedClass(): string {
-        return $this->supported_class;
+        return $this->supportedClass;
     }
 
     /**
@@ -89,10 +89,10 @@ abstract class AbstractValidator {
     /**
      * Set class for which validation is supported
      *  must be overwritten in every child
-     * @param string $supported_class
+     * @param string $supportedClass
      * @throws Exception
      */
-    protected function setSupportedClass(string $supported_class): void {
+    protected function setSupportedClass(string $supportedClass): void {
         throw new Exception("You must overwrite this method in child and set supported class property there");
     }
 
@@ -107,14 +107,14 @@ abstract class AbstractValidator {
     {
         $this->init();
 
-        $entity_class = get_class($entity);
+        $entityClass = get_class($entity);
 
-        if( $entity_class !== $this->getSupportedClass() ){
+        if( $entityClass !== $this->getSupportedClass() ){
             throw new Exception('This entity is not supported for in this validator');
         }
 
-        $validation_result = new ValidationResultVO();
-        return $validation_result;
+        $validationResult = new ValidationResultVO();
+        return $validationResult;
     }
 
     /**
@@ -123,33 +123,33 @@ abstract class AbstractValidator {
      */
     protected function processValidationResult(): ValidationResultVO
     {
-        $validation_result = new ValidationResultVO();
-        $validation_result->setValidable(true);
+        $validationResult = new ValidationResultVO();
+        $validationResult->setValidable(true);
 
-        $violated_fields_with_messages = [];
+        $violatedFieldsWithMessages = [];
 
-        if( empty($this->constraint_violations_lists) ){
-            $validation_result->setValid(true);
-            return $validation_result;
+        if( empty($this->constraintViolationsLists) ){
+            $validationResult->setValid(true);
+            return $validationResult;
         }
 
-        foreach($this->constraint_violations_lists as $field_name => $constraint_violation_list ){
+        foreach($this->constraintViolationsLists as $fieldName => $constraintViolationList ){
 
             /**
              * @var ConstraintViolation $violation
              */
-            foreach( $constraint_violation_list as $constraint_violation ){
-                $violation_message                          = $constraint_violation->getMessage();
-                $violated_fields_with_messages[$field_name] = $violation_message;
+            foreach( $constraintViolationList as $constraintViolation ){
+                $violationMessage                       = $constraintViolation->getMessage();
+                $violatedFieldsWithMessages[$fieldName] = $violationMessage;
             }
         }
 
-        $validation_result->setInvalidFieldsMessages($violated_fields_with_messages);
+        $validationResult->setInvalidFieldsMessages($violatedFieldsWithMessages);
 
-        if( empty($violated_fields_with_messages) ){
-            $validation_result->setValid(true);
+        if( empty($violatedFieldsWithMessages) ){
+            $validationResult->setValid(true);
         }
 
-        return $validation_result;
+        return $validationResult;
     }
 }

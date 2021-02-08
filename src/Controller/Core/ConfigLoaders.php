@@ -12,25 +12,25 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ConfigLoaders extends AbstractController {
 
     /**
-     * @var ConfigLoaderSession $config_loader_session
+     * @var ConfigLoaderSession $configLoaderSession
      */
-    private ConfigLoaderSession $config_loader_session;
+    private ConfigLoaderSession $configLoaderSession;
 
     /**
-     * @var ConfigLoaderSecurity $config_loader_security
+     * @var ConfigLoaderSecurity $configLoaderSecurity
      */
-    private ConfigLoaderSecurity $config_loader_security;
+    private ConfigLoaderSecurity $configLoaderSecurity;
 
     /**
-     * @var ConfigLoaderSystem $config_loader_system
+     * @var ConfigLoaderSystem $configLoaderSystem
      */
-    private ConfigLoaderSystem $config_loader_system;
+    private ConfigLoaderSystem $configLoaderSystem;
 
     /**
      * @return ConfigLoaderSession
      */
     public function getConfigLoaderSession(): ConfigLoaderSession {
-        return $this->config_loader_session;
+        return $this->configLoaderSession;
     }
 
     /**
@@ -38,7 +38,7 @@ class ConfigLoaders extends AbstractController {
      */
     public function getConfigLoaderSecurity(): ConfigLoaderSecurity
     {
-        return $this->config_loader_security;
+        return $this->configLoaderSecurity;
     }
 
     /**
@@ -46,18 +46,18 @@ class ConfigLoaders extends AbstractController {
      */
     public function getConfigLoaderSystem(): ConfigLoaderSystem
     {
-        return $this->config_loader_system;
+        return $this->configLoaderSystem;
     }
 
     public function __construct(
-        ConfigLoaderSession  $config_loader_session,
-        ConfigLoaderSecurity $config_loader_security,
-        ConfigLoaderSystem   $config_loader_system
+        ConfigLoaderSession  $configLoaderSession,
+        ConfigLoaderSecurity $configLoaderSecurity,
+        ConfigLoaderSystem   $configLoaderSystem
     )
     {
-        $this->config_loader_session  = $config_loader_session;
-        $this->config_loader_security = $config_loader_security;
-        $this->config_loader_system   = $config_loader_system;
+        $this->configLoaderSession  = $configLoaderSession;
+        $this->configLoaderSecurity = $configLoaderSecurity;
+        $this->configLoaderSystem   = $configLoaderSystem;
     }
 
 }

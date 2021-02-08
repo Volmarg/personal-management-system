@@ -48,12 +48,12 @@ class ReportsController extends AbstractController
     }
 
     /**
-     * @param bool $is_owed_by_me
+     * @param bool $isOwedByMe
      * @return array
      */
-    public function fetchHistoricalMoneyOwedBy(bool $is_owed_by_me = false): array
+    public function fetchHistoricalMoneyOwedBy(bool $isOwedByMe = false): array
     {
-        return $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy($is_owed_by_me);
+        return $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy($isOwedByMe);
     }
 
 }

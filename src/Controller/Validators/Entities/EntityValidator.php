@@ -56,16 +56,16 @@ class EntityValidator extends AbstractController {
      */
     public function handleValidation($entity, string $action): ValidationResultVO
     {
-        $is_validable = $this->isValidable($entity);
+        $isValidable = $this->isValidable($entity);
 
-        $validation_result = new ValidationResultVO();
-        $validation_result->setValidable(true);
+        $validationResult = new ValidationResultVO();
+        $validationResult->setValidable(true);
 
         // entity is not validable so return results as valid, to omit further validation failure logic
-        if( !$is_validable ){
-            $validation_result->setValidable(false);
-            $validation_result->setValid(true);
-            return $validation_result;
+        if( !$isValidable ){
+            $validationResult->setValidable(false);
+            $validationResult->setValid(true);
+            return $validationResult;
         }
 
 
@@ -74,7 +74,7 @@ class EntityValidator extends AbstractController {
             case self::ACTION_UPDATE:
                 {
                     if( $entity instanceof ValidateEntityForUpdateInterface ){
-                        $validation_result = $this->validate($entity);
+                        $validationResult = $this->validate($entity);
                     }
                 }
             break;
@@ -82,7 +82,7 @@ class EntityValidator extends AbstractController {
             case self::ACTION_CREATE:
                 {
                     if( $entity instanceof ValidateEntityForCreateInterface ){
-                        $validation_result = $this->validate($entity);
+                        $validationResult = $this->validate($entity);
                     }
                 }
             break;
@@ -91,7 +91,7 @@ class EntityValidator extends AbstractController {
             $this->logger->critical("logs.validators.undefinedActionOrInterfaceForEntityValidationIsMissing");
         }
 
-        return $validation_result;
+        return $validationResult;
     }
 
     /**
@@ -108,23 +108,22 @@ class EntityValidator extends AbstractController {
         }
 
         if( !is_object($object) ){
-            $var_type = gettype($object);
-            $message  = $this->translator->translate('logs.validators.providedVariableIsNotAnObject');
-            $this->logger->critical($message . $var_type);
+            $varType = gettype($object);
+            $message = $this->translator->translate('logs.validators.providedVariableIsNotAnObject');
+            $this->logger->critical($message . $varType);
 
             throw new Exception($message);
         }
 
-        $object_class = get_class($object);
-
+        $objectClass = get_class($object);
         if( !Repositories::isEntity($object) ){
             $message = $this->translator->translate('logs.validators.objectOfGivenClassIsNotEntity');
-            $this->logger->critical($message . $object_class);
+            $this->logger->critical($message . $objectClass);
 
             throw new Exception($message);
         }
 
-        if( !array_key_exists($object_class, self::MAP_ENTITY_TO_VALIDATOR) ){
+        if( !array_key_exists($objectClass, self::MAP_ENTITY_TO_VALIDATOR) ){
             $message = $this->translator->translate('logs.validators.thereIsNoValidationLogicForThisEntity');
 
             throw new Exception($message);
@@ -140,11 +139,11 @@ class EntityValidator extends AbstractController {
      */
     private function loadValidator(ValidateEntityInterface $entity): AbstractValidator
     {
-        $entity_class       = get_class($entity);
-        $validator_class    = self::MAP_ENTITY_TO_VALIDATOR[$entity_class];
-        $validator_instance = new $validator_class($this->em, $this->translator);
+        $entityClass       = get_class($entity);
+        $validatorClass    = self::MAP_ENTITY_TO_VALIDATOR[$entityClass];
+        $validatorInstance = new $validatorClass($this->em, $this->translator);
 
-        return $validator_instance;
+        return $validatorInstance;
     }
 
     /**
@@ -154,13 +153,13 @@ class EntityValidator extends AbstractController {
      */
     private function validate(ValidateEntityInterface $entity): ValidationResultVO
     {
-        $validation_result = new ValidationResultVO();
-        $validation_result->setValidable(true);
+        $validationResult = new ValidationResultVO();
+        $validationResult->setValidable(true);
 
         $validator = $this->loadValidator($entity);
 
-        $validation_result = $validator->validate($entity);
-        return $validation_result;
+        $validationResult = $validator->validate($entity);
+        return $validationResult;
     }
 
 }

@@ -104,7 +104,7 @@ class MyPaymentsIncomeAction extends AbstractController {
     {
 
         $form           = $this->app->forms->moneyIncomeForm();
-        $currenciesDtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/income.html.twig', [
             "records"                        => $this->controllers->getMyPaymentsIncomeController()->getAllNotDeleted(),

@@ -219,25 +219,21 @@ class Forms extends AbstractController {
     }
 
     /**
-     * @param string $form_namespace
+     * @param string $formNamespace
      * @param array $options
      * @return string
      */
-    public function getFormViewWithoutFormTags(string $form_namespace, array $options = []): string {
+    public function getFormViewWithoutFormTags(string $formNamespace, array $options = []): string {
 
-        $form        = $this->createForm($form_namespace, null, $options);
-        $form_view   = $form->createView();
+        $form     = $this->createForm($formNamespace, null, $options);
+        $formView = $form->createView();
 
-        if( !empty($form_data) ){
-            $form->setData($form_data);
-        }
-
-        $form_render = $this->render(FormsAction::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $form_view])->getContent();
+        $formRender = $this->render(FormsAction::TWIG_RENDERED_FORM_TEMPLATE, ['form' => $formView])->getContent();
         //todo: better regex
-        $form_content = preg_replace('#<(.*)form(.*)>#U','', $form_render,1);
-        $form_content = str_replace('</form>','', $form_content);
+        $formContent = preg_replace('#<(.*)form(.*)>#U','', $formRender,1);
+        $formContent = str_replace('</form>','', $formContent);
 
-        return $form_content;
+        return $formContent;
 
     }
 }

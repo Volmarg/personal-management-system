@@ -21,12 +21,12 @@ class MyTravelsIdeasController extends AbstractController {
     }
 
     /**
-     * @param bool $include_empty
+     * @param bool $includeEmpty
      * @return mixed
      * @throws DBALException
      */
-    public function getAllCategories(bool $include_empty = false){
-        return $this->app->repositories->myTravelsIdeasRepository->getAllCategories($include_empty);
+    public function getAllCategories(bool $includeEmpty = false){
+        return $this->app->repositories->myTravelsIdeasRepository->getAllCategories($includeEmpty);
     }
 
     /**

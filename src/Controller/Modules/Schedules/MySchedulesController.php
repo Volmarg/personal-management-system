@@ -16,30 +16,30 @@ class MySchedulesController extends AbstractController {
     /**
      * @var array
      */
-    private $all_schedules_types = [];
+    private $allSchedulesTypes = [];
 
     public function __construct(Application $app) {
         $this->app = $app;
-        $this->all_schedules_types = $app->repositories->myScheduleTypeRepository->getAllNonDeletedTypes();
+        $this->allSchedulesTypes = $app->repositories->myScheduleTypeRepository->getAllNonDeletedTypes();
     }
 
     /**
-     * @param string $schedules_type
+     * @param string $schedulesType
      * @return void
      * @throws \Exception
      */
-    public function validateSchedulesType(string $schedules_type):void {
+    public function validateSchedulesType(string $schedulesType):void {
 
-        $is_valid = false;
+        $isValid = false;
 
-        foreach( $this->all_schedules_types as $schedule_type ) {
-            if( $schedules_type === $schedule_type->getName() ){
-                $is_valid = true;
+        foreach($this->allSchedulesTypes as $scheduleType ) {
+            if( $schedulesType === $scheduleType->getName() ){
+                $isValid = true;
             }
         }
 
-        if( !$is_valid ){
-            throw new \Exception("Schedules type name: {$schedules_type} is incorrect ");
+        if( !$isValid ){
+            throw new \Exception("Schedules type name: {$schedulesType} is incorrect ");
         }
 
     }

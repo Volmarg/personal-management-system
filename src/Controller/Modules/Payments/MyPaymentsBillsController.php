@@ -21,28 +21,28 @@ class MyPaymentsBillsController extends AbstractController
 
     /**
      * @param MyPaymentsBills[] $bills
-     * @param MyPaymentsBillsItems[] $bills_items
+     * @param MyPaymentsBillsItems[] $billsItems
      * @return array
      */
-    public function buildAmountSummaries(array $bills, array $bills_items):array{
+    public function buildAmountSummaries(array $bills, array $billsItems):array{
 
         $summary = [];
 
         foreach($bills as $bill){
 
-            foreach($bills_items as $bill_item){
+            foreach($billsItems as $billItem){
 
-                $bill_id            = $bill->getId();
-                $bill_id_for_item   = $bill_item->getBill()->getId();
+                $billId        = $bill->getId();
+                $billIdForItem = $billItem->getBill()->getId();
 
-                if( $bill_id === $bill_id_for_item ){
+                if( $billId === $billIdForItem ){
 
-                    $amount = $bill_item->getAmount();
+                    $amount = $billItem->getAmount();
 
-                    if( array_key_exists($bill_id, $summary) ){
-                        $summary[$bill_id] = ( $summary[$bill_id] + $amount );
+                    if( array_key_exists($billId, $summary) ){
+                        $summary[$billId] = ( $summary[$billId] + $amount );
                     }else{
-                        $summary[$bill_id] = $amount;
+                        $summary[$billId] = $amount;
                     }
 
                 }

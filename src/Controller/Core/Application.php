@@ -3,13 +3,11 @@ namespace App\Controller\Core;
 
 
 use App\Controller\Utils\Utils;
-use App\Entity\User;
 use App\Services\Core\Logger;
 use App\Services\Core\Translator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -44,9 +42,9 @@ class Application extends AbstractController {
     public $logger;
 
     /**
-     * @var Logger $custom_loggers
+     * @var Logger $customLoggers
      */
-    public $custom_loggers;
+    public $customLoggers;
 
     /**
      * @var Settings
@@ -58,14 +56,14 @@ class Application extends AbstractController {
     public $translations;
 
     /**
-     * @var ConfigLoaders $config_loaders
+     * @var ConfigLoaders $configLoaders
      */
-    public $config_loaders;
+    public $configLoaders;
 
     /**
-     * @var TokenStorageInterface $token_storage
+     * @var TokenStorageInterface $tokenStorage
      */
-    private TokenStorageInterface $token_storage;
+    private TokenStorageInterface $tokenStorage;
 
     public function __construct(
         Repositories            $repositories,
@@ -73,20 +71,20 @@ class Application extends AbstractController {
         EntityManagerInterface  $em,
         LoggerInterface         $logger,
         Settings                $settings,
-        Logger                  $custom_loggers,
+        Logger                  $customLoggers,
         TranslatorInterface     $translator,
-        ConfigLoaders           $config_loaders,
-        TokenStorageInterface   $token_storage
+        ConfigLoaders           $configLoaders,
+        TokenStorageInterface   $tokenStorage
     ) {
-        $this->custom_loggers   = $custom_loggers;
-        $this->repositories     = $repositories;
-        $this->settings         = $settings;
-        $this->logger           = $logger;
-        $this->forms            = $forms;
-        $this->em               = $em;
-        $this->translator       = new Translator($translator);
-        $this->config_loaders   = $config_loaders;
-        $this->token_storage    = $token_storage;
+        $this->customLoggers = $customLoggers;
+        $this->repositories  = $repositories;
+        $this->settings      = $settings;
+        $this->logger        = $logger;
+        $this->forms         = $forms;
+        $this->em            = $em;
+        $this->translator    = new Translator($translator);
+        $this->configLoaders = $configLoaders;
+        $this->tokenStorage  = $tokenStorage;
     }
 
     /**
@@ -108,25 +106,25 @@ class Application extends AbstractController {
     }
 
     /**
-     * @param string $camel_string
+     * @param string $camelString
      * @return string
      */
-    public static function camelCaseToSnakeCaseConverter(string $camel_string)
+    public static function camelCaseToSnakeCaseConverter(string $camelString)
     {
-        $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
-        $snake_string                  = $camel_case_to_snake_converter->normalize($camel_string);
-        return $snake_string;
+        $camelCaseToSnakeConverter = new CamelCaseToSnakeCaseNameConverter(null, true);
+        $snakeString               = $camelCaseToSnakeConverter->normalize($camelString);
+        return $snakeString;
     }
 
     /**
-     * @param string $snake_case
+     * @param string $snakeCase
      * @return string
      */
-    public static function snakeCaseToCamelCaseConverter(string $snake_case)
+    public static function snakeCaseToCamelCaseConverter(string $snakeCase)
     {
-        $camel_case_to_snake_converter = new CamelCaseToSnakeCaseNameConverter(null, true);
-        $camel_string                  = $camel_case_to_snake_converter->denormalize($snake_case);
-        return $camel_string;
+        $camelCaseToSnakeConverter = new CamelCaseToSnakeCaseNameConverter(null, true);
+        $camelString               = $camelCaseToSnakeConverter->denormalize($snakeCase);
+        return $camelString;
     }
 
     /**
@@ -158,6 +156,6 @@ class Application extends AbstractController {
      */
     public function logoutCurrentlyLoggedInUser()
     {
-        $this->token_storage->setToken(null);
+        $this->tokenStorage->setToken(null);
     }
 }

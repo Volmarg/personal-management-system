@@ -10,19 +10,19 @@ namespace App\Controller\Utils;
  */
 class CliHandler{
 
-    static $foreground_colors = array();
+    static $foregroundColors = array();
 
-    static $background_colors = array();
+    static $backgroundColors = array();
 
-    static $text_yellow = "yellow";
+    static $textYellow = "yellow";
 
-    static $text_red = "red";
+    static $textRed = "red";
 
-    static $text_blue = "blue";
+    static $textBlue = "blue";
 
-    static $failure_mark = "✗";
+    static $failureMark = "✗";
 
-    static $success_mark = "✓";
+    static $successMark = "✓";
 
     public function initialize(){
         self::defineShellColors();
@@ -30,72 +30,72 @@ class CliHandler{
     
     private static function defineShellColors(){
         // Set up shell colors
-        self::$foreground_colors['black'] = '0;30';
-        self::$foreground_colors['dark_gray'] = '1;30';
-        self::$foreground_colors['blue'] = '0;34';
-        self::$foreground_colors['light_blue'] = '1;34';
-        self::$foreground_colors['green'] = '0;32';
-        self::$foreground_colors['light_green'] = '1;32';
-        self::$foreground_colors['cyan'] = '0;36';
-        self::$foreground_colors['light_cyan'] = '1;36';
-        self::$foreground_colors['red'] = '0;31';
-        self::$foreground_colors['light_red'] = '1;31';
-        self::$foreground_colors['purple'] = '0;35';
-        self::$foreground_colors['light_purple'] = '1;35';
-        self::$foreground_colors['brown'] = '0;33';
-        self::$foreground_colors['yellow'] = '1;33';
-        self::$foreground_colors['light_gray'] = '0;37';
-        self::$foreground_colors['white'] = '1;37';
+        self::$foregroundColors['black'] = '0;30';
+        self::$foregroundColors['dark_gray'] = '1;30';
+        self::$foregroundColors['blue'] = '0;34';
+        self::$foregroundColors['light_blue'] = '1;34';
+        self::$foregroundColors['green'] = '0;32';
+        self::$foregroundColors['light_green'] = '1;32';
+        self::$foregroundColors['cyan'] = '0;36';
+        self::$foregroundColors['light_cyan'] = '1;36';
+        self::$foregroundColors['red'] = '0;31';
+        self::$foregroundColors['light_red'] = '1;31';
+        self::$foregroundColors['purple'] = '0;35';
+        self::$foregroundColors['light_purple'] = '1;35';
+        self::$foregroundColors['brown'] = '0;33';
+        self::$foregroundColors['yellow'] = '1;33';
+        self::$foregroundColors['light_gray'] = '0;37';
+        self::$foregroundColors['white'] = '1;37';
 
-        self::$background_colors['black'] = '40';
-        self::$background_colors['red'] = '41';
-        self::$background_colors['green'] = '42';
-        self::$background_colors['yellow'] = '43';
-        self::$background_colors['blue'] = '44';
-        self::$background_colors['magenta'] = '45';
-        self::$background_colors['cyan'] = '46';
-        self::$background_colors['light_gray'] = '47';
+        self::$backgroundColors['black'] = '40';
+        self::$backgroundColors['red'] = '41';
+        self::$backgroundColors['green'] = '42';
+        self::$backgroundColors['yellow'] = '43';
+        self::$backgroundColors['blue'] = '44';
+        self::$backgroundColors['magenta'] = '45';
+        self::$backgroundColors['cyan'] = '46';
+        self::$backgroundColors['light_gray'] = '47';
     }
 
     /**
      * Handles coloring string in cli
      * @param string $string
-     * @param string|null $foreground_color
-     * @param string|null $background_color
+     * @param string|null $foregroundColor
+     * @param string|null $backgroundColor
      * @return string
      */
-    public static function getColoredString(string $string, ?string $foreground_color = null, ?string $background_color = null) {
-        $colored_string = "";
+    public static function getColoredString(string $string, ?string $foregroundColor = null, ?string $backgroundColor = null) {
+        $coloredString = "";
 
         // Check if given foreground color found
-        if (isset(self::$foreground_colors[$foreground_color])) {
-            $colored_string .= "\033[" . self::$foreground_colors[$foreground_color] . "m";
+        if (isset(self::$foregroundColors[$foregroundColor])) {
+            $coloredString .= "\033[" . self::$foregroundColors[$foregroundColor] . "m";
         }
         // Check if given background color found
-        if (isset(self::$background_colors[$background_color])) {
-            $colored_string .= "\033[" . self::$background_colors[$background_color] . "m";
+        if (isset(self::$backgroundColors[$backgroundColor])) {
+            $coloredString .= "\033[" . self::$backgroundColors[$backgroundColor] . "m";
         }
 
         // Add string and end coloring
-        $colored_string .=  $string . "\033[0m";
+        $coloredString .=  $string . "\033[0m";
 
-        return $colored_string;
+        return $coloredString;
     }
 
     /**
      * Returns colored string for cli
      * @param string $string
-     * @param bool $new_line
+     * @param bool $newLine
      */
-    public static function errorText(string $string, bool $new_line = true){
+    public static function errorText(string $string, bool $newLine = true){
 
-        if($new_line){
+        if($newLine){
             echo PHP_EOL;
         }
 
-        echo self::getColoredString($string, self::$text_red);
+        echo self::getColoredString($string, self::$textRed);
 
-        if($new_line){
+        if($newLine){
             echo PHP_EOL;
         }
     }
@@ -103,17 +103,17 @@ class CliHandler{
     /**
      * Returns colored string for cli
      * @param string $string
-     * @param bool $new_line
+     * @param bool $newLine
      */
-    public static function infoText(string $string, bool $new_line = true){
+    public static function infoText(string $string, bool $newLine = true){
 
-        if($new_line){
+        if($newLine){
             echo PHP_EOL;
         }
 
-        echo self::getColoredString($string, self::$text_yellow);
+        echo self::getColoredString($string, self::$textYellow);
 
-        if($new_line){
+        if($newLine){
             echo PHP_EOL;
         }
     }
@@ -121,13 +121,13 @@ class CliHandler{
     /**
      * Displays standard string
      * @param string $string
-     * @param bool $new_line
+     * @param bool $newLine
      */
-    public static function text(string $string, bool $new_line = true){
+    public static function text(string $string, bool $newLine = true){
 
         echo $string;
 
-        if($new_line){
+        if($newLine){
             echo PHP_EOL;
         }
     }
@@ -138,15 +138,15 @@ class CliHandler{
 
     /**
      * This function returns line separator with either default settings or customized
-     * @param int $line_size
+     * @param int $lineSize
      * @param string $symbol
      * @param string|null $color
      */
-    public static function lineSeparator(int $line_size = 30, string $symbol = '-', ?string $color = null)
+    public static function lineSeparator(int $lineSize = 30, string $symbol = '-', ?string $color = null)
     {
         $line = '';
 
-        for($x = 0; $x <= $line_size; $x++){
+        for($x = 0; $x <= $lineSize; $x++){
             $line .= $symbol;
         }
 
@@ -158,7 +158,7 @@ class CliHandler{
      * @return string
      */
     public static function successMark(){
-        return self::getColoredString(self::$success_mark);
+        return self::getColoredString(self::$successMark);
     }
 
     /**
@@ -166,7 +166,7 @@ class CliHandler{
      * @return string
      */
     public static function failureMark(){
-        return self::getColoredString(self::$failure_mark, self::$text_red);
+        return self::getColoredString(self::$failureMark, self::$textRed);
     }
 
     /**
@@ -184,15 +184,15 @@ class CliHandler{
      * Will display list of choices to select from, if user will select incorrect one then he will be asked again
      * until existing option will be provided
      * @param array $choices
-     * @param string $displayed_string
+     * @param string $displayedString
      * @return string
      */
-    public static function choices(array $choices, string $displayed_string): string {
+    public static function choices(array $choices, string $displayedString): string {
 
-        $selected_option_index = null;
+        $selectedOptionIndex = null;
 
         echo PHP_EOL;
-            echo $displayed_string;
+            echo $displayedString;
         echo PHP_EOL;
 
         foreach($choices as $index => $choice ){
@@ -202,15 +202,15 @@ class CliHandler{
         }
 
         echo PHP_EOL;
-            while( !array_key_exists($selected_option_index, $choices) ){
+            while( !array_key_exists($selectedOptionIndex, $choices) ){
                 echo "Select correct option: ";
-                $selected_option_index = readline();
+                $selectedOptionIndex = readline();
             }
 
-        $selected_option = $choices[$selected_option_index];
+        $selectedOption = $choices[$selectedOptionIndex];
 
         echo PHP_EOL;
 
-        return $selected_option;
+        return $selectedOption;
     }
 }

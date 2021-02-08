@@ -34,14 +34,14 @@ class ModuleDataController
     /**
      * Will return single module data for given parameters, or null if nothing is found
      *
-     * @param string $record_type
+     * @param string $recordType
      * @param string $module
-     * @param string $record_identifier
+     * @param string $recordIdentifier
      * @return ModuleData|null
      */
-    public function getOneByRecordTypeModuleAndRecordIdentifier(string $record_type, string $module, string $record_identifier): ?ModuleData
+    public function getOneByRecordTypeModuleAndRecordIdentifier(string $recordType, string $module, string $recordIdentifier): ?ModuleData
     {
-        return $this->app->repositories->moduleDataRepository->getOneByRecordTypeModuleAndRecordIdentifier($record_type, $module, $record_identifier);
+        return $this->app->repositories->moduleDataRepository->getOneByRecordTypeModuleAndRecordIdentifier($recordType, $module, $recordIdentifier);
     }
 
     /**
@@ -58,14 +58,14 @@ class ModuleDataController
     /**
      * Provided `new identifier` parameter will be used to update the existing ModuleData `identifier`
      *
-     * @param ModuleData $module_data
-     * @param string $new_identifier
+     * @param ModuleData $moduleData
+     * @param string $newIdentifier
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function updateRecordIdentifier(ModuleData $module_data, string $new_identifier): void
+    public function updateRecordIdentifier(ModuleData $moduleData, string $newIdentifier): void
     {
-        $module_data->setRecordIdentifier($new_identifier);
-        $this->app->repositories->moduleDataRepository->saveEntity($module_data);;
+        $moduleData->setRecordIdentifier($newIdentifier);
+        $this->app->repositories->moduleDataRepository->saveEntity($moduleData);;
     }
 }

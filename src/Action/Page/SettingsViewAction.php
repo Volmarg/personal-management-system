@@ -60,7 +60,7 @@ class SettingsViewAction extends AbstractController {
     private function renderSettingsDashboardTemplate($ajaxRender = false): Response
     {
 
-        $settingForDashboard = $this->app->settings->settings_loader->getSettingsForDashboard();
+        $settingForDashboard = $this->app->settings->settingsLoader->getSettingsForDashboard();
 
         $areSettingsInDb = !empty($settingForDashboard);
 
@@ -91,7 +91,7 @@ class SettingsViewAction extends AbstractController {
      */
     private function renderSettingsFinancesTemplate(bool $ajax_render = false): Response
     {
-        $currenciesSettings = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesSettings = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
         $currencyForm       = $this->app->forms->currencyTypeForm();
 
         $data = [

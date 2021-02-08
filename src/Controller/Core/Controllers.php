@@ -63,463 +63,463 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class Controllers extends AbstractController {
 
     /**
-     * @var AchievementController|null $achievement_controller
+     * @var AchievementController|null $achievementController
      */
-    private $achievement_controller = null;
+    private $achievementController = null;
 
     /**
-     * @var ReportsController $reports_controllers
+     * @var ReportsController $reportsControllers
      */
-    private $reports_controllers;
+    private $reportsControllers;
 
     /**
-     * @var MyNotesController $my_notes_controller
+     * @var MyNotesController $myNotesController
      */
-    private $my_notes_controller;
+    private $myNotesController;
 
     /**
-     * @var MyNotesCategoriesController $my_notes_categories_controller
+     * @var MyNotesCategoriesController $myNotesCategoriesController
      */
-    private $my_notes_categories_controller;
+    private $myNotesCategoriesController;
 
     /**
-     * @var LockedResourceController $locked_resource_controller
+     * @var LockedResourceController $lockedResourceController
      */
-    private $locked_resource_controller;
+    private $lockedResourceController;
 
     /**
-     * @var MyContactsController $my_contact_controller
+     * @var MyContactsController $myContactController
      */
-    private $my_contact_controller;
+    private $myContactController;
 
     /**
-     * @var MyContactsSettingsController $my_contact_settings_controller
+     * @var MyContactsSettingsController $myContactSettingsController
      */
-    private $my_contact_settings_controller;
+    private $myContactSettingsController;
 
     /**
-     * @var MyImagesController $my_images_controller
+     * @var MyImagesController $myImagesController
      */
-    private $my_images_controller;
+    private $myImagesController;
 
     /**
-     * @var MyFilesController $my_files_controller
+     * @var MyFilesController $myFilesController
      */
-    private $my_files_controller;
+    private $myFilesController;
 
     /**
-     * @var FilesTagsController $files_tags_controller
+     * @var FilesTagsController $filesTagsController
      */
-    private $files_tags_controller;
+    private $filesTagsController;
 
     /**
-     * @var MyJobAfterhoursController $my_job_afterhours_controller
+     * @var MyJobAfterhoursController $myJobAfterhoursController
      */
-    private $my_job_afterhours_controller;
+    private $myJobAfterhoursController;
 
     /**
-     * @var MyJobSettingsController $my_job_settings_controller
+     * @var MyJobSettingsController $myJobSettingsController
      */
-    private $my_job_settings_controller;
+    private $myJobSettingsController;
 
     /**
-     * @var MyPasswordsController $my_passwords_controller
+     * @var MyPasswordsController $myPasswordsController
      */
-    private $my_passwords_controller;
+    private $myPasswordsController;
 
     /**
-     * @var MySchedulesController $my_schedules_controller
+     * @var MySchedulesController $mySchedulesController
      */
-    private $my_schedules_controller;
+    private $mySchedulesController;
 
     /**
-     * @var MyTravelsIdeasController $my_travels_ideas_controller
+     * @var MyTravelsIdeasController $myTravelsIdeasController
      */
-    private $my_travels_ideas_controller;
+    private $myTravelsIdeasController;
 
     /**
-     * @var MyPaymentsBillsController $my_payments_bills_controller
+     * @var MyPaymentsBillsController $myPaymentsBillsController
      */
-    private $my_payments_bills_controller;
+    private $myPaymentsBillsController;
 
     /**
-     * @var MyPaymentsSettingsController $my_payments_settings_controller;
+     * @var MyPaymentsSettingsController $myPaymentsSettingsController;
      */
-    private $my_payments_settings_controller;
+    private $myPaymentsSettingsController;
 
     /**
-     * @var SecurityController $security_controller;
+     * @var SecurityController $securityController;
      */
-    private $security_controller;
+    private $securityController;
 
     /**
-     * @var SettingsController $settings_controller
+     * @var SettingsController $settingsController
      */
-    private $settings_controller;
+    private $settingsController;
 
     /**
-     * @var SettingsDashboardController $settings_dashboard_controller
+     * @var SettingsDashboardController $settingsDashboardController
      */
-    private $settings_dashboard_controller;
+    private $settingsDashboardController;
 
     /**
-     * @var SettingsFinancesController $settings_finances_controller
+     * @var SettingsFinancesController $settingsFinancesController
      */
-    private $settings_finances_controller;
+    private $settingsFinancesController;
 
     /**
-     * @var SettingsValidationController $settings_validation_controller
+     * @var SettingsValidationController $settingsValidationController
      */
-    private $settings_validation_controller;
+    private $settingsValidationController;
 
     /**
-     * @var SettingsViewController $settings_view_controller
+     * @var SettingsViewController $settingsViewController
      */
-    private $settings_view_controller;
+    private $settingsViewController;
 
     /**
-     * @var FilesUploadSettingsController $files_upload_settings_controller
+     * @var FilesUploadSettingsController $filesUploadSettingsController
      */
-    private $files_upload_settings_controller;
+    private $filesUploadSettingsController;
 
     /**
-     * @var MyIssuesController $my_issues_controller
+     * @var MyIssuesController $myIssuesController
      */
-    private $my_issues_controller;
+    private $myIssuesController;
 
     /**
-     * @var MyJobHolidaysPoolController $my_job_holidays_pool_controller
+     * @var MyJobHolidaysPoolController $myJobHolidaysPoolController
      */
-    private $my_job_holidays_pool_controller;
+    private $myJobHolidaysPoolController;
 
     /**
-     * @var MyTodoController $my_todo_controller
+     * @var MyTodoController $myTodoController
      */
-    private $my_todo_controller;
+    private $myTodoController;
 
     /**
-     * @var MyTodoElementController $my_todo_element_controller
+     * @var MyTodoElementController $myTodoElementController
      */
-    private $my_todo_element_controller;
+    private $myTodoElementController;
 
     /**
-     * @var ModuleController $module_controller
+     * @var ModuleController $moduleController
      */
-    private $module_controller;
+    private $moduleController;
 
     /**
-     * @var GoalsListController $goals_list_controller
+     * @var GoalsListController $goalsListController
      */
-    private $goals_list_controller;
+    private $goalsListController;
 
     /**
-     * @var UserController $user_controller
+     * @var UserController $userController
      */
-    private UserController $user_controller;
+    private UserController $userController;
 
     /**
-     * @var MyVideoController $my_video_controller
+     * @var MyVideoController $myVideoController
      */
-    private MyVideoController $my_video_controller;
+    private MyVideoController $myVideoController;
 
     /**
-     * @var FilesSearchController $files_search_controller
+     * @var FilesSearchController $filesSearchController
      */
-    private FilesSearchController $files_search_controller;
+    private FilesSearchController $filesSearchController;
 
     /**
-     * @var MyContactTypeController $my_contact_type_controller
+     * @var MyContactTypeController $myContactTypeController
      */
-    private MyContactTypeController $my_contact_type_controller;
+    private MyContactTypeController $myContactTypeController;
 
     /**
-     * @var MyContactGroupController $my_contact_group_controller
+     * @var MyContactGroupController $myContactGroupController
      */
-    private MyContactGroupController $my_contact_group_controller;
+    private MyContactGroupController $myContactGroupController;
 
     /**
-     * @var DashboardController $dashboard_controller
+     * @var DashboardController $dashboardController
      */
-    private DashboardController $dashboard_controller;
+    private DashboardController $dashboardController;
 
     /**
-     * @var GoalsPaymentsController $goals_payments_controller
+     * @var GoalsPaymentsController $goalsPaymentsController
      */
-    private GoalsPaymentsController $goals_payments_controller;
+    private GoalsPaymentsController $goalsPaymentsController;
 
     /**
-     * @var MyIssueContactController $my_issue_contact_controller
+     * @var MyIssueContactController $myIssueContactController
      */
-    private MyIssueContactController $my_issue_contact_controller;
+    private MyIssueContactController $myIssueContactController;
 
     /**
-     * @var MyIssueProgressController $my_issue_progress_controller
+     * @var MyIssueProgressController $myIssueProgressController
      */
-    private MyIssueProgressController $my_issue_progress_controller;
+    private MyIssueProgressController $myIssueProgressController;
 
     /**
-     * @var MyJobHolidaysController $my_job_holidays_controller
+     * @var MyJobHolidaysController $myJobHolidaysController
      */
-    private MyJobHolidaysController $my_job_holidays_controller;
+    private MyJobHolidaysController $myJobHolidaysController;
 
     /**
-     * @var MyPasswordsGroupsController $my_passwords_groups_controller
+     * @var MyPasswordsGroupsController $myPasswordsGroupsController
      */
-    private MyPasswordsGroupsController $my_passwords_groups_controller;
+    private MyPasswordsGroupsController $myPasswordsGroupsController;
 
     /**
-     * @var MyShoppingPlansController $my_shopping_plans_controller
+     * @var MyShoppingPlansController $myShoppingPlansController
      */
-    private MyShoppingPlansController $my_shopping_plans_controller;
+    private MyShoppingPlansController $myShoppingPlansController;
 
     /**
-     * @var MyScheduleTypeController $my_schedule_type_controller
+     * @var MyScheduleTypeController $myScheduleTypeController
      */
-    private MyScheduleTypeController $my_schedule_type_controller;
+    private MyScheduleTypeController $myScheduleTypeController;
 
     /**
-     * @var MyPaymentsIncomeController $my_payments_income_controller
+     * @var MyPaymentsIncomeController $myPaymentsIncomeController
      */
-    private MyPaymentsIncomeController $my_payments_income_controller;
+    private MyPaymentsIncomeController $myPaymentsIncomeController;
 
     /**
-     * @var MyRecurringPaymentsMonthlyController $my_recurring_payments_monthly_controller
+     * @var MyRecurringPaymentsMonthlyController $myRecurringPaymentsMonthlyController
      */
-    private MyRecurringPaymentsMonthlyController $my_recurring_payments_monthly_controller;
+    private MyRecurringPaymentsMonthlyController $myRecurringPaymentsMonthlyController;
 
     /**
-     * @var MyPaymentsProductsController $my_payments_products_controller
+     * @var MyPaymentsProductsController $myPaymentsProductsController
      */
-    private MyPaymentsProductsController $my_payments_products_controller;
+    private MyPaymentsProductsController $myPaymentsProductsController;
 
     /**
-     * @var MyPaymentsOwedController $my_payments_owed_controller
+     * @var MyPaymentsOwedController $myPaymentsOwedController
      */
-    private MyPaymentsOwedController $my_payments_owed_controller;
+    private MyPaymentsOwedController $myPaymentsOwedController;
 
     /**
-     * @var MyPaymentsMonthlyController $my_payments_monthly_controller
+     * @var MyPaymentsMonthlyController $myPaymentsMonthlyController
      */
-    private MyPaymentsMonthlyController $my_payments_monthly_controller;
+    private MyPaymentsMonthlyController $myPaymentsMonthlyController;
 
     /**
-     * @var MyPaymentsBillsItemsController $my_payments_bills_items_controller
+     * @var MyPaymentsBillsItemsController $myPaymentsBillsItemsController
      */
-    private MyPaymentsBillsItemsController $my_payments_bills_items_controller;
+    private MyPaymentsBillsItemsController $myPaymentsBillsItemsController;
 
     /**
-     * @var ModuleDataController $module_data_controller
+     * @var ModuleDataController $moduleDataController
      */
-    private ModuleDataController $module_data_controller;
+    private ModuleDataController $moduleDataController;
 
     /**
      * @return MyIssuesController
      */
     public function getMyIssuesController(): MyIssuesController {
-        return $this->my_issues_controller;
+        return $this->myIssuesController;
     }
 
     /**
      * @return MyImagesController
      */
     public function getMyImagesController(): MyImagesController {
-        return $this->my_images_controller;
+        return $this->myImagesController;
     }
 
     /**
      * @return MyContactsController
      */
     public function getMyContactController(): MyContactsController {
-        return $this->my_contact_controller;
+        return $this->myContactController;
     }
 
     /**
      * @return MyContactsSettingsController
      */
     public function getMyContactSettingsController(): MyContactsSettingsController {
-        return $this->my_contact_settings_controller;
+        return $this->myContactSettingsController;
     }
 
     /**
      * @return AchievementController|null
      */
     public function getAchievementController(): ?AchievementController {
-        return $this->achievement_controller;
+        return $this->achievementController;
     }
 
     /**
      * @return MyNotesController
      */
     public function getMyNotesController(): MyNotesController {
-        return $this->my_notes_controller;
+        return $this->myNotesController;
     }
 
     /**
      * @return MyNotesCategoriesController
      */
     public function getMyNotesCategoriesController(): MyNotesCategoriesController {
-        return $this->my_notes_categories_controller;
+        return $this->myNotesCategoriesController;
     }
 
     /**
      * @return ReportsController
      */
     public function getReportsControllers(): ReportsController {
-        return $this->reports_controllers;
+        return $this->reportsControllers;
     }
 
     /**
      * @return LockedResourceController
      */
     public function getLockedResourceController(): LockedResourceController {
-        return $this->locked_resource_controller;
+        return $this->lockedResourceController;
     }
 
     /**
      * @return MyFilesController
      */
     public function getMyFilesController(): MyFilesController {
-        return $this->my_files_controller;
+        return $this->myFilesController;
     }
 
     /**
      * @return FilesTagsController
      */
     public function getFilesTagsController(): FilesTagsController {
-        return $this->files_tags_controller;
+        return $this->filesTagsController;
     }
 
     /**
      * @return MyJobAfterhoursController
      */
     public function getMyJobAfterhoursController(): MyJobAfterhoursController {
-        return $this->my_job_afterhours_controller;
+        return $this->myJobAfterhoursController;
     }
 
     /**
      * @return MyJobSettingsController
      */
     public function getMyJobSettingsController(): MyJobSettingsController {
-        return $this->my_job_settings_controller;
+        return $this->myJobSettingsController;
     }
 
     /**
      * @return MyPasswordsController
      */
     public function getMyPasswordsController(): MyPasswordsController {
-        return $this->my_passwords_controller;
+        return $this->myPasswordsController;
     }
 
     /**
      * @return MySchedulesController
      */
     public function getMySchedulesController(): MySchedulesController {
-        return $this->my_schedules_controller;
+        return $this->mySchedulesController;
     }
 
     /**
      * @return MyTravelsIdeasController
      */
     public function getMyTravelsIdeasController(): MyTravelsIdeasController {
-        return $this->my_travels_ideas_controller;
+        return $this->myTravelsIdeasController;
     }
 
     /**
      * @return MyPaymentsBillsController
      */
     public function getMyPaymentsBillsController(): MyPaymentsBillsController {
-        return $this->my_payments_bills_controller;
+        return $this->myPaymentsBillsController;
     }
 
     /**
      * @return MyPaymentsSettingsController
      */
     public function getMyPaymentsSettingsController(): MyPaymentsSettingsController {
-        return $this->my_payments_settings_controller;
+        return $this->myPaymentsSettingsController;
     }
 
     /**
      * @return SecurityController
      */
     public function getSecurityController(): SecurityController {
-        return $this->security_controller;
+        return $this->securityController;
     }
 
     /**
      * @return SettingsController
      */
     public function getSettingsController(): SettingsController {
-        return $this->settings_controller;
+        return $this->settingsController;
     }
 
     /**
      * @return SettingsDashboardController
      */
     public function getSettingsDashboardController(): SettingsDashboardController {
-        return $this->settings_dashboard_controller;
+        return $this->settingsDashboardController;
     }
 
     /**
      * @return SettingsFinancesController
      */
     public function getSettingsFinancesController(): SettingsFinancesController {
-        return $this->settings_finances_controller;
+        return $this->settingsFinancesController;
     }
 
     /**
      * @return SettingsValidationController
      */
     public function getSettingsValidationController(): SettingsValidationController {
-        return $this->settings_validation_controller;
+        return $this->settingsValidationController;
     }
 
     /**
      * @return SettingsViewController
      */
     public function getSettingsViewController(): SettingsViewController {
-        return $this->settings_view_controller;
+        return $this->settingsViewController;
     }
 
     /**
      * @return FilesUploadSettingsController
      */
     public function getFilesUploadSettingsController(): FilesUploadSettingsController {
-        return $this->files_upload_settings_controller;
+        return $this->filesUploadSettingsController;
     }
 
     /**
      * @return MyJobHolidaysPoolController
      */
     public function getMyJobHolidaysPoolController(): MyJobHolidaysPoolController {
-        return $this->my_job_holidays_pool_controller;
+        return $this->myJobHolidaysPoolController;
     }
 
     /**
      * @return MyTodoController
      */
     public function getMyTodoController(): MyTodoController {
-        return $this->my_todo_controller;
+        return $this->myTodoController;
     }
 
     /**
      * @return MyTodoElementController
      */
     public function getMyTodoElementController(): MyTodoElementController {
-        return $this->my_todo_element_controller;
+        return $this->myTodoElementController;
     }
 
     /**
      * @return ModuleController
      */
     public function getModuleController(): ModuleController {
-        return $this->module_controller;
+        return $this->moduleController;
     }
 
     /**
      * @return GoalsListController
      */
     public function getGoalsListController(): GoalsListController {
-        return $this->goals_list_controller;
+        return $this->goalsListController;
     }
 
     /**
@@ -527,7 +527,7 @@ class Controllers extends AbstractController {
      */
     public function getUserController(): UserController
     {
-        return $this->user_controller;
+        return $this->userController;
     }
 
     /**
@@ -535,7 +535,7 @@ class Controllers extends AbstractController {
      */
     public function getMyVideoController(): MyVideoController
     {
-        return $this->my_video_controller;
+        return $this->myVideoController;
     }
 
     /**
@@ -543,7 +543,7 @@ class Controllers extends AbstractController {
      */
     public function getFilesSearchController(): FilesSearchController
     {
-        return $this->files_search_controller;
+        return $this->filesSearchController;
     }
 
     /**
@@ -551,7 +551,7 @@ class Controllers extends AbstractController {
      */
     public function getMyContactTypeController(): MyContactTypeController
     {
-        return $this->my_contact_type_controller;
+        return $this->myContactTypeController;
     }
 
     /**
@@ -559,7 +559,7 @@ class Controllers extends AbstractController {
      */
     public function getMyContactGroupController(): MyContactGroupController
     {
-        return $this->my_contact_group_controller;
+        return $this->myContactGroupController;
     }
 
     /**
@@ -567,7 +567,7 @@ class Controllers extends AbstractController {
      */
     public function getDashboardController(): DashboardController
     {
-        return $this->dashboard_controller;
+        return $this->dashboardController;
     }
 
     /**
@@ -575,7 +575,7 @@ class Controllers extends AbstractController {
      */
     public function getGoalsPaymentsController(): GoalsPaymentsController
     {
-        return $this->goals_payments_controller;
+        return $this->goalsPaymentsController;
     }
 
     /**
@@ -583,7 +583,7 @@ class Controllers extends AbstractController {
      */
     public function getMyIssueContactController(): MyIssueContactController
     {
-        return $this->my_issue_contact_controller;
+        return $this->myIssueContactController;
     }
 
     /**
@@ -591,7 +591,7 @@ class Controllers extends AbstractController {
      */
     public function getMyIssueProgressController(): MyIssueProgressController
     {
-        return $this->my_issue_progress_controller;
+        return $this->myIssueProgressController;
     }
 
     /**
@@ -599,7 +599,7 @@ class Controllers extends AbstractController {
      */
     public function getMyJobHolidaysController(): MyJobHolidaysController
     {
-        return $this->my_job_holidays_controller;
+        return $this->myJobHolidaysController;
     }
 
     /**
@@ -607,7 +607,7 @@ class Controllers extends AbstractController {
      */
     public function getMyPasswordsGroupsController(): MyPasswordsGroupsController
     {
-        return $this->my_passwords_groups_controller;
+        return $this->myPasswordsGroupsController;
     }
 
     /**
@@ -615,7 +615,7 @@ class Controllers extends AbstractController {
      */
     public function getMyShoppingPlansController(): MyShoppingPlansController
     {
-        return $this->my_shopping_plans_controller;
+        return $this->myShoppingPlansController;
     }
 
     /**
@@ -623,7 +623,7 @@ class Controllers extends AbstractController {
      */
     public function getMyScheduleTypeController(): MyScheduleTypeController
     {
-        return $this->my_schedule_type_controller;
+        return $this->myScheduleTypeController;
     }
 
     /**
@@ -631,7 +631,7 @@ class Controllers extends AbstractController {
      */
     public function getMyPaymentsIncomeController(): MyPaymentsIncomeController
     {
-        return $this->my_payments_income_controller;
+        return $this->myPaymentsIncomeController;
     }
 
     /**
@@ -639,7 +639,7 @@ class Controllers extends AbstractController {
      */
     public function getMyRecurringPaymentsMonthlyController(): MyRecurringPaymentsMonthlyController
     {
-        return $this->my_recurring_payments_monthly_controller;
+        return $this->myRecurringPaymentsMonthlyController;
     }
 
     /**
@@ -647,7 +647,7 @@ class Controllers extends AbstractController {
      */
     public function getMyPaymentsProductsController(): MyPaymentsProductsController
     {
-        return $this->my_payments_products_controller;
+        return $this->myPaymentsProductsController;
     }
 
     /**
@@ -655,7 +655,7 @@ class Controllers extends AbstractController {
      */
     public function getMyPaymentsOwedController(): MyPaymentsOwedController
     {
-        return $this->my_payments_owed_controller;
+        return $this->myPaymentsOwedController;
     }
 
     /**
@@ -663,7 +663,7 @@ class Controllers extends AbstractController {
      */
     public function getMyPaymentsMonthlyController(): MyPaymentsMonthlyController
     {
-        return $this->my_payments_monthly_controller;
+        return $this->myPaymentsMonthlyController;
     }
 
     /**
@@ -671,7 +671,7 @@ class Controllers extends AbstractController {
      */
     public function getMyPaymentsBillsItemsController(): MyPaymentsBillsItemsController
     {
-        return $this->my_payments_bills_items_controller;
+        return $this->myPaymentsBillsItemsController;
     }
 
     /**
@@ -679,113 +679,113 @@ class Controllers extends AbstractController {
      */
     public function getModuleDataController(): ModuleDataController
     {
-        return $this->module_data_controller;
+        return $this->moduleDataController;
     }
 
     public function __construct(
-        AchievementController         $achievement_controller,
-        ReportsController             $reports_controller,
-        MyNotesController             $my_notes_controller,
-        MyNotesCategoriesController   $my_notes_categories_controller,
-        LockedResourceController      $locked_resource_controller,
-        MyContactsSettingsController  $my_contact_settings_controller,
-        MyContactsController          $my_contact_controller,
-        MyImagesController            $my_images_controller,
-        MyFilesController             $my_files_controller,
-        FilesTagsController           $files_tags_controller,
-        MyJobAfterhoursController     $my_job_afterhours_controller,
-        MyJobSettingsController       $my_job_settings_controller,
-        MyPasswordsController         $my_passwords_controller,
-        MySchedulesController         $my_schedules_controller,
-        MyTravelsIdeasController      $my_travels_ideas_controller,
-        MyPaymentsBillsController     $my_payments_bills_controller,
-        MyPaymentsSettingsController  $my_payments_settings_controller,
-        SecurityController            $security_controller,
-        SettingsController            $settings_controller,
-        SettingsDashboardController   $settings_dashboard_controller,
-        SettingsFinancesController    $settings_finances_controller,
-        SettingsValidationController  $settings_validation_controller,
-        SettingsViewController        $settings_view_controller,
-        FilesUploadSettingsController $files_upload_settings_controller,
-        MyIssuesController            $my_issues_controller,
-        MyJobHolidaysPoolController   $my_job_holidays_pool_controller,
-        MyTodoController              $my_todo_controller,
-        MyTodoElementController       $my_todo_element_controller,
-        ModuleController              $module_controller,
-        GoalsListController           $goals_list_controller,
-        UserController                $user_controller,
-        MyVideoController             $my_video_controller,
-        FilesSearchController         $files_search_controller,
-        MyContactTypeController       $my_contact_type_controller,
-        MyContactGroupController      $my_contact_group_controller,
-        DashboardController           $dashboard_controller,
-        GoalsPaymentsController       $goals_payments_controller,
-        MyIssueContactController      $my_issue_contact_controller,
-        MyIssueProgressController     $my_issue_progress_controller,
-        MyJobHolidaysController       $my_job_holidays_controller,
-        MyPasswordsGroupsController   $my_passwords_groups_controller,
-        MyShoppingPlansController     $my_shopping_plans_controller,
-        MyScheduleTypeController      $my_schedule_type_controller,
-        MyPaymentsIncomeController    $my_payments_income_controller,
-        MyPaymentsProductsController  $my_payments_products_controller,
-        MyPaymentsOwedController      $my_payments_owed_controller,
-        MyPaymentsMonthlyController   $my_payments_monthly_controller,
-        ModuleDataController          $module_data_controller,
+        AchievementController         $achievementController,
+        ReportsController             $reportsController,
+        MyNotesController             $myNotesController,
+        MyNotesCategoriesController   $myNotesCategoriesController,
+        LockedResourceController      $lockedResourceController,
+        MyContactsSettingsController  $myContactSettingsController,
+        MyContactsController          $myContactController,
+        MyImagesController            $myImagesController,
+        MyFilesController             $myFilesController,
+        FilesTagsController           $filesTagsController,
+        MyJobAfterhoursController     $myJobAfterhoursController,
+        MyJobSettingsController       $myJobSettingsController,
+        MyPasswordsController         $myPasswordsController,
+        MySchedulesController         $mySchedulesController,
+        MyTravelsIdeasController      $myTravelsIdeasController,
+        MyPaymentsBillsController     $myPaymentsBillsController,
+        MyPaymentsSettingsController  $myPaymentsSettingsController,
+        SecurityController            $securityController,
+        SettingsController            $settingsController,
+        SettingsDashboardController   $settingsDashboardController,
+        SettingsFinancesController    $settingsFinancesController,
+        SettingsValidationController  $settingsValidationController,
+        SettingsViewController        $settingsViewController,
+        FilesUploadSettingsController $filesUploadSettingsController,
+        MyIssuesController            $myIssuesController,
+        MyJobHolidaysPoolController   $myJobHolidaysPoolController,
+        MyTodoController              $myTodoController,
+        MyTodoElementController       $myTodoElementController,
+        ModuleController              $moduleController,
+        GoalsListController           $goalsListController,
+        UserController                $userController,
+        MyVideoController             $myVideoController,
+        FilesSearchController         $filesSearchController,
+        MyContactTypeController       $myContactTypeController,
+        MyContactGroupController      $myContactGroupController,
+        DashboardController           $dashboardController,
+        GoalsPaymentsController       $goalsPaymentsController,
+        MyIssueContactController      $myIssueContactController,
+        MyIssueProgressController     $myIssueProgressController,
+        MyJobHolidaysController       $myJobHolidaysController,
+        MyPasswordsGroupsController   $myPasswordsGroupsController,
+        MyShoppingPlansController     $myShoppingPlansController,
+        MyScheduleTypeController      $myScheduleTypeController,
+        MyPaymentsIncomeController    $myPaymentsIncomeController,
+        MyPaymentsProductsController  $myPaymentsProductsController,
+        MyPaymentsOwedController      $myPaymentsOwedController,
+        MyPaymentsMonthlyController   $myPaymentsMonthlyController,
+        ModuleDataController          $moduleDataController,
 
-        MyRecurringPaymentsMonthlyController $my_recurring_payments_monthly_controller,
-        MyPaymentsBillsItemsController       $my_payments_bills_items_controller
+        MyRecurringPaymentsMonthlyController $myRecurringPaymentsMonthlyController,
+        MyPaymentsBillsItemsController       $myPaymentsBillsItemsController
     ) {
-        $this->achievement_controller           = $achievement_controller;
-        $this->reports_controllers              = $reports_controller;
-        $this->my_notes_controller              = $my_notes_controller;
-        $this->my_notes_categories_controller   = $my_notes_categories_controller;
-        $this->locked_resource_controller       = $locked_resource_controller;
-        $this->my_contact_settings_controller   = $my_contact_settings_controller;
-        $this->my_contact_controller            = $my_contact_controller;
-        $this->my_images_controller             = $my_images_controller;
-        $this->my_files_controller              = $my_files_controller;
-        $this->files_tags_controller            = $files_tags_controller;
-        $this->my_job_afterhours_controller     = $my_job_afterhours_controller;
-        $this->my_job_settings_controller       = $my_job_settings_controller;
-        $this->my_passwords_controller          = $my_passwords_controller;
-        $this->my_schedules_controller          = $my_schedules_controller;
-        $this->my_travels_ideas_controller      = $my_travels_ideas_controller;
-        $this->my_payments_bills_controller     = $my_payments_bills_controller;
-        $this->my_payments_settings_controller  = $my_payments_settings_controller;
-        $this->security_controller              = $security_controller;
-        $this->settings_controller              = $settings_controller;
-        $this->settings_finances_controller     = $settings_finances_controller;
-        $this->settings_dashboard_controller    = $settings_dashboard_controller;
-        $this->settings_validation_controller   = $settings_validation_controller;
-        $this->settings_view_controller         = $settings_view_controller;
-        $this->files_upload_settings_controller = $files_upload_settings_controller;
-        $this->my_issues_controller             = $my_issues_controller;
-        $this->my_job_holidays_pool_controller  = $my_job_holidays_pool_controller;
-        $this->my_todo_controller               = $my_todo_controller;
-        $this->my_todo_element_controller       = $my_todo_element_controller;
-        $this->module_controller                = $module_controller;
-        $this->goals_list_controller            = $goals_list_controller;
-        $this->user_controller                  = $user_controller;
-        $this->my_video_controller              = $my_video_controller;
-        $this->files_search_controller          = $files_search_controller;
-        $this->my_contact_type_controller       = $my_contact_type_controller;
-        $this->my_contact_group_controller      = $my_contact_group_controller;
-        $this->dashboard_controller             = $dashboard_controller;
-        $this->goals_payments_controller        = $goals_payments_controller;
-        $this->my_issue_contact_controller      = $my_issue_contact_controller;
-        $this->my_issue_progress_controller     = $my_issue_progress_controller;
-        $this->my_job_holidays_controller       = $my_job_holidays_controller;
-        $this->my_passwords_groups_controller   = $my_passwords_groups_controller;
-        $this->my_shopping_plans_controller     = $my_shopping_plans_controller;
-        $this->my_schedule_type_controller      = $my_schedule_type_controller;
-        $this->my_payments_income_controller    = $my_payments_income_controller;
-        $this->my_payments_products_controller  = $my_payments_products_controller;
-        $this->my_payments_owed_controller      = $my_payments_owed_controller;
-        $this->my_payments_monthly_controller   = $my_payments_monthly_controller;
-        $this->module_data_controller           = $module_data_controller;
+        $this->achievementController        = $achievementController;
+        $this->reportsControllers           = $reportsController;
+        $this->myNotesController            = $myNotesController;
+        $this->myNotesCategoriesController  = $myNotesCategoriesController;
+        $this->lockedResourceController     = $lockedResourceController;
+        $this->myContactSettingsController  = $myContactSettingsController;
+        $this->myContactController          = $myContactController;
+        $this->myImagesController           = $myImagesController;
+        $this->myFilesController            = $myFilesController;
+        $this->filesTagsController          = $filesTagsController;
+        $this->myJobAfterhoursController    = $myJobAfterhoursController;
+        $this->myJobSettingsController      = $myJobSettingsController;
+        $this->myPasswordsController        = $myPasswordsController;
+        $this->mySchedulesController        = $mySchedulesController;
+        $this->myTravelsIdeasController     = $myTravelsIdeasController;
+        $this->myPaymentsBillsController    = $myPaymentsBillsController;
+        $this->myPaymentsSettingsController = $myPaymentsSettingsController;
+        $this->securityController           = $securityController;
+        $this->settingsController           = $settingsController;
+        $this->settingsFinancesController   = $settingsFinancesController;
+        $this->settingsDashboardController  = $settingsDashboardController;
+        $this->settingsValidationController = $settingsValidationController;
+        $this->settingsViewController       = $settingsViewController;
+        $this->filesUploadSettingsController= $filesUploadSettingsController;
+        $this->myIssuesController           = $myIssuesController;
+        $this->myJobHolidaysPoolController  = $myJobHolidaysPoolController;
+        $this->myTodoController             = $myTodoController;
+        $this->myTodoElementController      = $myTodoElementController;
+        $this->moduleController             = $moduleController;
+        $this->goalsListController          = $goalsListController;
+        $this->userController               = $userController;
+        $this->myVideoController            = $myVideoController;
+        $this->filesSearchController        = $filesSearchController;
+        $this->myContactTypeController      = $myContactTypeController;
+        $this->myContactGroupController     = $myContactGroupController;
+        $this->dashboardController          = $dashboardController;
+        $this->goalsPaymentsController      = $goalsPaymentsController;
+        $this->myIssueContactController     = $myIssueContactController;
+        $this->myIssueProgressController    = $myIssueProgressController;
+        $this->myJobHolidaysController      = $myJobHolidaysController;
+        $this->myPasswordsGroupsController  = $myPasswordsGroupsController;
+        $this->myShoppingPlansController    = $myShoppingPlansController;
+        $this->myScheduleTypeController     = $myScheduleTypeController;
+        $this->myPaymentsIncomeController   = $myPaymentsIncomeController;
+        $this->myPaymentsProductsController = $myPaymentsProductsController;
+        $this->myPaymentsOwedController     = $myPaymentsOwedController;
+        $this->myPaymentsMonthlyController  = $myPaymentsMonthlyController;
+        $this->moduleDataController         = $moduleDataController;
 
-        $this->my_recurring_payments_monthly_controller = $my_recurring_payments_monthly_controller;
-        $this->my_payments_bills_items_controller       = $my_payments_bills_items_controller;
+        $this->myRecurringPaymentsMonthlyController = $myRecurringPaymentsMonthlyController;
+        $this->myPaymentsBillsItemsController       = $myPaymentsBillsItemsController;
     }
 
 }

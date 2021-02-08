@@ -19,110 +19,110 @@ class SettingsFinancesController extends AbstractController {
     private $translator;
 
     /**
-     * @var SettingsSaver $settings_saver
+     * @var SettingsSaver $settingsSaver
      */
-    private $settings_saver;
+    private $settingsSaver;
 
     /**
-     * @var SettingsLoader $settings_loader
+     * @var SettingsLoader $settingsLoader
      */
-    private $settings_loader;
+    private $settingsLoader;
 
     /**
-     * @var SettingsViewController $settings_view_controller
+     * @var SettingsViewController $settingsViewController
      */
-    private $settings_view_controller;
+    private $settingsViewController;
 
     /**
-     * @var SettingsValidationController $settings_validation_controller
+     * @var SettingsValidationController $settingsValidationController
      */
-    private $settings_validation_controller;
+    private $settingsValidationController;
 
     public function __construct(
         Translator                   $translator,
-        SettingsSaver                $settings_saver,
-        SettingsLoader               $settings_loader,
-        SettingsViewController       $settings_view_controller,
-        SettingsValidationController $settings_validation_controller
+        SettingsSaver                $settingsSaver,
+        SettingsLoader               $settingsLoader,
+        SettingsViewController       $settingsViewController,
+        SettingsValidationController $settingsValidationController
     ) {
-        $this->settings_validation_controller = $settings_validation_controller;
-        $this->settings_view_controller       = $settings_view_controller;
-        $this->settings_loader                = $settings_loader;
-        $this->settings_saver                 = $settings_saver;
-        $this->translator                     = $translator;
+        $this->settingsValidationController = $settingsValidationController;
+        $this->settingsViewController       = $settingsViewController;
+        $this->settingsLoader               = $settingsLoader;
+        $this->settingsSaver                = $settingsSaver;
+        $this->translator                   = $translator;
     }
 
     /**
-     * @param array|null $currencies_setting_dtos
+     * @param array|null $currenciesSettingDtos
      * @return SettingsFinancesDTO
      * @throws Exception
      */
-    public static function buildFinancesSettingsDtoFromCurrenciesSettingsDtos(array $currencies_setting_dtos = null){
+    public static function buildFinancesSettingsDtoFromCurrenciesSettingsDtos(array $currenciesSettingDtos = null){
 
-        if( empty($currencies_setting_dtos) ){
-            $currencies_setting_dtos   = [];
-            $currencies_setting_dtos[] = new SettingsCurrencyDTO();
+        if( empty($currenciesSettingDtos) ){
+            $currenciesSettingDtos   = [];
+            $currenciesSettingDtos[] = new SettingsCurrencyDTO();
         }
 
-        $finances_settings_dto = new SettingsFinancesDTO();
-        $finances_settings_dto->setSettingsCurrencyDtos($currencies_setting_dtos);
+        $financesSettingsDto = new SettingsFinancesDTO();
+        $financesSettingsDto->setSettingsCurrencyDtos($currenciesSettingDtos);
 
-        return $finances_settings_dto;
+        return $financesSettingsDto;
     }
 
     /**
      * This function enforce the update of all the currencies when default currency is changed
-     * @param SettingsCurrencyDTO[]  $currencies_settings_dtos
-     * @param SettingsCurrencyDTO    $new_default_setting_currency_dto
-     * @param string                 $array_index_of_updated_setting
+     * @param SettingsCurrencyDTO[]  $currenciesSettingsDtos
+     * @param SettingsCurrencyDTO    $newDefaultSettingCurrencyDto
+     * @param string                 $arrayIndexOfUpdatedSetting
      * @return SettingsCurrencyDTO[]
      */
-    public function handleDefaultCurrencyChange(array $currencies_settings_dtos, SettingsCurrencyDTO $new_default_setting_currency_dto, string $array_index_of_updated_setting){
+    public function handleDefaultCurrencyChange(array $currenciesSettingsDtos, SettingsCurrencyDTO $newDefaultSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
 
-        foreach( $currencies_settings_dtos as &$currency_setting_dto ){
+        foreach($currenciesSettingsDtos as &$currency_setting_dto ){
             $currency_setting_dto->setIsDefault(false);
         }
 
-        $currencies_settings_dtos[$array_index_of_updated_setting] = $new_default_setting_currency_dto;
+        $currenciesSettingsDtos[$arrayIndexOfUpdatedSetting] = $newDefaultSettingCurrencyDto;
 
-        return $currencies_settings_dtos;
+        return $currenciesSettingsDtos;
     }
 
     /**
      * This function enforce the update of all the currencies when default currency is changed
-     * @param SettingsCurrencyDTO[]  $currencies_settings_dtos
-     * @param SettingsCurrencyDTO    $new_setting_currency_dto
-     * @param string                 $array_index_of_updated_setting
+     * @param SettingsCurrencyDTO[]  $currenciesSettingsDtos
+     * @param SettingsCurrencyDTO    $newSettingCurrencyDto
+     * @param string                 $arrayIndexOfUpdatedSetting
      * @return SettingsCurrencyDTO[]
      */
-    public function handleCurrencyUpdate(array $currencies_settings_dtos, SettingsCurrencyDTO $new_setting_currency_dto, string $array_index_of_updated_setting){
-        $currencies_settings_dtos[$array_index_of_updated_setting] = $new_setting_currency_dto;
-        return $currencies_settings_dtos;
+    public function handleCurrencyUpdate(array $currenciesSettingsDtos, SettingsCurrencyDTO $newSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
+        $currenciesSettingsDtos[$arrayIndexOfUpdatedSetting] = $newSettingCurrencyDto;
+        return $currenciesSettingsDtos;
     }
 
     /**
-     * @param SettingsCurrencyDTO $settings_currency_dto
+     * @param SettingsCurrencyDTO $settingsCurrencyDto
      * @return SettingValidationDTO
      * @throws Exception
      */
-    public function addCurrencyToFinancesCurrencySettings(SettingsCurrencyDTO $settings_currency_dto): SettingValidationDTO {
+    public function addCurrencyToFinancesCurrencySettings(SettingsCurrencyDTO $settingsCurrencyDto): SettingValidationDTO {
 
-        $setting_validation_dto = $this->settings_validation_controller->isValueByKeyUnique($settings_currency_dto);
+        $settingValidationDto = $this->settingsValidationController->isValueByKeyUnique($settingsCurrencyDto);
 
-        if( !$setting_validation_dto->isValid() ){
-            return $setting_validation_dto;
+        if( !$settingValidationDto->isValid() ){
+            return $settingValidationDto;
         }
 
-        $settings_currencies_dtos_in_db = $this->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $settingsCurrenciesDtosInDb = $this->settingsLoader->getCurrenciesDtosForSettingsFinances();
 
-        if( !empty($settings_currencies_dtos_in_db) ){
-            $settings_currencies_dtos_in_db[] = $settings_currency_dto;
-            $this->settings_saver->saveFinancesSettingsForCurrenciesSettings($settings_currencies_dtos_in_db);
-            return $setting_validation_dto;
+        if( !empty($settingsCurrenciesDtosInDb) ){
+            $settingsCurrenciesDtosInDb[] = $settingsCurrencyDto;
+            $this->settingsSaver->saveFinancesSettingsForCurrenciesSettings($settingsCurrenciesDtosInDb);
+            return $settingValidationDto;
         }
 
-        $this->settings_saver->saveFinancesSettingsForCurrenciesSettings([$settings_currency_dto]);
-        return $setting_validation_dto;
+        $this->settingsSaver->saveFinancesSettingsForCurrenciesSettings([$settingsCurrencyDto]);
+        return $settingValidationDto;
     }
 
 }

@@ -481,7 +481,7 @@ class AutoInstaller{
      * This function will print line that is used to mark beginning and end of the installer
      */
     private static function installerAreaLine(){
-        CliHandler::lineSeparator(80, '=', CliHandler::$text_blue);
+        CliHandler::lineSeparator(80, '=', CliHandler::$textBlue);
     }
 
     /**

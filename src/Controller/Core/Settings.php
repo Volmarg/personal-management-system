@@ -11,49 +11,49 @@ use App\Services\Settings\SettingsSaver;
 class Settings {
 
     /**
-     * @var SettingsSaver $settings_saver
+     * @var SettingsSaver $settingsSaver
      */
-    public $settings_saver;
+    public $settingsSaver;
 
     /**
-     * @var SettingsLoader $settings_loader
+     * @var SettingsLoader $settingsLoader
      */
-    public $settings_loader;
+    public $settingsLoader;
 
     /***
-     * @var SettingsController $settings_controller
+     * @var SettingsController $settingsController
      */
-    public $settings_controller;
+    public $settingsController;
 
     /**
-     * @var SettingsDashboardController $settings_dashboard_controller
+     * @var SettingsDashboardController $settingsDashboardController
      */
-    public $settings_dashboard_controller;
+    public $settingsDashboardController;
 
     /**
-     * @var SettingsFinancesController $setting_finances_controller
+     * @var SettingsFinancesController $settingFinancesController
      */
-    public $setting_finances_controller;
+    public $settingFinancesController;
 
     /**
-     * @var SettingsValidationController $settings_validation_controller
+     * @var SettingsValidationController $settingsValidationController
      */
-    private $settings_validation_controller;
+    private $settingsValidationController;
 
     public function __construct(
-        SettingsSaver                $settings_saver,
-        SettingsLoader               $settings_loader,
-        SettingsController           $settings_controller,
-        SettingsDashboardController  $settings_dashboard_controller,
-        SettingsFinancesController   $setting_finances_controller,
-        SettingsValidationController $settings_validation_controller
+        SettingsSaver                $settingsSaver,
+        SettingsLoader               $settingsLoader,
+        SettingsController           $settingsController,
+        SettingsDashboardController  $settingsDashboardController,
+        SettingsFinancesController   $settingFinancesController,
+        SettingsValidationController $settingsValidationController
     ) {
-        $this->settings_saver                   = $settings_saver;
-        $this->settings_loader                  = $settings_loader;
-        $this->settings_controller              = $settings_controller;
-        $this->settings_dashboard_controller    = $settings_dashboard_controller;
-        $this->settings_validation_controller   = $settings_validation_controller;
-        $this->setting_finances_controller      = $setting_finances_controller;
+        $this->settingsSaver                = $settingsSaver;
+        $this->settingsLoader               = $settingsLoader;
+        $this->settingsController           = $settingsController;
+        $this->settingsDashboardController  = $settingsDashboardController;
+        $this->settingsValidationController = $settingsValidationController;
+        $this->settingFinancesController    = $settingFinancesController;
     }
 
 }

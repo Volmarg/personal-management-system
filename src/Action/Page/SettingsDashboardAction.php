@@ -83,7 +83,7 @@ class SettingsDashboardAction extends AbstractController {
             $widgetsVisibilitiesSettingsDtos[] = $widgetsVisibilitySettingsDto;
         }
 
-        $this->app->settings->settings_saver->saveSettingsForDashboardWidgetsVisibility($widgetsVisibilitiesSettingsDtos);
+        $this->app->settings->settingsSaver->saveSettingsForDashboardWidgetsVisibility($widgetsVisibilitiesSettingsDtos);
         $templateContent = $this->settingsViewAction->renderSettingsTemplate()->getContent();
 
         return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, "", $templateContent);

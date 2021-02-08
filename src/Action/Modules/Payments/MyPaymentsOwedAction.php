@@ -126,7 +126,7 @@ class MyPaymentsOwedAction extends AbstractController {
             $summaryOverallOwedByOthers[] = $summary;
         }
 
-        $currenciesDtos = $this->app->settings->settings_loader->getCurrenciesDtosForSettingsFinances();
+        $currenciesDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
 
         return $this->render('modules/my-payments/owed.html.twig', [
             'ajax_render'       => $ajaxRender,

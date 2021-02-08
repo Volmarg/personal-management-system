@@ -30,8 +30,8 @@ class MyJobAfterhoursController extends AbstractController {
         $goals = $this->app->repositories->myJobAfterhoursRepository->getGoalsWithTime();
 
         foreach ($goals as $goal) {
-            $goal_key               = (is_null($goal[MyJobAfterhoursRepository::GOAL_FIELD]) ? static::GENERAL_USAGE : $goal[MyJobAfterhoursRepository::GOAL_FIELD]);
-            $afterhours[$goal_key]  = [
+            $goalKey               = (is_null($goal[MyJobAfterhoursRepository::GOAL_FIELD]) ? static::GENERAL_USAGE : $goal[MyJobAfterhoursRepository::GOAL_FIELD]);
+            $afterhours[$goalKey]  = [
                 MyJobAfterhoursRepository::TIME_SUMMARY_FIELD => $goal[MyJobAfterhoursRepository::TIME_SUMMARY_FIELD],
                 MyJobAfterhoursRepository::DAYS_SUMMARY_FIELD => $goal[MyJobAfterhoursRepository::DAYS_SUMMARY_FIELD],
             ];

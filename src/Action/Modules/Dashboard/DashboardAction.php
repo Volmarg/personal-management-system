@@ -53,7 +53,7 @@ class DashboardAction extends AbstractController {
      */
     protected function renderTemplate($ajaxRender = false): Response
     {
-        $dashboardSettings               = $this->app->settings->settings_loader->getSettingsForDashboard();
+        $dashboardSettings               = $this->app->settings->settingsLoader->getSettingsForDashboard();
         $dashboardWidgetsVisibilityDtos  = null;
 
         if( !empty($dashboardSettings) ){

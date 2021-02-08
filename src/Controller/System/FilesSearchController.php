@@ -22,14 +22,14 @@ class FilesSearchController extends AbstractController
 
     /**
      * @param array $tags
-     * @param string $search_type
-     * @param bool $do_like_percent
+     * @param string $searchType
+     * @param bool $doLikePercent
      * @return mixed[]
      * @throws DBALException
      */
-    public function getSearchResultsDataForTag(array $tags, string $search_type, bool $do_like_percent = false)
+    public function getSearchResultsDataForTag(array $tags, string $searchType, bool $doLikePercent = false)
     {
-        return $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags, $search_type, $do_like_percent);
+        return $this->app->repositories->filesSearchRepository->getSearchResultsDataForTag($tags, $searchType, $doLikePercent);
     }
 
 }

@@ -34,25 +34,25 @@ class SettingsDashboardController extends AbstractController {
     private $translator;
 
     /**
-     * @var SettingsSaver $settings_saver
+     * @var SettingsSaver $settingsSaver
      */
-    private $settings_saver;
+    private $settingsSaver;
 
     /**
-     * @var SettingsLoader $settings_loader
+     * @var SettingsLoader $settingsLoader
      */
-    private $settings_loader;
+    private $settingsLoader;
 
     /**
-     * @var SettingsViewController $settings_view_controller
+     * @var SettingsViewController $settingsViewController
      */
-    private $settings_view_controller;
+    private $settingsViewController;
 
-    public function __construct(Translator $translator, SettingsSaver $settings_saver, SettingsLoader $settings_loader, SettingsViewController $settings_view_controller) {
-        $this->settings_view_controller = $settings_view_controller;
-        $this->settings_loader          = $settings_loader;
-        $this->settings_saver           = $settings_saver;
-        $this->translator               = $translator;
+    public function __construct(Translator $translator, SettingsSaver $settingsSaver, SettingsLoader $settingsLoader, SettingsViewController $settingsViewController) {
+        $this->settingsViewController = $settingsViewController;
+        $this->settingsLoader         = $settingsLoader;
+        $this->settingsSaver          = $settingsSaver;
+        $this->translator             = $translator;
     }
 
     /**
@@ -63,71 +63,69 @@ class SettingsDashboardController extends AbstractController {
      */
     public static function getDashboardWidgetsNames(Translator $translator):array {
 
-        $dashboard_widgets_names = [];
+        $dashboardWidgetsNames = [];
 
-        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
-            $dashboard_widgets_names[$widget_name] = $translator->translate('dashboard.widgets.' . $widget_name . '.label');
+        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widgetName ){
+            $dashboardWidgetsNames[$widgetName] = $translator->translate('dashboard.widgets.' . $widgetName . '.label');
         }
 
-        return $dashboard_widgets_names;
+        return $dashboardWidgetsNames;
     }
 
     /**
      * Returns array of widgets names with initial visibilities
-     * @param bool $all_visible
+     * @param bool $allVisible
      * @return array
      */
-    public static function getDashboardWidgetsInitialVisibility($all_visible = true){
-        $dashboard_widgets_visibility = [];
+    public static function getDashboardWidgetsInitialVisibility($allVisible = true){
+        $dashboardWidgetsVisibility = [];
 
-        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
-            $dashboard_widgets_visibility[$widget_name] = $all_visible;
+        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widgetName ){
+            $dashboardWidgetsVisibility[$widgetName] = $allVisible;
         }
 
-        return $dashboard_widgets_visibility;
+        return $dashboardWidgetsVisibility;
     }
 
     /**
      * Builds array of widgets visibilities dto
-     * @param bool $all_visible
+     * @param bool $allVisible
      * @return array
      */
-    public static function buildArrayOfWidgetsVisibilityDtoForInitialVisibility($all_visible = true){
+    public static function buildArrayOfWidgetsVisibilityDtoForInitialVisibility($allVisible = true){
 
-        $array_of_widgets_visibility_dto = [];
+        $arrayOfWidgetsVisibilityDto = [];
+        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widgetName ){
 
+            $settingsWidgetVisibilityDto = new SettingsWidgetVisibilityDTO();
+            $settingsWidgetVisibilityDto->setName($widgetName);
+            $settingsWidgetVisibilityDto->setIsVisible($allVisible);
 
-        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widget_name ){
-
-            $settings_widget_visibility_dto = new SettingsWidgetVisibilityDTO();
-            $settings_widget_visibility_dto->setName($widget_name);
-            $settings_widget_visibility_dto->setIsVisible($all_visible);
-
-            $array_of_widgets_visibility_dto[] = $settings_widget_visibility_dto;
+            $arrayOfWidgetsVisibilityDto[] = $settingsWidgetVisibilityDto;
         }
 
-        return $array_of_widgets_visibility_dto;
+        return $arrayOfWidgetsVisibilityDto;
     }
 
     /**
      * This function will build dashboard settings dto based on supplied data, if some is missing then default values will be used
-     * @param array|null $array_of_widgets_visibility_dto
+     * @param array|null $arrayOfWidgetsVisibilityDto
      * @return SettingsDashboardDTO
      * @throws Exception
      */
-    public static function buildDashboardSettingsDto(?array $array_of_widgets_visibility_dto = null): SettingsDashboardDTO{
+    public static function buildDashboardSettingsDto(?array $arrayOfWidgetsVisibilityDto = null): SettingsDashboardDTO{
 
-        if( empty($array_of_widgets_visibility_dto) ){
-            $array_of_widgets_visibility_dto   = [];
-            $array_of_widgets_visibility_dto[] = new SettingsWidgetVisibilityDTO();
+        if( empty($arrayOfWidgetsVisibilityDto) ){
+            $arrayOfWidgetsVisibilityDto   = [];
+            $arrayOfWidgetsVisibilityDto[] = new SettingsWidgetVisibilityDTO();
         }
 
-        $dashboard_widgets_settings_dto = new SettingsWidgetSettingsDTO();
-        $dashboard_widgets_settings_dto->setWidgetVisibility($array_of_widgets_visibility_dto);
+        $dashboardWidgetsSettingsDto = new SettingsWidgetSettingsDTO();
+        $dashboardWidgetsSettingsDto->setWidgetVisibility($arrayOfWidgetsVisibilityDto);
 
-        $dashboard_settings_dto = new SettingsDashboardDTO();
-        $dashboard_settings_dto->setWidgetSettings($dashboard_widgets_settings_dto);
+        $dashboardSettingsDto = new SettingsDashboardDTO();
+        $dashboardSettingsDto->setWidgetSettings($dashboardWidgetsSettingsDto);
 
-        return $dashboard_settings_dto;
+        return $dashboardSettingsDto;
     }
 }

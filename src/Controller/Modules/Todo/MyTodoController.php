@@ -24,30 +24,30 @@ class MyTodoController extends AbstractController {
     private $app;
 
     /**
-     * @var ModuleController $module_controller
+     * @var ModuleController $moduleController
      */
-    private ModuleController $module_controller;
+    private ModuleController $moduleController;
 
     /**
-     * @var MyIssuesController $issues_controller
+     * @var MyIssuesController $issuesController
      */
-    private MyIssuesController $issues_controller;
+    private MyIssuesController $issuesController;
 
-    public function __construct(Application $app, ModuleController $module_controller, MyIssuesController $issues_controller)
+    public function __construct(Application $app, ModuleController $moduleController, MyIssuesController $issuesController)
     {
-        $this->app               = $app;
-        $this->issues_controller = $issues_controller;
-        $this->module_controller = $module_controller;
+        $this->app              = $app;
+        $this->issuesController = $issuesController;
+        $this->moduleController = $moduleController;
     }
 
     /**
      * Will return the
-     * @param string $module_name
+     * @param string $moduleName
      * @return MyTodo[]
      */
-    public function getTodoForModule(string $module_name): array
+    public function getTodoForModule(string $moduleName): array
     {
-        $entities = $this->app->repositories->myTodoRepository->getEntitiesForModuleName($module_name);
+        $entities = $this->app->repositories->myTodoRepository->getEntitiesForModuleName($moduleName);
         return $entities;
     }
 
@@ -76,16 +76,16 @@ class MyTodoController extends AbstractController {
      */
     public function getAllGroupedByModuleName(bool $deleted = false): array
     {
-        $grouped_entities = [];
-        $all_entities     = $this->getAll($deleted);
+        $groupedEntities = [];
+        $allEntities     = $this->getAll($deleted);
 
-        foreach($all_entities as $entity)
+        foreach($allEntities as $entity)
         {
-            $module_name                      = ( is_null($entity->getModule()) ? null : $entity->getModule()->getName()) ;
-            $grouped_entities[$module_name][] = $entity;
+            $moduleName                     = ( is_null($entity->getModule()) ? null : $entity->getModule()->getName()) ;
+            $groupedEntities[$moduleName][] = $entity;
         }
 
-        return $grouped_entities;
+        return $groupedEntities;
     }
 
     /**
@@ -103,14 +103,14 @@ class MyTodoController extends AbstractController {
     /**
      * Will check if al elements in single todo are done
      *
-     * @param int $todo_id
+     * @param int $todoId
      * @return bool
      * @throws DBALException
      */
-    public function areAllElementsDone(int $todo_id): bool
+    public function areAllElementsDone(int $todoId): bool
     {
-        $are_elements_done = $this->app->repositories->myTodoRepository->areAllElementsDone($todo_id);
-        return $are_elements_done;
+        $areElementsDone = $this->app->repositories->myTodoRepository->areAllElementsDone($todoId);
+        return $areElementsDone;
     }
 
     /**
@@ -120,36 +120,36 @@ class MyTodoController extends AbstractController {
      */
     public function setRelationForTodo(MyTodo $todo): void
     {
-        $entity_id = $todo->getRelatedEntityId();
-        $module    = $todo->getModule();
+        $entityId = $todo->getRelatedEntityId();
+        $module   = $todo->getModule();
 
         if( empty($module) ){
             $this->app->logger->info("Not setting relation to myTodo as no related module was selected");
             return;
         }
 
-        $module_name      = $module->getName();
-        $entity_namespace = ModulesController::getEntityNamespaceForModuleName($module_name);
+        $moduleName      = $module->getName();
+        $entityNamespace = ModulesController::getEntityNamespaceForModuleName($moduleName);
 
-        if( empty($entity_id) ){
+        if( empty($entityId) ){
             $this->app->logger->info("Not setting relation to myTodo as no entity was give to relate with");
             return;
         }
 
-        if( is_null($entity_namespace) ){
+        if( is_null($entityNamespace) ){
             $this->app->logger->warning("Cannot set relation to MyTodo as no entity was found for module name", [
-                Logger::KEY_MODULE_NAME => $module_name,
-                Logger::KEY_ID          => $entity_id,
+                Logger::KEY_MODULE_NAME => $moduleName,
+                Logger::KEY_ID          => $entityId,
             ]);
             return;
         }
 
-        $entity = $this->getDoctrine()->getManager()->find($entity_namespace, $entity_id);
+        $entity = $this->getDoctrine()->getManager()->find($entityNamespace, $entityId);
 
         if( !$entity instanceof RelatesToMyTodoInterface ){
             $this->app->logger->warning("Cannot set relation to MyTodo as this entity does not implements relation interface", [
-                Logger::KEY_MODULE_NAME => $module_name,
-                Logger::KEY_ID          => $entity_id,
+                Logger::KEY_MODULE_NAME => $moduleName,
+                Logger::KEY_ID          => $entityId,
             ]);
             return;
         }
@@ -158,8 +158,8 @@ class MyTodoController extends AbstractController {
 
         if( is_null($entity) ){
             $this->app->logger->warning("Cannot set relation to MyTodo as no entity namespace mapping is defined for given module name", [
-                Logger::KEY_MODULE_NAME => $module_name,
-                Logger::KEY_ID          => $entity_id,
+                Logger::KEY_MODULE_NAME => $moduleName,
+                Logger::KEY_ID          => $entityId,
             ]);
             return;
         }
@@ -168,14 +168,14 @@ class MyTodoController extends AbstractController {
     /**
      * Will return one module entity for given name or null if no matching module with this name was found
      *
-     * @param string $module_name
-     * @param int $entity_id
+     * @param string $moduleName
+     * @param int $entityId
      * @return MyTodo|null
      * @throws NonUniqueResultException
      */
-    public function getTodoByModuleNameAndEntityId(string $module_name, int $entity_id): ?MyTodo
+    public function getTodoByModuleNameAndEntityId(string $moduleName, int $entityId): ?MyTodo
     {
-        return $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId($module_name, $entity_id);
+        return $this->app->repositories->myTodoRepository->getTodoByModuleNameAndEntityId($moduleName, $entityId);
     }
 
     /**
@@ -195,27 +195,27 @@ class MyTodoController extends AbstractController {
      */
     public function getAllRelatableEntitiesDataDtosForModulesNames(): array
     {
-        $all_modules                          = $this->module_controller->getAllActive();
-        $relatable_entities_for_modules_names = [];
+        $allModules                       = $this->moduleController->getAllActive();
+        $relatableEntitiesForModulesNames = [];
 
-        foreach( $all_modules as $module ){
-            $module_name = $module->getName();
+        foreach( $allModules as $module ){
+            $moduleName = $module->getName();
 
-            switch( $module_name ){
+            switch( $moduleName ){
                 case ModulesController::MODULE_NAME_ISSUES:
                 {
-                    $all_not_deleted_issues = $this->issues_controller->findAllNotDeletedAndNotResolved();
+                    $allNotDeletedIssues = $this->issuesController->findAllNotDeletedAndNotResolved();
 
-                    foreach( $all_not_deleted_issues as $issue_entity ){
-                        $entity_data_dto = new EntityDataDto();
-                        $entity_data_dto->setId($issue_entity->getId());
-                        $entity_data_dto->setName($issue_entity->getName());
+                    foreach( $allNotDeletedIssues as $issueEntity ){
+                        $entityDataDto = new EntityDataDto();
+                        $entityDataDto->setId($issueEntity->getId());
+                        $entityDataDto->setName($issueEntity->getName());
 
-                        if( !empty($issue_entity->getTodo()) ){
-                            $entity_data_dto->setActive(false);;
+                        if( !empty($issueEntity->getTodo()) ){
+                            $entityDataDto->setActive(false);;
                         }
 
-                        $relatable_entities_for_modules_names[$module_name][] = $entity_data_dto;
+                        $relatableEntitiesForModulesNames[$moduleName][] = $entityDataDto;
                     }
                 }
                 break;
@@ -223,7 +223,7 @@ class MyTodoController extends AbstractController {
 
         }
 
-        return $relatable_entities_for_modules_names;
+        return $relatableEntitiesForModulesNames;
     }
 
 }

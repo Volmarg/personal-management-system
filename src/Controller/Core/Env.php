@@ -59,8 +59,8 @@ class Env extends AbstractController {
      */
     public static function getNotifierProxyLoggerDefaultReceiversEmails(): array
     {
-        $emails_string = Utils::getRealArrayForStringArray($_ENV[self::APP_DEFAULT_NPL_RECEIVER_EMAILS]);
-        return $emails_string;
+        $emailsString = Utils::getRealArrayForStringArray($_ENV[self::APP_DEFAULT_NPL_RECEIVER_EMAILS]);
+        return $emailsString;
     }
 
     /**
@@ -69,11 +69,11 @@ class Env extends AbstractController {
      */
     public static function isGuide() {
         try {
-            $is_guide = Utils::getBoolRepresentationOfBoolString($_ENV['APP_GUIDE']);
+            $isGuide = Utils::getBoolRepresentationOfBoolString($_ENV['APP_GUIDE']);
         } catch (\Exception $e) {
-            $is_guide = false;
+            $isGuide = false;
         }
-        return $is_guide;
+        return $isGuide;
     }
 
     /**
@@ -81,18 +81,18 @@ class Env extends AbstractController {
      * @throws Exception
      */
     public static function getDatabaseCredentials(){
-        $regex        = '/^mysql:\/\/(.*):(.*)@(.*):(.*)\/(.*)/';
-        $database_url = self::getDatabaseUrl();
+        $regex       = '/^mysql:\/\/(.*):(.*)@(.*):(.*)\/(.*)/';
+        $databaseUrl = self::getDatabaseUrl();
 
-        preg_match($regex, $database_url, $matches);
+        preg_match($regex, $databaseUrl, $matches);
 
         try{
 
-            $login          = $matches[1];
-            $password       = $matches[2];
-            $host           = $matches[3];
-            $port           = $matches[4];
-            $database_name  = $matches[5];
+            $login        = $matches[1];
+            $password     = $matches[2];
+            $host         = $matches[3];
+            $port         = $matches[4];
+            $databaseName = $matches[5];
 
         }catch(\Exception $e){
             throw new Exception("There was ane error while parsing database connection from .env.");
@@ -103,7 +103,7 @@ class Env extends AbstractController {
         $dto->setDatabaseHost($host);
         $dto->setDatabasePassword($password);
         $dto->setDatabasePort($port);
-        $dto->setDatabaseName($database_name);
+        $dto->setDatabaseName($databaseName);
 
         return $dto;
     }
@@ -113,11 +113,11 @@ class Env extends AbstractController {
      */
     public static function isDemo() {
         try {
-            $is_demo = Utils::getBoolRepresentationOfBoolString($_ENV['APP_DEMO']);
+            $isDemo = Utils::getBoolRepresentationOfBoolString($_ENV['APP_DEMO']);
         } catch (\Exception $e) {
-            $is_demo = false;
+            $isDemo = false;
         }
-        return $is_demo;
+        return $isDemo;
     }
 
     /**
@@ -128,11 +128,11 @@ class Env extends AbstractController {
      */
     public static function isTest(): bool {
         try {
-            $is_test = $_ENV['APP_ENV'] === self::APP_ENV_TEST;
+            $isTest = $_ENV['APP_ENV'] === self::APP_ENV_TEST;
         } catch (\Exception $e) {
-            $is_test = false;
+            $isTest = false;
         }
-        return $is_test;
+        return $isTest;
     }
 
     /**
@@ -140,11 +140,11 @@ class Env extends AbstractController {
      */
     public static function isMaintenance(): bool {
         try {
-            $is_maintenance = Utils::getBoolRepresentationOfBoolString($_ENV['APP_MAINTENANCE']);
+            $isMaintenance = Utils::getBoolRepresentationOfBoolString($_ENV['APP_MAINTENANCE']);
         } catch (\Exception $e) {
-            $is_maintenance = false;
+            $isMaintenance = false;
         }
-        return $is_maintenance;
+        return $isMaintenance;
     }
 
     /**
@@ -153,11 +153,11 @@ class Env extends AbstractController {
     public static function areInfoBlocksShown(): bool
     {
         try {
-            $are_info_blocks_shown = Utils::getBoolRepresentationOfBoolString($_ENV[self::APP_SHOW_INFO_BLOCKS]);
+            $areInfoBlocksShown = Utils::getBoolRepresentationOfBoolString($_ENV[self::APP_SHOW_INFO_BLOCKS]);
         } catch (\Exception $e) {
-            $are_info_blocks_shown = false;
+            $areInfoBlocksShown = false;
         }
-        return $are_info_blocks_shown;
+        return $areInfoBlocksShown;
     }
 
 }

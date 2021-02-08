@@ -137,9 +137,9 @@ class Repositories extends AbstractController {
     const DOCTRINE_FIELD_MAPPING_TYPE_DATETIME = "datetime";
 
     /**
-     * @var EntityManagerInterface $entity_manager
+     * @var EntityManagerInterface $entityManager
      */
-    private $entity_manager;
+    private $entityManager;
 
     /**
      * @var Translator $translator
@@ -337,9 +337,9 @@ class Repositories extends AbstractController {
     public $moduleDataRepository;
 
     /**
-     * @var EntityValidator $entity_validator
+     * @var EntityValidator $entityValidator
      */
-    private $entity_validator;
+    private $entityValidator;
 
     /**
      * @var LoggerInterface $logger
@@ -386,8 +386,8 @@ class Repositories extends AbstractController {
         MyTodoElementRepository             $myTodoElementRepository,
         ModuleRepository                    $moduleRepository,
         ModuleDataRepository                $moduleDataRepository,
-        EntityManagerInterface              $entity_manager,
-        EntityValidator                     $entity_validator,
+        EntityManagerInterface              $entityManager,
+        EntityValidator                     $entityValidator,
         LoggerInterface                     $logger
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -425,8 +425,8 @@ class Repositories extends AbstractController {
         $this->myIssueRepository                    = $myIssueRepository;
         $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
-        $this->entity_manager                       = $entity_manager;
-        $this->entity_validator                     = $entity_validator;
+        $this->entityManager                        = $entityManager;
+        $this->entityValidator                      = $entityValidator;
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;
         $this->moduleRepository                     = $moduleRepository;
@@ -437,7 +437,7 @@ class Repositories extends AbstractController {
     /**
      *  This is general method for all common record soft delete called from front
      *  Also request is present only when calling via ajax, that's why in some places AjaxResponse is being sent back
-     * @param string $repository_name
+     * @param string $repositoryName
      * @param $id
      * @param array $findByParams
      * @param Request|null $request
@@ -445,19 +445,19 @@ class Repositories extends AbstractController {
      *
      * @throws Exception
      */
-    public function deleteById(string $repository_name, $id, array $findByParams = [], ?Request $request = null ): Response {
+    public function deleteById(string $repositoryName, $id, array $findByParams = [], ?Request $request = null ): Response {
         try {
 
             $id = $this->trimAndCheckId($id);
             $this->logger->info("Now handling removal for: ", [
-                self::KEY_REPOSITORY => $repository_name,
+                self::KEY_REPOSITORY => $repositoryName,
                 self::KEY_ID         => $id,
             ]);
 
             /**
              * @var ServiceEntityRepository $repository
              */
-            $repository = $this->{lcfirst($repository_name)};
+            $repository = $this->{lcfirst($repositoryName)};
             $record     = $repository->find($id);
 
             $record = $this->handleRecordActiveRelatedEntities($record);
@@ -473,7 +473,7 @@ class Repositories extends AbstractController {
             }
 
             #Info: Reattach the entity - doctrine based issue
-            $this->entity_manager->clear();
+            $this->entityManager->clear();
             $record = $repository->find($id);
 
             if( !($record instanceof SoftDeletableEntityInterface) ){
@@ -488,7 +488,7 @@ class Repositories extends AbstractController {
             }
 
             $record->setDeleted(1);
-            $record = $this->changeRecordDataBeforeSoftDelete($repository_name, $record);
+            $record = $this->changeRecordDataBeforeSoftDelete($repositoryName, $record);
 
             $em = $this->getDoctrine()->getManager();
 
@@ -544,11 +544,11 @@ class Repositories extends AbstractController {
             $entity = $this->setEntityPropertiesFromArrayOfFieldsParameters($entity, $parameters);
 
             // check constraints now that the entity is updated
-            $validation_result = $this->entity_validator->handleValidation($entity, EntityValidator::ACTION_UPDATE);
+            $validationResult = $this->entityValidator->handleValidation($entity, EntityValidator::ACTION_UPDATE);
 
-            if( !$validation_result->isValid() ){
-                $failed_validation_messages = $validation_result->getAllFailedValidationMessagesAsSingleString();
-                return new Response($failed_validation_messages, 500);
+            if( !$validationResult->isValid() ){
+                $failedValidationMessages = $validationResult->getAllFailedValidationMessagesAsSingleString();
+                return new Response($failedValidationMessages, 500);
             }
 
             $em = $this->getDoctrine()->getManager();
@@ -565,16 +565,16 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @param array $columns_names
+     * @param array $columnsNames
      */
-    public static function removeHelperColumnsFromView(array &$columns_names) {
-        $columns_to_remove = ['deleted', 'delete'];
+    public static function removeHelperColumnsFromView(array &$columnsNames) {
+        $columnsToRemove = ['deleted', 'delete'];
 
-        foreach ($columns_to_remove as $column_to_remove) {
-            $key = array_search($column_to_remove, $columns_names);
+        foreach ($columnsToRemove as $columnToRemove) {
+            $key = array_search($columnToRemove, $columnsNames);
 
             if (!is_null($key) && $key) {
-                unset($columns_names[$key]);
+                unset($columnsNames[$key]);
             }
 
         }
@@ -594,11 +594,11 @@ class Repositories extends AbstractController {
      * 'id': $(noteCategoryId).val(),
      * },
      *
-     * @param string $entity_class
+     * @param string $entityClass
      * @param array $parameters
      * @return Response
      */
-    public function createAndSaveEntityForEntityClassAndArrayOfParameters(string $entity_class, array $parameters): Response
+    public function createAndSaveEntityForEntityClassAndArrayOfParameters(string $entityClass, array $parameters): Response
     {
         /**
          * Id cannot be served as parameter because new entity is being created, therefore the auto_increment
@@ -609,11 +609,11 @@ class Repositories extends AbstractController {
         }
 
         try{
-            $entity = new $entity_class();
+            $entity = new $entityClass();
             $entity = $this->setEntityPropertiesFromArrayOfFieldsParameters($entity, $parameters);
 
-            $this->entity_manager->persist($entity);;
-            $this->entity_manager->flush();
+            $this->entityManager->persist($entity);;
+            $this->entityManager->flush();
         }catch(Exception | TypeError $e ){
             $message = $this->translator->translate('responses.repositories.recordUpdateFail');
 
@@ -663,20 +663,20 @@ class Repositories extends AbstractController {
     }
 
     /**
-     * @param string $table_name
+     * @param string $tableName
      * @return array
      */
-    public function getColumnsNamesForTableName(string $table_name): array
+    public function getColumnsNamesForTableName(string $tableName): array
     {
-        $schema_manager = $this->entity_manager->getConnection()->getSchemaManager();
-        $columns        = $schema_manager->listTableColumns($table_name);
+        $schemaManager = $this->entityManager->getConnection()->getSchemaManager();
+        $columns       = $schemaManager->listTableColumns($tableName);
 
-        $columns_names = [];
+        $columnsNames = [];
         foreach($columns as $column){
-            $columns_names[] = $column->getName();
+            $columnsNames[] = $column->getName();
         }
 
-        return $columns_names;
+        return $columnsNames;
     }
 
     /**
@@ -688,37 +688,37 @@ class Repositories extends AbstractController {
      */
     public function getAllRelatedEntities($entity): array
     {
-        $all_related_entities = [];
+        $allRelatedEntities = [];
 
-        $class     = get_class($entity);
-        $is_entity = self::isEntity($entity);
+        $class    = get_class($entity);
+        $isEntity = self::isEntity($entity);
 
-        if( !$is_entity ){
+        if( !$isEntity ){
             throw new Exception("Tried to get related entities on non entity class: {$class}");
         }
 
-        $class_meta            = $this->entity_manager->getClassMetadata($class);
-        $associations_mappings = $class_meta->getAssociationMappings();
+        $classMeta            = $this->entityManager->getClassMetadata($class);
+        $associationsMappings = $classMeta->getAssociationMappings();
 
-        foreach( $associations_mappings as $association_mapping ){
-            $field_name = $association_mapping[self::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
+        foreach( $associationsMappings as $associationMapping ){
+            $fieldName = $associationMapping[self::KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME];
 
-            $method_name = "get" .  ucfirst($field_name);
+            $methodName = "get" .  ucfirst($fieldName);
 
-            if( !method_exists($entity, $method_name) ){
+            if( !method_exists($entity, $methodName) ){
                 continue;
             }
 
-            $data_for_method_name = $entity->$method_name();
+            $dataForMethodName = $entity->$methodName();
             if( self::isEntity($entity)){
                 continue;
             }
 
-            $related_entities     = $data_for_method_name->getValues();
-            $all_related_entities = array_merge($all_related_entities, $related_entities);
+            $relatedEntities    = $dataForMethodName->getValues();
+            $allRelatedEntities = array_merge($allRelatedEntities, $relatedEntities);
         }
 
-        return $all_related_entities;
+        return $allRelatedEntities;
     }
 
     /**
@@ -733,8 +733,8 @@ class Repositories extends AbstractController {
         switch( $parameter ){
             case static::PASSWORD_FIELD:
             {
-                $is_not_empty = !empty($value);
-                return $is_not_empty;
+                $isNotEmpty = !empty($value);
+                return $isNotEmpty;
             }
             break;
 
@@ -751,10 +751,10 @@ class Repositories extends AbstractController {
                         return true;
                     }
 
-                    $found_corresponding_notes_categories    = $this->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($name, $value);
-                    $category_with_this_name_exist_in_parent = !empty($found_corresponding_notes_categories);
+                    $foundCorrespondingNotesCategories = $this->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($name, $value);
+                    $categoryWithThisNameExistInParent = !empty($foundCorrespondingNotesCategories);
 
-                    if ($category_with_this_name_exist_in_parent) {
+                    if ($categoryWithThisNameExistInParent) {
                         return false;
                     }
                 }
@@ -767,18 +767,18 @@ class Repositories extends AbstractController {
                      * this is case where we got some child but we change it's name to already existing category
                      */
                     if( $entity instanceof MyNotesCategories ){
-                        $name      = $entity->getName();
-                        $parent_id = $entity->getParentId();
+                        $name     = $entity->getName();
+                        $parentId = $entity->getParentId();
 
                         // Trigger name check only if name has changed, icon could change for example
                         if( $value == $name ){
                             return true;
                         }
 
-                        $found_corresponding_notes_categories    = $this->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($value, $parent_id);
-                        $category_with_this_name_exist_in_parent = !empty($found_corresponding_notes_categories);
+                        $foundCorrespondingNotesCategories = $this->myNotesCategoriesRepository->getNotDeletedCategoriesForParentIdAndName($value, $parentId);
+                        $categoryWithThisNameExistInParent = !empty($foundCorrespondingNotesCategories);
 
-                        if ($category_with_this_name_exist_in_parent) {
+                        if ($categoryWithThisNameExistInParent) {
                             return false;
                         }
                     }
@@ -799,8 +799,8 @@ class Repositories extends AbstractController {
      */
     private function decideResponseForInvalidUpdateParameter(string $parameter, $value, $entity = null): Response
     {
-        $default_message = $this->translator->translate('responses.general.invalidParameterValue');
-        $default_code    = 400;
+        $defaultMessage = $this->translator->translate('responses.general.invalidParameterValue');
+        $defaultCode    = 400;
 
         if( $entity instanceof MyNotesCategories ){
 
@@ -832,18 +832,18 @@ class Repositories extends AbstractController {
             }
         }
 
-        return new Response($default_message, $default_code);
+        return new Response($defaultMessage, $defaultCode);
     }
 
     /**
      * This function changes the record before soft delete
-     * @param string $repository_name
+     * @param string $repositoryName
      * @param $record
      * @return MyContact
      */
-    private function changeRecordDataBeforeSoftDelete(string $repository_name, $record) {
+    private function changeRecordDataBeforeSoftDelete(string $repositoryName, $record) {
 
-        switch( $repository_name ){
+        switch( $repositoryName ){
             case self::MY_CONTACT_REPOSITORY:
                 /**
                  * @var MyContact $record
@@ -863,10 +863,10 @@ class Repositories extends AbstractController {
     private function changeRecordDataBeforeUpdate($record) {
 
         if( $record instanceof MyContactGroup){
-            $color            = $record->getColor();
-            $normalized_color = str_replace("#", "", $color);
+            $color           = $record->getColor();
+            $normalizedColor = str_replace("#", "", $color);
 
-            $record->setColor($normalized_color);
+            $record->setColor($normalizedColor);
         }
 
         return $record;
@@ -880,41 +880,41 @@ class Repositories extends AbstractController {
      */
     private function handleCascadeSoftDeleteRelatedEntities($entity)
     {
-        $class_name = get_class($entity);
+        $className = get_class($entity);
 
         if( $entity instanceof SoftDeletableEntityInterface ){
-            $related_entities = $this->getAllRelatedEntities($entity);
+            $relatedEntities = $this->getAllRelatedEntities($entity);
 
-            if( empty($related_entities) ){
-                return $related_entities;
+            if( empty($relatedEntities) ){
+                return $relatedEntities;
             }
 
-            foreach($related_entities as $related_entity){
-                if( $related_entity instanceof SoftDeletableEntityInterface ){
-                    $related_entity->setDeleted(true);
+            foreach($relatedEntities as $relatedEntity){
+                if( $relatedEntity instanceof SoftDeletableEntityInterface ){
+                    $relatedEntity->setDeleted(true);
                 }
             }
 
         }else{
-            $this->entity_manager->rollback();
-            throw new Exception("This entity ({$class_name}) does not implements soft delete interface");
+            $this->entityManager->rollback();
+            throw new Exception("This entity ({$className}) does not implements soft delete interface");
         }
 
-        return $related_entities;
+        return $relatedEntities;
     }
 
 
     /**
-     * @param array $entity_data
+     * @param array $entityData
      * @return object|null
      */
-    private function getEntity(array $entity_data) {
+    private function getEntity(array $entityData) {
         $entity = null;
 
         try {
 
-            if (array_key_exists('namespace', $entity_data) && array_key_exists('id', $entity_data)) {
-                $entity = $this->getDoctrine()->getRepository($entity_data['namespace'])->find($entity_data['id']);
+            if (array_key_exists('namespace', $entityData) && array_key_exists('id', $entityData)) {
+                $entity = $this->getDoctrine()->getRepository($entityData['namespace'])->find($entityData['id']);
             }
 
         } catch (ExceptionRepository $er) {
@@ -936,38 +936,38 @@ class Repositories extends AbstractController {
     private function hasRecordActiveRelatedEntities($record, $repository): bool {
 
         # First if this is not entity for some reason then ignore it, as this applies only to entities
-        $record_class_name  = get_class($record);
-        $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
-        $table_name         = $class_meta->getTableName();
-        $is_record_entity   = self::isEntity($record);
+        $recordClassName = get_class($record);
+        $classMeta       = $this->entityManager->getClassMetadata($recordClassName);
+        $tableName       = $classMeta->getTableName();
+        $isRecordEntity  = self::isEntity($record);
 
-        if( !$is_record_entity ){
+        if( !$isRecordEntity ){
             return false;
         }
 
         # Second thing is that some tables have relation to self without foreign key - this must be checked separately
-        $parent_keys       = ['parent', 'parent_id', 'parentId', 'parentID'];
-        $has_self_relation = false;
+        $parentKeys      = ['parent', 'parent_id', 'parentId', 'parentID'];
+        $hasSelfRelation = false;
 
-        foreach ($parent_keys as $key) {
+        foreach ($parentKeys as $key) {
 
             if (property_exists($record, $key)) {
-                $child_record      = $repository->findBy([$key => $record->getId(), self::ENTITY_PROPERTY_DELETED => 0]);
-                $has_self_relation = true;
+                $childRecord     = $repository->findBy([$key => $record->getId(), self::ENTITY_PROPERTY_DELETED => 0]);
+                $hasSelfRelation = true;
             }
 
             if (
-                isset($child_record)
-                &&  !empty($child_record)
+                    isset($childRecord)
+                &&  !empty($childRecord)
                 &&  (
                     (
-                            method_exists($child_record, self::ENTITY_GET_DELETED_METHOD_NAME)
-                        &&  !$child_record->getDeleted()
+                            method_exists($childRecord, self::ENTITY_GET_DELETED_METHOD_NAME)
+                        &&  !$childRecord->getDeleted()
                     )
                     ||
                     (
-                            method_exists($child_record, self::ENTITY_IS_DELETED_METHOD_NAME)
-                        &&  !$child_record->isDeleted()
+                            method_exists($childRecord, self::ENTITY_IS_DELETED_METHOD_NAME)
+                        &&  !$childRecord->isDeleted()
                     )
                 )
             ) {
@@ -982,11 +982,11 @@ class Repositories extends AbstractController {
         # symfony adds _id to every foreign key so if there is property with _id we can assume that it is a children
         # info: this may cause problems if there will be advanced(i doubt there will) relations (not just parent/child)
 
-        $columns_names = $this->getColumnsNamesForTableName($table_name);
+        $columnsNames = $this->getColumnsNamesForTableName($tableName);
 
-        foreach( $columns_names as $column_name ){
+        foreach( $columnsNames as $columnName ){
             # we have a child so we can remove it
-            if( strstr($column_name, "_id") && !$has_self_relation ){
+            if( strstr($columnName, "_id") && !$hasSelfRelation ){
                 return false;
             }
         }
@@ -994,22 +994,21 @@ class Repositories extends AbstractController {
         # we have parent so we need to check what's the state of all of his children
         # we have to find which fields are relational ones
 
-        $related_entities = $this->getAllRelatedEntities($record);
+        $relatedEntities = $this->getAllRelatedEntities($record);
+        foreach( $relatedEntities as $relatedEntity ){
 
-        foreach( $related_entities as $related_entity ){
+            if( method_exists($relatedEntity, self::ENTITY_GET_DELETED_METHOD_NAME) ){
+                $isDeleted = $relatedEntity->getDeleted();
 
-            if( method_exists($related_entity, self::ENTITY_GET_DELETED_METHOD_NAME) ){
-                $is_deleted = $related_entity->getDeleted();
-
-                if(!$is_deleted){
+                if(!$isDeleted){
                     return true;
                 }
             }
 
-            if( method_exists($related_entity, self::ENTITY_IS_DELETED_METHOD_NAME) ){
-                $is_deleted = $related_entity->isDeleted();
+            if( method_exists($relatedEntity, self::ENTITY_IS_DELETED_METHOD_NAME) ){
+                $isDeleted = $relatedEntity->isDeleted();
 
-                if(!$is_deleted){
+                if(!$isDeleted){
                     return true;
                 }
             }
@@ -1025,34 +1024,34 @@ class Repositories extends AbstractController {
      */
     private function handleRecordActiveRelatedEntities($entity)
     {
-        $this->entity_manager->beginTransaction();
+        $this->entityManager->beginTransaction();
         {
-            $related_entities = [];
+            $relatedEntities = [];
             if( !is_object($entity) ) {
                 $message = $this->translator->translate("exceptions.general.providedEntityIsNotAnObject");
                 throw new Exception($message);
             }
 
             if( $entity instanceof  MyTodo ){
-                $related_entities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
-                $my_issue         = $entity->getMyIssue();
+                $relatedEntities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
+                $myIssue         = $entity->getMyIssue();
 
-                if( !empty($my_issue) ){
-                    $my_issue->setTodo(null);
-                    $this->entity_manager->persist($my_issue);
+                if( !empty($myIssue) ){
+                    $myIssue->setTodo(null);
+                    $this->entityManager->persist($myIssue);
                 }
 
             }elseif( $entity instanceof MyIssue){
-                $related_entities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
+                $relatedEntities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
             }
 
-            foreach($related_entities as $related_entity){
-                $this->entity_manager->persist($related_entity);
+            foreach($relatedEntities as $relatedEntity){
+                $this->entityManager->persist($relatedEntity);
             }
-            $this->entity_manager->persist($entity);
-            $this->entity_manager->flush();
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
         }
-        $this->entity_manager->commit();
+        $this->entityManager->commit();
 
         return $entity;
     }
@@ -1084,9 +1083,9 @@ class Repositories extends AbstractController {
                 $value = false;
             }
 
-            $is_parameter_valid = $this->isParameterValid($parameter, $value, $entity);
+            $isParameterValid = $this->isParameterValid($parameter, $value, $entity);
 
-            if (!$is_parameter_valid) {
+            if (!$isParameterValid) {
                 $response = $this->decideResponseForInvalidUpdateParameter($parameter, $value, $entity);
                 return $response;
             }
@@ -1098,40 +1097,40 @@ class Repositories extends AbstractController {
                 &&  $value[self::KEY_ENTITY_DATA_TYPE] == self::ENTITY_DATA_TYPE_ENTITY
             ) {
                 //todo: need to check if updating entities for example in notes also works fine
-                $is_entity_force_null = (
+                $isEntityForceNull = (
                         array_key_exists(self::KEY_ENTITY_DATA_IS_NULL, $value)
                     &&  Utils::getBoolRepresentationOfBoolString($value[self::KEY_ENTITY_DATA_IS_NULL])
                 );
 
-                if( $is_entity_force_null ){
+                if( $isEntityForceNull ){
                     $value = null;
                 }else{
                     $value = $this->getEntity($value);
                 }
             }
-            $record_class_name  = get_class($entity);
-            $class_meta         = $this->entity_manager->getClassMetadata($record_class_name);
+            $recordClassName  = get_class($entity);
+            $classMeta        = $this->entityManager->getClassMetadata($recordClassName);
 
-            $uc_first_parameter = ucfirst($parameter);
+            $ucFirstParameter = ucfirst($parameter);
 
             // this is needed to detect the type of field as doctrine sometimes want objects for it's internal mapping
-            if( $class_meta->hasField($parameter) ){
-                $field_mapping = $class_meta->getFieldMapping($parameter);
-                $field_type    = $field_mapping['type'];
-            }elseif( $class_meta->hasField($uc_first_parameter) ){
-                $field_mapping = $class_meta->getFieldMapping($uc_first_parameter);
-                $field_type    = $field_mapping['type'];
-            }elseif( $class_meta->hasAssociation($parameter)){
-                $field_type = self::FIELD_TYPE_ENTITY;
-            }elseif( $class_meta->hasAssociation($uc_first_parameter) ){
-                $field_type = self::FIELD_TYPE_ENTITY;
+            if( $classMeta->hasField($parameter) ){
+                $fieldMapping = $classMeta->getFieldMapping($parameter);
+                $fieldType    = $fieldMapping['type'];
+            }elseif( $classMeta->hasField($ucFirstParameter) ){
+                $fieldMapping = $classMeta->getFieldMapping($ucFirstParameter);
+                $fieldType    = $fieldMapping['type'];
+            }elseif( $classMeta->hasAssociation($parameter)){
+                $fieldType = self::FIELD_TYPE_ENTITY;
+            }elseif( $classMeta->hasAssociation($ucFirstParameter) ){
+                $fieldType = self::FIELD_TYPE_ENTITY;
             }else{
                 throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
             }
 
-            $methodName  = 'set' . $uc_first_parameter;
+            $methodName  = 'set' . $ucFirstParameter;
 
-            if( !property_exists($record_class_name, $methodName) ){
+            if( !property_exists($recordClassName, $methodName) ){
                 $methodName = 'set' . ucfirst(Application::snakeCaseToCamelCaseConverter($parameter));
             }
 
@@ -1141,7 +1140,7 @@ class Repositories extends AbstractController {
             $value       = ( $hasRelation && empty($value) ? null : $value ); // relation field is allowed to be empty sometimes
 
             // we need to check some type of field in which we insert value and ew. adjust it
-            switch( $field_type ){
+            switch( $fieldType ){
                 case self::DOCTRINE_FIELD_MAPPING_TYPE_DATETIME:
                     {
                         $value = new \DateTime($value);

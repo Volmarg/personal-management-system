@@ -22,13 +22,13 @@ class MyPaymentsOwedController extends AbstractController
 
     /**
      * This only gets summary SUM(), not fetching any detailed data.
-     * @param bool $owed_by_me
+     * @param bool $owedByMe
      * @return mixed[]
      * @throws DBALException
      */
-    public function getMoneyOwedSummaryForTargetsAndOwningSide(bool $owed_by_me)
+    public function getMoneyOwedSummaryForTargetsAndOwningSide(bool $owedByMe)
     {
-        return $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide($owed_by_me);
+        return $this->app->repositories->myPaymentsOwedRepository->getMoneyOwedSummaryForTargetsAndOwningSide($owedByMe);
     }
 
     /**
@@ -55,12 +55,12 @@ class MyPaymentsOwedController extends AbstractController
     /**
      * Will return all not deleted entities but filtered by the owed column
      *
-     * @param bool $owed_by_me
+     * @param bool $owedByMe
      * @return array
      */
-    public function findAllNotDeletedFilteredByOwedStatus(bool $owed_by_me): array
+    public function findAllNotDeletedFilteredByOwedStatus(bool $owedByMe): array
     {
-        return $this->app->repositories->myPaymentsOwedRepository->findAllNotDeletedFilteredByOwedStatus($owed_by_me);
+        return $this->app->repositories->myPaymentsOwedRepository->findAllNotDeletedFilteredByOwedStatus($owedByMe);
     }
 
 }

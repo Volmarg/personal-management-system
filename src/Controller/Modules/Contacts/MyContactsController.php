@@ -38,14 +38,14 @@ class MyContactsController extends AbstractController {
 
     /**
      * This function flushes the $entity
-     * @param MyContact $my_contact
-     * @param bool $search_and_rebuild_entity - this flag is needed in case of persisting entity built from form data (even if the id is the same)
+     * @param MyContact $myContact
+     * @param bool $searchAndRebuildEntity - this flag is needed in case of persisting entity built from form data (even if the id is the same)
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws Exception
      */
-    public function saveEntity(MyContact $my_contact, bool $search_and_rebuild_entity = false)
+    public function saveEntity(MyContact $myContact, bool $searchAndRebuildEntity = false)
     {
-        $this->app->repositories->myContactRepository->saveEntity($my_contact, $search_and_rebuild_entity);
+        $this->app->repositories->myContactRepository->saveEntity($myContact, $searchAndRebuildEntity);
     }
 }

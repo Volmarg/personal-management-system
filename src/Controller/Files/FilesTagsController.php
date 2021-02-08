@@ -21,28 +21,28 @@ class FilesTagsController extends AbstractController {
     private $app;
 
     /**
-     * @var FileTagger $file_tagger
+     * @var FileTagger $fileTagger
      */
-    private $file_tagger;
+    private $fileTagger;
 
-    public function __construct(Application $app, FileTagger $file_tagger) {
-        $this->app         = $app;
-        $this->file_tagger = $file_tagger;
+    public function __construct(Application $app, FileTagger $fileTagger) {
+        $this->app        = $app;
+        $this->fileTagger = $fileTagger;
     }
 
     /**
-     * @param string $tags_string
-     * @param string $file_full_path
+     * @param string $tagsString
+     * @param string $fileFullPath
      * @return Response
      * 
      */
-    public function updateTags(string $tags_string, string $file_full_path): Response {
+    public function updateTags(string $tagsString, string $fileFullPath): Response {
 
-        $array_of_tags  = explode(',', $tags_string);
+        $arrayOfTags  = explode(',', $tagsString);
 
         try{
-            $this->file_tagger->prepare($array_of_tags, $file_full_path);
-            $response = $this->file_tagger->updateTags();
+            $this->fileTagger->prepare($arrayOfTags, $fileFullPath);
+            $response = $this->fileTagger->updateTags();
         }catch(Exception $e){
             $message  = $this->app->translator->translate('responses.tags.errorWhileTryingToUpdateTagsViaApi');
             $response = new Response($message);
@@ -63,31 +63,31 @@ class FilesTagsController extends AbstractController {
             throw new Exception($message);
         }
 
-        $file_full_path = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
-        $response       = $this->removeTags($file_full_path);
+        $fileFullPath = $request->request->get(MyFilesController::KEY_FILE_FULL_PATH);
+        $response     = $this->removeTags($fileFullPath);
 
         return $response;
     }
 
     /**
-     * @param string $file_full_path
+     * @param string $fileFullPath
      * @return Response
      * @throws Exception
      */
-    public function removeTags(string $file_full_path): Response {
-        $this->file_tagger->prepare([], $file_full_path);
-        $response = $this->file_tagger->removeTags();
+    public function removeTags(string $fileFullPath): Response {
+        $this->fileTagger->prepare([], $fileFullPath);
+        $response = $this->fileTagger->removeTags();
         return $response;
     }
 
     /**
      * Will return tags entity for given file path if exists, or null if does not
      *
-     * @param string $file_full_path
+     * @param string $fileFullPath
      * @return FilesTags|null
      */
-    public function getFileTagsEntityByFileFullPath(string $file_full_path): ?FilesTags
+    public function getFileTagsEntityByFileFullPath(string $fileFullPath): ?FilesTags
     {
-        return $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($file_full_path);
+        return $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
     }
 }

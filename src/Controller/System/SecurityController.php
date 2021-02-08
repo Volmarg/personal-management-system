@@ -21,32 +21,32 @@ class SecurityController {
     private $encoderFactory;
 
     /**
-     * @var UserController $user_controller
+     * @var UserController $userController
      */
-    private UserController $user_controller;
+    private UserController $userController;
 
     /**
      * SecurityController constructor.
      * @param EncoderFactoryInterface $encoderFactory
-     * @param UserController $user_controller
+     * @param UserController $userController
      */
-    public function __construct(EncoderFactoryInterface $encoderFactory, UserController $user_controller)
+    public function __construct(EncoderFactoryInterface $encoderFactory, UserController $userController)
     {
         $this->encoderFactory  = $encoderFactory;
-        $this->user_controller = $user_controller;
+        $this->userController = $userController;
     }
 
     /**
-     * @param string $plain_password
+     * @param string $plainPassword
      * @return SecurityDTO|null
      * @throws Exception
      * @see PasswordUpdater::hashPassword() - taken and turned to reusable logic
      */
-    public function hashPassword(string $plain_password): ?SecurityDTO
+    public function hashPassword(string $plainPassword): ?SecurityDTO
     {
         $user = new User();
 
-        if (0 === strlen($plain_password)) {
+        if (0 === strlen($plainPassword)) {
             return null;
         }
 
@@ -58,28 +58,28 @@ class SecurityController {
             $salt = rtrim(str_replace('+', '.', base64_encode(random_bytes(32))), '=');
         }
 
-        $hashed_password = $encoder->encodePassword($plain_password, $user->getSalt());
+        $hashedPassword = $encoder->encodePassword($plainPassword, $user->getSalt());
 
-        $security_dto = new SecurityDTO();
-        $security_dto->setSalt($salt);
-        $security_dto->setPlainPassword($plain_password);
-        $security_dto->setHashedPassword($hashed_password);
+        $securityDto = new SecurityDTO();
+        $securityDto->setSalt($salt);
+        $securityDto->setPlainPassword($plainPassword);
+        $securityDto->setHashedPassword($hashedPassword);
 
-        return $security_dto;
+        return $securityDto;
     }
 
     /**
      * @param User $user
-     * @param string $user_password
-     * @param string $used_password
-     * @param string|null $salt_for_used_password
+     * @param string $userPassword
+     * @param string $usedPassword
+     * @param string|null $saltForUsedPassword
      * @return bool
      */
-    public function isPasswordValid(User $user, string $user_password, string $used_password, ?string $salt_for_used_password = null): bool
+    public function isPasswordValid(User $user, string $userPassword, string $usedPassword, ?string $saltForUsedPassword = null): bool
     {
-        $encoder           = $this->encoderFactory->getEncoder($user);
-        $is_password_valid = $encoder->isPasswordValid($user_password, $used_password, $salt_for_used_password);
-        return $is_password_valid;
+        $encoder         = $this->encoderFactory->getEncoder($user);
+        $isPasswordValid = $encoder->isPasswordValid($userPassword, $usedPassword, $saltForUsedPassword);
+        return $isPasswordValid;
     }
 
     /**
@@ -103,10 +103,10 @@ class SecurityController {
             return false;
         }
 
-        $all_registered_users = $this->user_controller->getAllUsers();
-        $count_of_users       = count($all_registered_users);
+        $allRegisteredUsers = $this->userController->getAllUsers();
+        $countOfUsers       = count($allRegisteredUsers);
 
-        if( $count_of_users > 0 ){
+        if( $countOfUsers > 0 ){
             return false;
         }
 

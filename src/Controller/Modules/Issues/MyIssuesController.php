@@ -8,7 +8,6 @@ use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
 use App\Entity\Modules\Todo\MyTodo;
-use DateTime;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
@@ -28,105 +27,105 @@ class MyIssuesController extends AbstractController {
 
     /**
      * @param MyIssue[] $issues
-     * @param bool $include_deleted
+     * @param bool $includeDeleted
      * @return IssueCardDTO[]
      * @throws Exception
      */
-    public function buildIssuesCardsDtosFromIssues(array $issues, bool $include_deleted = false): array
+    public function buildIssuesCardsDtosFromIssues(array $issues, bool $includeDeleted = false): array
     {
-        $issues_cards_dtos    = [];
-        $latest_contact_date  = null;
-        $latest_progress_date = null;
+        $issuesCardsDtos    = [];
+        $latestContactDate  = null;
+        $latestProgressDate = null;
 
         foreach( $issues as $issue ){
 
             /**
-             * @var MyIssueContact[]  $issue_contacts
-             * @var MyIssueProgress[] $issue_progresses
+             * @var MyIssueContact[]  $issueContacts
+             * @var MyIssueProgress[] $issueProgresses
              */
-            $issue_contacts   = $issue->getIssueContact()->getValues();
-            $issue_progresses = $issue->getIssueProgress()->getValues();
+            $issueContacts   = $issue->getIssueContact()->getValues();
+            $issueProgresses = $issue->getIssueProgress()->getValues();
 
-            $issue_contacts_grouped_by_icon = [];
-            $waiting_todo                   = [];
+            $issueContactsGroupedByIcon = [];
+            $waitingTodo                = [];
 
             if(
                     !empty($issue->getTodo())
                 &&  ($issue->getTodo() instanceof MyTodo)
                 &&  !empty($issue->getTodo()->getMyTodoElement())
             ){
-                foreach($issue->getTodo()->getMyTodoElement() as $todo_element){
-                    if( !$todo_element->getCompleted() ){
-                        $waiting_todo[] = $todo_element->getName();
+                foreach($issue->getTodo()->getMyTodoElement() as $todoElement){
+                    if( !$todoElement->getCompleted() ){
+                        $waitingTodo[] = $todoElement->getName();
                     }
                 }
             }
 
-            $is_latest_contact_date_used = false;
-            $latest_contact_date         = null;
-            foreach($issue_contacts as $issue_contact){
+            $isLatestContactDateUsed = false;
+            $latestContactDate       = null;
+            foreach($issueContacts as $issueContact){
 
                 if(
-                        !$include_deleted
-                    &&  $issue_contact->isDeleted()
+                        !$includeDeleted
+                    &&  $issueContact->isDeleted()
                 )
                 {
                     continue;
                 }
 
-                if( !$is_latest_contact_date_used ){
-                    $latest_contact_date = $issue_contact->getDate();
+                if( !$isLatestContactDateUsed ){
+                    $latestContactDate = $issueContact->getDate();
                 }
-                $is_latest_contact_date_used = true;
+                $isLatestContactDateUsed = true;
 
-                $icon = $issue_contact->getIcon();
-                if( !array_key_exists($icon, $issue_contacts_grouped_by_icon) ){
-                    $issue_contacts_grouped_by_icon[$icon] = [$issue_contact];
+                $icon = $issueContact->getIcon();
+                if( !array_key_exists($icon, $issueContactsGroupedByIcon) ){
+                    $issueContactsGroupedByIcon[$icon] = [$issueContact];
                 }else{
-                    $issue_contacts_grouped_by_icon[$icon][] = $issue_contact;
+                    $issueContactsGroupedByIcon[$icon][] = $issueContact;
                 }
             }
 
-            if( !empty($issue_progresses) ){
-                $latest_progress      = $issue_progresses[0];
-                $latest_progress_date = $latest_progress->getDate();
+            if( !empty($issueProgresses) ){
+                $latestProgress     = $issueProgresses[0];
+                $latestProgressDate = $latestProgress->getDate();
             }
 
-            $issue_contacts_count   = count($issue_contacts);
-            $issue_progresses_count = count($issue_progresses);
+            $issueContactsCount   = count($issueContacts);
+            $issueProgressesCount = count($issueProgresses);
 
-            $issue_card_dto = new IssueCardDTO();
-            $issue_card_dto->setIssue($issue);
-            $issue_card_dto->setIssueContactsCount($issue_contacts_count);
-            $issue_card_dto->setIssueProgressCount($issue_progresses_count);
-            $issue_card_dto->setIssueContactsByIcon($issue_contacts_grouped_by_icon);
-            $issue_card_dto->setIssueLastContact($latest_contact_date);
-            $issue_card_dto->setIssueLastProgress($latest_progress_date);
-            $issue_card_dto->setWaitingTodo($waiting_todo);
+            $issueCardDto = new IssueCardDTO();
+            $issueCardDto->setIssue($issue);
+            $issueCardDto->setIssueContactsCount($issueContactsCount);
+            $issueCardDto->setIssueProgressCount($issueProgressesCount);
+            $issueCardDto->setIssueContactsByIcon($issueContactsGroupedByIcon);
+            $issueCardDto->setIssueLastContact($latestContactDate);
+            $issueCardDto->setIssueLastProgress($latestProgressDate);
+            $issueCardDto->setWaitingTodo($waitingTodo);
 
-            $issues_cards_dtos[] = $issue_card_dto;
+            $issuesCardsDtos[] = $issueCardDto;
         }
 
-        return $issues_cards_dtos;
+        return $issuesCardsDtos;
     }
 
     /**
      * Returns one Entity or null for given id
-     * @param int $entity_id
+     * @param int $entityId
      * @return MyIssue|null
      */
-    public function findIssueById(int $entity_id): ?MyIssue
+    public function findIssueById(int $entityId): ?MyIssue
     {
-        return $this->app->repositories->myIssueRepository->findIssueById($entity_id);
+        return $this->app->repositories->myIssueRepository->findIssueById($entityId);
     }
 
     /**
-     * @param int|null $order_by_field_entity_id
+     * @param int|null $orderByFieldEntityId
      * @return MyIssue[]
      */
-    public function findAllNotDeletedAndNotResolved(int $order_by_field_entity_id = null): array
+    public function findAllNotDeletedAndNotResolved(int $orderByFieldEntityId = null): array
     {
-        return $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($order_by_field_entity_id);
+        return $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($orderByFieldEntityId);
     }
 
     /**
@@ -140,23 +139,23 @@ class MyIssuesController extends AbstractController {
     }
 
     /**
-     * @param MyIssueProgress $my_issue_progress
+     * @param MyIssueProgress $myIssueProgress
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function saveIssueProgress(MyIssueProgress $my_issue_progress): void
+    public function saveIssueProgress(MyIssueProgress $myIssueProgress): void
     {
-        $this->app->repositories->myIssueRepository->saveIssueProgress($my_issue_progress);
+        $this->app->repositories->myIssueRepository->saveIssueProgress($myIssueProgress);
     }
 
     /**
-     * @param MyIssueContact $my_issue_contact
+     * @param MyIssueContact $myIssueContact
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function saveIssueContact(MyIssueContact $my_issue_contact): void
+    public function saveIssueContact(MyIssueContact $myIssueContact): void
     {
-        $this->app->repositories->myIssueRepository->saveIssueContact($my_issue_contact);
+        $this->app->repositories->myIssueRepository->saveIssueContact($myIssueContact);
     }
 
 }

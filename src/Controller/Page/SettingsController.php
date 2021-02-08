@@ -23,16 +23,16 @@ class SettingsController extends AbstractController {
             return null;
         }
 
-        $setting_name = $setting->getName();
+        $settingName = $setting->getName();
 
-        if( SettingsLoader::SETTING_NAME_FINANCES !== $setting_name ){
-            throw new Exception("Incorrect setting was provided: " . $setting_name);
+        if( SettingsLoader::SETTING_NAME_FINANCES !== $settingName ){
+            throw new Exception("Incorrect setting was provided: " . $settingName);
         }
 
-        $settings_finances_json = $setting->getValue();
-        $settings_finances_dto  = SettingsFinancesDTO::fromJson($settings_finances_json);
+        $settingsFinancesJson = $setting->getValue();
+        $settingsFinancesDto  = SettingsFinancesDTO::fromJson($settingsFinancesJson);
 
-        return $settings_finances_dto;
+        return $settingsFinancesDto;
     }
 
 }

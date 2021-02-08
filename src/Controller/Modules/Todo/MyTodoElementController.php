@@ -20,30 +20,30 @@ class MyTodoElementController extends AbstractController {
     }
 
     /**
-     * @param string $module_name
+     * @param string $moduleName
      * @return MyTodoElement[]
      */
-    public function getTodoElementsForModule(string $module_name): array
+    public function getTodoElementsForModule(string $moduleName): array
     {
-        $todos_elements = [];
-        $todos          = $this->app->repositories->myTodoRepository->getEntitiesForModuleName($module_name);
+        $todosElements = [];
+        $todos          = $this->app->repositories->myTodoRepository->getEntitiesForModuleName($moduleName);
 
         foreach($todos as $todo){
-            $elements       = $todo->getMyTodoElement();
-            $todos_elements = array_merge($todos_elements, $elements);
+            $elements      = $todo->getMyTodoElement();
+            $todosElements = array_merge($todosElements, $elements);
         }
 
-        return $todos_elements;
+        return $todosElements;
     }
 
     /**
-     * @param MyTodoElement $todo_element
+     * @param MyTodoElement $todoElement
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(MyTodoElement $todo_element): void
+    public function save(MyTodoElement $todoElement): void
     {
-        $this->app->repositories->myTodoElementRepository->save($todo_element);
+        $this->app->repositories->myTodoElementRepository->save($todoElement);
     }
 
     /**

@@ -149,7 +149,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function blockIp(RequestEvent $event): void
     {
-        $restricted_ips = $this->app->config_loaders->getConfigLoaderSecurity()->getRestrictedIps();
+        $restricted_ips = $this->app->configLoaders->getConfigLoaderSecurity()->getRestrictedIps();
         $request        = $event->getRequest();
         $ip             = $request->getClientIp();
 

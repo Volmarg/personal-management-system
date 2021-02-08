@@ -3,10 +3,8 @@
 namespace App\Controller\Modules\Goals;
 
 use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
 use App\Controller\Modules\Todo\MyTodoController;
-use App\Controller\Modules\Todo\MyTodoElementController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -21,13 +19,13 @@ class GoalsListController extends AbstractController {
     private $app;
 
     /**
-     * @var MyTodoController $my_todo_controller
+     * @var MyTodoController $myTodoController
      */
-    private $my_todo_controller;
+    private $myTodoController;
 
-    public function __construct(Application $app, MyTodoController $my_todo_controller) {
-        $this->app                = $app;
-        $this->my_todo_controller = $my_todo_controller;
+    public function __construct(Application $app, MyTodoController $myTodoController) {
+        $this->app              = $app;
+        $this->myTodoController = $myTodoController;
     }
 
     /**
@@ -35,8 +33,8 @@ class GoalsListController extends AbstractController {
      */
     public function getGoals(): array
     {
-       $todo_goals = $this->my_todo_controller->getTodoForModule(ModulesController::MODULE_NAME_GOALS);
-       return $todo_goals;
+       $todoGoals = $this->myTodoController->getTodoForModule(ModulesController::MODULE_NAME_GOALS);
+       return $todoGoals;
     }
 
 }

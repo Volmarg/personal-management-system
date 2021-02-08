@@ -17,13 +17,13 @@ class SettingsValidationController extends AbstractController {
     private $translator;
 
     /**
-     * @var SettingsLoader $settings_loader
+     * @var SettingsLoader $settingsLoader
      */
-    private $settings_loader;
+    private $settingsLoader;
 
-    public function __construct(Translator $translator, SettingsLoader $settings_loader) {
-        $this->settings_loader = $settings_loader;
-        $this->translator      = $translator;
+    public function __construct(Translator $translator, SettingsLoader $settingsLoader) {
+        $this->settingsLoader = $settingsLoader;
+        $this->translator     = $translator;
     }
 
     /**
@@ -36,47 +36,47 @@ class SettingsValidationController extends AbstractController {
     public function isValueByKeyUnique($dto): SettingValidationDTO {
         $message = $this->translator->translate("messages.SettingValidationDTO.success");
 
-        $setting_validation_dto = new SettingValidationDTO();
-        $setting_validation_dto->setMessage($message);
-        $setting_validation_dto->setIsValid(true);
+        $settingValidationDto = new SettingValidationDTO();
+        $settingValidationDto->setMessage($message);
+        $settingValidationDto->setIsValid(true);
 
-        $dto_class = get_class($dto);
+        $dtoClass = get_class($dto);
 
-        switch( $dto_class ){
+        switch( $dtoClass ){
             case SettingsCurrencyDTO::class:
-                $setting       = $this->settings_loader->getSettingsForFinances();
-                $validated_key = SettingsCurrencyDTO::KEY_NAME;
+                $setting      = $this->settingsLoader->getSettingsForFinances();
+                $validatedKey = SettingsCurrencyDTO::KEY_NAME;
 
                 if( empty($setting) ){
-                    return $setting_validation_dto;
+                    return $settingValidationDto;
                 }
 
-                $settings_finances_dto = SettingsController::buildFinancesSettingsDtoFromSetting($setting);
-                $saved_dtos_in_setting = $settings_finances_dto->getSettingsCurrencyDtos();
+                $settingsFinancesDto = SettingsController::buildFinancesSettingsDtoFromSetting($setting);
+                $savedDtosInSetting  = $settingsFinancesDto->getSettingsCurrencyDtos();
 
                 break;
             default:
                 $message = $this->translator->translate("exceptions.dtoValidation.unsupportedSetting");
-                throw new Exception($message . $dto_class);
+                throw new Exception($message . $dtoClass);
         }
 
-        $method_name   = "get" . $validated_key;
-        $new_dto_value = $dto->{$method_name}();
+        $methodName   = "get" . $validatedKey;
+        $newDtoValue = $dto->{$methodName}();
 
-        foreach( $saved_dtos_in_setting as $saved_dto_in_setting ){
-            $saved_dto_value = $saved_dto_in_setting->{$method_name}();
+        foreach( $savedDtosInSetting as $savedDtoInSetting ){
+            $savedDtoValue = $savedDtoInSetting->{$methodName}();
 
-            if( $new_dto_value === $saved_dto_value) {
-                $message = $this->translator->translate("messages.failure.SettingValidationDTO.duplicatedValue") . ": " . $validated_key;
+            if( $newDtoValue === $savedDtoValue) {
+                $message = $this->translator->translate("messages.failure.SettingValidationDTO.duplicatedValue") . ": " . $validatedKey;
 
-                $setting_validation_dto->setMessage($message);
-                $setting_validation_dto->setIsValid(false);
+                $settingValidationDto->setMessage($message);
+                $settingValidationDto->setIsValid(false);
 
-                return $setting_validation_dto;
+                return $settingValidationDto;
             }
         }
 
-        return $setting_validation_dto;
+        return $settingValidationDto;
     }
 
 }

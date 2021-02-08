@@ -25,10 +25,10 @@ class MyRecurringPaymentsValidator extends AbstractValidator {
 
     /**
      * @inheritDoc
-     * @param string $supported_class
+     * @param string $supportedClass
      */
-    protected function setSupportedClass(string $supported_class): void {
-        $this->supported_class = $supported_class;
+    protected function setSupportedClass(string $supportedClass): void {
+        $this->supportedClass = $supportedClass;
     }
 
     /**
@@ -43,9 +43,9 @@ class MyRecurringPaymentsValidator extends AbstractValidator {
         parent::validate($entity);
 
         $this->validateDateOfMonth($entity);
-        $validation_result = $this->processValidationResult();
+        $validationResult = $this->processValidationResult();
 
-        return $validation_result;
+        return $validationResult;
     }
 
     /**
@@ -53,7 +53,7 @@ class MyRecurringPaymentsValidator extends AbstractValidator {
      */
     private function validateDateOfMonth($entity): void
     {
-        $this->constraint_violations_lists[MyRecurringPaymentMonthly::FIELD_DAYS_OF_MONTH] = $this->validator->validate($entity->getDayOfMonth(), [
+        $this->constraintViolationsLists[MyRecurringPaymentMonthly::FIELD_DAYS_OF_MONTH] = $this->validator->validate($entity->getDayOfMonth(), [
             new Assert\GreaterThanOrEqual([
                 "value"   => MyRecurringPaymentMonthly::MIN_DAY_OF_MONTH,
                 "message" => $this->translator->translate('validations.myRecurringPaymentsValidator.dayOfMonth.greaterThanOrEqual', ["%value%" => MyRecurringPaymentMonthly::MIN_DAY_OF_MONTH])

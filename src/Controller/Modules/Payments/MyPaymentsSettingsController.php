@@ -26,18 +26,18 @@ class MyPaymentsSettingsController extends AbstractController {
      * @param Request $request
      */
     public function insertOrUpdateRecord(Request $request) {
-        $currency_multiplier_form = $this->app->forms->currencyMultiplierForm();
-        $currency_multiplier_form->handleRequest($request);
+        $currencyMultiplierForm = $this->app->forms->currencyMultiplierForm();
+        $currencyMultiplierForm->handleRequest($request);
 
-        if ($currency_multiplier_form->isSubmitted() && $currency_multiplier_form->isValid()) {
-            $form_data           = $currency_multiplier_form->getData();
-            $currency_multiplier = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
+        if ($currencyMultiplierForm->isSubmitted() && $currencyMultiplierForm->isValid()) {
+            $formData           = $currencyMultiplierForm->getData();
+            $currencyMultiplier = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
 
-            if ($currency_multiplier) {
-                $this->updateCurrencyMultiplierRecord($form_data);
+            if ($currencyMultiplier) {
+                $this->updateCurrencyMultiplierRecord($formData);
                 return;
             }
-            $this->createRecord($form_data);
+            $this->createRecord($formData);
         }
     }
 
@@ -87,15 +87,15 @@ class MyPaymentsSettingsController extends AbstractController {
         return $this->app->repositories->myPaymentsSettingsRepository->findOneByValue($value);
     }
 
-    private function updateCurrencyMultiplierRecord($form_data) {
-        $orm_record = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplierRecord()[0];
-        $orm_record->setValue($form_data->getValue());
-        $this->em->persist($orm_record);
+    private function updateCurrencyMultiplierRecord($formData) {
+        $ormRecord = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplierRecord()[0];
+        $ormRecord->setValue($formData->getValue());
+        $this->em->persist($ormRecord);
         $this->em->flush();
     }
 
-    private function createRecord($record_data) {
-        $this->em->persist($record_data);
+    private function createRecord($recordData) {
+        $this->em->persist($recordData);
         $this->em->flush();
     }
 }

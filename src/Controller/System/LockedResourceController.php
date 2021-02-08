@@ -40,9 +40,9 @@ class LockedResourceController extends AbstractController {
 
         switch($type){
             case LockedResource::TYPE_ENTITY:
-                $is_locked_resource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
+                $isLockedResource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
 
-                if( empty($is_locked_resource) ){
+                if( empty($isLockedResource) ){
                     return false;
                 }
                 return true;
@@ -54,8 +54,8 @@ class LockedResourceController extends AbstractController {
                 $pattern = "#(.*)[\/]{1}(.*)#";
                 while( preg_match($pattern, $record, $matches) ){ # walk over the path and build parent path
 
-                    $locked_resource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
-                    if( !empty($locked_resource) ){
+                    $lockedResource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
+                    if( !empty($lockedResource) ){
                         return true;
                     }
 
@@ -88,26 +88,26 @@ class LockedResourceController extends AbstractController {
      * @param string $record
      * @param string $type
      * @param string $target
-     * @param bool $show_flash_message
+     * @param bool $showFlashMessage
      * @param Statement|null $stmt
      * @return bool
      *
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws \Doctrine\DBAL\Exception
      */
-    public function isAllowedToSeeResource(string $record, string $type, string $target, bool $show_flash_message = true, Statement $stmt = null): bool
+    public function isAllowedToSeeResource(string $record, string $type, string $target, bool $showFlashMessage = true, Statement $stmt = null): bool
     {
-        $is_resource_locked = $this->isResourceLocked($record, $type, $target, $stmt);
-        $is_system_locked   = $this->isSystemLocked();
+        $isResourceLocked = $this->isResourceLocked($record, $type, $target, $stmt);
+        $isSystemLocked   = $this->isSystemLocked();
 
         if(
-                ( $is_resource_locked && !$is_system_locked )
-            ||  ( !$is_resource_locked )
+                ( $isResourceLocked && !$isSystemLocked )
+            ||  ( !$isResourceLocked )
         ){
             return true;
         }
 
-        if($show_flash_message){
+        if($showFlashMessage){
             $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
             $this->app->addDangerFlash($message);
         }
@@ -115,12 +115,12 @@ class LockedResourceController extends AbstractController {
     }
 
     /**
-     * @param string $old_path
-     * @param string $new_path
+     * @param string $oldPath
+     * @param string $newPath
      */
-    public function updatePath(string $old_path, string $new_path): void
+    public function updatePath(string $oldPath, string $newPath): void
     {
-        $this->app->repositories->lockedResourceRepository->updatePath($old_path, $new_path);
+        $this->app->repositories->lockedResourceRepository->updatePath($oldPath, $newPath);
     }
 
     /**
@@ -136,23 +136,23 @@ class LockedResourceController extends AbstractController {
     }
 
     /**
-     * @param LockedResource $locked_resource
+     * @param LockedResource $lockedResource
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(LockedResource $locked_resource): void
+    public function remove(LockedResource $lockedResource): void
     {
-        $this->app->repositories->lockedResourceRepository->remove($locked_resource);
+        $this->app->repositories->lockedResourceRepository->remove($lockedResource);
     }
 
     /**
-     * @param LockedResource $locked_resource
+     * @param LockedResource $lockedResource
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(LockedResource $locked_resource): void
+    public function add(LockedResource $lockedResource): void
     {
-        $this->app->repositories->lockedResourceRepository->add($locked_resource);
+        $this->app->repositories->lockedResourceRepository->add($lockedResource);
     }
 
 }
