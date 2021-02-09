@@ -37,10 +37,10 @@ class FormManipulator extends AbstractExtension {
      * This can be especially useful to avoid extensive js logic just to select something from list
      *
      * @param string $html
-     * @param string $default_value
+     * @param string $defaultValue
      * @return string
      */
-    public function setSelectedOption(string $html, string $default_value): string
+    public function setSelectedOption(string $html, string $defaultValue): string
     {
         if( !strstr($html, "select"))
         {
@@ -48,9 +48,9 @@ class FormManipulator extends AbstractExtension {
             return $html;
         }
 
-        $value_string                = 'value="' . $default_value . '"';
-        $select_with_selected_option = str_replace($value_string, $value_string . " selected", $html);
+        $valueString              = 'value="' . $defaultValue . '"';
+        $selectWithSelectedOption = str_replace($valueString, $valueString . " selected", $html);
 
-        return $select_with_selected_option;
+        return $selectWithSelectedOption;
     }
 }

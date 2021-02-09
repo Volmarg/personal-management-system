@@ -13,58 +13,58 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
     /**
      * @var SettingsWidgetVisibilityDTO[]
      */
-    private $widgets_visibility = [];
+    private $widgetsVisibility = [];
 
     /**
      * @return SettingsWidgetVisibilityDTO[]
      */
     public function getWidgetsVisibility(): array {
-        return $this->widgets_visibility;
+        return $this->widgetsVisibility;
     }
 
     /**
-     * @param SettingsWidgetVisibilityDTO $widget_visibility
+     * @param SettingsWidgetVisibilityDTO $widgetVisibility
      */
-    public function addWidgetVisibility(SettingsWidgetVisibilityDTO $widget_visibility): void {
-        array_push($this->widgets_visibility, $widget_visibility);
+    public function addWidgetVisibility(SettingsWidgetVisibilityDTO $widgetVisibility): void {
+        array_push($this->widgetsVisibility, $widgetVisibility);
     }
 
     /**
-     * @param array $widgets_visibility_dtos
+     * @param array $widgetsVisibilityDtos
      * @throws \Exception
      */
-    public function setWidgetVisibility(array $widgets_visibility_dtos){
+    public function setWidgetVisibility(array $widgetsVisibilityDtos){
 
-        $has_dto = reset($widgets_visibility_dtos) instanceof SettingsWidgetVisibilityDTO;
+        $hasDto = reset($widgetsVisibilityDtos) instanceof SettingsWidgetVisibilityDTO;
 
-        if( !$has_dto ){
+        if( !$hasDto ){
             throw new \Exception("There are no SettingsWidgetVisibilityDTO in array ");
         }
 
-        $this->widgets_visibility = $widgets_visibility_dtos;
+        $this->widgetsVisibility = $widgetsVisibilityDtos;
     }
 
     /**
-     * @param string $widgets_settings_json
+     * @param string $widgetsSettingsJson
      * @return SettingsWidgetSettingsDTO
      * @throws \Exception
      */
-    public static function fromJson(string $widgets_settings_json): self{
-        $widgets_settings_array     = \GuzzleHttp\json_decode($widgets_settings_json, true);
-        $widgets_visibility_json    = self::checkAndGetKey($widgets_settings_array, self::KEY_WIDGETS_VISIBILITY);
-        $widget_visibility_arrays   = \GuzzleHttp\json_decode($widgets_visibility_json, true);
+    public static function fromJson(string $widgetsSettingsJson): self{
+        $widgetsSettingsArray   = \GuzzleHttp\json_decode($widgetsSettingsJson, true);
+        $widgetsVisibilityJson  = self::checkAndGetKey($widgetsSettingsArray, self::KEY_WIDGETS_VISIBILITY);
+        $widgetVisibilityArrays = \GuzzleHttp\json_decode($widgetsVisibilityJson, true);
 
-        $settings_widgets_settings_dto = new self();
+        $settingsWidgetsSettingsDto = new self();
 
-        foreach($widget_visibility_arrays as $widget_visibility_array){
+        foreach($widgetVisibilityArrays as $widgetVisibilityArray){
 
-            $widget_visibility_json = \GuzzleHttp\json_encode($widget_visibility_array);
-            $settings_widget_visibility_dto = SettingsWidgetVisibilityDTO::fromJson($widget_visibility_json);
-            $settings_widgets_settings_dto->addWidgetVisibility($settings_widget_visibility_dto);
+            $widgetVisibilityJson = \GuzzleHttp\json_encode($widgetVisibilityArray);
+            $settingsWidgetVisibilityDto = SettingsWidgetVisibilityDTO::fromJson($widgetVisibilityJson);
+            $settingsWidgetsSettingsDto->addWidgetVisibility($settingsWidgetVisibilityDto);
 
         }
 
-        return $settings_widgets_settings_dto;
+        return $settingsWidgetsSettingsDto;
     }
 
     /**
@@ -72,14 +72,14 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
      */
     public function toJson(): string{
 
-        $array_of_visibilities_jsons = [];
+        $arrayOfVisibilitiesJsons = [];
 
-        foreacH($this->getWidgetsVisibility() as $widget_visibility ){
-            $array_of_visibilities_jsons[] = $widget_visibility->toArray();
+        foreacH($this->getWidgetsVisibility() as $widgetVisibility ){
+            $arrayOfVisibilitiesJsons[] = $widgetVisibility->toArray();
         }
 
         $array = [
-            self::KEY_WIDGETS_VISIBILITY => $array_of_visibilities_jsons,
+            self::KEY_WIDGETS_VISIBILITY => $arrayOfVisibilitiesJsons,
         ];
 
         $json = json_encode($array);

@@ -31,54 +31,54 @@ abstract class Archivizer {
     /**
      * @var string
      */
-    protected $archiving_status;
+    protected $archivingStatus;
 
     /**
      * @var string
      */
-    protected $archive_name;
+    protected $archiveName;
 
     /**
      * @var string[]
      */
-    protected $directories_to_archive = [];
+    protected $directoriesToArchive = [];
 
     /**
      * @var array
      */
-    protected array $files_to_archive = [];
+    protected array $filesToArchive = [];
 
     /**
      * @var bool
      */
-    protected $archive_recursively = true;
+    protected $archiveRecursively = true;
 
     /**
      * @var bool
      */
-    protected $is_archived_successfully = false;
+    protected $isArchivedSuccessfully = false;
 
     /**
      * @var string
      */
-    protected $target_directory;
+    protected $targetDirectory;
 
     /**
      * Archivizer modifies target directory with for example `current datetime`
-     * @var string $used_directory
+     * @var string $usedDirectory
      */
-    protected string $used_directory;
+    protected string $usedDirectory;
 
     /**
      * Safety postfix - should be unique so that existing db sql for today won't be overwritten
      * @var string $file_postfix
      */
-    protected $file_prefix = '';
+    protected $filePrefix = '';
 
     /**
      * @var string
      */
-    protected $archive_full_path = '';
+    protected $archiveFullPath = '';
 
     /**
      * @var Application $app
@@ -89,35 +89,35 @@ abstract class Archivizer {
      * @return string
      */
     public function getArchivingStatus(): string {
-        return $this->archiving_status;
+        return $this->archivingStatus;
     }
 
     /**
-     * @param string $archiving_status
+     * @param string $archivingStatus
      */
-    protected function setArchivingStatus(string $archiving_status): void {
-        $this->archiving_status = $archiving_status;
+    protected function setArchivingStatus(string $archivingStatus): void {
+        $this->archivingStatus = $archivingStatus;
     }
 
     /**
      * @return string
      */
     public function getArchiveName(): string {
-        return $this->archive_name;
+        return $this->archiveName;
     }
 
     /**
      * @return  string[]
      */
     public function getDirectoriesToArchive(): string {
-        return $this->directories_to_archive;
+        return $this->directoriesToArchive;
     }
 
     /**
-     * @param string[] $directory_to_archive
+     * @param string[] $directoryToArchive
      */
-    public function setDirectoriesToArchive(array $directory_to_archive): void {
-        $this->directories_to_archive = $directory_to_archive;
+    public function setDirectoriesToArchive(array $directoryToArchive): void {
+        $this->directoriesToArchive = $directoryToArchive;
     }
 
     /**
@@ -125,64 +125,64 @@ abstract class Archivizer {
      */
     public function getUsedDirectory(): string
     {
-        return $this->used_directory;
+        return $this->usedDirectory;
     }
 
     /**
-     * @param string $used_directory
+     * @param string $usedDirectory
      */
-    public function setUsedDirectory(string $used_directory): void
+    public function setUsedDirectory(string $usedDirectory): void
     {
-        $this->used_directory = $used_directory;
+        $this->usedDirectory = $usedDirectory;
     }
 
     /**
      * @return bool
      */
     public function isArchiveRecursively(): bool {
-        return $this->archive_recursively;
+        return $this->archiveRecursively;
     }
 
     /**
-     * @param bool $archive_recursively
+     * @param bool $archiveRecursively
      */
-    public function setArchiveRecursively(bool $archive_recursively): void {
-        $this->archive_recursively = $archive_recursively;
+    public function setArchiveRecursively(bool $archiveRecursively): void {
+        $this->archiveRecursively = $archiveRecursively;
     }
 
     /**
      * @return bool
      */
     public function isArchivedSuccessfully(): bool {
-        return $this->is_archived_successfully;
+        return $this->isArchivedSuccessfully;
     }
 
     /**
-     * @param bool $is_archived_successfully
+     * @param bool $isArchivedSuccessfully
      */
-    protected function setIsArchivedSuccessfully(bool $is_archived_successfully): void {
-        $this->is_archived_successfully = $is_archived_successfully;
+    protected function setIsArchivedSuccessfully(bool $isArchivedSuccessfully): void {
+        $this->isArchivedSuccessfully = $isArchivedSuccessfully;
     }
 
     /**
-     * @param string $target_directory
+     * @param string $targetDirectory
      */
-    public function setTargetDirectory(string $target_directory): void {
-        $this->target_directory = $target_directory;
+    public function setTargetDirectory(string $targetDirectory): void {
+        $this->targetDirectory = $targetDirectory;
     }
 
     /**
      * @return string
      */
     protected function getTargetDirectory(): string {
-        return $this->target_directory;
+        return $this->targetDirectory;
     }
 
     /**
      * @return string
      */
     protected function getFilePrefix(): string {
-        return $this->file_prefix;
+        return $this->filePrefix;
     }
 
     /**
@@ -190,15 +190,15 @@ abstract class Archivizer {
      */
     public function getFilesToArchive(): array
     {
-        return $this->files_to_archive;
+        return $this->filesToArchive;
     }
 
     /**
-     * @param array $files_to_archive
+     * @param array $filesToArchive
      */
-    public function setFilesToArchive(array $files_to_archive): void
+    public function setFilesToArchive(array $filesToArchive): void
     {
-        $this->files_to_archive = $files_to_archive;
+        $this->filesToArchive = $filesToArchive;
     }
 
     /**
@@ -213,34 +213,34 @@ abstract class Archivizer {
 
         switch( $mode ){
             case self::FILE_PREFIX_MODE_CURRENT_DATE_TIME:
-                $curr_date_time = new \DateTime();
-                $prefix = $curr_date_time->format('Y_m_d_H_i_s_');
+                $currDateTime = new \DateTime();
+                $prefix = $currDateTime->format('Y_m_d_H_i_s_');
                 break;
             default:
                 throw new \Exception("This mode is not supported: {$mode}");
         }
 
-        $this->file_prefix = $prefix;
+        $this->filePrefix = $prefix;
     }
 
     /**
      * @return string
      */
     private function getArchiveFullPath(): string {
-        return $this->archive_full_path;
+        return $this->archiveFullPath;
     }
 
     /**
-     * @param string $archive_full_path
+     * @param string $archiveFullPath
      */
-    private function setArchiveFullPath(string $archive_full_path): void {
-        $this->archive_full_path = $archive_full_path;
+    private function setArchiveFullPath(string $archiveFullPath): void {
+        $this->archiveFullPath = $archiveFullPath;
     }
 
     /**
-     * @param string $archive_name
+     * @param string $archiveName
      */
-    public abstract function setArchiveName(string $archive_name): void;
+    public abstract function setArchiveName(string $archiveName): void;
 
     /**
      * This function will build archive for provided directories
@@ -262,9 +262,9 @@ abstract class Archivizer {
      */
     public function handleArchivizing(){
 
-        $target_directory_exists = file_exists($this->getTargetDirectory());
+        $targetDirectoryExists = file_exists($this->getTargetDirectory());
 
-        if( !$target_directory_exists ){
+        if( !$targetDirectoryExists ){
             $this->setArchivingStatus(self::EXPORT_MESSAGE_TARGET_DIRECTORY_DOES_NOT_EXIST);
             $this->setIsArchivedSuccessfully(false);
             return;
@@ -290,28 +290,27 @@ abstract class Archivizer {
      * Also sets target directory so that it points to the folder with current date
      */
     private function prepareTargetDirectory():void {
-        $curr_date_time = new \DateTime();
-        $curr_date      = $curr_date_time->format('Y-m-d');
+        $currDateTime = new \DateTime();
+        $currDate      = $currDateTime->format('Y-m-d');
 
-        $target_directory = $this->getTargetDirectory();
+        $targetDirectory     = $this->getTargetDirectory();
+        $usedTargetDirectory = $targetDirectory . DIRECTORY_SEPARATOR . $currDate;
 
-        $used_target_directory = $target_directory . DIRECTORY_SEPARATOR . $curr_date;
-
-        $dir_exists = file_exists($used_target_directory);
+        $dirExists = file_exists($usedTargetDirectory);
 
         // first checking if it exist and if not then create it
-        if( !$dir_exists ){
-            mkdir($used_target_directory);
+        if( !$dirExists ){
+            mkdir($usedTargetDirectory);
         }
 
         // this is safety check, if folder didnt existed and still does not exist then it's undesired state
-        if( !$dir_exists ){
+        if( !$dirExists ){
             $this->setArchivingStatus(self::EXPORT_MESSAGE_COULD_NOT_CREATE_FOLDER);
             $this->setIsArchivedSuccessfully(false);
         }
 
-        $this->setUsedDirectory($used_target_directory);
-        $this->setArchiveFullPath($used_target_directory . DIRECTORY_SEPARATOR . $this->file_prefix .$this->archive_name);
+        $this->setUsedDirectory($usedTargetDirectory);
+        $this->setArchiveFullPath($usedTargetDirectory . DIRECTORY_SEPARATOR . $this->filePrefix .$this->archiveName);
     }
 
     /**
@@ -319,15 +318,15 @@ abstract class Archivizer {
      */
     private function checkArchive(){
 
-        $is_archive_existing = file_exists($this->getArchiveFullPath());
+        $isArchiveExisting = file_exists($this->getArchiveFullPath());
 
-        if( !$is_archive_existing ){
+        if( !$isArchiveExisting ){
             $this->setIsArchivedSuccessfully(false);
             $this->setArchivingStatus(self::EXPORT_MESSAGE_EXPORT_FILE_DOES_NOT_EXIST);
         }else{
-            $archive_size = filesize($this->getArchiveFullPath());
+            $archiveSize = filesize($this->getArchiveFullPath());
 
-            if( self::MINIMUM_ARCHIVE_SIZE > $archive_size ){
+            if( self::MINIMUM_ARCHIVE_SIZE > $archiveSize ){
                 $this->setIsArchivedSuccessfully(false);
                 $this->setArchivingStatus(self::EXPORT_MESSAGE_EXPORTED_DATABASE_IS_TO_SMALL);
                 return;
@@ -343,55 +342,55 @@ abstract class Archivizer {
      * This is a dirty function but for zipping we provide "./public/..."
      * And for changing the structure inside archive itself we need "public/..."
      * Returns string usable for regex match - the result itself is useless - it's only needed for regex
-     * @param string $source_path
+     * @param string $sourcePath
      * @return string
      */
-    protected function rebuildSourceDirectoryForArchiveStructure(string $source_path): string {
+    protected function rebuildSourceDirectoryForArchiveStructure(string $sourcePath): string {
 
-        $target_directory   = $source_path;
-        $dot_position       = strpos($source_path, DOT);
-        $slash_position     = strpos($source_path, DIRECTORY_SEPARATOR);
+        $targetDirectory = $sourcePath;
+        $dotPosition     = strpos($sourcePath, DOT);
+        $slashPosition   = strpos($sourcePath, DIRECTORY_SEPARATOR);
 
-        if( !is_bool($dot_position) && 0 === $dot_position ){
-            $target_directory = str_replace(DOT . DIRECTORY_SEPARATOR, '', $source_path); // escape dot
-        }elseif(!is_bool($slash_position) && 0 === $slash_position){
-            $target_directory = substr($source_path, 1);    // escape first slash
+        if( !is_bool($dotPosition) && 0 === $dotPosition ){
+            $targetDirectory = str_replace(DOT . DIRECTORY_SEPARATOR, '', $sourcePath); // escape dot
+        }elseif(!is_bool($slashPosition) && 0 === $slashPosition){
+            $targetDirectory = substr($sourcePath, 1);    // escape first slash
         }
 
-        $target_directory_regex = str_replace( DIRECTORY_SEPARATOR , "\\" . DIRECTORY_SEPARATOR, $target_directory); //escape chars for regex
+        $targetDirectoryRegex = str_replace( DIRECTORY_SEPARATOR , "\\" . DIRECTORY_SEPARATOR, $targetDirectory); //escape chars for regex
 
-        return $target_directory_regex;
+        return $targetDirectoryRegex;
     }
 
     /**
      * Extract the directory to make in archive by finding in absolute path everything from $target_directory_regex path to the end
      * For example from: /var/www/html/personal-management-system-dev/public/upload/images/123/2/4/test/testo2123/
      * This will be extracted: public/upload/images/123/2/4/test/testo2123/
-     * @param string $absolute_path
-     * @param string $target_directory_regex
+     * @param string $absolutePath
+     * @param string $targetDirectoryRegex
      * @return string
      */
-    protected function extractArchiveDirectoryFromAbsolutePath(string $absolute_path, string $target_directory_regex): string{
+    protected function extractArchiveDirectoryFromAbsolutePath(string $absolutePath, string $targetDirectoryRegex): string{
 
-        preg_match('#' . $target_directory_regex . '(.*)[^\/]#', $absolute_path, $matches);
-        $archived_directory = DIRECTORY_SEPARATOR . $matches[0];
+        preg_match('#' . $targetDirectoryRegex . '(.*)[^\/]#', $absolutePath, $matches);
+        $archivedDirectory = DIRECTORY_SEPARATOR . $matches[0];
 
-        return $archived_directory;
+        return $archivedDirectory;
     }
 
     /**
      * Extract the file to add in archive by finding in absolute path everything from $target_directory_regex path to the end
      * For example from: /var/www/html/personal-management-system-dev/public/upload/images/123/2/4/test/testo2123/file.jpg
      * This will be extracted: public/upload/images/123/2/4/test/testo2123/file.jpg
-     * @param string $absolute_path
-     * @param string $target_directory_regex
+     * @param string $absolutePath
+     * @param string $targetDirectoryRegex
      * @return string
      */
-    protected function extractArchiveFileFromAbsolutePath(string $absolute_path, string $target_directory_regex): string{
+    protected function extractArchiveFileFromAbsolutePath(string $absolutePath, string $targetDirectoryRegex): string{
 
-        preg_match('#' . $target_directory_regex . '(.*)#', $absolute_path, $matches);
-        $archived_file = DIRECTORY_SEPARATOR . $matches[0];
+        preg_match('#' . $targetDirectoryRegex . '(.*)#', $absolutePath, $matches);
+        $archivedFile = DIRECTORY_SEPARATOR . $matches[0];
 
-        return $archived_file;
+        return $archivedFile;
     }
 }

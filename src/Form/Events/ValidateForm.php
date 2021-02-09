@@ -12,13 +12,13 @@ class ValidateForm
 {
     /**
      * @param FormEvent $event
-     * @param FormValidatorInterface $form_validator
+     * @param FormValidatorInterface $formValidator
      * @throws FormValidationException
      */
-    public static function onSubmit(FormEvent $event, FormValidatorInterface $form_validator)
+    public static function onSubmit(FormEvent $event, FormValidatorInterface $formValidator)
     {
-        $form_data = $event->getData();
-        $form_validator->doValidate($form_data);
+        $formData = $event->getData();
+        $formValidator->doValidate($formData);
     }
 
 }

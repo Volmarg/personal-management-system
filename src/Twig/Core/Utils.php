@@ -22,12 +22,12 @@ class Utils extends AbstractExtension {
      * Will round the given value to the nearest value provided as second parameter, for example nearest 0.25
      * 1.0, 1.25, 1.5, 1,75 ....
      *
-     * @param float $actual_value
-     * @param float $round_to_repentance_of
+     * @param float $actualValue
+     * @param float $roundToRepentanceOf
      * @return float|int
      */
-    public function roundDownToAny(float $actual_value, float $round_to_repentance_of) {
-        return CoreUtils::roundDownToAny($actual_value, $round_to_repentance_of);
+    public function roundDownToAny(float $actualValue, float $roundToRepentanceOf) {
+        return CoreUtils::roundDownToAny($actualValue, $roundToRepentanceOf);
     }
 
     /**

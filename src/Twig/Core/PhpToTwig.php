@@ -57,15 +57,15 @@ class PhpToTwig extends AbstractExtension {
      * @param string $string
      * @param int $start
      * @param int $length
-     * @param bool $add_dots - if true then applies ... on end of string
+     * @param bool $addDots - if true then applies ... on end of string
      * @return string
      */
-    public function substring(string $string, int $start = 0, int $length = self::DEFAULT_SUBSTRING_LENGTH, bool $add_dots = true): string
+    public function substring(string $string, int $start = 0, int $length = self::DEFAULT_SUBSTRING_LENGTH, bool $addDots = true): string
     {
         $substring = substr($string, $start, $length);
 
         if(
-                $add_dots
+                $addDots
             &&  strlen($string) > $length
         ){
             $substring .="...";

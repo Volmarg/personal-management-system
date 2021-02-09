@@ -2,7 +2,6 @@
 
 namespace App\Repository\System;
 
-use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;

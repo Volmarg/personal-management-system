@@ -229,23 +229,23 @@ class ReportsRepository{
     }
 
     /**
-     * @param bool $is_owed_by_me
+     * @param bool $isOwedByMe
      * @return array
      */
-    public function fetchHistoricalMoneyOwedBy(bool $is_owed_by_me = false): array
+    public function fetchHistoricalMoneyOwedBy(bool $isOwedByMe = false): array
     {
-        $query_builder = $this->em->createQueryBuilder();
-        $query_builder->select('mpo')
+        $queryBuilder = $this->em->createQueryBuilder();
+        $queryBuilder->select('mpo')
             ->from(MyPaymentsOwed::class, 'mpo')
             ->where('mpo.deleted = 1');
 
-            if( $is_owed_by_me ){
-                $query_builder->andWhere('mpo.owedByMe = 1');
+            if( $isOwedByMe ){
+                $queryBuilder->andWhere('mpo.owedByMe = 1');
             }else{
-                $query_builder->andWhere('mpo.owedByMe = 0');
+                $queryBuilder->andWhere('mpo.owedByMe = 0');
             }
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         return $results;

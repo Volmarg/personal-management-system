@@ -59,27 +59,27 @@ class AutoInstaller{
     const ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME = 'APP_SYSTEM_LOCK_SESSION_LIFETIME';
     const ENV_KEY_APP_IPS_ACCESS_RESTRICTION       = 'APP_IPS_ACCESS_RESTRICTION';
 
-    static $is_node_installed = false;
+    static $isNodeInstalled = false;
 
-    static $is_npm_installed = false;
+    static $isNpmInstalled = false;
 
-    static $is_mysql_installed = false;
+    static $isMysqlInstalled = false;
 
-    static $dependencies_state = [];
+    static $dependenciesState = [];
 
-    static $mysql_port     = '';
+    static $mysqlPort     = '';
 
-    static $mysql_host     = '';
+    static $mysqlHost     = '';
 
-    static $mysql_login    = '';
+    static $mysqlLogin    = '';
 
-    static $mysql_password = '';
+    static $mysqlPassword = '';
 
-    static $mysql_database = '';
+    static $mysqlDatabase = '';
 
-    static $user_selected_mode = '';
+    static $userSelectedMode = '';
 
-    static $encryption_key = '';
+    static $encryptionKey = '';
 
     public static function runDocker(){
 
@@ -202,11 +202,11 @@ class AutoInstaller{
         CliHandler::infoText("To install this project You need to have packages below installed");
         CliHandler::lineSeparator();
 
-        CliHandler::text("Mysql: "  .  ( self::$is_mysql_installed    ? CliHandler::successMark() : CliHandler::failureMark() ) );
-        CliHandler::text("Node: "   .  ( self::$is_node_installed     ? CliHandler::successMark() : CliHandler::failureMark() ) );
-        CliHandler::text("Npm: "    .  ( self::$is_npm_installed      ? CliHandler::successMark() : CliHandler::failureMark() ) );
+        CliHandler::text("Mysql: "  .  ( self::$isMysqlInstalled    ? CliHandler::successMark() : CliHandler::failureMark() ) );
+        CliHandler::text("Node: "   .  ( self::$isNodeInstalled     ? CliHandler::successMark() : CliHandler::failureMark() ) );
+        CliHandler::text("Npm: "    .  ( self::$isNpmInstalled      ? CliHandler::successMark() : CliHandler::failureMark() ) );
 
-        if( in_array(false, self::$dependencies_state) ){
+        if( in_array(false, self::$dependenciesState) ){
             CliHandler::errorText(PHP_EOL . "At least one of required packages is not present - please install it first");
         }
     }
@@ -216,14 +216,14 @@ class AutoInstaller{
      */
     private static function getDependenciesInformation(){
 
-        self::$is_node_installed   = trim(shell_exec('node -v'));
-        self::$is_npm_installed    = trim(shell_exec('npm -v'));
-        self::$is_mysql_installed  = trim(shell_exec('mysql -V'));
+        self::$isNodeInstalled   = trim(shell_exec('node -v'));
+        self::$isNpmInstalled    = trim(shell_exec('npm -v'));
+        self::$isMysqlInstalled  = trim(shell_exec('mysql -V'));
 
-        self::$dependencies_state = [
-            self::$is_mysql_installed,
-            self::$is_node_installed,
-            self::$is_npm_installed,
+        self::$dependenciesState = [
+            self::$isMysqlInstalled,
+            self::$isNodeInstalled,
+            self::$isNpmInstalled,
         ];
 
     }
@@ -233,23 +233,23 @@ class AutoInstaller{
      */
     private static function askQuestions(){
 
-        while( empty(self::$mysql_port) ){
-            self::$mysql_port = CliHandler::getUserInput("What is Your database port?");
+        while( empty(self::$mysqlPort) ){
+            self::$mysqlPort = CliHandler::getUserInput("What is Your database port?");
         }
-        while( empty(self::$mysql_host) ){
-            self::$mysql_host = CliHandler::getUserInput("What is Your database host?");
+        while( empty(self::$mysqlHost) ){
+            self::$mysqlHost = CliHandler::getUserInput("What is Your database host?");
         }
-        while( empty(self::$mysql_login) ){
-            self::$mysql_login = CliHandler::getUserInput("What is Your database login?");
-        }
-
-        self::$mysql_password  = CliHandler::getUserInput("What is Your database password?"); //it can be empty
-
-        while( empty(self::$mysql_database) ){
-            self::$mysql_database = CliHandler::getUserInput("How do You want to name Your new database?");
+        while( empty(self::$mysqlLogin) ){
+            self::$mysqlLogin = CliHandler::getUserInput("What is Your database login?");
         }
 
-        self::$user_selected_mode = CliHandler::choices([
+        self::$mysqlPassword  = CliHandler::getUserInput("What is Your database password?"); //it can be empty
+
+        while( empty(self::$mysqlDatabase) ){
+            self::$mysqlDatabase = CliHandler::getUserInput("How do You want to name Your new database?");
+        }
+
+        self::$userSelectedMode = CliHandler::choices([
             self::MODE_DEVELOPMENT,
             self::MODE_PRODUCTION,
         ], "Which mode do You want to install?");
@@ -273,67 +273,63 @@ class AutoInstaller{
      */
     private static function buildEnv(){
         CliHandler::infoText("Started building env file.");
-        $env_file_name = '.env';
+        $envFileName = '.env';
 
-        $db_login       = self::$mysql_login;
-        $db_password    = self::$mysql_password;
-        $db_host        = self::$mysql_host;
-        $db_port        = self::$mysql_port;
-        $db_name        = self::$mysql_database;
+        $dbLogin    = self::$mysqlLogin;
+        $dbPassword = self::$mysqlPassword;
+        $dbHost     = self::$mysqlHost;
+        $dbPort     = self::$mysqlPort;
+        $dbName     = self::$mysqlDatabase;
 
-
-        $db_connection_check_command = "mysql -u {$db_login} -h {$db_host} --port={$db_port} -e\"quit\"";
-
-        if( !empty($db_password) ){
-            $db_connection_check_command .= " -p{$db_password}";
+        $dbConnectionCheckCommand = "mysql -u {$dbLogin} -h {$dbHost} --port={$dbPort} -e\"quit\"";
+        if( !empty($dbPassword) ){
+            $dbConnectionCheckCommand .= " -p{$dbPassword}";
         }
 
-        exec($db_connection_check_command, $output, $connection_check_result);
+        exec($dbConnectionCheckCommand, $output, $connectionCheckResult);
 
-        $are_credentail_valid = empty($connection_check_result); //returns nothing if credentials are ok
-
-        if( !$are_credentail_valid ){
+        $areCredentailValid = empty($connectionCheckResult); //returns nothing if credentials are ok
+        if( !$areCredentailValid ){
             CliHandler::errorText("Database credentials are incorrect, could not connect - aborting.");
-            CliHandler::infoText("Command used to check credentials: ". $db_connection_check_command);
+            CliHandler::infoText("Command used to check credentials: ". $dbConnectionCheckCommand);
             self::installerAreaLine();
             exit();
         }
 
-        if( file_exists($env_file_name) ){
+        if( file_exists($envFileName) ){
             CliHandler::errorText("Env file already exist so It won't be modified - You must do this manually then.");
             self::installerAreaLine();
             return;
         }
 
-        $database_url = "mysql://{$db_login}:{$db_password}@{$db_host}:{$db_port}/{$db_name}";
-
-        if( self::MODE_DEVELOPMENT === self::$user_selected_mode ){
+        $databaseUrl = "mysql://{$dbLogin}:{$dbPassword}@{$dbHost}:{$dbPort}/{$dbName}";
+        if( self::MODE_DEVELOPMENT === self::$userSelectedMode ){
             $env    = self::ENV_DEV;
             $debug  = "true";
         }else{
             $env    = self::ENV_PROD;
             $debug  = "false";
         }
-        $file_handler = fopen($env_file_name, 'w+');
+        $fileHandler = fopen($envFileName, 'w+');
         {
-            fwrite($file_handler,self::ENV_KEY_APP_ENV      . "="  . $env              . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_APP_DEBUG    . "="  . $debug            . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_APP_SECRET   . "="  . self::APP_SECRET  . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_MAILER_URL   . "="  . self::MAILER_URL  . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_DATABASE_URL . "="  . $database_url     . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_UPLOAD_DIR   . "="  . self::UPLOAD_DIR  . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_ENV      . "="  . $env              . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_DEBUG    . "="  . $debug            . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_SECRET   . "="  . self::APP_SECRET  . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_MAILER_URL   . "="  . self::MAILER_URL  . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_DATABASE_URL . "="  . $databaseUrl     . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_UPLOAD_DIR   . "="  . self::UPLOAD_DIR  . PHP_EOL);
 
-            fwrite($file_handler,self::ENV_KEY_IMAGES_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_IMAGES      . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_FILES_UPLOAD_DIR      . "="  . self::UPLOAD_DIR_FILES       . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_VIDEOS_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_VIDEOS      . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_MINIATURES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_MINIATURES  . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_PUBLIC_ROOT_DIR       . "="  . self::PUBLIC_DIR             . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_IMAGES_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_IMAGES      . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_FILES_UPLOAD_DIR      . "="  . self::UPLOAD_DIR_FILES       . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_VIDEOS_UPLOAD_DIR     . "="  . self::UPLOAD_DIR_VIDEOS      . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_MINIATURES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_MINIATURES  . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_PUBLIC_ROOT_DIR       . "="  . self::PUBLIC_DIR             . PHP_EOL);
 
-            fwrite($file_handler,self::ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME   . "="  . self::USER_LOGIN_SESSION_LIFETIME  . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME  . "="  . self::SYSTEM_LOCK_SESSION_LIFETIME . PHP_EOL);
-            fwrite($file_handler,self::ENV_KEY_APP_IPS_ACCESS_RESTRICTION        . "="  . self::IPS_ACCESS_RESTRICTION       . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME   . "="  . self::USER_LOGIN_SESSION_LIFETIME  . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME  . "="  . self::SYSTEM_LOCK_SESSION_LIFETIME . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_IPS_ACCESS_RESTRICTION        . "="  . self::IPS_ACCESS_RESTRICTION       . PHP_EOL);
         }
-        fclose($file_handler);
+        fclose($fileHandler);
         CliHandler::infoText('Env file has been created.');
     }
 
@@ -343,25 +339,25 @@ class AutoInstaller{
     private function setDatabase(){
         CliHandler::infoText("Started configuring the database.");
         {
-            $drop_database_command   = "bin/console doctrine:database:drop -n --force";
-            $create_database_command = "bin/console doctrine:database:create -n";
-            $build_tables            = "bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
-            $run_migrations          = "bin/console doctrine:migrations:migrate -n";
+            $dropDatabaseCommand   = "bin/console doctrine:database:drop -n --force";
+            $createDatabaseCommand = "bin/console doctrine:database:create -n";
+            $buildTables           = "bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
+            $runMigrations         = "bin/console doctrine:migrations:migrate -n";
 
-            shell_exec($drop_database_command);
+            shell_exec($dropDatabaseCommand);
             CliHandler::text("Database has been dropped (if You provided the existing one)");
 
-            shell_exec($create_database_command);
+            shell_exec($createDatabaseCommand);
             CliHandler::text("Database has been created");
 
             CliHandler::text("Creating database tables, please wait");
 
-            shell_exec($build_tables);
+            shell_exec($buildTables);
             CliHandler::text("Database tables has been created");
 
             CliHandler::text("Inserting base data into the tables, please wait");
 
-            shell_exec($run_migrations);
+            shell_exec($runMigrations);
             CliHandler::text("Base data base been inserted into the tables", false);
 
         }
@@ -372,27 +368,27 @@ class AutoInstaller{
      * This function will install the node packages if this is development mode
      */
     private function installPackages(){
-        if(self::MODE_DEVELOPMENT === self::$user_selected_mode){
+        if(self::MODE_DEVELOPMENT === self::$userSelectedMode){
             CliHandler::infoText("Started installing node modules.");
             CliHandler::errorText("Yes - You might see some errors here and there, there is nothing I can do about it - it's just the packages dependencies/problems.");
             {
-                $npm_update_command         = 'npm update';
-                $npm_install_command        = 'npm install -g --unsafe-perm';
-                $npm_sass_command           = 'npm i node-sass -g --unsafe-perm';
-                $npm_sass_command_2         = 'nodejs node_modules/node-sass/scripts/install.js';
-                $npm_sas_rebuild_command    = 'npm rebuild node-sass';
+                $npmUpdateCommand     = 'npm update';
+                $npmInstallCommand    = 'npm install -g --unsafe-perm';
+                $npmSassCommand       = 'npm i node-sass -g --unsafe-perm';
+                $npmSassCommand2      = 'nodejs node_modules/node-sass/scripts/install.js';
+                $npmSasRebuildCommand = 'npm rebuild node-sass';
 
-                shell_exec($npm_update_command);
+                shell_exec($npmUpdateCommand);
                 CliHandler::text("Npm update has been finished.");
 
-                shell_exec($npm_install_command);
+                shell_exec($npmInstallCommand);
                 CliHandler::text("Npm install has been finished.");
 
-                shell_exec($npm_sass_command);
-                shell_exec($npm_sass_command_2);
+                shell_exec($npmSassCommand);
+                shell_exec($npmSassCommand2);
                 CliHandler::text("Npm sass install has been finished.");
 
-                shell_exec($npm_sas_rebuild_command);
+                shell_exec($npmSasRebuildCommand);
                 CliHandler::text("Npm sass rebuild has been finished.", false);
             }
             CliHandler::infoText("Finished installing node modules.");
@@ -405,22 +401,22 @@ class AutoInstaller{
     private function createFolders(){
         CliHandler::infoText("Started creating folders.");
         {
-            $upload_dir         = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR;
-            $upload_files_dir   = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_FILES;
-            $upload_images_dir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_IMAGES;
-            $upload_videos_dir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_VIDEOS;
+            $uploadDir       = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR;
+            $uploadFilesDir  = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_FILES;
+            $uploadImagesDir = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_IMAGES;
+            $uploadVideosDir = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR_VIDEOS;
 
-            if( !file_exists($upload_dir) ){
-                mkdir($upload_dir);
+            if( !file_exists($uploadDir) ){
+                mkdir($uploadDir);
             }
-            if( !file_exists($upload_files_dir) ){
-                mkdir($upload_files_dir);
+            if( !file_exists($uploadFilesDir) ){
+                mkdir($uploadFilesDir);
             }
-            if( !file_exists($upload_images_dir) ){
-                mkdir($upload_images_dir);
+            if( !file_exists($uploadImagesDir) ){
+                mkdir($uploadImagesDir);
             }
-            if( !file_exists($upload_videos_dir) ){
-                mkdir($upload_videos_dir);
+            if( !file_exists($uploadVideosDir) ){
+                mkdir($uploadVideosDir);
             }
         }
         CliHandler::infoText("Finished creating folders.");
@@ -432,13 +428,13 @@ class AutoInstaller{
     private function buildCache(){
         CliHandler::infoText("Started building cache.");
         {
-            $clear_cache_command    = "bin/console cache:clear";
-            $warmup_cache_command   = "bin/console cache:warmup";
+            $clearCacheCommand  = "bin/console cache:clear";
+            $warmupCacheCommand = "bin/console cache:warmup";
 
-            shell_exec($clear_cache_command);
+            shell_exec($clearCacheCommand);
             CliHandler::text("Cache has been cleared.");
 
-            shell_exec($warmup_cache_command);
+            shell_exec($warmupCacheCommand);
             CliHandler::text("Cache has been warmed up.", false);
         }
         CliHandler::infoText("Finished building cache.");
@@ -451,26 +447,26 @@ class AutoInstaller{
 
         CliHandler::infoText("Started setting permissions.");
         {
-            $chown_command_var_folder = "chown -R www-data var";
-            $chgrp_command_var_folder = "chgrp -R www-data var";
-            $chmod_command_var_folder = "chmod -R 777 var";
+            $chownCommandVarFolder = "chown -R www-data var";
+            $chgrpCommandVarFolder = "chgrp -R www-data var";
+            $chmodCommandVarFolder = "chmod -R 777 var";
 
-            $chown_command_vendor_folder = "chown -R www-data vendor";
-            $chgrp_command_vendor_folder = "chgrp -R www-data vendor";
+            $chownCommandVendorFolder = "chown -R www-data vendor";
+            $chgrpCommandVendorFolder = "chgrp -R www-data vendor";
 
-            shell_exec($chown_command_var_folder);
+            shell_exec($chownCommandVarFolder);
             CliHandler::text("Owner for `var` folder has been set.");
 
-            shell_exec($chgrp_command_var_folder);
+            shell_exec($chgrpCommandVarFolder);
             CliHandler::text("Group for `var` folder has been set.");
 
-            shell_exec($chmod_command_var_folder);
+            shell_exec($chmodCommandVarFolder);
             CliHandler::text("Read, write, execute permissions for `var` folder have been set.", false);
 
-            shell_exec($chown_command_vendor_folder);
+            shell_exec($chownCommandVendorFolder);
             CliHandler::text("Owner for `vendor` folder has been set.");
 
-            shell_exec($chgrp_command_vendor_folder);
+            shell_exec($chgrpCommandVendorFolder);
             CliHandler::text("Group for `vendor` folder has been set.");
         }
         CliHandler::infoText("Finished setting permissions.");
@@ -490,9 +486,9 @@ class AutoInstaller{
     private static function generateEncryptionKey(){
         CliHandler::infoText("Started generating encryption key.");
         {
-            $encryption_key_generation_command = 'bin/console --env=dev encrypt:genkey';
-            $encryption_key = trim( shell_exec($encryption_key_generation_command) );
-            CliHandler::text($encryption_key, false);
+            $encryptionKeyGenerationCommand = 'bin/console --env=dev encrypt:genkey';
+            $encryptionKey = trim( shell_exec($encryptionKeyGenerationCommand) );
+            CliHandler::text($encryptionKey, false);
         }
         CliHandler::infoText("Finished generating encryption key.");
     }
@@ -535,9 +531,9 @@ class AutoInstaller{
     private function checkMysqlMode(){
         CliHandler::infoText("Started checking Mysql mode.");
         {
-            $mode_to_disable = "ONLY_FULL_GROUP_BY";
+            $modeToDisable = "ONLY_FULL_GROUP_BY";
 
-            $conn   = new \mysqli(self::$mysql_host, self::$mysql_login);
+            $conn   = new \mysqli(self::$mysqlHost, self::$mysqlLogin);
             $sql    = "SELECT @@sql_mode";
 
             $result = $conn->query($sql);
@@ -545,7 +541,7 @@ class AutoInstaller{
 
             $modes = reset($row);
 
-            if( !strstr($mode_to_disable, $modes) ){
+            if( !strstr($modeToDisable, $modes) ){
                 echo "Seems like Mysql mode is ok";
                 CliHandler::newLine();
             }else{

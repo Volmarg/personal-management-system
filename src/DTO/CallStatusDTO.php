@@ -11,9 +11,9 @@ class CallStatusDTO extends AbstractDTO {
     const KEY_FAILURE_REASON_INTERNAL_SERVER_ERROR = "KEY_FAILURE_REASON_INTERNAL_SERVER_ERROR";
 
     /**
-     * @var bool $is_success
+     * @var bool $isSuccess
      */
-    private $is_success = false;
+    private $isSuccess = false;
 
     /**
      * @var string $code
@@ -21,9 +21,9 @@ class CallStatusDTO extends AbstractDTO {
     private $code = 500;
 
     /**
-     * @var string $failure_reason
+     * @var string $failureReason
      */
-    private $failure_reason = '';
+    private $failureReason = '';
 
     /**
      * @var string
@@ -42,13 +42,13 @@ class CallStatusDTO extends AbstractDTO {
 
         $translator = new Translator();
 
-        if( $this->is_success){
+        if( $this->isSuccess){
             $message = $translator->translate("messages.ajax.success.recordHasBeenCreated");
-        } elseif( self::KEY_FAILURE_REASON_FORM_VALIDATION == $this->failure_reason ){
+        } elseif( self::KEY_FAILURE_REASON_FORM_VALIDATION == $this->failureReason ){
             $message = $translator->translate("messages.ajax.failure.formValidationFailed");
-        } elseif( self::KEY_FAILURE_REASON_FORM_VALIDATION == $this->failure_reason ){
+        } elseif( self::KEY_FAILURE_REASON_FORM_VALIDATION == $this->failureReason ){
             $message = $translator->translate("messages.ajax.failure.internalServerError");
-        } elseif( self::KEY_FAILURE_REASON_DUPLICATED_RECORD == $this->failure_reason ){
+        } elseif( self::KEY_FAILURE_REASON_DUPLICATED_RECORD == $this->failureReason ){
             $message = $translator->translate("messages.ajax.failure.duplicatedRecord");
         } else{
             $message = $translator->translate("messages.ajax.failure.undefinedError");
@@ -82,28 +82,28 @@ class CallStatusDTO extends AbstractDTO {
      * @return string
      */
     public function getIsSuccess(): string {
-        return $this->is_success;
+        return $this->isSuccess;
     }
 
     /**
-     * @param string $is_success
+     * @param string $isSuccess
      */
-    public function setIsSuccess(string $is_success): void {
-        $this->is_success = $is_success;
+    public function setIsSuccess(string $isSuccess): void {
+        $this->isSuccess = $isSuccess;
     }
 
     /**
      * @return string
      */
     public function getFailureReason(): string {
-        return $this->failure_reason;
+        return $this->failureReason;
     }
 
     /**
-     * @param string $failure_reason
+     * @param string $failureReason
      */
-    public function setFailureReason(string $failure_reason): void {
-        $this->failure_reason = $failure_reason;
+    public function setFailureReason(string $failureReason): void {
+        $this->failureReason = $failureReason;
     }
 
 }

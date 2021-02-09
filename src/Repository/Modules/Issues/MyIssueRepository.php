@@ -27,39 +27,39 @@ class MyIssueRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param int|null $order_by_field_entity_id
+     * @param int|null $orderByFieldEntityId
      * @return MyIssue[]
      */
-    public function findAllNotDeletedAndNotResolved(int $order_by_field_entity_id = null): array
+    public function findAllNotDeletedAndNotResolved(int $orderByFieldEntityId = null): array
     {
-        $alias         = self::MY_ISSUE_TABLE_ALIAS;
-        $query_builder = $this->_em->createQueryBuilder();
+        $alias        = self::MY_ISSUE_TABLE_ALIAS;
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder
+        $queryBuilder
             ->select($alias)
             ->from(MyIssue::class, $alias);
 
-        $query_builder = $this->filterQueryBuilderResultByNotDeletedAndNotResolved($query_builder, $alias, false);
+        $queryBuilder = $this->filterQueryBuilderResultByNotDeletedAndNotResolved($queryBuilder, $alias, false);
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
-        if( !empty($order_by_field_entity_id) ){
-            $new_results = [];
+        if( !empty($orderByFieldEntityId) ){
+            $newResults = [];
 
             /**
              * Query builder does not support order by FIELD
              * @var MyIssue $entity
              */
             foreach( $results as $entity ){
-                if( $order_by_field_entity_id === $entity->getId() ){
-                    array_unshift($new_results, $entity);
+                if( $orderByFieldEntityId === $entity->getId() ){
+                    array_unshift($newResults, $entity);
                 }else{
-                    $new_results[] = $entity;
+                    $newResults[] = $entity;
                 }
             }
 
-            return $new_results;
+            return $newResults;
         }
 
         return $results;
@@ -70,15 +70,15 @@ class MyIssueRepository extends ServiceEntityRepository
      */
     public function findAllNotDeletedAndResolved(): array
     {
-        $alias         = self::MY_ISSUE_TABLE_ALIAS;
-        $query_builder = $this->_em->createQueryBuilder();
+        $alias        = self::MY_ISSUE_TABLE_ALIAS;
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select($alias)
+        $queryBuilder->select($alias)
             ->from(MyIssue::class, $alias);
 
-        $query_builder = $this->filterQueryBuilderResultByNotDeletedAndResolved($query_builder, $alias, false);
+        $queryBuilder = $this->filterQueryBuilderResultByNotDeletedAndResolved($queryBuilder, $alias, false);
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         return $results;
@@ -130,48 +130,48 @@ class MyIssueRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param QueryBuilder $query_builder
+     * @param QueryBuilder $queryBuilder
      * @param string $tableAlias
      * @param bool $isAnd
      * @return QueryBuilder
      */
-    private function filterQueryBuilderResultByNotDeletedAndNotResolved(QueryBuilder $query_builder, string $tableAlias, bool $isAnd = true): QueryBuilder
+    private function filterQueryBuilderResultByNotDeletedAndNotResolved(QueryBuilder $queryBuilder, string $tableAlias, bool $isAnd = true): QueryBuilder
     {
         if($isAnd){
-            $query_builder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
+            $queryBuilder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
         }else{
-            $query_builder->where("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
+            $queryBuilder->where("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
         }
 
-        $query_builder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_RESOLVED . " = 0");
-        return $query_builder;
+        $queryBuilder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_RESOLVED . " = 0");
+        return $queryBuilder;
     }
 
     /**
-     * @param QueryBuilder $query_builder
+     * @param QueryBuilder $queryBuilder
      * @param string $tableAlias
      * @param bool $isAnd
      * @return QueryBuilder
      */
-    private function filterQueryBuilderResultByNotDeletedAndResolved(QueryBuilder $query_builder, string $tableAlias, bool $isAnd = true): QueryBuilder
+    private function filterQueryBuilderResultByNotDeletedAndResolved(QueryBuilder $queryBuilder, string $tableAlias, bool $isAnd = true): QueryBuilder
     {
         if($isAnd){
-            $query_builder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
+            $queryBuilder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
         }else{
-            $query_builder->where("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
+            $queryBuilder->where("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
         }
 
-        $query_builder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_RESOLVED . " = 1");
-        return $query_builder;
+        $queryBuilder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_RESOLVED . " = 1");
+        return $queryBuilder;
     }
 
     /**
      * Returns one Entity or null for given id
-     * @param int $entity_id
+     * @param int $entityId
      * @return MyIssue|null
      */
-    public function findIssueById(int $entity_id): ?MyIssue
+    public function findIssueById(int $entityId): ?MyIssue
     {
-        return $this->find($entity_id);
+        return $this->find($entityId);
     }
 }

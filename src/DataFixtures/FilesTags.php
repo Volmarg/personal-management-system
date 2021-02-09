@@ -12,13 +12,13 @@ class FilesTags extends Fixture
 
     public function load(ObjectManager $manager) {
 
-        foreach ( FilesTagsProvider::DATA_SETS as $data_set ){
+        foreach ( FilesTagsProvider::DATA_SETS as $dataSet ){
 
-            $files_tags = new FilesTagsEntity();
-            $files_tags->setFullFilePath($data_set[FilesTagsProvider::KEY_FILEPATH]);
-            $files_tags->setTags($data_set[FilesTagsProvider::KEY_JSON_TAGS]);
+            $filesTags = new FilesTagsEntity();
+            $filesTags->setFullFilePath($dataSet[FilesTagsProvider::KEY_FILEPATH]);
+            $filesTags->setTags($dataSet[FilesTagsProvider::KEY_JSON_TAGS]);
 
-            $manager->persist($files_tags);
+            $manager->persist($filesTags);
         }
 
         $manager->flush();

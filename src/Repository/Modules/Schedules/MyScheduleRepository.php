@@ -35,18 +35,18 @@ class MyScheduleRepository extends ServiceEntityRepository {
      */
     public function getIncomingSchedulesEntitiesInDays(int $days): array
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
         $now    = new DateTime();
         $future = (new DateTime())->modify("+{$days} DAYS");
 
-        $query_builder->select("mch")
+        $queryBuilder->select("mch")
             ->from(MySchedule::class, "mch")
             ->where("mch.deleted = 0")
             ->andWhere("mch.Date BETWEEN :now AND :future")
             ->setParameter("now", $now)
             ->setParameter("future", $future);
 
-        $result = $query_builder->getQuery()->execute();
+        $result = $queryBuilder->getQuery()->execute();
 
         return $result;
     }
@@ -55,20 +55,20 @@ class MyScheduleRepository extends ServiceEntityRepository {
      * Will return incoming schedules information array
      *
      * @param int $days
-     * @param bool $include_past
+     * @param bool $includePast
      * @return array
      * @throws Exception
      */
-    public function getIncomingSchedulesInformationInDays(int $days, bool $include_past = true): array
+    public function getIncomingSchedulesInformationInDays(int $days, bool $includePast = true): array
     {
         $connection = $this->getEntityManager()->getConnection();
 
-        if( $include_past ){
-            $records_interval_sql = "
+        if( $includePast ){
+            $recordsIntervalSql = "
                 mch.date < NOW() + INTERVAL :days DAY
             ";
         }else{
-            $records_interval_sql = "
+            $recordsIntervalSql = "
                 AND DATEDIFF (mch.date, NOW()) > 0
                 mch.date BETWEEN NOW() AND NOW() + INTERVAL :days DAY
             ";
@@ -89,12 +89,12 @@ class MyScheduleRepository extends ServiceEntityRepository {
             ON mcht.id = mch.schedule_type_id
             
             WHERE 
-            $records_interval_sql
+            $recordsIntervalSql
             AND mch.deleted  = 0
             AND mcht.deleted = 0
         ";
 
-        $binded_values = [
+        $bindedValues = [
           'name'         => self::KEY_NAME,
           'date'         => self::KEY_DATE,
           'daysDiff'     => self::KEY_DAYS_DIFF,
@@ -104,17 +104,17 @@ class MyScheduleRepository extends ServiceEntityRepository {
           'days'         => $days
         ];
 
-        $statement = $connection->executeQuery($sql, $binded_values);
+        $statement = $connection->executeQuery($sql, $bindedValues);
         $results   = $statement->fetchAll();
 
         return $results;
     }
 
     /**
-     * @param string $schedules_type_name
+     * @param string $schedulesTypeName
      * @return MySchedule[]
      */
-    public function getSchedulesByScheduleTypeName(string $schedules_type_name):array
+    public function getSchedulesByScheduleTypeName(string $schedulesTypeName):array
     {
         $qb = $this->createQueryBuilder('sch');
 
@@ -123,7 +123,7 @@ class MyScheduleRepository extends ServiceEntityRepository {
             ->where('sch.deleted = 0')
             ->andWhere('scht.deleted = 0')
             ->andWhere('scht.name = :schedules_type_name')
-            ->setParameter('schedules_type_name', $schedules_type_name);
+            ->setParameter('schedules_type_name', $schedulesTypeName);
 
         $query      = $qb->getQuery();
         $results    = $query->getResult();

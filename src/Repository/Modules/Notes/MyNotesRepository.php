@@ -25,13 +25,13 @@ class MyNotesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param array $categories_ids
+     * @param array $categoriesIds
      * @return MyNotes[]
      */
-    public function getNotesByCategoriesIds(array $categories_ids): array
+    public function getNotesByCategoriesIds(array $categoriesIds): array
     {
         $results = $this->findBy([
-            'category' => $categories_ids,
+            'category' => $categoriesIds,
             "deleted"  => 0
         ]);
 
@@ -39,16 +39,16 @@ class MyNotesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param int $category_id
+     * @param int $categoryId
      * @return false|mixed
      * @throws DBALException
      */
-    public function countNotesInCategoryByCategoryId(int $category_id) {
+    public function countNotesInCategoryByCategoryId(int $categoryId) {
 
         $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = :category_id AND deleted = 0";
 
         $params = [
-            'category_id' => $category_id,
+            'category_id' => $categoryId,
         ];
 
         $statement = $this->connection->executeQuery($sql, $params);

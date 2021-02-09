@@ -37,38 +37,38 @@ class DatabaseExporter {
     /**
      * @var string
      */
-    private $file_name;
+    private $fileName;
 
     /**
      * @var string
      */
-    private $backup_directory;
+    private $backupDirectory;
 
     /**
      * @var bool
      */
-    private $is_exported_successfully = false;
+    private $isExportedSuccessfully = false;
 
     /**
      * @var string
      */
-    private $export_message;
+    private $exportMessage;
 
     /**
      * @var string
      */
-    private $dump_extension = '';
+    private $dumpExtension = '';
 
     /**
      * @var string
      */
-    private $dump_full_path;
+    private $dumpFullPath;
 
     /**
      * Safety postfix - should be unique so that existing db sql for today won't be overwritten
      * @var string $file_postfix
      */
-    private $file_prefix = '';
+    private $filePrefix = '';
 
     /**
      * @var Logger $app
@@ -79,35 +79,35 @@ class DatabaseExporter {
      * @return string
      */
     public function getFileName(): string {
-        return $this->file_name;
+        return $this->fileName;
     }
 
     /**
-     * @param string $file_name
+     * @param string $fileName
      */
-    public function setFileName(string $file_name): void {
-        $this->file_name = $file_name;
+    public function setFileName(string $fileName): void {
+        $this->fileName = $fileName;
     }
 
     /**
      * @return string
      */
     public function getBackupDirectory(): string {
-        return $this->backup_directory;
+        return $this->backupDirectory;
     }
 
     /**
      * @return bool
      */
     public function isExportedSuccessfully(): bool {
-        return $this->is_exported_successfully;
+        return $this->isExportedSuccessfully;
     }
 
     /**
-     * @param bool $is_exported_successfully
+     * @param bool $isExportedSuccessfully
      */
-    private function setIsExportedSuccessfully(bool $is_exported_successfully): void {
-        $this->is_exported_successfully = $is_exported_successfully;
+    private function setIsExportedSuccessfully(bool $isExportedSuccessfully): void {
+        $this->isExportedSuccessfully = $isExportedSuccessfully;
     }
 
     /**
@@ -116,68 +116,68 @@ class DatabaseExporter {
      */
     public function getDumpedArchiveAbsolutePath(): string
     {
-        return $this->dump_full_path;
+        return $this->dumpFullPath;
     }
 
     /**
      * @return string
      */
     public function getDumpExtension(): string {
-        return $this->dump_extension;
+        return $this->dumpExtension;
     }
 
     /**
      * @return string
      */
     private function getDumpFullPath(): string {
-        return $this->dump_full_path;
+        return $this->dumpFullPath;
     }
 
     /**
-     * @param string $dump_full_path
+     * @param string $dumpFullPath
      */
-    private function setDumpFullPath(string $dump_full_path): void {
-        $this->dump_full_path = $dump_full_path;
+    private function setDumpFullPath(string $dumpFullPath): void {
+        $this->dumpFullPath = $dumpFullPath;
     }
 
     /**
-     * @param string $dump_extension
+     * @param string $dumpExtension
      */
-    public function setDumpExtension(?string $dump_extension = null): void {
+    public function setDumpExtension(?string $dumpExtension = null): void {
 
-        if( empty($dump_extension )){
-            $this->dump_extension = self::DUMP_EXTENSION_SQL;
+        if( empty($dumpExtension )){
+            $this->dumpExtension = self::DUMP_EXTENSION_SQL;
             return;
         }
-        $this->dump_extension = $dump_extension;
+        $this->dumpExtension = $dumpExtension;
     }
 
     /**
      * @return string
      */
     public function getExportMessage(): string {
-        return $this->export_message;
+        return $this->exportMessage;
     }
 
     /**
-     * @param string $export_message
+     * @param string $exportMessage
      */
-    private function setExportMessage(string $export_message): void {
-        $this->export_message = $export_message;
+    private function setExportMessage(string $exportMessage): void {
+        $this->exportMessage = $exportMessage;
     }
 
     /**
-     * @param string $backup_directory
+     * @param string $backupDirectory
      */
-    public function setBackupDirectory(string $backup_directory): void {
-        $this->backup_directory = $backup_directory;
+    public function setBackupDirectory(string $backupDirectory): void {
+        $this->backupDirectory = $backupDirectory;
     }
 
     /**
      * @return string
      */
     private function getFilePrefix(): string {
-        return $this->file_prefix;
+        return $this->filePrefix;
     }
 
     /**
@@ -199,7 +199,7 @@ class DatabaseExporter {
                 throw new \Exception("This mode is not supported: {$mode}");
         }
 
-        $this->file_prefix = $prefix;
+        $this->filePrefix = $prefix;
     }
 
     /**
@@ -219,9 +219,9 @@ class DatabaseExporter {
      */
     public function runInternalDatabaseExport(){
 
-        $backup_directory_exists = file_exists($this->getBackupDirectory());
+        $backupDirectoryExists = file_exists($this->getBackupDirectory());
 
-        if( !$backup_directory_exists ){
+        if( !$backupDirectoryExists ){
             $this->setExportMessage(self::EXPORT_MESSAGE_BACKUP_DIRECTORY_DOES_NOT_EXIST);
             $this->setIsExportedSuccessfully(false);
             return;
@@ -231,9 +231,9 @@ class DatabaseExporter {
             $dto = Env::getDatabaseCredentials();
             $this->prepareBackupDirectory();
 
-            $database_dump_command = $this->buildShellMysqlDumpCommand($dto);
+            $databaseDumpCommand = $this->buildShellMysqlDumpCommand($dto);
 
-            $this->performDumpCommand($database_dump_command);
+            $this->performDumpCommand($databaseDumpCommand);
             $this->checkDump();
         }catch(\Exception $e){
             $this->app->logger->critical($e->getMessage());
@@ -250,27 +250,26 @@ class DatabaseExporter {
      * Also sets backup directory so that it points to the folder with current date
      */
     private function prepareBackupDirectory():void {
-        $curr_date_time = new \DateTime();
-        $curr_date      = $curr_date_time->format('Y-m-d');
+        $currDateTime = new \DateTime();
+        $currDate     = $currDateTime->format('Y-m-d');
 
-        $backup_directory = $this->getBackupDirectory();
+        $backupDirectory = $this->getBackupDirectory();
+        $targetDirectory = $backupDirectory . DIRECTORY_SEPARATOR . $currDate;
 
-        $target_directory = $backup_directory . DIRECTORY_SEPARATOR . $curr_date;
-
-        $dir_exists = file_exists($target_directory);
+        $dirExists = file_exists($targetDirectory);
 
         // first checking if it exist and if not then create it
-        if( !$dir_exists ){
-            mkdir($target_directory);
+        if( !$dirExists ){
+            mkdir($targetDirectory);
         }
 
         // this is safety check, if folder didnt existed and still does not exist then it's undesired state
-        if( !$dir_exists ){
+        if( !$dirExists ){
             $this->setExportMessage(self::EXPORT_MESSAGE_COULD_NOT_CREATE_FOLDER);
             $this->setIsExportedSuccessfully(false);
         }
 
-        $this->setBackupDirectory($target_directory);
+        $this->setBackupDirectory($targetDirectory);
     }
 
     /**
@@ -287,13 +286,13 @@ class DatabaseExporter {
         $port       = $dto->getDatabasePort();
         $name       = $dto->getDatabaseName();
 
-        $dump_extension  = $this->getDumpExtension();
-        $dump_location   = $this->getBackupDirectory();
-        $dump_filename   = $this->getFileName();
-        $prefix          = $this->getFilePrefix();
+        $dumpExtension  = $this->getDumpExtension();
+        $dumpLocation   = $this->getBackupDirectory();
+        $dumpFilename   = $this->getFileName();
+        $prefix         = $this->getFilePrefix();
 
-        $dump_full_path = $dump_location . DIRECTORY_SEPARATOR . $prefix . $dump_filename . $dump_extension;
-        $this->setDumpFullPath($dump_full_path);
+        $dumpFullPath = $dumpLocation . DIRECTORY_SEPARATOR . $prefix . $dumpFilename . $dumpExtension;
+        $this->setDumpFullPath($dumpFullPath);
 
         $command = "mysqldump -u " . $login;
 
@@ -301,17 +300,17 @@ class DatabaseExporter {
             $command .= ' -p' . $password;
         }
 
-        $command .= " -h {$host} --port={$port} {$name} > {$dump_full_path}";
+        $command .= " -h {$host} --port={$port} {$name} > {$dumpFullPath}";
 
         return $command;
     }
 
     /**
      * This function will execute dump command
-     * @param string $database_dump_command
+     * @param string $databaseDumpCommand
      */
-    private function performDumpCommand(string $database_dump_command): void {
-        exec($database_dump_command);
+    private function performDumpCommand(string $databaseDumpCommand): void {
+        exec($databaseDumpCommand);
     }
 
     /**
@@ -319,15 +318,15 @@ class DatabaseExporter {
      */
     private function checkDump(){
 
-        $is_dump_existing = file_exists($this->getDumpedArchiveAbsolutePath());
+        $isDumpExisting = file_exists($this->getDumpedArchiveAbsolutePath());
 
-        if( !$is_dump_existing ){
+        if( !$isDumpExisting ){
             $this->setIsExportedSuccessfully(false);
             $this->setExportMessage(self::EXPORT_MESSAGE_EXPORT_FILE_DOES_NOT_EXIST);
         }else{
-            $dump_size = filesize($this->getDumpedArchiveAbsolutePath());
+            $dumpSize = filesize($this->getDumpedArchiveAbsolutePath());
 
-            if( self::MINIMUM_BACKUP_SIZE > $dump_size ){
+            if( self::MINIMUM_BACKUP_SIZE > $dumpSize ){
                 $this->setIsExportedSuccessfully(false);
                 $this->setExportMessage(self::EXPORT_MESSAGE_EXPORTED_DATABASE_IS_TO_SMALL);
                 return;

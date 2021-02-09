@@ -26,7 +26,7 @@ class MyPaymentsMonthlyType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $payments_types = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
+        $paymentsTypes = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
 
         $builder
             ->add('date', DateType::class, [
@@ -50,9 +50,9 @@ class MyPaymentsMonthlyType extends AbstractType {
             ])
             ->add('type', EntityType::class, [
                 'class' => MyPaymentsSettings::class,
-                'choices' => $payments_types,
-                'choice_label' => function (MyPaymentsSettings $payment_type) {
-                    return $payment_type->getValue();
+                'choices' => $paymentsTypes,
+                'choice_label' => function (MyPaymentsSettings $paymentType) {
+                    return $paymentType->getValue();
                 },
                 'attr' => [
                     'required'                                       => true,

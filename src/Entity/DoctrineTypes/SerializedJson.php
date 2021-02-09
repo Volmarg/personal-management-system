@@ -32,8 +32,8 @@ class SerializedJson extends Type
             throw new \TypeError("Expected array! Got: " . gettype($value) );
         }
 
-        $serialized_json = serialize($value);
-        return $serialized_json;
+        $serializedJson = serialize($value);
+        return $serializedJson;
     }
 
     public function getName()

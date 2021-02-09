@@ -36,24 +36,24 @@ class AjaxCallsSessionService extends SessionsService {
      */
     public static function getPageReloadAfterAjaxCall(bool $unset = true):?bool
     {
-        $session   = new Session();
-        $do_reload = $session->get(self::SESSION_KEY_DO_PAGE_RELOAD_AFTER_AJAX_CALL);
+        $session  = new Session();
+        $doReload = $session->get(self::SESSION_KEY_DO_PAGE_RELOAD_AFTER_AJAX_CALL);
 
         if( $unset ){
             $session->remove(self::SESSION_KEY_DO_PAGE_RELOAD_AFTER_AJAX_CALL);
         }
 
-        return Utils::getBoolRepresentationOfBoolString($do_reload);
+        return Utils::getBoolRepresentationOfBoolString($doReload);
     }
 
     /**
-     * @param bool $do_reload
+     * @param bool $doReload
      */
-    public static function setPageReloadAfterAjaxCall(bool $do_reload): void
+    public static function setPageReloadAfterAjaxCall(bool $doReload): void
     {
         $session = new Session();
 
-        $session->set(self::SESSION_KEY_DO_PAGE_RELOAD_AFTER_AJAX_CALL, $do_reload);
+        $session->set(self::SESSION_KEY_DO_PAGE_RELOAD_AFTER_AJAX_CALL, $doReload);
     }
 
     /**

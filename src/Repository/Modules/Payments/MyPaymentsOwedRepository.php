@@ -20,10 +20,10 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
 
     /**
      * This only gets summary SUM(), not fetching any detailed data.
-     * @param bool $owed_by_me
+     * @param bool $owedByMe
      * @throws DBALException
      */
-    public function getMoneyOwedSummaryForTargetsAndOwningSide(bool $owed_by_me)
+    public function getMoneyOwedSummaryForTargetsAndOwningSide(bool $owedByMe)
     {
 
         $connection = $this->_em->getConnection();
@@ -42,13 +42,13 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
             GROUP BY target, currency;
         ";
 
-        $binded_values = [
-            'owed_by_me' => $owed_by_me
+        $bindedValues = [
+            'owed_by_me' => $owedByMe
         ];
 
 
         $statement = $connection->prepare($sql);
-        $statement->execute($binded_values);
+        $statement->execute($bindedValues);
         $results = $statement->fetchAll();
 
         return $results;
@@ -104,14 +104,14 @@ class MyPaymentsOwedRepository extends ServiceEntityRepository {
     /**
      * Will return all not deleted entities but filtered by the owed column
      *
-     * @param bool $owed_by_me
+     * @param bool $owedByMe
      * @return array
      */
-    public function findAllNotDeletedFilteredByOwedStatus(bool $owed_by_me): array
+    public function findAllNotDeletedFilteredByOwedStatus(bool $owedByMe): array
     {
         return $this->findBy([
             'deleted'  => 0,
-            'owedByMe' => $owed_by_me,
+            'owedByMe' => $owedByMe,
         ]);
     }
 

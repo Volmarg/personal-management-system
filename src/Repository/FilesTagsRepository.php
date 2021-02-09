@@ -23,27 +23,27 @@ class FilesTagsRepository extends ServiceEntityRepository
     /**
      * Will return tags entity for given file path if exists, or null if does not
      *
-     * @param string $file_full_path
+     * @param string $fileFullPath
      * @return FilesTags|null
      */
-    public function getFileTagsEntityByFileFullPath(string $file_full_path): ?FilesTags {
-        $files_tags     = $this->_em->getRepository(FilesTags::class)->findBy(['fullFilePath' => $file_full_path]);
+    public function getFileTagsEntityByFileFullPath(string $fileFullPath): ?FilesTags {
+        $filesTags = $this->_em->getRepository(FilesTags::class)->findBy(['fullFilePath' => $fileFullPath]);
 
-        if( empty($files_tags) ){
+        if( empty($filesTags) ){
             return null;
         }else{
-            $file_tags = reset($files_tags);
-            return $file_tags;
+            $fileTags = reset($filesTags);
+            return $fileTags;
         }
 
     }
 
     /**
-     * @param string $old_folder_path
-     * @param string $new_folder_path
+     * @param string $oldFolderPath
+     * @param string $newFolderPath
      * @throws DBALException
      */
-    public function updateFilePathByFolderPathChange(string $old_folder_path, string $new_folder_path): void {
+    public function updateFilePathByFolderPathChange(string $oldFolderPath, string $newFolderPath): void {
 
         $connection = $this->_em->getConnection();
 
@@ -54,12 +54,12 @@ class FilesTagsRepository extends ServiceEntityRepository
                 AND deleted = 0 
         ";
 
-        $binded_values = [
-            'old_folder_path' => $old_folder_path,
-            'new_folder_path' => $new_folder_path
+        $bindedValues = [
+            'old_folder_path' => $oldFolderPath,
+            'new_folder_path' => $newFolderPath
         ];
 
-        $connection->executeQuery($sql, $binded_values);
+        $connection->executeQuery($sql, $bindedValues);
     }
 
 

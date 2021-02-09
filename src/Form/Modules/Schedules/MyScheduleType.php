@@ -28,7 +28,7 @@ class MyScheduleType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $schedules_type = $options['schedules_type'];
+        $schedulesType = $options['schedules_type'];
 
         $builder
             ->add('Name', null, [
@@ -61,7 +61,7 @@ class MyScheduleType extends AbstractType {
                 ],
                 'label'         => $this->app->translator->translate('forms.MyScheduleType.scheduleType'),
                 'class'         => MyScheduleTypeEntity::class,
-                'choices'       => $this->app->repositories->myScheduleTypeRepository->findBy(['name' => $schedules_type, 'deleted' => 0]),
+                'choices'       => $this->app->repositories->myScheduleTypeRepository->findBy(['name' => $schedulesType, 'deleted' => 0]),
                 'choice_label'  => function (MyScheduleTypeEntity $schedule_types) {
                     return $schedule_types->getName();
                 },

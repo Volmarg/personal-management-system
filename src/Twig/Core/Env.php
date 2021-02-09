@@ -33,16 +33,16 @@ class Env extends AbstractExtension {
      * @return bool
      */
     public function isDemo() {
-        $is_demo = EnvController::isDemo();
-        return $is_demo;
+        $isDemo = EnvController::isDemo();
+        return $isDemo;
     }
 
     /**
      * @return bool
      */
     public function isMaintenance() {
-        $is_maintenance = EnvController::isMaintenance();
-        return $is_maintenance;
+        $isMaintenance = EnvController::isMaintenance();
+        return $isMaintenance;
     }
 
     /**
@@ -50,8 +50,8 @@ class Env extends AbstractExtension {
      */
     public function isGuide(): bool
     {
-        $is_guide = EnvController::isGuide();
-        return $is_guide;
+        $isGuide = EnvController::isGuide();
+        return $isGuide;
     }
 
     /**

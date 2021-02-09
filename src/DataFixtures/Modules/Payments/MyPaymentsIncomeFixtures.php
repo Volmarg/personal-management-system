@@ -40,16 +40,15 @@ class MyPaymentsIncomeFixtures extends Fixture implements OrderedFixtureInterfac
     public function load(ObjectManager $manager)
     {
 
-        $unique_dates = $this->app->repositories->myPaymentsMonthlyRepository->getUniqueDatesFromPayments();
+        $uniqueDates = $this->app->repositories->myPaymentsMonthlyRepository->getUniqueDatesFromPayments();
+        foreach( $uniqueDates as $date ){
 
-        foreach( $unique_dates as $date ){
-
-            $date_time = new DateTime($date);
-            $amount    = rand(1900, 3200);
+            $dateTime = new DateTime($date);
+            $amount   = rand(1900, 3200);
 
             $income = new MyPaymentsIncome();
             $income->setCurrency(self::CURRENCY_EUR);
-            $income->setDate($date_time);
+            $income->setDate($dateTime);
             $income->setInformation("Monthly payment");
             $income->setAmount($amount);
 

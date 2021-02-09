@@ -8,9 +8,9 @@ use Exception;
 class AllSessionsKeysLifetimesVO extends AbstractVO {
 
     /**
-     * @var SingleSessionKeyLifetimeVO[] $single_sessions_keys_lifetimes
+     * @var SingleSessionKeyLifetimeVO[] $singleSessionsKeysLifetimes
      */
-    private $single_sessions_keys_lifetimes = [];
+    private $singleSessionsKeysLifetimes = [];
 
     /**
      * Returns array of all single session keys lifetimes that should be active right now
@@ -18,16 +18,16 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      */
     public function getSingleSessionsKeysLifetimes(): array
     {
-        return $this->single_sessions_keys_lifetimes;
+        return $this->singleSessionsKeysLifetimes;
     }
 
     /**
      * Set array of all single session key lifetimes
-     * @param SingleSessionKeyLifetimeVO[] $single_sessions_keys_lifetimes
+     * @param SingleSessionKeyLifetimeVO[] $singleSessionsKeysLifetimes
      */
-    public function setSingleSessionsKeysLifetimes(array $single_sessions_keys_lifetimes): void
+    public function setSingleSessionsKeysLifetimes(array $singleSessionsKeysLifetimes): void
     {
-        $this->single_sessions_keys_lifetimes = $single_sessions_keys_lifetimes;
+        $this->singleSessionsKeysLifetimes = $singleSessionsKeysLifetimes;
     }
 
     /**
@@ -36,28 +36,28 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      *
      * Info: this does not set changes in session, only in the array of sessions_lifetimes
      * Will return expired session keys
-     * @param array $keys_to_compare
+     * @param array $keysToCompare
      *         if provided then additionally invalidates sessions lifetimes which are not in the array
      *         with this it's possible to invalidate lifetimes when somewhere else user/system removed something from session
      * @throws Exception
      */
-    public function unsetExpiredSingleSessionsKeysLifetimes(array $keys_to_compare = []): void
+    public function unsetExpiredSingleSessionsKeysLifetimes(array $keysToCompare = []): void
     {
-        foreach($this->single_sessions_keys_lifetimes as $index => $single_session_key_lifetime ){
-            $session_key = $single_session_key_lifetime->getSessionKey();
+        foreach($this->singleSessionsKeysLifetimes as $index => $singleSessionKeyLifetime ){
+            $sessionKey = $singleSessionKeyLifetime->getSessionKey();
 
-            if( !$single_session_key_lifetime->isSessionAllowedToLive() ){
-                unset($this->single_sessions_keys_lifetimes[$index]);
+            if( !$singleSessionKeyLifetime->isSessionAllowedToLive() ){
+                unset($this->singleSessionsKeysLifetimes[$index]);
             }elseif(
-                    !empty($keys_to_compare)
-                &&  !in_array($session_key, $keys_to_compare)
+                    !empty($keysToCompare)
+                &&  !in_array($sessionKey, $keysToCompare)
             ){
-                unset($this->single_sessions_keys_lifetimes[$index]);
+                unset($this->singleSessionsKeysLifetimes[$index]);
             }
         }
 
         // reset array index after unset
-        $this->single_sessions_keys_lifetimes = array_keys($this->single_sessions_keys_lifetimes);
+        $this->singleSessionsKeysLifetimes = array_keys($this->singleSessionsKeysLifetimes);
     }
 
     /**
@@ -67,15 +67,14 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      */
     public function getNonExpiredSessionsKeysLifetimes(): array
     {
-        $non_expired_single_session_key_lifetimes_vo = [];
-
-        foreach($this->single_sessions_keys_lifetimes as $index => $single_session_key_lifetime ){
-            if( $single_session_key_lifetime->isSessionAllowedToLive() ){
-                $non_expired_single_session_key_lifetimes_vo[] = $single_session_key_lifetime;
+        $nonExpiredSingleSessionKeyLifetimesVo = [];
+        foreach($this->singleSessionsKeysLifetimes as $index => $singleSessionKeyLifetime ){
+            if( $singleSessionKeyLifetime->isSessionAllowedToLive() ){
+                $nonExpiredSingleSessionKeyLifetimesVo[] = $singleSessionKeyLifetime;
             }
         }
 
-        return $non_expired_single_session_key_lifetimes_vo;
+        return $nonExpiredSingleSessionKeyLifetimesVo;
     }
 
     /**
@@ -85,15 +84,14 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      */
     public function getExpiredSessionsKeysLifetimes(): array
     {
-        $expired_single_session_key_lifetimes_vo = [];
-
-        foreach($this->single_sessions_keys_lifetimes as $index => $single_session_key_lifetime ){
-            if( !$single_session_key_lifetime->isSessionAllowedToLive() ){
-                $expired_single_session_key_lifetimes_vo[] = $single_session_key_lifetime;
+        $expiredSingleSessionKeyLifetimesVo = [];
+        foreach($this->singleSessionsKeysLifetimes as $index => $singleSessionKeyLifetime ){
+            if( !$singleSessionKeyLifetime->isSessionAllowedToLive() ){
+                $expiredSingleSessionKeyLifetimesVo[] = $singleSessionKeyLifetime;
             }
         }
 
-        return $expired_single_session_key_lifetimes_vo;
+        return $expiredSingleSessionKeyLifetimesVo;
     }
 
     /**
@@ -102,42 +100,41 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      */
     public function refreshSessionsKeysLifetimes(): void
     {
-        foreach($this->single_sessions_keys_lifetimes as $single_sessions_keys_lifetime ){
-            $single_sessions_keys_lifetime->resetSessionStartTime();
+        foreach($this->singleSessionsKeysLifetimes as $singleSessionsKeysLifetime ){
+            $singleSessionsKeysLifetime->resetSessionStartTime();
         }
     }
 
     /**
      * Will add new lifetime key if no such was found, otherwise it will be replace
-     * @param SingleSessionKeyLifetimeVO $added_session_key_lifetime
+     * @param SingleSessionKeyLifetimeVO $addedSessionKeyLifetime
      */
-    public function addSessionLifetimeVO(SingleSessionKeyLifetimeVO $added_session_key_lifetime): void
+    public function addSessionLifetimeVO(SingleSessionKeyLifetimeVO $addedSessionKeyLifetime): void
     {
-        $added_session_lifetime_key = $added_session_key_lifetime->getSessionKey();
+        $addedSessionLifetimeKey = $addedSessionKeyLifetime->getSessionKey();
+        foreach($this->singleSessionsKeysLifetimes as $index => $existingSessionKeyLifetime ) {
+            $existingSessionKey = $existingSessionKeyLifetime->getSessionKey();
 
-        foreach($this->single_sessions_keys_lifetimes as $index => $existing_session_key_lifetime ) {
-            $existing_session_key = $existing_session_key_lifetime->getSessionKey();
-
-            if( $existing_session_key === $added_session_lifetime_key ){
-                $this->single_sessions_keys_lifetimes[$index] = $added_session_key_lifetime;
+            if( $existingSessionKey === $addedSessionLifetimeKey ){
+                $this->singleSessionsKeysLifetimes[$index] = $addedSessionKeyLifetime;
                 return;
             }
         }
 
-        $this->single_sessions_keys_lifetimes[] = $added_session_key_lifetime;
+        $this->singleSessionsKeysLifetimes[] = $addedSessionKeyLifetime;
     }
 
     /**
      * Returns information if there is an expirable session with given key
-     * @param string $searched_key
+     * @param string $searchedKey
      * @return bool
      */
-    public function hasSingleSessionKeyLifetime(string $searched_key): bool
+    public function hasSingleSessionKeyLifetime(string $searchedKey): bool
     {
-        foreach( $this->single_sessions_keys_lifetimes as $single_sessions_keys_lifetime ){
-            $session_key = $single_sessions_keys_lifetime->getSessionKey();
+        foreach($this->singleSessionsKeysLifetimes as $singleSessionsKeysLifetime ){
+            $sessionKey = $singleSessionsKeysLifetime->getSessionKey();
 
-            if( $session_key == $searched_key ){
+            if( $sessionKey == $searchedKey ){
                 return true;
             }
         }
@@ -152,16 +149,16 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      */
     public static function fromJson(string $json): AllSessionsKeysLifetimesVO
     {
-        $single_sessions_keys_lifetimes_arrays = json_decode($json, true);
-        $all_sessions_keys_lifetimes           = new AllSessionsKeysLifetimesVO();
+        $singleSessionsKeysLifetimesArrays = json_decode($json, true);
+        $allSessionsKeysLifetimes          = new AllSessionsKeysLifetimesVO();
 
-        foreach( $single_sessions_keys_lifetimes_arrays as $single_session_key_lifetime_array ){
-            $single_session_key_lifetime_json = json_encode($single_session_key_lifetime_array);
-            $single_session_key_lifetime      = SingleSessionKeyLifetimeVO::fromJson($single_session_key_lifetime_json);
-            $all_sessions_keys_lifetimes->addSessionLifetimeVO($single_session_key_lifetime);
+        foreach( $singleSessionsKeysLifetimesArrays as $singleSessionKeyLifetimeArray ){
+            $singleSessionKeyLifetimeJson = json_encode($singleSessionKeyLifetimeArray);
+            $singleSessionKeyLifetime     = SingleSessionKeyLifetimeVO::fromJson($singleSessionKeyLifetimeJson);
+            $allSessionsKeysLifetimes->addSessionLifetimeVO($singleSessionKeyLifetime);
         }
 
-        return $all_sessions_keys_lifetimes;
+        return $allSessionsKeysLifetimes;
     }
 
     /**
@@ -170,14 +167,14 @@ class AllSessionsKeysLifetimesVO extends AbstractVO {
      */
     public function toJson(): string
     {
-        $all_sessions_keys_lifetimes_arrays = [];
+        $allSessionsKeysLifetimesArrays = [];
 
-        foreach($this->single_sessions_keys_lifetimes as $single_session_key_lifetime ){
-            $single_session_key_lifetime_array    = $single_session_key_lifetime->toArray();
-            $all_sessions_keys_lifetimes_arrays[] = $single_session_key_lifetime_array;
+        foreach($this->singleSessionsKeysLifetimes as $singleSessionKeyLifetime ){
+            $singleSessionKeyLifetimeArray    = $singleSessionKeyLifetime->toArray();
+            $allSessionsKeysLifetimesArrays[] = $singleSessionKeyLifetimeArray;
         }
 
-        $all_sessions_keys_lifetimes_json = json_encode($all_sessions_keys_lifetimes_arrays);
-        return $all_sessions_keys_lifetimes_json;
+        $allSessionsKeysLifetimesJson = json_encode($allSessionsKeysLifetimesArrays);
+        return $allSessionsKeysLifetimesJson;
     }
 }

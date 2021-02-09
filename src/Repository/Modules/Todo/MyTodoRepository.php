@@ -29,27 +29,27 @@ class MyTodoRepository extends ServiceEntityRepository
     /**
      * Will return the todoEntities for given module name
      *
-     * @param string $module_name
-     * @param bool $for_dashboard
+     * @param string $moduleName
+     * @param bool $forDashboard
      * @return MyTodo[]
      */
-    public function getEntitiesForModuleName(string $module_name, bool $for_dashboard = false): array
+    public function getEntitiesForModuleName(string $moduleName, bool $forDashboard = false): array
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select("td")
+        $queryBuilder->select("td")
             ->from(MyTodo::class, "td")
             ->join(Module::class, "m", "WITH", "m.id = td.module")
             ->where("m.name = :module_name")
             ->andWhere("td.deleted = 0")
-            ->setParameter("module_name", $module_name);
+            ->setParameter("module_name", $moduleName);
 
-        if($for_dashboard)
+        if($forDashboard)
         {
-            $query_builder->andWhere("td.displayOnDashboard = 1");
+            $queryBuilder->andWhere("td.displayOnDashboard = 1");
         }
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         return $results;
@@ -66,17 +66,17 @@ class MyTodoRepository extends ServiceEntityRepository
      */
     public function getAll(bool $deleted = false): array
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select("td")
+        $queryBuilder->select("td")
             ->from(MyTodo::class, "td");
 
         if( !$deleted )
         {
-            $query_builder->where("td.deleted = 0");
+            $queryBuilder->where("td.deleted = 0");
         }
 
-        $query  = $query_builder->getQuery();
+        $query  = $queryBuilder->getQuery();
         $result = $query->execute();
 
         return $result;
@@ -96,11 +96,11 @@ class MyTodoRepository extends ServiceEntityRepository
     /**
      * Will check if al elements in single todo are done
      *
-     * @param int $todo_id
+     * @param int $todoId
      * @return bool
      * @throws DBALException
      */
-    public function areAllElementsDone(int $todo_id): bool
+    public function areAllElementsDone(int $todoId): bool
     {
         $connection = $this->getEntityManager()->getConnection();
 
@@ -116,12 +116,12 @@ class MyTodoRepository extends ServiceEntityRepository
             AND mte.completed = 0
         ";
 
-        $binded_values  = [
-            'todo_id' => $todo_id
+        $bindedValues  = [
+            'todo_id' => $todoId
         ];
 
         $statement = $connection->prepare($sql);
-        $statement->execute($binded_values);
+        $statement->execute($bindedValues);
         $result    = (int) $statement->fetchColumn();
 
         return (0 === $result);
@@ -130,28 +130,28 @@ class MyTodoRepository extends ServiceEntityRepository
     /**
      * Will return one module entity for given name or null if no matching module with this name was found
      *
-     * @param string $module_name
-     * @param int $entity_id
+     * @param string $moduleName
+     * @param int $entityId
      * @return MyTodo|null
      * @throws NonUniqueResultException
      */
-    public function getTodoByModuleNameAndEntityId(string $module_name, int $entity_id): ?MyTodo
+    public function getTodoByModuleNameAndEntityId(string $moduleName, int $entityId): ?MyTodo
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select("td")
+        $queryBuilder->select("td")
             ->from(MyTodo::class, "td")
             ->join(Module::class, "m")
             ->where("m.name = :moduleName")
-            ->setParameter("moduleName", $module_name);
+            ->setParameter("moduleName", $moduleName);
 
-        switch($module_name)
+        switch($moduleName)
         {
             case ModulesController::MODULE_NAME_ISSUES:
                 {
-                    $query_builder->join(MyIssue::class, 'iss', "WITH", "iss.todo = td.id")
+                    $queryBuilder->join(MyIssue::class, 'iss', "WITH", "iss.todo = td.id")
                         ->andWhere("iss.id = :entityId")
-                        ->setParameter("entityId", $entity_id);
+                        ->setParameter("entityId", $entityId);
                 }
             break;
 
@@ -162,10 +162,10 @@ class MyTodoRepository extends ServiceEntityRepository
             break;
 
             default:
-                throw new \Exception("This module name is not supported: " . $module_name);
+                throw new \Exception("This module name is not supported: " . $moduleName);
         }
 
-        $query  = $query_builder->getQuery();
+        $query  = $queryBuilder->getQuery();
         $result = $query->getOneOrNullResult();
 
         return $result;

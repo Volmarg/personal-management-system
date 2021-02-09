@@ -4,7 +4,6 @@ namespace App\Repository\Modules\Todo;
 
 use App\Entity\Modules\Todo\MyTodoElement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;

@@ -9,7 +9,6 @@ use App\Controller\Core\Application;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Security;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -67,10 +66,10 @@ class LockedResource extends AbstractExtension {
      */
     public function getClassForLockedResource(string $record, string $type, string $target): string
     {
-        $is_allowed_to_see_resource_stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
-        $is_resource_locked              = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($is_allowed_to_see_resource_stmt, $record, $type, $target);
+        $isAllowedToSeeResourceStmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
+        $isResourceLocked           = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($isAllowedToSeeResourceStmt, $record, $type, $target);
 
-        if( empty($is_resource_locked) ){
+        if( empty($isResourceLocked) ){
             return "text-success";
         }
             return "text-danger";

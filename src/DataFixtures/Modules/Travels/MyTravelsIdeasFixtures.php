@@ -39,14 +39,14 @@ class MyTravelsIdeasFixtures extends Fixture
             $image      = Utils::arrayGetRandom(Travels::IMAGES_IN_PUBLIC_DIR);
             $map        = Utils::arrayGetRandom(Travels::MAPS);
 
-            $travel_idea = new MyTravelsIdeas();
-            $travel_idea->setCategory($category);
-            $travel_idea->setMap($map);
-            $travel_idea->setImage(static::IMAGES_PATH_IN_PUBLIC_DIR.$image);
-            $travel_idea->setLocation($city);
-            $travel_idea->setCountry($country);
+            $travelIdea = new MyTravelsIdeas();
+            $travelIdea->setCategory($category);
+            $travelIdea->setMap($map);
+            $travelIdea->setImage(static::IMAGES_PATH_IN_PUBLIC_DIR.$image);
+            $travelIdea->setLocation($city);
+            $travelIdea->setCountry($country);
 
-            $manager->persist($travel_idea);
+            $manager->persist($travelIdea);
         }
         $manager->flush();
     }

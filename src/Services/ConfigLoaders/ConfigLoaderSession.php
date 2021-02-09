@@ -4,18 +4,18 @@ namespace App\Services\ConfigLoaders;
 
 class ConfigLoaderSession extends AbstractConfigLoader {
 
-    private $system_lock_lifetime;
+    private $systemLockLifetime;
 
     /**
-     * @var int $user_login_lifetime
+     * @var int $userLoginLifetime
      */
-    private int $user_login_lifetime;
+    private int $userLoginLifetime;
 
     /**
      * @return string
      */
     public function getSystemLockLifetime(): string {
-        return $this->system_lock_lifetime;
+        return $this->systemLockLifetime;
     }
 
     /**
@@ -23,16 +23,16 @@ class ConfigLoaderSession extends AbstractConfigLoader {
      */
     public function getUserLoginLifetime(): int
     {
-        return $this->user_login_lifetime;
+        return $this->userLoginLifetime;
     }
 
     public function __construct(
-        string $system_lock_lifetime,
-        string $user_login_lifetime
+        string $systemLockLifetime,
+        string $userLoginLifetime
     )
     {
-        $this->system_lock_lifetime = $system_lock_lifetime;
-        $this->user_login_lifetime  = $user_login_lifetime;
+        $this->systemLockLifetime = $systemLockLifetime;
+        $this->userLoginLifetime  = $userLoginLifetime;
     }
 
 }

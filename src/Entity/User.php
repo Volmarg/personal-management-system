@@ -107,14 +107,14 @@ class User implements UserInterface, EntityInterface {
     // these fields are only used to transfer data - not being saved directly in DB
 
     /**
-     * @var string $password_repeat
+     * @var string $passwordRepeat
      */
-    private string $password_repeat;
+    private string $passwordRepeat;
 
     /**
-     * @var string $lock_password_repeat
+     * @var string $lockPasswordRepeat
      */
-    private string $lock_password_repeat;
+    private string $lockPasswordRepeat;
 
     public function __construct() {
         $this->lastLogin = new DateTime();
@@ -322,15 +322,15 @@ class User implements UserInterface, EntityInterface {
      */
     public function getPasswordRepeat(): string
     {
-        return $this->password_repeat;
+        return $this->passwordRepeat;
     }
 
     /**
-     * @param string $password_repeat
+     * @param string $passwordRepeat
      */
-    public function setPasswordRepeat(string $password_repeat): void
+    public function setPasswordRepeat(string $passwordRepeat): void
     {
-        $this->password_repeat = $password_repeat;
+        $this->passwordRepeat = $passwordRepeat;
     }
 
     /**
@@ -338,15 +338,15 @@ class User implements UserInterface, EntityInterface {
      */
     public function getLockPasswordRepeat(): string
     {
-        return $this->lock_password_repeat;
+        return $this->lockPasswordRepeat;
     }
 
     /**
-     * @param string $lock_password_repeat
+     * @param string $lockPasswordRepeat
      */
-    public function setLockPasswordRepeat(string $lock_password_repeat): void
+    public function setLockPasswordRepeat(string $lockPasswordRepeat): void
     {
-        $this->lock_password_repeat = $lock_password_repeat;
+        $this->lockPasswordRepeat = $lockPasswordRepeat;
     }
 
     /**

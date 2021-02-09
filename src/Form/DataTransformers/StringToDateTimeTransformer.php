@@ -85,8 +85,8 @@ class StringToDateTimeTransformer implements DataTransformerInterface {
             return null;
         }else{
             try{
-                $date_time = new \DateTime($value);
-                return $date_time;
+                $dateTime = new \DateTime($value);
+                return $dateTime;
             }catch (Exception $e){
                 return null;
             }

@@ -42,9 +42,9 @@ class DirectoriesHandler {
     private $logger;
 
     /**
-     * @var FileTagger $file_tagger
+     * @var FileTagger $fileTagger
      */
-    private $file_tagger;
+    private $fileTagger;
 
     /**
      * @var Finder $finder
@@ -52,124 +52,124 @@ class DirectoriesHandler {
     private $finder;
 
     /**
-     * @var FilesTagsController $files_tags_controller
+     * @var FilesTagsController $filesTagsController
      */
-    private $files_tags_controller;
+    private $filesTagsController;
 
     /**
      * Info: must remain static due to the static methods requiring this logic
-     * @var LockedResourceController $locked_resource_controller
+     * @var LockedResourceController $lockedResourceController
      */
-    private static LockedResourceController $locked_resource_controller;
+    private static LockedResourceController $lockedResourceController;
 
     /**
-     * @var ModuleDataController $module_data_controller
+     * @var ModuleDataController $moduleDataController
      */
-    private ModuleDataController $module_data_controller;
+    private ModuleDataController $moduleDataController;
 
     public function __construct(
         Application              $application,
         LoggerInterface          $logger,
-        FileTagger               $file_tagger,
-        FilesTagsController      $files_tags_controller,
-        LockedResourceController $locked_resource_controller,
-        ModuleDataController     $module_data_controller
+        FileTagger               $fileTagger,
+        FilesTagsController      $filesTagsController,
+        LockedResourceController $lockedResourceController,
+        ModuleDataController     $moduleDataController
     ) {
-        self::$locked_resource_controller = $locked_resource_controller;
-        $this->application                = $application;
-        $this->logger                     = $logger;
-        $this->finder                     = new Finder();
-        $this->file_tagger                = $file_tagger;
-        $this->files_tags_controller      = $files_tags_controller;
-        $this->module_data_controller     = $module_data_controller;
+        self::$lockedResourceController = $lockedResourceController;
+        $this->application              = $application;
+        $this->logger                   = $logger;
+        $this->finder                   = new Finder();
+        $this->fileTagger               = $fileTagger;
+        $this->filesTagsController      = $filesTagsController;
+        $this->moduleDataController     = $moduleDataController;
     }
 
     /**
-     * @param string $upload_module_dir
-     * @param string $current_directory_path_in_module_upload_dir
-     * @param bool $blocks_removal ( will prevent removing folder if there are some files in some subfolders )
+     * @param string|null $uploadModuleDir
+     * @param string|null $currentDirectoryPathInModuleUploadDir
+     * @param bool $blocksRemoval ( will prevent removing folder if there are some files in some subfolders )
      * @return Response
      * @throws \Exception
      */
-    public function removeFolder(?string $upload_module_dir, ?string $current_directory_path_in_module_upload_dir, bool $blocks_removal = false) {
+    public function removeFolder(?string $uploadModuleDir, ?string $currentDirectoryPathInModuleUploadDir, bool $blocksRemoval = false) {
 
-        $subdirectory_name = basename($current_directory_path_in_module_upload_dir);
+        $subdirectoryName = basename($currentDirectoryPathInModuleUploadDir);
 
         $message = $this->application->translator->translate('logs.directories.startedRemovingFolder');
         $this->logger->info($message, [
-            'upload_module_dir' => $upload_module_dir,
-            'subdirectory_name' => $subdirectory_name,
-            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_module_upload_dir,
+            'upload_module_dir' => $uploadModuleDir,
+            'subdirectory_name' => $subdirectoryName,
+            'current_directory_path_in_upload_type_dir' => $currentDirectoryPathInModuleUploadDir,
              // napiac kiedy bedziemy - data
         ]);
 
-        if( empty($subdirectory_name) )
+        if( empty($subdirectoryName) )
         {
             $message = $this->application->translator->translate('responses.directories.cannotRemoveMainFolder');
             return new Response($message, 500);
         }
 
-        if( empty($upload_module_dir) )
+        if( empty($uploadModuleDir) )
         {
             $message = $this->application->translator->translate('responses.directories.youNeedToSelectUploadType');
             return new Response($message, 500);
         }
 
-        $target_upload_dir_for_module = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
-        $is_subdirectory_existing     = !FileUploadController::isSubdirectoryForModuleDirExisting($target_upload_dir_for_module, $current_directory_path_in_module_upload_dir);
-        $subdirectory_path            = $target_upload_dir_for_module.'/'.$current_directory_path_in_module_upload_dir;
+        $targetUploadDirForModule = FileUploadController::getTargetDirectoryForUploadModuleDir($uploadModuleDir);
+        $isSubdirectoryExisting   = !FileUploadController::isSubdirectoryForModuleDirExisting($targetUploadDirForModule, $currentDirectoryPathInModuleUploadDir);
+        $subdirectoryPath         = $targetUploadDirForModule.'/'.$currentDirectoryPathInModuleUploadDir;
 
-        if( $is_subdirectory_existing ){
-            $log_message      = $this->application->translator->translate('logs.directories.removedFolderDoesNotExist');
-            $response_message = $this->application->translator->translate('responses.directories.subdirectoryDoesNotExistForThisModule');
+        if( $isSubdirectoryExisting ){
+            $logMessage      = $this->application->translator->translate('logs.directories.removedFolderDoesNotExist');
+            $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryDoesNotExistForThisModule');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
-        if( $blocks_removal ){
-            $files_count_in_tree = FilesHandler::countFilesInTree($subdirectory_path);
+        if( $blocksRemoval ){
+            $filesCountInTree = FilesHandler::countFilesInTree($subdirectoryPath);
 
-            if ( $files_count_in_tree > 0 ){
-                $log_message      = $this->application->translator->translate('logs.directories.folderRemovalHasBeenBlockedThereAreFilesInside');
-                $response_message = $this->application->translator->translate('responses.directories.subdirectoryDoesNotExistForThisModule');
+            if ( $filesCountInTree > 0 ){
+                $logMessage      = $this->application->translator->translate('logs.directories.folderRemovalHasBeenBlockedThereAreFilesInside');
+                $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryDoesNotExistForThisModule');
 
-                $this->logger->info($log_message,[
-                    'subdirectoryPath' => $subdirectory_path
+                $this->logger->info($logMessage,[
+                    'subdirectoryPath' => $subdirectoryPath
                 ]);
-                return new Response($response_message, 500);
+                return new Response($responseMessage, 500);
             }
         }
 
 
         try{
-            Utils::removeFolderRecursively($subdirectory_path);
+            Utils::removeFolderRecursively($subdirectoryPath);
         }catch(\Exception $e){
-            $log_message      = $this->application->translator->translate('logs.directories.couldNotRemoveFolder');
-            $response_message = $this->application->translator->translate('responses.directories.errorWhileRemovingSubdirectory');
+            $logMessage      = $this->application->translator->translate('logs.directories.couldNotRemoveFolder');
+            $responseMessage = $this->application->translator->translate('responses.directories.errorWhileRemovingSubdirectory');
 
-            $this->logger->info($log_message, [
+            $this->logger->info($logMessage, [
                 'message' => $e->getMessage()
             ]);
-            return new Response($response_message, 500);
+            return new Response($responseMessage, 500);
         }
 
-        $log_message      = $this->application->translator->translate('logs.directories.finishedRemovingFolder');
-        $response_message = $this->application->translator->translate('responses.directories.subdirectoryHasBeenRemove');
+        $logMessage      = $this->application->translator->translate('logs.directories.finishedRemovingFolder');
+        $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryHasBeenRemove');
 
-        $this->logger->info($log_message);
-        return new Response($response_message);
+        $this->logger->info($logMessage);
+        return new Response($responseMessage);
 
     }
 
     /**
      * @Route("/upload/{upload_type}/rename-subdirectory", name="upload_rename_subdirectory", methods="POST")
-     * @param string $upload_type
+     * @param string $uploadType
      * @param Request $request
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectoryByPostRequest(string $upload_type, Request $request) {
+    public function renameSubdirectoryByPostRequest(string $uploadType, Request $request) {
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME) ) {
             $message = $this->application->translator->translate('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NEW_NAME;
@@ -181,112 +181,111 @@ class DirectoriesHandler {
             return new Response($message, 500);
         }
 
-        $current_directory_path_in_module_upload_dir  = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-        $subdirectory_new_name                        = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
+        $currentDirectoryPathInModuleUploadDir = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
+        $subdirectoryNewName                   = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
 
-        $response = $this->renameSubdirectory($upload_type, $current_directory_path_in_module_upload_dir, $subdirectory_new_name);
+        $response = $this->renameSubdirectory($uploadType, $currentDirectoryPathInModuleUploadDir, $subdirectoryNewName);
 
         return $response;
     }
 
     /**
-     * @param string|null $upload_type
-     * @param string|null $current_directory_path_in_module_upload_dir
-     * @param string|null $subdirectory_new_name
+     * @param string|null $uploadType
+     * @param string|null $currentDirectoryPathInModuleUploadDir
+     * @param string|null $subdirectoryNewName
      * @return Response
      * @throws \Exception
      */
-    public function renameSubdirectory(?string $upload_type, ?string $current_directory_path_in_module_upload_dir, ?string $subdirectory_new_name) {
+    public function renameSubdirectory(?string $uploadType, ?string $currentDirectoryPathInModuleUploadDir, ?string $subdirectoryNewName) {
 
-        $subdirectory_current_name = basename($current_directory_path_in_module_upload_dir);
+        $subdirectoryCurrentName = basename($currentDirectoryPathInModuleUploadDir);
 
-        $log_message = $this->application->translator->translate('logs.directories.startedRenamingFolder');
-        $this->logger->info($log_message, [
-            'upload_type'               => $upload_type,
-            'subdirectory_current_name' => $subdirectory_current_name,
-            'subdirectory_new_name'     => $subdirectory_new_name,
-            'current_directory_path_in_upload_type_dir' => $current_directory_path_in_module_upload_dir
+        $logMessage = $this->application->translator->translate('logs.directories.startedRenamingFolder');
+        $this->logger->info($logMessage, [
+            'upload_type'               => $uploadType,
+            'subdirectory_current_name' => $subdirectoryCurrentName,
+            'subdirectory_new_name'     => $subdirectoryNewName,
+            'current_directory_path_in_upload_type_dir' => $currentDirectoryPathInModuleUploadDir
         ]);
 
-        if( $subdirectory_current_name === $subdirectory_new_name ){
-            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryNameWillNotChange');
-            $response_message = $this->application->translator->translate('responses.directories.subdirectoryNameWillNotChange');
+        if( $subdirectoryCurrentName === $subdirectoryNewName ){
+            $logMessage      = $this->application->translator->translate('logs.directories.subdirectoryNameWillNotChange');
+            $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryNameWillNotChange');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
-        if ( empty($subdirectory_new_name) ){
-            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryNewNameIsEmptyString');
-            $response_message = $this->application->translator->translate('responses.directories.subdirectoryNewNameIsEmptyString');
+        if ( empty($subdirectoryNewName) ){
+            $logMessage      = $this->application->translator->translate('logs.directories.subdirectoryNewNameIsEmptyString');
+            $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryNewNameIsEmptyString');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
-        if ( empty($subdirectory_current_name) ){
-            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryCurrentNameIsEmptyString');
-            $response_message = $this->application->translator->translate('responses.directories.subdirectoryCurrentNameIsEmptyString');
+        if ( empty($subdirectoryCurrentName) ){
+            $logMessage      = $this->application->translator->translate('logs.directories.subdirectoryCurrentNameIsEmptyString');
+            $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryCurrentNameIsEmptyString');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
-        if ( empty($upload_type) ){
-            $log_message      = $this->application->translator->translate('logs.directories.missingUploadModuleType');
-            $response_message = $this->application->translator->translate('responses.directories.missingUploadModuleType');
+        if ( empty($uploadType) ){
+            $logMessage      = $this->application->translator->translate('logs.directories.missingUploadModuleType');
+            $responseMessage = $this->application->translator->translate('responses.directories.missingUploadModuleType');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
-        $target_directory       = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
-        $subdirectory_exists    = FileUploadController::isSubdirectoryForModuleDirExisting($target_directory, $current_directory_path_in_module_upload_dir);
+        $targetDirectory       = FileUploadController::getTargetDirectoryForUploadModuleDir($uploadType);
+        $subdirectoryExists    = FileUploadController::isSubdirectoryForModuleDirExisting($targetDirectory, $currentDirectoryPathInModuleUploadDir);
 
-        $current_directory_path = $target_directory.'/'.$current_directory_path_in_module_upload_dir;
-        $target_directory       = dirname($current_directory_path);
-        $new_directory_path     = $target_directory . '/' . $subdirectory_new_name;
+        $currentDirectoryPath = $targetDirectory.'/'.$currentDirectoryPathInModuleUploadDir;
+        $targetDirectory      = dirname($currentDirectoryPath);
+        $newDirectoryPath     = $targetDirectory . '/' . $subdirectoryNewName;
 
-        if( !file_exists($current_directory_path) ){
-            $log_message      = $this->application->translator->translate('logs.directories.renamedTargetDirectoryDoesNotExist');
-            $response_message = $this->application->translator->translate('responses.directories.renamedTargetDirectoryDoesNotExist');
+        if( !file_exists($currentDirectoryPath) ){
+            $logMessage      = $this->application->translator->translate('logs.directories.renamedTargetDirectoryDoesNotExist');
+            $responseMessage = $this->application->translator->translate('responses.directories.renamedTargetDirectoryDoesNotExist');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
-        if( !$subdirectory_exists ){
-            $log_message      = $this->application->translator->translate('logs.directories.subdirectoryWithThisNameDoesNotExist');
-            $response_message = $this->application->translator->translate('responses.directories.subdirectoryWithThisNameDoesNotExist');
-            $this->logger->info($log_message, [
-                'targetDirectory'                 => $target_directory,
-                'currentDirPathInModuleUploadDir' => $current_directory_path_in_module_upload_dir
+        if( !$subdirectoryExists ){
+            $logMessage      = $this->application->translator->translate('logs.directories.subdirectoryWithThisNameDoesNotExist');
+            $responseMessage = $this->application->translator->translate('responses.directories.subdirectoryWithThisNameDoesNotExist');
+            $this->logger->info($logMessage, [
+                'targetDirectory'                 => $targetDirectory,
+                'currentDirPathInModuleUploadDir' => $currentDirectoryPathInModuleUploadDir
             ]);
-            return new Response($response_message, 500);
+            return new Response($responseMessage, 500);
         }
 
-        $subdirectory_with_new_name_exists = FileUploadController::isSubdirectoryForModuleDirExisting($target_directory, $subdirectory_new_name);
+        $subdirectoryWithNewNameExists = FileUploadController::isSubdirectoryForModuleDirExisting($targetDirectory, $subdirectoryNewName);
+        if( $subdirectoryWithNewNameExists ){
+            $logMessage      = $this->application->translator->translate('logs.directories.renamingSubdirectoryWithThisNameAlreadyExist');
+            $responseMessage = $this->application->translator->translate('responses.directories.renamingSubdirectoryWithThisNameAlreadyExist');
 
-        if( $subdirectory_with_new_name_exists ){
-            $log_message      = $this->application->translator->translate('logs.directories.renamingSubdirectoryWithThisNameAlreadyExist');
-            $response_message = $this->application->translator->translate('responses.directories.renamingSubdirectoryWithThisNameAlreadyExist');
-
-            $this->logger->info($log_message, [
-                'new_name'          => $subdirectory_new_name,
-                'target_directory'  => $target_directory
+            $this->logger->info($logMessage, [
+                'new_name'          => $subdirectoryNewName,
+                'target_directory'  => $targetDirectory
             ]);
-            return new Response($response_message, 500);
+            return new Response($responseMessage, 500);
         }
 
         try{
-            rename($current_directory_path, $new_directory_path);
-            $this->file_tagger->updateFilePathByFolderPathChange($current_directory_path, $new_directory_path);
+            rename($currentDirectoryPath, $newDirectoryPath);
+            $this->fileTagger->updateFilePathByFolderPathChange($currentDirectoryPath, $newDirectoryPath);
 
-            $module      = ModulesController::getUploadModuleNameForFileFullPath($current_directory_path);
-            $module_data = $this->module_data_controller->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $current_directory_path);
+            $module     = ModulesController::getUploadModuleNameForFileFullPath($currentDirectoryPath);
+            $moduleData = $this->moduleDataController->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentDirectoryPath);
 
-            if( !is_null($module_data) ){
-                $this->module_data_controller->updateRecordIdentifier($module_data, $new_directory_path);
+            if( !is_null($moduleData) ){
+                $this->moduleDataController->updateRecordIdentifier($moduleData, $newDirectoryPath);
             }
 
         }catch(\Exception $e){
@@ -299,92 +298,92 @@ class DirectoriesHandler {
             return new Response($message, 500);
         }
 
-        $log_message      = $this->application->translator->translate('logs.directories.finishedRenamingFolder');
-        $response_message = $this->application->translator->translate('responses.directories.folderNameHasBeenSuccessfullyChanged');
+        $logMessage      = $this->application->translator->translate('logs.directories.finishedRenamingFolder');
+        $responseMessage = $this->application->translator->translate('responses.directories.folderNameHasBeenSuccessfullyChanged');
 
-        $this->logger->info($log_message);
-        return new Response($response_message, 200);
+        $this->logger->info($logMessage);
+        return new Response($responseMessage, 200);
 
     }
 
     /**
-     * @param string $upload_type
-     * @param string $subdirectory_name
-     * @param string $target_directory_path_in_upload_type_dir
+     * @param string $uploadType
+     * @param string $subdirectoryName
+     * @param string $targetDirectoryPathInUploadTypeDir
      * @return Response
      * @throws \Exception
      */
-    public function createFolder(string $upload_type, string $subdirectory_name, string $target_directory_path_in_upload_type_dir){
+    public function createFolder(string $uploadType, string $subdirectoryName, string $targetDirectoryPathInUploadTypeDir){
 
-        $log_message = $this->application->translator->translate('logs.directories.startedCreatingSubdirectory');
+        $logMessage = $this->application->translator->translate('logs.directories.startedCreatingSubdirectory');
 
-        $this->logger->info($log_message, [
-            'upload_type'       => $upload_type,
-            'subdirectory_name' => $subdirectory_name
+        $this->logger->info($logMessage, [
+            'upload_type'       => $uploadType,
+            'subdirectory_name' => $subdirectoryName
         ]);
 
-        $target_directory       = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_type);
+        $targetDirectory = FileUploadController::getTargetDirectoryForUploadModuleDir($uploadType);
 
         # check if main folder
-        if( $target_directory_path_in_upload_type_dir === $target_directory ){
-            $full_subdir_path = $target_directory.'/'.$subdirectory_name;
+        if( $targetDirectoryPathInUploadTypeDir === $targetDirectory ){
+            $fullSubdirPath = $targetDirectory.'/'.$subdirectoryName;
         }else{
-            $full_subdir_path = $target_directory.'/'.$target_directory_path_in_upload_type_dir.'/'.$subdirectory_name;
+            $fullSubdirPath = $targetDirectory.'/'.$targetDirectoryPathInUploadTypeDir.'/'.$subdirectoryName;
         }
 
-        if( file_exists($full_subdir_path) ){
-            $log_message        = $this->application->translator->translate('logs.directories.createFoldedThisNameAlreadyExist');
-            $response_message   = $this->application->translator->translate('responses.directories.createFoldedThisNameAlreadyExist');
+        if( file_exists($fullSubdirPath) ){
+            $logMessage      = $this->application->translator->translate('logs.directories.createFoldedThisNameAlreadyExist');
+            $responseMessage = $this->application->translator->translate('responses.directories.createFoldedThisNameAlreadyExist');
 
-            $this->logger->info($log_message);
-            return new Response($response_message, 500);
+            $this->logger->info($logMessage);
+            return new Response($responseMessage, 500);
         }
 
         try {
-            mkdir($full_subdir_path, 0777);
+            mkdir($fullSubdirPath, 0777);
         } catch (\Exception $e) {
-            $log_message        = $this->application->translator->translate('logs.directories.thereWasAnErrorWhileCreatingFolder');
-            $response_message   = $this->application->translator->translate('responses.directories.thereWasAnErrorWhileCreatingFolder');
+            $logMessage        = $this->application->translator->translate('logs.directories.thereWasAnErrorWhileCreatingFolder');
+            $responseMessage   = $this->application->translator->translate('responses.directories.thereWasAnErrorWhileCreatingFolder');
 
-            $this->logger->info($log_message, [
+            $this->logger->info($logMessage, [
                 'message' => $e->getMessage()
             ]);
 
-            return new Response($response_message, 500);
+            return new Response($responseMessage, 500);
         }
 
-        $log_message        = $this->application->translator->translate('logs.directories.finishedCreatingSubdirectory');
-        $response_message   = $this->application->translator->translate('responses.directories.subdirectoryForModuleSuccessfullyCreated');
+        $logMessage        = $this->application->translator->translate('logs.directories.finishedCreatingSubdirectory');
+        $responseMessage   = $this->application->translator->translate('responses.directories.subdirectoryForModuleSuccessfullyCreated');
 
-        $this->logger->info($log_message);
-        return new Response ($response_message, 200);
+        $this->logger->info($logMessage);
+        return new Response ($responseMessage, 200);
     }
 
     /**
      * @param DirectoryIterator $dir
-     * @param bool $use_foldername
+     * @param bool $useFoldername
      * @param bool $flatten         - if true then returns tree in single dimension array
-     * @param bool $include_locked  - if true then includes also the locked directories (via LockMechanism)
+     * @param bool $includeLocked  - if true then includes also the locked directories (via LockMechanism)
      * @return array
      * @throws Exception
      * @throws DbalException
      * @throws \Exception
      */
-    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $use_foldername = false, bool $flatten = false, bool $include_locked = false): array
+    public static function buildFoldersTreeForDirectory(DirectoryIterator $dir, bool $useFoldername = false, bool $flatten = false, bool $includeLocked = false): array
     {
         $data = [];
         foreach ( $dir as $node )
         {
             if ( $node->isDir() && !$node->isDot() )
             {
-                $pathname    = $node->getPathname();
-                $module_name = FileUploadController::getUploadModuleNameForFilePath($pathname);
-                $foldername  = $node->getFilename();
-                $key         = ( $use_foldername ? $foldername : $pathname);
+                $pathname   = $node->getPathname();
+                $moduleName = FileUploadController::getUploadModuleNameForFilePath($pathname);
+                $foldername = $node->getFilename();
+                $key        = ( $useFoldername ? $foldername : $pathname);
 
                 if(
-                        !$include_locked
-                    &&  !self::$locked_resource_controller->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $module_name, false)
+                        !$includeLocked
+                    &&  !self::$lockedResourceController->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $moduleName, false)
                 ) {
                     continue; // skip that folder
                 }
@@ -392,11 +391,11 @@ class DirectoriesHandler {
                 if( !$flatten ){
                     $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
                 }else{
-                    $data[]           = $key;
-                    $recursion_result = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
-                    $data             = array_merge($data, array_keys($recursion_result));
-                    $data             = array_filter($data);
-                    $data             = array_unique($data);
+                    $data[]          = $key;
+                    $recursionResult = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                    $data            = array_merge($data, array_keys($recursionResult));
+                    $data            = array_filter($data);
+                    $data            = array_unique($data);
                 }
             }
 
@@ -405,44 +404,44 @@ class DirectoriesHandler {
     }
 
     /**
-     * @param string $current_folder_path
-     * @param string $parent_folder_path
+     * @param string $currentFolderPath
+     * @param string $parentFolderPath
      * @return Response
      * @throws \Exception
      */
-    public function moveDirectory(string $current_folder_path, string $parent_folder_path): Response{
+    public function moveDirectory(string $currentFolderPath, string $parentFolderPath): Response{
 
         # this vars are used to move the folder
-        $current_folder_name = basename($current_folder_path);
-        $new_folder_path     = $parent_folder_path . DIRECTORY_SEPARATOR . $current_folder_name;
-        $main_upload_dirs    = Env::getUploadDirs();
+        $currentFolderName = basename($currentFolderPath);
+        $newFolderPath     = $parentFolderPath . DIRECTORY_SEPARATOR . $currentFolderName;
+        $mainUploadDirs    = Env::getUploadDirs();
 
-        if( in_array($current_folder_path, $main_upload_dirs) ){
+        if( in_array($currentFolderPath, $mainUploadDirs) ){
             $message = $this->application->translator->translate('responses.directories.cannotMoveModuleMainUploadDir');
             return new Response($message, 500);
         }
 
-        if( file_exists($new_folder_path) ){
+        if( file_exists($newFolderPath) ){
             $message = $this->application->translator->translate('responses.directories.directoryWithThisNameAlreadyExistInTargetFolder');
             return new Response($message, 500);
         }
 
-        if( !file_exists($current_folder_path) ){
+        if( !file_exists($currentFolderPath) ){
             $message = $this->application->translator->translate('responses.directories.theDirectoryYouTryToMoveDoesNotExist');
             return new Response($message, 500);
         }
 
-        if( $current_folder_path === $parent_folder_path ){
+        if( $currentFolderPath === $parentFolderPath ){
             $message = $this->application->translator->translate('responses.directories.currentDirectoryPathIsTheSameAsNewPath');
             return new Response($message, 500);
         }
 
-        if( strstr($parent_folder_path, $current_folder_path) ){
+        if( strstr($parentFolderPath, $currentFolderPath) ){
             $message = $this->application->translator->translate('responses.directories.cannotMoveFolderInsideItsOwnSubfolder');
             return new Response($message, 500);
         }
 
-        $this->finder->files()->in($current_folder_path);
+        $this->finder->files()->in($currentFolderPath);
 
         try{
 
@@ -453,26 +452,26 @@ class DirectoriesHandler {
             foreach( $this->finder as $file ){
 
                 # this vars are only used to update tags
-                $current_file_path = $file->getPathname();
-                $current_file_name = $file->getFilename();
+                $currentFilePath = $file->getPathname();
+                $currentFileName = $file->getFilename();
 
-                $file_new_dir_path  = self::getFolderPathWithoutUploadDirForFolderPath($new_folder_path);
-                $module_upload_dir  = self::getUploadDirForFilePath($parent_folder_path);
+                $fileNewDirPath  = self::getFolderPathWithoutUploadDirForFolderPath($newFolderPath);
+                $moduleUploadDir = self::getUploadDirForFilePath($parentFolderPath);
 
-                $new_file_path = $module_upload_dir . DIRECTORY_SEPARATOR . $file_new_dir_path . DIRECTORY_SEPARATOR . $current_file_name;
+                $newFilePath = $moduleUploadDir . DIRECTORY_SEPARATOR . $fileNewDirPath . DIRECTORY_SEPARATOR . $currentFileName;
 
-                $this->file_tagger->updateFilePath($current_file_path, $new_file_path);
+                $this->fileTagger->updateFilePath($currentFilePath, $newFilePath);
             }
 
             # Info: rename is using for handling file moving
-            rename($current_folder_path, $new_folder_path);
-            $this->application->repositories->lockedResourceRepository->updatePath($current_folder_path, $new_folder_path);
+            rename($currentFolderPath, $newFolderPath);
+            $this->application->repositories->lockedResourceRepository->updatePath($currentFolderPath, $newFolderPath);
 
-            $module      = ModulesController::getUploadModuleNameForFileFullPath($current_folder_path);
-            $module_data = $this->module_data_controller->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $current_folder_path);
+            $module     = ModulesController::getUploadModuleNameForFileFullPath($currentFolderPath);
+            $moduleData = $this->moduleDataController->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentFolderPath);
 
-            if( !is_null($module_data) ){
-                $this->module_data_controller->updateRecordIdentifier($module_data, $new_folder_path);
+            if( !is_null($moduleData) ){
+                $this->moduleDataController->updateRecordIdentifier($moduleData, $newFolderPath);
             }
         }catch(\Exception $e){
             return new Response($e->getMessage(), $e->getCode());
@@ -485,38 +484,38 @@ class DirectoriesHandler {
     /**
      * This function will strip upload dir for module from folder path if folder contains the upload dir
      * it will not check if the upload dir is on the beginning so passing the absolute path will fail
-     * @param string $folder_path (relative)
+     * @param string $folderPath (relative)
      * @return string
      */
-    public static function getFolderPathWithoutUploadDirForFolderPath(string $folder_path): string{
-        $upload_dirs    = Env::getUploadDirs();
-        $modified_path  = $folder_path;
+    public static function getFolderPathWithoutUploadDirForFolderPath(string $folderPath): string{
+        $uploadDirs    = Env::getUploadDirs();
+        $modifiedPath  = $folderPath;
 
-        foreach($upload_dirs as $upload_dir){
+        foreach($uploadDirs as $uploadDir){
 
-            if( strstr($folder_path, $upload_dir) ){
-                $modified_path = str_replace($upload_dir, "", $folder_path);
+            if( strstr($folderPath, $uploadDir) ){
+                $modifiedPath = str_replace($uploadDir, "", $folderPath);
             }
 
         }
 
-        $stripped_path = $modified_path;
-        return FilesHandler::trimFirstAndLastSlash($stripped_path);
+        $strippedPath = $modifiedPath;
+        return FilesHandler::trimFirstAndLastSlash($strippedPath);
     }
 
     /**
      * This function will return null or string if the upload dir is found in the file_path
      * it will not check if the upload dir is on the beginning so passing the absolute path will fail
-     * @param string $file_path
+     * @param string $filePath
      * @return string | null
      */
-    public static function getUploadDirForFilePath(string $file_path): ?string{
-        $upload_dirs = Env::getUploadDirs();
+    public static function getUploadDirForFilePath(string $filePath): ?string{
+        $uploadDirs = Env::getUploadDirs();
 
-        foreach($upload_dirs as $upload_dir){
+        foreach($uploadDirs as $uploadDir){
 
-            if( strstr($file_path, $upload_dir) ){
-                return $upload_dir;
+            if( strstr($filePath, $uploadDir) ){
+                return $uploadDir;
             }
 
         }

@@ -3,15 +3,13 @@
 namespace App\DTO\Settings;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
-use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
 
 class SettingValidationDTO extends AbstractDTO{
 
     /**
-     * @var bool $is_valid
+     * @var bool $isValid
      */
-    private $is_valid = false;
+    private $isValid = false;
 
     /**
      * @var string $message
@@ -22,14 +20,14 @@ class SettingValidationDTO extends AbstractDTO{
      * @return bool
      */
     public function isValid(): bool {
-        return $this->is_valid;
+        return $this->isValid;
     }
 
     /**
-     * @param bool $is_valid
+     * @param bool $isValid
      */
-    public function setIsValid(bool $is_valid): void {
-        $this->is_valid = $is_valid;
+    public function setIsValid(bool $isValid): void {
+        $this->isValid = $isValid;
     }
 
     /**

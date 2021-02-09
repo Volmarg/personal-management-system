@@ -2,10 +2,7 @@
 
 namespace App\DataFixtures\Modules\Job;
 
-use App\Controller\Utils\Utils;
-use App\DataFixtures\Providers\Modules\JobAfterhours;
 use App\DataFixtures\Providers\Modules\JobHolidays;
-use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -32,35 +29,35 @@ class MyJobHolidaysFixtures extends Fixture implements OrderedFixtureInterface
     {
 
         // first add pools
-        foreach(JobHolidays::ALL_COMPANIES as $company_name => $holiday_data){
-            $year = $holiday_data[JobHolidays::KEY_YEAR];
-            $days = $holiday_data[JobHolidays::KEY_HOLIDAYS_COUNT];
+        foreach(JobHolidays::ALL_COMPANIES as $companyName => $holidayData){
+            $year = $holidayData[JobHolidays::KEY_YEAR];
+            $days = $holidayData[JobHolidays::KEY_HOLIDAYS_COUNT];
 
-            $my_job_holidays_pool = new MyJobHolidaysPool();
-            $my_job_holidays_pool->setCompanyName($company_name);
-            $my_job_holidays_pool->setDaysInPool($days);
-            $my_job_holidays_pool->setYear($year);
+            $myJobHolidaysPool = new MyJobHolidaysPool();
+            $myJobHolidaysPool->setCompanyName($companyName);
+            $myJobHolidaysPool->setDaysInPool($days);
+            $myJobHolidaysPool->setYear($year);
 
-            $manager->persist($my_job_holidays_pool);
+            $manager->persist($myJobHolidaysPool);
             $manager->flush();
         }
 
         // now add spent days
         $index = 0;
-        foreach(JobHolidays::ALL_COMPANIES as $company_name => $holiday_data){
+        foreach(JobHolidays::ALL_COMPANIES as $companyName => $holidayData){
             $daysMin = 5;
-            $daysMax = $holiday_data[JobHolidays::KEY_HOLIDAYS_COUNT];
+            $daysMax = $holidayData[JobHolidays::KEY_HOLIDAYS_COUNT];
 
-            $year    = $holiday_data[JobHolidays::KEY_YEAR];
+            $year    = $holidayData[JobHolidays::KEY_YEAR];
             $days    = $this->faker->randomFloat(0, $daysMin, $daysMax);
             $info    = JobHolidays::ALL_REASONS[$index];
 
-            $my_job_holidays_pool = new MyJobHolidays();
-            $my_job_holidays_pool->setInformation($info);
-            $my_job_holidays_pool->setDaysSpent($days);
-            $my_job_holidays_pool->setYear($year);
+            $myJobHolidaysPool = new MyJobHolidays();
+            $myJobHolidaysPool->setInformation($info);
+            $myJobHolidaysPool->setDaysSpent($days);
+            $myJobHolidaysPool->setYear($year);
 
-            $manager->persist($my_job_holidays_pool);
+            $manager->persist($myJobHolidaysPool);
             $manager->flush();
 
             $index++;

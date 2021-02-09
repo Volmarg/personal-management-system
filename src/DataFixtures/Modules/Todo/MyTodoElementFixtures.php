@@ -25,21 +25,21 @@ class MyTodoElementFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoGoalElements(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO_GOALS as $index => $todo_with_elements) {
+        foreach(Todo::ALL_TODO_GOALS as $index => $todoWithElements) {
 
-            foreach($todo_with_elements as $name => $elements){
+            foreach($todoWithElements as $name => $elements){
 
                 $todos = $manager->getRepository(MyTodo::class)->findBy(['name' => $name]);
                 $todo  = reset($todos);
 
-                foreach($elements as $element_name => $completing_status){
+                foreach($elements as $elementName => $completingStatus){
 
-                    $my_todo_element = new MyTodoElement();
-                    $my_todo_element->setMyTodo($todo);
-                    $my_todo_element->setName($element_name);
-                    $my_todo_element->setCompleted($completing_status);
+                    $myTodoElement = new MyTodoElement();
+                    $myTodoElement->setMyTodo($todo);
+                    $myTodoElement->setName($elementName);
+                    $myTodoElement->setCompleted($completingStatus);
 
-                    $manager->persist($my_todo_element);
+                    $manager->persist($myTodoElement);
                 }
             }
         }
@@ -52,20 +52,20 @@ class MyTodoElementFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoElements(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO as $index => $todo_with_elements) {
-            foreach($todo_with_elements as $name => $elements){
+        foreach(Todo::ALL_TODO as $index => $todoWithElements) {
+            foreach($todoWithElements as $name => $elements){
 
                 $todos = $manager->getRepository(MyTodo::class)->findBy(['name' => $name]);
                 $todo  = reset($todos);
 
-                foreach($elements as $element_name => $completing_status){
+                foreach($elements as $elementName => $completingStatus){
 
-                    $my_todo_element = new MyTodoElement();
-                    $my_todo_element->setName($element_name);
-                    $my_todo_element->setMyTodo($todo);
-                    $my_todo_element->setCompleted($completing_status);
+                    $myTodoElement = new MyTodoElement();
+                    $myTodoElement->setName($elementName);
+                    $myTodoElement->setMyTodo($todo);
+                    $myTodoElement->setCompleted($completingStatus);
 
-                    $manager->persist($my_todo_element);
+                    $manager->persist($myTodoElement);
                 }
             }
         }
@@ -78,21 +78,21 @@ class MyTodoElementFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoIssueElements(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO_ISSUE as $index => $todo_with_elements) {
+        foreach(Todo::ALL_TODO_ISSUE as $index => $todoWithElements) {
 
-            foreach($todo_with_elements as $name => $elements){
+            foreach($todoWithElements as $name => $elements){
 
                 $todos = $manager->getRepository(MyTodo::class)->findBy(['name' => $name]);
                 $todo  = reset($todos);
 
-                foreach($elements as $element_name => $completing_status){
+                foreach($elements as $elementName => $completingStatus){
 
-                    $my_todo_element = new MyTodoElement();
-                    $my_todo_element->setMyTodo($todo);
-                    $my_todo_element->setName($element_name);
-                    $my_todo_element->setCompleted($completing_status);
+                    $myTodoElement = new MyTodoElement();
+                    $myTodoElement->setMyTodo($todo);
+                    $myTodoElement->setName($elementName);
+                    $myTodoElement->setCompleted($completingStatus);
 
-                    $manager->persist($my_todo_element);
+                    $manager->persist($myTodoElement);
                 }
             }
         }

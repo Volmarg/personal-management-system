@@ -5,7 +5,6 @@ namespace App\Services\Session;
 
 
 use App\Controller\Core\Application;
-use App\Entity\User;
 use App\Listeners\OnKernelRequestListener;
 use App\VO\Session\SingleSessionKeyLifetimeVO;
 use App\VO\Session\AllSessionsKeysLifetimesVO;
@@ -50,24 +49,24 @@ class ExpirableSessionsService extends SessionsService {
     /**
      * Adds session lifetime data to the session key
      * if data for given key exists then it will be replaced with new data
-     * @param string $session_key
-     * @param int $session_lifetime
-     * @param array $remove_session_stored_roles
+     * @param string $sessionKey
+     * @param int $sessionLifetime
+     * @param array $removeSessionStoredRoles
      * @throws Exception
      */
-    public function addSessionLifetime(string $session_key, int $session_lifetime, array $remove_session_stored_roles = []): void
+    public function addSessionLifetime(string $sessionKey, int $sessionLifetime, array $removeSessionStoredRoles = []): void
     {
-        $sessions_lifetime_vo = $this->getSessionsKeysLifetimes();
-        $session_lifetime_vo  = new SingleSessionKeyLifetimeVO();
+        $sessionsLifetimeVo = $this->getSessionsKeysLifetimes();
+        $sessionLifetimeVo  = new SingleSessionKeyLifetimeVO();
 
-        $session_lifetime_vo->setSessionKey($session_key);
-        $session_lifetime_vo->setSessionStartTimestamp($this->now->getTimestamp());
-        $session_lifetime_vo->setSessionLifetime($session_lifetime);
-        $session_lifetime_vo->setSessionStoredRolesToRemove($remove_session_stored_roles);
+        $sessionLifetimeVo->setSessionKey($sessionKey);
+        $sessionLifetimeVo->setSessionStartTimestamp($this->now->getTimestamp());
+        $sessionLifetimeVo->setSessionLifetime($sessionLifetime);
+        $sessionLifetimeVo->setSessionStoredRolesToRemove($removeSessionStoredRoles);
 
-        $sessions_lifetime_vo->addSessionLifetimeVO($session_lifetime_vo);
+        $sessionsLifetimeVo->addSessionLifetimeVO($sessionLifetimeVo);
 
-        $this->setSessionsLifetime($sessions_lifetime_vo);
+        $this->setSessionsLifetime($sessionsLifetimeVo);
     }
 
     /**
@@ -75,14 +74,14 @@ class ExpirableSessionsService extends SessionsService {
      *  upon expiration it will be automatically invalidated
      * @param string $key
      * @param string $value
-     * @param int $session_lifetime
-     * @param array $remove_session_stored_roles
+     * @param int $sessionLifetime
+     * @param array $removeSessionStoredRoles
      * @throws Exception
      */
-    public function addExpirableSession(string $key, string $value, int $session_lifetime, array $remove_session_stored_roles = []): void
+    public function addExpirableSession(string $key, string $value, int $sessionLifetime, array $removeSessionStoredRoles = []): void
     {
         $this->session->set($key, $value);
-        $this->addSessionLifetime($key, $session_lifetime, $remove_session_stored_roles);
+        $this->addSessionLifetime($key, $sessionLifetime, $removeSessionStoredRoles);
     }
 
     /**
@@ -106,10 +105,10 @@ class ExpirableSessionsService extends SessionsService {
      */
     public function hasExpirableSession(string $key): ?bool
     {
-        $sessions_lifetime_vo  = $this->getSessionsKeysLifetimes();
-        $has_expirable_session = $sessions_lifetime_vo->hasSingleSessionKeyLifetime($key);
+        $sessionsLifetimeVo  = $this->getSessionsKeysLifetimes();
+        $hasExpirableSession = $sessionsLifetimeVo->hasSingleSessionKeyLifetime($key);
 
-        if( $has_expirable_session ){
+        if( $hasExpirableSession ){
             return true;
         }else{
             return false;
@@ -137,40 +136,40 @@ class ExpirableSessionsService extends SessionsService {
      */
     private function getSessionsKeysLifetimes(): AllSessionsKeysLifetimesVO
     {
-        $is_sessions_lifetime_defined = $this->session->has(self::KEY_SESSIONS_KEYS_LIFETIMES);
+        $isSessionsLifetimeDefined = $this->session->has(self::KEY_SESSIONS_KEYS_LIFETIMES);
 
-        if( $is_sessions_lifetime_defined ){
-            $json                 = $this->session->get(self::KEY_SESSIONS_KEYS_LIFETIMES);
-            $sessions_lifetime_vo = AllSessionsKeysLifetimesVO::fromJson($json);
+        if( $isSessionsLifetimeDefined ){
+            $json               = $this->session->get(self::KEY_SESSIONS_KEYS_LIFETIMES);
+            $sessionsLifetimeVo = AllSessionsKeysLifetimesVO::fromJson($json);
         }else{
-            $sessions_lifetime_vo = new AllSessionsKeysLifetimesVO();
+            $sessionsLifetimeVo = new AllSessionsKeysLifetimesVO();
         }
 
-        return $sessions_lifetime_vo;
+        return $sessionsLifetimeVo;
     }
 
     /**
      * This function removes expired key from the global session
-     * @param SingleSessionKeyLifetimeVO[] $expired_single_session_key_lifetimes_vo
+     * @param SingleSessionKeyLifetimeVO[] $expiredSingleSessionKeyLifetimesVo
      * @throws Exception
      */
-    private function removeExpiredSessionsKeysFromSession(array $expired_single_session_key_lifetimes_vo): void
+    private function removeExpiredSessionsKeysFromSession(array $expiredSingleSessionKeyLifetimesVo): void
     {
-        foreach( $expired_single_session_key_lifetimes_vo as $single_session_key_lifetime_vo ){
-            $removed_session_key = $single_session_key_lifetime_vo->getSessionKey();
+        foreach($expiredSingleSessionKeyLifetimesVo as $singleSessionKeyLifetimeVo ){
+            $removedSessionKey = $singleSessionKeyLifetimeVo->getSessionKey();
 
-            if( $single_session_key_lifetime_vo->doRemoveSessionStoredRolesInsteadOfSessionKey() ){
-                $session_based_roles_to_remove = $single_session_key_lifetime_vo->getSessionStoredRolesToRemove();
-                UserRolesSessionService::removeRolesFromSession($session_based_roles_to_remove);
+            if( $singleSessionKeyLifetimeVo->doRemoveSessionStoredRolesInsteadOfSessionKey() ){
+                $sessionBasedRolesToRemove = $singleSessionKeyLifetimeVo->getSessionStoredRolesToRemove();
+                UserRolesSessionService::removeRolesFromSession($sessionBasedRolesToRemove);
                 $message = $this->app->translator->translate('logs.sessions.removingRolesFromSession');
-            }elseif( !$this->session->has($removed_session_key) ){
+            }elseif( !$this->session->has($removedSessionKey) ){
                 $message = $this->app->translator->translate("logs.sessions.noSessionDataWasFoundForGivenKey");
             }else{
                 $message             = $this->app->translator->translate('logs.sessions.sessionsDataForGivenKeyHasExpired');
-                $this->session->remove($removed_session_key);
+                $this->session->remove($removedSessionKey);
             }
 
-            $this->app->logger->info($message, [$single_session_key_lifetime_vo->toJson()]);
+            $this->app->logger->info($message, [$singleSessionKeyLifetimeVo->toJson()]);
         }
     }
 
@@ -182,34 +181,34 @@ class ExpirableSessionsService extends SessionsService {
      */
     private function unsetExpiredSessionsKeysLifetimesAndRefreshRemaining(): array
     {
-        $all_keys_in_session = self::getAllSessionKeys();
+        $allKeysInSession = self::getAllSessionKeys();
 
-        $all_sessions_keys_lifetimes                 = $this->getSessionsKeysLifetimes();
-        $expired_single_session_key_lifetimes_vo     = $all_sessions_keys_lifetimes->getExpiredSessionsKeysLifetimes();
-        $non_expired_single_session_key_lifetimes_vo = $all_sessions_keys_lifetimes->getNonExpiredSessionsKeysLifetimes();
+        $allSessionsKeysLifetimes              = $this->getSessionsKeysLifetimes();
+        $expiredSingleSessionKeyLifetimesVo    = $allSessionsKeysLifetimes->getExpiredSessionsKeysLifetimes();
+        $nonExpiredSingleSessionKeyLifetimesVo = $allSessionsKeysLifetimes->getNonExpiredSessionsKeysLifetimes();
 
-        $all_sessions_keys_lifetimes->unsetExpiredSingleSessionsKeysLifetimes($all_keys_in_session);
+        $allSessionsKeysLifetimes->unsetExpiredSingleSessionsKeysLifetimes($allKeysInSession);
 
-        foreach( $non_expired_single_session_key_lifetimes_vo as &$single_session_key_lifetime ){
-            $single_session_key_lifetime->resetSessionStartTime();
+        foreach( $nonExpiredSingleSessionKeyLifetimesVo as &$singleSessionKeyLifetime ){
+            $singleSessionKeyLifetime->resetSessionStartTime();
         }
 
-        $reseted_all_active_sessions_keys_lifetimes = clone $all_sessions_keys_lifetimes;
-        $reseted_all_active_sessions_keys_lifetimes->setSingleSessionsKeysLifetimes($non_expired_single_session_key_lifetimes_vo);
+        $resetedAllActiveSessionsKeysLifetimes = clone $allSessionsKeysLifetimes;
+        $resetedAllActiveSessionsKeysLifetimes->setSingleSessionsKeysLifetimes($nonExpiredSingleSessionKeyLifetimesVo);
 
-        $this->setSessionsLifetime($reseted_all_active_sessions_keys_lifetimes);
+        $this->setSessionsLifetime($resetedAllActiveSessionsKeysLifetimes);
 
-        return $expired_single_session_key_lifetimes_vo;
+        return $expiredSingleSessionKeyLifetimesVo;
     }
 
     /**
      * Sets all sessions lifetime to session
-     * @param AllSessionsKeysLifetimesVO $all_sessions_keys_lifetimes
+     * @param AllSessionsKeysLifetimesVO $allSessionsKeysLifetimes
      * @throws Exception
      */
-    private function setSessionsLifetime(AllSessionsKeysLifetimesVO $all_sessions_keys_lifetimes): void
+    private function setSessionsLifetime(AllSessionsKeysLifetimesVO $allSessionsKeysLifetimes): void
     {
-        $json = $all_sessions_keys_lifetimes->toJson();
+        $json = $allSessionsKeysLifetimes->toJson();
         $this->session->set(self::KEY_SESSIONS_KEYS_LIFETIMES, $json);
     }
 

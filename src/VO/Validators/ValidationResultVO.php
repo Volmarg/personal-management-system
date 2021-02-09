@@ -23,14 +23,14 @@ class ValidationResultVO {
     /**
      * Where key is a field name and value is a message
      *
-     * @var array $invalid_fields_messages
+     * @var array $invalidFieldsMessages
      */
-    private $invalid_fields_messages = [];
+    private $invalidFieldsMessages = [];
 
     /**
-     * @var string $validated_class
+     * @var string $validatedClass
      */
-    private $validated_class = "";
+    private $validatedClass = "";
 
     /**
      * @return bool
@@ -50,28 +50,28 @@ class ValidationResultVO {
      * @return array
      */
     public function getInvalidFieldsMessages(): array {
-        return $this->invalid_fields_messages;
+        return $this->invalidFieldsMessages;
     }
 
     /**
-     * @param array $invalid_fields_messages
+     * @param array $invalidFieldsMessages
      */
-    public function setInvalidFieldsMessages(array $invalid_fields_messages): void {
-        $this->invalid_fields_messages = $invalid_fields_messages;
+    public function setInvalidFieldsMessages(array $invalidFieldsMessages): void {
+        $this->invalidFieldsMessages = $invalidFieldsMessages;
     }
 
     /**
      * @return string
      */
     public function getValidatedClass(): string {
-        return $this->validated_class;
+        return $this->validatedClass;
     }
 
     /**
-     * @param string $validated_class
+     * @param string $validatedClass
      */
-    public function setValidatedClass(string $validated_class): void {
-        $this->validated_class = $validated_class;
+    public function setValidatedClass(string $validatedClass): void {
+        $this->validatedClass = $validatedClass;
     }
 
     /**
@@ -95,10 +95,10 @@ class ValidationResultVO {
     {
         $messages = "";
 
-        foreach( $this->invalid_fields_messages as $field_name => $message )
+        foreach($this->invalidFieldsMessages as $fieldName => $message )
         {
-            $ucfirst_field_name = ucfirst($field_name);
-            $messages .= "({$ucfirst_field_name}) " . $message;
+            $ucfirstFieldName = ucfirst($fieldName);
+            $messages .= "({$ucfirstFieldName}) " . $message;
         }
 
         return $messages;
@@ -111,8 +111,8 @@ class ValidationResultVO {
      */
     public static function buildValidResult(): ValidationResultVO
     {
-        $validation_result = new ValidationResultVO();
-        $validation_result->setValid(true);
-        return $validation_result;
+        $validationResult = new ValidationResultVO();
+        $validationResult->setValid(true);
+        return $validationResult;
     }
 }

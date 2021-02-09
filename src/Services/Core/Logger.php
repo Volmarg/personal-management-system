@@ -11,18 +11,18 @@ class Logger {
     const KEY_MODULE_NAME = "module_name";
 
     /**
-     * @var LoggerInterface $security_logger
+     * @var LoggerInterface $securityLogger
      */
-    private $security_logger;
+    private $securityLogger;
 
-    public function __construct(LoggerInterface $security_logger)
+    public function __construct(LoggerInterface $securityLogger)
     {
-        $this->security_logger = $security_logger;
+        $this->securityLogger = $securityLogger;
     }
 
     public function getSecurityLogger(): LoggerInterface
     {
-        return $this->security_logger;
+        return $this->securityLogger;
     }
 
 }

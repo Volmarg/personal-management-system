@@ -19,7 +19,7 @@ class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
     private $faker;
 
     public function __construct() {
-        $this->faker                     = Factory::create('en');
+        $this->faker = Factory::create('en');
     }
 
     /**
@@ -31,26 +31,26 @@ class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
 
         foreach (NotesCategories::ALL_CATEGORIES as $category) {
 
-            $name        = $category[NotesCategories::KEY_NAME];
-            $icon        = $category[NotesCategories::KEY_ICON];
-            $parent_name = $category[NotesCategories::KEY_PARENT_NAME];
-            $parent_id   = NULL;
-            $color       = $this->faker->hexColor;
+            $name       = $category[NotesCategories::KEY_NAME];
+            $icon       = $category[NotesCategories::KEY_ICON];
+            $parentName = $category[NotesCategories::KEY_PARENT_NAME];
+            $parentId   = NULL;
+            $color      = $this->faker->hexColor;
 
-            if( !empty($parent_name) ){
-                $notes_categories = $manager->getRepository(MyNotesCategories::class)->findBy(['name' => $parent_name]);
-                $notes_category   = reset($notes_categories);
-                $parent_id        = $notes_category->getId();
+            if( !empty($parentName) ){
+                $notesCategories = $manager->getRepository(MyNotesCategories::class)->findBy(['name' => $parentName]);
+                $notesCategory   = reset($notesCategories);
+                $parentId        = $notesCategory->getId();
             }
 
-            $notes_category = new MyNotesCategories();
-            $notes_category->setName($name);
-            $notes_category->setColor($color);
+            $notesCategory = new MyNotesCategories();
+            $notesCategory->setName($name);
+            $notesCategory->setColor($color);
 
-            $notes_category->setIcon($icon);
-            $notes_category->setParentId($parent_id);
+            $notesCategory->setIcon($icon);
+            $notesCategory->setParentId($parentId);
 
-            $manager->persist($notes_category);
+            $manager->persist($notesCategory);
             $manager->flush();
 
         }

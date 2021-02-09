@@ -8,26 +8,26 @@ use Exception;
 class ConfigLoaderSecurity extends AbstractConfigLoader {
 
     /**
-     * @var string $restricted_ips
+     * @var string $restrictedIps
      */
-    private string $restricted_ips;
+    private string $restrictedIps;
 
     /**
      * @return array
      * @throws Exception
      */
     public function getRestrictedIps(): array {
-        $array_of_ips = Utils::getRealArrayForStringArray($this->restricted_ips);
-        return $array_of_ips;
+        $arrayOfIps = Utils::getRealArrayForStringArray($this->restrictedIps);
+        return $arrayOfIps;
     }
 
     /**
      * Info: uses autowired param from env, but env does not support arrays, only strings
-     * @param string $restricted_ips
+     * @param string $restrictedIps
      */
-    public function setRestrictedIps(string $restricted_ips): void
+    public function setRestrictedIps(string $restrictedIps): void
     {
-        $this->restricted_ips = $restricted_ips;
+        $this->restrictedIps = $restrictedIps;
     }
 
 }

@@ -19,7 +19,7 @@ class ZipArchivizer extends Archivizer
 
     public function setArchiveName(string $archive_name): void
     {
-        $this->archive_name = $archive_name . self::EXTENSION_ZIP;
+        $this->archiveName = $archive_name . self::EXTENSION_ZIP;
     }
 
     public function __construct(Application $app)
@@ -40,17 +40,17 @@ class ZipArchivizer extends Archivizer
      */
     protected function buildArchive(){
 
-        if ( !$this->zip->open($this->archive_full_path, ZipArchive::CREATE) ) {
+        if ( !$this->zip->open($this->archiveFullPath, ZipArchive::CREATE) ) {
             $this->setIsArchivedSuccessfully(false);
             $this->setArchivingStatus(self::EXPORT_MESSAGE_ARCHIVIZER_HAS_NO_PERMISSIONS_TO_SAVE);
             return;
         }
 
-        foreach($this->directories_to_archive as $directory_to_archive ){
+        foreach($this->directoriesToArchive as $directory_to_archive ){
             $this->addRecursively($directory_to_archive);
         }
 
-        foreach($this->files_to_archive as $file_to_archive){
+        foreach($this->filesToArchive as $file_to_archive){
             $archived_directory_path = pathinfo($file_to_archive, PATHINFO_DIRNAME);
             $this->addSingleFileToArchive($file_to_archive, $archived_directory_path, true);
         }

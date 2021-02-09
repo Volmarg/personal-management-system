@@ -40,18 +40,18 @@ class MyPaymentsBillsFixtures extends Fixture
 
         foreach ( PaymentsBills::ALL_BILLS as $data ) {
 
-            $start_date     = new \DateTime($data[PaymentsBills::KEY_BILL_END_DATE]);
-            $end_date       = new \DateTime($data[PaymentsBills::KEY_BILL_END_DATE]);
-            $name           = $data[PaymentsBills::KEY_BILL_NAME];
-            $information    = $data[PaymentsBills::KEY_BILL_INFORMATION];
-            $planned_amount = $data[PaymentsBills::KEY_BILL_PLANNED_AMOUNT];
+            $startDate     = new \DateTime($data[PaymentsBills::KEY_BILL_END_DATE]);
+            $endDate       = new \DateTime($data[PaymentsBills::KEY_BILL_END_DATE]);
+            $name          = $data[PaymentsBills::KEY_BILL_NAME];
+            $information   = $data[PaymentsBills::KEY_BILL_INFORMATION];
+            $plannedAmount = $data[PaymentsBills::KEY_BILL_PLANNED_AMOUNT];
 
             $bill = new MyPaymentsBills();
-            $bill->setStartDate($start_date);
-            $bill->setEndDate($end_date);
+            $bill->setStartDate($startDate);
+            $bill->setEndDate($endDate);
             $bill->setName($name);
             $bill->setInformation($information);
-            $bill->setPlannedAmount($planned_amount);
+            $bill->setPlannedAmount($plannedAmount);
 
             $manager->persist($bill);
         }
@@ -67,21 +67,21 @@ class MyPaymentsBillsFixtures extends Fixture
 
         foreach ( PaymentsBills::ALL_BILLS_ITEMS as $data ) {
 
-            $date       = new \DateTime($data[PaymentsBills::KEY_BILL_ITEM_DATE]);
-            $name       = $data[PaymentsBills::KEY_BILL_ITEM_NAME];
-            $amount     = $data[PaymentsBills::KEY_BILL_ITEM_AMOUNT];
-            $bill_name  = $data[PaymentsBills::KEY_BILL_ITEM_BILL_NAME];
+            $date      = new \DateTime($data[PaymentsBills::KEY_BILL_ITEM_DATE]);
+            $name      = $data[PaymentsBills::KEY_BILL_ITEM_NAME];
+            $amount    = $data[PaymentsBills::KEY_BILL_ITEM_AMOUNT];
+            $billName  = $data[PaymentsBills::KEY_BILL_ITEM_BILL_NAME];
 
-            $bills = $manager->getRepository(MyPaymentsBills::class)->findBy(['name' => $bill_name]);
+            $bills = $manager->getRepository(MyPaymentsBills::class)->findBy(['name' => $billName]);
             $bill  = reset($bills);
 
-            $bill_item = new MyPaymentsBillsItems();
-            $bill_item->setDate($date);
-            $bill_item->setAmount($amount);
-            $bill_item->setName($name);
-            $bill_item->setBill($bill);
+            $billItem = new MyPaymentsBillsItems();
+            $billItem->setDate($date);
+            $billItem->setAmount($amount);
+            $billItem->setName($name);
+            $billItem->setBill($bill);
 
-            $manager->persist($bill_item);
+            $manager->persist($billItem);
         }
 
         $manager->flush();

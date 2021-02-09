@@ -48,33 +48,33 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
     private function addGroups(ObjectManager $manager)
     {
-        foreach(ContactGroups::ALL_CONTACT_GROUPS as $contact_group_data){
+        foreach(ContactGroups::ALL_CONTACT_GROUPS as $contactGroupData){
 
-            $name  = $contact_group_data[ContactGroups::KEY_NAME];
-            $icon  = $contact_group_data[ContactGroups::KEY_ICON];
-            $color = $contact_group_data[ContactGroups::KEY_COLOR];
+            $name  = $contactGroupData[ContactGroups::KEY_NAME];
+            $icon  = $contactGroupData[ContactGroups::KEY_ICON];
+            $color = $contactGroupData[ContactGroups::KEY_COLOR];
 
 
-            $contact_group = new MyContactGroup();
-            $contact_group->setName($name);
-            $contact_group->setIcon($icon);
-            $contact_group->setColor($color);
-            $manager->persist($contact_group);
+            $contactGroup = new MyContactGroup();
+            $contactGroup->setName($name);
+            $contactGroup->setIcon($icon);
+            $contactGroup->setColor($color);
+            $manager->persist($contactGroup);
         }
         $manager->flush();
     }
 
     private function addTypes(ObjectManager $manager)
     {
-        foreach(ContactTypes::ALL_CONTACT_TYPES as $contact_type_data){
+        foreach(ContactTypes::ALL_CONTACT_TYPES as $contactTypeData){
 
-            $name       = $contact_type_data[ContactTypes::KEY_NAME];
-            $image_path = $contact_type_data[ContactTypes::KEY_IMAGE_PATH];
+            $name      = $contactTypeData[ContactTypes::KEY_NAME];
+            $imagePath = $contactTypeData[ContactTypes::KEY_IMAGE_PATH];
 
-            $contact_type = new MyContactType();
-            $contact_type->setName($name);
-            $contact_type->setImagePath($image_path);
-            $manager->persist($contact_type);
+            $contactType = new MyContactType();
+            $contactType->setName($name);
+            $contactType->setImagePath($imagePath);
+            $manager->persist($contactType);
         }
         $manager->flush();
     }
@@ -87,80 +87,80 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
         for( $x = 0; $x <= 22 ; $x++) {
 
-            $person_name     = $this->faker->firstName . ' ' . $this->faker->lastName;
-            $person_nickname = $this->faker->realText(50);
-            $person_picture  = $this->getUserPictureUrl();
-            $person_group    = $this->getGroup();
+            $personName     = $this->faker->firstName . ' ' . $this->faker->lastName;
+            $personNickname = $this->faker->realText(50);
+            $personPicture  = $this->getUserPictureUrl();
+            $personGroup    = $this->getGroup();
 
 
-            $contact_type_location_city  = $this->faker->city;
-            $contact_type_location_name  = ContactTypes::CONTACT_TYPE_LOCATION[ContactTypes::KEY_NAME];
-            $contact_type_location_image = ContactTypes::CONTACT_TYPE_LOCATION[ContactTypes::KEY_IMAGE_PATH];
+            $contactTypeLocationCity  = $this->faker->city;
+            $contactTypeLocationName  = ContactTypes::CONTACT_TYPE_LOCATION[ContactTypes::KEY_NAME];
+            $contactTypeLocationImage = ContactTypes::CONTACT_TYPE_LOCATION[ContactTypes::KEY_IMAGE_PATH];
 
-            $contact_type_location = new ContactTypeDTO();
-            $contact_type_location->setUuid(Uuid::uuid1());
-            $contact_type_location->setName($contact_type_location_name);
-            $contact_type_location->setIconPath($contact_type_location_image);
-            $contact_type_location->setDetails($contact_type_location_city);
-
-
-
-            $contact_type_email_address  = $this->faker->email;
-            $contact_type_email_name     = ContactTypes::CONTACT_TYPE_EMAIL[ContactTypes::KEY_NAME];
-            $contact_type_email_image    = ContactTypes::CONTACT_TYPE_EMAIL[ContactTypes::KEY_IMAGE_PATH];
-
-            $contact_type_email = new ContactTypeDTO();
-            $contact_type_email->setUuid(Uuid::uuid1());
-            $contact_type_email->setName($contact_type_email_name);
-            $contact_type_email->setIconPath($contact_type_email_image);
-            $contact_type_email->setDetails($contact_type_email_address);
+            $contactTypeLocation = new ContactTypeDTO();
+            $contactTypeLocation->setUuid(Uuid::uuid1());
+            $contactTypeLocation->setName($contactTypeLocationName);
+            $contactTypeLocation->setIconPath($contactTypeLocationImage);
+            $contactTypeLocation->setDetails($contactTypeLocationCity);
 
 
-            $contact_type_mobile_number  = $this->faker->email;
-            $contact_type_mobile_name     = ContactTypes::CONTACT_TYPE_MOBILE[ContactTypes::KEY_NAME];
-            $contact_type_mobile_image    = ContactTypes::CONTACT_TYPE_MOBILE[ContactTypes::KEY_IMAGE_PATH];
 
-            $contact_type_mobile = new ContactTypeDTO();
-            $contact_type_mobile->setUuid(Uuid::uuid1());
-            $contact_type_mobile->setName($contact_type_mobile_name);
-            $contact_type_mobile->setIconPath($contact_type_mobile_image);
-            $contact_type_mobile->setDetails($contact_type_mobile_number);
+            $contactTypeEmailAddress = $this->faker->email;
+            $contactTypeEmailName    = ContactTypes::CONTACT_TYPE_EMAIL[ContactTypes::KEY_NAME];
+            $contactTypeEmailImage   = ContactTypes::CONTACT_TYPE_EMAIL[ContactTypes::KEY_IMAGE_PATH];
 
-            $additional_contact_type_data  = Utils::arrayGetRandom(ContactTypes::ADDITIONAL_CONTACT_TYPES_EXAMPLES);
-            $additional_contact_type_name  = $additional_contact_type_data[ContactTypes::KEY_NAME];
-            $additional_contact_type_image = $additional_contact_type_data[ContactTypes::KEY_IMAGE_PATH];
-            $additional_contact_type_nick  = $this->faker->userName;
+            $contactTypeEmail = new ContactTypeDTO();
+            $contactTypeEmail->setUuid(Uuid::uuid1());
+            $contactTypeEmail->setName($contactTypeEmailName);
+            $contactTypeEmail->setIconPath($contactTypeEmailImage);
+            $contactTypeEmail->setDetails($contactTypeEmailAddress);
 
-            $contact_type_additional = new ContactTypeDTO();
-            $contact_type_additional->setUuid(Uuid::uuid1());
-            $contact_type_additional->setName($additional_contact_type_name);
-            $contact_type_additional->setIconPath($additional_contact_type_image);
-            $contact_type_additional->setDetails($additional_contact_type_nick);
 
-            $contact_type_dtos = [
-                $contact_type_email,
-                $contact_type_mobile,
-                $contact_type_location,
-                $contact_type_additional,
+            $contactTypeMobileNumber = $this->faker->email;
+            $contactTypeMobileName   = ContactTypes::CONTACT_TYPE_MOBILE[ContactTypes::KEY_NAME];
+            $contactTypeMobileImage  = ContactTypes::CONTACT_TYPE_MOBILE[ContactTypes::KEY_IMAGE_PATH];
+
+            $contactTypeMobile = new ContactTypeDTO();
+            $contactTypeMobile->setUuid(Uuid::uuid1());
+            $contactTypeMobile->setName($contactTypeMobileName);
+            $contactTypeMobile->setIconPath($contactTypeMobileImage);
+            $contactTypeMobile->setDetails($contactTypeMobileNumber);
+
+            $additionalContactTypeData  = Utils::arrayGetRandom(ContactTypes::ADDITIONAL_CONTACT_TYPES_EXAMPLES);
+            $additionalContactTypeName  = $additionalContactTypeData[ContactTypes::KEY_NAME];
+            $additionalContactTypeImage = $additionalContactTypeData[ContactTypes::KEY_IMAGE_PATH];
+            $additionalContactTypeNick  = $this->faker->userName;
+
+            $contactTypeAdditional = new ContactTypeDTO();
+            $contactTypeAdditional->setUuid(Uuid::uuid1());
+            $contactTypeAdditional->setName($additionalContactTypeName);
+            $contactTypeAdditional->setIconPath($additionalContactTypeImage);
+            $contactTypeAdditional->setDetails($additionalContactTypeNick);
+
+            $contactTypeDtos = [
+                $contactTypeEmail,
+                $contactTypeMobile,
+                $contactTypeLocation,
+                $contactTypeAdditional,
             ];
 
-            $contacts_types_dtos = new ContactsTypesDTO();
-            $contacts_types_dtos->setContactTypeDtos($contact_type_dtos);
-            $contacts_types_json = $contacts_types_dtos->toJson();
+            $contactsTypesDtos = new ContactsTypesDTO();
+            $contactsTypesDtos->setContactTypeDtos($contactTypeDtos);
+            $contactsTypesJson = $contactsTypesDtos->toJson();
 
             $contact = new MyContact();
-            $contact->setName($person_name);
-            $contact->setContacts($contacts_types_json);
-            $contact->setDescription($person_nickname);
+            $contact->setName($personName);
+            $contact->setContacts($contactsTypesJson);
+            $contact->setDescription($personNickname);
 
-            $color_set = Utils::arrayGetRandom(Contact::ALL_COLORS_SETS);
-            $description_background_color = $color_set[Contact::KEY_DESCRIPTION_BACKGROUND_COLOR];
-            $name_background_color        = $color_set[Contact::KEY_NAME_BACKGROUND_COLOR];
+            $colorSet = Utils::arrayGetRandom(Contact::ALL_COLORS_SETS);
+            $descriptionBackgroundColor = $colorSet[Contact::KEY_DESCRIPTION_BACKGROUND_COLOR];
+            $nameBackgroundColor        = $colorSet[Contact::KEY_NAME_BACKGROUND_COLOR];
 
-            $contact->setImagePath($person_picture);
-            $contact->setGroup($person_group);
-            $contact->setDescriptionBackgroundColor($description_background_color);
-            $contact->setNameBackgroundColor($name_background_color);
+            $contact->setImagePath($personPicture);
+            $contact->setGroup($personGroup);
+            $contact->setDescriptionBackgroundColor($descriptionBackgroundColor);
+            $contact->setNameBackgroundColor($nameBackgroundColor);
 
             $manager->persist($contact);
         }
@@ -177,8 +177,8 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
     private function getGroup()
     {
-        $all_groups = $this->app->repositories->myContactGroupRepository->findAll();
-        $group      = Utils::arrayGetRandom($all_groups);
+        $allGroups = $this->app->repositories->myContactGroupRepository->findAll();
+        $group      = Utils::arrayGetRandom($allGroups);
         return $group;
     }
 

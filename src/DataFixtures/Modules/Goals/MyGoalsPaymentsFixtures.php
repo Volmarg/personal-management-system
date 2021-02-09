@@ -29,28 +29,28 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
 
         foreach (Goals::ALL_PAYMENT_GOALS as $index => $name){
 
-            $random_day_offset  = $this->faker->numberBetween(3, 100);
+            $randomDayOffset = $this->faker->numberBetween(3, 100);
 
-            $random_datetime    = $this->faker->dateTimeBetween('-14 day', '+1 month');
-            $cloned_datetime    = clone $random_datetime;
-            $offset_datetime    = $cloned_datetime->modify("+{$random_day_offset} day");
+            $randomDatetime  = $this->faker->dateTimeBetween('-14 day', '+1 month');
+            $clonedDatetime  = clone $randomDatetime;
+            $offsetDatetime  = $clonedDatetime->modify("+{$randomDayOffset} day");
 
-            $start_date         = $random_datetime->format('Y-m-d');
-            $end_date           = $offset_datetime->format('Y-m-d');
+            $startDate       = $randomDatetime->format('Y-m-d');
+            $endDate         = $offsetDatetime->format('Y-m-d');
 
-            $display            = $this->faker->boolean;
-            $money_collected    = $this->faker->numberBetween(500, 2500);
-            $money_goal         = $this->faker->numberBetween(500, 2500);
+            $display         = $this->faker->boolean;
+            $moneyCollected  = $this->faker->numberBetween(500, 2500);
+            $moneyGoal       = $this->faker->numberBetween(500, 2500);
 
-            $my_goal_payment  = new MyGoalsPayments();
-            $my_goal_payment->setName($name);
-            $my_goal_payment->setDisplayOnDashboard($display);
-            $my_goal_payment->setCollectionStartDate($start_date);
-            $my_goal_payment->setDeadline($end_date);
-            $my_goal_payment->setMoneyCollected($money_collected);
-            $my_goal_payment->setMoneyGoal($money_goal);
+            $myGoalPayment  = new MyGoalsPayments();
+            $myGoalPayment->setName($name);
+            $myGoalPayment->setDisplayOnDashboard($display);
+            $myGoalPayment->setCollectionStartDate($startDate);
+            $myGoalPayment->setDeadline($endDate);
+            $myGoalPayment->setMoneyCollected($moneyCollected);
+            $myGoalPayment->setMoneyGoal($moneyGoal);
 
-            $manager->persist($my_goal_payment);
+            $manager->persist($myGoalPayment);
 
         }
 

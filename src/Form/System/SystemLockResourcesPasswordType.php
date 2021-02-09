@@ -33,9 +33,9 @@ class SystemLockResourcesPasswordType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $is_create_password = $options[self::RESOLVER_OPTION_IS_CREATE_PASSWORD];
+        $isCreatePassword = $options[self::RESOLVER_OPTION_IS_CREATE_PASSWORD];
 
-        switch( $is_create_password ){
+        switch( $isCreatePassword ){
             case true:
                 {
                     $builder->add(AppAction::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class,[
@@ -49,12 +49,12 @@ class SystemLockResourcesPasswordType extends AbstractType
                 break;
             default:
                 {
-                    $placeholder_label = ( Env::isDemo() ? User::DEMO_PASSWORD : $this->app->translator->translate("forms.systemLockPassword.placeholders.password") );
+                    $placeholderLabel = ( Env::isDemo() ? User::DEMO_PASSWORD : $this->app->translator->translate("forms.systemLockPassword.placeholders.password") );
 
                     $builder->add(AppAction::KEY_SYSTEM_LOCK_PASSWORD, PasswordType::class, [
                         'label' => $this->app->translator->translate('forms.systemLockPassword.labels.password'),
                         'attr'  => [
-                            "placeholder" => $placeholder_label,
+                            "placeholder" => $placeholderLabel,
                         ]
                     ]);
                 }

@@ -60,15 +60,14 @@ class MyGoalsPaymentsRepository extends ServiceEntityRepository
      */
     public function getOneByName(string $name): ?MyGoalsPayments
     {
-        $all_entities = $this->findBy(['name' => $name]);
-
-        if( empty($all_entities) ){
+        $allEntities = $this->findBy(['name' => $name]);
+        if( empty($allEntities) ){
             return null;
         }
 
-        $first_key = array_key_first($all_entities);
+        $firstKey = array_key_first($allEntities);
 
-        return $all_entities[$first_key];
+        return $allEntities[$firstKey];
     }
 
 }

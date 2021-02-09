@@ -33,8 +33,8 @@ class MyNotesCategoriesType extends AbstractType {
             ->add('parent_id', EntityType::class, [
                 'class' => MyNotesCategories::class,
                 'choices' => $this->app->repositories->myNotesCategoriesRepository->findBy(['deleted' => 0]),
-                'choice_label' => function (MyNotesCategories $note_category) {
-                    return $note_category->getName();
+                'choice_label' => function (MyNotesCategories $noteCategory) {
+                    return $noteCategory->getName();
                 },
                 'required' => false,
                 'label' => $this->app->translator->translate('forms.MyNotesCategoriesType.parentId'),

@@ -24,17 +24,17 @@ class ModuleDataRepository extends ServiceEntityRepository
     /**
      * Will return single module data for given parameters, or null if nothing is found
      *
-     * @param string $record_type
+     * @param string $recordType
      * @param string $module
-     * @param string $record_identifier
+     * @param string $recordIdentifier
      * @return ModuleData|null
      */
-    public function getOneByRecordTypeModuleAndRecordIdentifier(string $record_type, string $module, string $record_identifier): ?ModuleData
+    public function getOneByRecordTypeModuleAndRecordIdentifier(string $recordType, string $module, string $recordIdentifier): ?ModuleData
     {
         $results = $this->findBy([
            ModuleData::FIELD_NAME_MODULE            => $module,
-           ModuleData::FIELD_NAME_RECORD_IDENTIFIER => $record_identifier,
-           ModuleData::FIELD_NAME_RECORD_TYPE       => $record_type,
+           ModuleData::FIELD_NAME_RECORD_IDENTIFIER => $recordIdentifier,
+           ModuleData::FIELD_NAME_RECORD_TYPE       => $recordType,
         ]);
 
         if( empty($results) ){
@@ -47,13 +47,13 @@ class ModuleDataRepository extends ServiceEntityRepository
     /**
      * Will save the entity in DB
      *
-     * @param ModuleData $module_data
+     * @param ModuleData $moduleData
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function saveEntity(ModuleData $module_data): void
+    public function saveEntity(ModuleData $moduleData): void
     {
-        $this->_em->persist($module_data);;
+        $this->_em->persist($moduleData);;
         $this->_em->flush();
     }
 

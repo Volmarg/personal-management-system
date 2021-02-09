@@ -40,7 +40,7 @@ class MyIssueContactType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $entity_id = $options[self::OPTION_ENTITY_ID];
+        $entityId = $options[self::OPTION_ENTITY_ID];
 
         $builder
             ->add(self::FIELD_INFORMATION, TextType::class, [
@@ -49,7 +49,7 @@ class MyIssueContactType extends AbstractType {
             ->add(self::FIELD_ISSUE, EntityType::class, [
                 'label'         => $this->app->translator->translate('forms.MyIssueTypeProgress.issue'),
                 'class'         => MyIssue::class,
-                'choices'       => $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($entity_id),
+                'choices'       => $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($entityId),
                 'choice_label'  => function (MyIssue $issue) {
                     return $issue->getName();
                 },

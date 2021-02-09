@@ -19,9 +19,9 @@ class TemplatesLoader extends AbstractExtension {
         ];
     }
 
-    public function getBaseTemplate(bool $ajax_render) {
+    public function getBaseTemplate(bool $ajaxRender) {
 
-        switch ($ajax_render) {
+        switch ($ajaxRender) {
             case false:
                 return 'base.html.twig';
                 break;

@@ -24,31 +24,31 @@ class FilesSearchRepository
 
     /**
      * @param array $tags
-     * @param string $search_type
-     * @param bool $do_like_percent
+     * @param string $searchType
+     * @param bool $doLikePercent
      * @return mixed[]
      * @throws DBALException
      * @throws Exception
      */
-    public function getSearchResultsDataForTag(array $tags, string $search_type, bool $do_like_percent = false) {
+    public function getSearchResultsDataForTag(array $tags, string $searchType, bool $doLikePercent = false) {
 
-        $binded_values = [];
+        $bindedValues = [];
         $index         = 0;
 
-        $tags_sql      = '';
+        $tagsSql      = '';
 
-        array_map(function($value) use ($do_like_percent, &$binded_values,  &$tags_sql, &$index, $search_type) {
-            $binded_values[]       = ( $do_like_percent ? "%{$value}%" : $value );
+        array_map(function($value) use ($doLikePercent, &$bindedValues,  &$tagsSql, &$index, $searchType) {
+            $bindedValues[]       = ( $doLikePercent ? "%{$value}%" : $value );
 
-            switch($search_type){
+            switch($searchType){
                 case self::SEARCH_TYPE_FILES:
-                    $tags_sql .= (0 === $index ? " " : " OR ") . " tags LIKE ?";
+                    $tagsSql .= (0 === $index ? " " : " OR ") . " tags LIKE ?";
                     break;
                 case self::SEARCH_TYPE_NOTES:
-                    $tags_sql .= (0 === $index ? " " : " OR ") . " title LIKE ?";
+                    $tagsSql .= (0 === $index ? " " : " OR ") . " title LIKE ?";
                     break;
                 default:
-                    throw new Exception("Undefined search type for search results: {$search_type}.");
+                    throw new Exception("Undefined search type for search results: {$searchType}.");
             }
 
             $index++;
@@ -56,32 +56,32 @@ class FilesSearchRepository
 
         $connection = $this->em->getConnection();
 
-        switch($search_type){
+        switch($searchType){
             case self::SEARCH_TYPE_FILES:
-                $sql = $this->getSqlForFileSearch($tags_sql);
+                $sql = $this->getSqlForFileSearch($tagsSql);
                 break;
             case self::SEARCH_TYPE_NOTES:
-                $sql = $this->getSqlForNotesSearch($tags_sql);
+                $sql = $this->getSqlForNotesSearch($tagsSql);
                 break;
             default:
-                throw new Exception("Undefined search type for search results: {$search_type}.");
+                throw new Exception("Undefined search type for search results: {$searchType}.");
         }
 
-        $stmt    = $connection->executeQuery($sql, $binded_values);
+        $stmt    = $connection->executeQuery($sql, $bindedValues);
         $results = $stmt->fetchAll();
 
         return $results;
     }
 
     /**
-     * @param string $tags_sql
+     * @param string $tagsSql
      * @return string
      */
-    private function getSqlForFileSearch(string $tags_sql){
+    private function getSqlForFileSearch(string $tagsSql){
 
-        $my_images_module_name = ModulesController::MODULE_NAME_IMAGES;
-        $my_video_module_name  = ModulesController::MODULE_NAME_VIDEO;
-        $my_files_module_name  = ModulesController::MODULE_NAME_FILES;
+        $myImagesModuleName = ModulesController::MODULE_NAME_IMAGES;
+        $myVideoModuleName  = ModulesController::MODULE_NAME_VIDEO;
+        $myFilesModuleName  = ModulesController::MODULE_NAME_FILES;
 
         $sql = "
             SELECT
@@ -137,9 +137,9 @@ class FilesSearchRepository
                 SELECT
                     id AS id,
                 CASE
-                    WHEN full_file_path LIKE '%images%' THEN '{$my_images_module_name}'
-                    WHEN full_file_path LIKE '%files%' THEN '{$my_files_module_name}'
-                    WHEN full_file_path LIKE '%videos%' THEN '{$my_video_module_name}'
+                    WHEN full_file_path LIKE '%images%' THEN '{$myImagesModuleName}'
+                    WHEN full_file_path LIKE '%files%' THEN '{$myFilesModuleName}'
+                    WHEN full_file_path LIKE '%videos%' THEN '{$myVideoModuleName}'
                 END AS module
                 
                 FROM files_tags
@@ -162,7 +162,7 @@ class FilesSearchRepository
 
             
             WHERE 1
-                AND ($tags_sql) -- limit to entered tags
+                AND ($tagsSql) -- limit to entered tags
                 AND deleted = 0;
         ";
 
@@ -170,10 +170,10 @@ class FilesSearchRepository
     }
 
     /**
-     * @param string $tags_sql
+     * @param string $tagsSql
      * @return string
      */
-    private function getSqlForNotesSearch(string $tags_sql){
+    private function getSqlForNotesSearch(string $tagsSql){
         $sql = "
             SELECT 
                 mn.title    AS title,
@@ -189,7 +189,7 @@ class FilesSearchRepository
                 AND mnc.deleted = 0
             
             WHERE 1
-                AND ($tags_sql) -- limit to entered tags
+                AND ($tagsSql) -- limit to entered tags
                 AND mn.deleted = 0;
         ";
 

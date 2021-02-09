@@ -9,37 +9,37 @@ class FormValidationException extends \Exception
 {
 
     /**
-     * @var FormValidationViolationDto[] $form_validation_violations
+     * @var FormValidationViolationDto[] $formValidationViolations
      */
-    private array $form_validation_violations;
+    private array $formValidationViolations;
 
     /**
-     * @param bool $as_arrays
+     * @param bool $asArrays
      *          - if false then returns array of dtos
      *          - if true then return array of arrays where each key is a field name and value is a violation message
      *
      * @return FormValidationViolationDto[] | string[]
      */
-    public function getFormValidationViolations(bool $as_arrays = false): array
+    public function getFormValidationViolations(bool $asArrays = false): array
     {
-        if( $as_arrays ){
-            $all_violations = [];
-            foreach($this->form_validation_violations as $violation){
-                $all_violations[$violation->getFieldName()] = $violation->getViolationMessage();
+        if( $asArrays ){
+            $allViolations = [];
+            foreach($this->formValidationViolations as $violation){
+                $allViolations[$violation->getFieldName()] = $violation->getViolationMessage();
             }
 
-            return $all_violations;
+            return $allViolations;
         }
 
-        return $this->form_validation_violations;
+        return $this->formValidationViolations;
     }
 
     /**
-     * @param FormValidationViolationDto[] $form_validation_violations
+     * @param FormValidationViolationDto[] $formValidationViolations
      */
-    public function setFormValidationViolations(array $form_validation_violations): void
+    public function setFormValidationViolations(array $formValidationViolations): void
     {
-        $this->form_validation_violations = $form_validation_violations;
+        $this->formValidationViolations = $formValidationViolations;
     }
 
     /**

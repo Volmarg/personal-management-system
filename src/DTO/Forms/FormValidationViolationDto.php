@@ -10,23 +10,23 @@ class FormValidationViolationDto
     const FIELD_NAME        = "field_name";
     const VIOLATION_MESSAGE = "violation_message";
 
-    private string $field_name;
-    private string $violation_message;
+    private string $fieldName;
+    private string $violationMessage;
 
     /**
      * @return string
      */
     public function getFieldName(): string
     {
-        return $this->field_name;
+        return $this->fieldName;
     }
 
     /**
-     * @param string $field_name
+     * @param string $fieldName
      */
-    public function setFieldName(string $field_name): void
+    public function setFieldName(string $fieldName): void
     {
-        $this->field_name = $field_name;
+        $this->fieldName = $fieldName;
     }
 
     /**
@@ -34,27 +34,27 @@ class FormValidationViolationDto
      */
     public function getViolationMessage(): string
     {
-        return $this->violation_message;
+        return $this->violationMessage;
     }
 
     /**
-     * @param string $violation_message
+     * @param string $violationMessage
      */
-    public function setViolationMessage(string $violation_message): void
+    public function setViolationMessage(string $violationMessage): void
     {
-        $this->violation_message = $violation_message;
+        $this->violationMessage = $violationMessage;
     }
 
     /**
      * Build the violation dto for given field name and message
-     * @param string $field_name
+     * @param string $fieldName
      * @param string $message
      * @return FormValidationViolationDto
      */
-    public static function buildForFieldNameAndMessage(string $field_name, string $message): FormValidationViolationDto
+    public static function buildForFieldNameAndMessage(string $fieldName, string $message): FormValidationViolationDto
     {
         $dto = new FormValidationViolationDto();
-        $dto->setFieldName($field_name);
+        $dto->setFieldName($fieldName);
         $dto->setViolationMessage($message);
 
         return $dto;

@@ -24,37 +24,37 @@ class UserRolesSessionService extends SessionsService {
      */
     public static function getRolesFromSession():? array
     {
-        $session     = new Session();
-        $roles_json  = $session->get(self::KEY_SESSION_USER_ROLES);
+        $session   = new Session();
+        $rolesJson = $session->get(self::KEY_SESSION_USER_ROLES);
 
-        if( empty($roles_json) ){
+        if( empty($rolesJson) ){
             return [];
         }
 
-        $roles_array = json_decode($roles_json, true);
-        return $roles_array;
+        $rolesArray = json_decode($rolesJson, true);
+        return $rolesArray;
     }
 
     /**
      * Remove given roles from session, if given role does not exist in session then nothing will be done with it
-     * @param array $roles_to_remove
+     * @param array $rolesToRemove
      */
-    public static function removeRolesFromSession(array $roles_to_remove): void
+    public static function removeRolesFromSession(array $rolesToRemove): void
     {
-        $session    = new Session();
-        $roles_json = $session->get(self::KEY_SESSION_USER_ROLES);
+        $session   = new Session();
+        $rolesJson = $session->get(self::KEY_SESSION_USER_ROLES);
 
-        if( !empty($roles_json) ){
-            $roles_array = json_decode($roles_json);
+        if( !empty($rolesJson) ){
+            $rolesArray = json_decode($rolesJson);
 
-            foreach( $roles_to_remove as $role_to_remove ){
-                if( in_array($role_to_remove, $roles_array) ){
-                    $value_key = array_search($role_to_remove, $roles_array);
-                    unset($roles_array[$value_key]);
+            foreach($rolesToRemove as $roleToRemove ){
+                if( in_array($roleToRemove, $rolesArray) ){
+                    $valueKey = array_search($roleToRemove, $rolesArray);
+                    unset($rolesArray[$valueKey]);
                 }
             }
 
-            self::saveRolesInSession($roles_array);
+            self::saveRolesInSession($rolesArray);
         }
     }
 
@@ -66,11 +66,11 @@ class UserRolesSessionService extends SessionsService {
     {
         $session = new Session();
 
-        $roles_in_session             = self::getRolesFromSession();
-        $roles_added_to_session_array = array_merge($roles_in_session, $roles);
-        $roles_added_to_session_json  = json_encode($roles_added_to_session_array);
+        $rolesInSession           = self::getRolesFromSession();
+        $rolesAddedToSessionArray = array_merge($rolesInSession, $roles);
+        $rolesAddedToSessionJson  = json_encode($rolesAddedToSessionArray);
 
-        $session->set(self::KEY_SESSION_USER_ROLES, $roles_added_to_session_json);
+        $session->set(self::KEY_SESSION_USER_ROLES, $rolesAddedToSessionJson);
     }
 
     /**
@@ -92,7 +92,7 @@ class UserRolesSessionService extends SessionsService {
     {
         $session = new Session();
 
-        $roles_json = json_encode($roles);
-        $session->set(self::KEY_SESSION_USER_ROLES, $roles_json);
+        $rolesJson = json_encode($roles);
+        $session->set(self::KEY_SESSION_USER_ROLES, $rolesJson);
     }
 }

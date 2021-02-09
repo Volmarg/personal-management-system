@@ -40,15 +40,15 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
     }
 
     private function addScheduleTypes(ObjectManager $manager){
-        foreach(Schedules::ALL_SCHEDULES_TYPES as $schedule_type_data){
-            $name = $schedule_type_data[Schedules::KEY_NAME];
-            $icon = $schedule_type_data[Schedules::KEY_ICON];
+        foreach(Schedules::ALL_SCHEDULES_TYPES as $scheduleTypeData){
+            $name = $scheduleTypeData[Schedules::KEY_NAME];
+            $icon = $scheduleTypeData[Schedules::KEY_ICON];
 
-            $schedule_type = new MyScheduleType();
-            $schedule_type->setName($name);
-            $schedule_type->setIcon($icon);
+            $scheduleType = new MyScheduleType();
+            $scheduleType->setName($name);
+            $scheduleType->setIcon($icon);
 
-            $manager->persist($schedule_type);
+            $manager->persist($scheduleType);
         }
         $manager->flush();
     }
@@ -59,26 +59,25 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addSchedules(ObjectManager $manager){
 
-        $all_schedules_data = array_merge(Schedules::ALL_CAR_SCHEDULES, Schedules::ALL_HOME_SCHEDULES);
-
-        foreach($all_schedules_data as $schedule_data)
+        $allSchedulesData = array_merge(Schedules::ALL_CAR_SCHEDULES, Schedules::ALL_HOME_SCHEDULES);
+        foreach($allSchedulesData as $scheduleData)
         {
 
-            $type_name     = $schedule_data[Schedules::KY_SCHEDULE_TYPE_NAME];
-            $type          = $this->app->repositories->myScheduleTypeRepository->findOneBy(["name" => $type_name]);
+            $typeName     = $scheduleData[Schedules::KY_SCHEDULE_TYPE_NAME];
+            $type          = $this->app->repositories->myScheduleTypeRepository->findOneBy(["name" => $typeName]);
 
-            $name          = $schedule_data[Schedules::KEY_NAME];
-            $information   = $schedule_data[Schedules::KEY_INFORMATION];
+            $name          = $scheduleData[Schedules::KEY_NAME];
+            $information   = $scheduleData[Schedules::KEY_INFORMATION];
             $date          = $this->faker->dateTimeBetween('+5 day','+2 month')->format('d-m-Y');
 
-            $car_schedule  = new MySchedule();
-            $car_schedule->setName($name);
-            $car_schedule->setScheduleType($type);
-            $car_schedule->setInformation($information);
-            $car_schedule->setDate($date);
-            $car_schedule->setIsDateBased();
+            $carSchedule  = new MySchedule();
+            $carSchedule->setName($name);
+            $carSchedule->setScheduleType($type);
+            $carSchedule->setInformation($information);
+            $carSchedule->setDate($date);
+            $carSchedule->setIsDateBased();
 
-            $manager->persist($car_schedule);
+            $manager->persist($carSchedule);
         }
 
         $manager->flush();

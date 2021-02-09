@@ -21,8 +21,8 @@ use Symfony\Component\Form\FormEvent;
 
 class DatalistLogicOverride {
 
-    private static $original_data;
-    private static $modified_keys;
+    private static $originalData;
+    private static $modifiedKeys;
 
     /**
      * @param FormEvent $event
@@ -30,24 +30,24 @@ class DatalistLogicOverride {
      * @throws \Exception
      */
     public static function postSubmit(FormEvent $event) {
-        $modified_data = $event->getForm()->getData();
+        $modifiedData = $event->getForm()->getData();
 
-        $modified_data = Utils::modifyEventData(static::$original_data, $modified_data);
-        $event->setData($modified_data);
+        $modifiedData = Utils::modifyEventData(static::$originalData, $modifiedData);
+        $event->setData($modifiedData);
 
         return $event;
     }
 
     /**
      * @param FormEvent $event
-     * @param array $modified_keys
+     * @param array $modifiedKeys
      * @param array $choices
      * @return FormEvent
      * @throws \Exception
      */
-    public static function preSubmit(FormEvent $event, array $modified_keys, array $choices) {
-        static::$original_data = $modified_data = $event->getData();
-        static::$modified_keys = $modified_keys;
+    public static function preSubmit(FormEvent $event, array $modifiedKeys, array $choices) {
+        static::$originalData = $modifiedData = $event->getData();
+        static::$modifiedKeys = $modifiedKeys;
 
         # This step is important because we need array where keys are the same as values, and are strings
         if(!empty($choices)){
@@ -57,12 +57,12 @@ class DatalistLogicOverride {
             );
         }
 
-        foreach ($modified_keys as $key) {
-            $data_elements_to_modify[$key] = array_keys($choices)[0];
+        foreach ($modifiedKeys as $key) {
+            $dataElementsToModify[$key] = array_keys($choices)[0];
         }
 
-        $modified_data = Utils::modifyEventData($data_elements_to_modify, $modified_data);
-        $event->setData($modified_data);
+        $modifiedData = Utils::modifyEventData($dataElementsToModify, $modifiedData);
+        $event->setData($modifiedData);
 
         return $event;
     }

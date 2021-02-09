@@ -118,12 +118,12 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
 
         $name       = self::checkAndGetKey($array, self::KEY_NAME);
         $symbol     = self::checkAndGetKey($array, self::KEY_SYMBOL);
-        $is_default = self::checkAndGetKey($array, self::KEY_IS_DEFAULT);
+        $isDefault  = self::checkAndGetKey($array, self::KEY_IS_DEFAULT);
         $multiplier = self::checkAndGetKey($array, self::KEY_MULTIPLIER);
 
         $dto = new self();
         $dto->setName($name);
-        $dto->setIsDefault($is_default);
+        $dto->setIsDefault($isDefault);
         $dto->setMultiplier($multiplier);
         $dto->setSymbol($symbol);
 

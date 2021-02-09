@@ -21,7 +21,7 @@ class FileTagger {
     /**
      * @var string
      */
-    private $full_file_path;
+    private $fullFilePath;
 
     /**
      * @var array
@@ -41,45 +41,43 @@ class FileTagger {
      * Set the vars to handle tagging for current file
      * All the tags from input must be passed in as the difference between what's in DB will handle the corresponding action
      * @param array $tags - empty is ok, this means we remove all tags
-     * @param string $full_file_path
+     * @param string $fullFilePath
      * @throws \Exception
      */
-    public function prepare(array $tags, string $full_file_path) {
-        $this->tags           = $tags;
-        $this->full_file_path = $full_file_path;
+    public function prepare(array $tags, string $fullFilePath) {
+        $this->tags         = $tags;
+        $this->fullFilePath = $fullFilePath;
     }
 
     /**
      * This method will get the fileTags entity for full file path,
      * By default the full file path passed as param will be used but if param is passed then it will be used in search
-     * @param string|null $file_full_path
+     * @param string|null $fileFullPath
      * @return FilesTags
      * @throws \Exception
      */
-    private function getEntity(? string $file_full_path = null): ?FilesTags {
+    private function getEntity(? string $fileFullPath = null): ?FilesTags {
 
-        $file_full_path = ( is_null($file_full_path) ? $this->full_file_path : $file_full_path );
+        $fileFullPath = ( is_null($fileFullPath) ? $this->fullFilePath : $fileFullPath );
 
 
-        $all_files_with_tags = $this->app->repositories->filesTagsRepository->findBy([
-            'fullFilePath' => $file_full_path
+        $allFilesWithTags = $this->app->repositories->filesTagsRepository->findBy([
+            'fullFilePath' => $fileFullPath
         ]);
 
-        $counted_files_with_tags = count($all_files_with_tags);
-
-        if( $counted_files_with_tags > 1 ){
-            $message = $this->app->translator->translate('exceptions.tagger.moreThanOneFileTagsRecordsFoundForPath') . $file_full_path;
+        $countedFilesWithTags = count($allFilesWithTags);
+        if( $countedFilesWithTags > 1 ){
+            $message = $this->app->translator->translate('exceptions.tagger.moreThanOneFileTagsRecordsFoundForPath') . $fileFullPath;
             throw new \Exception($message);
         }
 
-        if( empty($all_files_with_tags) ){
+        if( empty($allFilesWithTags) ){
             return null;
         } else {
-            $file_with_tags = reset($all_files_with_tags);
-
+            $fileWithTags = reset($allFilesWithTags);
         }
 
-        return $file_with_tags;
+        return $fileWithTags;
     }
 
     /**
@@ -95,17 +93,17 @@ class FileTagger {
 
         try {
 
-            $file_with_tags = $this->getEntity();
+            $fileWithTags = $this->getEntity();
 
             # no tags exist for that file, add them, or do nothing
-            if( empty($file_with_tags) && !empty($this->tags) ){
-                $tags_json = $this->arrayTagsToJson($this->tags);
+            if( empty($fileWithTags) && !empty($this->tags) ){
+                $tagsJson = $this->arrayTagsToJson($this->tags);
 
-                $file_tags = new FilesTags();
-                $file_tags->setFullFilePath($this->full_file_path);
-                $file_tags->setTags($tags_json);
+                $fileTags = new FilesTags();
+                $fileTags->setFullFilePath($this->fullFilePath);
+                $fileTags->setTags($tagsJson);
 
-                $this->app->em->persist($file_tags);
+                $this->app->em->persist($fileTags);
                 $this->app->em->flush();
 
                 $message = $this->app->translator->translate('responses.tagger.tagsHaveBeenCreated');
@@ -113,7 +111,7 @@ class FileTagger {
             }
 
             # no tags exist and not adding any
-            if ( empty($file_with_tags) && empty($this->tags) ){
+            if ( empty($fileWithTags) && empty($this->tags) ){
                 $message = $this->app->translator->translate('responses.tagger.noTagsToAdd');
                 return new Response($message);
             }
@@ -122,7 +120,7 @@ class FileTagger {
             if(
                     // either there are not tags at all
                 (
-                        !empty($file_with_tags)
+                        !empty($fileWithTags)
                     &&   empty($this->tags)
                 )
                 ||  // or there is just one tag but it's empty
@@ -132,32 +130,32 @@ class FileTagger {
                     &&  empty( reset($this->tags) )
                 )
                 ){
-                $this->app->em->remove($file_with_tags);
+                $this->app->em->remove($fileWithTags);
                 $this->app->em->flush();
 
                 $message = $this->app->translator->translate('responses.tagger.allTagsHaveBeenRemoved');
                 return new Response($message);
             }
 
-            $current_tags_json  = $file_with_tags->getTags();
-            $current_tags_array = $this->jsonTagsToArray($current_tags_json);
+            $currentTagsJson  = $fileWithTags->getTags();
+            $currentTagsArray = $this->jsonTagsToArray($currentTagsJson);
 
-            $new_tags           = array_diff($this->tags, $current_tags_array);
-            $common_tags        = array_intersect($this->tags, $current_tags_array);
+            $newTags    = array_diff($this->tags, $currentTagsArray);
+            $commonTags = array_intersect($this->tags, $currentTagsArray);
 
-            $are_tags_removed   = ( count($current_tags_array) !== count($common_tags) );
+            $areTagsRemoved = ( count($currentTagsArray) !== count($commonTags) );
 
-            if ( empty($new_tags) && !$are_tags_removed ) {
+            if ( empty($newTags) && !$areTagsRemoved ) {
                 $message = $this->app->translator->translate('responses.tagger.noTagsToAdd');
                 return new Response($message);
             }
 
-            $tags_array = array_merge($new_tags, $common_tags);
-            $tags_json  = $this->arrayTagsToJson($tags_array);
+            $tagsArray = array_merge($newTags, $commonTags);
+            $tagsJson  = $this->arrayTagsToJson($tagsArray);
 
-            $file_with_tags->setTags($tags_json);
+            $fileWithTags->setTags($tagsJson);
 
-            $this->app->em->persist($file_with_tags);
+            $this->app->em->persist($fileWithTags);
             $this->app->em->flush();
 
             $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
@@ -176,13 +174,12 @@ class FileTagger {
      */
     public function removeTags(){
 
-        $file_with_tags = $this->getEntity();
-
-        if( empty($file_with_tags) ){
+        $fileWithTags = $this->getEntity();
+        if( empty($fileWithTags) ){
             $message = $this->app->translator->translate('responses.tagger.noTagsToRemove');
             return new Response($message);
         }else{
-            $this->app->em->remove($file_with_tags);
+            $this->app->em->remove($fileWithTags);
             $this->app->em->flush();
 
             $message = $this->app->translator->translate('responses.tagger.allTagsHaveBeenRemoved');
@@ -207,7 +204,7 @@ class FileTagger {
     private function isPrepared(){
 
         if(
-                !isset($this->full_file_path)
+                !isset($this->fullFilePath)
             ||  !isset($this->tags)
         ){
             return false;
@@ -217,50 +214,49 @@ class FileTagger {
     }
 
     /**
-     * @param string $old_file_path
-     * @param string $new_file_path
+     * @param string $oldFilePath
+     * @param string $newFilePath
      * @throws \Exception
      */
-    public function updateFilePath(string $old_file_path, string $new_file_path) {
+    public function updateFilePath(string $oldFilePath, string $newFilePath) {
 
-        $file_tags = $this->getEntity($old_file_path);
-
-        if( !$file_tags ){
+        $fileTags = $this->getEntity($oldFilePath);
+        if( !$fileTags ){
             return;
         }
 
-        $file_tags->setFullFilePath($new_file_path);
+        $fileTags->setFullFilePath($newFilePath);
 
-        $this->app->em->persist($file_tags);
+        $this->app->em->persist($fileTags);
         $this->app->em->flush();
     }
 
     /**
-     * @param string $old_folder_path
-     * @param string $new_folder_path
+     * @param string $oldFolderPath
+     * @param string $newFolderPath
      * @throws \Exception
      */
-    public function updateFilePathByFolderPathChange(string $old_folder_path, string $new_folder_path) {
-        $this->app->repositories->filesTagsRepository->updateFilePathByFolderPathChange($old_folder_path, $new_folder_path);
+    public function updateFilePathByFolderPathChange(string $oldFolderPath, string $newFolderPath) {
+        $this->app->repositories->filesTagsRepository->updateFilePathByFolderPathChange($oldFolderPath, $newFolderPath);
     }
 
     /**
      * This will copy the current set of tag and create new set with new path
-     * @param string $current_file_path
-     * @param string $copy_file_path
+     * @param string $currentFilePath
+     * @param string $copyFilePath
      * @throws \Exception
      */
-    public function copyTagsFromPathToNewPath(string $current_file_path, string $copy_file_path): void {
+    public function copyTagsFromPathToNewPath(string $currentFilePath, string $copyFilePath): void {
 
-        $tags_arr  = [];
-        $file_tags = $this->getEntity($current_file_path);
+        $tagsArr  = [];
+        $fileTags = $this->getEntity($currentFilePath);
 
-        if( !empty($file_tags) ){
-            $tags_json = $file_tags->getTags();
-            $tags_arr  = \GuzzleHttp\json_decode($tags_json);
+        if( !empty($fileTags) ){
+            $tagsJson = $fileTags->getTags();
+            $tagsArr  = \GuzzleHttp\json_decode($tagsJson);
         }
 
-        $this->prepare($tags_arr, $copy_file_path);
+        $this->prepare($tagsArr, $copyFilePath);
         $this->updateTags();
 
     }

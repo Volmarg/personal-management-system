@@ -43,8 +43,8 @@ class MyPasswordsType extends AbstractType {
             ->add('group', EntityType::class, [
                 'class' => MyPasswordsGroups::class,
                 'choices' => $this->app->repositories->myPasswordsGroupsRepository->findBy(['deleted' => 0]),
-                'choice_label' => function (MyPasswordsGroups $password_group) {
-                    return $password_group->getName();
+                'choice_label' => function (MyPasswordsGroups $passwordGroup) {
+                    return $passwordGroup->getName();
                 },
                 'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.group'),
                 'attr'  => [

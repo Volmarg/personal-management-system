@@ -40,8 +40,8 @@ class MyPaymentsIncomeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $finances_currencies_dtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
-        $choices                  = $this->buildCurrencyChoices($finances_currencies_dtos);
+        $financesCurrenciesDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
+        $choices                = $this->buildCurrencyChoices($financesCurrenciesDtos);
 
         $builder
             ->add(self::KEY_INFORMATION, TextType::class, [
@@ -99,15 +99,15 @@ class MyPaymentsIncomeType extends AbstractType
     }
 
     /**
-     * @param SettingsCurrencyDTO[] $settings_currencies_dtos
+     * @param SettingsCurrencyDTO[] $settingsCurrenciesDtos
      * @return array
      */
-    private function buildCurrencyChoices(array $settings_currencies_dtos){
+    private function buildCurrencyChoices(array $settingsCurrenciesDtos){
         $choices = [];
 
-        foreach( $settings_currencies_dtos as $setting_currency_dto ){
-            $value           = $setting_currency_dto->getName();
-            $name            = $setting_currency_dto->getSymbol();
+        foreach($settingsCurrenciesDtos as $settingCurrencyDto ){
+            $value           = $settingCurrencyDto->getName();
+            $name            = $settingCurrencyDto->getSymbol();
             $choices[$name]  = $value;
         }
 

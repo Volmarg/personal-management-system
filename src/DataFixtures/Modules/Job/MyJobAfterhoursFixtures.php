@@ -32,15 +32,15 @@ class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface
 
             $goal = Utils::arrayGetRandom(JobAfterhours::ALL_GOALS);
 
-            $date           = $this->faker->date();
-            $minutes_made   = $this->faker->numberBetween(45, 80);
+            $date        = $this->faker->date();
+            $minutesMade = $this->faker->numberBetween(45, 80);
 
-            $hours_from_minutes_made = floor($minutes_made / 60);
-            $minutes_left_from_hours = $minutes_made % 60;
-            $minutes_left_from_hours = ( $minutes_left_from_hours < 10 ? "0{$minutes_left_from_hours}" : $minutes_left_from_hours );
+            $hoursFromMinutesMade = floor($minutesMade / 60);
+            $minutesLeftFromHours = $minutesMade % 60;
+            $minutesLeftFromHours = ( $minutesLeftFromHours < 10 ? "0{$minutesLeftFromHours}" : $minutesLeftFromHours );
 
-            $startHour   = rand(5, 8);
-            $finishHour  = $startHour + 8 + $hours_from_minutes_made;
+            $startHour  = rand(5, 8);
+            $finishHour = $startHour + 8 + $hoursFromMinutesMade;
 
             $description = str_replace(
                 JobAfterhours::STARTED_AT,
@@ -50,18 +50,18 @@ class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface
 
             $description = str_replace(
                 JobAfterhours::FINISHED_AT,
-                "{$finishHour}:{$minutes_left_from_hours}",
+                "{$finishHour}:{$minutesLeftFromHours}",
                 $description
             );
 
-            $my_job_afterhours  = new MyJobAfterhours();
-            $my_job_afterhours->setDate($date);
-            $my_job_afterhours->setGoal(ucfirst($goal));
-            $my_job_afterhours->setType(MyJobAfterhours::TYPE_MADE);
-            $my_job_afterhours->setMinutes($minutes_made);
-            $my_job_afterhours->setDescription($description);
+            $myJobAfterhours  = new MyJobAfterhours();
+            $myJobAfterhours->setDate($date);
+            $myJobAfterhours->setGoal(ucfirst($goal));
+            $myJobAfterhours->setType(MyJobAfterhours::TYPE_MADE);
+            $myJobAfterhours->setMinutes($minutesMade);
+            $myJobAfterhours->setDescription($description);
 
-            $manager->persist($my_job_afterhours);
+            $manager->persist($myJobAfterhours);
             $manager->flush();
         }
 
@@ -69,20 +69,20 @@ class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface
         for($x = 0; $x <= 10; $x++) {
 
             // this is because i want to add spent time only to goals for which i collected some time
-            $all_goals_names = $manager->getRepository(MyJobAfterhours::class)->getAllGoalsNames();
-            $goal            = Utils::arrayGetRandom($all_goals_names);
+            $allGoalsNames = $manager->getRepository(MyJobAfterhours::class)->getAllGoalsNames();
+            $goal          = Utils::arrayGetRandom($allGoalsNames);
 
-            $date           = $this->faker->date();
-            $minutes_spent  = $this->faker->numberBetween(10, 30);
+            $date          = $this->faker->date();
+            $minutesSpent  = $this->faker->numberBetween(10, 30);
 
-            $my_job_afterhours  = new MyJobAfterhours();
-            $my_job_afterhours->setDate($date);
-            $my_job_afterhours->setGoal(ucfirst($goal));
-            $my_job_afterhours->setType(MyJobAfterhours::TYPE_SPENT);
-            $my_job_afterhours->setMinutes($minutes_spent);
-            $my_job_afterhours->setDescription('');
+            $myJobAfterhours  = new MyJobAfterhours();
+            $myJobAfterhours->setDate($date);
+            $myJobAfterhours->setGoal(ucfirst($goal));
+            $myJobAfterhours->setType(MyJobAfterhours::TYPE_SPENT);
+            $myJobAfterhours->setMinutes($minutesSpent);
+            $myJobAfterhours->setDescription('');
 
-            $manager->persist($my_job_afterhours);
+            $manager->persist($myJobAfterhours);
             $manager->flush();
         }
 

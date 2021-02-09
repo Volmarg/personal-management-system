@@ -38,10 +38,10 @@ class UploadrecursiveoptionsType extends AbstractType {
 
     public function buildView(FormView $view, FormInterface $form, array $options) {
 
-        $form_name                     = $form->getParent()->getName();
+        $formName                     = $form->getParent()->getName();
         $view->vars['add_main_folder'] = false;
 
-        if( in_array($form_name, static::FORMS_NAMES_WITH_VISIBLE_MAIN_FOLDERS) ){
+        if( in_array($formName, static::FORMS_NAMES_WITH_VISIBLE_MAIN_FOLDERS) ){
             $view->vars['add_main_folder'] = true;
         }
 

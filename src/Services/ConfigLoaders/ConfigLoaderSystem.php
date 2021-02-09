@@ -5,24 +5,24 @@ namespace App\Services\ConfigLoaders;
 class ConfigLoaderSystem extends AbstractConfigLoader {
 
     /**
-     * @var string $system_from_email
+     * @var string $systemFromEmail
      */
-    private string $system_from_email;
+    private string $systemFromEmail;
 
     /**
      * @return string
      */
     public function getSystemFromEmail(): string
     {
-        return $this->system_from_email;
+        return $this->systemFromEmail;
     }
 
     /**
-     * @param string $system_from_email
+     * @param string $systemFromEmail
      */
-    public function setSystemFromEmail(string $system_from_email): void
+    public function setSystemFromEmail(string $systemFromEmail): void
     {
-        $this->system_from_email = $system_from_email;
+        $this->systemFromEmail = $systemFromEmail;
     }
 
 }

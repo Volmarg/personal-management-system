@@ -5,7 +5,6 @@ namespace App\Repository\System;
 use App\Entity\System\LockedResource;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Driver\Exception;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Statement;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\OptimisticLockException;
@@ -25,24 +24,24 @@ class LockedResourceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param LockedResource $locked_resource
+     * @param LockedResource $lockedResource
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function add(LockedResource $locked_resource): void
+    public function add(LockedResource $lockedResource): void
     {
-        $this->_em->persist($locked_resource);
+        $this->_em->persist($lockedResource);
         $this->_em->flush();
     }
 
     /**
-     * @param LockedResource $locked_resource
+     * @param LockedResource $lockedResource
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function remove(LockedResource $locked_resource): void
+    public function remove(LockedResource $lockedResource): void
     {
-        $this->_em->remove($locked_resource);
+        $this->_em->remove($lockedResource);
         $this->_em->flush();
     }
 
@@ -55,9 +54,9 @@ class LockedResourceRepository extends ServiceEntityRepository
      */
     public function findOneEntity(string $record, string $type, string $target):? LockedResource
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select('lr')
+        $queryBuilder->select('lr')
             ->from(LockedResource::class, 'lr')
             ->where('lr.type = :type')
             ->andWhere('lr.record = :record')
@@ -66,7 +65,7 @@ class LockedResourceRepository extends ServiceEntityRepository
             ->setParameter("record", $record)
             ->setParameter("target", $target);
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         if( empty($results) ){

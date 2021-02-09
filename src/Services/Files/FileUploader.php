@@ -41,9 +41,9 @@ class FileUploader extends AbstractController {
     ];
 
     /**
-     * @var string $target_directory
+     * @var string $targetDirectory
      */
-    private $target_directory;
+    private $targetDirectory;
 
     /**
      * @var Finder $finder
@@ -61,21 +61,21 @@ class FileUploader extends AbstractController {
     private $app;
 
     /**
-     * @var FilesTagsController $files_tags_controller
+     * @var FilesTagsController $filesTagsController
      */
-    private $files_tags_controller;
+    private $filesTagsController;
 
     /**
-     * @var ImageHandler $image_handler
+     * @var ImageHandler $imageHandler
      */
-    private $image_handler;
+    private $imageHandler;
 
-    public function __construct(LoggerInterface $logger, Application $app, FilesTagsController $files_tags_controller, ImageHandler $image_handler) {
-        $this->files_tags_controller = $files_tags_controller;
-        $this->image_handler         = $image_handler;
-        $this->finder                = new Finder();
-        $this->logger                = $logger;
-        $this->app                   = $app;
+    public function __construct(LoggerInterface $logger, Application $app, FilesTagsController $filesTagsController, ImageHandler $imageHandler) {
+        $this->filesTagsController = $filesTagsController;
+        $this->imageHandler        = $imageHandler;
+        $this->finder              = new Finder();
+        $this->logger              = $logger;
+        $this->app                 = $app;
     }
 
     /**
@@ -95,9 +95,9 @@ class FileUploader extends AbstractController {
         $this->logger->info($message);
 
         if( Env::isDemo() ){
-            $is_file_valid = $this->isFileValid($file, $request);
+            $isFileValid = $this->isFileValid($file, $request);
 
-            if( !$is_file_valid ){
+            if( !$isFileValid ){
                 $message = $this->app->translator->translate('responses.upload.invalidFileHasBeenSkipped') . $subdirectory;
                 return new Response($message, 500);
             }
@@ -109,51 +109,51 @@ class FileUploader extends AbstractController {
 
         switch($type){
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
-                $target_directory = Env::getFilesUploadDir();
+                $targetDirectory = Env::getFilesUploadDir();
             break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
-                $target_directory = Env::getImagesUploadDir();
+                $targetDirectory = Env::getImagesUploadDir();
             break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_VIDEO:
-                $target_directory = Env::getVideoUploadDir();
+                $targetDirectory = Env::getVideoUploadDir();
                 break;
             default:
-                $log_message = $this->app->translator->translate('logs.upload.triedToUploadForUnknownUploadType') . $type;
-                $exc_message = $this->app->translator->translate('exception.upload.thisUploadTypeIsNotAllowed') . $type;
-                $this->logger->info($log_message);
-                throw new \Exception($exc_message);
+                $logMessage = $this->app->translator->translate('logs.upload.triedToUploadForUnknownUploadType') . $type;
+                $excMessage = $this->app->translator->translate('exception.upload.thisUploadTypeIsNotAllowed') . $type;
+                $this->logger->info($logMessage);
+                throw new \Exception($excMessage);
         }
 
-        $original_filename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $file_extension     = $file->guessExtension();
+        $originalFilename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $fileExtension     = $file->guessExtension();
 
-        $extension = $extension ?: $file_extension;
-        $filename  = $filename  ?: $original_filename;
+        $extension = $extension ?: $fileExtension;
+        $filename  = $filename  ?: $originalFilename;
 
         # check if the target folder is main folder
-        if ( !empty($subdirectory) && $subdirectory !== $target_directory ) {
-            $target_directory .= DIRECTORY_SEPARATOR . $subdirectory;
+        if ( !empty($subdirectory) && $subdirectory !== $targetDirectory ) {
+            $targetDirectory .= DIRECTORY_SEPARATOR . $subdirectory;
         }
 
-        $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
-        if (file_exists($file_full_path)) {
+        $fileFullPath = $targetDirectory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
+        if (file_exists($fileFullPath)) {
             $filename .= '_' . $now->format('Y_m_d_H_i_s_u');
-            $file_full_path = $target_directory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
+            $fileFullPath = $targetDirectory . DIRECTORY_SEPARATOR . $filename . DOT . $extension;
         }
 
-        $filename_with_extension = $filename . DOT . $extension;
+        $filenameWithExtension = $filename . DOT . $extension;
 
         try {
-            $file->move($target_directory, $filename_with_extension);
+            $file->move($targetDirectory, $filenameWithExtension);
 
             // Todo(maybe) in future: make checking which file based module is targeted - generate miniatures only for MyImages, as it will be only used in this case
-            $moved_file = new File($file_full_path);
-            if( FileValidator::isFileImage($moved_file) && FileValidator::isImageResizable($moved_file)){
-                $this->image_handler->createMiniature($file_full_path);
+            $movedFile = new File($fileFullPath);
+            if( FileValidator::isFileImage($movedFile) && FileValidator::isImageResizable($movedFile)){
+                $this->imageHandler->createMiniature($fileFullPath);
             }
 
             if( !empty($tags) ){
-                $this->files_tags_controller->updateTags($tags, $file_full_path);
+                $this->filesTagsController->updateTags($tags, $fileFullPath);
             }
 
         } catch (FileException $e) {
@@ -164,26 +164,26 @@ class FileUploader extends AbstractController {
             return new Response($message, 500);
         }
 
-        $log_message       = $this->app->translator->translate('logs.upload.finishedUploading');
-        $response_message  = $this->app->translator->translate('responses.upload.finishedUploading');
-        $this->logger->info($log_message);
-        return new Response($response_message, 200);
+        $logMessage       = $this->app->translator->translate('logs.upload.finishedUploading');
+        $responseMessage  = $this->app->translator->translate('responses.upload.finishedUploading');
+        $this->logger->info($logMessage);
+        return new Response($responseMessage, 200);
     }
 
     public function handleUploadDir() {
 
-        $folder_count        = 0;
-        $upload_folder_path  = '';
-        $this->finder->directories()->name($this->target_directory)->in('.');
+        $folderCount       = 0;
+        $uploadFolderPath  = '';
+        $this->finder->directories()->name($this->targetDirectory)->in('.');
 
         foreach($this->finder as $folder){
-            $upload_folder_path = $folder->getPath();
+            $uploadFolderPath = $folder->getPath();
         }
 
 
         try{
-            if($folder_count > 0){
-                $message = $this->app->translator->translate('exceptions.upload.foundMoreThanOneDirWithName') . $this->target_directory;
+            if($folderCount > 0){
+                $message = $this->app->translator->translate('exceptions.upload.foundMoreThanOneDirWithName') . $this->targetDirectory;
                 throw new Exception($message);
             }
         }catch(\Exception $e){
@@ -193,8 +193,8 @@ class FileUploader extends AbstractController {
             ]);
         }
 
-        if (!file_exists($upload_folder_path)) {
-            mkdir($this->target_directory, 0777);
+        if (!file_exists($uploadFolderPath)) {
+            mkdir($this->targetDirectory, 0777);
         }
 
     }
@@ -211,11 +211,11 @@ class FileUploader extends AbstractController {
         $extension  = $file->getClientOriginalExtension();
         $mime       = $file->getClientMimeType();
 
-        $is_mime_allowed      = $this->isMimeAllowed($mime);
-        $is_extension_allowed = $this->isExtensionAllowed($extension);
-        $is_file_name_allowed = $this->isFileNameAllowed($filename);
+        $isMimeAllowed      = $this->isMimeAllowed($mime);
+        $isExtensionAllowed = $this->isExtensionAllowed($extension);
+        $isFileNameAllowed  = $this->isFileNameAllowed($filename);
 
-        if(!$is_mime_allowed || !$is_extension_allowed || !$is_file_name_allowed){
+        if(!$isMimeAllowed || !$isExtensionAllowed || !$isFileNameAllowed){
             $this->logger->critical("Skipped file.", [
                 'filename'      =>  $filename,
                 'extension'     =>  $extension,

@@ -30,14 +30,14 @@ class ModuleData extends AbstractExtension
     /**
      * Will return single module data for given parameters, or null if nothing is found
      *
-     * @param string $record_type
+     * @param string $recordType
      * @param string $module
-     * @param string $record_identifier
+     * @param string $recordIdentifier
      * @return ModuleDataEntity|null
      */
-   public function getOneByRecordTypeModuleAndRecordIdentifier(string $record_type, string $module, string $record_identifier): ?ModuleDataEntity
+   public function getOneByRecordTypeModuleAndRecordIdentifier(string $recordType, string $module, string $recordIdentifier): ?ModuleDataEntity
    {
-       return $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier($record_type, $module, $record_identifier);
+       return $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier($recordType, $module, $recordIdentifier);
    }
 
 }

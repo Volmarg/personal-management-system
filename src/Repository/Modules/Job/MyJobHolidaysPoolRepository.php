@@ -146,9 +146,9 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
             return 0;
         }
 
-        $days_in_pool = (int) $result[MyJobHolidaysPool::FIELD_DAYS_IN_POOL];
+        $daysInPool = (int) $result[MyJobHolidaysPool::FIELD_DAYS_IN_POOL];
 
-        return $days_in_pool;
+        return $daysInPool;
     }
 
     /**
@@ -207,9 +207,9 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
             return 0;
         }
 
-        $days_left = (int) $result['daysLeft'];
+        $daysLeft = (int) $result['daysLeft'];
 
-        return $days_left;
+        return $daysLeft;
     }
 
     /**

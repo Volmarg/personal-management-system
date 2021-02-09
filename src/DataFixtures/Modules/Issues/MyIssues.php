@@ -44,10 +44,10 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
     }
 
     private function addAllIssues(ObjectManager $manager){
-        foreach(Issues::ALL_ISSUES as $issue_data){
-            $id          = $issue_data[Issues::KEY_ID];
-            $name        = $issue_data[Issues::KEY_NAME];
-            $information = $issue_data[Issues::KEY_INFORMATION];
+        foreach(Issues::ALL_ISSUES as $issueData){
+            $id          = $issueData[Issues::KEY_ID];
+            $name        = $issueData[Issues::KEY_NAME];
+            $information = $issueData[Issues::KEY_INFORMATION];
 
             $issue = new MyIssue();
             $issue->setId($id);
@@ -65,21 +65,21 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      */
     private function addAllIssuesContacts(ObjectManager $manager)
     {
-        foreach(Issues::ALL_ISSUES_CONTACTS as $issue_contact_data){
-            $issue_id    = $issue_contact_data[Issues::KEY_ISSUE_ID];
-            $information = $issue_contact_data[Issues::KEY_INFORMATION];
-            $date        = $issue_contact_data[Issues::KEY_DATE];
-            $icon        = $issue_contact_data[Issues::KEY_ICON];
+        foreach(Issues::ALL_ISSUES_CONTACTS as $issueContactData){
+            $issueId     = $issueContactData[Issues::KEY_ISSUE_ID];
+            $information = $issueContactData[Issues::KEY_INFORMATION];
+            $date        = $issueContactData[Issues::KEY_DATE];
+            $icon        = $issueContactData[Issues::KEY_ICON];
 
-            $issue = $this->app->repositories->myIssueRepository->find($issue_id);
+            $issue = $this->app->repositories->myIssueRepository->find($issueId);
 
-            $issue_contact = new MyIssueContact();
-            $issue_contact->setIssue($issue);
-            $issue_contact->setInformation($information);
-            $issue_contact->setIcon($icon);
-            $issue_contact->setDate(new DateTime($date));
+            $issueContact = new MyIssueContact();
+            $issueContact->setIssue($issue);
+            $issueContact->setInformation($information);
+            $issueContact->setIcon($icon);
+            $issueContact->setDate(new DateTime($date));
 
-            $manager->persist($issue_contact);
+            $manager->persist($issueContact);
         }
         $manager->flush();
     }
@@ -90,19 +90,19 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      */
     private function addAllIssuesProgress(ObjectManager $manager)
     {
-        foreach(Issues::ALL_ISSUES_PROGRESS as $issue_progress_data){
-            $issue_id    = $issue_progress_data[Issues::KEY_ISSUE_ID];
-            $information = $issue_progress_data[Issues::KEY_INFORMATION];
-            $date        = $issue_progress_data[Issues::KEY_DATE];
+        foreach(Issues::ALL_ISSUES_PROGRESS as $issueProgressData){
+            $issueId     = $issueProgressData[Issues::KEY_ISSUE_ID];
+            $information = $issueProgressData[Issues::KEY_INFORMATION];
+            $date        = $issueProgressData[Issues::KEY_DATE];
 
-            $issue = $this->app->repositories->myIssueRepository->find($issue_id);
+            $issue = $this->app->repositories->myIssueRepository->find($issueId);
 
-            $issue_progress = new MyIssueProgress();
-            $issue_progress->setIssue($issue);
-            $issue_progress->setInformation($information);
-            $issue_progress->setDate(new DateTime($date));
+            $issueProgress = new MyIssueProgress();
+            $issueProgress->setIssue($issue);
+            $issueProgress->setInformation($information);
+            $issueProgress->setDate(new DateTime($date));
 
-            $manager->persist($issue_progress);
+            $manager->persist($issueProgress);
         }
         $manager->flush();
     }

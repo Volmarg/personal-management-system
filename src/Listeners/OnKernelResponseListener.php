@@ -16,18 +16,18 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class OnKernelResponseListener implements EventSubscriberInterface {
 
     /**
-     * @var \App\Services\Core\Logger $security_logger
+     * @var Logger $securityLogger
      */
-    private $security_logger;
+    private $securityLogger;
 
     /**
      * @var Translator $translator
      */
     private $translator;
 
-    public function __construct(Logger $security_logger, Translator $translator) {
-        $this->security_logger = $security_logger->getSecurityLogger();
-        $this->translator      = $translator;
+    public function __construct(Logger $securityLogger, Translator $translator) {
+        $this->securityLogger = $securityLogger->getSecurityLogger();
+        $this->translator     = $translator;
     }
 
     /**

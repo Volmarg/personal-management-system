@@ -14,21 +14,21 @@ class NotificationsStyling extends AbstractExtension {
     }
 
     /**
-     * @param int $days_diff
+     * @param int $daysDiff
      * @return string
      * @throws \Exception
      */
-    public function getClassesForSchedulesNotifications(int $days_diff):string {
+    public function getClassesForSchedulesNotifications(int $daysDiff):string {
         $classes    = '';
 
-        switch($days_diff) {
-            case $days_diff > 30 && $days_diff <= 60:
+        switch($daysDiff) {
+            case $daysDiff > 30 && $daysDiff <= 60:
                 $classes = 'text-success';
                 break;
-            case $days_diff > 14 && $days_diff <= 30:
+            case $daysDiff > 14 && $daysDiff <= 30:
                 $classes = 'text-warning';
                 break;
-            case $days_diff <= 14:
+            case $daysDiff <= 14:
                 $classes = 'text-danger';
                 break;
         }

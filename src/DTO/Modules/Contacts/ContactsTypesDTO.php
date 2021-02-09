@@ -12,27 +12,27 @@ class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
     /**
      * @var ContactTypeDTO[]
      */
-    private $contact_type_dtos = [];
+    private $contactTypeDtos = [];
 
     /**
      * @return ContactTypeDTO[]
      */
     public function getContactTypeDtos(): array {
-        return $this->contact_type_dtos;
+        return $this->contactTypeDtos;
     }
 
     /**
-     * @param ContactTypeDTO[] $contact_type_dtos
+     * @param ContactTypeDTO[] $contactTypeDtos
      */
-    public function setContactTypeDtos(array $contact_type_dtos): void {
-        $this->contact_type_dtos = $contact_type_dtos;
+    public function setContactTypeDtos(array $contactTypeDtos): void {
+        $this->contactTypeDtos = $contactTypeDtos;
     }
 
     /**
-     * @param ContactTypeDTO $contact_type_dto
+     * @param ContactTypeDTO $contactTypeDto
      */
-    public function addContactType(ContactTypeDTO $contact_type_dto){
-        $this->contact_type_dtos[] = $contact_type_dto;
+    public function addContactType(ContactTypeDTO $contactTypeDto){
+        $this->contactTypeDtos[] = $contactTypeDto;
     }
 
     /**
@@ -40,13 +40,13 @@ class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
      */
     public function toArray():array {
 
-        $contact_types_array = [];
+        $contactTypesArray = [];
 
-        foreach($this->contact_type_dtos as $contact_type_dto){
-            $contact_types_array[] = $contact_type_dto->toArray();
+        foreach($this->contactTypeDtos as $contactTypeDto){
+            $contactTypesArray[] = $contactTypeDto->toArray();
         }
 
-        return $contact_types_array; #info: no key - this is required for this solution
+        return $contactTypesArray; #info: no key - this is required for this solution
     }
 
     /**
@@ -65,15 +65,15 @@ class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
      */
     public static function fromJson(string $json):ContactsTypesDTO {
 
-        $array_of_contacts_types = json_decode($json, true);
-        $contacts_types_dtos     = new ContactsTypesDTO();
+        $arrayOfContactsTypes = json_decode($json, true);
+        $contactsTypesDtos    = new ContactsTypesDTO();
 
-        foreach( $array_of_contacts_types as $contact_type ){
-            $contact_type_dto = ContactTypeDTO::fromArray($contact_type);
-            $contacts_types_dtos->addContactType($contact_type_dto);
+        foreach( $arrayOfContactsTypes as $contactType ){
+            $contactTypeDto = ContactTypeDTO::fromArray($contactType);
+            $contactsTypesDtos->addContactType($contactTypeDto);
         }
 
-        return $contacts_types_dtos;
+        return $contactsTypesDtos;
     }
 
 }

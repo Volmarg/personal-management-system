@@ -25,9 +25,9 @@ class NotifierProxyLoggerService
 {
 
     /**
-     * @var NotifierProxyLoggerBridge $notifier_proxy_logger_bridge
+     * @var NotifierProxyLoggerBridge $notifierProxyLoggerBridge
      */
-    private NotifierProxyLoggerBridge $notifier_proxy_logger_bridge;
+    private NotifierProxyLoggerBridge $notifierProxyLoggerBridge;
 
     /**
      * @var Application $app
@@ -37,13 +37,13 @@ class NotifierProxyLoggerService
     /**
      * NotifierProxyLoggerService constructor.
      *
-     * @param NotifierProxyLoggerBridge $notifier_proxy_logger_bridge
+     * @param NotifierProxyLoggerBridge $notifierProxyLoggerBridge
      * @param Application $app
      */
-    public function __construct(NotifierProxyLoggerBridge $notifier_proxy_logger_bridge, Application $app)
+    public function __construct(NotifierProxyLoggerBridge $notifierProxyLoggerBridge, Application $app)
     {
-        $this->app                          = $app;
-        $this->notifier_proxy_logger_bridge = $notifier_proxy_logger_bridge;
+        $this->app                       = $app;
+        $this->notifierProxyLoggerBridge = $notifierProxyLoggerBridge;
     }
 
     /**
@@ -57,16 +57,16 @@ class NotifierProxyLoggerService
     public function insertDiscordMessageForSchedule(MySchedule $schedule): InsertDiscordMessageResponse
     {
         try{
-            $discord_message_dto = new DiscordMessageDTO();
-            $request             = new InsertDiscordMessageRequest();
+            $discordMessageDto = new DiscordMessageDTO();
+            $request           = new InsertDiscordMessageRequest();
 
-            $discord_message_dto->setWebhookName(NotifierProxyLoggerBridge::WEBHOOK_NAME_ALL_NOTIFICATIONS);
-            $discord_message_dto->setMessageTitle($schedule->getName());
-            $discord_message_dto->setMessageContent($schedule->getInformation());
-            $discord_message_dto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
+            $discordMessageDto->setWebhookName(NotifierProxyLoggerBridge::WEBHOOK_NAME_ALL_NOTIFICATIONS);
+            $discordMessageDto->setMessageTitle($schedule->getName());
+            $discordMessageDto->setMessageContent($schedule->getInformation());
+            $discordMessageDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
 
-            $request->setDiscordMessageDto($discord_message_dto);
-            $response = $this->notifier_proxy_logger_bridge->insertDiscordMessage($request);
+            $request->setDiscordMessageDto($discordMessageDto);
+            $response = $this->notifierProxyLoggerBridge->insertDiscordMessage($request);
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
             throw $e;
@@ -86,17 +86,17 @@ class NotifierProxyLoggerService
     public function insertEmailForSchedule(MySchedule $schedule): InsertMailResponse
     {
         try{
-            $mail_dto = new MailDTO();
-            $request  = new InsertMailRequest();
+            $mailDto = new MailDTO();
+            $request = new InsertMailRequest();
 
-            $mail_dto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
-            $mail_dto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
-            $mail_dto->setFromEmail($this->app->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
-            $mail_dto->setSubject($schedule->getName());
-            $mail_dto->setBody($schedule->getInformation());
+            $mailDto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
+            $mailDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
+            $mailDto->setFromEmail($this->app->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
+            $mailDto->setSubject($schedule->getName());
+            $mailDto->setBody($schedule->getInformation());
 
-            $request->setMailDto($mail_dto);
-            $response = $this->notifier_proxy_logger_bridge->insertMail($request);
+            $request->setMailDto($mailDto);
+            $response = $this->notifierProxyLoggerBridge->insertMail($request);
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
             throw $e;

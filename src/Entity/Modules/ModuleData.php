@@ -55,7 +55,7 @@ class ModuleData implements EntityInterface
     /**
      * @ORM\Column(type="string", length=50)
      */
-    private $record_type;
+    private $recordType;
 
     /**
      * @ORM\Column(type="string", length=75)
@@ -65,7 +65,7 @@ class ModuleData implements EntityInterface
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $record_identifier;
+    private $recordIdentifier;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -79,12 +79,12 @@ class ModuleData implements EntityInterface
 
     public function getRecordType(): ?string
     {
-        return $this->record_type;
+        return $this->recordType;
     }
 
-    public function setRecordType(string $record_type): self
+    public function setRecordType(string $recordType): self
     {
-        $this->record_type = $record_type;
+        $this->recordType = $recordType;
 
         return $this;
     }
@@ -103,12 +103,12 @@ class ModuleData implements EntityInterface
 
     public function getRecordIdentifier(): ?string
     {
-        return $this->record_identifier;
+        return $this->recordIdentifier;
     }
 
-    public function setRecordIdentifier(string $record_identifier): self
+    public function setRecordIdentifier(string $recordIdentifier): self
     {
-        $this->record_identifier = $record_identifier;
+        $this->recordIdentifier = $recordIdentifier;
 
         return $this;
     }

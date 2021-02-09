@@ -23,9 +23,9 @@ class MyPasswordsSettingsFixtures extends Fixture implements OrderedFixtureInter
     public function load(ObjectManager $manager)
     {
 
-        foreach(PasswordsGroups::ALL as $password_group_name) {
+        foreach(PasswordsGroups::ALL as $passwordGroupName) {
             $passwordGroup = new MyPasswordsGroups();
-            $passwordGroup->setName($password_group_name);
+            $passwordGroup->setName($passwordGroupName);
 
             $manager->persist($passwordGroup);
         }

@@ -29,19 +29,19 @@ class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterf
     public function load(ObjectManager $manager)
     {
 
-        $currency_multiplier = new MyPaymentsSettings();
-        $currency_multiplier->setName('currency_multiplier');
-        $currency_multiplier->setValue(static::MULTIPLIER);
+        $currencyMultiplier = new MyPaymentsSettings();
+        $currencyMultiplier->setName('currency_multiplier');
+        $currencyMultiplier->setValue(static::MULTIPLIER);
 
-        $manager->persist($currency_multiplier);
+        $manager->persist($currencyMultiplier);
 
-        foreach ( PaymentsSettings::CATEGORIES_NAMES as $category_name ) {
+        foreach ( PaymentsSettings::CATEGORIES_NAMES as $categoryName ) {
 
-            $payment_type = new MyPaymentsSettings();
-            $payment_type->setName(static::SETTING_NAME);
-            $payment_type->setValue($category_name);
+            $paymentType = new MyPaymentsSettings();
+            $paymentType->setName(static::SETTING_NAME);
+            $paymentType->setValue($categoryName);
 
-            $manager->persist($payment_type);
+            $manager->persist($paymentType);
         }
 
         $manager->flush();

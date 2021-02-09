@@ -27,13 +27,13 @@ class MyNotesType extends AbstractType {
     private $app;
 
     /**
-     * @var MyNotesCategoriesController $my_notes_categories_controller
+     * @var MyNotesCategoriesController $myNotesCategoriesController
      */
-    private $my_notes_categories_controller;
+    private $myNotesCategoriesController;
 
-    public function __construct(Application $app, MyNotesCategoriesController $my_notes_categories_controller) {
+    public function __construct(Application $app, MyNotesCategoriesController $myNotesCategoriesController) {
         $this->app = $app;
-        $this->my_notes_categories_controller = $my_notes_categories_controller;
+        $this->myNotesCategoriesController = $myNotesCategoriesController;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
@@ -65,19 +65,19 @@ class MyNotesType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.general.submit')
             ])
             ->addEventListener(FormEvents::SUBMIT, function(FormEvent $event){
-                $form_data   = $event->getData();
-                $title       = $form_data[self::KEY_TITLE];
-                $body        = $form_data[self::KEY_BODY];
-                $category_id = $form_data[self::KEY_CATEGORY];
+                $formData   = $event->getData();
+                $title      = $formData[self::KEY_TITLE];
+                $body       = $formData[self::KEY_BODY];
+                $categoryId = $formData[self::KEY_CATEGORY];
 
-                $category    = $this->app->repositories->myNotesCategoriesRepository->find($category_id);
+                $category = $this->app->repositories->myNotesCategoriesRepository->find($categoryId);
 
-                $my_note = new MyNotes();
-                $my_note->setCategory($category);
-                $my_note->setTitle($title);
-                $my_note->setBody($body);
+                $myNote = new MyNotes();
+                $myNote->setCategory($category);
+                $myNote->setTitle($title);
+                $myNote->setBody($body);
 
-                $event->setData($my_note);
+                $event->setData($myNote);
             })
             ->get(self::KEY_CATEGORY)->resetViewTransformers();
 
@@ -93,8 +93,8 @@ class MyNotesType extends AbstractType {
      */
     private function buildChoices(): array
     {
-        $parents_children_dtos = $this->my_notes_categories_controller->buildParentsChildrenCategoriesHierarchy();
-        return $parents_children_dtos;
+        $parentsChildrenDtos = $this->myNotesCategoriesController->buildParentsChildrenCategoriesHierarchy();
+        return $parentsChildrenDtos;
     }
 
 }

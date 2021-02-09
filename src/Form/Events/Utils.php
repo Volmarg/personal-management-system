@@ -5,77 +5,77 @@ namespace App\Form\Events;
 
 class Utils {
 
-    private static $uc_property;
-    private static $lc_property;
+    private static $ucProperty;
+    private static $lcProperty;
 
     /**
-     * @param $data_elements_to_modify
-     * @param $modified_data
+     * @param $dataElementsToModify
+     * @param $modifiedData
      * @return array
      * @throws \Exception
      */
-    public static function modifyEventData($data_elements_to_modify, $modified_data) {
+    public static function modifyEventData($dataElementsToModify, $modifiedData) {
 
         // FIX: for exceeded uploaded file size - $_FILES is empty, and symfony does not provide any errors
-        if( is_null($data_elements_to_modify) ){
+        if( is_null($dataElementsToModify) ){
             return [];
         }
 
-        foreach ($data_elements_to_modify as $modified_property => $new_value) {
-            static::$uc_property = ucfirst($modified_property);
-            static::$lc_property = lcfirst($modified_property);
+        foreach ($dataElementsToModify as $modifiedProperty => $newValue) {
+            static::$ucProperty = ucfirst($modifiedProperty);
+            static::$lcProperty = lcfirst($modifiedProperty);
 
-            if (is_object($modified_data)) {
-                $modified_data = static::modifyEventDataForObject($modified_data, $new_value);
+            if (is_object($modifiedData)) {
+                $modifiedData = static::modifyEventDataForObject($modifiedData, $newValue);
             } else {
-                $modified_data = static::modifyEventDataForArray($modified_data, $new_value);
+                $modifiedData = static::modifyEventDataForArray($modifiedData, $newValue);
             }
         }
 
-        return $modified_data;
+        return $modifiedData;
     }
 
 
     /**
-     * @param $modified_data
-     * @param $new_value
+     * @param $modifiedData
+     * @param $newValue
      * @return mixed
      * @throws \Exception
      */
-    private static function modifyEventDataForObject($modified_data, $new_value) {
+    private static function modifyEventDataForObject($modifiedData, $newValue) {
 
-        if (property_exists($modified_data, static::$uc_property)) {
-            $modified_data->{'set' . static::$uc_property}($new_value);
-        } elseif (property_exists($modified_data, static::$lc_property)) {
-            $modified_data->{'set' . static::$lc_property}($new_value);
+        if (property_exists($modifiedData, static::$ucProperty)) {
+            $modifiedData->{'set' . static::$ucProperty}($newValue);
+        } elseif (property_exists($modifiedData, static::$lcProperty)) {
+            $modifiedData->{'set' . static::$lcProperty}($newValue);
         } else {
-            static::throwExceptionMissingProperty([static::$uc_property, static::$lc_property]);
+            static::throwExceptionMissingProperty([static::$ucProperty, static::$lcProperty]);
         }
 
-        return $modified_data;
+        return $modifiedData;
     }
 
     /**
-     * @param $modified_data
-     * @param $new_value
+     * @param $modifiedData
+     * @param $newValue
      * @return mixed
      */
-    private static function modifyEventDataForArray($modified_data, $new_value) {
+    private static function modifyEventDataForArray($modifiedData, $newValue) {
 
         // FIX: for exceeded uploaded file size - $_FILES is empty, and symfony does not provide any errors
-        if( is_null($modified_data) ){
+        if( is_null($modifiedData) ){
             return [];
         }
 
-        if (array_key_exists(static::$uc_property, $modified_data)) {
-            $modified_data[static::$uc_property] = $new_value;
-        } elseif (array_key_exists(static::$lc_property, $modified_data)) {
-            $modified_data[static::$lc_property] = $new_value;
+        if (array_key_exists(static::$ucProperty, $modifiedData)) {
+            $modifiedData[static::$ucProperty] = $newValue;
+        } elseif (array_key_exists(static::$lcProperty, $modifiedData)) {
+            $modifiedData[static::$lcProperty] = $newValue;
         } else {
-            $modified_data[static::$lc_property] = $new_value;
+            $modifiedData[static::$lcProperty] = $newValue;
         }
 
-        return $modified_data;
+        return $modifiedData;
     }
 
     /**
@@ -83,8 +83,8 @@ class Utils {
      * @throws \Exception
      */
     private static function throwExceptionMissingProperty(array $properties) {
-        $properties_string = json_encode($properties);
-        throw new \Exception("For some reason the object is missing the property that You try to modify ({$properties_string})");
+        $propertiesString = json_encode($properties);
+        throw new \Exception("For some reason the object is missing the property that You try to modify ({$propertiesString})");
     }
 
 }

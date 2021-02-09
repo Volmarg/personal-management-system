@@ -62,27 +62,27 @@ class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $parent_id = NULL;
+    private $parentId = NULL;
 
     /**
      * @return mixed
      */
     public function getParentId() {
-        return $this->parent_id;
+        return $this->parentId;
     }
 
     /**
-     * @param mixed $parent_id
+     * @param mixed $parentId
      * @throws \Exception
      */
-    public function setParentId($parent_id): void {
+    public function setParentId($parentId): void {
         if (
-                $this->id == $parent_id
-            &&  !is_null($parent_id)
+                $this->id == $parentId
+            &&  !is_null($parentId)
         ) {
             throw new \Exception('You cannot be children and parent at the same time!');
         }
-        $this->parent_id = $parent_id;
+        $this->parentId = $parentId;
     }
 
     /**

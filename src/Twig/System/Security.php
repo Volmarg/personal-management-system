@@ -9,12 +9,12 @@ use Twig\TwigFunction;
 class Security extends AbstractExtension {
 
     /**
-     * @var SecurityController $security_controller
+     * @var SecurityController $securityController
      */
-    private SecurityController  $security_controller;
+    private SecurityController $securityController;
 
-    public function __construct(SecurityController $security_controller) {
-        $this->security_controller = $security_controller;
+    public function __construct(SecurityController $securityController) {
+        $this->securityController = $securityController;
     }
 
     public function getFunctions() {
@@ -30,7 +30,7 @@ class Security extends AbstractExtension {
      */
     public function canRegisterUser(): bool
     {
-        return $this->security_controller->canRegisterUser();
+        return $this->securityController->canRegisterUser();
     }
 
 }

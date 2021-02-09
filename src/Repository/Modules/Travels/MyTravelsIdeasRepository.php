@@ -22,17 +22,17 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param bool $include_empty
+     * @param bool $includeEmpty
      * @return array
      * @throws DBALException
      */
-    public function getAllCategories(bool $include_empty = false) {
+    public function getAllCategories(bool $includeEmpty = false) {
         $categories = [];
         $connection = $this->getEntityManager()->getConnection();
 
-        $deleted_statuses = [0];
-        if( $include_empty ){
-            $deleted_statuses[] = 1;
+        $deletedStatuses = [0];
+        if( $includeEmpty ){
+            $deletedStatuses[] = 1;
         }
 
         $sql = '
@@ -48,7 +48,7 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
         ';
 
         $params = [
-            $deleted_statuses
+            $deletedStatuses
         ];
 
         $types = [

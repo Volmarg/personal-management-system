@@ -12,14 +12,14 @@ use App\DTO\AbstractDTO;
 class SecurityDTO extends AbstractDTO {
 
     /**
-     * @var string $plain_password
+     * @var string $plainPassword
      */
-    private $plain_password = "";
+    private $plainPassword = "";
 
     /**
-     * @var string $hashed_password
+     * @var string $hashedPassword
      */
-    private $hashed_password = "";
+    private $hashedPassword = "";
 
     /**
      * @var string $salt
@@ -30,28 +30,28 @@ class SecurityDTO extends AbstractDTO {
      * @return string
      */
     public function getPlainPassword(): string {
-        return $this->plain_password;
+        return $this->plainPassword;
     }
 
     /**
-     * @param string $plain_password
+     * @param string $plainPassword
      */
-    public function setPlainPassword(string $plain_password): void {
-        $this->plain_password = $plain_password;
+    public function setPlainPassword(string $plainPassword): void {
+        $this->plainPassword = $plainPassword;
     }
 
     /**
      * @return string
      */
     public function getHashedPassword(): string {
-        return $this->hashed_password;
+        return $this->hashedPassword;
     }
 
     /**
-     * @param string $hashed_password
+     * @param string $hashedPassword
      */
-    public function setHashedPassword(string $hashed_password): void {
-        $this->hashed_password = $hashed_password;
+    public function setHashedPassword(string $hashedPassword): void {
+        $this->hashedPassword = $hashedPassword;
     }
 
     /**

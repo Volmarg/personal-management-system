@@ -31,12 +31,12 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     /**
      * @var Food
      */
-    private $provider_food;
+    private $providerFood;
 
     /**
      * @var MyPaymentsSettingsRepository
      */
-    private $payments_settings_repository;
+    private $paymentsSettingsRepository;
 
     /**
      * @var ObjectManager $manager
@@ -44,8 +44,8 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     private $manager;
 
     public function __construct() {
-        $this->faker         = Factory::create('en');
-        $this->provider_food = new Food();
+        $this->faker        = Factory::create('en');
+        $this->providerFood = new Food();
     }
 
     /**
@@ -54,29 +54,29 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
      */
     public function load(ObjectManager $manager)
     {
-        $this->payments_settings_repository = $manager->getRepository(MyPaymentsSettings::class);
+        $this->paymentsSettingsRepository = $manager->getRepository(MyPaymentsSettings::class);
         $this->manager                      = $manager;
 
         $currDate = new \DateTime();
 
         for($x = 0; $x <= static::AMOUNT_OF_MONTH_TO_FILL ; $x++){
-            $curr_month  = $currDate->format('m');
-            $curr_year   = $currDate->format('y');
+            $currMonth  = $currDate->format('m');
+            $currYear   = $currDate->format('y');
 
             # first recurring monthly payments
-            $this->addRecurringPayments( $curr_year, $curr_month);
+            $this->addRecurringPayments( $currYear, $currMonth);
 
             # now add some random FOOD products for each month
-            $category_name  = PaymentsSettings::CATEGORY_FOOD;
-            $shops_names    = Shops::SUPERMARKETS;
-            $products_names = $this->provider_food->all;
-            $this->addProductsListWithShop($curr_year, $curr_month, $category_name, $shops_names, $products_names);
+            $categoryName  = PaymentsSettings::CATEGORY_FOOD;
+            $shopsNames    = Shops::SUPERMARKETS;
+            $productsNames = $this->providerFood->all;
+            $this->addProductsListWithShop($currYear, $currMonth, $categoryName, $shopsNames, $productsNames);
 
             # now add some random DOMESTIC products for each month
-            $category_name  = PaymentsSettings::CATEGORY_DOMESTIC;
-            $shops_names    = Shops::DOMESTIC_SHOPS;
-            $products_names = (new Domestic())->all;
-            $this->addProductsListWithShop($curr_year, $curr_month, $category_name, $shops_names, $products_names);
+            $categoryName  = PaymentsSettings::CATEGORY_DOMESTIC;
+            $shopsNames    = Shops::DOMESTIC_SHOPS;
+            $productsNames = (new Domestic())->all;
+            $this->addProductsListWithShop($currYear, $currMonth, $categoryName, $shopsNames, $productsNames);
 
             $currDate->modify('+1months');
 
@@ -86,22 +86,22 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     }
 
     /**
-     * @param int $curr_year
-     * @param int $curr_month
+     * @param int $currYear
+     * @param int $currMonth
      * @throws \Exception
      */
-    private function addRecurringPayments(int $curr_year, int $curr_month) {
+    private function addRecurringPayments(int $currYear, int $currMonth) {
         foreach (PaymentsMonthly::ALL_MONTHLY as $name => $price) {
 
-            $date = "{$curr_year}-{$curr_month}-1";
+            $date = "{$currYear}-{$currMonth}-1";
 
             $firstDayOfMonthDateTime = new \DateTime($date);
 
-            $monthly_payments_types  = $this->payments_settings_repository->findBy(['value' => PaymentsSettings::CATEGORY_MONTHLY_PAYMENTS]);
-            $monthly_payments_type   = reset($monthly_payments_types);
+            $monthlyPaymentsTypes  = $this->paymentsSettingsRepository->findBy(['value' => PaymentsSettings::CATEGORY_MONTHLY_PAYMENTS]);
+            $monthlyPaymentsType   = reset($monthlyPaymentsTypes);
 
             $monthlyPayment = new MyPaymentsMonthly();
-            $monthlyPayment->setType($monthly_payments_type);
+            $monthlyPayment->setType($monthlyPaymentsType);
             $monthlyPayment->setDate($firstDayOfMonthDateTime);
             $monthlyPayment->setDescription($name);
             $monthlyPayment->setMoney($price);
@@ -111,51 +111,50 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
     }
 
     /**
-     * @param int $curr_year
-     * @param int $curr_month
-     * @param string $category_name
-     * @param array $shops_names
-     * @param array $products_names
+     * @param int $currYear
+     * @param int $currMonth
+     * @param string $categoryName
+     * @param array $shopsNames
+     * @param array $productsNames
      * @throws \Exception
      */
     private function addProductsListWithShop(
-        int             $curr_year,
-        int             $curr_month,
-        string          $category_name,
-        array           $shops_names,
-        array           $products_names
-
+        int    $currYear,
+        int    $currMonth,
+        string $categoryName,
+        array  $shopsNames,
+        array  $productsNames
     ){
         for($y = 0; $y <= static::AMOUNT_OF_SHOPPING_PER_MONTH; $y++) {
 
             $day        = rand(1, 25);
-            $date       = "{$curr_year}-{$curr_month}-{$day}";
+            $date       = "{$currYear}-{$currMonth}-{$day}";
             $dateTime   = new \DateTime($date);
 
-            $monthly_payments_types  = $this->payments_settings_repository->findBy(['value' => $category_name]);
-            $monthly_payments_type   = reset($monthly_payments_types);
+            $monthlyPaymentsTypes  = $this->paymentsSettingsRepository->findBy(['value' => $categoryName]);
+            $monthlyPaymentsType   = reset($monthlyPaymentsTypes);
 
 
-            $products_list  = '';
-            $shop_name      = Utils::arrayGetRandom($shops_names);
-            $products       = Utils::arrayGetNotRepeatingValuesCount($products_names, static::AMOUNT_OF_PRODUCTS);
-            $products_count = count($products) -1;
+            $productsList  = '';
+            $shopName      = Utils::arrayGetRandom($shopsNames);
+            $products      = Utils::arrayGetNotRepeatingValuesCount($productsNames, static::AMOUNT_OF_PRODUCTS);
+            $productsCount = count($products) -1;
 
             foreach($products as $index => $product){
 
-                $products_list .= $product;
+                $productsList .= $product;
 
-                if( $index < $products_count) {
-                    $products_list .= ', ';
+                if( $index < $productsCount) {
+                    $productsList .= ', ';
                 }
             }
 
-            $description = "{$shop_name}: $products_list";
+            $description = "{$shopName}: $productsList";
             $money       = rand(100, 1599) / 10;
 
 
             $monthlyPayment = new MyPaymentsMonthly();
-            $monthlyPayment->setType($monthly_payments_type);
+            $monthlyPayment->setType($monthlyPaymentsType);
             $monthlyPayment->setDate($dateTime);
             $monthlyPayment->setDescription($description);
             $monthlyPayment->setMoney($money);

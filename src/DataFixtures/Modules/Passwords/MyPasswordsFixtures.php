@@ -27,20 +27,20 @@ class MyPasswordsFixtures extends Fixture implements OrderedFixtureInterface
 
         foreach(Passwords::ALL as $password){
 
-            $url              = $password[Passwords::KEY_URL];
-            $description      = $password[Passwords::KEY_DESCRIPTION];
-            $group_name       = $password[Passwords::KEY_GROUP];
+            $url         = $password[Passwords::KEY_URL];
+            $description = $password[Passwords::KEY_DESCRIPTION];
+            $groupName   = $password[Passwords::KEY_GROUP];
 
-            $passwords_groups = $manager->getRepository(MyPasswordsGroups::class)->findBy(['name' => $group_name]);
-            $password_group   = reset($passwords_groups);
+            $passwordsGroups = $manager->getRepository(MyPasswordsGroups::class)->findBy(['name' => $groupName]);
+            $passwordGroup   = reset($passwordsGroups);
 
-            $password_string = $this->faker->password;
-            $login           = $this->faker->word;
+            $passwordString = $this->faker->password;
+            $login          = $this->faker->word;
 
             $password = new MyPasswords();
-            $password->setPassword($password_string);
+            $password->setPassword($passwordString);
             $password->setDescription($description);
-            $password->setGroup($password_group);
+            $password->setGroup($passwordGroup);
             $password->setUrl($url);
             $password->setLogin($login);
 

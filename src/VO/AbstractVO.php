@@ -10,15 +10,15 @@ abstract class AbstractVO {
      * If does not exist - throw exception
      * @param array $array
      * @param string $key
-     * @param $default_value
+     * @param $defaultValue
      * @return mixed
      */
-    public static function checkAndGetKey(array $array, string $key, $default_value) {
+    public static function checkAndGetKey(array $array, string $key, $defaultValue) {
 
         if( array_key_exists($key, $array) ){
             return $array[$key];
         }else{
-            return $default_value;
+            return $defaultValue;
         }
     }
 

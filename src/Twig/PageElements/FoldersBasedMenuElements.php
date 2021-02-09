@@ -39,7 +39,7 @@ class FoldersBasedMenuElements extends AbstractExtension {
      * The request uri for that case is the ajax url uri, but the call for quick create comes from upload based module.
      * @var array
      */
-    private $allow_referer_for_urls = [];
+    private $allowRefererForUrls = [];
 
     /**
      * @var Finder $finder
@@ -47,9 +47,9 @@ class FoldersBasedMenuElements extends AbstractExtension {
     private $finder;
 
     /**
-     * @var UrlGeneratorInterface $url_generator
+     * @var UrlGeneratorInterface $urlGenerator
      */
-    private $url_generator;
+    private $urlGenerator;
 
     /**
      * @var Navigation $navigation
@@ -57,19 +57,19 @@ class FoldersBasedMenuElements extends AbstractExtension {
     private $navigation;
 
     /**
-     * @var LockedResourceController $lock_resource_controller
+     * @var LockedResourceController $lockedResourceController
      */
-    private $locked_resource_controller;
+    private $lockedResourceController;
 
-    public function __construct(UrlGeneratorInterface $url_generator, Navigation $navigation, LockedResourceController $locked_resource_controller) {
-        $this->finder           = new Finder();
-        $this->url_generator    = $url_generator;
-        $this->navigation       = $navigation;
+    public function __construct(UrlGeneratorInterface $urlGenerator, Navigation $navigation, LockedResourceController $lockedResourceController) {
+        $this->finder       = new Finder();
+        $this->urlGenerator = $urlGenerator;
+        $this->navigation   = $navigation;
 
-        $this->locked_resource_controller = $locked_resource_controller;
+        $this->lockedResourceController = $lockedResourceController;
 
-        $this->allow_referer_for_urls = [
-          $this->url_generator->generate('render_menu_node_template'),
+        $this->allowRefererForUrls = [
+          $this->urlGenerator->generate('render_menu_node_template'),
         ];
     }
 
@@ -84,33 +84,33 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
 
     /**
-     * @param $upload_module_dir
+     * @param $uploadModuleDir
      * @return array
      * @throws Exception
      */
-    public function getUploadFolderSubdirectoriesTree($upload_module_dir) {
+    public function getUploadFolderSubdirectoriesTree($uploadModuleDir) {
 
-        $target_directory = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
-        $folders_tree     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $target_directory) );
+        $targetDirectory = FileUploadController::getTargetDirectoryForUploadModuleDir($uploadModuleDir);
+        $foldersTree     = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $targetDirectory) );
 
-        return $folders_tree;
+        return $foldersTree;
 
     }
 
     /**
-     * @param string $upload_module_dir
+     * @param string $uploadModuleDir
      * @return array
      * @throws Exception
      */
-    public function getAllExistingUploadFolderSubdirectories(string $upload_module_dir): array
+    public function getAllExistingUploadFolderSubdirectories(string $uploadModuleDir): array
     {
-        $folder_tree   = $this->getUploadFolderSubdirectoriesTree($upload_module_dir);
-        $folders_array = UtilsController::arrayKeysMulti($folder_tree);
-        $folders       = [];
+        $folderTree   = $this->getUploadFolderSubdirectoriesTree($uploadModuleDir);
+        $foldersArray = UtilsController::arrayKeysMulti($folderTree);
+        $folders      = [];
 
-        foreach($folders_array as  $folder){
-            $folder_shown           = FilesHandler::getSubdirectoryPathFromUploadModuleUploadFullPath($folder, $upload_module_dir);
-            $folders[$folder_shown] = $folder;
+        foreach($foldersArray as  $folder){
+            $folderShown           = FilesHandler::getSubdirectoryPathFromUploadModuleUploadFullPath($folder, $uploadModuleDir);
+            $folders[$folderShown] = $folder;
         }
 
         return $folders;
@@ -118,17 +118,17 @@ class FoldersBasedMenuElements extends AbstractExtension {
 
     /**
      * Not doing this in twig because of nested arrays functions limitation
-     * @param string $upload_module_dir
+     * @param string $uploadModuleDir
      * @return string
      * @throws Exception
      */
-    public function buildMenuForUploadType(string $upload_module_dir){
+    public function buildMenuForUploadType(string $uploadModuleDir){
 
-        $folders_tree   = $this->getUploadFolderSubdirectoriesTree($upload_module_dir);
-        $list           = '';
+        $foldersTree = $this->getUploadFolderSubdirectoriesTree($uploadModuleDir);
+        $list        = '';
 
-        array_walk($folders_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_module_dir) {
-           $list = $this->buildList($subfolder_tree, $upload_module_dir, $folder_path, $list);
+        array_walk($foldersTree, function ($subfolderTree, $folderPath) use (&$list, $uploadModuleDir) {
+           $list = $this->buildList($subfolderTree, $uploadModuleDir, $folderPath, $list);
         });
 
 
@@ -136,58 +136,58 @@ class FoldersBasedMenuElements extends AbstractExtension {
     }
 
     /**
-     * @param array $folder_tree
-     * @param string $upload_module_dir
+     * @param array $folderTree
+     * @param string $uploadModuleDir
      * @param string $list
-     * @param string $folder_path
+     * @param string $folderPath
      * @return string
      * @throws Exception
      */
-    private function buildList(array $folder_tree, string $upload_module_dir, string $folder_path, string $list = '') {
+    private function buildList(array $folderTree, string $uploadModuleDir, string $folderPath, string $list = '') {
 
-        $upload_folder                      = FileUploadController::getTargetDirectoryForUploadModuleDir($upload_module_dir);
-        $folder_path_in_module_upload_dir   = str_replace($upload_folder . DIRECTORY_SEPARATOR, '', $folder_path);
-        $module_name                        = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$upload_module_dir];
-        $folder_name                        = basename($folder_path);
+        $uploadFolder                = FileUploadController::getTargetDirectoryForUploadModuleDir($uploadModuleDir);
+        $folderPathInModuleUploadDir = str_replace($uploadFolder . DIRECTORY_SEPARATOR, '', $folderPath);
+        $moduleName                  = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$uploadModuleDir];
+        $FolderName                  = basename($folderPath);
 
         //urlencoded is needed since entire path is single param in controller, but then we need to unescape escaped spacebars
-        $encoded_folder_path_in_module_upload_dir = urlencode($folder_path_in_module_upload_dir);
-        $folder_path_with_unescaped_spacebar      = str_replace("+"," ", $encoded_folder_path_in_module_upload_dir);
+        $encodedFolderPathInModuleUploadDir = urlencode($folderPathInModuleUploadDir);
+        $folderPathWithUnescapedSpacebar    = str_replace("+"," ", $encodedFolderPathInModuleUploadDir);
 
-        $href   = $this->buildPathForUploadModuleDir($folder_path_with_unescaped_spacebar, $upload_module_dir);
-        $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$folder_name}</a>";
+        $href   = $this->buildPathForUploadModuleDir($folderPathWithUnescapedSpacebar, $uploadModuleDir);
+        $link   = "<a class='sidebar-link' href='{$href}' style='display: inline;'>{$FolderName}</a>";
 
         $uri = $_SERVER['REQUEST_URI'];
 
-        if( in_array($uri, $this->allow_referer_for_urls) ){
+        if( in_array($uri, $this->allowRefererForUrls) ){
             $uri = $_SERVER['HTTP_REFERER'];
         }
 
-        $dropdown_arrow = '';
-        $class          = '';
-        $is_url         = false;
-        $isOpen         = $this->navigation->keepMenuOpen($uri, '',  $href);
+        $dropdownArrow = '';
+        $class         = '';
+        $isUrl         = false;
+        $isOpen        = $this->navigation->keepMenuOpen($uri, '',  $href);
 
-        if( !empty($folder_tree) ){
-            $dropdown_arrow = static::DROPDOWN_ARROW_HTML;
+        if( !empty($folderTree) ){
+            $dropdownArrow = static::DROPDOWN_ARROW_HTML;
             $class         = 'nav-item dropdown';
-            $is_url        = true;
+            $isUrl         = true;
         }
 
         //prevent rendering the given node if if any parent or the children itself is locked
-        if( !$this->locked_resource_controller->isAllowedToSeeResource($folder_path, LockedResource::TYPE_DIRECTORY, $module_name, false) ){
+        if( !$this->lockedResourceController->isAllowedToSeeResource($folderPath, LockedResource::TYPE_DIRECTORY, $moduleName, false) ){
             return $list;
         }
 
 
-        $list  .= '<li class="' . $class . ' ' . $isOpen . ' folder-based-menu-element">'.$link.$dropdown_arrow;
+        $list  .= '<li class="' . $class . ' ' . $isOpen . ' folder-based-menu-element">'.$link.$dropdownArrow;
 
-        if( $is_url ) //prevent adding "open" class to menu elements which does not have any subtree
+        if( $isUrl ) //prevent adding "open" class to menu elements which does not have any subtree
         {
             $list .= '<ul class="dropdown-menu folder-based-menu folder-based-menu-element" >';
 
-            array_walk($folder_tree, function ($subfolder_tree, $folder_path) use (&$list, $upload_module_dir) {
-                $list = static::buildList($subfolder_tree, $upload_module_dir, $folder_path, $list);
+            array_walk($folderTree, function ($subfolderTree, $folderPath) use (&$list, $uploadModuleDir) {
+                $list = static::buildList($subfolderTree, $uploadModuleDir, $folderPath, $list);
             });
 
             $list .= '</ul>';
@@ -199,25 +199,25 @@ class FoldersBasedMenuElements extends AbstractExtension {
     }
 
     /**
-     * @param string $upload_module_directory
-     * @param string $encoded_subdirectory_path
+     * @param string $uploadModuleDirectory
+     * @param string $encodedSubdirectoryPath
      * @return string
      * @throws Exception
      */
-    private function buildPathForUploadModuleDir(string $encoded_subdirectory_path, string $upload_module_directory) {
+    private function buildPathForUploadModuleDir(string $encodedSubdirectoryPath, string $uploadModuleDirectory) {
 
-        switch($upload_module_directory){
+        switch($uploadModuleDirectory){
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
-                $path = $this->url_generator->generate('modules_my_files', ['encoded_subdirectory_path' => $encoded_subdirectory_path]);
+                $path = $this->urlGenerator->generate('modules_my_files', ['encoded_subdirectory_path' => $encodedSubdirectoryPath]);
                 break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
-                $path = $this->url_generator->generate('modules_my_images', ['encoded_subdirectory_path' => $encoded_subdirectory_path]);
+                $path = $this->urlGenerator->generate('modules_my_images', ['encoded_subdirectory_path' => $encodedSubdirectoryPath]);
                 break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_VIDEO:
-                $path = $this->url_generator->generate('modules_my_video', ['encoded_subdirectory_path' => $encoded_subdirectory_path]);
+                $path = $this->urlGenerator->generate('modules_my_video', ['encoded_subdirectory_path' => $encodedSubdirectoryPath]);
                 break;
             default:
-                throw new Exception("This upload directory is not supported: {$upload_module_directory}");
+                throw new Exception("This upload directory is not supported: {$uploadModuleDirectory}");
         }
 
         return $path;

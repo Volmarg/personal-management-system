@@ -25,13 +25,13 @@ class AchievementsStyling extends AbstractExtension {
     }
 
     /**
-     * @param string $achievement_typ
+     * @param string $achievementTyp
      * @return string
      */
-    public function getClassForAchievementType(string $achievement_typ) {
+    public function getClassForAchievementType(string $achievementTyp) {
         $class = '';
 
-        switch (strtolower($achievement_typ)) {
+        switch (strtolower($achievementTyp)) {
             case static::SIMPLE:
                 $class = static::CLASS_ALERT . ' ' . static::CLASS_ALERT_SUCCESS;
                 break;

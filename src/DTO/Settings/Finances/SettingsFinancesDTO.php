@@ -13,34 +13,34 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
     /**
      * @var SettingsCurrencyDTO[]
      */
-    private $settings_currency_dto = [];
+    private $settingsCurrencyDto = [];
 
     /**
      * @return SettingsCurrencyDTO[]
      */
     public function getSettingsCurrencyDtos(): array {
-        return $this->settings_currency_dto;
+        return $this->settingsCurrencyDto;
     }
 
     /**
-     * @param SettingsCurrencyDTO[] $settings_currency_dto
+     * @param SettingsCurrencyDTO[] $settingsCurrencyDto
      * @throws Exception
      */
-    public function setSettingsCurrencyDtos(array $settings_currency_dto): void {
-        $has_dto = reset($settings_currency_dto) instanceof SettingsCurrencyDTO;
+    public function setSettingsCurrencyDtos(array $settingsCurrencyDto): void {
+        $hasDto = reset($settingsCurrencyDto) instanceof SettingsCurrencyDTO;
 
-        if( !$has_dto ){
+        if( !$hasDto ){
             throw new \Exception("There are no SettingsCurrencyDTO in array ");
         }
 
-        $this->settings_currency_dto = $settings_currency_dto;
+        $this->settingsCurrencyDto = $settingsCurrencyDto;
     }
 
     /**
-     * @param SettingsCurrencyDTO $settings_currency_dto
+     * @param SettingsCurrencyDTO $settingsCurrencyDto
      */
-    public function addSettingsCurrencyDto(SettingsCurrencyDTO $settings_currency_dto): void {
-        $this->settings_currency_dto[] = $settings_currency_dto;
+    public function addSettingsCurrencyDto(SettingsCurrencyDTO $settingsCurrencyDto): void {
+        $this->settingsCurrencyDto[] = $settingsCurrencyDto;
     }
 
     /**
@@ -49,21 +49,21 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
      * @throws Exception
      */
     public static function fromJson(string $json): self{
-        $finances_settings_array = \GuzzleHttp\json_decode($json, true);
-        $currency_setting_jsons    = self::checkAndGetKey($finances_settings_array, self::KEY_SETTINGS_CURRENCIES);
-        $currency_setting_arrays   = \GuzzleHttp\json_decode($currency_setting_jsons, true);
+        $financesSettingsArray = \GuzzleHttp\json_decode($json, true);
+        $currencySettingJsons  = self::checkAndGetKey($financesSettingsArray, self::KEY_SETTINGS_CURRENCIES);
+        $currencySettingArrays = \GuzzleHttp\json_decode($currencySettingJsons, true);
 
-        $settings_finances_dto = new self();
+        $settingsFinancesDto = new self();
 
-        foreach($currency_setting_arrays as $currency_setting_array) {
+        foreach($currencySettingArrays as $currencySettingArray) {
 
-            $currency_setting_json = \GuzzleHttp\json_encode($currency_setting_array);
-            $currency_setting_dto = SettingsCurrencyDTO::fromJson($currency_setting_json);
-            $settings_finances_dto->addSettingsCurrencyDto($currency_setting_dto);
+            $currencySettingJson = \GuzzleHttp\json_encode($currencySettingArray);
+            $currencySettingDto = SettingsCurrencyDTO::fromJson($currencySettingJson);
+            $settingsFinancesDto->addSettingsCurrencyDto($currencySettingDto);
 
         }
 
-        return $settings_finances_dto;
+        return $settingsFinancesDto;
     }
 
     /**
@@ -71,14 +71,14 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
      */
     public function toJson(): string{
 
-        $array_of_currency_setting_jsons = [];
+        $arrayOfCurrencySettingJsons = [];
 
-        foreacH($this->getSettingsCurrencyDtos() as $currency_settings ){
-            $array_of_currency_setting_jsons[] = $currency_settings->toArray();
+        foreacH($this->getSettingsCurrencyDtos() as $currencySettings ){
+            $arrayOfCurrencySettingJsons[] = $currencySettings->toArray();
         }
 
         $array = [
-            self::KEY_SETTINGS_CURRENCIES => $array_of_currency_setting_jsons,
+            self::KEY_SETTINGS_CURRENCIES => $arrayOfCurrencySettingJsons,
         ];
 
         $json = json_encode($array);

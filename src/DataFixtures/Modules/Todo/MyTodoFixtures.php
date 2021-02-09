@@ -37,20 +37,20 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoGoals(ObjectManager $manager): void
     {
-        $goals_module = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_GOALS]);
+        $goalsModule = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_GOALS]);
 
-        foreach(Todo::ALL_TODO_GOALS as $index => $todo_with_elements) {
+        foreach(Todo::ALL_TODO_GOALS as $index => $todoWithElements) {
 
-            foreach($todo_with_elements as $todo_name => $elements) {
+            foreach($todoWithElements as $todoName => $elements) {
 
-                $display_on_dashboard = $this->faker->boolean;
+                $displayOnDashboard = $this->faker->boolean;
 
-                $my_todo = new MyTodo();
-                $my_todo->setName($todo_name);
-                $my_todo->setModule($goals_module);
-                $my_todo->setDisplayOnDashboard($display_on_dashboard);
+                $myTodo = new MyTodo();
+                $myTodo->setName($todoName);
+                $myTodo->setModule($goalsModule);
+                $myTodo->setDisplayOnDashboard($displayOnDashboard);
 
-                $manager->persist($my_todo);
+                $manager->persist($myTodo);
             }
         }
 
@@ -62,17 +62,17 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodo(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO as $index=> $todo_with_elements) {
+        foreach(Todo::ALL_TODO as $index=> $todoWithElements) {
 
-            foreach($todo_with_elements as $todo_name => $elements) {
+            foreach($todoWithElements as $todoName => $elements) {
 
-                $display_on_dashboard = $this->faker->boolean;
+                $displayOnDashboard = $this->faker->boolean;
 
-                $my_todo = new MyTodo();
-                $my_todo->setName($todo_name);
-                $my_todo->setDisplayOnDashboard($display_on_dashboard);
+                $myTodo = new MyTodo();
+                $myTodo->setName($todoName);
+                $myTodo->setDisplayOnDashboard($displayOnDashboard);
 
-                $manager->persist($my_todo);
+                $manager->persist($myTodo);
             }
         }
 
@@ -84,23 +84,23 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addIssueTodo(ObjectManager $manager): void
     {
-        $issue_module = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_ISSUES]);
+        $issueModule = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_ISSUES]);
 
-        foreach(Todo::ALL_TODO_ISSUE as $issue_id => $todo_with_elements) {
+        foreach(Todo::ALL_TODO_ISSUE as $issueId => $todoWithElements) {
 
-            foreach($todo_with_elements as $todo_name => $elements) {
+            foreach($todoWithElements as $todo_name => $elements) {
 
-                $issue = $manager->getRepository(MyIssue::class)->findOneBy([MyIssue::FIELD_NAME_ID => $issue_id]);
+                $issue = $manager->getRepository(MyIssue::class)->findOneBy([MyIssue::FIELD_NAME_ID => $issueId]);
 
-                $display_on_dashboard = $this->faker->boolean;
+                $displayOnDashboard = $this->faker->boolean;
 
-                $my_todo = new MyTodo();
-                $my_todo->setName($todo_name);
-                $my_todo->setMyIssue($issue);
-                $my_todo->setModule($issue_module);
-                $my_todo->setDisplayOnDashboard($display_on_dashboard);
+                $myTodo = new MyTodo();
+                $myTodo->setName($todo_name);
+                $myTodo->setMyIssue($issue);
+                $myTodo->setModule($issueModule);
+                $myTodo->setDisplayOnDashboard($displayOnDashboard);
 
-                $manager->persist($my_todo);
+                $manager->persist($myTodo);
             }
         }
 

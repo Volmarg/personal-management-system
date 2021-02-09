@@ -34,52 +34,52 @@ class CssClasses extends AbstractExtension {
     }
 
     /**
-     * @param $column_name
+     * @param $columnName
      * @return string
      */
-    public function hideIdColumn($column_name) {
-        $id_columns_names = [static::ID];
+    public function hideIdColumn($columnName) {
+        $idColumnsNames = [static::ID];
 
-        if (in_array($column_name, $id_columns_names)) {
+        if (in_array($columnName, $idColumnsNames)) {
             return static::CLASS_D_NONE;
         }
         return '';
     }
 
     /**
-     * @param $column_name
+     * @param $columnName
      * @return string
      */
-    public function hideDeletedColumn($column_name) {
-        $id_columns_names = [static::DELETED];
+    public function hideDeletedColumn($columnName) {
+        $idColumnsNames = [static::DELETED];
 
-        if (in_array($column_name, $id_columns_names)) {
+        if (in_array($columnName, $idColumnsNames)) {
             return static::CLASS_D_NONE;
         }
         return '';
     }
 
     /**
-     * @param $column_name
+     * @param $columnName
      * @return string
      */
-    public function hideCountryColumn($column_name){
-        $country_columns_names = [static::COUNTRY];
+    public function hideCountryColumn($columnName){
+        $countryColumnsNames = [static::COUNTRY];
 
-        if (in_array($column_name, $country_columns_names)) {
+        if (in_array($columnName, $countryColumnsNames)) {
             return static::CLASS_D_NONE;
         }
         return '';
     }
 
     /**
-     * @param $column_name
+     * @param $columnName
      * @return string
      */
-    public function hideLocationColumn($column_name){
-        $location_columns_names = [static::LOCATION];
+    public function hideLocationColumn($columnName){
+        $locationColumnsNames = [static::LOCATION];
 
-        if (in_array($column_name, $location_columns_names)) {
+        if (in_array($columnName, $locationColumnsNames)) {
             return static::CLASS_D_NONE;
         }
         return '';

@@ -15,62 +15,62 @@ class SingleSessionKeyLifetimeVO extends AbstractVO {
     const KEY_SESSION_REMOVE_SESSION_STORED_ROLES_TO_REMOVE = "session_stored_roles_to_remove";
 
     /**
-     * @var string $session_key
+     * @var string $sessionKey
      */
-    private $session_key = '';
+    private $sessionKey = '';
 
     /**
-     * @var int $session_start_timestamp
+     * @var int $sessionStartTimestamp
      */
-    private $session_start_timestamp = 0;
+    private $sessionStartTimestamp = 0;
 
     /**
-     * @var int $session_lifetime
+     * @var int $sessionLifetime
      */
-    private $session_lifetime;
+    private $sessionLifetime;
 
     /**
-     * @var DateTime $session_end_datetime
+     * @var DateTime $sessionEndDatetime
      */
-    private $session_end_datetime;
+    private $sessionEndDatetime;
 
     /**
-     * @var array $session_stored_roles_to_remove
+     * @var array $sessionStoredRolesToRemove
      */
-    private $session_stored_roles_to_remove = [];
+    private $sessionStoredRolesToRemove = [];
 
     /**
      * @return string
      */
     public function getSessionKey(): string {
-        return $this->session_key;
+        return $this->sessionKey;
     }
 
     /**
-     * @param string $session_key
+     * @param string $sessionKey
      */
-    public function setSessionKey(string $session_key): void {
-        $this->session_key = $session_key;
+    public function setSessionKey(string $sessionKey): void {
+        $this->sessionKey = $sessionKey;
     }
 
     /**
      * @return int
      */
     public function getSessionStartTimestamp(): int {
-        return $this->session_start_timestamp;
+        return $this->sessionStartTimestamp;
     }
 
     /**
-     * @param int $session_start_timestamp
+     * @param int $sessionStartTimestamp
      * @throws Exception
      */
-    public function setSessionStartTimestamp(int $session_start_timestamp): void {
-        $max_lifetime_timestamp = $session_start_timestamp + $this->session_lifetime;
-        $max_life_date_time     = new DateTime();
-        $max_life_date_time->setTimestamp($max_lifetime_timestamp);
+    public function setSessionStartTimestamp(int $sessionStartTimestamp): void {
+        $maxLifetimeTimestamp = $sessionStartTimestamp + $this->sessionLifetime;
+        $maxLifeDateTime      = new DateTime();
+        $maxLifeDateTime->setTimestamp($maxLifetimeTimestamp);
 
-        $this->session_start_timestamp = $session_start_timestamp;
-        $this->session_end_datetime    = $max_life_date_time;
+        $this->sessionStartTimestamp = $sessionStartTimestamp;
+        $this->sessionEndDatetime    = $maxLifeDateTime;
     }
 
     /**
@@ -78,28 +78,28 @@ class SingleSessionKeyLifetimeVO extends AbstractVO {
      */
     public function resetSessionStartTime(): void
     {
-        $this->session_start_timestamp = (new DateTime())->getTimestamp();
+        $this->sessionStartTimestamp = (new DateTime())->getTimestamp();
     }
 
     /**
      * @return mixed
      */
     public function getSessionLifetime() {
-        return $this->session_lifetime;
+        return $this->sessionLifetime;
     }
 
     /**
-     * @param mixed $session_lifetime
+     * @param mixed $sessionLifetime
      */
-    public function setSessionLifetime($session_lifetime): void {
-        $this->session_lifetime = $session_lifetime;
+    public function setSessionLifetime($sessionLifetime): void {
+        $this->sessionLifetime = $sessionLifetime;
     }
 
     /**
      * @throws Exception
      */
     public function getSessionEndDateTime(): DateTime {
-        return $this->session_end_datetime;
+        return $this->sessionEndDatetime;
     }
 
     /**
@@ -135,14 +135,14 @@ class SingleSessionKeyLifetimeVO extends AbstractVO {
      * @return array
      */
     public function getSessionStoredRolesToRemove(): array {
-        return $this->session_stored_roles_to_remove;
+        return $this->sessionStoredRolesToRemove;
     }
 
     /**
-     * @param array $session_stored_roles_to_remove
+     * @param array $sessionStoredRolesToRemove
      */
-    public function setSessionStoredRolesToRemove(array $session_stored_roles_to_remove): void {
-        $this->session_stored_roles_to_remove = $session_stored_roles_to_remove;
+    public function setSessionStoredRolesToRemove(array $sessionStoredRolesToRemove): void {
+        $this->sessionStoredRolesToRemove = $sessionStoredRolesToRemove;
     }
 
     /**
@@ -150,7 +150,7 @@ class SingleSessionKeyLifetimeVO extends AbstractVO {
      */
     public function doRemoveSessionStoredRolesInsteadOfSessionKey(): bool
     {
-        return !empty($this->session_stored_roles_to_remove);
+        return !empty($this->sessionStoredRolesToRemove);
     }
 
     /**
@@ -160,23 +160,23 @@ class SingleSessionKeyLifetimeVO extends AbstractVO {
      */
     public static function fromJson(string $json): SingleSessionKeyLifetimeVO
     {
-        $array           = json_decode($json, true);
-        $json_last_error = json_last_error();
+        $array         = json_decode($json, true);
+        $jsonLastError = json_last_error();
 
-        if( JSON_ERROR_NONE	!== $json_last_error ){
+        if( JSON_ERROR_NONE	!== $jsonLastError ){
             throw new Exception("Not a valid json format");
         }
 
-        $session_key                       = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_KEY, "");
-        $session_lifetime                  = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_LIFETIME, "");
-        $session_start_time                = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_START_TIME, "");
-        $remove_session_stored_roles_array = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_REMOVE_SESSION_STORED_ROLES_TO_REMOVE, []);
+        $sessionKey                    = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_KEY, "");
+        $sessionLifetime               = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_LIFETIME, "");
+        $sessionStartTime              = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_START_TIME, "");
+        $removeSessionStoredRolesArray = AbstractVO::checkAndGetKey($array, self::KEY_SESSION_REMOVE_SESSION_STORED_ROLES_TO_REMOVE, []);
 
         $vo = new SingleSessionKeyLifetimeVO();
-        $vo->setSessionKey($session_key);
-        $vo->setSessionLifetime($session_lifetime);
-        $vo->setSessionStartTimestamp($session_start_time);
-        $vo->setSessionStoredRolesToRemove($remove_session_stored_roles_array);
+        $vo->setSessionKey($sessionKey);
+        $vo->setSessionLifetime($sessionLifetime);
+        $vo->setSessionStartTimestamp($sessionStartTime);
+        $vo->setSessionStoredRolesToRemove($removeSessionStoredRolesArray);
 
         return $vo;
     }
@@ -187,10 +187,10 @@ class SingleSessionKeyLifetimeVO extends AbstractVO {
      */
     public function isSessionAllowedToLive(): bool
     {
-        $now                = new DateTime();
-        $max_life_date_time = $this->getSessionEndDateTime();
+        $now             = new DateTime();
+        $maxLifeDateTime = $this->getSessionEndDateTime();
 
-        if( $now > $max_life_date_time ){
+        if( $now > $maxLifeDateTime ){
             return false;
         }
 

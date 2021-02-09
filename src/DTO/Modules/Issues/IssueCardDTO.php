@@ -13,34 +13,34 @@ class IssueCardDTO {
     private $issue;
 
     /**
-     * @var array $issue_contacts_by_icon
+     * @var array $issueContactsByIcon
      */
-    private $issue_contacts_by_icon = [];
+    private $issueContactsByIcon = [];
 
     /**
-     * @var int $issue_contacts_count
+     * @var int $issueContactsCount
      */
-    private $issue_contacts_count = 0;
+    private $issueContactsCount = 0;
 
     /**
-     * @var int $issue_progress_count
+     * @var int $issueProgressCount
      */
-    private $issue_progress_count = 0;
+    private $issueProgressCount = 0;
 
     /**
-     * @var DateTime $issue_last_contact
+     * @var DateTime $issueLastContact
      */
-    private $issue_last_contact = null;
+    private $issueLastContact = null;
 
     /**
-     * @var DateTime $issue_last_progress
+     * @var DateTime $issueLastProgress
      */
-    private $issue_last_progress = null;
+    private $issueLastProgress = null;
 
     /**
-     * @var string[] $waiting_todo
+     * @var string[] $waitingTodo
      */
-    private $waiting_todo = [];
+    private $waitingTodo = [];
 
     /**
      * @return MyIssue
@@ -60,84 +60,84 @@ class IssueCardDTO {
      * @return array
      */
     public function getIssueContactsByIcon(): array {
-        return $this->issue_contacts_by_icon;
+        return $this->issueContactsByIcon;
     }
 
     /**
-     * @param array $issue_contacts_by_icon
+     * @param array $issueContactsByIcon
      */
-    public function setIssueContactsByIcon(array $issue_contacts_by_icon): void {
-        $this->issue_contacts_by_icon = $issue_contacts_by_icon;
+    public function setIssueContactsByIcon(array $issueContactsByIcon): void {
+        $this->issueContactsByIcon = $issueContactsByIcon;
     }
 
     /**
      * @return int
      */
     public function getIssueContactsCount(): int {
-        return $this->issue_contacts_count;
+        return $this->issueContactsCount;
     }
 
     /**
-     * @param int $issue_contacts_count
+     * @param int $issueContactsCount
      */
-    public function setIssueContactsCount(int $issue_contacts_count): void {
-        $this->issue_contacts_count = $issue_contacts_count;
+    public function setIssueContactsCount(int $issueContactsCount): void {
+        $this->issueContactsCount = $issueContactsCount;
     }
 
     /**
      * @return int
      */
     public function getIssueProgressCount(): int {
-        return $this->issue_progress_count;
+        return $this->issueProgressCount;
     }
 
     /**
-     * @param int $issue_progress_count
+     * @param int $issueProgressCount
      */
-    public function setIssueProgressCount(int $issue_progress_count): void {
-        $this->issue_progress_count = $issue_progress_count;
+    public function setIssueProgressCount(int $issueProgressCount): void {
+        $this->issueProgressCount = $issueProgressCount;
     }
 
     /**
      * @return null|DateTime
      */
     public function getIssueLastContact(): ?DateTime {
-        return $this->issue_last_contact;
+        return $this->issueLastContact;
     }
 
     /**
-     * @param null|DateTime $issue_last_contact
+     * @param null|DateTime $issueLastContact
      */
-    public function setIssueLastContact(?DateTime $issue_last_contact): void {
-        $this->issue_last_contact = $issue_last_contact;
+    public function setIssueLastContact(?DateTime $issueLastContact): void {
+        $this->issueLastContact = $issueLastContact;
     }
 
     /**
      * @return DateTime
      */
     public function getIssueLastProgress(): ?DateTime {
-        return $this->issue_last_progress;
+        return $this->issueLastProgress;
     }
 
     /**
-     * @param DateTime $issue_last_progress
+     * @param DateTime $issueLastProgress
      */
-    public function setIssueLastProgress(?DateTime $issue_last_progress): void {
-        $this->issue_last_progress = $issue_last_progress;
+    public function setIssueLastProgress(?DateTime $issueLastProgress): void {
+        $this->issueLastProgress = $issueLastProgress;
     }
 
     /**
      * @return string[]
      */
     public function getWaitingTodo(): array {
-        return $this->waiting_todo;
+        return $this->waitingTodo;
     }
 
     /**
-     * @param string[] $waiting_todo
+     * @param string[] $waitingTodo
      */
-    public function setWaitingTodo(array $waiting_todo): void {
-        $this->waiting_todo = $waiting_todo;
+    public function setWaitingTodo(array $waitingTodo): void {
+        $this->waitingTodo = $waitingTodo;
     }
 
 }

@@ -13,39 +13,38 @@ class SettingsDashboardDTO extends AbstractDTO implements dtoInterface{
     /**
      * @var SettingsWidgetSettingsDTO
      */
-    private $widget_settings = [];
+    private $widgetSettings = [];
 
     /**
      * @return SettingsWidgetSettingsDTO
      */
     public function getWidgetSettings(): SettingsWidgetSettingsDTO {
-        return $this->widget_settings;
+        return $this->widgetSettings;
     }
 
     /**
-     * @param SettingsWidgetSettingsDTO $widget_settings_dto
+     * @param SettingsWidgetSettingsDTO $widgetSettingsDto
      */
-    public function setWidgetSettings(SettingsWidgetSettingsDTO $widget_settings_dto): void {
-        $this->widget_settings = $widget_settings_dto;
+    public function setWidgetSettings(SettingsWidgetSettingsDTO $widgetSettingsDto): void {
+        $this->widgetSettings = $widgetSettingsDto;
     }
 
 
     /**
-     * @param string $settings_dashboard_json
+     * @param string $settingsDashboardJson
      * @return SettingsDashboardDTO
      * @throws \Exception
      */
-    public static function fromJson(string $settings_dashboard_json): self{
-        $settings_dashboard_array   = \GuzzleHttp\json_decode($settings_dashboard_json, true);
-        $widgets_settings_json      = self::checkAndGetKey($settings_dashboard_array, self::KEY_WIDGETS_SETTINGS);
+    public static function fromJson(string $settingsDashboardJson): self{
+        $settingsDashboardArray = \GuzzleHttp\json_decode($settingsDashboardJson, true);
+        $widgetsSettingsJson    = self::checkAndGetKey($settingsDashboardArray, self::KEY_WIDGETS_SETTINGS);
 
-        $settings_dashboard_dto = new self();
-
-        $settings_dashboard_dto->setWidgetSettings(
-            SettingsWidgetSettingsDTO::fromJson($widgets_settings_json)
+        $settingsDashboardDto = new self();
+        $settingsDashboardDto->setWidgetSettings(
+            SettingsWidgetSettingsDTO::fromJson($widgetsSettingsJson)
         );
 
-        return $settings_dashboard_dto;
+        return $settingsDashboardDto;
     }
 
     /**

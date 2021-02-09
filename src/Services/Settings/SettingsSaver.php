@@ -10,7 +10,6 @@ use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
-use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -25,21 +24,21 @@ class SettingsSaver {
     private $em;
 
     /**
-     * @var SettingsLoader $settings_loader
+     * @var SettingsLoader $settingsLoader
      */
-    private $settings_loader;
+    private $settingsLoader;
 
     /**
      * @param EntityManagerInterface $em
-     * @param SettingsLoader $settings_loader
+     * @param SettingsLoader $settingsLoader
      */
     public function __construct(
         EntityManagerInterface  $em,
-        SettingsLoader          $settings_loader
+        SettingsLoader          $settingsLoader
 
     ) {
         $this->em = $em;
-        $this->settings_loader = $settings_loader;
+        $this->settingsLoader = $settingsLoader;
     }
 
     /**
@@ -71,58 +70,57 @@ class SettingsSaver {
     }
 
     /**
-     * @param SettingsWidgetVisibilityDTO[] $array_of_widgets_visibility_dto
+     * @param SettingsWidgetVisibilityDTO[] $arrayOfWidgetsVisibilityDto
      * @throws \Exception
      */
-    public function saveSettingsForDashboardWidgetsVisibility(array $array_of_widgets_visibility_dto): void {
+    public function saveSettingsForDashboardWidgetsVisibility(array $arrayOfWidgetsVisibilityDto): void {
 
-        $setting = $this->settings_loader->getSettingsForDashboard();
+        $setting = $this->settingsLoader->getSettingsForDashboard();
 
-        $are_settings_in_db = !empty($setting);
+        $areSettingsInDb = !empty($setting);
 
-        if( $are_settings_in_db ){
-            $setting_json = $setting->getValue();
-            $dto          = SettingsDashboardDTO::fromJson($setting_json);
+        if( $areSettingsInDb ){
+            $settingJson = $setting->getValue();
+            $dto         = SettingsDashboardDTO::fromJson($settingJson);
 
-            $dto->getWidgetSettings()->setWidgetVisibility($array_of_widgets_visibility_dto);
+            $dto->getWidgetSettings()->setWidgetVisibility($arrayOfWidgetsVisibilityDto);
         }else{
             $setting = new Setting();
-            $dto     = SettingsDashboardController::buildDashboardSettingsDto($array_of_widgets_visibility_dto);
+            $dto     = SettingsDashboardController::buildDashboardSettingsDto($arrayOfWidgetsVisibilityDto);
         }
 
-        $dashboard_settings_json = $dto->toJson();
+        $dashboardSettingsJson = $dto->toJson();
 
         $setting->setName(SettingsLoader::SETTING_NAME_DASHBOARD);
-        $setting->setValue($dashboard_settings_json);
+        $setting->setValue($dashboardSettingsJson);
 
         $this->em->persist($setting);
         $this->em->flush();
     }
 
     /**
-     * @param SettingsCurrencyDTO[] $currencies_settings_dtos
+     * @param SettingsCurrencyDTO[] $currenciesSettingsDtos
      * @throws \Exception
      */
-    public function saveFinancesSettingsForCurrenciesSettings(array $currencies_settings_dtos): void {
+    public function saveFinancesSettingsForCurrenciesSettings(array $currenciesSettingsDtos): void {
 
-        $setting = $this->settings_loader->getSettingsForFinances();
+        $setting = $this->settingsLoader->getSettingsForFinances();
 
-        $are_settings_in_db = !empty($setting);
+        $areSettingsInDb = !empty($setting);
+        if( $areSettingsInDb ){
+            $settingJson = $setting->getValue();
+            $dto         = SettingsFinancesDTO::fromJson($settingJson);
 
-        if( $are_settings_in_db ){
-            $setting_json = $setting->getValue();
-            $dto          = SettingsFinancesDTO::fromJson($setting_json);
-
-            $dto->setSettingsCurrencyDtos($currencies_settings_dtos);
+            $dto->setSettingsCurrencyDtos($currenciesSettingsDtos);
         }else{
             $setting = new Setting();
-            $dto     = SettingsFinancesController::buildFinancesSettingsDtoFromCurrenciesSettingsDtos($currencies_settings_dtos);
+            $dto     = SettingsFinancesController::buildFinancesSettingsDtoFromCurrenciesSettingsDtos($currenciesSettingsDtos);
         }
 
-        $finances_settings_json = $dto->toJson();
+        $financesSettingsJson = $dto->toJson();
 
         $setting->setName(SettingsLoader::SETTING_NAME_FINANCES);
-        $setting->setValue($finances_settings_json);
+        $setting->setValue($financesSettingsJson);
 
         $this->em->persist($setting);
         $this->em->flush();

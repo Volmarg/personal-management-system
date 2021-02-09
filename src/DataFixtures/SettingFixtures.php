@@ -46,75 +46,75 @@ class SettingFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
 
-        $pln_currency_dto  = $this->getPlnCurrency();
-        $eur_currency_dto  = $this->getEurCurrency();
-        $cash_currency_dto = $this->getCashCurrency();
+        $plnCurrencyDto  = $this->getPlnCurrency();
+        $eurCurrencyDto  = $this->getEurCurrency();
+        $cashCurrencyDto = $this->getCashCurrency();
 
         $currencies = [
-            $pln_currency_dto,
-            $eur_currency_dto,
-            $cash_currency_dto,
+            $plnCurrencyDto,
+            $eurCurrencyDto,
+            $cashCurrencyDto,
         ];
 
-        $finances_settings_dto = new SettingsFinancesDTO();
-        $finances_settings_dto->setSettingsCurrencyDtos($currencies);
+        $financesSettingsDto = new SettingsFinancesDTO();
+        $financesSettingsDto->setSettingsCurrencyDtos($currencies);
 
-        $this->insertCurrenciesIntoDb($finances_settings_dto);
+        $this->insertCurrenciesIntoDb($financesSettingsDto);
     }
 
     /**
      * @throws ExceptionValueNotAllowed
      */
     private function getPlnCurrency(): SettingsCurrencyDTO {
-        $settings_currency_dto = new SettingsCurrencyDTO();
-        $settings_currency_dto->setName(SettingProvider::KEY_CURRENCY_NAME_PLN);
-        $settings_currency_dto->setIsDefault(1);
-        $settings_currency_dto->setMultiplier(1);
-        $settings_currency_dto->setSymbol("z\u0142");
+        $settingsCurrencyDto = new SettingsCurrencyDTO();
+        $settingsCurrencyDto->setName(SettingProvider::KEY_CURRENCY_NAME_PLN);
+        $settingsCurrencyDto->setIsDefault(1);
+        $settingsCurrencyDto->setMultiplier(1);
+        $settingsCurrencyDto->setSymbol("z\u0142");
 
-        return $settings_currency_dto;
+        return $settingsCurrencyDto;
     }
 
     /**
      * @throws ExceptionValueNotAllowed
      */
     private function getEurCurrency(): SettingsCurrencyDTO {
-        $settings_currency_dto = new SettingsCurrencyDTO();
-        $settings_currency_dto->setName(SettingProvider::KEY_CURRENCY_NAME_EUR);
-        $settings_currency_dto->setIsDefault(false);
-        $settings_currency_dto->setMultiplier(4.3);
-        $settings_currency_dto->setSymbol("\u20ac");
+        $settingsCurrencyDto = new SettingsCurrencyDTO();
+        $settingsCurrencyDto->setName(SettingProvider::KEY_CURRENCY_NAME_EUR);
+        $settingsCurrencyDto->setIsDefault(false);
+        $settingsCurrencyDto->setMultiplier(4.3);
+        $settingsCurrencyDto->setSymbol("\u20ac");
 
-        return $settings_currency_dto;
+        return $settingsCurrencyDto;
     }
 
     /**
      * @throws ExceptionValueNotAllowed
      */
     private function getCashCurrency(): SettingsCurrencyDTO {
-        $settings_currency_dto = new SettingsCurrencyDTO();
-        $settings_currency_dto->setName(SettingProvider::KEY_CURRENCY_NAME_CASH);
-        $settings_currency_dto->setIsDefault(false);
-        $settings_currency_dto->setMultiplier(1.01);
-        $settings_currency_dto->setSymbol("\ud83d\udcb6");
+        $settingsCurrencyDto = new SettingsCurrencyDTO();
+        $settingsCurrencyDto->setName(SettingProvider::KEY_CURRENCY_NAME_CASH);
+        $settingsCurrencyDto->setIsDefault(false);
+        $settingsCurrencyDto->setMultiplier(1.01);
+        $settingsCurrencyDto->setSymbol("\ud83d\udcb6");
 
-        return $settings_currency_dto;
+        return $settingsCurrencyDto;
     }
 
     /**
      * This function will insert data into db as RAW text - this is required to prevent escaping slashes
      * Info: this sql is here as it's the only - special use case - not adding it to repository as it's a fixture part
-     * @param SettingsFinancesDTO $finances_settings_dto
+     * @param SettingsFinancesDTO $financesSettingsDto
      * @throws DBALException
      */
-    private function insertCurrenciesIntoDb(SettingsFinancesDTO $finances_settings_dto){
+    private function insertCurrenciesIntoDb(SettingsFinancesDTO $financesSettingsDto){
 
-        $setting_type = SettingsLoader::SETTING_NAME_FINANCES;
-        $json         = $finances_settings_dto->toJson();
+        $settingType = SettingsLoader::SETTING_NAME_FINANCES;
+        $json        = $financesSettingsDto->toJson();
 
             $sql = "
                 INSERT IGNORE INTO setting (`id`, `name`, `value`)
-                VALUES(2, '{$setting_type}', '{$json}')
+                VALUES(2, '{$settingType}', '{$json}')
             ";
 
         $this->app->em->getConnection()->executeQuery($sql);

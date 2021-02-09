@@ -4,7 +4,6 @@ namespace App\DataFixtures\Modules\Notes;
 
 
 use App\DataFixtures\Providers\Modules\Notes;
-use App\DataFixtures\Providers\Modules\NotesCategories;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -28,19 +27,19 @@ class MyNotesFixtures extends Fixture implements OrderedFixtureInterface
 
         foreach (Notes::ALL_CATEGORIES as $category) {
 
-            $category_name  = $category[Notes::KEY_CATEGORY_NAME];
-            $body           = $category[Notes::KEY_BODY];
-            $name           = $category[Notes::KEY_NAME];
+            $categoryName = $category[Notes::KEY_CATEGORY_NAME];
+            $body         = $category[Notes::KEY_BODY];
+            $name         = $category[Notes::KEY_NAME];
 
-            $notes_categories = $manager->getRepository(MyNotesCategories::class)->findBy(['name' => $category_name]);
-            $note_category    = reset($notes_categories);
+            $notesCategories = $manager->getRepository(MyNotesCategories::class)->findBy(['name' => $categoryName]);
+            $noteCategory    = reset($notesCategories);
 
-            $my_note = new MyNotes();
-            $my_note->setCategory($note_category);
-            $my_note->setBody($body);
-            $my_note->setTitle($name);
+            $myNote = new MyNotes();
+            $myNote->setCategory($noteCategory);
+            $myNote->setBody($body);
+            $myNote->setTitle($name);
 
-            $manager->persist($my_note);
+            $manager->persist($myNote);
 
         }
 

@@ -34,8 +34,8 @@ class Settings extends AbstractExtension {
      * @return SettingsFinancesDTO[]
      */
     public function getFinancesCurrenciesDtos(): array {
-        $finances_currencies_dtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
-        return $finances_currencies_dtos;
+        $financesCurrenciesDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
+        return $financesCurrenciesDtos;
     }
 
 }

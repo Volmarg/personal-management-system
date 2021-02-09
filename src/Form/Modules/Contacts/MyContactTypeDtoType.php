@@ -34,23 +34,23 @@ class MyContactTypeDtoType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $name_value      = '';
-        $selected_entity = null;
+        $nameValue      = '';
+        $selectedEntity = null;
 
         if( array_key_exists(self::KEY_NAME, $options)){
-            $name_value = $options[self::KEY_NAME];
+            $nameValue = $options[self::KEY_NAME];
         }
 
         if( array_key_exists(self::KEY_TYPE, $options)){
-            $type_name = $options[self::KEY_TYPE];
-            $selected_entity = $this->app->repositories->myContactTypeRepository->getOneByName($type_name); //todo: this should go to controller
+            $typeName       = $options[self::KEY_TYPE];
+            $selectedEntity = $this->app->repositories->myContactTypeRepository->getOneByName($typeName); //todo: this should go to controller
         }
 
         $builder
             ->add(self::KEY_NAME, null, [
                 'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_NAME),
                 "attr"  => [
-                    'value' => $name_value
+                    'value' => $nameValue
                 ]
             ])
             ->add(self::KEY_TYPE,EntityType::class, [
@@ -60,7 +60,7 @@ class MyContactTypeDtoType extends AbstractType {
                     return $contact_type->getName();
                 },
                 'label' => $this->app->translator->translate('forms.MyContactTypeDtoType.labels.' . self::KEY_TYPE),
-                'data'  => $selected_entity,
+                'data'  => $selectedEntity,
                 'attr'  => [
                     "class"                                          => "selectpicker",
                     'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',

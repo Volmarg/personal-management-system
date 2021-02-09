@@ -19,19 +19,19 @@ class MyNotes extends AbstractExtension {
     private $app;
 
     /**
-     * @var MyNotesController $my_notes_controller
+     * @var MyNotesController $myNotesController
      */
-    private $my_notes_controller;
+    private $myNotesController;
 
     /**
-     * @var MyNotesCategoriesController $my_notes_categories_controller
+     * @var MyNotesCategoriesController $myNotesCategoriesController
      */
-    private $my_notes_categories_controller;
+    private $myNotesCategoriesController;
 
-    public function __construct(Application $app, MyNotesController $my_notes_controller, MyNotesCategoriesController $my_notes_categories_controller) {
-        $this->app = $app;
-        $this->my_notes_controller = $my_notes_controller;
-        $this->my_notes_categories_controller = $my_notes_categories_controller;
+    public function __construct(Application $app, MyNotesController $myNotesController, MyNotesCategoriesController $myNotesCategoriesController) {
+        $this->app                         = $app;
+        $this->myNotesController           = $myNotesController;
+        $this->myNotesCategoriesController = $myNotesCategoriesController;
     }
 
     public function getFunctions() {
@@ -45,27 +45,27 @@ class MyNotes extends AbstractExtension {
     }
 
     /**
-     * @param string $category_id
+     * @param string $categoryId
      * @return bool
-     * 
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function hasCategoryFamilyVisibleNotes(string $category_id) {
-        $hasCategoryFamilyVisibleNotes = $this->my_notes_controller->hasCategoryFamilyVisibleNotes($category_id);
+    public function hasCategoryFamilyVisibleNotes(string $categoryId) {
+        $hasCategoryFamilyVisibleNotes = $this->myNotesController->hasCategoryFamilyVisibleNotes($categoryId);
         return $hasCategoryFamilyVisibleNotes;
     }
 
     /**
      * Based on count of notes in category (for recursive menu mostly)
-     * @param int $category_id
+     * @param int $categoryId
      * @param string $type
      * @return bool
      * @throws DBALException
      */
-    public function isNotesCategoryActive(int $category_id, string $type){
-
+    public function isNotesCategoryActive(int $categoryId, string $type){
         switch ($type) {
             case 'MyNotes':
-                return (bool) $this->app->repositories->myNotesRepository->countNotesInCategoryByCategoryId($category_id);
+                return (bool) $this->app->repositories->myNotesRepository->countNotesInCategoryByCategoryId($categoryId);
             default:
                 return false;
         }
@@ -78,16 +78,16 @@ class MyNotes extends AbstractExtension {
      * @throws Exception
      */
     public function getAccessibleNotesCategories() {
-        $accessible_categories = $this->my_notes_categories_controller->getAccessibleCategories();
-        return $accessible_categories;
+        $accessibleCategories = $this->myNotesCategoriesController->getAccessibleCategories();
+        return $accessibleCategories;
     }
 
     /**
      * @return ParentChildDTO[]
      */
     public function buildParentsChildrenCategoriesHierarchy(): array {
-        $parents_children_dtos = $this->my_notes_categories_controller->buildParentsChildrenCategoriesHierarchy();
-        return $parents_children_dtos;
+        $parentsChildrenDtos = $this->myNotesCategoriesController->buildParentsChildrenCategoriesHierarchy();
+        return $parentsChildrenDtos;
     }
 
 }

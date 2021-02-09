@@ -169,15 +169,15 @@ class MyIssue implements SoftDeletableEntityInterface, EntityInterface, RelatesT
     }
 
     /**
-     * @param bool $include_deleted
+     * @param bool $includeDeleted
      * @return Collection|MyIssueContact[]
      */
-    public function getIssueContact(bool $include_deleted = false): Collection
+    public function getIssueContact(bool $includeDeleted = false): Collection
     {
-        foreach($this->issueContact as $index => $issue_contact ){
+        foreach($this->issueContact as $index => $issueContact ){
             if(
-                    !$include_deleted
-                &&  $issue_contact->isDeleted()
+                    !$includeDeleted
+                &&  $issueContact->isDeleted()
             ){
                 unset($this->issueContact[$index]);
             }
@@ -210,15 +210,15 @@ class MyIssue implements SoftDeletableEntityInterface, EntityInterface, RelatesT
     }
 
     /**
-     * @param bool $include_deleted
+     * @param bool $includeDeleted
      * @return Collection|MyIssueProgress[]
      */
-    public function getIssueProgress(bool $include_deleted = false): Collection
+    public function getIssueProgress(bool $includeDeleted = false): Collection
     {
-        foreach($this->issueProgress as $index => $issue_progress ){
+        foreach($this->issueProgress as $index => $issueProgress ){
             if(
-                    !$include_deleted
-                &&  $issue_progress->isDeleted()
+                    !$includeDeleted
+                &&  $issueProgress->isDeleted()
             ){
                 unset($this->issueProgress[$index]);
             }

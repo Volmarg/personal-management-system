@@ -11,7 +11,6 @@ use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use App\Form\Events\Modules\AddRelationToTodoEvent;
 use App\Form\Type\RoundcheckboxType;
-use App\Services\Core\Translator;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
@@ -47,18 +46,18 @@ class MyTodoType extends AbstractType
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
-        $predefined_module = $options[self::OPTION_PREDEFINED_MODULE];
+        $predefinedModule = $options[self::OPTION_PREDEFINED_MODULE];
 
-        if( $predefined_module instanceof EntityInterface ){
-            $choices              = [$predefined_module];
-            $is_module_predefined = true;
+        if( $predefinedModule instanceof EntityInterface ){
+            $choices            = [$predefinedModule];
+            $isModulePredefined = true;
         }else{
             $choices              = $this->controllers->getModuleController()->getAllActive();
-            $is_module_predefined = false;
+            $isModulePredefined = false;
         }
 
-        $display_on_dashboard_id                     = Utils::fieldIdForSymfonyForm($options['data_class'], MyTodo::FIELD_DISPLAY_ON_DASHBOARD);
-        $toggle_display_on_dashboard_for_modules_ids = json_encode([
+        $displayOnDashboardId                  = Utils::fieldIdForSymfonyForm($options['data_class'], MyTodo::FIELD_DISPLAY_ON_DASHBOARD);
+        $toggleDisplayOnDashboardForModulesIds = json_encode([
             $this->controllers->getModuleController()->getOneByName(ModulesController::MODULE_NAME_GOALS)->getId()
         ]);
 
@@ -76,15 +75,15 @@ class MyTodoType extends AbstractType
                 },
                 "class"    => Module::class,
                 'label'    => $this->app->translator->translate('forms.MyTodoType.module'),
-                'required' => $is_module_predefined, // this must be set via variable to force set predefined module,
+                'required' => $isModulePredefined, // this must be set via variable to force set predefined module,
                 "attr"     => [
                     'class'                                          => 'selectpicker',
                     'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
                     'data-append-classes-to-bootstrap-select-button' => 'm-0',
                     'data-hide-dom-element'                          => '',
-                    'data-hide-dom-element-target-selector'          => '#' . $display_on_dashboard_id,
+                    'data-hide-dom-element-target-selector'          => '#' . $displayOnDashboardId,
                     'data-hide-dom-element-target-parent-selector'   => '.row',
-                    'data-hide-dom-element-for-options-values'       => $toggle_display_on_dashboard_for_modules_ids
+                    'data-hide-dom-element-for-options-values'       => $toggleDisplayOnDashboardForModulesIds
                 ]
             ])
             ->add(MyTodo::FIELD_DISPLAY_ON_DASHBOARD,RoundcheckboxType::class,[

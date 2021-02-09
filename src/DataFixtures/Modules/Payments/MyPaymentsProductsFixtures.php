@@ -28,28 +28,28 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
     public function load(ObjectManager $manager)
     {
 
-        $all_food_products       = (new Food())->all;
-        $all_food_shops          = Shops::SUPERMARKETS;
+        $allFoodProducts     = (new Food())->all;
+        $allFoodShops        = Shops::SUPERMARKETS;
 
-        $all_domestic_products   = (new Domestic())->all;
-        $all_domestic_shops      = Shops::DOMESTIC_SHOPS;
+        $allDomesticProducts = (new Domestic())->all;
+        $allDomesticShops    = Shops::DOMESTIC_SHOPS;
 
-        $this->addProductsWithShops($all_food_products, $all_food_shops, $manager);
-        $this->addProductsWithShops($all_domestic_products, $all_domestic_shops, $manager);
+        $this->addProductsWithShops($allFoodProducts, $allFoodShops, $manager);
+        $this->addProductsWithShops($allDomesticProducts, $allDomesticShops, $manager);
 
         $manager->flush();
     }
 
-    private function addProductsWithShops(array $all_products, array $all_shops, ObjectManager $manager){
-        foreach($all_products as $product_name){
+    private function addProductsWithShops(array $allProducts, array $allShops, ObjectManager $manager){
+        foreach($allProducts as $productName){
 
-            $shop     = Utils::arrayGetRandom($all_shops);
+            $shop     = Utils::arrayGetRandom($allShops);
 
             $price    = $this->faker->randomFloat(2, 2, 10);
             $rejected = $this->faker->boolean;
 
             $product = new MyPaymentsProduct();
-            $product->setName(ucfirst($product_name));
+            $product->setName(ucfirst($productName));
             $product->setInformation('');
             $product->setMarket($shop);
             $product->setPrice($price);

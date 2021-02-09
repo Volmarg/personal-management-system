@@ -22,23 +22,23 @@ class ProductsTypesStyling extends AbstractExtension {
     }
 
     /**
-     * @param string $rejection_type
-     * @param int $rejection_status
-     * @param string $column_name
+     * @param string $rejectionType
+     * @param int $rejectionStatus
+     * @param string $columnName
      * @return string
      */
-    public function getClassForProductType(string $rejection_type, int $rejection_status, string $column_name) {
+    public function getClassForProductType(string $rejectionType, int $rejectionStatus, string $columnName) {
         $class = '';
 
-        if ($column_name == static::PRICE)
+        if ($columnName == static::PRICE)
             if (
-                strtolower($rejection_type) === static::NON_REJECTED && $rejection_status === 0 ||
-                strtolower($rejection_type) === static::REJECTED && $rejection_status === 0
+                strtolower($rejectionType) === static::NON_REJECTED && $rejectionStatus === 0 ||
+                strtolower($rejectionType) === static::REJECTED && $rejectionStatus === 0
             ) {
                 $class = static::CLASS_TEXT_SUCCESS;
             } elseif (
-                strtolower($rejection_type) === static::NON_REJECTED && $rejection_status === 1 ||
-                strtolower($rejection_type) === static::REJECTED && $rejection_status === 1
+                strtolower($rejectionType) === static::NON_REJECTED && $rejectionStatus === 1 ||
+                strtolower($rejectionType) === static::REJECTED && $rejectionStatus === 1
             ) {
                 $class = static::CLASS_TEXT_DANGER;
             }
@@ -47,21 +47,21 @@ class ProductsTypesStyling extends AbstractExtension {
     }
 
     /**
-     * @param string $rejection_type
-     * @param int $rejection_status
+     * @param string $rejectionType
+     * @param int $rejectionStatus
      * @return bool
      */
-    public function isRowHiddenForProductType(string $rejection_type, int $rejection_status) {
+    public function isRowHiddenForProductType(string $rejectionType, int $rejectionStatus) {
         $status = false;
 
         if (
-            strtolower($rejection_type) === static::NON_REJECTED && $rejection_status === 0 ||
-            strtolower($rejection_type) === static::REJECTED && $rejection_status === 1
+            strtolower($rejectionType) === static::NON_REJECTED && $rejectionStatus === 0 ||
+            strtolower($rejectionType) === static::REJECTED && $rejectionStatus === 1
         ) {
             $status = true;
         } elseif (
-            strtolower($rejection_type) === static::NON_REJECTED && $rejection_status === 1 ||
-            strtolower($rejection_type) === static::REJECTED && $rejection_status === 0
+            strtolower($rejectionType) === static::NON_REJECTED && $rejectionStatus === 1 ||
+            strtolower($rejectionType) === static::REJECTED && $rejectionStatus === 0
         ) {
             $status = false;
         }

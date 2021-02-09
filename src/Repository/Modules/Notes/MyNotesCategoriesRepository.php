@@ -2,11 +2,8 @@
 
 namespace App\Repository\Modules\Notes;
 
-use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\Query\Expr\Join;
@@ -46,13 +43,13 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
     /**
      * @param Statement $statement
-     * @param array $categories_ids
+     * @param array $categoriesIds
      * @return bool
      * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function executeHaveCategoriesNotesStatement(Statement $statement, array $categories_ids): bool
+    public function executeHaveCategoriesNotesStatement(Statement $statement, array $categoriesIds): bool
     {
-        $ids = "'" . implode("','", $categories_ids) . "'";
+        $ids = "'" . implode("','", $categoriesIds) . "'";
 
         $statement->execute([$ids]);
         $result = $statement->fetchFirstColumn();
@@ -65,42 +62,42 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param array $categories_ids
+     * @param array $categoriesIds
      * @return MyNotesCategories[]
      */
-    public function getChildrenCategoriesForCategoriesIds(array $categories_ids): array
+    public function getChildrenCategoriesForCategoriesIds(array $categoriesIds): array
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select("mnc_child")
+        $queryBuilder->select("mnc_child")
             ->from(MyNotesCategories::class, "mnc")
             ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent_id = mnc.id")
             ->where("mnc.id IN (:categoriesIds)")
             ->andWhere("mnc_child.deleted = 0")
-            ->setParameter("categoriesIds", $categories_ids);
+            ->setParameter("categoriesIds", $categoriesIds);
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         return $results;
     }
 
     /**
-     * @param array $categories_ids
+     * @param array $categoriesIds
      * @return string[]
      */
-    public function getChildrenCategoriesIdsForCategoriesIds(array $categories_ids): array
+    public function getChildrenCategoriesIdsForCategoriesIds(array $categoriesIds): array
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select("mnc_child.id")
+        $queryBuilder->select("mnc_child.id")
             ->from(MyNotesCategories::class, "mnc")
             ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent_id = mnc.id")
             ->where("mnc.id IN (:categoriesIds)")
             ->andWhere("mnc_child.deleted = 0")
-            ->setParameter("categoriesIds", $categories_ids);
+            ->setParameter("categoriesIds", $categoriesIds);
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
         $ids     = array_column($results, 'id');
 
@@ -163,34 +160,34 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
     /**
      * Returns categories inside given parentId
      * @param string $name
-     * @param string $category_id
+     * @param string $categoryId
      * @return MyNotesCategories[]
      */
-    public function getNotDeletedCategoriesForParentIdAndName(string $name, ?string $category_id): array
+    public function getNotDeletedCategoriesForParentIdAndName(string $name, ?string $categoryId): array
     {
-        $query_builder = $this->_em->createQueryBuilder();
-        $query_builder->select("mnc")
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select("mnc")
             ->from(MyNotesCategories::class, "mnc")
             ->where("mnc.deleted = 0");
 
-        if( is_null($category_id) ){
-            $query_builder
+        if( is_null($categoryId) ){
+            $queryBuilder
                 ->andWhere("mnc.name = :name")
                 ->andWhere("mnc.parent_id IS NULL")
                 ->setParameters([
                     "name" => $name,
                 ]);
         }else{
-            $query_builder
+            $queryBuilder
                 ->andWhere("mnc.name      = :name")
                 ->andWhere("mnc.parent_id = :categoryId")
                 ->setParameters([
                     "name"       => $name,
-                    "categoryId" => $category_id,
+                    "categoryId" => $categoryId,
                 ]);
         }
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         return $results;

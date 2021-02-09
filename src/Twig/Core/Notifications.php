@@ -28,11 +28,11 @@ class Notifications extends AbstractExtension {
 
     /**
      * This function must exists in twig as this is used for overall top-bar
-     * @param int $days_max_offset
+     * @param int $daysMaxOffset
      * @return mixed[]
      */
-    public function getSchedulesForNotifications(int $days_max_offset){
-        $schedules = $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays($days_max_offset);
+    public function getSchedulesForNotifications(int $daysMaxOffset){
+        $schedules = $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays($daysMaxOffset);
 
         $data = [
             self::KEY_SCHEDULES       => $schedules,

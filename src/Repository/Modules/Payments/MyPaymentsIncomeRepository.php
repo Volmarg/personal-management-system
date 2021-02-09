@@ -53,16 +53,16 @@ class MyPaymentsIncomeRepository extends ServiceEntityRepository {
 
         $results = $this->_em->getConnection()->fetchAllAssociative($sql);
 
-        $returned_result = [];
+        $returnedResult = [];
         foreach($results as $result){
 
             $date   =       $result['date'];
             $amount = (int) $result['amount'];
 
-            $returned_result[$date] = $amount;
+            $returnedResult[$date] = $amount;
         }
 
-        return $returned_result;
+        return $returnedResult;
     }
 
     /**

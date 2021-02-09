@@ -63,8 +63,8 @@ class MyJobHolidaysPool implements EntityInterface{
         return $this->daysInPool;
     }
 
-    public function setDaysInPool(string $days_in_pool): self {
-        $this->daysInPool = $days_in_pool;
+    public function setDaysInPool(string $daysInPool): self {
+        $this->daysInPool = $daysInPool;
 
         return $this;
     }

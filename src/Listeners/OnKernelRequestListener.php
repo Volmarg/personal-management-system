@@ -39,30 +39,30 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     ];
 
     /**
-     * @var Logger $security_logger
+     * @var Logger $securityLogger
      */
-    private $security_logger;
+    private $securityLogger;
 
     /**
-     * @var ExpirableSessionsService $expirable_sessions_service
+     * @var ExpirableSessionsService $expirableSessionsService
      */
-    private $expirable_sessions_service;
+    private $expirableSessionsService;
 
     /**
-     * @var UrlGeneratorInterface $url_generator
+     * @var UrlGeneratorInterface $urlGenerator
      */
-    private UrlGeneratorInterface $url_generator;
+    private UrlGeneratorInterface $urlGenerator;
 
     /**
      * @var Application $app
      */
     private Application $app;
 
-    public function __construct(Logger $security_logger, ExpirableSessionsService $sessions_service, UrlGeneratorInterface  $url_generator, Application $app) {
-        $this->security_logger            = $security_logger->getSecurityLogger();
-        $this->expirable_sessions_service = $sessions_service;
-        $this->url_generator              = $url_generator;
-        $this->app                        = $app;
+    public function __construct(Logger $securityLogger, ExpirableSessionsService $sessionsService, UrlGeneratorInterface  $urlGenerator, Application $app) {
+        $this->securityLogger           = $securityLogger->getSecurityLogger();
+        $this->expirableSessionsService = $sessionsService;
+        $this->urlGenerator             = $urlGenerator;
+        $this->app                      = $app;
     }
 
     /**
@@ -73,11 +73,11 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     public function onRequest(RequestEvent $ev)
     {
-        $is_system_lock_unlocked_before_handling_expiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        $isSystemLockUnlockedBeforeHandlingExpiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
 
         $this->handleSessionsLifetimes($ev);
         $this->handleLogoutUserOnExpiredLoginSession($ev);
-        $this->handleTurnLockOffOnExpiredUnlockSession($ev, $is_system_lock_unlocked_before_handling_expiration);
+        $this->handleTurnLockOffOnExpiredUnlockSession($ev, $isSystemLockUnlockedBeforeHandlingExpiration);
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         $this->blockIp($ev);
@@ -96,19 +96,19 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     {
         $request = $event->getRequest();
 
-        $method     = $request->getMethod();
-        $get_data   = json_encode($request->query->all());
-        $post_data  = json_encode($request->request->all());
-        $ip         = $request->getClientIp();
-        $content    = $request->getContent();
-        $headers    = json_encode($request->headers->all());
-        $url        = $request->getUri();
+        $method   = $request->getMethod();
+        $getData  = json_encode($request->query->all());
+        $postData = json_encode($request->request->all());
+        $ip       = $request->getClientIp();
+        $content  = $request->getContent();
+        $headers  = json_encode($request->headers->all());
+        $url      = $request->getUri();
 
-        $this->security_logger->info("Visited url", [
+        $this->securityLogger->info("Visited url", [
             self::LOGGER_REQUEST_URL       => $url,
             self::LOGGER_REQUEST_METHOD    => $method,
-            self::LOGGER_REQUEST_GET_DATA  => $get_data,
-            self::LOGGER_REQUEST_POST_DATA => $post_data,
+            self::LOGGER_REQUEST_GET_DATA  => $getData,
+            self::LOGGER_REQUEST_POST_DATA => $postData,
             self::LOGGER_REQUEST_IP        => $ip,
             self::LOGGER_REQUEST_CONTENT   => $content,
             self::LOGGER_REQUEST_HEADERS   => $headers,
@@ -122,9 +122,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function blockRequestTypes(RequestEvent $event): void
     {
-        $request_method = $event->getRequest()->getMethod();
-
-        if( !in_array($request_method, self::ALLOWED_REQUEST_TYPES) ){
+        $requestMethod = $event->getRequest()->getMethod();
+        if( !in_array($requestMethod, self::ALLOWED_REQUEST_TYPES) ){
 
             $response = new Response();
             $response->setContent("");
@@ -132,11 +131,11 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             $event->stopPropagation();
             $event->setResponse($response);
 
-            $log_message       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedMethod");
-            $exception_message = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
+            $logMessage       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedMethod");
+            $exceptionMessage = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
 
-            $this->security_logger->info($log_message);
-            throw new SecurityException($exception_message);
+            $this->securityLogger->info($logMessage);
+            throw new SecurityException($exceptionMessage);
         }
 
     }
@@ -149,28 +148,28 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function blockIp(RequestEvent $event): void
     {
-        $restricted_ips = $this->app->configLoaders->getConfigLoaderSecurity()->getRestrictedIps();
-        $request        = $event->getRequest();
-        $ip             = $request->getClientIp();
+        $restrictedIps = $this->app->configLoaders->getConfigLoaderSecurity()->getRestrictedIps();
+        $request       = $event->getRequest();
+        $ip            = $request->getClientIp();
 
-        if( empty($restricted_ips) ){
+        if( empty($restrictedIps) ){
             return;
         }
 
-        if( !in_array($ip, $restricted_ips) ){
+        if( !in_array($ip, $restrictedIps) ){
             $response = new Response();
             $response->setContent("");
 
             $event->stopPropagation();
             $event->setResponse($response);
 
-            $log_message       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedIp");
-            $exception_message = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
+            $logMessage       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedIp");
+            $exceptionMessage = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
 
-            $this->security_logger->info($log_message, [
+            $this->securityLogger->info($logMessage, [
                 "ip" => $ip,
             ]);
-            throw new SecurityException($exception_message);
+            throw new SecurityException($exceptionMessage);
         }
 
     }
@@ -183,7 +182,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private function handleSessionsLifetimes(RequestEvent $event): void
     {
         $request = $event->getRequest();
-        $this->expirable_sessions_service->handleSessionExpiration($request);
+        $this->expirableSessionsService->handleSessionExpiration($request);
     }
 
     /**
@@ -199,22 +198,22 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $request = $ev->getRequest();
 
         if(
-                !$this->expirable_sessions_service->hasExpirableSession(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME)
+                !$this->expirableSessionsService->hasExpirableSession(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME)
             &&  !empty($this->app->getCurrentlyLoggedInUser())
         ) {
             $message = $this->app->translator->translate('messages.general.yourSessionHasExpiredYouWereLoggedOut');
 
             $this->app->logoutCurrentlyLoggedInUser();
-            $logout_url = $this->url_generator->generate("login");
+            $logoutUrl = $this->urlGenerator->generate("login");
 
             if( $request->isXmlHttpRequest() ){
-                $ajax_response = new AjaxResponse();
-                $ajax_response->setCode(Response::HTTP_TEMPORARY_REDIRECT);
-                $ajax_response->setReloadPage(true);;
+                $ajaxResponse = new AjaxResponse();
+                $ajaxResponse->setCode(Response::HTTP_TEMPORARY_REDIRECT);
+                $ajaxResponse->setReloadPage(true);;
 
-                $response = $ajax_response->buildJsonResponse();
+                $response = $ajaxResponse->buildJsonResponse();
             }else{
-                $response = new RedirectResponse($logout_url);
+                $response = new RedirectResponse($logoutUrl);
             }
 
             $this->app->addDangerFlash($message);
@@ -224,25 +223,25 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
     /**
      * @param RequestEvent $ev
-     * @param bool $is_system_lock_unlocked_before_handling_expiration
+     * @param bool $isSystemLockUnlockedBeforeHandlingExpiration
      */
-    private function handleTurnLockOffOnExpiredUnlockSession(RequestEvent $ev, bool $is_system_lock_unlocked_before_handling_expiration)
+    private function handleTurnLockOffOnExpiredUnlockSession(RequestEvent $ev, bool $isSystemLockUnlockedBeforeHandlingExpiration)
     {
-        $request                                           = $ev->getRequest();
-        $is_system_lock_unlocked_after_handling_expiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        $request                                     = $ev->getRequest();
+        $isSystemLockUnlockedAfterHandlingExpiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
 
         if(
-                $is_system_lock_unlocked_before_handling_expiration
-            &&  !$is_system_lock_unlocked_after_handling_expiration
+                $isSystemLockUnlockedBeforeHandlingExpiration
+            &&  !$isSystemLockUnlockedAfterHandlingExpiration
         ){
             $message = $this->app->translator->translate('messages.lock.unlockExpiredReloadingPage');
 
             if( $request->isXmlHttpRequest() ){
-                $ajax_response = new AjaxResponse();
-                $ajax_response->setCode(Response::HTTP_TEMPORARY_REDIRECT);
-                $ajax_response->setReloadPage(true);;
+                $ajaxResponse = new AjaxResponse();
+                $ajaxResponse->setCode(Response::HTTP_TEMPORARY_REDIRECT);
+                $ajaxResponse->setReloadPage(true);
 
-                $response = $ajax_response->buildJsonResponse();
+                $response = $ajaxResponse->buildJsonResponse();
             }else{
                 $response = new RedirectResponse($request->getUri()); // the same page - just reload
             }

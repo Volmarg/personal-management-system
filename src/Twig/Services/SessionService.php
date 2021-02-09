@@ -15,14 +15,14 @@ class SessionService extends AbstractExtension {
     private $app;
 
     /**
-     * @var UserRolesSessionService $roles_session_service
+     * @var UserRolesSessionService $rolesSessionService
      */
-    private $roles_session_service;
+    private $rolesSessionService;
 
     public function __construct(Application $app, UserRolesSessionService $rolesSessionService)
     {
-        $this->app                   = $app;
-        $this->roles_session_service = $rolesSessionService;
+        $this->app                 = $app;
+        $this->rolesSessionService = $rolesSessionService;
     }
 
     public function getFunctions()
@@ -34,7 +34,7 @@ class SessionService extends AbstractExtension {
 
     public function getRolesSessionService()
     {
-        return $this->roles_session_service;
+        return $this->rolesSessionService;
     }
 
 }

@@ -18,7 +18,7 @@ class SettingsWidgetVisibilityDTO extends AbstractDTO implements dtoInterface{
     /**
      * @var bool
      */
-    private $is_visible = false;
+    private $isVisible = false;
 
     /**
      * @return string
@@ -38,32 +38,32 @@ class SettingsWidgetVisibilityDTO extends AbstractDTO implements dtoInterface{
      * @return bool
      */
     public function isVisible(): bool {
-        return $this->is_visible;
+        return $this->isVisible;
     }
 
     /**
-     * @param bool $is_visible
+     * @param bool $isVisible
      */
-    public function setIsVisible(bool $is_visible): void {
-        $this->is_visible = $is_visible;
+    public function setIsVisible(bool $isVisible): void {
+        $this->isVisible = $isVisible;
     }
 
     /**
-     * @param string $widget_visibility_json
+     * @param string $widgetVisibilityJson
      * @return SettingsWidgetVisibilityDTO
      * @throws \Exception
      */
-    public static function fromJson(string $widget_visibility_json): self{
-        $widget_visibility_array = \GuzzleHttp\json_decode($widget_visibility_json, true);
+    public static function fromJson(string $widgetVisibilityJson): self{
+        $widgetVisibilityArray = \GuzzleHttp\json_decode($widgetVisibilityJson, true);
 
-        $name       = self::checkAndGetKey($widget_visibility_array, self::KEY_NAME);
-        $is_visible = self::checkAndGetKey($widget_visibility_array, self::KEY_IS_VISIBLE);
+        $name      = self::checkAndGetKey($widgetVisibilityArray, self::KEY_NAME);
+        $IsVisible = self::checkAndGetKey($widgetVisibilityArray, self::KEY_IS_VISIBLE);
 
-        $settings_widget_visibility_dto = new self();
-        $settings_widget_visibility_dto->setName($name);
-        $settings_widget_visibility_dto->setIsVisible($is_visible);
+        $settingsWidgetVisibilityDto = new self();
+        $settingsWidgetVisibilityDto->setName($name);
+        $settingsWidgetVisibilityDto->setIsVisible($IsVisible);
 
-        return $settings_widget_visibility_dto;
+        return $settingsWidgetVisibilityDto;
 
     }
 

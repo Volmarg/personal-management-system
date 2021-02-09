@@ -36,9 +36,9 @@ class MyPasswordsRepository extends ServiceEntityRepository {
             AND deleted = 0
         ";
 
-        $binded_params = ['id' => $id];
-        $statement     = $connection->prepare($sql);
-        $statement->execute($binded_params);
+        $bindedParams = ['id' => $id];
+        $statement    = $connection->prepare($sql);
+        $statement->execute($bindedParams);
 
         $result     = $statement->fetchAll();
         $returned   = (!empty($result) ? $result[0]->password : '');

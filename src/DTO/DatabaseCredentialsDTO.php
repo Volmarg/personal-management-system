@@ -13,96 +13,96 @@ class DatabaseCredentialsDTO {
     /**
      * @var string
      */
-    private $database_login = '';
+    private $databaseLogin = '';
 
     /**
      * @var string
      */
-    private $database_host = '';
+    private $databaseHost = '';
 
     /**
      * @var string
      */
-    private $database_port = '';
+    private $databasePort = '';
 
     /**
      * @var string
      */
-    private $database_password = '';
+    private $databasePassword = '';
 
     /**
      * @var string
      */
-    private $database_name = '';
+    private $databaseName = '';
 
     /**
      * @return string
      */
     public function getDatabaseLogin(): string {
-        return $this->database_login;
+        return $this->databaseLogin;
     }
 
     /**
-     * @param string $database_login
+     * @param string $databaseLogin
      */
-    public function setDatabaseLogin(string $database_login): void {
-        $this->database_login = $database_login;
+    public function setDatabaseLogin(string $databaseLogin): void {
+        $this->databaseLogin = $databaseLogin;
     }
 
     /**
      * @return string
      */
     public function getDatabaseHost(): string {
-        return $this->database_host;
+        return $this->databaseHost;
     }
 
     /**
-     * @param string $database_host
+     * @param string $databaseHost
      */
-    public function setDatabaseHost(string $database_host): void {
-        $this->database_host = $database_host;
+    public function setDatabaseHost(string $databaseHost): void {
+        $this->databaseHost = $databaseHost;
     }
 
     /**
      * @return string
      */
     public function getDatabasePort(): string {
-        return $this->database_port;
+        return $this->databasePort;
     }
 
     /**
-     * @param string $database_port
+     * @param string $databasePort
      */
-    public function setDatabasePort(string $database_port): void {
-        $this->database_port = $database_port;
+    public function setDatabasePort(string $databasePort): void {
+        $this->databasePort = $databasePort;
     }
 
     /**
      * @return string
      */
     public function getDatabasePassword(): string {
-        return $this->database_password;
+        return $this->databasePassword;
     }
 
     /**
-     * @param string $database_password
+     * @param string $databasePassword
      */
-    public function setDatabasePassword(string $database_password): void {
-        $this->database_password = $database_password;
+    public function setDatabasePassword(string $databasePassword): void {
+        $this->databasePassword = $databasePassword;
     }
 
     /**
      * @return string
      */
     public function getDatabaseName(): string {
-        return $this->database_name;
+        return $this->databaseName;
     }
 
     /**
-     * @param string $database_name
+     * @param string $databaseName
      */
-    public function setDatabaseName(string $database_name): void {
-        $this->database_name = $database_name;
+    public function setDatabaseName(string $databaseName): void {
+        $this->databaseName = $databaseName;
     }
 
     /**

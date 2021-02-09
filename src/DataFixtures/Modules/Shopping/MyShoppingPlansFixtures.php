@@ -2,10 +2,8 @@
 
 namespace App\DataFixtures\Modules\Shopping;
 
-use App\DataFixtures\Providers\Business\Shops;
 use App\DataFixtures\Providers\Products\ExpensiveProducts;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
-use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -25,14 +23,14 @@ class MyShoppingPlansFixtures extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager)
     {
 
-        foreach(ExpensiveProducts::ALL as $product_name => $product_example) {
+        foreach(ExpensiveProducts::ALL as $productName => $productExample) {
 
-            $shopping_plan = new MyShoppingPlans();
-            $shopping_plan->setName(ucfirst($product_name));
-            $shopping_plan->setExample($product_example);
-            $shopping_plan->setInformation("");
+            $shoppingPlan = new MyShoppingPlans();
+            $shoppingPlan->setName(ucfirst($productName));
+            $shoppingPlan->setExample($productExample);
+            $shoppingPlan->setInformation("");
 
-            $manager->persist($shopping_plan);
+            $manager->persist($shoppingPlan);
 
         }
 

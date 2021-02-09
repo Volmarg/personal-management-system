@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
@@ -40,14 +39,14 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     private Translator  $translator;
 
     /**
-     * @var ExpirableSessionsService $expirable_sessions_service
+     * @var ExpirableSessionsService $expirableSessionsService
      */
-    private ExpirableSessionsService $expirable_sessions_service;
+    private ExpirableSessionsService $expirableSessionsService;
 
     /**
-     * @var ConfigLoaders $config_loaders
+     * @var ConfigLoaders $configLoaders
      */
-    private ConfigLoaders $config_loaders;
+    private ConfigLoaders $configLoaders;
 
     public function __construct(
         EntityManagerInterface       $entityManager,
@@ -55,17 +54,17 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
         CsrfTokenManagerInterface    $csrfTokenManager,
         UserPasswordEncoderInterface $passwordEncoder,
         Translator                   $translator,
-        ExpirableSessionsService     $expirable_sessions_service,
-        ConfigLoaders                $config_loaders
+        ExpirableSessionsService     $expirableSessionsService,
+        ConfigLoaders                $configLoaders
     )
     {
-        $this->entityManager              = $entityManager;
-        $this->urlGenerator               = $urlGenerator;
-        $this->csrfTokenManager           = $csrfTokenManager;
-        $this->passwordEncoder            = $passwordEncoder;
-        $this->translator                 = $translator;
-        $this->config_loaders             = $config_loaders;
-        $this->expirable_sessions_service = $expirable_sessions_service;
+        $this->entityManager            = $entityManager;
+        $this->urlGenerator             = $urlGenerator;
+        $this->csrfTokenManager         = $csrfTokenManager;
+        $this->passwordEncoder          = $passwordEncoder;
+        $this->translator               = $translator;
+        $this->configLoaders            = $configLoaders;
+        $this->expirableSessionsService = $expirableSessionsService;
     }
 
     public function supports(Request $request)
@@ -77,8 +76,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function getCredentials(Request $request)
     {
         $credentials = [
-            'username' => $request->request->get('username'),
-            'password' => $request->request->get('password'),
+            'username'   => $request->request->get('username'),
+            'password'   => $request->request->get('password'),
             'csrf_token' => $request->request->get('_csrf_token'),
         ];
         $request->getSession()->set(
@@ -108,9 +107,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        $is_password_valid = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
-
-        if( !$is_password_valid ){
+        $isPasswordValid = $this->passwordEncoder->isPasswordValid($user, $credentials['password']);
+        if( !$isPasswordValid ){
             $message = $this->translator->translate('login.errors.invalidPassword');
             throw new BadCredentialsException($message);
         }
@@ -136,8 +134,8 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
         // save expirable session to auto logout user once it expires
-        $user_login_session_lifetime = $this->config_loaders->getConfigLoaderSession()->getUserLoginLifetime();
-        $this->expirable_sessions_service->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME, $user_login_session_lifetime);
+        $userLoginSessionLifetime = $this->configLoaders->getConfigLoaderSession()->getUserLoginLifetime();
+        $this->expirableSessionsService->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME, $userLoginSessionLifetime);
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
             return new RedirectResponse($targetPath);

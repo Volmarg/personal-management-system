@@ -12,19 +12,19 @@ class ModuleData extends Fixture
     public function load(ObjectManager $manager)
     {
 
-        foreach(ModuleDataProvider::ALL_ENTRIES as $single_entry){
-            $identifier  = $single_entry[ModuleDataProvider::KEY_RECORD_IDENTIFIER];
-            $module      = $single_entry[ModuleDataProvider::KEY_MODULE];
-            $type        = $single_entry[ModuleDataProvider::KEY_RECORD_TYPE];
-            $description = $single_entry[ModuleDataProvider::KEY_DESCRIPTION];
+        foreach(ModuleDataProvider::ALL_ENTRIES as $singleEntry){
+            $identifier  = $singleEntry[ModuleDataProvider::KEY_RECORD_IDENTIFIER];
+            $module      = $singleEntry[ModuleDataProvider::KEY_MODULE];
+            $type        = $singleEntry[ModuleDataProvider::KEY_RECORD_TYPE];
+            $description = $singleEntry[ModuleDataProvider::KEY_DESCRIPTION];
 
-            $module_data = new ModuleDataEntity();
-            $module_data->setRecordIdentifier($identifier);
-            $module_data->setModule($module);
-            $module_data->setRecordType($type);
-            $module_data->setDescription($description);
+            $moduleData = new ModuleDataEntity();
+            $moduleData->setRecordIdentifier($identifier);
+            $moduleData->setModule($module);
+            $moduleData->setRecordType($type);
+            $moduleData->setDescription($description);
 
-            $manager->persist($module_data);;
+            $manager->persist($moduleData);;
         }
 
         $manager->flush();

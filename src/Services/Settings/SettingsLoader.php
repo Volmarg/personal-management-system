@@ -53,16 +53,16 @@ class SettingsLoader {
      * @throws Exception
      */
     public function getCurrenciesDtosForSettingsFinances(): array {
-        $setting                  = $this->getSettingsForFinances();
-        $currencies_setting_dtos  = [];
+        $setting                = $this->getSettingsForFinances();
+        $currenciesSettingDtos  = [];
 
         if( !empty($setting) ) {
-            $settings_finances_json   = $setting->getValue();
-            $settings_finances_dto    = SettingsFinancesDTO::fromJson($settings_finances_json);
-            $currencies_setting_dtos  = $settings_finances_dto->getSettingsCurrencyDtos();
+            $settingsFinancesJson   = $setting->getValue();
+            $settingsFinancesDto    = SettingsFinancesDTO::fromJson($settingsFinancesJson);
+            $currenciesSettingDtos  = $settingsFinancesDto->getSettingsCurrencyDtos();
         }
 
-        return $currencies_setting_dtos;
+        return $currenciesSettingDtos;
     }
 
 }

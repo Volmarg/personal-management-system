@@ -15,28 +15,28 @@ class SchedulesStyling extends AbstractExtension {
     }
 
     /**
-     * @param \DateTime $schedule_date
+     * @param \DateTime $scheduleDate
      * @return string
      * @throws \Exception
      */
-    public function getClassesForSchedulesTable(?\DateTime $schedule_date):string {
+    public function getClassesForSchedulesTable(?\DateTime $scheduleDate):string {
         $classes    = '';
 
-        if( is_null($schedule_date) ){
+        if( is_null($scheduleDate) ){
             return $classes;
         }
 
-        $currDate   = new \DateTime();
-        $days_diff  = (int)$currDate->diff($schedule_date)->format('%r%a');
+        $currDate = new \DateTime();
+        $daysDiff = (int)$currDate->diff($scheduleDate)->format('%r%a');
 
-        switch($days_diff) {
-            case $days_diff > 30 && $days_diff <= 60:
+        switch($daysDiff) {
+            case $daysDiff > 30 && $daysDiff <= 60:
                 $classes = 'table-success';
                 break;
-            case $days_diff > 14 && $days_diff <= 30:
+            case $daysDiff > 14 && $daysDiff <= 30:
                 $classes = 'table-warning';
                 break;
-            case $days_diff <= 14:
+            case $daysDiff <= 14:
                 $classes = 'table-danger';
                 break;
         }
@@ -45,20 +45,20 @@ class SchedulesStyling extends AbstractExtension {
     }
 
     /**
-     * @param int $days_diff
+     * @param int $daysDiff
      * @return string
      */
-    public function getClassesForSchedulesWidget(int $days_diff):string {
+    public function getClassesForSchedulesWidget(int $daysDiff):string {
         $classes    = '';
 
-        switch($days_diff) {
-            case $days_diff > 30 && $days_diff <= 60:
+        switch($daysDiff) {
+            case $daysDiff > 30 && $daysDiff <= 60:
                 $classes = 'badge-success';
                 break;
-            case $days_diff > 14 && $days_diff <= 30:
+            case $daysDiff > 14 && $daysDiff <= 30:
                 $classes = 'badge-warning';
                 break;
-            case $days_diff <= 14:
+            case $daysDiff <= 14:
                 $classes = 'badge-danger';
                 break;
         }

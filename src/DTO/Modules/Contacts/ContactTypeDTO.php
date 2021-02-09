@@ -18,9 +18,9 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
     private $name;
 
     /**
-     * @var string $icon_path
+     * @var string $iconPath
      */
-    private $icon_path;
+    private $iconPath;
 
     /**
      * @var string $details
@@ -51,14 +51,14 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
      * @return string
      */
     public function getIconPath(): string {
-        return $this->icon_path;
+        return $this->iconPath;
     }
 
     /**
-     * @param string $icon_path
+     * @param string $iconPath
      */
-    public function setIconPath(string $icon_path): void {
-        $this->icon_path = $icon_path;
+    public function setIconPath(string $iconPath): void {
+        $this->iconPath = $iconPath;
     }
 
     /**
@@ -114,18 +114,18 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
      */
     public static function fromArray(array $array): ContactTypeDTO {
 
-        $name       = static::checkAndGetKey($array, self::KEY_NAME);
-        $icon_path  = static::checkAndGetKey($array, self::KEY_ICON_PATH);
-        $details    = static::checkAndGetKey($array, self::KEY_DETAILS);
-        $uuid       = static::checkAndGetKey($array, self::KEY_UUID);
+        $name     = static::checkAndGetKey($array, self::KEY_NAME);
+        $iconPath = static::checkAndGetKey($array, self::KEY_ICON_PATH);
+        $details  = static::checkAndGetKey($array, self::KEY_DETAILS);
+        $uuid     = static::checkAndGetKey($array, self::KEY_UUID);
 
-        $contact_type_dto = new ContactTypeDTO();
-        $contact_type_dto->setName($name);
-        $contact_type_dto->setIconPath($icon_path);
-        $contact_type_dto->setDetails($details);
-        $contact_type_dto->setUuid($uuid);
+        $contactTypeDto = new ContactTypeDTO();
+        $contactTypeDto->setName($name);
+        $contactTypeDto->setIconPath($iconPath);
+        $contactTypeDto->setDetails($details);
+        $contactTypeDto->setUuid($uuid);
 
-        return $contact_type_dto;
+        return $contactTypeDto;
     }
 
     /**
@@ -133,9 +133,9 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
      * @return ContactTypeDTO
      */
     public static function fromJson(string $json):ContactTypeDTO {
-        $array              = json_decode($json, true);
-        $contact_type_dto   = self::fromJson($array);
-        return $contact_type_dto;
+        $array          = json_decode($json, true);
+        $contactTypeDto = self::fromJson($array);
+        return $contactTypeDto;
     }
 
 
