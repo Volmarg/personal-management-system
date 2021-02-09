@@ -41,7 +41,7 @@ services:
 
     App\Services\Core\Logger:
         arguments:
-            $security_logger: "@monolog.logger.security"
+            $securityLogger: "@monolog.logger.security"
         public: true
 
     services_core_logger:
@@ -55,8 +55,8 @@ services:
     App\Services\ConfigLoaders\ConfigLoaderSession:
         public: true
         arguments:
-          $system_lock_lifetime: '%session_data.lifetime.system_lock%'
-          $user_login_lifetime: '%session_data.lifetime.user_login%'
+          $systemLockLifetime: '%session_data.lifetime.system_lock%'
+          $userLoginLifetime: '%session_data.lifetime.user_login%'
 
     App\Services\ConfigLoaders\ConfigLoaderSecurity:
         calls:
@@ -78,7 +78,7 @@ services:
 
     App\Services\External\NotifierProxyLoggerService:
         arguments:
-            $notifier_proxy_logger_bridge: '@notifier_proxy_logger_bridge'
+            $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
