@@ -256,12 +256,12 @@ class AutoInstaller{
 
         CliHandler::errorText('!! Beware that if You provided existing database then it will be dropped. !!');
 
-        $selected_option = CliHandler::choices([
+        $selectedOption = CliHandler::choices([
             self::YES,
             self::NO,
         ], "Do You want to continue?");
 
-        if( self::NO === $selected_option ){
+        if( self::NO === $selectedOption ){
             CliHandler::errorText("Well... ok");
             self::installerAreaLine();
             exit;

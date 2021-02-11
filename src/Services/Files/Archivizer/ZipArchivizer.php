@@ -17,9 +17,9 @@ class ZipArchivizer extends Archivizer
      */
     private $zip;
 
-    public function setArchiveName(string $archive_name): void
+    public function setArchiveName(string $archiveName): void
     {
-        $this->archiveName = $archive_name . self::EXTENSION_ZIP;
+        $this->archiveName = $archiveName . self::EXTENSION_ZIP;
     }
 
     public function __construct(Application $app)
@@ -46,13 +46,13 @@ class ZipArchivizer extends Archivizer
             return;
         }
 
-        foreach($this->directoriesToArchive as $directory_to_archive ){
-            $this->addRecursively($directory_to_archive);
+        foreach($this->directoriesToArchive as $directoryToArchive ){
+            $this->addRecursively($directoryToArchive);
         }
 
-        foreach($this->filesToArchive as $file_to_archive){
-            $archived_directory_path = pathinfo($file_to_archive, PATHINFO_DIRNAME);
-            $this->addSingleFileToArchive($file_to_archive, $archived_directory_path, true);
+        foreach($this->filesToArchive as $fileToArchive){
+            $archivedDirectoryPath = pathinfo($fileToArchive, PATHINFO_DIRNAME);
+            $this->addSingleFileToArchive($fileToArchive, $archivedDirectoryPath, true);
         }
 
         if( ZipArchive::ER_OK !== $this->zip->status ){
@@ -111,32 +111,32 @@ class ZipArchivizer extends Archivizer
      * This function will zip files recursively for given directory
      * Iterator makes archived structure a bit messy by adding absolute path that's why there is a bit dirty logic in
      *  we extract new path based on absolute path and replace it in archive itself
-     * @param $archived_directory_path
+     * @param $archivedDirectoryPath
      * @throws Exception
      */
-    private function addRecursively(string $archived_directory_path){
+    private function addRecursively(string $archivedDirectoryPath){
 
-        if ( is_dir($archived_directory_path) ) {
+        if ( is_dir($archivedDirectoryPath) ) {
 
-            $iterator = new RecursiveDirectoryIterator($archived_directory_path);
+            $iterator = new RecursiveDirectoryIterator($archivedDirectoryPath);
             $iterator->setFlags(RecursiveDirectoryIterator::SKIP_DOTS);
-            $resources_in_directory = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+            $resourcesInDirectory = new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
 
-            foreach ($resources_in_directory as $resource_found_in_archived_directory) {
-                $resource_found_in_archived_directory = realpath($resource_found_in_archived_directory);
+            foreach ($resourcesInDirectory as $resourceFoundInArchivedDirectory) {
+                $resourceFoundInArchivedDirectory = realpath($resourceFoundInArchivedDirectory);
 
-                $target_directory_regex = $this->rebuildSourceDirectoryForArchiveStructure($archived_directory_path);
+                $targetDirectoryRegex = $this->rebuildSourceDirectoryForArchiveStructure($archivedDirectoryPath);
 
-                if ( is_dir($resource_found_in_archived_directory) ) {
-                    $archived_directory = $this->extractArchiveDirectoryFromAbsolutePath($resource_found_in_archived_directory, $target_directory_regex);
-                    $this->zip->addEmptyDir($archived_directory . DIRECTORY_SEPARATOR);
-                } else if (is_file($resource_found_in_archived_directory) ) {
-                    $this->addSingleFileToArchive($resource_found_in_archived_directory, $archived_directory_path);
+                if ( is_dir($resourceFoundInArchivedDirectory) ) {
+                    $archivedDirectory = $this->extractArchiveDirectoryFromAbsolutePath($resourceFoundInArchivedDirectory, $targetDirectoryRegex);
+                    $this->zip->addEmptyDir($archivedDirectory . DIRECTORY_SEPARATOR);
+                } else if (is_file($resourceFoundInArchivedDirectory) ) {
+                    $this->addSingleFileToArchive($resourceFoundInArchivedDirectory, $archivedDirectoryPath);
                 }
             }
 
-        } else if (is_file($archived_directory_path) === true) {
-            $this->zip->addFile($archived_directory_path);
+        } else if (is_file($archivedDirectoryPath) === true) {
+            $this->zip->addFile($archivedDirectoryPath);
         }
 
     }
@@ -144,31 +144,31 @@ class ZipArchivizer extends Archivizer
     /**
      * Will add single file to the zip archive
      *
-     * @param string $resource_found_in_archived_directory
-     * @param string $archived_directory_path
-     * @param bool $is_single_file
+     * @param string $resourceFoundInArchivedDirectory
+     * @param string $archivedDirectoryPath
+     * @param bool $isSingleFile
      *        - required to decide if the filepath (which is used to check if the file exists) is absolute or relative
      * @throws Exception
      */
-    private function addSingleFileToArchive(string $resource_found_in_archived_directory, string $archived_directory_path, bool $is_single_file = false): void
+    private function addSingleFileToArchive(string $resourceFoundInArchivedDirectory, string $archivedDirectoryPath, bool $isSingleFile = false): void
     {
-        $target_directory_regex = $this->rebuildSourceDirectoryForArchiveStructure($archived_directory_path);
-        $archived_file = $this->extractArchiveFileFromAbsolutePath($resource_found_in_archived_directory, $target_directory_regex);
+        $targetDirectoryRegex = $this->rebuildSourceDirectoryForArchiveStructure($archivedDirectoryPath);
+        $archivedFile         = $this->extractArchiveFileFromAbsolutePath($resourceFoundInArchivedDirectory, $targetDirectoryRegex);
 
         /**
-         * `$archived_file` has leading slash as it's needed to build the folder structure in the zip archive itself
+         * `$archivedFile` has leading slash as it's needed to build the folder structure in the zip archive itself
          *  when adding the directories to the archive
          */
-        $archived_file_path_in_project = $archived_file;
-        if(!$is_single_file){
-            $archived_file_path_in_project = FilesHandler::trimFirstAndLastSlash($archived_file);
+        $archivedFilePathInProject = $archivedFile;
+        if(!$isSingleFile){
+            $archivedFilePathInProject = FilesHandler::trimFirstAndLastSlash($archivedFile);
         }
 
-        if( !file_exists($archived_file_path_in_project) ){
-            throw new Exception("Could not add file to the archive, no such file exist: {$archived_file_path_in_project}");
+        if( !file_exists($archivedFilePathInProject) ){
+            throw new Exception("Could not add file to the archive, no such file exist: {$archivedFilePathInProject}");
         }
 
-        $this->zip->addFile($resource_found_in_archived_directory, $archived_file);
+        $this->zip->addFile($resourceFoundInArchivedDirectory, $archivedFile);
     }
 
 }

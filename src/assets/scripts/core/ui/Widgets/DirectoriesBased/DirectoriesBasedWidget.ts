@@ -18,7 +18,7 @@ export default class DirectoriesBasedWidget {
         let directorySelect         = $(directorySelectSelector);
 
         let getAttrs                = JSON.parse(Navigation.getCurrentGetAttrs());
-        let directoryPath           = unescape(getAttrs.encoded_subdirectory_path);
+        let directoryPath           = unescape(getAttrs.encodedSubdirectoryPath);
         let route                   = Navigation.getCurrentRoute();
 
         let moduleToSelect = '';

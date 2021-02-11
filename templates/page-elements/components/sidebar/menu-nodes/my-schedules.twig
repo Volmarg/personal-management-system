@@ -18,7 +18,7 @@
 
         {% for scheduleType in getNotDeletedSchedulesTypes() %}
             <li>
-                <a class="sidebar-link left-nav-link" href="{{ path('my_schedules', {'schedules_type': scheduleType.name}) }}"><i class="{{ scheduleType.icon }} fa-sm"></i> {{ scheduleType.name | capitalize }}</a>
+                <a class="sidebar-link left-nav-link" href="{{ path('my_schedules', {'schedulesType': scheduleType.name}) }}"><i class="{{ scheduleType.icon }} fa-sm"></i> {{ scheduleType.name | capitalize }}</a>
             </li>
         {% endfor %}
         <li>

@@ -198,13 +198,13 @@ class MyFilesAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderSettingsTemplate(bool $ajax_render = false): Response
+    private function renderSettingsTemplate(bool $ajaxRender = false): Response
     {
         $data = [
-            'ajax_render' => $ajax_render,
+            'ajax_render' => $ajaxRender,
         ];
         return $this->render(self::TWIG_TEMPLATE_MY_FILES_SETTINGS, $data);
     }

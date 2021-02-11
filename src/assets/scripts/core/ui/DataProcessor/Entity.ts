@@ -91,7 +91,7 @@ export default class Entity extends AbstractDataProcessor {
             return dataProcessorsDto;
         },
         makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let schedulesType = JSON.parse(Navigation.getCurrentGetAttrs()).schedules_type;
+            let schedulesType = JSON.parse(Navigation.getCurrentGetAttrs()).schedulesType;
 
             let url             = '/my-schedules/' + schedulesType;
             let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MySchedules.processorName);

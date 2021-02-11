@@ -37,14 +37,14 @@ class MyJobHolidaysAction extends AbstractController {
     private Controllers $controllers;
 
     /**
-     * @var EntityValidator $entity_validator
+     * @var EntityValidator $entityValidator
      */
-    private EntityValidator $entity_validator;
+    private EntityValidator $entityValidator;
 
-    public function __construct(Application $app, Controllers $controllers, EntityValidator $entity_validator) {
+    public function __construct(Application $app, Controllers $controllers, EntityValidator $entityValidator) {
         $this->app              = $app;
         $this->controllers      = $controllers;
-        $this->entity_validator = $entity_validator;
+        $this->entityValidator = $entityValidator;
     }
 
     /**
@@ -146,15 +146,15 @@ class MyJobHolidaysAction extends AbstractController {
 
     /**
      * @param Request $request
-     * @param array $all_pools_years
+     * @param array $allPoolsYears
      * @return ValidationResultVO
      * @throws Exception
      */
-    private function add(Request $request, array $all_pools_years): ValidationResultVO
+    private function add(Request $request, array $allPoolsYears): ValidationResultVO
     {
 
         $form = $this->app->forms->jobHolidaysForm([
-            static::KEY_CHOICES => $all_pools_years
+            static::KEY_CHOICES => $allPoolsYears
         ]);
 
         $form->handleRequest($request);
@@ -162,7 +162,7 @@ class MyJobHolidaysAction extends AbstractController {
         if ( $form->isSubmitted() && $form->isValid() ) {
 
             $jobHoliday       = $form->getData();
-            $validationResult = $this->entity_validator->handleValidation($jobHoliday, EntityValidator::ACTION_CREATE);
+            $validationResult = $this->entityValidator->handleValidation($jobHoliday, EntityValidator::ACTION_CREATE);
 
             if ( $validationResult->isValid() ){
                 $em = $this->getDoctrine()->getManager();
@@ -193,7 +193,7 @@ class MyJobHolidaysAction extends AbstractController {
             static::KEY_CHOICES => $allPoolsYears
         ]);
 
-        $twig_data = [
+        $twigData = [
             'ajax_render'                       => $ajaxRender,
             'all_holidays_spent'                => $allHolidaysSpent,
             'job_holidays_form'                 => $jobHolidaysForm->createView(),
@@ -202,7 +202,7 @@ class MyJobHolidaysAction extends AbstractController {
             'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
         ];
 
-        return $this->render('modules/my-job/holidays.html.twig', $twig_data);
+        return $this->render('modules/my-job/holidays.html.twig', $twigData);
     }
 
 }

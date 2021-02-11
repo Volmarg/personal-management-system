@@ -6,7 +6,7 @@
             {% if elements[child_id].category is defined and elements[child_id].category is not null %}
                 {% set href = path(path_name,{
                     'category':elements[child_id].category,
-                    'category_id':elements[child_id].category_id
+                    'categoryId':elements[child_id].category_id
                 }) %}
 
             {% endif %}

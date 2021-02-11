@@ -505,7 +505,7 @@ class FilesHandler {
     }
 
     /**
-     * Removes first and last slash from $dir_path
+     * Removes first and last slash from $dirPath
      * @param string $dirPath
      * @return bool|string
      */

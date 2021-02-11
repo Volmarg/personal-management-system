@@ -63,7 +63,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
             HAVING (timeMade - timeSpent > 0)
         ";
 
-        $binded_values = [
+        $bindedValues = [
             'type_made'  => MyJobAfterhours::TYPE_MADE,
             'type_spent' => MyJobAfterhours::TYPE_SPENT,
         ];
@@ -71,7 +71,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         $connection = $this->getEntityManager()->getConnection();
         $statement  = $connection->prepare($sql);
 
-        $statement->execute($binded_values);
+        $statement->execute($bindedValues);
         $results = $statement->fetchAll();
 
         return (!empty($results) ? $results : []);

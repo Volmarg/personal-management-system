@@ -71,7 +71,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
         $queryBuilder->select("mnc_child")
             ->from(MyNotesCategories::class, "mnc")
-            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent_id = mnc.id")
+            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parentId = mnc.id")
             ->where("mnc.id IN (:categoriesIds)")
             ->andWhere("mnc_child.deleted = 0")
             ->setParameter("categoriesIds", $categoriesIds);
@@ -92,7 +92,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
 
         $queryBuilder->select("mnc_child.id")
             ->from(MyNotesCategories::class, "mnc")
-            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parent_id = mnc.id")
+            ->join(MyNotesCategories::class, "mnc_child", Join::WITH, "mnc_child.parentId = mnc.id")
             ->where("mnc.id IN (:categoriesIds)")
             ->andWhere("mnc_child.deleted = 0")
             ->setParameter("categoriesIds", $categoriesIds);
@@ -173,14 +173,14 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
         if( is_null($categoryId) ){
             $queryBuilder
                 ->andWhere("mnc.name = :name")
-                ->andWhere("mnc.parent_id IS NULL")
+                ->andWhere("mnc.parentId IS NULL")
                 ->setParameters([
                     "name" => $name,
                 ]);
         }else{
             $queryBuilder
-                ->andWhere("mnc.name      = :name")
-                ->andWhere("mnc.parent_id = :categoryId")
+                ->andWhere("mnc.name     = :name")
+                ->andWhere("mnc.parentId = :categoryId")
                 ->setParameters([
                     "name"       => $name,
                     "categoryId" => $categoryId,

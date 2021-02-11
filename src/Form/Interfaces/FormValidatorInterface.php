@@ -8,9 +8,9 @@ interface FormValidatorInterface
 {
 
     /**
+     * @param array $formData
      * @throws FormValidationException
-     * @param array $form_data
      */
-    public function doValidate(array $form_data): void;
+    public function doValidate(array $formData): void;
 
 }

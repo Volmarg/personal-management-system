@@ -94,17 +94,17 @@ class MyPasswordsGroupsAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderTemplate(bool $ajax_render = false, bool $skipRewritingTwigVarsToJs = false): Response
+    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
         $passwordGroupForm = $this->app->forms->passwordGroupForm();
         $groups            = $this->controllers->getMyPasswordsGroupsController()->findAllNotDeleted();
 
         return $this->render('modules/my-passwords/settings.html.twig', [
-            'ajax_render'                    => $ajax_render,
+            'ajax_render'                    => $ajaxRender,
             'groups'                         => $groups,
             'groups_form'                    => $passwordGroupForm->createView(),
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
@@ -120,18 +120,18 @@ class MyPasswordsGroupsAction extends AbstractController {
     private function submitForm(FormInterface $form, Request $request): JsonResponse
     {
         $form->handleRequest($request);
-        $form_data = $form->getData();
+        $formData = $form->getData();
 
         if (
-                !is_null($form_data)
-            &&  !is_null($this->controllers->getMyPasswordsGroupsController()->findOneByName($form_data->getName()))
+                !is_null($formData)
+            &&  !is_null($this->controllers->getMyPasswordsGroupsController()->findOneByName($formData->getName()))
         ) {
             $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
             return new JsonResponse($recordWithThisNameExist, 409);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->app->em->persist($form_data);
+            $this->app->em->persist($formData);
             $this->app->em->flush();
         }
 

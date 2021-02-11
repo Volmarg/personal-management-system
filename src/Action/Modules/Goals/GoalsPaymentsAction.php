@@ -41,7 +41,7 @@ class GoalsPaymentsAction extends AbstractController {
     {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate(false);
+            return $this->renderTemplate();
         }
 
         $templateContent  = $this->renderTemplate(true)->getContent();
@@ -55,10 +55,10 @@ class GoalsPaymentsAction extends AbstractController {
      */
     private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
 
-        $all_payments = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
+        $allPayments = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
 
         $data = [
-            'all_payments'                   => $all_payments,
+            'all_payments'                   => $allPayments,
             'ajax_render'                    => $ajaxRender,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];

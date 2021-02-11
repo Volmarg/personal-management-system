@@ -17,12 +17,12 @@ class Migrations
      * Will output an sql only if constraint does not exist in given table
      * - prevents crashing on cases where foreign key is about to be added but it already exists
      *
-     * @param string $constraint_type
-     * @param string $constraint_name
-     * @param string $executed_sql
+     * @param string $constraintType
+     * @param string $constraintName
+     * @param string $executedSql
      * @return string
      */
-    public static function buildSqlExecutedIfConstraintDoesNotExist(string $constraint_type, string $constraint_name, string $executed_sql): string
+    public static function buildSqlExecutedIfConstraintDoesNotExist(string $constraintType, string $constraintName, string $executedSql): string
     {
         $sql = "
             SELECT IF (
@@ -31,11 +31,11 @@ class Migrations
                     FROM information_schema.TABLE_CONSTRAINTS                                                                                                                                                       
                     WHERE                                                                                                                                                                                           
                     CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
-                    CONSTRAINT_NAME   = '{$constraint_name}' AND                                                                                                                                               
-                    CONSTRAINT_TYPE   = '{$constraint_type}'                                                                                                                                                       
+                    CONSTRAINT_NAME   = '{$constraintName}' AND                                                                                                                                               
+                    CONSTRAINT_TYPE   = '{$constraintType}'                                                                                                                                                       
                 )
                 ,'select ''index index_1 exists'' _______;'
-                ,'{$executed_sql}'
+                ,'{$executedSql}'
             ) INTO @a;
                 PREPARE executedIfConstraintNotExist FROM @a;
                 EXECUTE executedIfConstraintNotExist;
@@ -49,17 +49,17 @@ class Migrations
      * Will output an sql executed only if column in table does not exist
      * - prevents crashing on cases where column already exists
      *
-     * @param string $column_name
-     * @param string $table_name
-     * @param string $executed_sql
+     * @param string $columnName
+     * @param string $tableName
+     * @param string $executedSql
      * @return string
      */
-    public static function buildSqlExecutedIfColumnDoesNotExist(string $column_name, string $table_name, string $executed_sql): string
+    public static function buildSqlExecutedIfColumnDoesNotExist(string $columnName, string $tableName, string $executedSql): string
     {
         $sql = "
             SET @dbname             = DATABASE();
-            SET @tablename          = '{$table_name}';
-            SET @columnname         = '{$column_name}';
+            SET @tablename          = '{$tableName}';
+            SET @columnname         = '{$columnName}';
             SET @preparedStatement  = (SELECT IF(
               (
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
@@ -69,7 +69,7 @@ class Migrations
                   AND   (column_name  = @columnname)
               ) > 0,
               'SELECT 1',
-              '{$executed_sql}'
+              '{$executedSql}'
             ));
             PREPARE executedIfColumnNotExist FROM @preparedStatement;
             EXECUTE executedIfColumnNotExist;
@@ -83,12 +83,12 @@ class Migrations
      * Will output an sql executed only when given table does not exist
      * - prevents crashing on cases where column already exists
      *
-     * @param string $table_name
-     * @param string $executed_sql
+     * @param string $tableName
+     * @param string $executedSql
      * @return string
      * @throws Exception
      */
-    public static function buildSqlExecutedIfTableNotExist(string $table_name, string $executed_sql): string
+    public static function buildSqlExecutedIfTableNotExist(string $tableName, string $executedSql): string
     {
         $databaseCredentialsDto = Env::getDatabaseCredentials();
         $databaseName           = $databaseCredentialsDto->getDatabaseName();
@@ -98,11 +98,11 @@ class Migrations
               (
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
                 WHERE
-                            table_name   = '{$table_name}'
+                            table_name   = '{$tableName}'
                         AND table_schema = '{$databaseName}'
               ) > 0,
               'SELECT 1',
-              '{$executed_sql}'
+              '{$executedSql}'
             ));
             PREPARE executedIfTableNotExist FROM @preparedStatement;
             EXECUTE executedIfTableNotExist;
@@ -116,12 +116,12 @@ class Migrations
      * Will output an sql executed only if given table is empty
      * - prevents crashing on cases where column already exists
      *
-     * @param string $table_name
-     * @param string $executed_sql
+     * @param string $tableName
+     * @param string $executedSql
      * @return string
      * @throws Exception
      */
-    public static function buildSqlExecutedIfTableIsEmpty(string $table_name, string $executed_sql): string
+    public static function buildSqlExecutedIfTableIsEmpty(string $tableName, string $executedSql): string
     {
         $databaseCredentialsDto = Env::getDatabaseCredentials();
         $databaseName           = $databaseCredentialsDto->getDatabaseName();
@@ -131,11 +131,11 @@ class Migrations
               (
                 SELECT IF(TABLE_ROWS !='', TABLE_ROWS, 1) -- add 1 to prevent executing if table does not exist 
                 FROM INFORMATION_SCHEMA.TABLES 
-                WHERE TABLE_NAME = '{$table_name}'
+                WHERE TABLE_NAME = '{$tableName}'
                 AND TABLE_SCHEMA = '{$databaseName}'
               ) > 0,
               'SELECT 1',
-              '{$executed_sql}'              
+              '{$executedSql}'              
             ));
             PREPARE executedIfTableIsEmpty FROM @preparedStatement;
             EXECUTE executedIfTableIsEmpty;

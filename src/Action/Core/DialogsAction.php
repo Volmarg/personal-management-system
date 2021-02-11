@@ -350,13 +350,13 @@ class DialogsAction extends AbstractController
     }
 
     /**
-     * @Route("/dialog/body/create-note/{category}/{category_id}", name="dialog_body_create_note", methods="POST")
+     * @Route("/dialog/body/create-note/{category}/{categoryId}", name="dialog_body_create_note", methods="POST")
      * @param Request $request
      * @param string $category
-     * @param string $category_id
+     * @param string $categoryId
      * @return JsonResponse
      */
-    public function buildCreateNoteDialogBody(Request $request, string $category, string $category_id): JsonResponse
+    public function buildCreateNoteDialogBody(Request $request, string $category, string $categoryId): JsonResponse
     {
         $ajaxResponse = new AjaxResponse();
         $code         = Response::HTTP_OK;
@@ -892,10 +892,10 @@ class DialogsAction extends AbstractController
 
         try{
 
-            $removed_files_json = json_encode([]);
+            $removedFilesJson = json_encode([]);
 
             $templateData = [
-                'removedFilesJson' =>   $removed_files_json
+                'removedFilesJson' =>   $removedFilesJson
             ];
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_REMOVE_FILES, $templateData)->getContent();

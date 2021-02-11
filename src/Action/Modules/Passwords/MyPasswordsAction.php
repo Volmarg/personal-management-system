@@ -101,11 +101,11 @@ class MyPasswordsAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    protected function renderTemplate(bool $ajax_render = false, bool $skipRewritingTwigVarsToJs = false): Response
+    protected function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
 
         $passwordForm  = $this->app->forms->myPasswordForm();
@@ -115,7 +115,7 @@ class MyPasswordsAction extends AbstractController {
 
         return $this->render('modules/my-passwords/my-passwords.html.twig', [
             'form'                           => $formView,
-            'ajax_render'                    => $ajax_render,
+            'ajax_render'                    => $ajaxRender,
             'passwords'                      => $passwords,
             'groups'                         => $groups,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,

@@ -232,12 +232,12 @@ class FilesAction extends AbstractController {
 
         $response = $this->filesHandler->moveSingleFile($currentFileLocation, $targetFileLocation);
 
-        $response_data = [
+        $responseData = [
             self::KEY_RESPONSE_MESSAGE => $response->getContent(),
             self::KEY_RESPONSE_CODE    => $response->getStatusCode(),
         ];
 
-        return new JsonResponse($response_data);
+        return new JsonResponse($responseData);
     }
 
     /**

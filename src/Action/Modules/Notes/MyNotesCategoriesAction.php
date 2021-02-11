@@ -138,28 +138,27 @@ class MyNotesCategoriesAction extends AbstractController {
         $form = $this->app->forms->noteCategoryForm();
         $form->handleRequest($request);
         /**
-         * @var MyNotesCategories $form_data
+         * @var MyNotesCategories $formData
          */
-        $form_data = $form->getData();
+        $formData = $form->getData();
 
-        if( $form_data instanceof MyNotesCategories ){
-            $parent_id = $form_data->getParentId();
-            $name      = $form_data->getName();
+        if( $formData instanceof MyNotesCategories ){
+            $parentId = $formData->getParentId();
+            $name     = $formData->getName();
 
-            $category_has_child_with_this_name = $this->controllers->getMyNotesCategoriesController()->hasCategoryChildWithThisName($name, $parent_id);
-
-            if ($category_has_child_with_this_name) {
+            $categoryHasChildWithThisName = $this->controllers->getMyNotesCategoriesController()->hasCategoryChildWithThisName($name, $parentId);
+            if ($categoryHasChildWithThisName) {
                 $message = $this->app->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
                 return new JsonResponse($message, Response::HTTP_CONFLICT);
             }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->app->em->persist($form_data);
+            $this->app->em->persist($formData);
             $this->app->em->flush();
 
-            $form_submitted_message = $this->app->translator->translate('messages.ajax.success.recordHasBeenCreated');
-            return new JsonResponse($form_submitted_message,Response::HTTP_OK);
+            $formSubmittedMessage = $this->app->translator->translate('messages.ajax.success.recordHasBeenCreated');
+            return new JsonResponse($formSubmittedMessage,Response::HTTP_OK);
         }
 
         return new JsonResponse("",Response::HTTP_OK);

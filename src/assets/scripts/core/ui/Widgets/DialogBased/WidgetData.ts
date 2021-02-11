@@ -77,7 +77,7 @@ export default class WidgetData {
         };
         let getAttrs      = Navigation.getCurrentGetAttrs();
         let categoryName  = getAttrs['category'];
-        let categoryId    = getAttrs['category_id'];
+        let categoryId    = getAttrs['categoryId'];
 
         let url           = `/dialog/body/create-note/${categoryName}/${categoryId}`;
         let widgetDataDto = new WidgetDataDto();

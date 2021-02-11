@@ -33,18 +33,18 @@ class SettingsViewAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      * @throws Exception
      */
-    public function renderSettingsTemplate($ajax_render = false): Response
+    public function renderSettingsTemplate($ajaxRender = false): Response
     {
 
-        $dashboardSettingsView = $this->renderSettingsDashboardTemplate($ajax_render)->getContent();
-        $financesSettingsView  = $this->renderSettingsFinancesTemplate($ajax_render)->getContent();
+        $dashboardSettingsView = $this->renderSettingsDashboardTemplate($ajaxRender)->getContent();
+        $financesSettingsView  = $this->renderSettingsFinancesTemplate($ajaxRender)->getContent();
 
         $data = [
-            'ajax_render'             => $ajax_render,
+            'ajax_render'             => $ajaxRender,
             'dashboard_settings_view' => $dashboardSettingsView,
             'finances_settings_view'  => $financesSettingsView,
         ];
@@ -85,17 +85,17 @@ class SettingsViewAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      * @throws Exception
      */
-    private function renderSettingsFinancesTemplate(bool $ajax_render = false): Response
+    private function renderSettingsFinancesTemplate(bool $ajaxRender = false): Response
     {
         $currenciesSettings = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
         $currencyForm       = $this->app->forms->currencyTypeForm();
 
         $data = [
-            'ajax_render'         => $ajax_render,
+            'ajax_render'         => $ajaxRender,
             "currencies_settings" => $currenciesSettings,
             'currency_form'       => $currencyForm->createView()
         ];

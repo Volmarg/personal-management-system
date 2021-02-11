@@ -48,7 +48,7 @@ class MyRecurringPaymentsMonthlyType extends AbstractType implements ValidableFo
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
-        $payments_types = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
+        $paymentsTypes = $this->app->repositories->myPaymentsSettingsRepository->findBy(['deleted' => 0, 'name' => 'type']);
 
         $builder
             ->add(self::KEY_DAY_OF_MONTH, IntegerType::class, [
@@ -66,7 +66,7 @@ class MyRecurringPaymentsMonthlyType extends AbstractType implements ValidableFo
             ])
             ->add(self::KEY_TYPE, EntityType::class, [
                 'class' => MyPaymentsSettings::class,
-                'choices' => $payments_types,
+                'choices' => $paymentsTypes,
                 'choice_label' => function (MyPaymentsSettings $payment_type) {
                     return $payment_type->getValue();
                 },

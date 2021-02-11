@@ -69,11 +69,11 @@ class FilesUploadSettingsAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      * @throws Exception
      */
-    private function renderSettingsPage(bool $ajax_render){
+    private function renderSettingsPage(bool $ajaxRender){
 
         $renameForm       = $this->app->forms->renameSubdirectoryForm();
         $createSubdirForm = $this->app->forms->createSubdirectoryForm();
@@ -87,7 +87,7 @@ class FilesUploadSettingsAction extends AbstractController {
         ];
 
         $data = [
-            'ajax_render'                       => $ajax_render,
+            'ajax_render'                       => $ajaxRender,
             'rename_form'                       => $renameForm->createView(),
             'copy_data_form'                    => $copyDataForm->createView(),
             'create_subdir_form'                => $createSubdirForm->createView(),

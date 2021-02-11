@@ -22,21 +22,21 @@ class UserFixtures extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $app_user  = new User();
-        $app_user->setUsername(static::USERNAME);
-        $app_user->setUsernameCanonical(static::USERNAME);
-        $app_user->setEmail(static::USERNAME);
-        $app_user->setEmailCanonical(static::USERNAME);
-        $app_user->setEnabled(static::ENABLED);
-        $app_user->setSalt(static::SALT);
-        $app_user->setPassword(static::PASSWORD);
-        $app_user->setLockPassword(static::PASSWORD);
-        $app_user->setLastLogin(static::LAST_LOGIN);
-        $app_user->setRoles([static::ROLES]);
-        $app_user->setAvatar(static::AVATAR);
-        $app_user->setNickname(static::NICKNAME);
+        $appUser  = new User();
+        $appUser->setUsername(static::USERNAME);
+        $appUser->setUsernameCanonical(static::USERNAME);
+        $appUser->setEmail(static::USERNAME);
+        $appUser->setEmailCanonical(static::USERNAME);
+        $appUser->setEnabled(static::ENABLED);
+        $appUser->setSalt(static::SALT);
+        $appUser->setPassword(static::PASSWORD);
+        $appUser->setLockPassword(static::PASSWORD);
+        $appUser->setLastLogin(static::LAST_LOGIN);
+        $appUser->setRoles([static::ROLES]);
+        $appUser->setAvatar(static::AVATAR);
+        $appUser->setNickname(static::NICKNAME);
 
-        $manager->persist($app_user);
+        $manager->persist($appUser);
         $manager->flush();
     }
 }

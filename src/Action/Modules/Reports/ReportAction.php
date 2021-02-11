@@ -164,15 +164,15 @@ class ReportAction extends AbstractController {
 
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderTemplateHistoricalMoneyOwed(bool $ajax_render): Response {
+    private function renderTemplateHistoricalMoneyOwed(bool $ajaxRender): Response {
         $historicalMoneyOwedByMe     = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(true);
         $historicalMoneyOwedByOthers = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(false);
 
         $templateData = [
-            'ajax_render'                     => $ajax_render,
+            'ajax_render'                     => $ajaxRender,
             'historical_money_owed_by_me'     => $historicalMoneyOwedByMe,
             'historical_money_owed_by_others' => $historicalMoneyOwedByOthers,
         ];
@@ -266,13 +266,13 @@ class ReportAction extends AbstractController {
             return strtotime($a) - strtotime($b);
         });
 
-        $template_data = [
+        $templateData = [
             'chart_colors'        => $chartColors,
             'chart_values'        => $chartValues,
             'chart_x_axis_values' => $chartXAxisValues,
         ];
 
-        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_EACH_MONTH, $template_data);
+        $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHART_TOTAL_AMOUNT_EACH_MONTH, $templateData);
         return $renderedTemplate;
     }
 
@@ -340,15 +340,15 @@ class ReportAction extends AbstractController {
     }
 
     /**
-     * @param $ajax_render
+     * @param $ajaxRender
      * @return Response
      * @throws DBALException
      */
-    private function renderTemplateMonthlyPaymentsSummaries(bool $ajax_render): Response
+    private function renderTemplateMonthlyPaymentsSummaries(bool $ajaxRender): Response
     {
         $data = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
         $templateData = [
-            'ajax_render' => $ajax_render,
+            'ajax_render' => $ajaxRender,
             'data'        => $data
         ];
 

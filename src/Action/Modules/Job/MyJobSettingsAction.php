@@ -58,17 +58,17 @@ class MyJobSettingsAction extends AbstractController {
     public function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
 
-        $all_holidays_pools      = $this->controllers->getMyJobHolidaysPoolController()->getAllNotDeleted();
-        $job_holidays_pool_form  = $this->app->forms->jobHolidaysPoolForm();
+        $allHolidaysPools    = $this->controllers->getMyJobHolidaysPoolController()->getAllNotDeleted();
+        $jobHolidaysPoolForm = $this->app->forms->jobHolidaysPoolForm();
 
-        $twig_data = [
+        $twigData = [
             'ajax_render'                       => $ajaxRender,
-            'all_holidays_pools'                => $all_holidays_pools,
-            'job_holidays_pool_form'            => $job_holidays_pool_form->createView(),
+            'all_holidays_pools'                => $allHolidaysPools,
+            'job_holidays_pool_form'            => $jobHolidaysPoolForm->createView(),
             'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs
         ];
 
-        return $this->render(static::SETTINGS_TWIG_TEMPLATE, $twig_data);
+        return $this->render(static::SETTINGS_TWIG_TEMPLATE, $twigData);
     }
 
     /**

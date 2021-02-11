@@ -336,7 +336,7 @@ class AjaxResponse extends AbstractController {
      */
     public function buildJsonResponse(): JsonResponse
     {
-        $response_data = [
+        $responseData = [
             self::KEY_CODE                  => $this->getCode(),
             self::KEY_MESSAGE               => $this->getMessage(),
             self::KEY_TEMPLATE              => $this->getTemplate(),
@@ -351,7 +351,7 @@ class AjaxResponse extends AbstractController {
             self::KEY_CONSTANT_VALUE        => $this->getConstantValue(),
         ];
 
-        $response = new JsonResponse($response_data, 200);
+        $response = new JsonResponse($responseData, 200);
         return $response;
     }
 

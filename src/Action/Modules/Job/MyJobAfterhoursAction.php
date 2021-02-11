@@ -108,7 +108,7 @@ class MyJobAfterhoursAction extends AbstractController {
 
         $remainingTimeToSpendPerGoal = $this->controllers->getMyJobAfterhoursController()->getTimeToSpend();
 
-        $twig_data = [
+        $twigData = [
             'afterhours_form_view'              => $afterhoursFormView,
             'column_names'                      => $columnNames,
             'afterhours_all'                    => $afterhoursAll,
@@ -121,7 +121,7 @@ class MyJobAfterhoursAction extends AbstractController {
             'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
         ];
 
-        return $this->render('modules/my-job/afterhours.html.twig', $twig_data);
+        return $this->render('modules/my-job/afterhours.html.twig', $twigData);
     }
 
 

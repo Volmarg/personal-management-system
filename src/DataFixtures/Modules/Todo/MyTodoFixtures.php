@@ -88,14 +88,14 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
 
         foreach(Todo::ALL_TODO_ISSUE as $issueId => $todoWithElements) {
 
-            foreach($todoWithElements as $todo_name => $elements) {
+            foreach($todoWithElements as $todoName => $elements) {
 
                 $issue = $manager->getRepository(MyIssue::class)->findOneBy([MyIssue::FIELD_NAME_ID => $issueId]);
 
                 $displayOnDashboard = $this->faker->boolean;
 
                 $myTodo = new MyTodo();
-                $myTodo->setName($todo_name);
+                $myTodo->setName($todoName);
                 $myTodo->setMyIssue($issue);
                 $myTodo->setModule($issueModule);
                 $myTodo->setDisplayOnDashboard($displayOnDashboard);

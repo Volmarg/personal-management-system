@@ -18,19 +18,19 @@ class UserRegisterTypeValidator extends FormTypeValidator implements FormValidat
     }
 
     /**
-     * @throws FormValidationException
-     * @param array $form_data
+     * @param array $formData
+     *@throws FormValidationException
      */
-    public function doValidate(array $form_data): void
+    public function doValidate(array $formData): void
     {
         $formValidationViolations = [];
 
-        $username           = $form_data[UserRegisterType::FIELD_USERNAME];
-        $email              = $form_data[UserRegisterType::FIELD_EMAIL];
-        $password           = $form_data[UserRegisterType::FIELD_PASSWORD];
-        $passwordRepeat     = $form_data[UserRegisterType::FIELD_PASSWORD_REPEAT];
-        $lockPassword       = $form_data[UserRegisterType::FIELD_LOCK_PASSWORD];
-        $lockPasswordRepeat = $form_data[UserRegisterType::FIELD_LOCK_PASSWORD_REPEAT];
+        $username           = $formData[UserRegisterType::FIELD_USERNAME];
+        $email              = $formData[UserRegisterType::FIELD_EMAIL];
+        $password           = $formData[UserRegisterType::FIELD_PASSWORD];
+        $passwordRepeat     = $formData[UserRegisterType::FIELD_PASSWORD_REPEAT];
+        $lockPassword       = $formData[UserRegisterType::FIELD_LOCK_PASSWORD];
+        $lockPasswordRepeat = $formData[UserRegisterType::FIELD_LOCK_PASSWORD_REPEAT];
 
         if( empty($username) ){
             $message                      = $this->app->translator->translate('validators.UserRegisterTypeValidator.username.isEmpty');

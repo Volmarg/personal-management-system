@@ -285,8 +285,8 @@ payments:
           Lists of the money spent in each month with separate summary per month and per payment type.
   bills:
     headers:
-      billsSummaries: Bills summaries
-      billsItemsManagement: Management items
+      billsManagement: Bills management
+      billsItemsManagement: Items management
     forms:
       bills: Add bill
     table:

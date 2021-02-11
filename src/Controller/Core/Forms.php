@@ -102,8 +102,8 @@ class Forms extends AbstractController {
         return $this->createForm(MyScheduleTypeType::class, null, $params);
     }
 
-    public function contactForm(array $params = [], MyContact $my_contact_type = null): FormInterface {
-        return $this->createForm(MyContactType::class, $my_contact_type, $params);
+    public function contactForm(array $params = [], MyContact $myContactType = null): FormInterface {
+        return $this->createForm(MyContactType::class, $myContactType, $params);
     }
 
     public function contactTypeForm(array $params = []): FormInterface {
@@ -150,8 +150,8 @@ class Forms extends AbstractController {
         return $this->createForm(MyShoppingPlansType::class, null, $params);
     }
 
-    public function travelIdeasForm(array $params = [], ?MyTravelsIdeas $travel_idea = null): FormInterface {
-        return $this->createForm(MyTravelsIdeasType::class, $travel_idea, $params);
+    public function travelIdeasForm(array $params = [], ?MyTravelsIdeas $travelIdea = null): FormInterface {
+        return $this->createForm(MyTravelsIdeasType::class, $travelIdea, $params);
     }
 
     public function userAvatarForm(array $params = []): FormInterface {

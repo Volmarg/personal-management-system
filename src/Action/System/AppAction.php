@@ -160,20 +160,20 @@ class AppAction extends AbstractController {
                 return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
             }
 
-            $tpl_data = [
+            $tplData = [
                 static::KEY_CURR_URL => $request->server->get('HTTP_REFERER'),
                 static::MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES[$menuNodeModuleName] => $menuNodeModuleName // because of constants used in tpl
             ];
 
-            $template = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menuNodeModuleName], $tpl_data)->getContent();
+            $template = $this->render(static::MENU_NODES_MODULES_NAMES_TO_TEMPLATES_MAP[$menuNodeModuleName], $tplData)->getContent();
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
 
             $ajaxResponse = new AjaxResponse();
             $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
             $ajaxResponse->setSuccess(false);
-            $json_response = $ajaxResponse->buildJsonResponse();
-            return $json_response;
+            $jsonResponse = $ajaxResponse->buildJsonResponse();
+            return $jsonResponse;
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, $message, $template);
@@ -203,11 +203,11 @@ class AppAction extends AbstractController {
      * - set system in lock state where locked resources are hidden,
      * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
      * @param Request $request
-     * @param SecurityController $security_controller
+     * @param SecurityController $securityController
      * @return JsonResponse
      * @throws Exception
      */
-    public function toggleResourcesLock(Request $request, SecurityController $security_controller): Response
+    public function toggleResourcesLock(Request $request, SecurityController $securityController): Response
     {
         if( !$request->isXmlHttpRequest() ){
             $message  = $this->app->translator->translate('responses.general.youAreNotAllowedToCallThisLogic');
@@ -250,7 +250,7 @@ class AppAction extends AbstractController {
                 $user            = $this->getUser();
                 $userPassword    = $user->getLockPassword();
                 $password        = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
-                $isPasswordValid = $security_controller->isPasswordValid($user, $userPassword, $password);
+                $isPasswordValid = $securityController->isPasswordValid($user, $userPassword, $password);
 
                 if( !$isPasswordValid ){
                     $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
@@ -282,12 +282,12 @@ class AppAction extends AbstractController {
     /**
      * @Route("/api/system/system-lock-set-password", name="system-lock-create-password", methods="POST")
      * @param Request $request
-     * @param SecurityController $security_controller
+     * @param SecurityController $securityController
      * @return JsonResponse
      *
      * @throws Exception
      */
-    public function systemLockCreatePassword(Request $request, SecurityController $security_controller): Response
+    public function systemLockCreatePassword(Request $request, SecurityController $securityController): Response
     {
         if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
             $message = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
@@ -305,7 +305,7 @@ class AppAction extends AbstractController {
             $user           = $this->getUser();
             $hasPassword    = $user->hasLockPassword();
 
-            $securityDto    = $security_controller->hashPassword($password);
+            $securityDto    = $securityController->hashPassword($password);
             $hashedPassword = $securityDto->getHashedPassword();
 
             $user->setLockPassword($hashedPassword);
@@ -548,13 +548,13 @@ class AppAction extends AbstractController {
             return $ajaxResponse->buildJsonResponse();
         }
 
-        $template      = "security/pages/register.html.twig";
-        $template_data = [
+        $template     = "security/pages/register.html.twig";
+        $templateData = [
             'allow_to_register'  => $allowToRegister,
             'user_register_form' => $userRegisterFormView,
         ];
 
-        return $this->render($template, $template_data);
+        return $this->render($template, $templateData);
     }
 
     /**

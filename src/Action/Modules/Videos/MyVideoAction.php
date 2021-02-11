@@ -26,9 +26,9 @@ class MyVideoAction extends AbstractController {
     const TWIG_TEMPLATE_MY_VIDEO_SETTINGS = 'modules/my-video/settings.html.twig';
 
     /**
-     * @var FilesTagsController $files_tags_controller
+     * @var FilesTagsController $filesTagsController
      */
-    private FilesTagsController $files_tags_controller;
+    private FilesTagsController $filesTagsController;
 
     /**
      * @var Application $app
@@ -40,28 +40,28 @@ class MyVideoAction extends AbstractController {
      */
     private Controllers $controllers;
 
-    public function __construct(FilesTagsController $files_tags_controller, Application $app, Controllers $controllers) {
+    public function __construct(FilesTagsController $filesTagsController, Application $app, Controllers $controllers) {
 
-        $this->controllers                = $controllers;
-        $this->files_tags_controller      = $files_tags_controller;
+        $this->controllers         = $controllers;
+        $this->filesTagsController = $filesTagsController;
 
         $this->app = $app;
     }
 
     /**
-     * @Route("my-video/dir/{encoded_subdirectory_path?}", name="modules_my_video")
-     * @param string|null $encoded_subdirectory_path
+     * @Route("my-video/dir/{encodedSubdirectoryPath?}", name="modules_my_video")
+     * @param string|null $encodedSubdirectoryPath
      * @param Request $request
      * @return Response
      *
      * @throws Exception|\Doctrine\DBAL\Driver\Exception
      */
-    public function displayVideos(? string $encoded_subdirectory_path, Request $request) {
+    public function displayVideos(? string $encodedSubdirectoryPath, Request $request) {
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderCategoryTemplate($encoded_subdirectory_path, false);
+            return $this->renderCategoryTemplate($encodedSubdirectoryPath, false);
         }
 
-        $templateContent = $this->renderCategoryTemplate($encoded_subdirectory_path, true)->getContent();
+        $templateContent = $this->renderCategoryTemplate($encodedSubdirectoryPath, true)->getContent();
         return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
@@ -83,13 +83,13 @@ class MyVideoAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderSettingsTemplate(bool $ajax_render = false): Response
+    private function renderSettingsTemplate(bool $ajaxRender = false): Response
     {
         $data = [
-            'ajax_render' => $ajax_render,
+            'ajax_render' => $ajaxRender,
         ];
         return $this->render(static::TWIG_TEMPLATE_MY_VIDEO_SETTINGS, $data);
     }
@@ -118,7 +118,7 @@ class MyVideoAction extends AbstractController {
         if( !file_exists($subdirectoryPathInModuleUploadDir) ){
             $subdirectoryName = basename($decodedSubdirectoryPath);
             $this->addFlash('danger', "Folder '{$subdirectoryName} does not exist.");
-            return $this->redirectToRoute('upload');
+            return $this->redirectToRoute('upload_fine_upload');
         }
 
         if (empty($decodedSubdirectoryPath)) {
@@ -129,8 +129,8 @@ class MyVideoAction extends AbstractController {
         }
 
         # count files in dir tree - disables button for folder removing on front
-        $searchDir              = (empty($decodedSubdirectoryPath) ? $moduleUploadDir : $subdirectoryPathInModuleUploadDir);
-        $filesCountInTree    = FilesHandler::countFilesInTree($searchDir);
+        $searchDir        = (empty($decodedSubdirectoryPath) ? $moduleUploadDir : $subdirectoryPathInModuleUploadDir);
+        $filesCountInTree = FilesHandler::countFilesInTree($searchDir);
 
         $isMainDir  = ( empty($decodedSubdirectoryPath) );
         $uploadPath = Env::getVideoUploadDir() . DIRECTORY_SEPARATOR . $decodedSubdirectoryPath;

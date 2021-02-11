@@ -62,8 +62,8 @@ export default class NotesTinyMce {
         let $selectOptions   = $("select#my_notes_category option");
         let getAttrs         = JSON.parse(Navigation.getCurrentGetAttrs());
 
-        if ( !StringUtils.isEmptyString(getAttrs.category_id) ) {
-            let categoryId = getAttrs.category_id;
+        if ( !StringUtils.isEmptyString(getAttrs.categoryId) ) {
+            let categoryId = getAttrs.categoryId;
             $quickNoteSelect.val(categoryId);
 
             $selectOptions.each(function (index, option) {

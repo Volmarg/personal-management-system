@@ -130,8 +130,8 @@ class FileUploadAction extends AbstractController {
             return $this->renderFineUploadTemplate(false);
         }
 
-        $template_content = $this->renderFineUploadTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $template_content);
+        $templateContent = $this->renderFineUploadTemplate(true)->getContent();
+        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**

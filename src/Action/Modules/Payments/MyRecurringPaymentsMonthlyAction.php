@@ -36,13 +36,13 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
     private MyPaymentsSettingsAction $myPaymentsSettingsAction;
 
     /**
-     * @var EntityValidator $entity_validator
+     * @var EntityValidator $entityValidator
      */
-    private EntityValidator $entity_validator;
+    private EntityValidator $entityValidator;
 
     public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $myPaymentsSettingsAction, EntityValidator $entityValidator) {
         $this->myPaymentsSettingsAction = $myPaymentsSettingsAction;
-        $this->entity_validator         = $entityValidator;
+        $this->entityValidator          = $entityValidator;
         $this->controllers              = $controllers;
         $this->app                      = $app;
     }
@@ -149,7 +149,7 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
             $em = $this->getDoctrine()->getManager();
 
             $recurringPayment = $recurringPaymentsForm->getData();
-            $validationResult = $this->entity_validator->handleValidation($recurringPayment, EntityValidator::ACTION_CREATE);
+            $validationResult = $this->entityValidator->handleValidation($recurringPayment, EntityValidator::ACTION_CREATE);
 
             if( !$validationResult->isValid() ){
                 return $validationResult;

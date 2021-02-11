@@ -97,24 +97,25 @@ class MyPaymentsProductsAction extends AbstractController {
 
     /**
      * Todo: check later why is this done this strange way....
-     * @param $column_names
+     * @param $columnNames
      * @return array
      *
      * @throws Exception
      */
-    private function reorderPriceColumn($column_names): array
+    private function reorderPriceColumn($columnNames): array
     {
-        $priceKey = array_search(static::PRICE_COLUMN_NAME, $column_names);
+        dump($columnNames);
+        $priceKey = array_search(static::PRICE_COLUMN_NAME, $columnNames);
 
-        if (!array_key_exists(static::PRICE_COLUMN_NAME, $column_names)) {
+        if (!in_array(static::PRICE_COLUMN_NAME, $columnNames)) {
             $message = $this->app->translator->translate('exceptions.MyPaymentsProductsController.keyPriceNotFoundInProductsColumnsArray');
             throw new Exception($message);
         }
 
-        unset($column_names[$priceKey]);
-        $column_names[] = static::PRICE_COLUMN_NAME;
+        unset($columnNames[$priceKey]);
+        $columnNames[] = static::PRICE_COLUMN_NAME;
 
-        return $column_names;
+        return $columnNames;
     }
 
     /**
@@ -134,9 +135,16 @@ class MyPaymentsProductsAction extends AbstractController {
         $productsAllData    = $this->controllers->getMyPaymentsProductsController()->getAllNotDeleted();
         $currencyMultiplier = $this->controllers->getMyPaymentsSettingsController()->fetchCurrencyMultiplier();
 
-        return $this->render('modules/my-payments/products.html.twig',
-            compact('columnNames', 'productsAllData', 'productsFormView', 'currencyMultiplier', 'ajaxRender', 'skipRewritingTwigVarsToJs')
-        );
+        $templateData = [
+            'column_names'                   => $columnNames,
+            'products_all_data'              => $productsAllData,
+            'products_form_view'             => $productsFormView,
+            'currency_multiplier'            => $currencyMultiplier,
+            'ajax_render'                    => $ajaxRender,
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+        ];
+
+        return $this->render('modules/my-payments/products.html.twig', $templateData);
     }
 
     /**

@@ -66,7 +66,7 @@ class DatabaseExporter {
 
     /**
      * Safety postfix - should be unique so that existing db sql for today won't be overwritten
-     * @var string $file_postfix
+     * @var string $filePrefix
      */
     private $filePrefix = '';
 
@@ -192,8 +192,8 @@ class DatabaseExporter {
 
         switch( $mode ){
             case self::FILE_PREFIX_MODE_CURRENT_DATE_TIME:
-                    $curr_date_time = new \DateTime();
-                    $prefix = $curr_date_time->format('Y_m_d_H_i_s_');
+                    $currDateTime = new \DateTime();
+                    $prefix = $currDateTime->format('Y_m_d_H_i_s_');
                 break;
             default:
                 throw new \Exception("This mode is not supported: {$mode}");

@@ -159,10 +159,10 @@ class CronMakeBackupCommand extends Command
     /**
      * This function creates database dump
      * @param SymfonyStyle $io
-     * @param string $backup_database_filename
+     * @param string $backupDatabaseFilename
      */
-    private function backupDatabase(SymfonyStyle $io, string $backup_database_filename ){
-        $this->databaseExporter->setFileName($backup_database_filename);
+    private function backupDatabase(SymfonyStyle $io, string $backupDatabaseFilename ){
+        $this->databaseExporter->setFileName($backupDatabaseFilename);
         $this->databaseExporter->runInternalDatabaseExport();
         $exportMessage = $this->databaseExporter->getExportMessage();
 

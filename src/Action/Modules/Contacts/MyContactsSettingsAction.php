@@ -100,8 +100,8 @@ class MyContactsSettingsAction extends AbstractController
 
         $message = $response->getContent();
         if ($response->getStatusCode() == 200) {
-            $rendered_template = $this->renderSettingsTemplate(true);
-            $templateContent  = $rendered_template->getContent();
+            $renderedTemplate = $this->renderSettingsTemplate(true);
+            $templateContent  = $renderedTemplate->getContent();
 
             return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
@@ -118,8 +118,8 @@ class MyContactsSettingsAction extends AbstractController
     public function updateContactType(Request $request): Response
     {
         $parameters = $request->request->all();
-
-        $entityAfterUpdate  = $this->controllers->getMyContactTypeController()->findOneById($parameters['id']);
+        $id         = trim($parameters['id']);
+        $entityAfterUpdate  = $this->controllers->getMyContactTypeController()->findOneById($id);
         $entityBeforeUpdate = clone($entityAfterUpdate); // because doctrine will overwrite the data we got to clone it
 
         $this->app->em->beginTransaction(); //all or nothing
@@ -158,10 +158,10 @@ class MyContactsSettingsAction extends AbstractController
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderSettingsTemplate($ajax_render = false): Response
+    private function renderSettingsTemplate($ajaxRender = false): Response
     {
 
         $typeForm  = $this->app->forms->contactTypeForm();
@@ -170,7 +170,7 @@ class MyContactsSettingsAction extends AbstractController
         $data = [
             'type_form'            => $typeForm->createView(),
             'group_form'           => $groupForm->createView(),
-            'ajax_render'          => $ajax_render,
+            'ajax_render'          => $ajaxRender,
             'contact_types_table'  => $this->renderContactTypeTemplate()->getContent(),
             'contact_groups_table' => $this->renderContactGroupTemplate()->getContent()
         ];
@@ -179,16 +179,16 @@ class MyContactsSettingsAction extends AbstractController
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderContactTypeTemplate($ajax_render = false): Response
+    private function renderContactTypeTemplate($ajaxRender = false): Response
     {
 
         $types = $this->controllers->getMyContactTypeController()->getAllNotDeleted();
 
         $data = [
-            'ajax_render' => $ajax_render,
+            'ajax_render' => $ajaxRender,
             'types'       => $types,
         ];
 
@@ -196,16 +196,16 @@ class MyContactsSettingsAction extends AbstractController
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @return Response
      */
-    private function renderContactGroupTemplate($ajax_render = false): Response
+    private function renderContactGroupTemplate($ajaxRender = false): Response
     {
 
         $groups = $this->controllers->getMyContactGroupController()->getAllNotDeleted();
 
         $data = [
-            'ajax_render' => $ajax_render,
+            'ajax_render' => $ajaxRender,
             'groups'      => $groups,
         ];
 

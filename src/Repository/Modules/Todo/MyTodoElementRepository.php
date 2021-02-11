@@ -22,13 +22,13 @@ class MyTodoElementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param MyTodoElement $todo_element
+     * @param MyTodoElement $todoElement
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(MyTodoElement $todo_element): void
+    public function save(MyTodoElement $todoElement): void
     {
-        $this->_em->persist($todo_element);
+        $this->_em->persist($todoElement);
         $this->_em->flush();
     }
 

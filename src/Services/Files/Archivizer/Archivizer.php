@@ -71,7 +71,7 @@ abstract class Archivizer {
 
     /**
      * Safety postfix - should be unique so that existing db sql for today won't be overwritten
-     * @var string $file_postfix
+     * @var string $filePrefix
      */
     protected $filePrefix = '';
 

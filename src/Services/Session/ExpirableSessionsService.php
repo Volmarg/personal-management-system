@@ -42,8 +42,8 @@ class ExpirableSessionsService extends SessionsService {
      */
     public function handleSessionExpiration(?Request $request = null)
     {
-        $expired_single_session_key_lifetimes_vo = $this->unsetExpiredSessionsKeysLifetimesAndRefreshRemaining();
-        $this->removeExpiredSessionsKeysFromSession($expired_single_session_key_lifetimes_vo);
+        $expiredSingleSessionKeyLifetimesVo = $this->unsetExpiredSessionsKeysLifetimesAndRefreshRemaining();
+        $this->removeExpiredSessionsKeysFromSession($expiredSingleSessionKeyLifetimesVo);
     }
 
     /**

@@ -172,22 +172,22 @@ class MyNotesAction extends AbstractController {
     }
 
     /**
-     * @param bool $ajax_render
+     * @param bool $ajaxRender
      * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    private function renderCreateNoteTemplate(bool $ajax_render = false, bool $skipRewritingTwigVarsToJs = false): Response {
+    private function renderCreateNoteTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response {
 
         $form     = $this->app->forms->noteTypeForm();
         $formView = $form->createView();
 
-        $template_data = [
-            'ajax_render'                    => $ajax_render,
+        $templateData = [
+            'ajax_render'                    => $ajaxRender,
             'form'                           => $formView,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
-        return $this->render('modules/my-notes/new-note.html.twig', $template_data);
+        return $this->render('modules/my-notes/new-note.html.twig', $templateData);
 
     }
 

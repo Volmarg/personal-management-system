@@ -140,16 +140,16 @@ class LockedResourceRepository extends ServiceEntityRepository
      */
     public function findByDirectoryLocation(string $path):? LockedResource
     {
-        $query_builder = $this->_em->createQueryBuilder();
+        $queryBuilder = $this->_em->createQueryBuilder();
 
-        $query_builder->select('lr')
+        $queryBuilder->select('lr')
             ->from(LockedResource::class, 'lr')
             ->where('lr.type = :type')
             ->andWhere('lr.record = :path')
             ->setParameter("type", LockedResource::TYPE_DIRECTORY)
             ->setParameter("path", $path);
 
-        $query   = $query_builder->getQuery();
+        $query   = $queryBuilder->getQuery();
         $results = $query->execute();
 
         if( empty($results) ){
@@ -161,10 +161,10 @@ class LockedResourceRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param string $old_path
-     * @param string $new_path
+     * @param string $oldPath
+     * @param string $newPath
      */
-    public function updatePath(string $old_path, string $new_path): void
+    public function updatePath(string $oldPath, string $newPath): void
     {
         $qb = $this->_em->createQueryBuilder();
 
@@ -172,8 +172,8 @@ class LockedResourceRepository extends ServiceEntityRepository
             ->set('lr.record', ':new_path')
             ->where('lr.record = :old_path')
             ->setParameters([
-               'new_path' => $new_path,
-               'old_path' => $old_path,
+               'new_path' => $newPath,
+               'old_path' => $oldPath,
             ]);
 
         $query = $qb->getQuery();

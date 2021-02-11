@@ -121,8 +121,8 @@ class MyImagesAction extends AbstractController {
         }
 
         if( !file_exists($subdirectoryPathInModuleUploadDir) ){
-            $subdirectory_name = basename($decodedSubdirectoryPath);
-            $this->addFlash('danger', "Folder '{$subdirectory_name} does not exist.");
+            $subdirectoryName = basename($decodedSubdirectoryPath);
+            $this->addFlash('danger', "Folder '{$subdirectoryName} does not exist.");
             return $this->redirectToRoute('upload');
         }
 
