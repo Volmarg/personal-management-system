@@ -460,6 +460,7 @@ class Repositories extends AbstractController {
             $repository = $this->{lcfirst($repositoryName)};
             $record     = $repository->find($id);
 
+            // first attempt to remove the related entities, only then check if there is still some relation left
             $record = $this->handleRecordActiveRelatedEntities($record);
             if ( $this->hasRecordActiveRelatedEntities($record, $repository) ) {
                 $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
@@ -710,7 +711,11 @@ class Repositories extends AbstractController {
             }
 
             $dataForMethodName = $entity->$methodName();
-            if( self::isEntity($entity)){
+            if( !property_exists($dataForMethodName, 'getValues') ){
+                // this is a single entity relation with One `side` instead of `Many`
+                if( self::isEntity($dataForMethodName) ){
+                    $relatedEntities[] = $dataForMethodName;
+                }
                 continue;
             }
 
@@ -952,7 +957,7 @@ class Repositories extends AbstractController {
         foreach ($parentKeys as $key) {
 
             if (property_exists($record, $key)) {
-                $childRecord     = $repository->findBy([$key => $record->getId(), self::ENTITY_PROPERTY_DELETED => 0]);
+                $childRecord     = $repository->findOneBy([$key => $record->getId(), self::ENTITY_PROPERTY_DELETED => 0]);
                 $hasSelfRelation = true;
             }
 
@@ -983,7 +988,6 @@ class Repositories extends AbstractController {
         # info: this may cause problems if there will be advanced(i doubt there will) relations (not just parent/child)
 
         $columnsNames = $this->getColumnsNamesForTableName($tableName);
-
         foreach( $columnsNames as $columnName ){
             # we have a child so we can remove it
             if( strstr($columnName, "_id") && !$hasSelfRelation ){
@@ -1041,7 +1045,10 @@ class Repositories extends AbstractController {
                     $this->entityManager->persist($myIssue);
                 }
 
-            }elseif( $entity instanceof MyIssue){
+            }elseif(
+                    ($entity instanceof MyIssue)
+                ||  ($entity instanceof MyNotesCategories)
+            ){
                 $relatedEntities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
             }
 
@@ -1096,7 +1103,6 @@ class Repositories extends AbstractController {
                 &&  array_key_exists(self::KEY_ENTITY_DATA_TYPE, $value)
                 &&  $value[self::KEY_ENTITY_DATA_TYPE] == self::ENTITY_DATA_TYPE_ENTITY
             ) {
-                //todo: need to check if updating entities for example in notes also works fine
                 $isEntityForceNull = (
                         array_key_exists(self::KEY_ENTITY_DATA_IS_NULL, $value)
                     &&  Utils::getBoolRepresentationOfBoolString($value[self::KEY_ENTITY_DATA_IS_NULL])
