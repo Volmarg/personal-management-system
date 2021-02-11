@@ -1111,7 +1111,8 @@ class Repositories extends AbstractController {
             $recordClassName  = get_class($entity);
             $classMeta        = $this->entityManager->getClassMetadata($recordClassName);
 
-            $ucFirstParameter = ucfirst($parameter);
+            $ucFirstParameter    = ucfirst($parameter);
+            $camelCasedParameter = Application::snakeCaseToCamelCaseConverter($parameter);
 
             // this is needed to detect the type of field as doctrine sometimes want objects for it's internal mapping
             if( $classMeta->hasField($parameter) ){
@@ -1120,9 +1121,14 @@ class Repositories extends AbstractController {
             }elseif( $classMeta->hasField($ucFirstParameter) ){
                 $fieldMapping = $classMeta->getFieldMapping($ucFirstParameter);
                 $fieldType    = $fieldMapping['type'];
-            }elseif( $classMeta->hasAssociation($parameter)){
-                $fieldType = self::FIELD_TYPE_ENTITY;
-            }elseif( $classMeta->hasAssociation($ucFirstParameter) ){
+            }elseif( $classMeta->hasField($camelCasedParameter) ){
+                $fieldMapping = $classMeta->getFieldMapping($camelCasedParameter);
+                $fieldType    = $fieldMapping['type'];
+            }elseif(
+                    $classMeta->hasAssociation($parameter)
+                ||  $classMeta->hasAssociation($ucFirstParameter)
+                ||  $classMeta->hasAssociation($camelCasedParameter)
+            ){
                 $fieldType = self::FIELD_TYPE_ENTITY;
             }else{
                 throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
@@ -1131,7 +1137,7 @@ class Repositories extends AbstractController {
             $methodName  = 'set' . $ucFirstParameter;
 
             if( !property_exists($recordClassName, $methodName) ){
-                $methodName = 'set' . ucfirst(Application::snakeCaseToCamelCaseConverter($parameter));
+                $methodName = 'set' . ucfirst($ucFirstParameter);
             }
 
             $hasRelation = strstr($methodName, '_id');
