@@ -12,7 +12,7 @@
     <hr/>
 
     <section class="p-20 add-record-form" data-type="MyTodoElement">
-        <h3 class="text-center">{{ 'todo.list.headers.addElement' | trans }}</h3>
+        <h4 class="text-center c-grey-900">{{ 'todo.list.headers.addElement' | trans }}</h4>
         {# Info: direct object must be passed to render form multiple time #}
         {% set form = todo_element_form.createView %}
         {{ form_start(form, {attr: {

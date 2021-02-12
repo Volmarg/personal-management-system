@@ -57,6 +57,7 @@
 
                         {% else %}
                             <h4 class="c-grey-900 mB-20 text-center">{{ 'dialogs.addOrModifyTodo.modify' | trans }}</h4>
+                            <h6 class="text-center c-grey-900"><i>{{ todo.name }}</i></h6>
 
                             {% include 'modules/my-todo/components/modal-body.html.twig' with {
                                 todo: todo,
