@@ -278,6 +278,9 @@ payments:
     summary: 'Monthly payments summary:'
     table:
       type: Type
+      description: Description
+      money: Money
+      date: Date
     infoBlock:
       header: Monthly payments
       text:

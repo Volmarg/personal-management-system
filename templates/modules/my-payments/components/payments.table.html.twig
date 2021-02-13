@@ -8,40 +8,30 @@
     <table id="MyPaymentsMonthly" class="table table-hover" cellspacing="0" width="100%" data-table="true">
         <thead>
         <tr>
-            {% for column in columns_names %}
-                <td class="{% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}">
-                    {{ column|capitalize }}
-                </td>
-            {% endfor %}
-            <td>{{ 'payments.monthlyPayments.table.type' | trans }}</td>
-            <td>{{ 'datatables.table.actions' | trans }}</td>
+            <td class="d-none">Id</td>
+            <td>{{ 'payments.monthlyPayments.table.date'        | trans }}</td>
+            <td>{{ 'payments.monthlyPayments.table.money'       | trans }}</td>
+            <td>{{ 'payments.monthlyPayments.table.description' | trans }}</td>
+            <td>{{ 'payments.monthlyPayments.table.type'        | trans }}</td>
+            <td>{{ 'datatables.table.actions'                   | trans }}</td>
         </tr>
         </thead>
         <tbody>
         {% for payment in all_payments %}
-            {% if date_group.date|date("Y-m") in payment.date|date("Y-m-d")%}
+            {% if date_group.date|date("Y-m") in payment.date|date("Y-m-d") %}
                 <tr class="trash-parent monthly-single-data editable-parent save-parent" data-type="MyPaymentsMonthly">
-                    {% for column in columns_names %}
-
-                        {% set timestamp = date( payment.date | date('m/d/yyyy') ).timestamp %}
-
-                        <td
-                                class="{{ column }} {% if column=='money' %}text-success{% endif %} {{ hideIdColumn(column) }}"
-                                {{ ( column == "date" ? "data-order="~timestamp : '' ) }}
-                        >
-
-                            {% if column == 'date' %}
-                                <span class="{{ column }} ">
-                                    {% include 'page-elements/components/forms/input-datepicker.twig' with {
-                                        "value"     : payment.date | date('Y-m-d'),
-                                        "disabled"  : true
-                                    } %}
-                                </span>
-                            {% else %}
-                                {{ attribute(payment,column) }}
-                            {% endif %}
-                        </td>
-                    {% endfor %}
+                    {% set timestamp = date( payment.date | date('m/d/yyyy') ).timestamp %}
+                    <td class="id d-none"> {{ payment.id }} </td>
+                    <td class="date" data-order="{{ timestamp }}">
+                        <span class="date">
+                            {% include 'page-elements/components/forms/input-datepicker.twig' with {
+                                "value"     : payment.date | date('Y-m-d'),
+                                "disabled"  : true
+                            } %}
+                        </span>
+                    </td>
+                    <td class="money text-success" >                      {{ payment.money }}        </td>
+                    <td class="description" data-order="{{ timestamp }}"> {{ payment.description }}  </td>
 
                     <td class="parent-td">
                         <select class="form-control disabled type option-picker">

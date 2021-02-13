@@ -19,25 +19,30 @@ class MyPaymentsMonthlyController extends AbstractController {
     }
 
 
-    public function fetchAllDateGroups()
+    public function fetchAllDateGroupsForYear(string $year)
     {
-        return $this->app->repositories->myPaymentsMonthlyRepository->fetchAllDateGroups();
+        return $this->app->repositories->myPaymentsMonthlyRepository->fetchAllDateGroupsForYear($year);
     }
 
-    public function getPaymentsByTypes()
+    /**
+     * @param string $year
+     * @return mixed[]
+     */
+    public function getPaymentsByTypesForYear(string $year): array
     {
-        return $this->app->repositories->myPaymentsMonthlyRepository->getPaymentsByTypes();
+        return $this->app->repositories->myPaymentsMonthlyRepository->getPaymentsByTypesForYear($year);
     }
 
 
     /**
      * Will return all not deleted entities
      *
+     * @param string $year
      * @return array
      */
-    public function getAllNotDeleted(): array
+    public function getAllNotDeletedForYear(string $year): array
     {
-        return $this->app->repositories->myPaymentsMonthlyRepository->getAllNotDeleted();
+        return $this->app->repositories->myPaymentsMonthlyRepository->getAllNotDeletedForYear($year);
     }
 
     /**

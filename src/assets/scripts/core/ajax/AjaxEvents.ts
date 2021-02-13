@@ -38,13 +38,13 @@ export default class AjaxEvents extends AbstractAjax {
 
     public init()
     {
-        this.attachModuleContentLoadingViaAjaxOnMenuLinks();
+        this.attachModuleContentLoadingViaAjaxOnLinks();
     }
 
     /**
      * @description Attaches module content load by clicking on links in menu
      */
-    public attachModuleContentLoadingViaAjaxOnMenuLinks(): void
+    public attachModuleContentLoadingViaAjaxOnLinks(): void
     {
         let _this = this;
         let excludeHrefsRegexPatterns = [

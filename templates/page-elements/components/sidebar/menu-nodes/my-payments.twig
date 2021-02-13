@@ -19,7 +19,7 @@
             <a class="sidebar-link left-nav-link" href="{{ path('my-payments-products') }}">{{ 'sidebar.menu.payments.productsPrices' | trans }}</a>
         </li>
         <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-payments-monthly') }}">{{ 'sidebar.menu.payments.monthlyPayments' | trans }}</a>
+            <a class="sidebar-link left-nav-link" data-href-pattern="{{ path('my-payments-monthly') }}[/]?[0-9]{4}" href="{{ path('my-payments-monthly') }}">{{ 'sidebar.menu.payments.monthlyPayments' | trans }}</a>
         </li>
         <li>
             <a class="sidebar-link left-nav-link" href="{{ path('my-payments-owed') }}">{{ 'sidebar.menu.payments.moneyOwed' | trans }}</a>

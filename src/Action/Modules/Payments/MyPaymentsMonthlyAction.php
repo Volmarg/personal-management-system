@@ -37,51 +37,68 @@ class MyPaymentsMonthlyAction extends AbstractController {
     }
 
     /**
-     * @Route("/my-payments-monthly", name="my-payments-monthly")
+     * @Route("/my-payments-monthly/{year}", name="my-payments-monthly")
      * @param Request $request
+     * @param string|null $year
      * @return Response
-     * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    public function display(Request $request): Response
+    public function display(Request $request, ?string $year = null): Response
     {
         $this->addFormDataToDB($request);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
+            return $this->renderTemplate($year);
         }
 
-        $templateContent = $this->renderTemplate(true)->getContent();
+        $templateContent = $this->renderTemplate($year, true)->getContent();
         return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
     }
 
     /**
+     * @param string|null $year
      * @param bool $ajaxRender
      * @param bool $skipRewritingTwigVarsToJs
      * @return Response
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
      */
-    protected function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    protected function renderTemplate(?string $year = null, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
         $form            = $this->getForm();
         $monthlyFormView = $form->createView();
 
-        $columnsNames = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsMonthly::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columnsNames);
+        $years           = $this->controllers->getMyPaymentsSettingsController()->getYears();
 
-        $allPayments           = $this->controllers->getMyPaymentsMonthlyController()->getAllNotDeleted();
-        $datesGroups           = $this->controllers->getMyPaymentsMonthlyController()->fetchAllDateGroups();
-        $paymentsByTypeAndDate = $this->controllers->getMyPaymentsMonthlyController()->getPaymentsByTypes();
-        $paymentsTypes         = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
+        $allPayments           = [];
+        $datesGroups           = [];
+        $paymentsByTypeAndDate = [];
+        $paymentsTypes         = [];
 
+        $usedYear = $year;
+        if( !empty($years) ){
+            if( is_null($year) ){
+                $latestYearIndex = array_key_first($years);
+                $usedYear        = $years[$latestYearIndex];
+            }
+
+            $allPayments           = $this->controllers->getMyPaymentsMonthlyController()->getAllNotDeletedForYear($usedYear);
+            $datesGroups           = $this->controllers->getMyPaymentsMonthlyController()->fetchAllDateGroupsForYear($usedYear);
+            $paymentsByTypeAndDate = $this->controllers->getMyPaymentsMonthlyController()->getPaymentsByTypesForYear($usedYear);
+            $paymentsTypes         = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
+        }
 
         return $this->render('modules/my-payments/monthly.html.twig', [
             'form'                           => $monthlyFormView,
             'all_payments'                   => $allPayments,
-            'columns_names'                  => $columnsNames,
             'dates_groups'                   => $datesGroups,
             'ajax_render'                    => $ajaxRender,
             'payments_by_type_and_date'      => $paymentsByTypeAndDate,
             'payments_types'                 => $paymentsTypes,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'years'                          => $years,
+            'active_year'                    => $usedYear,
         ]);
     }
 

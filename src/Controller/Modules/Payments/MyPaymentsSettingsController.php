@@ -4,6 +4,7 @@ namespace App\Controller\Modules\Payments;
 
 use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
+use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +64,18 @@ class MyPaymentsSettingsController extends AbstractController {
     public function getAllPaymentsTypes(): array
     {
         return $this->app->repositories->myPaymentsSettingsRepository->getAllPaymentsTypes();
+    }
+
+    /**
+     * Will return array of years for payments
+     *
+     * @return string[]
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getYears(): array
+    {
+        return $this->app->repositories->myPaymentsSettingsRepository->getYears();
     }
 
     /**

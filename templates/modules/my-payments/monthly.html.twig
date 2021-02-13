@@ -21,6 +21,17 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
+
+                            <section class="mB-20">
+                                {% for year in years %}
+                                    <a href="{{ path("my-payments-monthly", {"year" : year}) }}" class="ajax-content-load">
+                                        <button class="trigger-custom btn cur-p todo-title active {{ (active_year == year ? 'btn-primary' : 'btn-outline-primary') }}">
+                                            {{ year }}
+                                        </button>
+                                    </a>
+                                {% endfor %}
+                            </section>
+
                             <div id="accordion">
                                 {% for date_group in dates_groups %}
                                     <div class="accordin-section">

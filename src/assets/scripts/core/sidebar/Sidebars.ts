@@ -3,6 +3,8 @@ import DomElements from "../utils/DomElements";
 
 export default class Sidebars {
 
+    private static hrefPatternAttribute : string = 'data-href-pattern';
+
     public static init(): void
     {
         // Sidebar links
@@ -87,12 +89,27 @@ export default class Sidebars {
     public static markCurrentMenuElementAsActive(): void
     {
         let currUrl       = window.location.pathname;
-        let currMenuLink  = $('[href="' + currUrl + '"');
+        let currMenuLink  = $('.sidebar-link[href="' + currUrl + '"');
 
         let currActiveMenuLink = $('.sidebar-menu li.nav-item a.active');
 
         if( !DomElements.doElementsExists(currMenuLink) ){
-            return;
+            let $allHrefPatternsElements = $("[" + Sidebars.hrefPatternAttribute + "]");
+            let hasMatch                 = false;
+            $.each($allHrefPatternsElements, (index, patternElement) => {
+                let $patternElement   = $(patternElement);
+                let regexpHrefPattern = new RegExp($patternElement.attr(Sidebars.hrefPatternAttribute));
+
+                if( currUrl.match(regexpHrefPattern) ){
+                    hasMatch     = true;
+                    currMenuLink = $patternElement;
+                    return;
+                }
+            })
+
+            if(!hasMatch){
+                return;
+            }
         }
 
         // first find curr active and deactivate it

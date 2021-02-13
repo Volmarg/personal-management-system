@@ -46,6 +46,7 @@ import MassActions                  from "./core/ui/Actions/MassActions";
 import Tippy                        from "./libs/tippy/Tippy";
 import TodoModal                    from "./modules/Todo/TodoModal";
 import FineUploaderService          from "./libs/fine-uploader/FineUploaderService";
+import AjaxEvents                   from "./core/ajax/AjaxEvents";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -85,6 +86,7 @@ export default class Initializer {
         let modal                  = new Modal();
         let dialog                 = new Dialog();
         let domElements            = new DomElements();
+        let ajaxEvents             = new AjaxEvents();
 
         // modules
         let todoChecklist       = new TodoChecklist();
@@ -99,6 +101,7 @@ export default class Initializer {
         this.initializeActions();
         Tippy.init();
         Sidebars.init();
+        Sidebars.markCurrentMenuElementAsActive();
         selectize.init();
         formsUtils.init();
         uploadSettings.init();
@@ -131,6 +134,8 @@ export default class Initializer {
 
         videoJs.init();
         fineUploadService.init();
+
+        ajaxEvents.init();
     }
 
     /**

@@ -138,7 +138,7 @@ export default class Ajax extends AbstractAjax{
                 _this.bootstrapNotify.notify(ajaxResponseDto.message, notificationType)
             }
 
-            _this.ajaxEvents.attachModuleContentLoadingViaAjaxOnMenuLinks();
+            _this.ajaxEvents.attachModuleContentLoadingViaAjaxOnLinks();
 
             if( ajaxResponseDto.reloadPage ){
                 if( ajaxResponseDto.isReloadMessageSet() ){
