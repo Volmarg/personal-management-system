@@ -162,21 +162,30 @@ class FilesHandler {
         $newTargetDirectory     = FileUploadController::getTargetDirectoryForUploadModuleDir($targetUploadType);
 
         # checking if it's not main dir on any side
-        if( $currentTargetDirectory === $currentDirectoryPathInModuleUploadDir ){ // current dir is main
+        if(
+                $currentTargetDirectory === $currentDirectoryPathInModuleUploadDir
+            ||  $newTargetDirectory     === $targetDirectoryPathInModuleUploadDir
+        ){
+            if( // both are main
+                    $currentTargetDirectory === $currentDirectoryPathInModuleUploadDir
+                &&  $newTargetDirectory     === $targetDirectoryPathInModuleUploadDir
+            ){
 
-            $currentSubdirectoryPath = $currentDirectoryPathInModuleUploadDir;
-            $targetSubdirectoryPath  = $newTargetDirectory . DIRECTORY_SEPARATOR . $targetDirectoryPathInModuleUploadDir;
+                $currentSubdirectoryPath = $currentDirectoryPathInModuleUploadDir;
+                $targetSubdirectoryPath  = $targetDirectoryPathInModuleUploadDir;
+            }elseif( $currentTargetDirectory === $currentDirectoryPathInModuleUploadDir ){ // current dir is main
 
-        }elseif( $newTargetDirectory === $targetDirectoryPathInModuleUploadDir ){ // target dir is main
+                $currentSubdirectoryPath = $currentDirectoryPathInModuleUploadDir;
+                $targetSubdirectoryPath  = $newTargetDirectory . DIRECTORY_SEPARATOR . $targetDirectoryPathInModuleUploadDir;
+            }elseif( $newTargetDirectory === $targetDirectoryPathInModuleUploadDir ){ // target dir is main
 
-            $currentSubdirectoryPath = $currentTargetDirectory . DIRECTORY_SEPARATOR . $currentDirectoryPathInModuleUploadDir;
-            $targetSubdirectoryPath  = $targetDirectoryPathInModuleUploadDir;
+                $currentSubdirectoryPath = $currentTargetDirectory . DIRECTORY_SEPARATOR . $currentDirectoryPathInModuleUploadDir;
+                $targetSubdirectoryPath  = $targetDirectoryPathInModuleUploadDir;
+            }
 
-        } else { // there is NO main dir on any side
-
+        }else { // there is NO main dir on any side
             $currentSubdirectoryPath = $currentTargetDirectory . DIRECTORY_SEPARATOR . $currentDirectoryPathInModuleUploadDir;
             $targetSubdirectoryPath  = $newTargetDirectory. DIRECTORY_SEPARATOR . $targetDirectoryPathInModuleUploadDir;
-
         }
 
         if( !file_exists($currentSubdirectoryPath) ){
