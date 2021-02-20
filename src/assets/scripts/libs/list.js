@@ -25,3 +25,4 @@ import './selectize/Selectize';
 import './shuffle/ShuffleWrapper';
 import './tiny-mce/TinyMce';
 import './js-cookie/JsCookie';
+import './tui-calendar/TuiCalendarService';

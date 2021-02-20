@@ -47,6 +47,7 @@ import Tippy                        from "./libs/tippy/Tippy";
 import TodoModal                    from "./modules/Todo/TodoModal";
 import FineUploaderService          from "./libs/fine-uploader/FineUploaderService";
 import AjaxEvents                   from "./core/ajax/AjaxEvents";
+import TuiCalendarService           from "./libs/tui-calendar/TuiCalendarService";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -76,6 +77,7 @@ export default class Initializer {
         let accordion         = new Accordion();
         let videoJs           = new VideoJs();
         let fineUploadService = new FineUploaderService();
+        let tuiCalendar       = new TuiCalendarService();
 
         // core
         let search                 = new Search();
@@ -136,6 +138,7 @@ export default class Initializer {
         fineUploadService.init();
 
         ajaxEvents.init();
+        tuiCalendar.init();
     }
 
     /**

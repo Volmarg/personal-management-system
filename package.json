@@ -37,6 +37,7 @@
     "eslint-plugin-import": "2.22.1",
     "extract-text-webpack-plugin": "^3.0.1",
     "file-loader": "6.2.0",
+    "fork-ts-checker-webpack-plugin": "^4.1.6",
     "html-webpack-plugin": "^4.5.0",
     "imagemin-webpack-plugin": "2.4.2",
     "node-sass": "^4.14.1",
@@ -118,6 +119,7 @@
     "tinymce": "^5.5.1",
     "tippy.js": "^6.2.7",
     "trumbowyg": "^2.21.0",
+    "tui-calendar": "^1.13.0",
     "twig": "^1.15.2",
     "video.js": "^7.10.1"
   }

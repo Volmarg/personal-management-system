@@ -16,21 +16,87 @@
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
                             <h4 class="c-grey-900 mB-20 text-center">{{ 'schedules.headers.schedules' | trans }}</h4>
-                            {% include 'modules/my-schedules/components/schedules-table.html.twig' %}
+{#                            {% include 'modules/my-schedules/components/schedules-table.html.twig' %}#}
+
+
+                            {# start test#}
+                            {# Main wrapper #}
+                            <section class="tui-calendar-wrapper d-flex flex-row flex-wrap">
+
+                                <section class="left-side col-2 p-0">
+                                    <div id="lnb">
+                                        <div class="lnb-new-schedule">
+                                            <button id="btn-new-schedule" type="button" class="btn btn-default btn-block lnb-new-schedule-btn" data-toggle="modal">
+                                                New schedule</button>
+                                        </div>
+                                        <div id="lnb-calendars" class="lnb-calendars">
+                                            <div>
+                                                <div class="lnb-calendars-item">
+                                                    <label>
+                                                        <input class="tui-full-calendar-checkbox-square view-all-calendars" type="checkbox" value="all" checked>
+                                                        <span></span>
+                                                        <strong>View all</strong>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div id="calendarList" class="lnb-calendars-d1"></div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="right-side col-10 p-0">
+                                    <div id="right">
+                                        <div id="menu">
+                                    <span class="dropdown">
+                                        <button id="dropdownMenu-calendarType" class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="true">
+                                            <i id="calendarTypeIcon" class="calendar-icon ic_view_month" style="margin-right: 4px;"></i>
+                                            <span id="calendarTypeName">Dropdown</span>&nbsp;
+                                            <i class="calendar-icon tui-full-calendar-dropdown-arrow"></i>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu-calendarType">
+                                            <li role="presentation">
+                                                <a class="dropdown-menu-title" role="menuitem" data-action="toggle-view-daily">
+                                                    <i class="calendar-icon ic_view_day"></i>Daily
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a class="dropdown-menu-title" role="menuitem" data-action="toggle-view-weekly">
+                                                    <i class="calendar-icon ic_view_week"></i>Weekly
+                                                </a>
+                                            </li>
+                                            <li role="presentation">
+                                                <a class="dropdown-menu-title" role="menuitem" data-action="toggle-view-monthly">
+                                                    <i class="calendar-icon ic_view_month"></i>Month
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        </span>
+
+                                            <span id="menu-navi">
+                                            <button type="button" class="btn btn-default btn-sm" data-action="move-today">Today</button>
+                                            <button type="button" class="btn btn-default btn-sm" data-action="move-previous">
+                                                <i class="calendar-icon ic-arrow-line-left">Back</i>
+                                            </button>
+                                            <button type="button" class="btn btn-default btn-sm" data-action="move-next">
+                                                <i class="calendar-icon ic-arrow-line-right">Forward</i>
+                                            </button>
+                                        </span>
+                                            <span id="renderRange" class="render-range"></span>
+                                        </div>
+
+                                        {# This is the calendar wrapper holding the real tui-callendar, rendered by js #}
+                                        <section data-is-tui-calendar id="calendar" class="p-20 pL-40"></section>
+
+                                    </div>
+                                </section>
+
+                            </section>
+                            {# end test #}
                         </div>
                     </div>
                 </div>
-                {# Form #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h4 class="c-grey-900 mB-20 align-self-center">{{ 'schedules.headers.addSchedule' | trans }}</h4>
-                            <div class="col-md-6 align-self-center add-record-form">
-                                {{ form(form ,{'attr':{' data-entity':"MySchedules"}}) }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </div>
     </main>

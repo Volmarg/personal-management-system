@@ -66,6 +66,11 @@ Encore
     .enableBuildNotifications()
     .enableSingleRuntimeChunk();
 
+// this skips some check in the TS while compiling files to speed up compilation
+if( !Encore.isProduction() ){
+    Encore.enableForkedTypeScriptTypesChecking();
+}
+
 const app_js_build = Encore.getWebpackConfig();
 
 app_js_build.name    = 'app_js_build';
@@ -79,7 +84,7 @@ app_js_build.optimization.namedModules  = !Encore.isProduction();
 
 // this must be set only for the development, otherwise production mode compiles the assets like in the dev
 if( !Encore.isProduction() ){
-    app_js_build.devtool = 'inline-source-map';
+    app_js_build.devtool = 'eval-source-map';
 }
 
 

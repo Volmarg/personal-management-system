@@ -16,6 +16,7 @@
 @import 'libs/customization-for-liblaries/tinymce';
 @import 'libs/customization-for-liblaries/bootstrap-notification';
 @import 'libs/customization-for-liblaries/bootstrap-select';
+@import 'libs/customization-for-liblaries/tui-calendar';
 @import 'libs/bootstrap-select/bootstrap-select-style-classes';
 
 @import 'app.css';
@@ -45,3 +46,5 @@
 
 /* Node packages */
 @import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
+@import '../../../node_modules/tui-date-picker/dist/tui-date-picker.min.css';
+@import '../../../node_modules/tui-calendar/dist/tui-calendar.min.css';
