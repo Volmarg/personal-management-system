@@ -2,10 +2,14 @@
 
 namespace App\Repository\Modules\Schedules;
 
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Modules\Schedules\MySchedule;
+use App\Entity\Modules\Schedules\Schedule;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -142,4 +146,35 @@ class MyScheduleRepository extends ServiceEntityRepository {
         return $this->find($id);
     }
 
+
+    // TODO: New schedules logic
+
+    /**
+     * Will save schedule or update the existing one
+     *
+     * @param Schedule $schedule
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveSchedule(Schedule $schedule): void
+    {
+        $this->_em->persist($schedule);
+        $this->_em->flush();
+    }
+
+    /**
+     * Will return all not deleted schedules
+     *
+     * @return Schedule[]
+     */
+    public function getAllNotDeletedSchedules(): array
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+
+        $queryBuilder->select("sch")
+            ->from(Schedule::class, "sch")
+            ->where("sch.deleted = 0");
+
+        return $queryBuilder->getQuery()->execute();
+    }
 }

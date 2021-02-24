@@ -4,6 +4,9 @@ namespace App\Controller\Modules\Schedules;
 
 use App\Controller\Core\Application;
 use App\Entity\Modules\Schedules\MySchedule;
+use App\Entity\Modules\Schedules\Schedule;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MySchedulesController extends AbstractController {
@@ -64,6 +67,30 @@ class MySchedulesController extends AbstractController {
     public function getIncomingSchedulesEntitiesInDays(int $days): array
     {
         return $this->app->repositories->myScheduleRepository->getIncomingSchedulesEntitiesInDays($days);
+    }
+
+    // TODO: New schedules logic
+
+    /**
+     * Will save schedule or update the existing one
+     *
+     * @param Schedule $schedule
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function saveSchedule(Schedule $schedule): void
+    {
+        $this->app->repositories->myScheduleRepository->saveSchedule($schedule);
+    }
+
+    /**
+     * Will return all not deleted schedules
+     *
+     * @return Schedule[]
+     */
+    public function getAllNotDeletedSchedules(): array
+    {
+        return $this->app->repositories->myScheduleRepository->getAllNotDeletedSchedules();
     }
 
 }

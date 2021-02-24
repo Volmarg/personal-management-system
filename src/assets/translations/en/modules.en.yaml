@@ -207,6 +207,9 @@ schedules:
     information: Information
     date: Date
     name: Name
+  calendar:
+    messages:
+      noCalendarHasBeenFoundForId: "No calendar has been found for given id %id%"
 
 travels:
   headers:

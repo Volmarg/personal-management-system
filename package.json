@@ -65,6 +65,7 @@
     "@types/datatables.net-select": "^1.2.6",
     "apexcharts": "^3.22.0",
     "autocomplete-js": "^2.7.1",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "bootbox": "^5.5.1",
     "bootstrap": "4.5.3",

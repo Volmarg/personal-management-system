@@ -7,6 +7,8 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * @deprecated REMOVE IT, is replaced by Calendar
+ *
  * @method MyScheduleType|null find($id, $lockMode = null, $lockVersion = null)
  * @method MyScheduleType|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyScheduleType[]    findAll()

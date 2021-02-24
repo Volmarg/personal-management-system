@@ -68,6 +68,11 @@ export default class AjaxResponseDto extends AbstractDto {
     public constantValue = "";
 
     /**
+     * @var Object
+     */
+    public dataBag;
+
+    /**
      * Builds DTO from data array
      * @param array
      * @returns {AjaxResponseDto}
@@ -87,6 +92,7 @@ export default class AjaxResponseDto extends AbstractDto {
         ajaxResponseDto.invalidFormFields   = ajaxResponseDto.getFromArray(array, 'invalid_form_fields', []);
         ajaxResponseDto.routeUrl            = ajaxResponseDto.getFromArray(array, 'route_url', "");
         ajaxResponseDto.constantValue       = ajaxResponseDto.getFromArray(array, 'constant_value', "");
+        ajaxResponseDto.dataBag             = ajaxResponseDto.getFromArray(array, 'data_bag', {});
 
         return ajaxResponseDto;
     }
@@ -189,6 +195,14 @@ export default class AjaxResponseDto extends AbstractDto {
     isConstantValueSet(): boolean
     {
         return this.isset(this.constantValue);
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    public isDataBagSet(): boolean
+    {
+        return (0 !== Object.keys(this.dataBag).length);
     }
 
 }

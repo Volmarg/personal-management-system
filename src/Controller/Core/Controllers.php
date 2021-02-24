@@ -36,6 +36,7 @@ use App\Controller\Modules\Payments\MyPaymentsProductsController;
 use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Modules\Payments\MyRecurringPaymentsMonthlyController;
 use App\Controller\Modules\Reports\ReportsController;
+use App\Controller\Modules\Schedules\MyScheduleCalendarController;
 use App\Controller\Modules\Schedules\MySchedulesController;
 use App\Controller\Modules\Schedules\MyScheduleTypeController;
 use App\Controller\Modules\Shopping\MyShoppingPlansController;
@@ -311,6 +312,11 @@ class Controllers extends AbstractController {
      * @var ModuleDataController $moduleDataController
      */
     private ModuleDataController $moduleDataController;
+
+    /**
+     * @var MyScheduleCalendarController $myScheduleCalendarController
+     */
+    private MyScheduleCalendarController $myScheduleCalendarController;
 
     /**
      * @return MyIssuesController
@@ -682,6 +688,14 @@ class Controllers extends AbstractController {
         return $this->moduleDataController;
     }
 
+    /**
+     * @return MyScheduleCalendarController
+     */
+    public function getMyScheduleCalendarController(): MyScheduleCalendarController
+    {
+        return $this->myScheduleCalendarController;
+    }
+
     public function __construct(
         AchievementController         $achievementController,
         ReportsController             $reportsController,
@@ -731,6 +745,7 @@ class Controllers extends AbstractController {
         MyPaymentsOwedController      $myPaymentsOwedController,
         MyPaymentsMonthlyController   $myPaymentsMonthlyController,
         ModuleDataController          $moduleDataController,
+        MyScheduleCalendarController  $myScheduleCalendarController,
 
         MyRecurringPaymentsMonthlyController $myRecurringPaymentsMonthlyController,
         MyPaymentsBillsItemsController       $myPaymentsBillsItemsController
@@ -783,6 +798,7 @@ class Controllers extends AbstractController {
         $this->myPaymentsOwedController     = $myPaymentsOwedController;
         $this->myPaymentsMonthlyController  = $myPaymentsMonthlyController;
         $this->moduleDataController         = $moduleDataController;
+        $this->myScheduleCalendarController = $myScheduleCalendarController;
 
         $this->myRecurringPaymentsMonthlyController = $myRecurringPaymentsMonthlyController;
         $this->myPaymentsBillsItemsController       = $myPaymentsBillsItemsController;

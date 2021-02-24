@@ -46,6 +46,7 @@ use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
+use App\Repository\Modules\Schedules\MyScheduleCalendarRepository;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Repository\Modules\Schedules\MyScheduleTypeRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
@@ -332,6 +333,11 @@ class Repositories extends AbstractController {
     public $moduleRepository;
 
     /**
+     * @var MyScheduleCalendarRepository $myScheduleCalendarRepository
+     */
+    public $myScheduleCalendarRepository;
+
+    /**
      * @var ModuleDataRepository $moduleDataRepository
      */
     public $moduleDataRepository;
@@ -386,6 +392,7 @@ class Repositories extends AbstractController {
         MyTodoElementRepository             $myTodoElementRepository,
         ModuleRepository                    $moduleRepository,
         ModuleDataRepository                $moduleDataRepository,
+        MyScheduleCalendarRepository        $myScheduleCalendarRepository,
         EntityManagerInterface              $entityManager,
         EntityValidator                     $entityValidator,
         LoggerInterface                     $logger
@@ -431,6 +438,7 @@ class Repositories extends AbstractController {
         $this->myTodoElementRepository              = $myTodoElementRepository;
         $this->moduleRepository                     = $moduleRepository;
         $this->moduleDataRepository                 = $moduleDataRepository;
+        $this->myScheduleCalendarRepository         = $myScheduleCalendarRepository;
         $this->logger                               = $logger;
     }
 

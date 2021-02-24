@@ -3,12 +3,33 @@ import * as moment from 'moment';
 
 var TuiCalendar = require('tui-calendar');
 
-import DomElements from "../../core/utils/DomElements";
 import Calendar, {ICalendarInfo, ISchedule} from "tui-calendar";
+import axios                                from "axios";
+
+import DomElements         from "../../core/utils/DomElements";
+import ScheduleCalendarDto from "../../DTO/modules/schedules/ScheduleCalendarDto";
+import Loader              from "../loader/Loader";
+import BootstrapNotify     from "../bootstrap-notify/BootstrapNotify";
+import AjaxResponseDto     from "../../DTO/AjaxResponseDto";
+import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
+
+/**
+ * Todo:
+ *  - add logic to create calendars on fly + update them
+ *  - add some search logic to easily find by subject, with `goto`, `edit` (creation popup) , `remove` (creation popup)
+ *  - the time picker in tui popup is not working
+ *  - also add action to update schedule when moving / updating via modal
+ *  - add settings to change color/name of calendar
+ *  - test creating schedule via `new schedule`
+ */
 
 /**
  * @description handles the calendar logic, keep in mind that the logic assume that there will
  *              be only one TuiCalendar instance on the page, otherwise the logic needs to be adjusted
+ *
+ *              The logic inside this action is different that in other actions where everything relies on the
+ *              DataLoaders in front entities updates etc. Normally whenever something is added / changed then whole
+ *              page is reloaded but in this case there is fully interactive calendar with built in actions handling
  *
  * @link https://www.npmjs.com/package/tui-calendar
  * @link https://github.com/nhn/tui.calendar/blob/master/docs/getting-started.md
@@ -34,6 +55,14 @@ export default class TuiCalendarService
     private readonly CALENDAR_IN_LIST               = '.lnb-calendars-item';
     private readonly CALENDAR_IN_LIST_INPUT_ROUND   = '.tui-full-calendar-checkbox-round';
 
+    private bootstrapNotify = new BootstrapNotify();
+
+    /**
+     * @description this value is used to get unique schedule id upon inserting in GUI,
+     *              this is NOT equal to entity id, the Calendar requires that schedule has unique id
+     */
+    private lastUsedScheduleId: number = 0;
+
     /**
      * @description will initialize the calendar instance
      */
@@ -52,64 +81,87 @@ export default class TuiCalendarService
      */
     private handleAllCalendarDomElements($allElementsToHandle: JQuery<HTMLElement>)
     {
-        let _this = this;
+        Loader.showLoader(); // todo: fix it, wont work in this case - why?
+        {
+            let _this = this;
 
-        $allElementsToHandle.each( (index, elementToHandle) => {
-            let calendarInstance = _this.createCalendarInstance(elementToHandle);
-            calendarInstance     = _this.insertICalendarsIntoCalendarInstance(calendarInstance);
-            calendarInstance     = _this.insertSchedulesIntoCalendarInstance(calendarInstance);
+            //@ts-ignore
+            $allElementsToHandle.each( async (index, elementToHandle) => {
+                let calendarInstance = _this.createCalendarInstance(elementToHandle);
 
-            _this.applyBuiltInEventsToCalendarInstance(calendarInstance);
-            _this.displayAndHandleCalendarsList(calendarInstance);
-            _this.createNewScheduleOnNewScheduleClick(calendarInstance);
-            _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
+                Loader.showLoader(); // todo: not working (!?)
+                {
+                    calendarInstance = await _this.insertICalendarsIntoCalendarInstance(calendarInstance);
+                    calendarInstance = await _this.insertSchedulesIntoCalendarInstance(calendarInstance);
+                }
+                Loader.hideLoader();
 
-            _this.attachActionMoveNext(calendarInstance);
-            _this.attachActionMovePrevious(calendarInstance);
-            _this.attachActionToday(calendarInstance);
+                _this.setLastUsedScheduleId(calendarInstance);
 
-            _this.attachActionViewMonthly(calendarInstance);
-            _this.attachActionViewWeekly(calendarInstance);
-            _this.attachActionViewToday(calendarInstance);
-        })
+                _this.applyBuiltInEventsToCalendarInstance(calendarInstance);
+                _this.displayAndHandleCalendarsList(calendarInstance);
+                _this.createNewScheduleOnNewScheduleClick(calendarInstance);
+                _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
+                _this.modifyScheduleCreationPopup();
+
+                _this.attachActionMoveNext(calendarInstance);
+                _this.attachActionMovePrevious(calendarInstance);
+                _this.attachActionToday(calendarInstance);
+
+                _this.attachActionViewMonthly(calendarInstance);
+                _this.attachActionViewWeekly(calendarInstance);
+                _this.attachActionViewToday(calendarInstance);
+            });
+        }
+        Loader.hideLoader();
     }
 
     /**
      * @description will insert schedules into calendar
      */
-    private insertSchedulesIntoCalendarInstance(calendarInstance: Calendar): Calendar
+    private insertSchedulesIntoCalendarInstance(calendarInstance: Calendar): Promise<Calendar>
     {
-        // todo: testing showing schedules - remove later
-        calendarInstance.createSchedules([
-            {
-                id: "489273",
-                title: 'Workout for 2020-04-05',
-                isAllDay: false,
-                start: '2021-02-15T11:30:00+09:00',
-                end: '2021-02-15T12:00:00+09:00',
-                goingDuration: 30,
-                comingDuration: 30,
-                color: '#ffffff',
-                isVisible: true,
-                bgColor: '#69BB2D',
-                dragBgColor: '#69BB2D',
-                borderColor: '#69BB2D',
-                calendarId: '1',
-                category: 'time',
-                dueDateClass: '',
-                customStyle: 'cursor: default;',
-                isPending: false,
-                isFocused: false,
-                isReadOnly: false,
-                isPrivate: false,
-                location: '',
-                attendees: [],
-                recurrenceRule: '',
-                state: ''
-            }
-        ]);
+        let _this = this;
 
-        return calendarInstance;
+        return axios.get('/modules/schedules/get-all-not-deleted').then( (response) => {
+            let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
+            if( !ajaxResponseDto.isDataBagSet() ){
+                throw {
+                    "message"  : "The data bag was not filled in the backed!",
+                    "response" : response,
+                }
+            }
+
+            if(!ajaxResponseDto.success){
+                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+                return;
+            }
+
+            let calendarSchedules: Array<ISchedule> = [];
+            for(let scheduleJson of ajaxResponseDto.dataBag.schedulesDtoJsons){
+
+                let scheduleDto = ScheduleDto.fromJson(scheduleJson);
+                let calendarSchedule: ISchedule = {
+                    id    : scheduleDto.id,
+                    title : scheduleDto.title,
+                    start : scheduleDto.start,
+                    end   : scheduleDto.end,
+
+                    color       : '#ffffff',
+                    bgColor     : '#69BB2D',
+                    dragBgColor : '#69BB2D',
+                    borderColor : '#69BB2D',
+
+                    calendarId : scheduleDto.calendarId,
+                    category   : scheduleDto.category,
+                    location   : scheduleDto.location,
+                }
+                calendarSchedules.push(calendarSchedule)
+            }
+            calendarInstance.createSchedules(calendarSchedules);
+            return calendarInstance;
+        } )
+
     }
 
     /**
@@ -148,11 +200,11 @@ export default class TuiCalendarService
     private createCalendarInstance(domElement: HTMLElement): Calendar
     {
         return new TuiCalendar(domElement, {
-            useCreationPopup: true,
-            useDetailPopup: true,
-            taskView: true,
-            scheduleView: true,
-            defaultView: "week",
+            useCreationPopup : true,
+            useDetailPopup   : true,
+            taskView         : false,
+            scheduleView     : ['time'],
+            defaultView      : "week",
             week: {
                 startDayOfWeek: 1
             },
@@ -165,30 +217,44 @@ export default class TuiCalendarService
     /**
      * @description will insert all iCalendar instances int Calendar instance
      */
-    private insertICalendarsIntoCalendarInstance(calendarInstance: Calendar): Calendar
+    private insertICalendarsIntoCalendarInstance(calendarInstance: Calendar): Promise<Calendar>
     {
-        // todo: testing showing calendars - remove later
-        let allCalendars = [
-            {
-                id: '1', // todo: this will be entity id from backend
-                name: 'My Calendar',
-                color: '#ffffff',
-                bgColor: '#9e5fff',
-                dragBgColor: '#9e5fff',
-                borderColor: '#9e5fff'
-            },
-            {
-                id: '2',
-                name: 'My Calendar 2',
-                color: '#ffffff',
-                bgColor: '#ff5f5f',
-                dragBgColor: '#ff5f5f',
-                borderColor: '#ff5f5f'
-            }
-        ];
+        let _this = this;
 
-        calendarInstance.setCalendars(allCalendars)
-        return calendarInstance;
+        return axios.get("/modules/schedules/calendar/get-all-non-deleted-calendars-data").then( (response) => {
+
+            let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
+            if( !ajaxResponseDto.isDataBagSet() ){
+                throw {
+                    "message"  : "The data bag was not filled in the backed!",
+                    "response" : response,
+                }
+            }
+
+            if(!ajaxResponseDto.success){
+                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+                return;
+            }
+
+            let calendarsDataJsons = ajaxResponseDto.dataBag.calendarsDataJsons;
+            let arrayOfCalendars   = [];
+            for(let calendarDataJson of calendarsDataJsons){
+                let dto = ScheduleCalendarDto.fromJson(calendarDataJson);
+                let iCalendar = {
+                    id          : dto.id.toString(),
+                    name        : dto.name,
+                    color       : dto.color,
+                    bgColor     : dto.backgroundColor,
+                    dragBgColor : dto.dragBackgroundColor,
+                    borderColor : dto.borderColor,
+                }
+
+                arrayOfCalendars.push(iCalendar);
+            }
+
+            calendarInstance.setCalendars(arrayOfCalendars);
+            return calendarInstance;
+        })
     }
 
     /**
@@ -199,38 +265,63 @@ export default class TuiCalendarService
      */
     private saveNewSchedule(scheduleData: ISchedule, calendarInstance: Calendar): void
     {
-        var calendar = this.findCalendar(scheduleData.calendarId, calendarInstance);
+        let calendar = this.findCalendar(scheduleData.calendarId, calendarInstance);
+        let _this    = this;
 
-        // todo: handle with promises
+        //@ts-ignore
+        let startDate = scheduleData.start.toDate();
+        //@ts-ignore
+        let endDate   = scheduleData.end.toDate();
 
-        var schedule = {
-            id: '1', // todo -- will be fetched from backend as entity id
-            title: scheduleData.title,
-            // isAllDay: scheduleData.isAllDay,
-            start: scheduleData.start,
-            end: scheduleData.end,
-            category: 'time',
-            // category: scheduleData.isAllDay ? 'allday' : 'time',
-            // dueDateClass: '',
-            calendarId: calendar.id,
-            color: calendar.color,
-            bgColor: calendar.bgColor,
-            dragBgColor: calendar.bgColor,
-            borderColor: calendar.borderColor,
-            location: scheduleData.location,
-            // raw: {
-            //     class: scheduleData.raw['class']
-            // },
-            // state: scheduleData.state
+        let dataBag  = {
+            title       : scheduleData.title,
+            isAllDay    : scheduleData.isAllDay,
+            start       : startDate,
+            end         : endDate,
+            category    : scheduleData.isAllDay ? 'allday' : 'time',
+            location    : scheduleData.location,
+            calendarId  : calendar.id
         };
-        // if (calendar) {
-        //     schedule.calendarId = calendar.id;
-        //     schedule.color = calendar.color;
-        //     schedule.bgColor = calendar.bgColor;
-        //     schedule.borderColor = calendar.borderColor;
-        // }
 
-        calendarInstance.createSchedules([schedule]);
+        Loader.showLoader();
+        axios.post('/modules/schedules/save-new-schedule', dataBag)
+            .then( (response) => {
+                Loader.hideLoader();
+
+                let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
+                if(!ajaxResponseDto.success){
+                    _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+                    return;
+                }
+
+                let usedScheduleId = ++_this.lastUsedScheduleId;
+
+                var schedule = {
+                    id          : usedScheduleId.toString(),
+                    title       : scheduleData.title,
+                    isAllDay    : scheduleData.isAllDay,
+                    start       : scheduleData.start,
+                    end         : scheduleData.end,
+                    category    : scheduleData.isAllDay ? 'allday' : 'time',
+                    location    : scheduleData.location,
+
+                    calendarId  : calendar.id,
+                    color       : calendar.color,
+                    bgColor     : calendar.bgColor,
+                    dragBgColor : calendar.bgColor,
+                    borderColor : calendar.borderColor,
+                };
+
+                calendarInstance.createSchedules([schedule]);
+            })
+            .catch( (reason) => {
+                Loader.hideLoader();
+                throw {
+                    "message" : "Could not handle saving new schedule in database",
+                    "reason"  : reason,
+                }
+            })
+
     }
 
     /**
@@ -416,15 +507,6 @@ export default class TuiCalendarService
     }
 
     /**
-     * @description will toggle the schedules visibility for the state of instance
-     * @private
-     */
-    private toggleSchedulesVisibilityForInstance()
-    {
-        //todo foreach list elements
-    }
-
-    /**
      * @description will handle clicking on the action (toggle view monthly)
      */
     private attachActionViewMonthly(calendarInstance: Calendar): void
@@ -455,6 +537,44 @@ export default class TuiCalendarService
         $actionElement.on('click', () => {
             calendarInstance.changeView('day');
         })
+    }
+
+    /**
+     * @description will modify the creation popup by watch for parent dom element and on the moment that children are
+     *              added it will attempt to find the popup elements and modify them
+     */
+    private modifyScheduleCreationPopup(): void
+    {
+        let parentWrapperObserver = new MutationObserver( (mutations) => {
+            $('.tui-full-calendar-section-allday').addClass('d-none');
+            $('.tui-full-calendar-section-state').addClass('d-none');
+        })
+
+        let htmlDomElement = document.querySelector('.tui-full-calendar-floating-layer');
+        parentWrapperObserver.observe(htmlDomElement, {
+            childList: true,
+        })
+    }
+
+    /**
+     * @description will set last used schedule id
+     */
+    private setLastUsedScheduleId(calendarInstance: Calendar): void
+    {
+        //@ts-ignore
+        let allSchedules = calendarInstance._controller.schedules.items;
+        if( 0 === allSchedules.length ){
+            return;
+        }
+
+        for(let scheduleIndex in allSchedules){
+            let schedule   = allSchedules[scheduleIndex];
+            let scheduleId = parseInt(schedule.id)
+
+            if(this.lastUsedScheduleId < scheduleId){
+                this.lastUsedScheduleId = scheduleId;
+            }
+        }
     }
 
 }

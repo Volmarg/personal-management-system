@@ -26,6 +26,7 @@ class AjaxResponse extends AbstractController {
     const KEY_INVALID_FORM_FIELDS   = "invalid_form_fields";
     const KEY_ROUTE_URL             = "route_url";
     const KEY_CONSTANT_VALUE        = "constant_value";
+    const KEY_DATA_BAG              = "data_bag";
 
     const XML_HTTP_HEADER_KEY   = "X-Requested-With";
     const XML_HTTP_HEADER_VALUE = "XMLHttpRequest";
@@ -84,6 +85,11 @@ class AjaxResponse extends AbstractController {
      * @var string $constantValue
      */
     private $constantValue = "";
+
+    /**
+     * @var array $dataBag
+     */
+    private $dataBag = [];
 
     /**
      * @return int
@@ -254,6 +260,22 @@ class AjaxResponse extends AbstractController {
     }
 
     /**
+     * @return array
+     */
+    public function getDataBag(): array
+    {
+        return $this->dataBag;
+    }
+
+    /**
+     * @param array $dataBag
+     */
+    public function setDataBag(array $dataBag): void
+    {
+        $this->dataBag = $dataBag;
+    }
+
+    /**
      * @param int $code
      * @param string $message
      * @param string|null $template
@@ -264,6 +286,7 @@ class AjaxResponse extends AbstractController {
      * @param string $formTemplate
      * @param string $validatedFormPrefix
      * @param array $invalidFormFields
+     * @param array $dataBag
      * @return JsonResponse
      * @throws Exception
      */
@@ -277,7 +300,8 @@ class AjaxResponse extends AbstractController {
         bool    $success             = true,
         string  $formTemplate        = "",
         string  $validatedFormPrefix = "",
-        array   $invalidFormFields   = []
+        array   $invalidFormFields   = [],
+        array   $dataBag             = []
     ): JsonResponse {
 
         $responseData = [
@@ -307,6 +331,7 @@ class AjaxResponse extends AbstractController {
         $responseData[self::KEY_FORM_TEMPLATE]         = $formTemplate;
         $responseData[self::KEY_VALIDATED_FORM_PREFIX] = $validatedFormPrefix;
         $responseData[self::KEY_INVALID_FORM_FIELDS]   = $invalidFormFields;
+        $responseData[self::KEY_DATA_BAG]              = $dataBag;
 
         $response = new JsonResponse($responseData, 200);
         return $response;
@@ -349,6 +374,7 @@ class AjaxResponse extends AbstractController {
             self::KEY_INVALID_FORM_FIELDS   => $this->getInvalidFormFields(),
             self::KEY_ROUTE_URL             => $this->getRouteUrl(),
             self::KEY_CONSTANT_VALUE        => $this->getConstantValue(),
+            self::KEY_DATA_BAG              => $this->getDataBag(),
         ];
 
         $response = new JsonResponse($responseData, 200);
