@@ -8,6 +8,7 @@ use App\Entity\Modules\Schedules\Schedule;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -177,4 +178,24 @@ class MyScheduleRepository extends ServiceEntityRepository {
 
         return $queryBuilder->getQuery()->execute();
     }
+
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return Schedule|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneScheduleById(int $id): ?Schedule
+    {
+        $queryBuilder = $this->_em->createQueryBuilder();
+        $queryBuilder->select("sch")
+            ->from(Schedule::class, "sch")
+            ->where("sch.id = :id")
+            ->andWhere("sch.deleted = 0")
+            ->setParameter("id", $id);
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }
+
 }

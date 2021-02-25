@@ -132,6 +132,7 @@ schedules:
     legend: { label: Legend, over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' }
     table: { scheduleType: 'Schedule type', information: Information, date: Date, name: Name }
     calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' } }
+    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%' } }
 travels:
     headers: { addIdea: 'Add idea' }
     popovers: { remove: 'Remove record', edit: 'Edit record' }

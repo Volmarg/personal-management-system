@@ -145,6 +145,7 @@ class MySchedulesAction extends AbstractController {
 
     // TODO: new schedules logic
 
+    const KEY_ID          = 'id';
     const KEY_TITLE       = 'title';
     const KEY_IS_ALL_DAY  = 'isAllDay';
     const KEY_START       = 'start';
@@ -154,13 +155,14 @@ class MySchedulesAction extends AbstractController {
     const KEY_LOCATION    = 'location';
 
     /**
-     * Will save single schedule
+     * Will save single schedule (new one or updated one)
      *
      * @param Request $request
+     * @param string|null $scheduleId
      * @return JsonResponse
-     * @Route("/modules/schedules/save-new-schedule", methods={"POST"})
+     * @Route("/modules/schedules/save-schedule/{scheduleId}", methods={"POST"})
      */
-    public function saveSchedule(Request $request): JsonResponse
+    public function saveSchedule(Request $request, ?string $scheduleId = null): JsonResponse
     {
         $ajaxResponse = new AjaxResponse();
 
@@ -201,6 +203,21 @@ class MySchedulesAction extends AbstractController {
             }
 
             $schedule = new Schedule();
+            if( !empty($scheduleId) ){
+
+                $schedule = $this->controllers->getMySchedulesController()->findOneScheduleById($scheduleId);
+                if( empty($schedule) ){
+
+                    $message = $this->app->translator->translate('schedules.schedule.message.noScheduleHasBeenFoundForId', [
+                        "%id%" => $scheduleId
+                    ]);
+                    $ajaxResponse->setMessage($message);
+                    $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);;
+
+                    return $ajaxResponse->buildJsonResponse();
+                }
+            }
+
             $schedule->setTitle($title);
             $schedule->setAllDay($isAllDay);
             $schedule->setStart(new DateTime($start));

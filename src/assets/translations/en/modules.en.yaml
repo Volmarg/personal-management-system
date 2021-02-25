@@ -210,6 +210,9 @@ schedules:
   calendar:
     messages:
       noCalendarHasBeenFoundForId: "No calendar has been found for given id %id%"
+  schedule:
+    message:
+      noScheduleHasBeenFoundForId: "No schedule has been found for given id %id%"
 
 travels:
   headers:

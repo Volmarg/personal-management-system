@@ -5,6 +5,7 @@ namespace App\Controller\Modules\Schedules;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Schedules\Schedule;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -91,6 +92,18 @@ class MySchedulesController extends AbstractController {
     public function getAllNotDeletedSchedules(): array
     {
         return $this->app->repositories->myScheduleRepository->getAllNotDeletedSchedules();
+    }
+
+    /**
+     * Returns one entity for given id or null otherwise
+     *
+     * @param int $id
+     * @return Schedule|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneScheduleById(int $id): ?Schedule
+    {
+        return $this->app->repositories->myScheduleRepository->findOneScheduleById($id);
     }
 
 }

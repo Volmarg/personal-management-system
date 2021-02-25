@@ -175,12 +175,17 @@ export default class TuiCalendarService
              * @description handles the case when the schedule is create upon click
              */
             beforeCreateSchedule: (event) => {
-                _this.saveNewSchedule(event, calendarInstance);
+                let ajaxCallUrl = '/modules/schedules/save-schedule';
+                _this.saveSchedule(event, ajaxCallUrl, calendarInstance);
             },
             /**
              * @description handles updating the calendar like for example via drag n drop
              */
             beforeUpdateSchedule: (event) => {
+                let ajaxCallUrl     = `/modules/schedules/save-schedule/${event.schedule.id}`;
+                let updatedSchedule = _this.buildUpdatedSchedule(event.schedule, event.changes);
+
+                _this.saveSchedule(updatedSchedule, ajaxCallUrl, calendarInstance, false);
                 calendarInstance.updateSchedule(event.schedule.id, event.schedule.calendarId, event.changes);
             },
             /**
@@ -203,7 +208,7 @@ export default class TuiCalendarService
             useCreationPopup : true,
             useDetailPopup   : true,
             taskView         : false,
-            scheduleView     : ['time'],
+            scheduleView     : true,
             defaultView      : "week",
             week: {
                 startDayOfWeek: 1
@@ -258,12 +263,15 @@ export default class TuiCalendarService
     }
 
     /**
-     * Will create new schedule in Calendar
+     * @description Will create new schedule in Calendar
+     *
      * @param scheduleData
+     * @param ajaxCallUrl
      * @param calendarInstance
+     * @param createInstance
      * @private
      */
-    private saveNewSchedule(scheduleData: ISchedule, calendarInstance: Calendar): void
+    private saveSchedule(scheduleData: ISchedule, ajaxCallUrl: string, calendarInstance: Calendar, createInstance: boolean = true): void
     {
         let calendar = this.findCalendar(scheduleData.calendarId, calendarInstance);
         let _this    = this;
@@ -284,7 +292,7 @@ export default class TuiCalendarService
         };
 
         Loader.showLoader();
-        axios.post('/modules/schedules/save-new-schedule', dataBag)
+        axios.post(ajaxCallUrl, dataBag)
             .then( (response) => {
                 Loader.hideLoader();
 
@@ -312,7 +320,9 @@ export default class TuiCalendarService
                     borderColor : calendar.borderColor,
                 };
 
-                calendarInstance.createSchedules([schedule]);
+                if(createInstance){
+                    calendarInstance.createSchedules([schedule]);
+                }
             })
             .catch( (reason) => {
                 Loader.hideLoader();
@@ -575,6 +585,36 @@ export default class TuiCalendarService
                 this.lastUsedScheduleId = scheduleId;
             }
         }
+    }
+
+    /**
+     * The schedule update event consist of schedule and object of changes, this method combines both and outputs
+     * the schedule with applied changes on it
+     *
+     * @param schedule
+     * @param changes
+     * @private
+     */
+    private buildUpdatedSchedule(schedule: ISchedule, changes): ISchedule
+    {
+        let updatedSchedule : ISchedule = {
+            id          : ("undefined" === typeof changes.id          ) ? schedule.id          : changes.id,
+            title       : ("undefined" === typeof changes.title       ) ? schedule.title       : changes.title,
+            isAllDay    : ("undefined" === typeof changes.isAllDay    ) ? schedule.isAllDay    : changes.isAllDay,
+            start       : ("undefined" === typeof changes.start       ) ? schedule.start       : changes.start,
+            end         : ("undefined" === typeof changes.end         ) ? schedule.end         : changes.end,
+            category    : ("undefined" === typeof changes.category    ) ? schedule.category    : changes.category,
+            location    : ("undefined" === typeof changes.location    ) ? schedule.location    : changes.location,
+            calendarId  : ("undefined" === typeof changes.calendarId  ) ? schedule.calendarId  : changes.calendarId,
+            color       : ("undefined" === typeof changes.color       ) ? schedule.color       : changes.color,
+            bgColor     : ("undefined" === typeof changes.bgColor     ) ? schedule.bgColor     : changes.bgColor,
+            dragBgColor : ("undefined" === typeof changes.dragBgColor ) ? schedule.dragBgColor : changes.dragBgColor,
+            borderColor : ("undefined" === typeof changes.borderColor ) ? schedule.borderColor : changes.borderColor,
+        };
+
+        console.log(updatedSchedule);
+
+        return updatedSchedule;
     }
 
 }
