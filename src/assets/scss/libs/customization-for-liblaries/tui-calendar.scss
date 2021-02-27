@@ -231,4 +231,25 @@
   .tui-full-calendar-button.tui-full-calendar-section-private {
     padding: 5px;
   }
+
+  .navbar-tui-calendar {
+    #btn-new-schedule, #btn-settings, #btn-move-previous, #btn-move-next, #btn-move-today, #btn-calendar-view-list {
+      background-color: unset;
+
+      &:focus {
+        outline: none;
+      }
+
+      .tui-navbar-icon{
+        color: #0062cc;
+        opacity: 0.8;
+        font-size: 20px;
+
+        &:hover {
+          opacity: 0.5;
+          }
+        }
+      }
+    }
+
 }

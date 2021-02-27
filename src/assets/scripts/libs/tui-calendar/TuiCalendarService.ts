@@ -21,6 +21,8 @@ import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
  *  - also add action to update schedule when moving / updating via modal
  *  - add settings to change color/name of calendar
  *  - test creating schedule via `new schedule`
+ *  - schedule should have color based on calendar, this must be still added,
+ *  - keep icons selection for the calendars
  */
 
 /**
@@ -41,6 +43,13 @@ export default class TuiCalendarService
     private readonly DATA_ATTRIBUTE_IS_TUI_CALENDAR = 'data-is-tui-calendar';
     private readonly DATA_ATTRIBUTE_ACTION_MOVE     = 'data-action';
 
+    private readonly DATA_ATTRIBUTE_CALENDAR_ID               = 'data-calendar-id';
+    private readonly DATA_ATTRIBUTE_CALENDAR_NAME             = 'data-calendar-name';
+    private readonly DATA_ATTRIBUTE_CALENDAR_COLOR            = 'data-calendar-color';
+    private readonly DATA_ATTRIBUTE_CALENDAR_DRAG_COLOR       = 'data-calendar-drag-color';
+    private readonly DATA_ATTRIBUTE_CALENDAR_BORDER_COLOR     = 'data-calendar-border-color';
+    private readonly DATA_ATTRIBUTE_CALENDAR_BACKGROUND_COLOR = 'data-calendar-background-color';
+
     private readonly ACTION_MOVE_TODAY              = 'move-today';
     private readonly ACTION_MOVE_PREVIOUS           = 'move-previous';
     private readonly ACTION_MOVE_NEXT               = 'move-next';
@@ -49,11 +58,12 @@ export default class TuiCalendarService
     private readonly ACTION_VIEW_WEEKLY             = 'toggle-view-weekly';
     private readonly ACTION_VIEW_MONTHLY            = 'toggle-view-monthly';
 
-    private readonly CALENDAR_LIST_SELECTOR         = '#calendarList';
     private readonly CALENDAR_NEW_SCHEDULE_BUTTON   = '#btn-new-schedule';
     private readonly VIEW_ALL_CALENDARS_SELECTOR    = '.view-all-calendars';
     private readonly CALENDAR_IN_LIST               = '.lnb-calendars-item';
     private readonly CALENDAR_IN_LIST_INPUT_ROUND   = '.tui-full-calendar-checkbox-round';
+
+    private readonly SCHEDULE_DEFAULT_TEXT_COLOR = '#ffffff';
 
     private bootstrapNotify = new BootstrapNotify();
 
@@ -99,7 +109,7 @@ export default class TuiCalendarService
                 _this.setLastUsedScheduleId(calendarInstance);
 
                 _this.applyBuiltInEventsToCalendarInstance(calendarInstance);
-                _this.displayAndHandleCalendarsList(calendarInstance);
+                _this.handleCalendarList(calendarInstance);
                 _this.createNewScheduleOnNewScheduleClick(calendarInstance);
                 _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
                 _this.modifyScheduleCreationPopup();
@@ -147,10 +157,10 @@ export default class TuiCalendarService
                     start : scheduleDto.start,
                     end   : scheduleDto.end,
 
-                    color       : '#ffffff',
-                    bgColor     : '#69BB2D',
-                    dragBgColor : '#69BB2D',
-                    borderColor : '#69BB2D',
+                    color       : _this.SCHEDULE_DEFAULT_TEXT_COLOR, // this is hardcoded on purpose
+                    bgColor     : '#' + scheduleDto.calendarColor,
+                    dragBgColor : '#' + scheduleDto.calendarColor,
+                    borderColor : '#' + scheduleDto.calendarColor,
 
                     calendarId : scheduleDto.calendarId,
                     category   : scheduleDto.category,
@@ -192,6 +202,7 @@ export default class TuiCalendarService
              * @description handles removal of schedule
              */
             beforeDeleteSchedule: (event) => {
+                _this.deleteSchedule(event.schedule.id);
                 calendarInstance.deleteSchedule(event.schedule.id, event.schedule.calendarId);
             }
         });
@@ -222,44 +233,36 @@ export default class TuiCalendarService
     /**
      * @description will insert all iCalendar instances int Calendar instance
      */
-    private insertICalendarsIntoCalendarInstance(calendarInstance: Calendar): Promise<Calendar>
+    private insertICalendarsIntoCalendarInstance(calendarInstance: Calendar): Calendar
     {
-        let _this = this;
+        let _this               = this;
+        let $allCalendarsInList = $(this.CALENDAR_IN_LIST);
 
-        return axios.get("/modules/schedules/calendar/get-all-non-deleted-calendars-data").then( (response) => {
+        let arrayOfCalendars = [];
+        $allCalendarsInList.each( (index, element) => {
+            let $element = $(element);
 
-            let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
-            if( !ajaxResponseDto.isDataBagSet() ){
-                throw {
-                    "message"  : "The data bag was not filled in the backed!",
-                    "response" : response,
-                }
+            let id                  = $element.attr(_this.DATA_ATTRIBUTE_CALENDAR_ID);
+            let name                = $element.attr(_this.DATA_ATTRIBUTE_CALENDAR_NAME);
+            let color               = $element.attr(_this.DATA_ATTRIBUTE_CALENDAR_COLOR);
+            let backgroundColor     = $element.attr(_this.DATA_ATTRIBUTE_CALENDAR_DRAG_COLOR);
+            let dragBackgroundColor = $element.attr(_this.DATA_ATTRIBUTE_CALENDAR_BORDER_COLOR);
+            let borderColor         = $element.attr(_this.DATA_ATTRIBUTE_CALENDAR_BACKGROUND_COLOR);
+
+            let iCalendar = {
+                id          : id,
+                name        : name,
+                color       : '#' + color,
+                bgColor     : '#' + backgroundColor,
+                dragBgColor : '#' + dragBackgroundColor,
+                borderColor : '#' + borderColor,
             }
 
-            if(!ajaxResponseDto.success){
-                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
-                return;
-            }
-
-            let calendarsDataJsons = ajaxResponseDto.dataBag.calendarsDataJsons;
-            let arrayOfCalendars   = [];
-            for(let calendarDataJson of calendarsDataJsons){
-                let dto = ScheduleCalendarDto.fromJson(calendarDataJson);
-                let iCalendar = {
-                    id          : dto.id.toString(),
-                    name        : dto.name,
-                    color       : dto.color,
-                    bgColor     : dto.backgroundColor,
-                    dragBgColor : dto.dragBackgroundColor,
-                    borderColor : dto.borderColor,
-                }
-
-                arrayOfCalendars.push(iCalendar);
-            }
-
-            calendarInstance.setCalendars(arrayOfCalendars);
-            return calendarInstance;
+            arrayOfCalendars.push(iCalendar);
         })
+
+        calendarInstance.setCalendars(arrayOfCalendars);
+        return calendarInstance;
     }
 
     /**
@@ -314,7 +317,7 @@ export default class TuiCalendarService
                     location    : scheduleData.location,
 
                     calendarId  : calendar.id,
-                    color       : calendar.color,
+                    color       : _this.SCHEDULE_DEFAULT_TEXT_COLOR,
                     bgColor     : calendar.bgColor,
                     dragBgColor : calendar.bgColor,
                     borderColor : calendar.borderColor,
@@ -359,41 +362,15 @@ export default class TuiCalendarService
     /**
      * @description will handle adding calendars to the dom element thus displays them in the GUI
      */
-    private displayAndHandleCalendarsList(calendarInstance: Calendar): void
+    private handleCalendarList(calendarInstance: Calendar): void
     {
-        let allCalendarsInInstance = this.getAllCalendarsFromCalendarInstance(calendarInstance);
-        let $calendarListWrapper   = $(this.CALENDAR_LIST_SELECTOR);
         let _this                  = this;
+        let $allCalendarsInList = $(this.CALENDAR_IN_LIST);
 
-        for( let iCalendar of allCalendarsInInstance ){
-            let $inputCheckbox           = $('<INPUT>');
-            let $spanColorWrapper        = $('<SPAN>');
-            let $spanCalendarNameWrapper = $('<SPAN>');
-            let $divMainWrapper          = $('<DIV>');
-            let $labelMainWrapper        = $('<LABEL>');
-
-            $divMainWrapper.addClass('lnb-calendars-item');
-
-            $inputCheckbox
-                .attr('type', 'checkbox')
-                .attr('checked', 'true')
-                .addClass('tui-full-calendar-checkbox-round')
-                .val(iCalendar.id);
-
-            $spanColorWrapper.css({
-                "border-color"     : iCalendar.borderColor,
-                "background-color" : iCalendar.borderColor,
-            })
-
-            $spanCalendarNameWrapper.html(iCalendar.name);
-
-            $labelMainWrapper.append([$inputCheckbox, $spanColorWrapper, $spanCalendarNameWrapper])
-            $divMainWrapper.append($labelMainWrapper);
-
-            $calendarListWrapper.append($divMainWrapper);
-            _this.attachFilterSchedulesOnCalendarChangeInCalendarList($inputCheckbox, $spanColorWrapper, calendarInstance, iCalendar);
-        }
-
+        $allCalendarsInList.each( (index, element) => {
+            let $calendarListElement = $(element);
+            _this.attachFilterSchedulesOnCalendarChangeInCalendarList(calendarInstance, $calendarListElement);
+        })
     }
 
     /**
@@ -456,18 +433,22 @@ export default class TuiCalendarService
      * @description will attach filtering logic when clicking on the calendar checkbox on the calendar list
      */
     private attachFilterSchedulesOnCalendarChangeInCalendarList(
-        $inputCheckbox    : JQuery<HTMLElement>,
-        $spanColorWrapper : JQuery<HTMLElement>,
-        calendarInstance  : Calendar,
-        iCalendar         : ICalendarInfo
+        calendarInstance      : Calendar,
+        $calendarListElement  : JQuery<HTMLElement>,
     ): void
     {
-        let _this = this;
+        let _this           = this;
+        let $inputCheckbox  = $calendarListElement.find('input');
+        let $colorWrapper   = $calendarListElement.find('.color-wrapper');
+
+        let calendarId      = $calendarListElement.attr(this.DATA_ATTRIBUTE_CALENDAR_ID);
+        let backgroundColor = $calendarListElement.attr(this.DATA_ATTRIBUTE_CALENDAR_BACKGROUND_COLOR);
+
         $inputCheckbox.on('change', (event) => {
             let $clickedElement = $(event.currentTarget);
             let isChecked       = $clickedElement.prop('checked');
 
-            calendarInstance.toggleSchedules(iCalendar.id, !isChecked, false);
+            calendarInstance.toggleSchedules(calendarId, !isChecked, false);
             calendarInstance.render(true);
 
             let $viewAllCalendarsCheckbox = $(_this.VIEW_ALL_CALENDARS_SELECTOR);
@@ -489,8 +470,8 @@ export default class TuiCalendarService
                 $viewAllCalendarsCheckbox.prop('checked', true);
             }
 
-            $spanColorWrapper.css({
-                'background-color': (isChecked ? $spanColorWrapper.css('border-color') : 'transparent')
+            $colorWrapper.css({
+                'background-color': (isChecked ? '#' + backgroundColor : 'transparent')
             })
         })
     }
@@ -612,9 +593,29 @@ export default class TuiCalendarService
             borderColor : ("undefined" === typeof changes.borderColor ) ? schedule.borderColor : changes.borderColor,
         };
 
-        console.log(updatedSchedule);
-
         return updatedSchedule;
+    }
+
+    /**
+     * Will delete the schedule
+     *
+     * @param scheduleId
+     * @private
+     */
+    private deleteSchedule(scheduleId: string): void
+    {
+        Loader.showLoader();
+        let _this = this;
+        axios.get(`/modules/schedules/delete/${scheduleId}`).then( (response) => {
+            Loader.hideLoader();
+            let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
+
+            if(!ajaxResponseDto.success){
+                _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
+                return;
+            }
+            _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
+        });
     }
 
 }

@@ -21,6 +21,7 @@ use App\Form\Modules\Job\MyJobHolidaysPoolType;
 use App\Form\Modules\Job\MyJobHolidaysType;
 use App\Form\Modules\Notes\MyNotesCategoriesType;
 use App\Form\Modules\Notes\MyNotesType;
+use App\Form\Modules\Schedules\MyScheduleCalendarType;
 use App\Form\Modules\Passwords\MyPasswordsGroupsType;
 use App\Form\Modules\Passwords\MyPasswordsType;
 use App\Form\Modules\Payments\MyPaymentsBills;
@@ -216,6 +217,10 @@ class Forms extends AbstractController {
 
     public function getModuleAndDirectorySelectForm(array $params = []): FormInterface{
         return $this->createForm(ModuleAndDirectorySelectType::class, null, $params);
+    }
+
+    public function scheduleCalendarForm(array $params = []): FormInterface{
+        return $this->createForm(MyScheduleCalendarType::class, null, $params);
     }
 
     /**

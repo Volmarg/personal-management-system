@@ -305,6 +305,13 @@ forms:
     lockPassword: Lock password
     lockPasswordRepeat: Repeat lock password
     submit: Submit
+  MyScheduleCalendarType:
+    name:
+      label: Name
+    icon:
+      label: Icon
+    color:
+      label: Color
 
 Types:
   indentChoice:

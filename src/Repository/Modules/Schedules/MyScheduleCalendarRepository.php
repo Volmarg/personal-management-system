@@ -40,9 +40,12 @@ class MyScheduleCalendarRepository extends ServiceEntityRepository
             background_color      AS backgroundColor,
             drag_background_color AS dragBackgroundColor,
             border_color          AS borderColor,
-            deleted               AS deleted
+            deleted               AS deleted,
+            icon                  AS icon
             
-            FROM my_schedule_calendar;
+            FROM my_schedule_calendar
+
+            WHERE deleted = 0
         ";
 
         $results = $connection->executeQuery($sql)->fetchAll(PDO::FETCH_CLASS, ScheduleCalendarDTO::class);

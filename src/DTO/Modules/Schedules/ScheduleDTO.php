@@ -6,14 +6,15 @@ use App\Entity\Modules\Schedules\Schedule;
 
 class ScheduleDTO {
 
-    const KEY_ID          = 'id';
-    const KEY_TITLE       = 'title';
-    const KEY_ALL_DAY     = 'allDay';
-    const KEY_START       = 'start';
-    const KEY_END         = 'end';
-    const KEY_CATEGORY    = 'category';
-    const KEY_LOCATION    = 'location';
-    const KEY_CALENDAR_ID = 'calendarId';
+    const KEY_ID             = 'id';
+    const KEY_TITLE          = 'title';
+    const KEY_ALL_DAY        = 'allDay';
+    const KEY_START          = 'start';
+    const KEY_END            = 'end';
+    const KEY_CATEGORY       = 'category';
+    const KEY_LOCATION       = 'location';
+    const KEY_CALENDAR_ID    = 'calendarId';
+    const KEY_CALENDAR_COLOR = 'calendarColor';
 
     /**
      * @var string $id
@@ -54,6 +55,11 @@ class ScheduleDTO {
      * @var string $calendarId
      */
     private string $calendarId;
+
+    /**
+     * @var string $calendarColor
+     */
+    private string $calendarColor;
 
     /**
      * @return string
@@ -184,19 +190,36 @@ class ScheduleDTO {
     }
 
     /**
+     * @return string
+     */
+    public function getCalendarColor(): string
+    {
+        return $this->calendarColor;
+    }
+
+    /**
+     * @param string $calendarColor
+     */
+    public function setCalendarColor(string $calendarColor): void
+    {
+        $this->calendarColor = $calendarColor;
+    }
+
+    /**
      * Will build json representation of dto
      */
     public function toJson()
     {
         $dataArray = [
-            self::KEY_ID          => $this->getId(),
-            self::KEY_TITLE       => $this->getTitle(),
-            self::KEY_ALL_DAY     => $this->getAllDay(),
-            self::KEY_START       => $this->getStart(),
-            self::KEY_END         => $this->getEnd(),
-            self::KEY_CATEGORY    => $this->getCategory(),
-            self::KEY_LOCATION    => $this->getLocation(),
-            self::KEY_CALENDAR_ID => $this->getCalendarId(),
+            self::KEY_ID             => $this->getId(),
+            self::KEY_TITLE          => $this->getTitle(),
+            self::KEY_ALL_DAY        => $this->getAllDay(),
+            self::KEY_START          => $this->getStart(),
+            self::KEY_END            => $this->getEnd(),
+            self::KEY_CATEGORY       => $this->getCategory(),
+            self::KEY_LOCATION       => $this->getLocation(),
+            self::KEY_CALENDAR_ID    => $this->getCalendarId(),
+            self::KEY_CALENDAR_COLOR => $this->getCalendarColor(),
         ];
 
         return json_encode($dataArray);
@@ -219,6 +242,7 @@ class ScheduleDTO {
         $dto->setLocation($schedule->getLocation());
         $dto->setEnd($schedule->getEnd()->format("Y-m-d H:i:s"));
         $dto->setCategory($schedule->getCategory());
+        $dto->setCalendarColor($schedule->getCalendar()->getBackgroundColor()); // all colors for calendar are the same
 
         return $dto;
     }

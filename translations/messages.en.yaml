@@ -69,6 +69,7 @@ forms:
     MyIssueTypeProgress: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
     MyIssueContactType: { icon: Icon, date: Date, name: Name, issue: Issue, information: Information }
     UserRegisterType: { username: Username, email: Email, password: Password, passwordRepeat: 'Repeat password', lockPassword: 'Lock password', lockPasswordRepeat: 'Repeat lock password', submit: Submit }
+    MyScheduleCalendarType: { name: { label: Name }, icon: { label: Icon }, color: { label: Color } }
 Types:
     indentChoice: { errors: { choiceIsNotInstanceOfIndentChoiceTypeDTO: 'Choice is not instance of IndentChoiceTypeDTO', choicesIsNotArray: 'Choices is not array', choicesAreMissing: 'Choices are missing' } }
 flash:
@@ -132,7 +133,8 @@ schedules:
     legend: { label: Legend, over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' }
     table: { scheduleType: 'Schedule type', information: Information, date: Date, name: Name }
     calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' } }
-    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%' } }
+    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed' } }
+    modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } } } }
 travels:
     headers: { addIdea: 'Add idea' }
     popovers: { remove: 'Remove record', edit: 'Edit record' }

@@ -1,5 +1,8 @@
 require("./src/2.3.3/jscolor.js");
 
+/**
+ * @link https://jscolor.com/
+ */
 export default class JsColor {
 
     /**

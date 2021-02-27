@@ -1,13 +1,14 @@
 export default class ScheduleDto
 {
-    private _id         : string;
-    private _title      : string;
-    private _allDay     : boolean;
-    private _start      : string;
-    private _end        : string;
-    private _category   : string;
-    private _location   : string;
-    private _calendarId : string;
+    private _id            : string;
+    private _title         : string;
+    private _allDay        : boolean;
+    private _start         : string;
+    private _end           : string;
+    private _category      : string;
+    private _location      : string;
+    private _calendarId    : string;
+    private _calendarColor : string;
 
     get id(): string {
         return this._id;
@@ -41,6 +42,14 @@ export default class ScheduleDto
         return this._calendarId;
     }
 
+    get calendarColor(): string {
+        return this._calendarColor;
+    }
+
+    set calendarColor(value: string) {
+        this._calendarColor = value;
+    }
+
     /**
      * @description will create dto from json
      */
@@ -48,15 +57,16 @@ export default class ScheduleDto
     {
         let object = JSON.parse(json);
 
-        let dto = new ScheduleDto();
-        dto._id         = object.id;
-        dto._title      = object.title;
-        dto._allDay     = object.allDay;
-        dto._start      = object.start;
-        dto._end        = object.end;
-        dto._category   = object.category;
-        dto._location   = object.location;
-        dto._calendarId = object.calendarId;
+        let dto            = new ScheduleDto();
+        dto._id            = object.id;
+        dto._title         = object.title;
+        dto._allDay        = object.allDay;
+        dto._start         = object.start;
+        dto._end           = object.end;
+        dto._category      = object.category;
+        dto._location      = object.location;
+        dto._calendarId    = object.calendarId;
+        dto._calendarColor = object.calendarColor;
 
         return dto;
     }

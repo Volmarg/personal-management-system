@@ -23,7 +23,7 @@
                 <td class="d-none id">{{ category.id }}</td>
                 <td class="name"> {{ category.name }}</td>
                 <td class="icon fontawesome-input"> {{ category.icon }}</td>
-                <td class="color position-relative"> {#todo: make a button from this as twig template#}
+                <td class="color position-relative">
                     {% include 'page-elements/libs/js-color-button.html.twig' with {
                         color        : category.color,
                         pickerNumber : loop.index0

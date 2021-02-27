@@ -14,6 +14,7 @@ class ScheduleCalendarDTO {
     const KEY_DRAG_BACKGROUND_COLOR = 'dragBackgroundColor';
     const KEY_BORDER_COLOR          = 'borderColor';
     const KEY_DELETED               = 'deleted';
+    const KEY_ICON                  = 'icon';
 
     /**
      * @var int $id
@@ -49,6 +50,11 @@ class ScheduleCalendarDTO {
      * @var bool $deleted
      */
     private bool $deleted;
+
+    /**
+     * @var string $icon
+     */
+    private string $icon;
 
     /**
      * @return int
@@ -163,6 +169,22 @@ class ScheduleCalendarDTO {
     }
 
     /**
+     * @return string
+     */
+    public function getIcon(): string
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon(string $icon): void
+    {
+        $this->icon = $icon;
+    }
+
+    /**
      * Return current object as string
      *
      * @return string
@@ -177,6 +199,7 @@ class ScheduleCalendarDTO {
             self::KEY_DRAG_BACKGROUND_COLOR => $this->getDragBackgroundColor(),
             self::KEY_BORDER_COLOR          => $this->getBorderColor(),
             self::KEY_DELETED               => $this->isDeleted(),
+            self::KEY_ICON                  => $this->getIcon(),
         ];
 
         return json_encode($dataArray);

@@ -52,6 +52,11 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
     private $schedules;
 
     /**
+     * @ORM\Column(type="string", length=50)
+     */
+    private $icon;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $deleted = false;
@@ -85,7 +90,7 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
 
     public function setColor(string $color): self
     {
-        $this->color = $color;
+        $this->color = strtoupper(str_replace('#', '', $color));
 
         return $this;
     }
@@ -97,7 +102,7 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
 
     public function setBackgroundColor(string $backgroundColor): self
     {
-        $this->backgroundColor = $backgroundColor;
+        $this->backgroundColor = strtoupper(str_replace('#', '', $backgroundColor));
 
         return $this;
     }
@@ -109,7 +114,7 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
 
     public function setDragBackgroundColor(string $dragBackgroundColor): self
     {
-        $this->dragBackgroundColor = $dragBackgroundColor;
+        $this->dragBackgroundColor = strtoupper(str_replace('#', '', $dragBackgroundColor));
 
         return $this;
     }
@@ -121,7 +126,7 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
 
     public function setBorderColor(string $borderColor): self
     {
-        $this->borderColor = $borderColor;
+        $this->borderColor = strtoupper(str_replace('#', '', $borderColor));
 
         return $this;
     }
@@ -170,6 +175,22 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
     public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param mixed $icon
+     */
+    public function setIcon($icon): void
+    {
+        $this->icon = $icon;
     }
 
 }

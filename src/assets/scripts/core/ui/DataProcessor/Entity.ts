@@ -2049,4 +2049,74 @@ export default class Entity extends AbstractDataProcessor {
         processorName: "ModuleData"
     };
 
+    public static MyScheduleCalendar: DataProcessorInterface = {
+        makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id              = $($baseElement).find('.id').html();
+            let name            = $($baseElement).find('.name').html();
+            let icon            = $($baseElement).find('.icon').html();
+            let colorWithHash   = $($baseElement).find('.color').find('[data-color-holder]').val() as string;
+            let normalizedColor = colorWithHash.replace("#", "");
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyScheduleCalendar.processorName);
+            let failMessage = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyScheduleCalendar.processorName);
+
+            let url      = '/modules/schedules/calendar/update';
+            let ajaxData = {
+                'name'                : name,
+                'icon'                : icon,
+
+                // this is not a bug: all of this colors are supposed to be the same - it's due to TuiCalendar functionality
+                'color'               : normalizedColor,
+                'backgroundColor'     : normalizedColor,
+                'dragBackgroundColor' : normalizedColor,
+                'borderColor'         : normalizedColor,
+                'id'                  : id
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let id              = $($baseElement).find('.id').html();
+            let url             = '/modules/schedules/calendar/remove';
+            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyScheduleCalendar.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyScheduleCalendar.processorName);
+            let ajaxData        = {
+                id: id
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.isDataTable    = false;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            let url             = '/modules/schedules/calendar/create';
+            let successMessage  = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyScheduleCalendar.processorName);
+            let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyScheduleCalendar.processorName);
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
+        },
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        processorName: "Calendar settings",
+    };
 }

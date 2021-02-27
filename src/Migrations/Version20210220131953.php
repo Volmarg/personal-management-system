@@ -47,6 +47,7 @@ final class Version20210220131953 extends AbstractMigration
                 drag_background_color VARCHAR(100) NOT NULL, 
                 border_color VARCHAR(100) NOT NULL, 
                 deleted TINYINT(1) NOT NULL DEFAULT 0,
+                icon VARCHAR(50) NOT NULL, 
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
@@ -62,10 +63,10 @@ final class Version20210220131953 extends AbstractMigration
                 SELECT
                 NULL    AS id,
                 name    AS name,
-                CONCAT('#',LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS color,
-                CONCAT('#',LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS background_color,
-                CONCAT('#',LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS drag_background_color,
-                CONCAT('#',LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS border_color,
+                CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS color,
+                CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS background_color,
+                CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS drag_background_color,
+                CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS border_color,
                 deleted AS deleted
                 
                 FROM my_schedule_type
@@ -85,8 +86,9 @@ final class Version20210220131953 extends AbstractMigration
                 CONCAT(ms.`date`, ' 10:00:00') AS `end`,
                 'time'     AS category,
                 ''         AS location,
-                ms.deleted AS deleted
-                
+                ms.deleted AS deleted,
+                mst.icon   AS icon
+
                 FROM my_schedule ms
 
                 -- currently related types

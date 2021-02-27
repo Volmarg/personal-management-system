@@ -213,6 +213,15 @@ schedules:
   schedule:
     message:
       noScheduleHasBeenFoundForId: "No schedule has been found for given id %id%"
+      scheduleHasBeenRemoved: "Schedule has been removed"
+  modals:
+    calendarSettings:
+      header: Calendar settings
+      table:
+        headers:
+          name: Name
+          color: Color
+          icon: Icon
 
 travels:
   headers:

@@ -17,6 +17,7 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
@@ -99,6 +100,7 @@ class Repositories extends AbstractController {
     const SETTING_REPOSITORY                            = 'SettingRepository';
     const MY_SCHEDULE_REPOSITORY                        = "MyScheduleRepository";
     const MY_SCHEDULE_TYPE_REPOSITORY                   = "MyScheduleTypeRepository";
+    const MY_SCHEDULE_CALENDAR_REPOSITORY               = "MyScheduleCalendarRepository";
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
     const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
@@ -719,7 +721,7 @@ class Repositories extends AbstractController {
             }
 
             $dataForMethodName = $entity->$methodName();
-            if( !property_exists($dataForMethodName, 'getValues') ){
+            if( !method_exists($dataForMethodName, 'getValues') ){
                 // this is a single entity relation with One `side` instead of `Many`
                 if( self::isEntity($dataForMethodName) ){
                     $relatedEntities[] = $dataForMethodName;
@@ -875,7 +877,10 @@ class Repositories extends AbstractController {
      */
     private function changeRecordDataBeforeUpdate($record) {
 
-        if( $record instanceof MyContactGroup){
+        if(
+                $record instanceof MyContactGroup
+            ||  $record instanceof MyScheduleCalendar
+        ){
             $color           = $record->getColor();
             $normalizedColor = str_replace("#", "", $color);
 
@@ -1056,6 +1061,7 @@ class Repositories extends AbstractController {
             }elseif(
                     ($entity instanceof MyIssue)
                 ||  ($entity instanceof MyNotesCategories)
+                ||  ($entity instanceof MyScheduleCalendar)
             ){
                 $relatedEntities = $this->handleCascadeSoftDeleteRelatedEntities($entity);
             }

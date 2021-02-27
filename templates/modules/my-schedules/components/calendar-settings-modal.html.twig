@@ -1,0 +1,71 @@
+<div class="modal fade bd-example-modal-lg" id="calendar-settings-modal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">{{ 'schedules.modals.calendarSettings.header' | trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <section class="p-20">
+                <div class="modal-body ">
+
+                    {# Table #}
+                    <table id="MyScheduleCalendar" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+                        <thead>
+                        <tr>
+                            <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
+                            <td>{{ 'schedules.modals.calendarSettings.table.headers.name' | trans }}</td>
+                            <td>{{ 'schedules.modals.calendarSettings.table.headers.icon' | trans }}</td>
+                            <td style="width: 50px;">{{ 'schedules.modals.calendarSettings.table.headers.color' | trans }}</td>
+                            <td>{{ 'datatables.table.actions' | trans }}</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for calendar_data_dto in calendars_data_dto_array %}
+
+                                <tr class="trash-parent editable-parent save-parent" data-type="MyScheduleCalendar">
+                                    <td class="d-none id">{{ calendar_data_dto.id }} </td>
+                                    <td class="name"> {{ calendar_data_dto.name }} </td>
+                                    <td class="icon fontawesome-input"> {{ calendar_data_dto.icon }} </td>
+                                    <td class="color position-relative">
+                                        {% include 'page-elements/libs/js-color-button.html.twig' with {
+                                            color        : calendar_data_dto.backgroundColor,
+                                            pickerNumber : loop.index0
+                                        } %}
+                                    </td>
+
+                                    {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                                        "trash"       : true,
+                                        "edit"        : true,
+                                        "save"        : true,
+                                        "fontawesome" : true,
+                                    } %}
+                                </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <hr/>
+
+                    {# Form #}
+                    <div class="add-record-form">
+                        {{ form_start(schedule_calendar_form, {
+                            "attr": {
+                                'data-entity':"MyScheduleCalendar"
+                            }
+                        }) }}
+                        {{ form_end(schedule_calendar_form) }}
+                    </div>
+
+                </div>
+            </section>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'buttons.close' | trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>

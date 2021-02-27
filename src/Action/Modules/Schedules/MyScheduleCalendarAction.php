@@ -7,25 +7,23 @@ namespace App\Action\Modules\Schedules;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
-use App\DTO\Modules\Schedules\ScheduleCalendarDTO;
+use App\Controller\Core\Repositories;
+use App\Entity\Modules\Schedules\MyScheduleCalendar;
+use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use TypeError;
 
 /**
- * The logic inside this action is different that in other actions where everything relies on the DataLoaders in front
- * entities updates etc. Normally whenever something is added / changed then whole page is reloaded but in this case
- * there is fully interactive calendar with built in actions handling
- *
  * Class MyScheduleCalendarAction
  * @package App\Action\Modules\Schedules
  */
 class MyScheduleCalendarAction extends AbstractController {
 
-    const KEY_CALENDARS_DATA_JSONS = "calendarsDataJsons";
+    const PARAMETER_ID = "id";
 
     /**
      * @var Application
@@ -43,36 +41,80 @@ class MyScheduleCalendarAction extends AbstractController {
     }
 
     /**
-     * Will fetch all non deleted calendars in form of json
-     *
-     * @Route("/modules/schedules/calendar/get-all-non-deleted-calendars-data", methods={"GET"})
+     * @Route("/modules/schedules/calendar/update",name="schedules-calendar-update", methods={"POST"})
+     * @param Request $request
+     * @return Response
+     * @throws MappingException
+     * @throws Exception
      */
-    public function getAllNonDeletedCalendarsDataAsJson(): JsonResponse
+    public function update(Request $request): Response
     {
-        $ajaxResponse = new AjaxResponse();
+        $parameters = $request->request->all();
+        $id         = $parameters[self::PARAMETER_ID];
 
-        try{
-            $calendarsDataDtoArray   = $this->controllers->getMyScheduleCalendarController()->fetchAllNonDeletedCalendarsData();
-            $calendarsDataJsonsArray = array_map( fn(ScheduleCalendarDTO $scheduleCalendarDto) => $scheduleCalendarDto->toJson(), $calendarsDataDtoArray);
+        $entity     = $this->controllers->getMyScheduleCalendarController()->findCalendarById($id);
+        $response   = $this->app->repositories->update($parameters, $entity);
 
-            $ajaxResponse->setCode(Response::HTTP_OK);
-            $ajaxResponse->setDataBag([
-                self::KEY_CALENDARS_DATA_JSONS => $calendarsDataJsonsArray,
-            ]);
+        $message    = $response->getContent();
+        $code       = $response->getStatusCode();
 
-        }catch(Exception | TypeError $e){
-            $this->app->logExceptionWasThrown($e);
-            $message = $this->app->translator->translate('messages.general.internalServerError');
+        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
+    }
 
-            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            $ajaxResponse->setSuccess(false);
-            $ajaxResponse->setMessage($message);
+    /**
+     * @Route("/modules/schedules/calendar/remove",name="schedules-calendar-remove", methods={"POST"})
+     * @param Request $request
+     * @param MySchedulesAction $mySchedulesAction
+     * @return Response
+     * @throws Exception
+     */
+    public function remove(Request $request, MySchedulesAction $mySchedulesAction): Response
+    {
+        $id = trim($request->request->get(self::PARAMETER_ID));
 
-            return $ajaxResponse->buildJsonResponse();
+        $response = $this->app->repositories->deleteById(Repositories::MY_SCHEDULE_CALENDAR_REPOSITORY, $id);
+        $message  = $response->getContent();
+
+        if ($response->getStatusCode() == 200) {
+            $renderedTemplate = $mySchedulesAction->renderTemplate('car', true, true); // todo: this first parameter will be gone later on
+            $templateContent  = $renderedTemplate->getContent();
+
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
+        }
+        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+    }
+
+    /**
+     * @Route("/modules/schedules/calendar/create",name="schedules-calendar-create", methods={"POST"})
+     * @param Request $request
+     * @param MySchedulesAction $mySchedulesAction
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function create(Request $request, MySchedulesAction $mySchedulesAction): Response
+    {
+        $form = $this->app->forms->scheduleCalendarForm();
+        $form->handleRequest($request);
+
+        $formData = $form->getData();
+        if( $formData instanceof MyScheduleCalendar ){
+            // this is not a bug, TuiCalendar allows to handle multiple colors but it was planned so to just use one
+            $formData->setBackgroundColor($formData->getColor());
+            $formData->setBorderColor($formData->getColor());
+            $formData->setDragBackgroundColor($formData->getColor());
         }
 
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->app->em->persist($formData);
+            $this->app->em->flush();
 
-        return $ajaxResponse->buildJsonResponse();
+            $formSubmittedMessage = $this->app->translator->translate('messages.ajax.success.recordHasBeenCreated');
+            $renderedTemplate     = $mySchedulesAction->renderTemplate('car', true, true); // todo: this first parameter will be gone later on
+
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, $formSubmittedMessage, $renderedTemplate);
+        }
+
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK);
     }
 
 }

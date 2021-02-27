@@ -9,6 +9,7 @@ use App\Controller\Core\Repositories;
 use App\DTO\Modules\Schedules\ScheduleDTO;
 use App\Entity\Modules\Schedules\Schedule;
 use App\Form\Modules\Schedules\MyScheduleType;
+use App\Repository\Modules\Schedules\ScheduleRepository;
 use DateTime;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
@@ -64,7 +65,7 @@ class MySchedulesAction extends AbstractController {
      * @param bool $skipRewritingTwigVarsToJs
      * @return Response
      */
-    protected function renderTemplate(string $schedulesType, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    public function renderTemplate(string $schedulesType, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
 
         $form = $form = $this->app->forms->scheduleForm([MyScheduleType::KEY_PARAM_SCHEDULES_TYPES => $schedulesType]);
@@ -72,12 +73,19 @@ class MySchedulesAction extends AbstractController {
         $schedules      = $this->app->repositories->myScheduleRepository->getSchedulesByScheduleTypeName($schedulesType);
         $schedulesTypes = $this->app->repositories->myScheduleTypeRepository->findBy(['deleted' => 0]);
 
+        // todo: start part for new calendar logic
+        $calendarsDataDtoArray = $this->controllers->getMyScheduleCalendarController()->fetchAllNonDeletedCalendarsData();
+        $scheduleCalendarForm  = $this->app->forms->scheduleCalendarForm();
+        // todo: end part of new calendar logic
+
         $data = [
             'form'                           => $form->createView(),
             'ajax_render'                    => $ajaxRender,
             'schedules'                      => $schedules,
             'schedules_types'                => $schedulesTypes,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'calendars_data_dto_array'       => $calendarsDataDtoArray,
+            'schedule_calendar_form'         => $scheduleCalendarForm->createView(),
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);
@@ -265,6 +273,50 @@ class MySchedulesAction extends AbstractController {
                 self::KEY_SCHEDULES_DTO_JSONS => $schedulesDtoJsons,
             ]);
 
+        }catch(Exception | TypeError $e){
+            $this->app->logExceptionWasThrown($e);
+            $message = $this->app->translator->translate('messages.general.internalServerError');
+
+            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $ajaxResponse->setSuccess(false);
+            $ajaxResponse->setMessage($message);
+
+            return $ajaxResponse->buildJsonResponse();
+        }
+
+        return $ajaxResponse->buildJsonResponse();
+    }
+
+    /**
+     * Will return all not deleted schedules
+     *
+     * @Route("/modules/schedules/delete/{scheduleId}", methods={"GET"})
+     * @param string $scheduleId
+     * @return JsonResponse
+     */
+    public function deleteSchedule(string $scheduleId): JsonResponse
+    {
+        $ajaxResponse = new AjaxResponse();
+
+        try{
+            $schedule = $this->controllers->getMySchedulesController()->findOneScheduleById($scheduleId);
+            if( empty($schedule) ){
+
+                $message = $this->app->translator->translate('schedules.schedule.message.noScheduleHasBeenFoundForId', [
+                    "%id%" => $scheduleId
+                ]);
+                $ajaxResponse->setMessage($message);
+                $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);;
+
+                return $ajaxResponse->buildJsonResponse();
+            }
+
+            $message = $this->app->translator->translate('schedules.schedule.message.scheduleHasBeenRemoved');
+
+            $ajaxResponse->setMessage($message);;
+            $ajaxResponse->setCode(Response::HTTP_OK);
+
+            $this->app->repositories->deleteById(ScheduleRepository::class, $scheduleId);
         }catch(Exception | TypeError $e){
             $this->app->logExceptionWasThrown($e);
             $message = $this->app->translator->translate('messages.general.internalServerError');

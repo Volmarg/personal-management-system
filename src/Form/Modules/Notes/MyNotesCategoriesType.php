@@ -5,6 +5,7 @@ namespace App\Form\Modules\Notes;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Form\Type\FontawesomepickerType;
+use App\Form\Type\JscolorpickerType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ColorType;
@@ -47,7 +48,7 @@ class MyNotesCategoriesType extends AbstractType {
             ->add('icon', FontawesomepickerType::class, [
                 'label' => $this->app->translator->translate('forms.MyNotesCategoriesType.icon')
             ])
-            ->add('color', ColorType::class, [
+            ->add('color', JscolorpickerType::class, [
                 'attr' => [
                     'style' => 'height:40px !important; width:80px !important;'
                 ],
