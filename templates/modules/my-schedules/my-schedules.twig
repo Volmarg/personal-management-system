@@ -8,7 +8,7 @@
 
 {% block body %}
 
-    <main class='main-content bgc-grey-100'>
+    <main class='main-content bgc-grey-100 my-schedules'>
 
         {# todo: add block above with description like in other modules#}
 
@@ -116,6 +116,7 @@
                                                         <label>
                                                             <input type="checkbox" checked="checked" class="tui-full-calendar-checkbox-round" value="1">
                                                             <span class="color-wrapper" style="border-color: #{{ calendar_data_dto.borderColor }}; background-color: #{{ calendar_data_dto.backgroundColor }};"></span>
+                                                            <i class="{{ calendar_data_dto.icon }}"></i>
                                                             <span>{{ calendar_data_dto.name }}</span>
                                                         </label>
                                                     </div>

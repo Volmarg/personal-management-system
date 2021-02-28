@@ -23,6 +23,8 @@ import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
  *  - test creating schedule via `new schedule`
  *  - schedule should have color based on calendar, this must be still added,
  *  - keep icons selection for the calendars
+ *  - handle showing schedules in widget + bell,
+ *  - on the very end add task for later to integrate reminder + NPL with them
  */
 
 /**

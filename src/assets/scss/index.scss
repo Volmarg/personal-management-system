@@ -49,3 +49,7 @@
 @import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 @import '../../../node_modules/tui-date-picker/dist/tui-date-picker.min.css';
 @import '../../../node_modules/tui-calendar/dist/tui-calendar.min.css';
+@import '../../../node_modules/jquery-smarttab/dist/css/smart_tab_github.min.css';
+
+/* Overwrite node packages styling */
+@import 'libs/customization-for-liblaries/smart-tabs';

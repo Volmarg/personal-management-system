@@ -134,7 +134,7 @@ schedules:
     table: { scheduleType: 'Schedule type', information: Information, date: Date, name: Name }
     calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' } }
     schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed' } }
-    modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } } } }
+    modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } } }, panels: { management: Management, addNewCalendar: 'Add new calendar' } }
 travels:
     headers: { addIdea: 'Add idea' }
     popovers: { remove: 'Remove record', edit: 'Edit record' }

@@ -11,54 +11,73 @@
             <section class="p-20">
                 <div class="modal-body ">
 
-                    {# Table #}
-                    <table id="MyScheduleCalendar" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
-                        <thead>
-                        <tr>
-                            <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
-                            <td>{{ 'schedules.modals.calendarSettings.table.headers.name' | trans }}</td>
-                            <td>{{ 'schedules.modals.calendarSettings.table.headers.icon' | trans }}</td>
-                            <td style="width: 50px;">{{ 'schedules.modals.calendarSettings.table.headers.color' | trans }}</td>
-                            <td>{{ 'datatables.table.actions' | trans }}</td>
-                        </tr>
-                        </thead>
-                        <tbody>
+                    <div data-smart-tab="true">
 
-                            {% for calendar_data_dto in calendars_data_dto_array %}
+                        <ul class="nav">
+                            <li>
+                                <a class="nav-link" href="#tab-1" id="tab-nav-1">
+                                    {{ 'schedules.modals.panels.management' | trans }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link" href="#tab-2" id="tab-nav-2">
+                                    {{ 'schedules.modals.panels.addNewCalendar' | trans }}
+                                </a>
+                            </li>
+                        </ul>
 
-                                <tr class="trash-parent editable-parent save-parent" data-type="MyScheduleCalendar">
-                                    <td class="d-none id">{{ calendar_data_dto.id }} </td>
-                                    <td class="name"> {{ calendar_data_dto.name }} </td>
-                                    <td class="icon fontawesome-input"> {{ calendar_data_dto.icon }} </td>
-                                    <td class="color position-relative">
-                                        {% include 'page-elements/libs/js-color-button.html.twig' with {
-                                            color        : calendar_data_dto.backgroundColor,
-                                            pickerNumber : loop.index0
-                                        } %}
-                                    </td>
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane" role="tabpanel">
+                                {# Table #}
+                                <table id="MyScheduleCalendar" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+                                    <thead>
+                                    <tr>
+                                        <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
+                                        <td>{{ 'schedules.modals.calendarSettings.table.headers.name' | trans }}</td>
+                                        <td>{{ 'schedules.modals.calendarSettings.table.headers.icon' | trans }}</td>
+                                        <td style="width: 50px;">{{ 'schedules.modals.calendarSettings.table.headers.color' | trans }}</td>
+                                        <td>{{ 'datatables.table.actions' | trans }}</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
 
-                                    {% include 'modules/common/components/table-cells/actions.html.twig' with {
-                                        "trash"       : true,
-                                        "edit"        : true,
-                                        "save"        : true,
-                                        "fontawesome" : true,
-                                    } %}
-                                </tr>
+                                    {% for calendar_data_dto in calendars_data_dto_array %}
 
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                                        <tr class="trash-parent editable-parent save-parent" data-type="MyScheduleCalendar">
+                                            <td class="d-none id">{{ calendar_data_dto.id }} </td>
+                                            <td class="name"> {{ calendar_data_dto.name }} </td>
+                                            <td class="icon fontawesome-input"> {{ calendar_data_dto.icon }} </td>
+                                            <td class="color position-relative">
+                                                {% include 'page-elements/libs/js-color-button.html.twig' with {
+                                                    color        : calendar_data_dto.backgroundColor,
+                                                    pickerNumber : loop.index0
+                                                } %}
+                                            </td>
 
-                    <hr/>
+                                            {% include 'modules/common/components/table-cells/actions.html.twig' with {
+                                                "trash"       : true,
+                                                "edit"        : true,
+                                                "save"        : true,
+                                                "fontawesome" : true,
+                                            } %}
+                                        </tr>
 
-                    {# Form #}
-                    <div class="add-record-form">
-                        {{ form_start(schedule_calendar_form, {
-                            "attr": {
-                                'data-entity':"MyScheduleCalendar"
-                            }
-                        }) }}
-                        {{ form_end(schedule_calendar_form) }}
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="tab-2" class="tab-pane" role="tabpanel">
+                                {# Form #}
+                                <div class="add-record-form">
+                                    {{ form_start(schedule_calendar_form, {
+                                        "attr": {
+                                            'data-entity':"MyScheduleCalendar"
+                                        }
+                                    }) }}
+                                    {{ form_end(schedule_calendar_form) }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

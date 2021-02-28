@@ -89,6 +89,7 @@
     "jquery": "^3.5.1",
     "jquery-autocompleter": "^0.3.0",
     "jquery-migrate": "^3.3.1",
+    "jquery-smarttab": "^3.1.1",
     "jquery-sparkline": "^2.4.0",
     "jquery-ui": "^1.12.1",
     "js-base64": "^3.5.2",

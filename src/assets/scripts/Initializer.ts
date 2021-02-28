@@ -48,6 +48,7 @@ import TodoModal                    from "./modules/Todo/TodoModal";
 import FineUploaderService          from "./libs/fine-uploader/FineUploaderService";
 import AjaxEvents                   from "./core/ajax/AjaxEvents";
 import TuiCalendarService           from "./libs/tui-calendar/TuiCalendarService";
+import SmartTab                     from "./libs/smarttab/SmartTab";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -78,6 +79,7 @@ export default class Initializer {
         let videoJs           = new VideoJs();
         let fineUploadService = new FineUploaderService();
         let tuiCalendar       = new TuiCalendarService();
+        let smartTab          = new SmartTab();
 
         // core
         let search                 = new Search();
@@ -139,6 +141,7 @@ export default class Initializer {
 
         ajaxEvents.init();
         tuiCalendar.init();
+        smartTab.init();
     }
 
     /**
