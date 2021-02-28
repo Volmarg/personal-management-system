@@ -42,7 +42,7 @@
     cursor: pointer;
   }
 
-  .dropdown-menu > li > a:hover {
+  .dropdown-menu > li:hover{
     background-color: rgba(81, 92, 230, 0.05);
     color: #333;
   }
@@ -200,6 +200,7 @@
     left: 0;
     right: 0;
     bottom: 5px;
+    margin-top: 20px;
   }
 
   /** custom fontawesome */
@@ -252,4 +253,14 @@
       }
     }
 
+  .calendar-view-change {
+    padding: 5px !important;
+    padding-left: 12px !important;
+    margin-bottom: 5px;
+  }
+
+  .calendar-menu {
+    display: flex;
+    justify-content: space-around;
+  }
 }

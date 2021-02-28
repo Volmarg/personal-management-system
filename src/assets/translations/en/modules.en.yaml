@@ -210,6 +210,19 @@ schedules:
   calendar:
     messages:
       noCalendarHasBeenFoundForId: "No calendar has been found for given id %id%"
+    views:
+      daily: Daily
+      weekly: Weekly
+      monthly: Monthly
+    actions:
+      addSchedule: Add schedule
+      settings: Calendars settings
+      view: View
+      back: Go back
+      today: Today
+      forward: Go forward
+    calendarsList:
+      viewAll: View all
   schedule:
     message:
       noScheduleHasBeenFoundForId: "No schedule has been found for given id %id%"

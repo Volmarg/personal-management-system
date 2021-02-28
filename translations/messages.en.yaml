@@ -132,7 +132,7 @@ schedules:
     headers: { schedules: Schedules, addSchedule: 'Add schedule' }
     legend: { label: Legend, over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' }
     table: { scheduleType: 'Schedule type', information: Information, date: Date, name: Name }
-    calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' } }
+    calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' }, views: { daily: Daily, weekly: Weekly, monthly: Monthly }, actions: { addSchedule: 'Add schedule', settings: 'Calendars settings', view: View, back: 'Go back', today: Today, forward: 'Go forward' }, calendarsList: { viewAll: 'View all' } }
     schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed' } }
     modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } } }, panels: { management: Management, addNewCalendar: 'Add new calendar' } }
 travels:

@@ -15,14 +15,8 @@ import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
 
 /**
  * Todo:
- *  - add logic to create calendars on fly + update them
  *  - add some search logic to easily find by subject, with `goto`, `edit` (creation popup) , `remove` (creation popup)
  *  - the time picker in tui popup is not working
- *  - also add action to update schedule when moving / updating via modal
- *  - add settings to change color/name of calendar
- *  - test creating schedule via `new schedule`
- *  - schedule should have color based on calendar, this must be still added,
- *  - keep icons selection for the calendars
  *  - handle showing schedules in widget + bell,
  *  - on the very end add task for later to integrate reminder + NPL with them
  */

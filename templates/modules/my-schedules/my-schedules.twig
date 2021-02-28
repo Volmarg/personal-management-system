@@ -29,81 +29,123 @@
                                 <section class="left-side col-2 p-0 navbar-tui-calendar">
                                     <div id="lnb">
                                         <div class="lnb-new-schedule">
-                                            {# todo: add hover tippy #}
-                                            {# add schedule#}
-                                            <button id="btn-new-schedule" type="button" class="clear-button-styles" data-toggle="modal">
-                                                <i class="fas fa-plus-circle tui-navbar-icon"></i>
-                                            </button>
+                                            <span class="calendar-menu">
 
-                                            {# todo: add hover tippy #}
-                                            {# settings #}
-                                            <button id="btn-settings" type="button" class="clear-button-styles" data-toggle="modal" data-target="#calendar-settings-modal">
-                                                <i class="fas fa-cog tui-navbar-icon"></i>
-                                            </button>
+                                                {# left side#}
+                                                <span>
+                                                    {# add schedule#}
+                                                    <button id="btn-new-schedule" type="button" class="clear-button-styles" data-toggle="modal"
+                                                            {# Tippy attributes #}
+                                                            data-toggle-popover="true"
+                                                            data-html="true"
+                                                            data-trigger="hover"
+                                                            data-content="{{ 'schedules.calendar.actions.addSchedule' | trans }}"
+                                                            data-placement="top"
+                                                    >
+                                                        <i class="fas fa-plus-circle tui-navbar-icon"></i>
+                                                    </button>
 
-                                            |
+                                                    {# settings #}
+                                                    <button id="btn-settings" type="button" class="clear-button-styles" data-toggle="modal" data-target="#calendar-settings-modal"
+                                                            {# Tippy attributes #}
+                                                            data-toggle-popover="true"
+                                                            data-html="true"
+                                                            data-trigger="hover"
+                                                            data-content="{{ 'schedules.calendar.actions.settings' | trans }}"
+                                                            data-placement="top"
+                                                    >
+                                                        <i class="fas fa-cog tui-navbar-icon"></i>
+                                                    </button>
 
-                                            {# view #}
-                                            <span class="dropdown">
-                                                <button id="btn-calendar-view-list" class="clear-button-styles" type="button" data-toggle="dropdown"
-                                                        aria-haspopup="true" aria-expanded="true">
-                                                    <i id="calendarTypeIcon" class="calendar-icon ic_view_month"></i>
-                                                    <span>
-                                                        <i class="fas fa-eye tui-navbar-icon"></i>
-                                                    </span>&nbsp;
-                                                    <i class="calendar-icon tui-full-calendar-dropdown-arrow"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu-calendarType">
-                                                    <li role="presentation">
-                                                        <a class="dropdown-menu-title" role="menuitem" data-action="toggle-view-daily">
-                                                            <i class="calendar-icon ic_view_day"></i>Daily
-                                                        </a>
-                                                    </li>
-                                                    <li role="presentation">
-                                                        <a class="dropdown-menu-title" role="menuitem" data-action="toggle-view-weekly">
-                                                            <i class="calendar-icon ic_view_week"></i>Weekly
-                                                        </a>
-                                                    </li>
-                                                    <li role="presentation">
-                                                        <a class="dropdown-menu-title" role="menuitem" data-action="toggle-view-monthly">
-                                                            <i class="calendar-icon ic_view_month"></i>Month
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                                    {# view #}
+                                                    <span class="dropdown">
+                                                        <button id="btn-calendar-view-list" class="clear-button-styles" type="button" data-toggle="dropdown"
+                                                                aria-haspopup="true" aria-expanded="true"
+                                                                {# Tippy attributes #}
+                                                                data-toggle-popover="true"
+                                                                data-html="true"
+                                                                data-trigger="hover"
+                                                                data-content="{{ 'schedules.calendar.actions.view' | trans }}"
+                                                                data-placement="top"
+                                                        >
+                                                            <i id="calendarTypeIcon" class="calendar-icon ic_view_month"></i>
+                                                            <span>
+                                                                <i class="fas fa-eye tui-navbar-icon"></i>
+                                                            </span>&nbsp;
+                                                            <i class="calendar-icon tui-full-calendar-dropdown-arrow"></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu-calendarType">
+                                                            <li role="presentation" class="mb-1">
+                                                                <a class="dropdown-menu-title calendar-view-change" role="menuitem" data-action="toggle-view-daily">
+                                                                    <i class="fas fa-list"></i>
+                                                                    <span class="ml-1">{{ 'schedules.calendar.views.daily' | trans }}</span>
+                                                                </a>
+                                                            </li>
+                                                            <li role="presentation" class="mb-1">
+                                                                <a class="dropdown-menu-title calendar-view-change" role="menuitem" data-action="toggle-view-weekly">
+                                                                    <i class="fas fa-th-large"></i>
+                                                                    <span class="ml-1">{{ 'schedules.calendar.views.weekly' | trans }}</span>
+                                                                </a>
+                                                            </li>
+                                                            <li role="presentation" class="mb-1">
+                                                                <a class="dropdown-menu-title calendar-view-change" role="menuitem" data-action="toggle-view-monthly">
+                                                                    <i class="fas fa-th"></i>
+                                                                    <span class="ml-1">{{ 'schedules.calendar.views.monthly' | trans }}</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </span>
+                                                </span>
+
+                                                {# Right side #}
+                                                <span>
+                                                    {# previous #}
+                                                    <button id="btn-move-previous" type="button" class="clear-button-styles" data-action="move-previous"
+                                                            {# Tippy attributes #}
+                                                            data-toggle-popover="true"
+                                                            data-html="true"
+                                                            data-trigger="hover"
+                                                            data-content="{{ 'schedules.calendar.actions.back' | trans }}"
+                                                            data-placement="top"
+                                                    >
+                                                        <i class="fas fa-arrow-circle-left tui-navbar-icon"></i>
+                                                    </button>
+
+                                                    {# today #}
+                                                    <button id="btn-move-today" type="button" class="clear-button-styles" data-action="move-today"
+                                                            {# Tippy attributes #}
+                                                            data-toggle-popover="true"
+                                                            data-html="true"
+                                                            data-trigger="hover"
+                                                            data-content="{{ 'schedules.calendar.actions.today' | trans }}"
+                                                            data-placement="top"
+                                                    >
+                                                        <i class="fas fa-arrow-circle-down tui-navbar-icon"></i>
+                                                    </button>
+
+                                                    {# next #}
+                                                    <button id="btn-move-next" type="button" class="clear-button-styles" data-action="move-next"
+                                                            {# Tippy attributes #}
+                                                            data-toggle-popover="true"
+                                                            data-html="true"
+                                                            data-trigger="hover"
+                                                            data-content="{{ 'schedules.calendar.actions.forward' | trans }}"
+                                                            data-placement="top"
+                                                    >
+                                                        <i class="fas fa-arrow-circle-right tui-navbar-icon"></i>
+                                                    </button>
+                                                </span>
+
                                             </span>
-
-
-                                            {# todo: add hover tippy #}
-                                            {# previous #}
-                                            <button id="btn-move-previous" type="button" class="clear-button-styles" data-action="move-previous">
-                                                <i class="fas fa-arrow-circle-left tui-navbar-icon"></i>
-                                            </button>
-
-                                            {# todo: add hover tippy #}
-                                            {# today #}
-                                            <button id="btn-move-today" type="button" class="clear-button-styles" data-action="move-today">
-                                                <i class="fas fa-arrow-circle-down tui-navbar-icon"></i>
-                                            </button>
-
-                                            {# todo: add hover tippy #}
-                                            {# next #}
-                                            <button id="btn-move-next" type="button" class="clear-button-styles" data-action="move-next">
-                                                <i class="fas fa-arrow-circle-right tui-navbar-icon"></i>
-                                            </button>
 
                                         </div>
                                         <div id="lnb-calendars" class="lnb-calendars">
-                                            <div>
-                                                <div class="lnb-calendars-item">
-                                                    <label>
-                                                        <input class="tui-full-calendar-checkbox-square view-all-calendars" type="checkbox" value="all" checked>
-                                                        <span></span>
-                                                        <strong>View all</strong>
-                                                    </label>
-                                                </div>
-                                            </div>
                                             <div id="calendarList" class="lnb-calendars-d1">
-
+                                                <label class="mb-2">
+                                                    <input class="tui-full-calendar-checkbox-square view-all-calendars" type="checkbox" value="all" checked>
+                                                    <span></span>
+                                                    <strong>{{ 'schedules.calendar.calendarsList.viewAll' | trans }}</strong>
+                                                </label>
                                                 {% for calendar_data_dto in calendars_data_dto_array %}
                                                     <div class="lnb-calendars-item"
                                                          data-calendar-id="{{ calendar_data_dto.id }}"
