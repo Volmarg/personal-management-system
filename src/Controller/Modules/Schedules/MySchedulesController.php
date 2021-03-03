@@ -70,40 +70,4 @@ class MySchedulesController extends AbstractController {
         return $this->app->repositories->myScheduleRepository->getIncomingSchedulesEntitiesInDays($days);
     }
 
-    // TODO: New schedules logic
-
-    /**
-     * Will save schedule or update the existing one
-     *
-     * @param Schedule $schedule
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function saveSchedule(Schedule $schedule): void
-    {
-        $this->app->repositories->myScheduleRepository->saveSchedule($schedule);
-    }
-
-    /**
-     * Will return all not deleted schedules
-     *
-     * @return Schedule[]
-     */
-    public function getAllNotDeletedSchedules(): array
-    {
-        return $this->app->repositories->myScheduleRepository->getAllNotDeletedSchedules();
-    }
-
-    /**
-     * Returns one entity for given id or null otherwise
-     *
-     * @param int $id
-     * @return Schedule|null
-     * @throws NonUniqueResultException
-     */
-    public function findOneScheduleById(int $id): ?Schedule
-    {
-        return $this->app->repositories->myScheduleRepository->findOneScheduleById($id);
-    }
-
 }

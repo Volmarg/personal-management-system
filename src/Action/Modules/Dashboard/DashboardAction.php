@@ -14,6 +14,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class DashboardAction extends AbstractController {
 
+    const INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE = 10;
+    const INCOMING_SCHEDULES_WIDGET_MAX_PAGES    = 5;
+
     /**
      * @var Application
      */
@@ -62,20 +65,24 @@ class DashboardAction extends AbstractController {
             $dashboardWidgetsVisibilityDtos   = $dashboardSettingsDto->getWidgetSettings()->getWidgetsVisibility();
         }
 
-        $schedules     = $this->controllers->getDashboardController()->getIncomingSchedulesInformation();
+        $maxResultsForIncomingSchedulesWidget = self::INCOMING_SCHEDULES_WIDGET_MAX_PAGES * self::INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE;
+
+        $schedules     = $this->controllers->getDashboardController()->getIncomingSchedulesInformation($maxResultsForIncomingSchedulesWidget);
         $allTodo       = $this->controllers->getDashboardController()->getGoalsTodoForWidget();
         $goalsPayments = $this->controllers->getDashboardController()->getGoalsPayments();
 
         $pendingIssues   = $this->controllers->getDashboardController()->getPendingIssues();
         $issuesCardsDtos = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($pendingIssues);
 
+        $schedulesForPages = array_chunk($schedules, self::INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE);
+
         $data = [
-            'dashboard_widgets_visibility_dtos'  => $dashboardWidgetsVisibilityDtos,
-            'schedules'                          => $schedules,
-            'all_todo'                           => $allTodo,
-            'goals_payments'                     => $goalsPayments,
-            'issues_cards_dtos'                  => $issuesCardsDtos,
-            'ajax_render'                        => $ajaxRender,
+            'dashboard_widgets_visibility_dtos' => $dashboardWidgetsVisibilityDtos,
+            'schedules_for_pages'               => $schedulesForPages,
+            'all_todo'                          => $allTodo,
+            'goals_payments'                    => $goalsPayments,
+            'issues_cards_dtos'                 => $issuesCardsDtos,
+            'ajax_render'                       => $ajaxRender,
         ];
 
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);

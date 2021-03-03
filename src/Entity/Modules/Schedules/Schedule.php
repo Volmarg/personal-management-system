@@ -27,6 +27,11 @@ class Schedule implements SoftDeletableEntityInterface, EntityInterface
     private $title;
 
     /**
+     * @ORM\Column(type="string", length=250)
+     */
+    private $body;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $allDay;
@@ -165,6 +170,22 @@ class Schedule implements SoftDeletableEntityInterface, EntityInterface
     public function setDeleted(bool $deleted): void
     {
         $this->deleted = $deleted;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param mixed $body
+     */
+    public function setBody($body): void
+    {
+        $this->body = $body;
     }
 
 }

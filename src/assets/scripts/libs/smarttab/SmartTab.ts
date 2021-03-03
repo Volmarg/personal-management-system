@@ -3,6 +3,7 @@ import JquerySmartTab from "./src/JquerySmartTab";
 /**
  * Handles switching the content via panels
  * @see `templates/modules/my-schedules/components/calendar-settings-modal.html.twig` to check how it's being used
+ * <div data-smart-tab="true">
  *    <ul class="nav">
  *       <li><a class="nav-link" href="#tab-1" id="tab-nav-1"></a></li>
  *       <li><a class="nav-link" href="#tab-2" id="tab-nav-2"></a></li>
@@ -12,6 +13,7 @@ import JquerySmartTab from "./src/JquerySmartTab";
  *       <div id="tab-1" class="tab-pane" role="tabpanel"></div>
  *       <div id="tab-2" class="tab-pane" role="tabpanel"></div>
  *    </div>
+ * </div>
  *
  * @link https://github.com/techlab/jquery-smarttab
  * @link http://techlaboratory.net/jquery-smarttab#documentation

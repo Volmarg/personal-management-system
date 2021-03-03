@@ -4,6 +4,7 @@ namespace App\Controller\Modules\Dashboard;
 
 use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
+use App\DTO\Modules\Schedules\IncomingScheduleDTO;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
 use Doctrine\DBAL\Exception;
@@ -24,11 +25,12 @@ class DashboardController extends AbstractController {
     }
 
     /**
-     * @return array
+     * @param int|null $limit
+     * @return IncomingScheduleDTO[]
      * @throws Exception
      */
-    public function getIncomingSchedulesInformation() {
-        return $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL);
+    public function getIncomingSchedulesInformation(?int $limit = null) {
+        return  $this->app->repositories->scheduleRepository->getIncomingSchedulesInformationInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL, $limit);
     }
 
     /**

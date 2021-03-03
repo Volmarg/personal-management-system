@@ -12,13 +12,16 @@ import Loader              from "../loader/Loader";
 import BootstrapNotify     from "../bootstrap-notify/BootstrapNotify";
 import AjaxResponseDto     from "../../DTO/AjaxResponseDto";
 import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
+import StringUtils from "../../core/utils/StringUtils";
 
 /**
  * Todo:
  *  - add some search logic to easily find by subject, with `goto`, `edit` (creation popup) , `remove` (creation popup)
  *  - the time picker in tui popup is not working
  *  - handle showing schedules in widget + bell,
+ *  - handle information field + adjust migration after that
  *  - on the very end add task for later to integrate reminder + NPL with them
+ *    - add also info to handle adding reminders to the calendar, so far this will work like before
  */
 
 /**
@@ -28,6 +31,9 @@ import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
  *              The logic inside this action is different that in other actions where everything relies on the
  *              DataLoaders in front entities updates etc. Normally whenever something is added / changed then whole
  *              page is reloaded but in this case there is fully interactive calendar with built in actions handling
+ *
+ *              Info: as long as property of schedule is provided, it seems like it's shown in GUI
+ *                    the only issue is that update/create does not have the additional fields
  *
  * @link https://www.npmjs.com/package/tui-calendar
  * @link https://github.com/nhn/tui.calendar/blob/master/docs/getting-started.md
@@ -58,10 +64,17 @@ export default class TuiCalendarService
     private readonly VIEW_ALL_CALENDARS_SELECTOR    = '.view-all-calendars';
     private readonly CALENDAR_IN_LIST               = '.lnb-calendars-item';
     private readonly CALENDAR_IN_LIST_INPUT_ROUND   = '.tui-full-calendar-checkbox-round';
+    private readonly POPUP_CONTAINER_SELECTOR       = '.tui-full-calendar-popup-container';
+
+    private readonly POPUP_CONTAINER_SECTION_TITLE_SELECTOR = '.tui-full-calendar-section-title';
 
     private readonly SCHEDULE_DEFAULT_TEXT_COLOR = '#ffffff';
 
+    private readonly POPUP_CUSTOM_FIELD_NAME_BODY = "body";
+
     private bootstrapNotify = new BootstrapNotify();
+
+    private lastClickedScheduleId ?: string  = null;
 
     /**
      * @description this value is used to get unique schedule id upon inserting in GUI,
@@ -108,7 +121,7 @@ export default class TuiCalendarService
                 _this.handleCalendarList(calendarInstance);
                 _this.createNewScheduleOnNewScheduleClick(calendarInstance);
                 _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
-                _this.modifyScheduleCreationPopup();
+                _this.modifyScheduleCreationAndDetailPopup(calendarInstance);
 
                 _this.attachActionMoveNext(calendarInstance);
                 _this.attachActionMovePrevious(calendarInstance);
@@ -150,6 +163,7 @@ export default class TuiCalendarService
                 let calendarSchedule: ISchedule = {
                     id    : scheduleDto.id,
                     title : scheduleDto.title,
+                    body  : scheduleDto.body,
                     start : scheduleDto.start,
                     end   : scheduleDto.end,
 
@@ -183,16 +197,30 @@ export default class TuiCalendarService
             beforeCreateSchedule: (event) => {
                 let ajaxCallUrl = '/modules/schedules/save-schedule';
                 _this.saveSchedule(event, ajaxCallUrl, calendarInstance);
+                this.lastClickedScheduleId = null;
             },
             /**
              * @description handles updating the calendar like for example via drag n drop
+             *              some of the attributes are custom made, therefore standard update
+             *              is not working on them
              */
             beforeUpdateSchedule: (event) => {
-                let ajaxCallUrl     = `/modules/schedules/save-schedule/${event.schedule.id}`;
-                let updatedSchedule = _this.buildUpdatedSchedule(event.schedule, event.changes);
+                let $creationPopupContainer = $(this.POPUP_CONTAINER_SELECTOR);
+                let ajaxCallUrl             = `/modules/schedules/save-schedule/${event.schedule.id}`;
+                let changes                 = event.changes;
+
+                // no changes in standard properties
+                if(null === changes){
+                    changes = {};
+                }
+
+                // handle additional properties
+                changes.body        = $creationPopupContainer.find('#body').val() as string;
+                let updatedSchedule = _this.buildUpdatedSchedule(event.schedule, changes);
 
                 _this.saveSchedule(updatedSchedule, ajaxCallUrl, calendarInstance, false);
-                calendarInstance.updateSchedule(event.schedule.id, event.schedule.calendarId, event.changes);
+                calendarInstance.updateSchedule(event.schedule.id, event.schedule.calendarId, changes);
+                this.lastClickedScheduleId = null;
             },
             /**
              * @description handles removal of schedule
@@ -200,6 +228,13 @@ export default class TuiCalendarService
             beforeDeleteSchedule: (event) => {
                 _this.deleteSchedule(event.schedule.id);
                 calendarInstance.deleteSchedule(event.schedule.id, event.schedule.calendarId);
+                this.lastClickedScheduleId = null;
+            },
+            /**
+             * @description handles clicking on the schedule
+             */
+            clickSchedule: (event) => {
+                this.lastClickedScheduleId = event.schedule.id;
             }
         });
 
@@ -272,16 +307,20 @@ export default class TuiCalendarService
      */
     private saveSchedule(scheduleData: ISchedule, ajaxCallUrl: string, calendarInstance: Calendar, createInstance: boolean = true): void
     {
-        let calendar = this.findCalendar(scheduleData.calendarId, calendarInstance);
-        let _this    = this;
+        let $creationPopupContainer = $(this.POPUP_CONTAINER_SELECTOR);
+        let calendar                = this.findCalendar(scheduleData.calendarId, calendarInstance);
+        let _this                   = this;
 
         //@ts-ignore
         let startDate = scheduleData.start.toDate();
         //@ts-ignore
         let endDate   = scheduleData.end.toDate();
 
+        let scheduleBody = $creationPopupContainer.find('#body').val() as string;
+
         let dataBag  = {
             title       : scheduleData.title,
+            body        : scheduleBody,
             isAllDay    : scheduleData.isAllDay,
             start       : startDate,
             end         : endDate,
@@ -306,6 +345,7 @@ export default class TuiCalendarService
                 var schedule = {
                     id          : usedScheduleId.toString(),
                     title       : scheduleData.title,
+                    body        : scheduleBody,
                     isAllDay    : scheduleData.isAllDay,
                     start       : scheduleData.start,
                     end         : scheduleData.end,
@@ -356,11 +396,32 @@ export default class TuiCalendarService
     }
 
     /**
+     * @description will search for defined ISchedule with given id in the calendar instance
+     *
+     * @param scheduleId
+     * @param calendarInstance
+     */
+    private findSchedule(scheduleId: string, calendarInstance: Calendar): ISchedule | null
+    {
+        let allSchedulesInInstance = this.getAllSchedulesFromCalendarInstance(calendarInstance);
+        let foundSchedule          = null;
+        let schedulesArray         = Object.values(allSchedulesInInstance);
+
+        for(let schedule of schedulesArray){
+            if (schedule.id === scheduleId) {
+                foundSchedule = schedule;
+            }
+        }
+
+        return foundSchedule;
+    }
+
+    /**
      * @description will handle adding calendars to the dom element thus displays them in the GUI
      */
     private handleCalendarList(calendarInstance: Calendar): void
     {
-        let _this                  = this;
+        let _this               = this;
         let $allCalendarsInList = $(this.CALENDAR_IN_LIST);
 
         $allCalendarsInList.each( (index, element) => {
@@ -376,6 +437,15 @@ export default class TuiCalendarService
     {
         //@ts-ignore
         return calendarInstance._controller.calendars;
+    }
+
+    /**
+     * @description will return array of ISchedules defined in Calendar instance
+     */
+    private getAllSchedulesFromCalendarInstance(calendarInstance: Calendar): Array<ISchedule>
+    {
+        //@ts-ignore
+        return calendarInstance._controller.schedules.items;
     }
 
     /**
@@ -530,11 +600,28 @@ export default class TuiCalendarService
      * @description will modify the creation popup by watch for parent dom element and on the moment that children are
      *              added it will attempt to find the popup elements and modify them
      */
-    private modifyScheduleCreationPopup(): void
+    private modifyScheduleCreationAndDetailPopup(calendarInstance: Calendar): void
     {
         let parentWrapperObserver = new MutationObserver( (mutations) => {
+            // remove fields
             $('.tui-full-calendar-section-allday').addClass('d-none');
             $('.tui-full-calendar-section-state').addClass('d-none');
+
+            // add/prefill fields
+            let lastClickedSchedule = this.findSchedule(this.lastClickedScheduleId, calendarInstance);
+            if(null === lastClickedSchedule){
+                throw {
+                    "message"               : "Could not find the schedule for lastClickedScheduleId",
+                    "lastClickedScheduleId" : this.lastClickedScheduleId,
+                }
+            }
+
+            // BODY
+            let containerTitleSection = $(this.POPUP_CONTAINER_SECTION_TITLE_SELECTOR);
+            let valueForBodyField     = lastClickedSchedule[this.POPUP_CUSTOM_FIELD_NAME_BODY];
+            let $bodySection          = this.buildInputFieldForPopup(this.POPUP_CUSTOM_FIELD_NAME_BODY, 'fas fa-pen', valueForBodyField);
+
+            containerTitleSection.parent().after($bodySection);
         })
 
         let htmlDomElement = document.querySelector('.tui-full-calendar-floating-layer');
@@ -570,13 +657,13 @@ export default class TuiCalendarService
      *
      * @param schedule
      * @param changes
-     * @private
      */
     private buildUpdatedSchedule(schedule: ISchedule, changes): ISchedule
     {
         let updatedSchedule : ISchedule = {
             id          : ("undefined" === typeof changes.id          ) ? schedule.id          : changes.id,
             title       : ("undefined" === typeof changes.title       ) ? schedule.title       : changes.title,
+            body        : ("undefined" === typeof changes.body        ) ? schedule.body        : changes.body,
             isAllDay    : ("undefined" === typeof changes.isAllDay    ) ? schedule.isAllDay    : changes.isAllDay,
             start       : ("undefined" === typeof changes.start       ) ? schedule.start       : changes.start,
             end         : ("undefined" === typeof changes.end         ) ? schedule.end         : changes.end,
@@ -614,4 +701,35 @@ export default class TuiCalendarService
         });
     }
 
+    /**
+     * @description will build input field for popup, returns entire section with icon
+     */
+    private buildInputFieldForPopup(fieldName: string, fontawesomeIconClasses: string, dataToPrefill?: any): JQuery<HTMLElement>
+    {
+        let $divPopupSection     = $("<DIV>");
+        let $divPopupSectionItem = $("<DIV>");
+        let $spanWithIcon        = $("<SPAN>");
+        let $fontawesomeIcon     = $('<I>');
+        let $input               = $("<INPUT>");
+
+        $divPopupSection.addClass('tui-full-calendar-popup-section');
+        $divPopupSectionItem.addClass(`tui-full-calendar-popup-section-item tui-full-calendar-section-${fieldName} w-100`)
+        $spanWithIcon.addClass('tui-full-calendar-icon');
+        $fontawesomeIcon.addClass(fontawesomeIconClasses);
+        $input
+            .attr('id', fieldName)
+            .addClass('tui-full-calendar-content w-90')
+            .attr('placeholder', StringUtils.capitalizeFirstLetter(fieldName));
+
+        if(null !== dataToPrefill){
+            $input.val(dataToPrefill);
+        }
+
+        // combine all
+        $spanWithIcon.append($fontawesomeIcon);
+        $divPopupSectionItem.append([$spanWithIcon, $input]);
+        $divPopupSection.append($divPopupSectionItem);
+
+        return $divPopupSection;
+    }
 }

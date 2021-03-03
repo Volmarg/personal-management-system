@@ -4,26 +4,11 @@
     popoverContent  : 'guide.modules.schedules.description' | trans
 }%}
 >
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-                <span class="icon-holder" style="color:black;">
-                    <i class="far fa-calendar-alt fa-sm"></i>
-                </span>
+    <a class="sidebar-link left-nav-link" href="{{ path('my_schedules') }}">
+        <span class="icon-holder" style="color:black;">
+            <i class="far fa-calendar-alt fa-sm"></i>
+        </span>
         <span class="title">{{ 'sidebar.menu.schedules.label' | trans }}</span>
-        <span class="arrow">
-                    <i class="ti-angle-right fa-sm"></i>
-                  </span>
     </a>
 
-    <ul class="dropdown-menu">
-
-        {% for scheduleType in getNotDeletedSchedulesTypes() %}
-            <li>
-                <a class="sidebar-link left-nav-link" href="{{ path('my_schedules', {'schedulesType': scheduleType.name}) }}"><i class="{{ scheduleType.icon }} fa-sm"></i> {{ scheduleType.name | capitalize }}</a>
-            </li>
-        {% endfor %}
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my_schedules_settings') }}">{{ 'sidebar.menu.schedules.settings' | trans }}</a>
-        </li>
-    </ul>
-    </a>
 </li>

@@ -3,6 +3,7 @@
 namespace App\Twig\Core;
 
 use App\Controller\Core\Application;
+use Doctrine\DBAL\Exception;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -28,11 +29,14 @@ class Notifications extends AbstractExtension {
 
     /**
      * This function must exists in twig as this is used for overall top-bar
+     *
      * @param int $daysMaxOffset
-     * @return mixed[]
+     * @return array
+     * @throws Exception
      */
-    public function getSchedulesForNotifications(int $daysMaxOffset){
-        $schedules = $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays($daysMaxOffset);
+    public function getSchedulesForNotifications(int $daysMaxOffset): array
+    {
+        $schedules = $this->app->repositories->scheduleRepository->getIncomingSchedulesInformationInDays($daysMaxOffset);
 
         $data = [
             self::KEY_SCHEDULES       => $schedules,

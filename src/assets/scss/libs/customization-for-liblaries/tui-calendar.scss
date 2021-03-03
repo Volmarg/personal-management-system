@@ -263,4 +263,9 @@
     display: flex;
     justify-content: space-around;
   }
+
+  .tui-full-calendar-icon > svg {
+    font-size: 13px;
+    color: rgba(0,0,0,0.65);
+  }
 }

@@ -8,6 +8,7 @@ class ScheduleDTO {
 
     const KEY_ID             = 'id';
     const KEY_TITLE          = 'title';
+    const KEY_BODY           = 'body';
     const KEY_ALL_DAY        = 'allDay';
     const KEY_START          = 'start';
     const KEY_END            = 'end';
@@ -25,6 +26,11 @@ class ScheduleDTO {
      * @var string $title
      */
     private string $title;
+
+    /**
+     * @var string $body
+     */
+    private string $body;
 
     /**
      * @var string $allDay
@@ -206,6 +212,22 @@ class ScheduleDTO {
     }
 
     /**
+     * @return string
+     */
+    public function getBody(): string
+    {
+        return $this->body;
+    }
+
+    /**
+     * @param string $body
+     */
+    public function setBody(string $body): void
+    {
+        $this->body = $body;
+    }
+
+    /**
      * Will build json representation of dto
      */
     public function toJson()
@@ -213,6 +235,7 @@ class ScheduleDTO {
         $dataArray = [
             self::KEY_ID             => $this->getId(),
             self::KEY_TITLE          => $this->getTitle(),
+            self::KEY_BODY           => $this->getBody(),
             self::KEY_ALL_DAY        => $this->getAllDay(),
             self::KEY_START          => $this->getStart(),
             self::KEY_END            => $this->getEnd(),
@@ -238,6 +261,7 @@ class ScheduleDTO {
         $dto->setAllDay($schedule->getAllDay());
         $dto->setCalendarId($schedule->getCalendar()->getId());
         $dto->setTitle($schedule->getTitle());
+        $dto->setBody($schedule->getBody());
         $dto->setStart($schedule->getStart()->format("Y-m-d H:i:s"));
         $dto->setLocation($schedule->getLocation());
         $dto->setEnd($schedule->getEnd()->format("Y-m-d H:i:s"));

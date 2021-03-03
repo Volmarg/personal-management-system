@@ -2,6 +2,7 @@ export default class ScheduleDto
 {
     private _id            : string;
     private _title         : string;
+    private _body          : string;
     private _allDay        : boolean;
     private _start         : string;
     private _end           : string;
@@ -50,6 +51,14 @@ export default class ScheduleDto
         this._calendarColor = value;
     }
 
+    get body(): string {
+        return this._body;
+    }
+
+    set body(value: string) {
+        this._body = value;
+    }
+
     /**
      * @description will create dto from json
      */
@@ -60,6 +69,7 @@ export default class ScheduleDto
         let dto            = new ScheduleDto();
         dto._id            = object.id;
         dto._title         = object.title;
+        dto._body          = object.body;
         dto._allDay        = object.allDay;
         dto._start         = object.start;
         dto._end           = object.end;

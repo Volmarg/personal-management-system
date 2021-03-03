@@ -28,6 +28,7 @@ final class Version20210220131953 extends AbstractMigration
                 id INT AUTO_INCREMENT NOT NULL, 
                 calendar_id INT NOT NULL, 
                 title VARCHAR(100) NOT NULL, 
+                body VARCHAR(250) NOT NULL, 
                 all_day TINYINT(1) NOT NULL, 
                 start DATETIME NOT NULL, 
                 end DATETIME NOT NULL, 

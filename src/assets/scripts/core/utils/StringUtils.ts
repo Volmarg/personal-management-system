@@ -28,4 +28,12 @@ export default class StringUtils {
         return firstString === secondString;
     }
 
+    /**
+     * @description will return given string with first letter being capitalized
+     */
+    public static capitalizeFirstLetter(string): string
+    {
+        return string[0].toUpperCase() + string.slice(1);
+    }
+
 }
