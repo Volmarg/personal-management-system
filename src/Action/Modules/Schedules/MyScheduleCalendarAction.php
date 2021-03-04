@@ -76,7 +76,7 @@ class MyScheduleCalendarAction extends AbstractController {
         $message  = $response->getContent();
 
         if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $mySchedulesAction->renderTemplate('car', true, true); // todo: this first parameter will be gone later on
+            $renderedTemplate = $mySchedulesAction->renderTemplate(true, true);
             $templateContent  = $renderedTemplate->getContent();
 
             return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);

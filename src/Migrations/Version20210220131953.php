@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Controller\Core\Application;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
+use Doctrine\Migrations\Version\Version;
 
 /**
  * Auto-generated Migration: Please modify to your needs!
@@ -22,7 +24,6 @@ final class Version20210220131953 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        // todo: replace the old my_schedule with this below + rename that one below
         $this->addSql('
             CREATE TABLE schedule (
                 id INT AUTO_INCREMENT NOT NULL, 
@@ -68,7 +69,8 @@ final class Version20210220131953 extends AbstractMigration
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS background_color,
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS drag_background_color,
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS border_color,
-                deleted AS deleted
+                deleted AS deleted,
+                icon    AS icon
                 
                 FROM my_schedule_type
             )
@@ -79,16 +81,16 @@ final class Version20210220131953 extends AbstractMigration
             INSERT INTO schedule
             (
                 SELECT 
-                NULL    AS id,
-                msc.id  AS calendar_id,
-                ms.name AS title,
-                0       AS all_day,
+                NULL           AS id,
+                msc.id         AS calendar_id,
+                ms.name        AS title,
+                ms.information AS body,
+                0              AS all_day,
                 CONCAT(ms.`date`, ' 06:00:00') AS `start`,
                 CONCAT(ms.`date`, ' 10:00:00') AS `end`,
                 'time'     AS category,
                 ''         AS location,
-                ms.deleted AS deleted,
-                mst.icon   AS icon
+                ms.deleted AS deleted
 
                 FROM my_schedule ms
 
@@ -102,10 +104,11 @@ final class Version20210220131953 extends AbstractMigration
             )           
         ");
 
-        // TODO:
-        // drop old schedule
+        $this->addSql("DROP TABLE my_schedule");
+        $this->addSql("RENAME TABLE schedule TO my_schedule");
 
-        // rename new schedule table name to old schedule table name
+        // no longer used table
+        $this->addSql("DROP TABLE my_schedule_type");
     }
 
     public function down(Schema $schema) : void

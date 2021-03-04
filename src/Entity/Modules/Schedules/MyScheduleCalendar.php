@@ -47,7 +47,7 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
     private $borderColor;
 
     /**
-     * @ORM\OneToMany(targetEntity=Schedule::class, mappedBy="calendar")
+     * @ORM\OneToMany(targetEntity=MySchedule::class, mappedBy="calendar")
      */
     private $schedules;
 
@@ -132,14 +132,14 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
     }
 
     /**
-     * @return Collection|Schedule[]
+     * @return Collection|MySchedule[]
      */
     public function getSchedules(): Collection
     {
         return $this->schedules;
     }
 
-    public function addSchedule(Schedule $schedule): self
+    public function addSchedule(MySchedule $schedule): self
     {
         if (!$this->schedules->contains($schedule)) {
             $this->schedules[] = $schedule;
@@ -149,7 +149,7 @@ class MyScheduleCalendar implements SoftDeletableEntityInterface, EntityInterfac
         return $this;
     }
 
-    public function removeSchedule(Schedule $schedule): self
+    public function removeSchedule(MySchedule $schedule): self
     {
         if ($this->schedules->removeElement($schedule)) {
             // set the owning side to null (unless already changed)

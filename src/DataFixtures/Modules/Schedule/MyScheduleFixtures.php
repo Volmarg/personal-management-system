@@ -5,7 +5,7 @@ namespace App\DataFixtures\Modules\Schedule;
 use App\Controller\Core\Application;
 use App\DataFixtures\Providers\FontawesomeIconsProvider;
 use App\Entity\Modules\Schedules\MyScheduleCalendar;
-use App\Entity\Modules\Schedules\Schedule;
+use App\Entity\Modules\Schedules\MySchedule;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -104,7 +104,7 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
             $endDateTime->modify("+{$durationTime} HOUR");
             $location = $this->faker->postcode . " " . $this->faker->city . ", " . $this->faker->streetAddress;
 
-            $schedule = new Schedule();
+            $schedule = new MySchedule();
             $schedule->setDeleted(false);
             $schedule->setBody($this->faker->sentence);
             $schedule->setCalendar($calendar);
@@ -112,7 +112,7 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
             $schedule->setTitle($this->faker->sentence);
             $schedule->setStart($startDateTime);
             $schedule->setEnd($endDateTime);
-            $schedule->setCategory(Schedule::CATEGORY_TIME);
+            $schedule->setCategory(MySchedule::CATEGORY_TIME);
             $schedule->setLocation($location);
 
             $manager->persist($schedule);;

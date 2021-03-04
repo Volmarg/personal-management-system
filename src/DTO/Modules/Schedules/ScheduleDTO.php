@@ -2,7 +2,7 @@
 
 namespace App\DTO\Modules\Schedules;
 
-use App\Entity\Modules\Schedules\Schedule;
+use App\Entity\Modules\Schedules\MySchedule;
 
 class ScheduleDTO {
 
@@ -251,10 +251,10 @@ class ScheduleDTO {
     /**
      * Will build the dto from schedule entity
      *
-     * @param Schedule $schedule
+     * @param MySchedule $schedule
      * @return ScheduleDTO
      */
-    public static function fromScheduleEntity(Schedule $schedule): ScheduleDTO
+    public static function fromScheduleEntity(MySchedule $schedule): ScheduleDTO
     {
         $dto = new ScheduleDTO();
         $dto->setId($schedule->getId());

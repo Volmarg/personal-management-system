@@ -36,7 +36,7 @@ class Notifications extends AbstractExtension {
      */
     public function getSchedulesForNotifications(int $daysMaxOffset): array
     {
-        $schedules = $this->app->repositories->scheduleRepository->getIncomingSchedulesInformationInDays($daysMaxOffset);
+        $schedules = $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays($daysMaxOffset);
 
         $data = [
             self::KEY_SCHEDULES       => $schedules,

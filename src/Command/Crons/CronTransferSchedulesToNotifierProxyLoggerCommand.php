@@ -108,8 +108,8 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
             $this->app->logger->info("Started transferring the schedules to npl");
             {
                 foreach($this->dueDays as $days){
-                    // todo: test since it's adjusted now
-                    $incomingSchedulesDTOS = $this->app->repositories->scheduleRepository->getIncomingSchedulesInformationInDays($days);
+
+                    $incomingSchedulesDTOS = $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays($days);
 
                     if( empty($incomingSchedulesDTOS) ){
                         $this->app->logger->info("No results to find for due days: {$days}");

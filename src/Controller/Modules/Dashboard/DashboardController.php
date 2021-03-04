@@ -30,7 +30,7 @@ class DashboardController extends AbstractController {
      * @throws Exception
      */
     public function getIncomingSchedulesInformation(?int $limit = null) {
-        return  $this->app->repositories->scheduleRepository->getIncomingSchedulesInformationInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL, $limit);
+        return  $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL, $limit);
     }
 
     /**

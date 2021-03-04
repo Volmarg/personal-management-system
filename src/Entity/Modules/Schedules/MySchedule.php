@@ -4,13 +4,13 @@ namespace App\Entity\Modules\Schedules;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
-use App\Repository\Modules\Schedules\ScheduleRepository;
+use App\Repository\Modules\Schedules\MyScheduleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ScheduleRepository::class)
+ * @ORM\Entity(repositoryClass=MyScheduleRepository::class)
  */
-class Schedule implements SoftDeletableEntityInterface, EntityInterface
+class MySchedule implements SoftDeletableEntityInterface, EntityInterface
 {
     const FIELD_NAME_DELETED = "deleted";
     const CATEGORY_ALL_DAY   = "allday";
