@@ -6,22 +6,18 @@ var TuiCalendar = require('tui-calendar');
 import Calendar, {ICalendarInfo, ISchedule} from "tui-calendar";
 import axios                                from "axios";
 
-import DomElements         from "../../core/utils/DomElements";
-import ScheduleCalendarDto from "../../DTO/modules/schedules/ScheduleCalendarDto";
-import Loader              from "../loader/Loader";
-import BootstrapNotify     from "../bootstrap-notify/BootstrapNotify";
-import AjaxResponseDto     from "../../DTO/AjaxResponseDto";
-import ScheduleDto         from "../../DTO/modules/schedules/ScheduleDto";
-import StringUtils from "../../core/utils/StringUtils";
+import DomElements     from "../../core/utils/DomElements";
+import Loader          from "../loader/Loader";
+import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
+import AjaxResponseDto from "../../DTO/AjaxResponseDto";
+import ScheduleDto     from "../../DTO/modules/schedules/ScheduleDto";
+import StringUtils     from "../../core/utils/StringUtils";
 
 /**
  * Todo:
- *  - add some search logic to easily find by subject, with `goto`, `edit` (creation popup) , `remove` (creation popup)
- *  - the time picker in tui popup is not working
- *  - handle showing schedules in widget + bell,
- *  - handle information field + adjust migration after that
  *  - on the very end add task for later to integrate reminder + NPL with them
  *    - add also info to handle adding reminders to the calendar, so far this will work like before
+ *    - add some search logic to easily find by subject, with `goto`, `edit` (creation popup) , `remove` (creation popup)
  */
 
 /**
@@ -186,6 +182,8 @@ export default class TuiCalendarService
 
     /**
      * @description will apply logic for events built into the Calendar itself
+     *              keep in mind that event if the logic for attaching/prefilling/reading custom elements in popup
+     *              seems to be the same, it MUST be handled differently in beforeUpdate/beforeCreate - do not merge it!
      */
     private applyBuiltInEventsToCalendarInstance(calendarInstance: Calendar): Calendar
     {
@@ -194,9 +192,15 @@ export default class TuiCalendarService
             /**
              * @description handles the case when the schedule is create upon click
              */
-            beforeCreateSchedule: (event) => {
+            beforeCreateSchedule: (schedule) => {
                 let ajaxCallUrl = '/modules/schedules/save-schedule';
-                _this.saveSchedule(event, ajaxCallUrl, calendarInstance);
+
+                let $creationPopupContainer = $(this.POPUP_CONTAINER_SELECTOR);
+                if( DomElements.doElementsExists([$creationPopupContainer]) ){
+                    schedule.body = $creationPopupContainer.find('#body').val() as string;
+                }
+
+                _this.saveSchedule(schedule, ajaxCallUrl, calendarInstance);
                 this.lastClickedScheduleId = null;
             },
             /**
@@ -214,8 +218,14 @@ export default class TuiCalendarService
                     changes = {};
                 }
 
-                // handle additional properties
-                changes.body        = $creationPopupContainer.find('#body').val() as string;
+                // @ts-ignore, handle additional properties, creation popup might not exist, example -> drag schedule
+                changes.body = event.schedule.body;
+                if( StringUtils.isEmptyString(changes.body) ){
+                    if( DomElements.doElementsExists([$creationPopupContainer]) ){
+                        changes.body = $creationPopupContainer.find('#body').val() as string;
+                    }
+                }
+
                 let updatedSchedule = _this.buildUpdatedSchedule(event.schedule, changes);
 
                 _this.saveSchedule(updatedSchedule, ajaxCallUrl, calendarInstance, false);
@@ -316,11 +326,9 @@ export default class TuiCalendarService
         //@ts-ignore
         let endDate   = scheduleData.end.toDate();
 
-        let scheduleBody = $creationPopupContainer.find('#body').val() as string;
-
         let dataBag  = {
             title       : scheduleData.title,
-            body        : scheduleBody,
+            body        : scheduleData.body,
             isAllDay    : scheduleData.isAllDay,
             start       : startDate,
             end         : endDate,
@@ -339,13 +347,14 @@ export default class TuiCalendarService
                     _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                     return;
                 }
+                _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
 
                 let usedScheduleId = ++_this.lastUsedScheduleId;
 
                 var schedule = {
                     id          : usedScheduleId.toString(),
                     title       : scheduleData.title,
-                    body        : scheduleBody,
+                    body        : scheduleData.body,
                     isAllDay    : scheduleData.isAllDay,
                     start       : scheduleData.start,
                     end         : scheduleData.end,
@@ -609,16 +618,15 @@ export default class TuiCalendarService
 
             // add/prefill fields
             let lastClickedSchedule = this.findSchedule(this.lastClickedScheduleId, calendarInstance);
-            if(null === lastClickedSchedule){
-                throw {
-                    "message"               : "Could not find the schedule for lastClickedScheduleId",
-                    "lastClickedScheduleId" : this.lastClickedScheduleId,
-                }
+            let valueForBodyField   = "";
+
+            // this is null when creating new schedule via popup
+            if(null != lastClickedSchedule){
+                valueForBodyField = lastClickedSchedule[this.POPUP_CUSTOM_FIELD_NAME_BODY];
             }
 
             // BODY
             let containerTitleSection = $(this.POPUP_CONTAINER_SECTION_TITLE_SELECTOR);
-            let valueForBodyField     = lastClickedSchedule[this.POPUP_CUSTOM_FIELD_NAME_BODY];
             let $bodySection          = this.buildInputFieldForPopup(this.POPUP_CUSTOM_FIELD_NAME_BODY, 'fas fa-pen', valueForBodyField);
 
             containerTitleSection.parent().after($bodySection);

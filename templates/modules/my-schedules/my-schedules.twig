@@ -8,18 +8,21 @@
 
 {% block body %}
 
-    <main class='main-content bgc-grey-100 my-schedules'>
+    <main class='main-content bgc-grey-100 my-schedules scroll-y'>
 
-        {# todo: add block above with description like in other modules #}
-        {# todo: remove not longer used translations strings #}
+        {# todo: add colors legends in the settings (readonly so far) #}
 
         <div id='mainContent'>
             <div class="container-fluid">
-                {# DataTable#}
+
+                {% include "modules/common/components/info-block.twig" with {
+                    text_translation_string   : 'schedules.calendar.infoBlock.text.mainDescription',
+                    header_translation_string : 'schedules.calendar.infoBlock.header'
+                } %}
+
                 <div class="row">
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'schedules.headers.schedules' | trans }}</h4>
 
                             {# Main wrapper #}
                             <section class="tui-calendar-wrapper d-flex flex-row flex-wrap">

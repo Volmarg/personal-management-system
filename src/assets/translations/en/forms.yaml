@@ -39,23 +39,6 @@ forms:
     type: Type
     description: Description
     group: Group
-  MyCarSchedule:
-    scheduleType: Schedule type
-    name: Name
-    date: Date
-    information: Information
-  MyCarScheduleType:
-    labels:
-      name: Name
-  MyScheduleType:
-    scheduleType: Schedule type
-    name: Name
-    date: Date
-    information: Information
-  MyScheduleTypeType:
-    labels:
-      name: Name
-      icon: Icon
   MyTravelsIdeasType:
     placeholders:
       category:

@@ -182,31 +182,6 @@ achievements:
         the successes toward personal goals and dreams.
 
 schedules:
-  settings:
-    headers:
-      changeAddScheduleType: Change/Add schedule type
-    table:
-      name: Name
-      icon: Icon
-    infoBlock:
-      header: Schedules settings
-      text:
-        mainDescription: |
-          Each of the defined type results in showing additional submenu element in the <b>Schedules</b> menu element.
-          Defined schedules which are close to the deadline are shown on dashboard and in the notification bell list.
-  headers:
-    schedules: Schedules
-    addSchedule: Add schedule
-  legend:
-    label: Legend
-    over30: In 30 - 60 days
-    over14: In 14 -30 days
-    14: In 14 days
-  table:
-    scheduleType: Schedule type
-    information: Information
-    date: Date
-    name: Name
   calendar:
     messages:
       noCalendarHasBeenFoundForId: "No calendar has been found for given id %id%"
@@ -223,10 +198,17 @@ schedules:
       forward: Go forward
     calendarsList:
       viewAll: View all
+    infoBlock:
+      header: Schedules
+      text:
+        mainDescription: |
+          Fully interactive calendar with support of schedules groups management
   schedule:
     message:
       noScheduleHasBeenFoundForId: "No schedule has been found for given id %id%"
       scheduleHasBeenRemoved: "Schedule has been removed"
+      scheduleHasBeenUpdated: Schedule has been updated
+      scheduleHasBeenCreated: Schedule has been created
   modals:
     calendarSettings:
       header: Calendar settings
@@ -235,6 +217,11 @@ schedules:
           name: Name
           color: Color
           icon: Icon
+      legend:
+        label: Legend
+        over30: In 30 - 60 days
+        over14: In 14 -30 days
+        14: In 14 days
     panels:
       management: Management
       addNewCalendar: Add new calendar

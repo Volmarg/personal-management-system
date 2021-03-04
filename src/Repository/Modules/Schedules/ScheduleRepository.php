@@ -89,6 +89,7 @@ class ScheduleRepository extends ServiceEntityRepository
 
         $sql = "
             SELECT 
+                sch.id                      AS id,
                 sch.title                   AS title,
                 sch.start                   AS date,
                 DATEDIFF(sch.start ,NOW())  AS daysDiff,

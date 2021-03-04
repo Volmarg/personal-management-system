@@ -38,7 +38,6 @@ use App\Controller\Modules\Payments\MyRecurringPaymentsMonthlyController;
 use App\Controller\Modules\Reports\ReportsController;
 use App\Controller\Modules\Schedules\MyScheduleCalendarController;
 use App\Controller\Modules\Schedules\MySchedulesController;
-use App\Controller\Modules\Schedules\MyScheduleTypeController;
 use App\Controller\Modules\Schedules\ScheduleController;
 use App\Controller\Modules\Shopping\MyShoppingPlansController;
 use App\Controller\Modules\Todo\MyTodoController;
@@ -273,11 +272,6 @@ class Controllers extends AbstractController {
      * @var MyShoppingPlansController $myShoppingPlansController
      */
     private MyShoppingPlansController $myShoppingPlansController;
-
-    /**
-     * @var MyScheduleTypeController $myScheduleTypeController
-     */
-    private MyScheduleTypeController $myScheduleTypeController;
 
     /**
      * @var MyPaymentsIncomeController $myPaymentsIncomeController
@@ -631,14 +625,6 @@ class Controllers extends AbstractController {
     }
 
     /**
-     * @return MyScheduleTypeController
-     */
-    public function getMyScheduleTypeController(): MyScheduleTypeController
-    {
-        return $this->myScheduleTypeController;
-    }
-
-    /**
      * @return MyPaymentsIncomeController
      */
     public function getMyPaymentsIncomeController(): MyPaymentsIncomeController
@@ -753,7 +739,6 @@ class Controllers extends AbstractController {
         MyJobHolidaysController       $myJobHolidaysController,
         MyPasswordsGroupsController   $myPasswordsGroupsController,
         MyShoppingPlansController     $myShoppingPlansController,
-        MyScheduleTypeController      $myScheduleTypeController,
         MyPaymentsIncomeController    $myPaymentsIncomeController,
         MyPaymentsProductsController  $myPaymentsProductsController,
         MyPaymentsOwedController      $myPaymentsOwedController,
@@ -807,7 +792,6 @@ class Controllers extends AbstractController {
         $this->myJobHolidaysController      = $myJobHolidaysController;
         $this->myPasswordsGroupsController  = $myPasswordsGroupsController;
         $this->myShoppingPlansController    = $myShoppingPlansController;
-        $this->myScheduleTypeController     = $myScheduleTypeController;
         $this->myPaymentsIncomeController   = $myPaymentsIncomeController;
         $this->myPaymentsProductsController = $myPaymentsProductsController;
         $this->myPaymentsOwedController     = $myPaymentsOwedController;

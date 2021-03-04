@@ -33,8 +33,6 @@ use App\Form\Modules\Payments\MyPaymentsSettingsCurrencyMultiplierType;
 use App\Form\Modules\Payments\MyPaymentsTypesType;
 use App\Form\Modules\Payments\MyRecurringPaymentsMonthlyType;
 use App\Form\Modules\Issues\MyIssueType;
-use App\Form\Modules\Schedules\MyScheduleType;
-use App\Form\Modules\Schedules\MyScheduleTypeType;
 use App\Form\Modules\Shopping\MyShoppingPlansType;
 use App\Form\Modules\Todo\MyTodoElementType;
 use App\Form\Modules\Todo\MyTodoType;
@@ -93,14 +91,6 @@ class Forms extends AbstractController {
 
     public function recurringPaymentsForm(array $params = []): FormInterface {
         return $this->createForm(MyRecurringPaymentsMonthlyType::class, null, $params);
-    }
-
-    public function scheduleForm(array $params = []): FormInterface {
-        return $this->createForm(MyScheduleType::class, null, $params);
-    }
-
-    public function scheduleTypeForm(array $params = []): FormInterface {
-        return $this->createForm(MyScheduleTypeType::class, null, $params);
     }
 
     public function contactForm(array $params = [], MyContact $myContactType = null): FormInterface {

@@ -13,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Schedule implements SoftDeletableEntityInterface, EntityInterface
 {
     const FIELD_NAME_DELETED = "deleted";
+    const CATEGORY_ALL_DAY   = "allday";
+    const CATEGORY_TIME      = "time";
 
     /**
      * @ORM\Id

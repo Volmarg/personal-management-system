@@ -6,7 +6,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\DTO\Discord\DiscordMessageDTO;
 use App\DTO\Mail\MailDTO;
-use App\Entity\Modules\Schedules\MySchedule;
+use App\DTO\Modules\Schedules\IncomingScheduleDTO;
 use App\NotifierProxyLoggerBridge;
 use App\Request\Discord\InsertDiscordMessageRequest;
 use App\Request\Mail\InsertMailRequest;
@@ -47,22 +47,22 @@ class NotifierProxyLoggerService
     }
 
     /**
-     * Will use schedule and insert single discord message to the queue in NPL
+     * Will use IncomingScheduleDTO and insert single discord message to the queue in NPL
      *
-     * @param MySchedule $schedule
+     * @param IncomingScheduleDTO $incomingScheduleDTO
      * @return InsertDiscordMessageResponse
      * @throws GuzzleException
      * @throws Exception
      */
-    public function insertDiscordMessageForSchedule(MySchedule $schedule): InsertDiscordMessageResponse
+    public function insertDiscordMessageForIncomingScheduleDto(IncomingScheduleDTO $incomingScheduleDTO): InsertDiscordMessageResponse
     {
         try{
             $discordMessageDto = new DiscordMessageDTO();
             $request           = new InsertDiscordMessageRequest();
 
             $discordMessageDto->setWebhookName(NotifierProxyLoggerBridge::WEBHOOK_NAME_ALL_NOTIFICATIONS);
-            $discordMessageDto->setMessageTitle($schedule->getName());
-            $discordMessageDto->setMessageContent($schedule->getInformation());
+            $discordMessageDto->setMessageTitle($incomingScheduleDTO->getTitle());
+            $discordMessageDto->setMessageContent($incomingScheduleDTO->getBody());
             $discordMessageDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
 
             $request->setDiscordMessageDto($discordMessageDto);
@@ -76,14 +76,14 @@ class NotifierProxyLoggerService
     }
 
     /**
-     * Will use schedule and insert single email to the queue in NPL
+     * Will use IncomingScheduleDTO and insert single email to the queue in NPL
      *
-     * @param MySchedule $schedule
+     * @param IncomingScheduleDTO $incomingScheduleDTO
      * @return InsertMailResponse
      * @throws GuzzleException
      * @throws Exception
      */
-    public function insertEmailForSchedule(MySchedule $schedule): InsertMailResponse
+    public function insertEmailForIncomingScheduleDto(IncomingScheduleDTO $incomingScheduleDTO): InsertMailResponse
     {
         try{
             $mailDto = new MailDTO();
@@ -92,8 +92,8 @@ class NotifierProxyLoggerService
             $mailDto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
             $mailDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
             $mailDto->setFromEmail($this->app->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
-            $mailDto->setSubject($schedule->getName());
-            $mailDto->setBody($schedule->getInformation());
+            $mailDto->setSubject($incomingScheduleDTO->getTitle());
+            $mailDto->setBody($incomingScheduleDTO->getBody());
 
             $request->setMailDto($mailDto);
             $response = $this->notifierProxyLoggerBridge->insertMail($request);

@@ -3,7 +3,7 @@
 namespace App\Command\Crons;
 
 use App\Controller\Core\Application;
-use App\Entity\Modules\Schedules\MySchedule;
+use App\DTO\Modules\Schedules\IncomingScheduleDTO;
 use App\Services\External\NotifierProxyLoggerService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -108,16 +108,17 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
             $this->app->logger->info("Started transferring the schedules to npl");
             {
                 foreach($this->dueDays as $days){
-                    $schedulesToHandle = $this->app->repositories->myScheduleRepository->getIncomingSchedulesEntitiesInDays($days);
+                    // todo: test since it's adjusted now
+                    $incomingSchedulesDTOS = $this->app->repositories->scheduleRepository->getIncomingSchedulesInformationInDays($days);
 
-                    if( empty($schedulesToHandle) ){
+                    if( empty($incomingSchedulesDTOS) ){
                         $this->app->logger->info("No results to find for due days: {$days}");
                         continue;
                     }
 
-                    foreach($schedulesToHandle as $schedule){
-                        $this->app->logger->info("Now handling schedule with id {$schedule->getId()}");
-                        $this->handleTransferForChannel($schedule);
+                    foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
+                        $this->app->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}");
+                        $this->handleTransferForChannel($incomingScheduleDTO);
                     }
                 }
             }
@@ -134,22 +135,22 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     /**
      * Handle sending the schedule depending on the provided channel in the console (as option)
      *
-     * @param MySchedule $schedule
-     * @throws Exception|GuzzleException
+     * @param IncomingScheduleDTO $incomingScheduleDTO
+     * @throws GuzzleException
      */
-    private function handleTransferForChannel(MySchedule $schedule): void
+    private function handleTransferForChannel(IncomingScheduleDTO $incomingScheduleDTO): void
     {
         switch($this->channel)
         {
             case self::TRANSFER_CHANNEL_DISCORD:
             {
-                $response = $this->notifierProxyLoggerService->insertDiscordMessageForSchedule($schedule);
+                $response = $this->notifierProxyLoggerService->insertDiscordMessageForIncomingScheduleDto($incomingScheduleDTO);
             }
             break;
 
             case self::TRANSFER_CHANNEL_MAIL:
             {
-                $response = $this->notifierProxyLoggerService->insertEmailForSchedule($schedule);
+                $response = $this->notifierProxyLoggerService->insertEmailForIncomingScheduleDto($incomingScheduleDTO);
             }
             break;
 

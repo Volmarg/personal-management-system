@@ -27,10 +27,6 @@ forms:
     MyNotesCategoriesType: { parentId: Parent, name: Name, icon: Icon, color: Color }
     MyNotesType: { labels: { title: Title, body: Body, category: Category } }
     MyContactsType: { phone: 'Phone Number', email: Email, other: Contact, archived: Contact, type: Type, description: Description, group: Group }
-    MyCarSchedule: { scheduleType: 'Schedule type', name: Name, date: Date, information: Information }
-    MyCarScheduleType: { labels: { name: Name } }
-    MyScheduleType: { scheduleType: 'Schedule type', name: Name, date: Date, information: Information }
-    MyScheduleTypeType: { labels: { name: Name, icon: Icon } }
     MyTravelsIdeasType: { placeholders: { category: { exists: 'Either pick category from list or type name of new one', first: 'Add Your first category' }, image: 'Link to image', map: 'Link to google maps' }, labels: { location: Location, country: Country, image: Image, map: Map, category: Category } }
     MyJobHolidaysType: { placeholders: { daysSpent: 'Amount of days that You want to spend', information: 'Goal/Reason of spending holidays' }, labels: { year: Year, daysSpent: 'Days spent', information: Information } }
     MyJobHolidaysPoolType: { placeholders: { year: 'Add year', daysInPool: 'Amount of days that You have for this year generally', companyName: 'Provide company name' }, labels: { year: Year, daysInPool: 'Days in pool', companyName: 'Company name' } }
@@ -128,13 +124,9 @@ achievements:
     headers: { addAchievement: 'Add achievements' }
     infoBlock: { header: Achievements, text: { mainDescription: "Track of personal achievements, both smaller and bigger ones - as it's always nice to remember\nthe successes toward personal goals and dreams.\n" } }
 schedules:
-    settings: { headers: { changeAddScheduleType: 'Change/Add schedule type' }, table: { name: Name, icon: Icon }, infoBlock: { header: 'Schedules settings', text: { mainDescription: "Each of the defined type results in showing additional submenu element in the <b>Schedules</b> menu element.\nDefined schedules which are close to the deadline are shown on dashboard and in the notification bell list.\n" } } }
-    headers: { schedules: Schedules, addSchedule: 'Add schedule' }
-    legend: { label: Legend, over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' }
-    table: { scheduleType: 'Schedule type', information: Information, date: Date, name: Name }
-    calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' }, views: { daily: Daily, weekly: Weekly, monthly: Monthly }, actions: { addSchedule: 'Add schedule', settings: 'Calendars settings', view: View, back: 'Go back', today: Today, forward: 'Go forward' }, calendarsList: { viewAll: 'View all' } }
-    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed' } }
-    modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } } }, panels: { management: Management, addNewCalendar: 'Add new calendar' } }
+    calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' }, views: { daily: Daily, weekly: Weekly, monthly: Monthly }, actions: { addSchedule: 'Add schedule', settings: 'Calendars settings', view: View, back: 'Go back', today: Today, forward: 'Go forward' }, calendarsList: { viewAll: 'View all' }, infoBlock: { header: Schedules, text: { mainDescription: "Fully interactive calendar with support of schedules groups management\n" } } }
+    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed', scheduleHasBeenUpdated: 'Schedule has been updated', scheduleHasBeenCreated: 'Schedule has been created' } }
+    modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } }, legend: { label: Legend, over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' } }, panels: { management: Management, addNewCalendar: 'Add new calendar' } }
 travels:
     headers: { addIdea: 'Add idea' }
     popovers: { remove: 'Remove record', edit: 'Edit record' }

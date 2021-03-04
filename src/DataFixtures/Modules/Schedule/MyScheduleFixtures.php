@@ -3,16 +3,21 @@
 namespace App\DataFixtures\Modules\Schedule;
 
 use App\Controller\Core\Application;
-use App\DataFixtures\Providers\Modules\Schedules;
-use App\Entity\Modules\Schedules\MySchedule;
-use App\Entity\Modules\Schedules\MyScheduleType;
+use App\DataFixtures\Providers\FontawesomeIconsProvider;
+use App\Entity\Modules\Schedules\MyScheduleCalendar;
+use App\Entity\Modules\Schedules\Schedule;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Exception;
 use Faker\Factory;
 
 class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
 {
+    const COUNT_OF_ENTRIES_FOR_MONTH = 100;
+    const COUNT_OF_CALENDARS         = 5;
+
     /**
      * Factory $faker
      */
@@ -30,57 +35,118 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
 
     /**
      * @param ObjectManager $manager
-     * @throws \Exception
+     * @throws Exception
      */
     public function load(ObjectManager $manager)
     {
+        $calendars = $this->addCalendars($manager);
 
-        $this->addScheduleTypes($manager);
-        $this->addSchedules($manager);
+        $this->addSchedulesForPreviousMonth($manager, $calendars);
+        $this->addSchedulesForCurrentMonth($manager, $calendars);
+        $this->addSchedulesForNextMonth($manager, $calendars);
     }
 
-    private function addScheduleTypes(ObjectManager $manager){
-        foreach(Schedules::ALL_SCHEDULES_TYPES as $scheduleTypeData){
-            $name = $scheduleTypeData[Schedules::KEY_NAME];
-            $icon = $scheduleTypeData[Schedules::KEY_ICON];
+    /**
+     * @param ObjectManager $manager
+     * @param MyScheduleCalendar[] $calendars
+     * @throws Exception
+     */
+    private function addSchedulesForPreviousMonth(ObjectManager $manager, array $calendars): void
+    {
+        $startDateTime = $this->faker->dateTimeThisMonth->modify("-1 MONTHS");
+        $this->addSchedulesForDateTimeString($startDateTime, $manager, $calendars);
+    }
 
-            $scheduleType = new MyScheduleType();
-            $scheduleType->setName($name);
-            $scheduleType->setIcon($icon);
+    /**
+     * @param ObjectManager $manager
+     * @param MyScheduleCalendar[] $calendars
+     * @throws Exception
+     */
+    private function addSchedulesForCurrentMonth(ObjectManager $manager, array $calendars): void
+    {
+        $startDateTime = $this->faker->dateTimeThisMonth;
+        $this->addSchedulesForDateTimeString($startDateTime, $manager, $calendars);
+    }
 
-            $manager->persist($scheduleType);
+    /**
+     * @param MyScheduleCalendar[] $calendars
+     * @param ObjectManager $manager
+     * @throws Exception
+     */
+    private function addSchedulesForNextMonth(ObjectManager $manager, array $calendars): void
+    {
+        $startDateTime = $this->faker->dateTimeThisMonth->modify("+1 MONTHS");
+        $this->addSchedulesForDateTimeString($startDateTime, $manager, $calendars);
+    }
+
+    /**
+     * @param DateTime $startDateTime
+     * @param ObjectManager $manager
+     * @param MyScheduleCalendar[] $calendars
+     * @throws Exception
+     */
+    private function addSchedulesForDateTimeString(DateTime $startDateTime, ObjectManager $manager, array $calendars): void
+    {
+        for($x = 0; $x <= self::COUNT_OF_ENTRIES_FOR_MONTH; $x++){
+            $randomCalendarIndex = array_rand($calendars);
+            $calendar            = $calendars[$randomCalendarIndex];
+
+            $firstDayInMonth = 1;
+            $lastDayInMonth  = $startDateTime->format("t");
+            $dayInMonth      = rand($firstDayInMonth, $lastDayInMonth);
+
+            $startDateTimeString = $startDateTime->format("Y-m-") . $dayInMonth . " " . $this->faker->time();
+            $startDateTime       = new DateTime($startDateTimeString);
+
+            $durationTime = rand(1,5);
+
+            $endDateTime = clone $startDateTime;
+            $endDateTime->modify("+{$durationTime} HOUR");
+            $location = $this->faker->postcode . " " . $this->faker->city . ", " . $this->faker->streetAddress;
+
+            $schedule = new Schedule();
+            $schedule->setDeleted(false);
+            $schedule->setBody($this->faker->sentence);
+            $schedule->setCalendar($calendar);
+            $schedule->setAllDay(false);
+            $schedule->setTitle($this->faker->sentence);
+            $schedule->setStart($startDateTime);
+            $schedule->setEnd($endDateTime);
+            $schedule->setCategory(Schedule::CATEGORY_TIME);
+            $schedule->setLocation($location);
+
+            $manager->persist($schedule);;
         }
+
         $manager->flush();
     }
 
     /**
      * @param ObjectManager $manager
-     * @throws \Exception
+     * @return MyScheduleCalendar[]
      */
-    private function addSchedules(ObjectManager $manager){
+    private function addCalendars(ObjectManager $manager): array
+    {
+        $allCalendars = [];
+        for($x = 0; $x <= self::COUNT_OF_CALENDARS; $x++){
+            $hexColor = $this->faker->hexColor;
+            $calendar = new MyScheduleCalendar();
+            $calendar->setColor("white");
+            $calendar->setBorderColor($hexColor);
+            $calendar->setBackgroundColor($hexColor);
+            $calendar->setDragBackgroundColor($hexColor);
+            $calendar->setName($this->faker->word);
+            $calendar->setDeleted(false);
+            $calendar->setIcon(FontawesomeIconsProvider::getRandomIcon());
 
-        $allSchedulesData = array_merge(Schedules::ALL_CAR_SCHEDULES, Schedules::ALL_HOME_SCHEDULES);
-        foreach($allSchedulesData as $scheduleData)
-        {
+            $allCalendars[] = $calendar;
 
-            $typeName     = $scheduleData[Schedules::KY_SCHEDULE_TYPE_NAME];
-            $type          = $this->app->repositories->myScheduleTypeRepository->findOneBy(["name" => $typeName]);
-
-            $name          = $scheduleData[Schedules::KEY_NAME];
-            $information   = $scheduleData[Schedules::KEY_INFORMATION];
-            $date          = $this->faker->dateTimeBetween('+5 day','+2 month')->format('d-m-Y');
-
-            $carSchedule  = new MySchedule();
-            $carSchedule->setName($name);
-            $carSchedule->setScheduleType($type);
-            $carSchedule->setInformation($information);
-            $carSchedule->setDate($date);
-            $carSchedule->setIsDateBased();
-
-            $manager->persist($carSchedule);
+            $manager->persist($calendar);
         }
 
         $manager->flush();
+
+        return $allCalendars;
     }
 
     /**

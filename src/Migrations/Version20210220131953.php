@@ -102,6 +102,7 @@ final class Version20210220131953 extends AbstractMigration
             )           
         ");
 
+        // TODO:
         // drop old schedule
 
         // rename new schedule table name to old schedule table name

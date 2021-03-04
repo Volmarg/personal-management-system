@@ -49,7 +49,6 @@ use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Schedules\MyScheduleCalendarRepository;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
-use App\Repository\Modules\Schedules\MyScheduleTypeRepository;
 use App\Repository\Modules\Schedules\ScheduleRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Todo\MyTodoElementRepository;
@@ -100,7 +99,6 @@ class Repositories extends AbstractController {
     const MY_RECURRING_PAYMENT_MONTHLY_REPOSITORY_NAME  = 'MyRecurringPaymentMonthlyRepository';
     const SETTING_REPOSITORY                            = 'SettingRepository';
     const MY_SCHEDULE_REPOSITORY                        = "MyScheduleRepository";
-    const MY_SCHEDULE_TYPE_REPOSITORY                   = "MyScheduleTypeRepository";
     const MY_SCHEDULE_CALENDAR_REPOSITORY               = "MyScheduleCalendarRepository";
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
     const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
@@ -276,11 +274,6 @@ class Repositories extends AbstractController {
     public $myScheduleRepository;
 
     /**
-     * @var MyScheduleTypeRepository $myScheduleTypeRepository
-     */
-    public $myScheduleTypeRepository;
-
-    /**
      * @var MyContactRepository $myContactRepository
      */
     public $myContactRepository;
@@ -387,7 +380,6 @@ class Repositories extends AbstractController {
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
         MyScheduleRepository                $myScheduleRepository,
-        MyScheduleTypeRepository            $myScheduleTypeRepository,
         MyContactTypeRepository             $myContactTypeRepository,
         MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
@@ -432,7 +424,6 @@ class Repositories extends AbstractController {
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
         $this->myScheduleRepository                 = $myScheduleRepository;
-        $this->myScheduleTypeRepository             = $myScheduleTypeRepository;
         $this->myContactTypeRepository              = $myContactTypeRepository;
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;

@@ -11,6 +11,11 @@ use Exception;
 class IncomingScheduleDTO {
 
     /**
+     * @var string $id
+     */
+    private string $id;
+
+    /**
      * @var string $title
      */
     private string $title = "";
@@ -135,6 +140,22 @@ class IncomingScheduleDTO {
     public function setBody(string $body): void
     {
         $this->body = $body;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId(string $id): void
+    {
+        $this->id = $id;
     }
 
 }

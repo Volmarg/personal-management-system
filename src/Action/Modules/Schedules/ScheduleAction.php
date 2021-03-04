@@ -133,9 +133,10 @@ class ScheduleAction extends AbstractController {
                 return $ajaxResponse->buildJsonResponse();
             }
 
-            $schedule = new Schedule();
+            $schedule       = new Schedule();
+            $successMessage = $this->app->translator->translate('schedules.schedule.message.scheduleHasBeenCreated');
             if( !empty($scheduleId) ){
-
+                $successMessage = $this->app->translator->translate('schedules.schedule.message.scheduleHasBeenUpdated');
                 $schedule = $this->controllers->getScheduleController()->findOneScheduleById($scheduleId);
                 if( empty($schedule) ){
 
@@ -170,6 +171,7 @@ class ScheduleAction extends AbstractController {
             return $ajaxResponse->buildJsonResponse();
         }
 
+        $ajaxResponse->setMessage($successMessage);
         return $ajaxResponse->buildJsonResponse();
     }
 
