@@ -228,7 +228,7 @@ export default class DataTable {
                 backdrop: true,
                 callback: function (result) {
                     if (result) {
-                        Loader.showLoader();
+                        Loader.showMainLoader();
 
                         $.ajax({
                             url: url,
@@ -236,7 +236,7 @@ export default class DataTable {
                             data: data,
                         }).always((data) => {
 
-                            Loader.hideLoader();
+                            Loader.hideMainLoader();
 
                             let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
 

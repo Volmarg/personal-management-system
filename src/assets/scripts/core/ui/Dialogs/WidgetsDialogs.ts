@@ -61,7 +61,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
            dialog.init( () => {
                 switch (widgetDataDto.type) {
                     case WidgetData.TYPE_TEMPLATE:
-                        Loader.toggleLoader();
+                        Loader.toggleMainLoader();
                         $.ajax({
                             method : Ajax.REQUEST_TYPE_POST,
                             data   : widgetDataDto.ajaxData,
@@ -84,7 +84,7 @@ export default class WidgetsDialogs extends AbstractDialogs {
                         }).fail(() => {
                             _this.bootstrapNotify.showRedNotification('There was an error while fetching data for bootbox modal')
                         }).always(() => {
-                            Loader.toggleLoader();
+                            Loader.toggleMainLoader();
                         });
 
                         break;

@@ -24,7 +24,7 @@ export default class DataTransferDialogs extends AbstractDialogs {
             'moduleName'              : moduleName
         };
 
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_POST,
             url: this.methods.getDataTransferDialogTemplate,
@@ -87,13 +87,13 @@ export default class DataTransferDialogs extends AbstractDialogs {
             'target_upload_module_dir'                      : targetUploadModuleDirInput,
             'subdirectory_target_path_in_module_upload_dir' : targetSubdirectoryPath
         };
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_POST,
             url: this.methods.moveMultipleFiles,
             data: data
         }).always( (data) => {
-            Loader.toggleLoader();
+            Loader.toggleMainLoader();
 
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
             let notifyType      = '';

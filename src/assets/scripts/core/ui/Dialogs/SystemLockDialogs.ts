@@ -16,12 +16,12 @@ export default class SystemLockDialogs extends AbstractDialogs {
     public buildSystemToggleLockDialog(callback = null, isUnlocked) {
         let _this = this;
 
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_GET,
             url: this.methods.systemLockResourcesDialogTemplate
         }).always((data) => {
-            Loader.toggleLoader();
+            Loader.toggleMainLoader();
 
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
@@ -92,7 +92,7 @@ export default class SystemLockDialogs extends AbstractDialogs {
     public buildCreateLockPasswordForSystemDialog(callback = null) {
         let _this = this;
 
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_GET,
             url: this.methods.createSystemLockPasswordDialogTemplate

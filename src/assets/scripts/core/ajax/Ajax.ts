@@ -160,7 +160,7 @@ export default class Ajax extends AbstractAjax{
     public getFormViewByNamespace(namespace:string, callback:Function, stripFormTag:boolean = true): void
     {
         let _this = this;
-        Loader.showLoader();
+        Loader.showMainLoader();
 
         let requestData = {
             'form_namespace': namespace
@@ -171,7 +171,7 @@ export default class Ajax extends AbstractAjax{
             method: Ajax.methods.getFormView.method,
             data:   requestData
         }).always((data) => {
-            Loader.hideLoader();
+            Loader.hideMainLoader();
 
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
             let formTemplate    = ajaxResponseDto.formTemplate;

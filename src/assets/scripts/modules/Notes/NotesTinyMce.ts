@@ -176,7 +176,7 @@ export default class NotesTinyMce {
                     'id': noteId,
                 };
 
-                Loader.showLoader();
+                Loader.showMainLoader();
 
                 $.ajax({
                     method : Ajax.REQUEST_TYPE_POST,
@@ -196,7 +196,7 @@ export default class NotesTinyMce {
                 }).fail(() => {
                     _this.bootstrapNotify.showRedNotification(TinyMce.messages["note-delete-fail"]);
                 }).always( () => {
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
                 });
 
             })

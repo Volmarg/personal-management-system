@@ -95,7 +95,7 @@ export default class AjaxEvents extends AbstractAjax {
         let _this = this;
 
         let showLoaderTimeout = setTimeout(function(){
-            Loader.showLoader();
+            Loader.showMainLoader();
         }, 500);
 
         $.ajax({
@@ -128,7 +128,7 @@ export default class AjaxEvents extends AbstractAjax {
              */
             imagesLoaded( twigBodySection, function() {
                 _this.initializer.reinitializeLogic();
-                Loader.hideLoader();
+                Loader.hideMainLoader();
                 clearTimeout(showLoaderTimeout);
                 history.pushState({}, null, url);
                 Sidebars.markCurrentMenuElementAsActive();
@@ -166,7 +166,7 @@ export default class AjaxEvents extends AbstractAjax {
             "files_full_paths":  escapedFilesPaths
         };
 
-        Loader.showLoader();
+        Loader.showMainLoader();
         $.ajax({
             method:  Ajax.REQUEST_TYPE_POST,
             url:     AbstractAjax.API_URLS.fileRemoval,
@@ -174,7 +174,7 @@ export default class AjaxEvents extends AbstractAjax {
             async:   async,
         }).always((data) => {
 
-            Loader.hideLoader();
+            Loader.hideMainLoader();
             BootboxWrapper.hideAll();
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 

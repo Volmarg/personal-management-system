@@ -21,7 +21,7 @@ export default class NotePreviewDialogs extends AbstractDialogs {
         let url = getDialogTemplate.replace(this.placeholders.categoryId, categoryId);
         url     = url.replace(this.placeholders.noteId, noteId);
 
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_GET,
             url: url

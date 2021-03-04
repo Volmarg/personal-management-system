@@ -121,7 +121,7 @@ export default abstract class AbstractDialogs {
     protected ajaxEvents = new AjaxEvents();
 
     protected handleCommonAjaxCallLogicForBuildingDialog(data, callback, callDialogCallback, center: boolean = false, dialogButtonLabel:string = null){
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
 
         try{
             var ajaxResponseDto = AjaxResponseDto.fromArray(data);

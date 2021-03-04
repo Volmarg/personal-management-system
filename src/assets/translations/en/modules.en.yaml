@@ -218,7 +218,7 @@ schedules:
           color: Color
           icon: Icon
       legend:
-        label: Legend
+        legendOfNotificationsColors: Legend of notifications colors
         over30: In 30 - 60 days
         over14: In 14 -30 days
         14: In 14 days

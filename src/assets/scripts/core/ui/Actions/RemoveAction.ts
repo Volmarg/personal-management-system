@@ -72,14 +72,14 @@ export default class RemoveAction extends AbstractAction {
                 backdrop: true,
                 callback: function (result) {
                     if (result) {
-                        Loader.showLoader();
+                        Loader.showMainLoader();
                         $.ajax({
                             url    : dataProcessorDto.url,
                             method : Ajax.REQUEST_TYPE_POST,
                             data   : dataProcessorDto.ajaxData
                         }).always( (data) => {
 
-                            Loader.hideLoader();
+                            Loader.hideMainLoader();
 
                             let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
 
@@ -174,14 +174,14 @@ export default class RemoveAction extends AbstractAction {
             backdrop: true,
             callback: function (result) {
                 if (result) {
-                    Loader.showLoader();
+                    Loader.showMainLoader();
 
                     $.ajax({
                         url: url,
                         method: _this.methods.removeEntity.method,
                     }).always((data) => {
 
-                        Loader.hideLoader();
+                        Loader.hideMainLoader();
 
                         let ajaxResponseDto = AjaxResponseDto.fromArray(data);
                         let message         = ajaxResponseDto.message;

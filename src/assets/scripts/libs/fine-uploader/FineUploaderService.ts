@@ -161,7 +161,7 @@ export default class FineUploaderService
                          * @description triggered right a moment before when the `upload` process has started for single file
                          */
                         onUpload: (uploadedFileId) => {
-                            Loader.showLoader();
+                            Loader.showMainLoader();
 
                             let $listElementForCurrentFile = _this.getListElementForUploadedFileId(uploadedFileId);
                             let tags                       = $listElementForCurrentFile.find('.tags').val();
@@ -193,7 +193,7 @@ export default class FineUploaderService
                                 }, 600);
                             }
 
-                            Loader.hideLoader();
+                            Loader.hideMainLoader();
                             if(reloadPageAfterSuccessfulUpload){
                                 let afterReinitializeCallback = () => {
                                     _this.directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);

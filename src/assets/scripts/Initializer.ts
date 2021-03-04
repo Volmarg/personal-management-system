@@ -225,7 +225,7 @@ export default class Initializer {
                 callableViaDataAttrsDialogs.buildDialogBody(dialogUrl, Ajax.REQUEST_TYPE_POST,{}, ()=>{
                     let prism = new PrismHighlight();
                     prism.init();
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
                 }, true, "Ok")
             }
 

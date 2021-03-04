@@ -127,14 +127,14 @@ export default class LockedResourceAjaxCall {
             "systemLockPassword": password,
             "isUnlocked"        : isUnlocked,
         };
-        Loader.showLoader();
+        Loader.showMainLoader();
 
         $.ajax({
             method: LockedResourceAjaxCall.general.methods.toggleLockedResourcesVisibility.method,
             url   : LockedResourceAjaxCall.general.methods.toggleLockedResourcesVisibility.url,
             data  : data,
         }).always( function(data){
-            Loader.hideLoader();
+            Loader.hideMainLoader();
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
             if( !ajaxResponseDto.isSuccessCode() ){
@@ -151,7 +151,7 @@ export default class LockedResourceAjaxCall {
                 bootstrapNotify.showGreenNotification(message);
 
                 // now ajax reload for this as there is also menu to be changed etc.
-                Loader.showLoader();
+                Loader.showMainLoader();
 
                 if( ajaxResponseDto.isReloadMessageSet() ){
                     bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);
@@ -174,14 +174,14 @@ export default class LockedResourceAjaxCall {
         let data  = {
             "systemLockPassword": password
         };
-        Loader.showLoader();
+        Loader.showMainLoader();
 
         $.ajax({
             method: LockedResourceAjaxCall.general.methods.lockCreatePasswordType.method,
             url   : LockedResourceAjaxCall.general.methods.lockCreatePasswordType.url,
             data  : data,
         }).always( function(data){
-            Loader.hideLoader();
+            Loader.hideMainLoader();
 
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
@@ -198,7 +198,7 @@ export default class LockedResourceAjaxCall {
                 bootstrapNotify.showGreenNotification(message);
 
                 // no ajax reload for this as there is also menu to be changed etc.
-                Loader.showLoader();
+                Loader.showMainLoader();
 
                 if( ajaxResponseDto.isReloadMessageSet() ){
                     bootstrapNotify.showBlueNotification(ajaxResponseDto.reloadMessage);

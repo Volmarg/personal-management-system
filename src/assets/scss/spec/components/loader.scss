@@ -1,10 +1,10 @@
-#loader {
+#loader, #subloader {
   transition: all 0.3s ease-in-out;
   opacity: 1;
   visibility: visible;
 }
 
-#loader.fadeOut {
+#subloader.fadeOut, #loader.fadeOut {
   opacity: 0;
   visibility: hidden;
 }

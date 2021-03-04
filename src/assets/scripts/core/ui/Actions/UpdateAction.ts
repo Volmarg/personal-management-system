@@ -73,14 +73,14 @@ export default class UpdateAction extends AbstractAction {
                 dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, formTarget, $form);
             }
 
-            Loader.showLoader();
+            Loader.showMainLoader();
             $.ajax({
                 url : dataProcessorDto.url,
                 type: Ajax.REQUEST_TYPE_POST,
                 data: dataProcessorDto.ajaxData,
             }).always((data) => {
 
-                Loader.hideLoader();
+                Loader.hideMainLoader();
 
                 try{
                     var ajaxResponseDto = AjaxResponseDto.fromArray(data);
@@ -161,7 +161,7 @@ export default class UpdateAction extends AbstractAction {
     private makeAjaxRecordUpdateCall(dataProcessorDto: DataProcessorDto): void {
 
         let _this = this;
-        Loader.showLoader();
+        Loader.showMainLoader();
 
         $.ajax({
             url: dataProcessorDto.url,

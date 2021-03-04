@@ -14,7 +14,7 @@ export default class TagManagementDialogs extends AbstractDialogs {
             'fileCurrentPath': fileCurrentPath,
             'moduleName'     : moduleName
         };
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_POST,
             url: this.methods.getTagsUpdateDialogTemplate,
@@ -82,13 +82,13 @@ export default class TagManagementDialogs extends AbstractDialogs {
             'tags'              : tags,
             'fileCurrentPath'   : fileCurrentPath,
         };
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: Ajax.REQUEST_TYPE_POST,
             url: this.methods.updateTagsForMyImages,
             data: data
         }).always( (data) => {
-            Loader.toggleLoader();
+            Loader.toggleMainLoader();
 
             let ajaxResponseDto = AjaxResponseDto.fromArray(data);
             let notifyType      = '';

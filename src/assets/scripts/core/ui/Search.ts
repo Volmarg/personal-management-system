@@ -89,7 +89,7 @@ export default class Search {
                 clearTimeout(timeout);
             }
 
-            Loader.showLoader();
+            Loader.showMainLoader();
 
             timeout = setTimeout( () => {
                 $.ajax({
@@ -97,7 +97,7 @@ export default class Search {
                     url     : _this.methods.getSearchResultsDataForTag,
                     data    : data,
                 }).always((data)=>{
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
 
                     let resultsCount  = data['searchResults'].length;
                     let reloadPage    = data['reload_page'];

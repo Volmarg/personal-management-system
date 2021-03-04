@@ -57,7 +57,7 @@ export default class CreateAction extends AbstractAction {
                 dataProcessorDto = DataProcessorLoader.getCreateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, singleProcessedFormDefinitionName);
             }
 
-            Loader.showLoader();
+            Loader.showMainLoader();
             $.ajax({
                 url: dataProcessorDto.url,
                 type: formSubmissionType, //todo
@@ -80,11 +80,11 @@ export default class CreateAction extends AbstractAction {
                     if( ajaxResponseDto.hasInvalidFields() && !ajaxResponseDto.isInternalServerErrorCode() ){
                         let formValidator = new FormsValidator(ajaxResponseDto.validatedFormPrefix, ajaxResponseDto.invalidFormFields);
                         formValidator.handleInvalidFields();
-                        Loader.hideLoader();
+                        Loader.hideMainLoader();
                         return;
                     }
 
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
                     _this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
                     return;
                 }
@@ -104,7 +104,7 @@ export default class CreateAction extends AbstractAction {
                  * @info handle logic reinitialization
                  */
                 if ( !reinitializePageLogicAfterAjaxCall ) {
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
 
                     let message = "";
 
@@ -123,7 +123,7 @@ export default class CreateAction extends AbstractAction {
 
                 try{
                     _this.initializer.reinitializeLogic();
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
 
                     _this.bootstrapNotify.showGreenNotification( ajaxResponseDto.isMessageSet() ? ajaxResponseDto.message : dataProcessorDto.successMessage );
 
@@ -139,7 +139,7 @@ export default class CreateAction extends AbstractAction {
                     BootboxWrapper.hideAll();
 
                 }catch(Exception){
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
                     _this.bootstrapNotify.showRedNotification("Failed reinitializing logic");
                     throw Exception;
                 }

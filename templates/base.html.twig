@@ -24,7 +24,18 @@
                 z-index: 90000;
             }
 
-            #loader.fadeOut {
+            #subloader {
+                transition: all 0.3s ease-in-out;
+                opacity: 1;
+                visibility: visible;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.5);
+                z-index: 50;
+            }
+
+            #subloader.fadeOut, #loader.fadeOut {
                 opacity: 0;
                 visibility: hidden;
             }
@@ -102,7 +113,9 @@
     {% include 'page-elements/components/sidebar.twig' %}
     <!-- #Main ============================ -->
     <div class="page-container">
-
+        <div id='subloader'>
+            <div class="spinner"></div>
+        </div>
         {# This must be done this way for controllers/etc - for unknown reason yaml defined globals are not working when trying to call constant() with them #}
         {% set modules_controller = 'App\\Controller\\Modules\\ModulesController::' %}
         {% set dialogs_controller = 'App\\Action\\Core\\DialogsAction::' %}

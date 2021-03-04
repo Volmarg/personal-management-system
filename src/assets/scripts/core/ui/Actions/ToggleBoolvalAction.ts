@@ -26,13 +26,13 @@ export default class ToggleBoolvalAction extends AbstractAction {
             let fieldName      = $clickedElement.attr(_this.data.entityFieldName);
             let entityId       = $clickedElement.attr(_this.data.entityId);
 
-            Loader.showLoader();
+            Loader.showMainLoader();
 
             $.ajax({
                 url    : _this.methods.toggleBoolval.buildUrl(entityId, repositoryName, fieldName),
                 method : _this.methods.toggleBoolval.method
             }).always(function(data){
-                Loader.hideLoader();
+                Loader.hideMainLoader();
 
                 let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 

@@ -27,12 +27,12 @@ export default class CopyToClipboardAction extends AbstractAction {
 
                     let temporaryCopyDataInput = $("<input>");
                     $("body").append(temporaryCopyDataInput);
-                    Loader.showLoader();
+                    Loader.showMainLoader();
                     $.ajax({
                         url: dataProcessorDto.url,
                         method: Ajax.REQUEST_TYPE_GET,
                     }).always((data) => {
-                        Loader.hideLoader();
+                        Loader.hideMainLoader();
 
                         let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 

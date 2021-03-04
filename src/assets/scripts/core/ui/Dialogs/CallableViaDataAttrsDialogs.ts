@@ -54,7 +54,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
                     }
             }
 
-            Loader.toggleLoader();
+            Loader.toggleMainLoader();
             $.ajax({
                 method : requestMethod,
                 url    : url,
@@ -82,7 +82,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
         let _this = this;
 
-        Loader.toggleLoader();
+        Loader.toggleMainLoader();
         $.ajax({
             method: method,
             url: url,

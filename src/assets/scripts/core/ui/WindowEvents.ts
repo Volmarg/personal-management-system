@@ -30,11 +30,11 @@ export default class WindowEvents {
         ajaxEvents.init();
 
         $(window).on('beforeunload', function(){
-            Loader.showLoader();
+            Loader.showMainLoader();
         });
 
         $(window).on('load', function(){
-            Loader.hideLoader();
+            Loader.hideMainLoader();
         });
 
         let denyUnloadForSelectors = ['.file-download'];
@@ -43,7 +43,7 @@ export default class WindowEvents {
             let $element = $(selector);
             $element.on('click', function(){
                 setTimeout(function(){
-                    Loader.hideLoader();
+                    Loader.hideMainLoader();
                 }, 1000);
             })
         });

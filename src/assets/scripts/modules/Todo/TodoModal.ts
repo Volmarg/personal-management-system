@@ -151,14 +151,14 @@ export default class TodoModal {
                 'moduleName' : moduleName
             };
 
-            Loader.showLoader();
+            Loader.showMainLoader();
             $.ajax({
                 method : AjaxEvents.REQUEST_TYPE_POST,
                 url    : '/admin/todo/update',
                 data   : ajaxData
             }).always( (response) => {
 
-                Loader.hideLoader();
+                Loader.hideMainLoader();
                 let ajaxResponseDto = AjaxResponseDto.fromArray(response);
 
                 if( ajaxResponseDto.isSuccessCode() ){

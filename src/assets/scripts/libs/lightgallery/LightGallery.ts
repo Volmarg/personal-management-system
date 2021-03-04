@@ -221,7 +221,7 @@ export default class LightGallery {
                                 file_full_path  :  filePath.replace("/", "")
                             };
 
-                            Loader.toggleLoader();
+                            Loader.toggleMainLoader();
                             $.ajax({
                                 method:  Ajax.REQUEST_TYPE_POST,
                                 url:     AbstractAjax.API_URLS.fileRename,
@@ -249,7 +249,7 @@ export default class LightGallery {
                             }).fail((data) => {
                                 _this.bootstrapNotify.showRedNotification(data.responseText);
                             }).always(() => {
-                                Loader.toggleLoader();
+                                Loader.toggleMainLoader();
                             });
 
                         }

@@ -14,13 +14,6 @@ import ScheduleDto     from "../../DTO/modules/schedules/ScheduleDto";
 import StringUtils     from "../../core/utils/StringUtils";
 
 /**
- * Todo:
- *  - on the very end add task for later to integrate reminder + NPL with them
- *    - add also info to handle adding reminders to the calendar, so far this will work like before
- *    - add some search logic to easily find by subject, with `goto`, `edit` (creation popup) , `remove` (creation popup)
- */
-
-/**
  * @description handles the calendar logic, keep in mind that the logic assume that there will
  *              be only one TuiCalendar instance on the page, otherwise the logic needs to be adjusted
  *
@@ -96,39 +89,35 @@ export default class TuiCalendarService
      */
     private handleAllCalendarDomElements($allElementsToHandle: JQuery<HTMLElement>)
     {
-        Loader.showLoader(); // todo: fix it, wont work in this case - why?
-        {
-            let _this = this;
+        let _this = this;
 
-            //@ts-ignore
-            $allElementsToHandle.each( async (index, elementToHandle) => {
-                let calendarInstance = _this.createCalendarInstance(elementToHandle);
+        //@ts-ignore
+        $allElementsToHandle.each( async (index, elementToHandle) => {
+            let calendarInstance = _this.createCalendarInstance(elementToHandle);
+            calendarInstance     = _this.insertICalendarsIntoCalendarInstance(calendarInstance);
 
-                Loader.showLoader(); // todo: not working (!?)
-                {
-                    calendarInstance = await _this.insertICalendarsIntoCalendarInstance(calendarInstance);
-                    calendarInstance = await _this.insertSchedulesIntoCalendarInstance(calendarInstance);
-                }
-                Loader.hideLoader();
+            Loader.showSubLoader();
+            {
+                calendarInstance = await _this.insertSchedulesIntoCalendarInstance(calendarInstance);
+            }
+            Loader.hideSubLoader();
 
-                _this.setLastUsedScheduleId(calendarInstance);
+            _this.setLastUsedScheduleId(calendarInstance);
 
-                _this.applyBuiltInEventsToCalendarInstance(calendarInstance);
-                _this.handleCalendarList(calendarInstance);
-                _this.createNewScheduleOnNewScheduleClick(calendarInstance);
-                _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
-                _this.modifyScheduleCreationAndDetailPopup(calendarInstance);
+            _this.applyBuiltInEventsToCalendarInstance(calendarInstance);
+            _this.handleCalendarList(calendarInstance);
+            _this.createNewScheduleOnNewScheduleClick(calendarInstance);
+            _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
+            _this.modifyScheduleCreationAndDetailPopup(calendarInstance);
 
-                _this.attachActionMoveNext(calendarInstance);
-                _this.attachActionMovePrevious(calendarInstance);
-                _this.attachActionToday(calendarInstance);
+            _this.attachActionMoveNext(calendarInstance);
+            _this.attachActionMovePrevious(calendarInstance);
+            _this.attachActionToday(calendarInstance);
 
-                _this.attachActionViewMonthly(calendarInstance);
-                _this.attachActionViewWeekly(calendarInstance);
-                _this.attachActionViewToday(calendarInstance);
-            });
-        }
-        Loader.hideLoader();
+            _this.attachActionViewMonthly(calendarInstance);
+            _this.attachActionViewWeekly(calendarInstance);
+            _this.attachActionViewToday(calendarInstance);
+        });
     }
 
     /**
@@ -337,10 +326,10 @@ export default class TuiCalendarService
             calendarId  : calendar.id
         };
 
-        Loader.showLoader();
+        Loader.showMainLoader();
         axios.post(ajaxCallUrl, dataBag)
             .then( (response) => {
-                Loader.hideLoader();
+                Loader.hideMainLoader();
 
                 let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
                 if(!ajaxResponseDto.success){
@@ -373,7 +362,7 @@ export default class TuiCalendarService
                 }
             })
             .catch( (reason) => {
-                Loader.hideLoader();
+                Loader.hideMainLoader();
                 throw {
                     "message" : "Could not handle saving new schedule in database",
                     "reason"  : reason,
@@ -695,10 +684,10 @@ export default class TuiCalendarService
      */
     private deleteSchedule(scheduleId: string): void
     {
-        Loader.showLoader();
+        Loader.showMainLoader();
         let _this = this;
         axios.get(`/modules/schedules/delete/${scheduleId}`).then( (response) => {
-            Loader.hideLoader();
+            Loader.hideMainLoader();
             let ajaxResponseDto = AjaxResponseDto.fromArray(response.data);
 
             if(!ajaxResponseDto.success){

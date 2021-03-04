@@ -64,13 +64,13 @@ export default class UploadBasedModules {
                                 'subdirectory_current_path_in_module_upload_dir': subdirectoryPathInUploadDir,
                                 'block_removal'                                 : true
                             };
-                            Loader.toggleLoader();
+                            Loader.toggleMainLoader();
                             $.ajax({
                                 method  : Ajax.REQUEST_TYPE_POST,
                                 url     : apiUrl,
                                 data    : data
                             }).always((data) => {
-                                Loader.toggleLoader();
+                                Loader.toggleMainLoader();
 
                                 let ajaxResponseDto = AjaxResponseDto.fromArray(data);
 
