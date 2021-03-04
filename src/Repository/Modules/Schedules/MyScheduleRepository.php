@@ -11,6 +11,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
+use PDO;
 
 /**
  * @method MySchedule|null find($id, $lockMode = null, $lockVersion = null)
@@ -119,13 +120,11 @@ class MyScheduleRepository extends ServiceEntityRepository {
         ];
 
         if( !is_null($limit) ){
-            $sql .= " LIMIT {$limit}"; //todo
-            $bindedValues["limit"] = $limit;
-            $parametersTypes[]     = \PDO::PARAM_INT;
+            $sql .= " LIMIT {$limit}"; // limit cannot be simply parametrized, won't work also with params types
         }
 
         $statement = $connection->executeQuery($sql, $bindedValues, $parametersTypes);
-        $results   = $statement->fetchAll(\PDO::FETCH_CLASS, IncomingScheduleDTO::class);
+        $results   = $statement->fetchAll(PDO::FETCH_CLASS, IncomingScheduleDTO::class);
 
         return $results;
     }

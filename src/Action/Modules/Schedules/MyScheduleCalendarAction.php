@@ -109,7 +109,7 @@ class MyScheduleCalendarAction extends AbstractController {
             $this->app->em->flush();
 
             $formSubmittedMessage = $this->app->translator->translate('messages.ajax.success.recordHasBeenCreated');
-            $renderedTemplate     = $mySchedulesAction->renderTemplate('car', true, true); // todo: this first parameter will be gone later on
+            $renderedTemplate     = $mySchedulesAction->renderTemplate(true, true); // todo: this first parameter will be gone later on
 
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK, $formSubmittedMessage, $renderedTemplate);
         }
