@@ -49,8 +49,8 @@ final class Version20210220131953 extends AbstractMigration
                 background_color VARCHAR(100) NOT NULL, 
                 drag_background_color VARCHAR(100) NOT NULL, 
                 border_color VARCHAR(100) NOT NULL, 
-                deleted TINYINT(1) NOT NULL DEFAULT 0,
                 icon VARCHAR(50) NOT NULL, 
+                deleted TINYINT(1) NOT NULL DEFAULT 0,
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
@@ -72,8 +72,9 @@ final class Version20210220131953 extends AbstractMigration
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS background_color,
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS drag_background_color,
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS border_color,
-                deleted AS deleted,
-                icon    AS icon
+                icon    AS icon,
+                deleted AS deleted
+
                 
                 FROM my_schedule_type
             )
