@@ -81,7 +81,7 @@ final class Version20210220131953 extends AbstractMigration
         ");
 
         // transform old `my_schedule` into new `my_schedule` with calendar usage
-        $this->addSql("
+        $this->addSql(Migrations::buildSqlExecutedIfColumnExist('name', 'my_schedule', "
             INSERT INTO schedule
             (
                 SELECT 
@@ -105,8 +105,8 @@ final class Version20210220131953 extends AbstractMigration
                 -- now join by names to new calendar table since the id changed now
                 JOIN my_schedule_calendar msc
                 ON msc.name = mst.name 
-            )           
-        ");
+            )    
+        "));
 
         $this->addSql("DROP TABLE IF EXISTS my_schedule");
         $this->addSql("RENAME TABLE schedule TO my_schedule");
