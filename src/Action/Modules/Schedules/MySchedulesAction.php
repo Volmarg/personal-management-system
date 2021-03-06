@@ -128,6 +128,7 @@ class MySchedulesAction extends AbstractController {
                     "%id%" => $calendarId
                 ]);
                 $ajaxResponse->setMessage($message);
+                $ajaxResponse->setSuccess(false);
                 $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);;
 
                 return $ajaxResponse->buildJsonResponse();
@@ -144,6 +145,7 @@ class MySchedulesAction extends AbstractController {
                         "%id%" => $scheduleId
                     ]);
                     $ajaxResponse->setMessage($message);
+                    $ajaxResponse->setSuccess(false);
                     $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);;
 
                     return $ajaxResponse->buildJsonResponse();
@@ -232,6 +234,7 @@ class MySchedulesAction extends AbstractController {
                     "%id%" => $scheduleId
                 ]);
                 $ajaxResponse->setMessage($message);
+                $ajaxResponse->setSuccess(false);
                 $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);;
 
                 return $ajaxResponse->buildJsonResponse();

@@ -37,9 +37,12 @@ export default class Dialog {
      *              Also this logic should be triggered to explicitly pointed modals as the Bootbox is a wrapper to
      *              standard modal so relying on modal/bootbox classes causes a problems
      */
-    public moveBackdropToReloadablePageContainer(): void
+    public moveBackdropToReloadablePageContainer($modal ?:JQuery<HTMLElement>): void
     {
-        $(document).on('shown.bs.modal', (event) => {
+        let $domDocument     =  $(document);
+        let $listenedElement = $modal ?? $domDocument;
+
+        $listenedElement.on('shown.bs.modal', (event) => {
             let $targetElement = $(event.target);
 
             if( $targetElement.hasClass(Dialog.classesNames.modalMovedBackdrop) ){

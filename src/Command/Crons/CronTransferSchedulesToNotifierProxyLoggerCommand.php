@@ -64,7 +64,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
             ->addOption(self::OPTION_DUE_DATE_DAYS_TO_TRANSFER, "due-date", InputOption::VALUE_REQUIRED, "How many days before the deadline should the message be sent")
             ->addUsage("--transfer-channel=mail (Will send the schedules via mailing)")
             ->addUsage("--transfer-channel=discord (Will send the schedules via discord)")
-            ->addUsage("--due-date-days-to-transfer=1,5,7 (Will send the schedules 1,5,7 days before the deadline)")
+            ->addUsage("--transfer-channel=mail --due-date-days-to-transfer=1,5,7 (Will send the schedules 1,5,7 days before the deadline)")
             ;
     }
 

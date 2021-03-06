@@ -1,4 +1,3 @@
-import MonthViewTemplate from "./views-templates/MonthViewTemplate";
 import * as moment from 'moment';
 
 var TuiCalendar = require('tui-calendar');
@@ -12,6 +11,7 @@ import BootstrapNotify from "../bootstrap-notify/BootstrapNotify";
 import AjaxResponseDto from "../../DTO/AjaxResponseDto";
 import ScheduleDto     from "../../DTO/modules/schedules/ScheduleDto";
 import StringUtils     from "../../core/utils/StringUtils";
+import Dialog          from "../../core/ui/Dialogs/Dialog";
 
 /**
  * @description handles the calendar logic, keep in mind that the logic assume that there will
@@ -54,6 +54,7 @@ export default class TuiCalendarService
     private readonly CALENDAR_IN_LIST               = '.lnb-calendars-item';
     private readonly CALENDAR_IN_LIST_INPUT_ROUND   = '.tui-full-calendar-checkbox-round';
     private readonly POPUP_CONTAINER_SELECTOR       = '.tui-full-calendar-popup-container';
+    private readonly CALENDAR_MODAL_SELECTOR        = '#calendar-settings-modal';
 
     private readonly POPUP_CONTAINER_SECTION_TITLE_SELECTOR = '.tui-full-calendar-section-title';
 
@@ -62,6 +63,8 @@ export default class TuiCalendarService
     private readonly POPUP_CUSTOM_FIELD_NAME_BODY = "body";
 
     private bootstrapNotify = new BootstrapNotify();
+
+    private dialog = new Dialog();
 
     private lastClickedScheduleId ?: string  = null;
 
@@ -82,6 +85,7 @@ export default class TuiCalendarService
         }
 
         this.handleAllCalendarDomElements($allElementsToHandle);
+        this.handleCalendarSettingsModal();
     }
 
     /**
@@ -215,10 +219,31 @@ export default class TuiCalendarService
                     }
                 }
 
+
+                /**
+                 * @description this must be done on this step as calendar is using internally the `changes` to update elements,
+                 *              these are also used later to update data in DB, there is also bug in the plugin
+                 *              itself, meaning that when calendar gets updated, the drag color is not updated until calendar
+                 *              or schedule will be fully reloaded, but this is not implemented in here
+                 */
+                if( !StringUtils.isEmptyString(event.changes.calendarId) ){
+                    let calendar        = this.findCalendar(event.changes.calendarId, calendarInstance);
+                    changes.color       = this.SCHEDULE_DEFAULT_TEXT_COLOR;
+                    changes.bgColor     = calendar.bgColor;
+                    changes.dragBgColor = calendar.dragBgColor;
+                    changes.borderColor = calendar.borderColor;
+                }
+
                 let updatedSchedule = _this.buildUpdatedSchedule(event.schedule, changes);
 
-                _this.saveSchedule(updatedSchedule, ajaxCallUrl, calendarInstance, false);
-                calendarInstance.updateSchedule(event.schedule.id, event.schedule.calendarId, changes);
+
+                // test start
+
+                // todo: info: this is done due to the bug of drag color not being updated + now there is issue with id
+                calendarInstance.deleteSchedule(event.schedule.id, event.schedule.calendarId);
+                _this.saveSchedule(updatedSchedule, ajaxCallUrl, calendarInstance);
+                // test end
+                // calendarInstance.updateSchedule(event.schedule.id, event.schedule.calendarId, changes);
                 this.lastClickedScheduleId = null;
             },
             /**
@@ -338,7 +363,7 @@ export default class TuiCalendarService
                 }
                 _this.bootstrapNotify.showGreenNotification(ajaxResponseDto.message);
 
-                let usedScheduleId = ++_this.lastUsedScheduleId;
+                let usedScheduleId = ( ("undefined" === typeof scheduleData.id) ? ++_this.lastUsedScheduleId : scheduleData.id);
 
                 var schedule = {
                     id          : usedScheduleId.toString(),
@@ -604,6 +629,10 @@ export default class TuiCalendarService
             // remove fields
             $('.tui-full-calendar-section-allday').addClass('d-none');
             $('.tui-full-calendar-section-state').addClass('d-none');
+            $('#tui-full-calendar-schedule-private').addClass('d-none');
+
+            // modify fields
+            $('.tui-full-calendar-section-title').addClass("w-100");
 
             // add/prefill fields
             let lastClickedSchedule = this.findSchedule(this.lastClickedScheduleId, calendarInstance);
@@ -728,5 +757,15 @@ export default class TuiCalendarService
         $divPopupSection.append($divPopupSectionItem);
 
         return $divPopupSection;
+    }
+
+    /**
+     *
+     * @private
+     */
+    private handleCalendarSettingsModal()
+    {
+        let $modal = $(this.CALENDAR_MODAL_SELECTOR) ;
+        this.dialog.moveBackdropToReloadablePageContainer($modal);
     }
 }
