@@ -41,7 +41,7 @@ final class Version20191108195910 extends AbstractMigration
                 VALUES (1, 'car', 'fas fa-car', 0)"
         );
 
-        $this->addSql("
+        $this->addSql(Migrations::buildSqlExecutedIfColumnExist('schedule_type_id', 'my_schedule', '
             INSERT INTO my_schedule
             (
                 SELECT
@@ -58,7 +58,7 @@ final class Version20191108195910 extends AbstractMigration
                 
                 FROM my_car
             )
-        ");
+        '));
 
         $this->addSql("DROP TABLE IF EXISTS my_car");
         $this->addSql("DROP TABLE IF EXISTS my_car_schedules_types");

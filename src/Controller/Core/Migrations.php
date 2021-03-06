@@ -78,7 +78,41 @@ class Migrations
 
         return $sql;
     }
-    
+
+    /**
+     * Will output an sql executed only if column in table does exist
+     * - prevents crashing on cases where column does not exists
+     *
+     * @param string $columnName
+     * @param string $tableName
+     * @param string $executedSql
+     * @return string
+     */
+    public static function buildSqlExecutedIfColumnExist(string $columnName, string $tableName, string $executedSql): string
+    {
+        $sql = "
+            SET @dbname             = DATABASE();
+            SET @tablename          = '{$tableName}';
+            SET @columnname         = '{$columnName}';
+            SET @preparedStatement  = (SELECT IF(
+              (
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+                WHERE
+                        (table_name   = @tablename)
+                  AND   (table_schema = @dbname)
+                  AND   (column_name  = @columnname)
+              ) >= 1,
+              'SELECT 1',
+              '{$executedSql}'
+            ));
+            PREPARE executedIfColumnNotExist FROM @preparedStatement;
+            EXECUTE executedIfColumnNotExist;
+            DEALLOCATE PREPARE executedIfColumnNotExist; 
+        ";
+
+        return $sql;
+    }
+
     /**
      * Will output an sql executed only when given table does not exist
      * - prevents crashing on cases where column already exists
