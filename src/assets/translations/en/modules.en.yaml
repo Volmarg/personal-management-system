@@ -121,9 +121,6 @@ contact:
     group: Group
     type: Type
   settings:
-    headers:
-      changeAddContactType: Change/Add contact type
-      changeAddContactGroup: Change/Add contact group
     table:
       name: Name
       imagePath: Image path
@@ -136,6 +133,11 @@ contact:
         mainDescription: |
           Management of contacts types (the small icons visible on the list below the colored box) and contact groups
           (icons shown in the upper left corner of the contact)
+    tab:
+      changeAddContactType:
+        label: Change/Add contact type
+      changeAddContactGroup:
+        label: Change/Add contact group
   overview:
     infoBlock:
       header: Contacts
@@ -243,8 +245,12 @@ travels:
 
 payments:
   productsPrices:
+    tabs:
+      acceptedProducts:
+        label: Accepted products
+      rejectedProducts:
+        label: Rejected products
     headers:
-      productPrices: Products prices
       addProduct: Add product
     table:
       homeCurrency: Home currency
@@ -259,6 +265,11 @@ payments:
       owedByOthers: Money owed by others
       owedByMe: Money owed by me
       addRecord: Add record
+    tab:
+      owedByOthers:
+        label: Money owed by others
+      owedByMe:
+        label: Money owed by me
     table:
       target: Target
       amount: Amount
@@ -305,9 +316,11 @@ payments:
         mainDescription: |
           Lists of the money spent in each month with separate summary per month and per payment type.
   bills:
-    headers:
-      billsManagement: Bills management
-      billsItemsManagement: Items management
+    tabs:
+      billsManagement:
+        label: Bills management
+      billsItemsManagement:
+        label: Items management
     forms:
       bills: Add bill
     table:
@@ -333,9 +346,13 @@ payments:
   settings:
     headers:
       changeAddSetting: Change/Add settings
-      currencyMultiplier: Currency multiplier
-      paymentsTypes: Payments types
-      recurringPayments: Recurring payments
+    tab:
+      currencyMultiplier:
+        label: Currency multiplier
+      paymentsTypes:
+        label: Payments types
+      recurringPayments:
+        label: Recurring payments
     types:
       table:
         name: Name
@@ -422,11 +439,14 @@ shopping:
 job:
   afterhours:
     headers:
-      allAfterhours: All afterhours
-      spentAfterhours: Spent afterhours
       remainingAfterhours: Remaining afterhours
       addSpendAfterhours: Add/Spend afterhours
       summary: Summary
+      tabs:
+        madeAfterhours:
+          label: Made afterhours
+        spentAfterhours:
+          label: Spent afterhours
     labels:
       hours: Hours
       days: Days
@@ -445,9 +465,12 @@ job:
           calculated automatically into days that can be spent as additional free days.
   holidays:
     headers:
-      summary: Holidays summary
-      spent: Holidays spent
       spend: Spend holidays
+      tab:
+        summary:
+          label: Holidays summary
+        spent:
+          label: Holidays spent
     infoBlock:
       header: Holidays
       text:
@@ -569,9 +592,11 @@ issues:
     lastContactDate: "Last contact date: "
     lastProgressDate: "Last progress date: "
     preview:
-      headers:
-        contacts: "Contacts"
-        progress: "Progress"
+      tabs:
+        contacts:
+          label: "Contacts"
+        progress:
+          label: "Progress"
     popovers:
       toggleDashboardVisibility: "Toggle dashboard visibility"
       previewAndEdit: "Preview and edit"

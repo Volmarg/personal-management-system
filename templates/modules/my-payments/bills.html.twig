@@ -20,58 +20,80 @@
                     header_translation_string : 'payments.bills.infoBlock.header'
                 } %}
 
-                {# Bills items #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.bills.headers.billsItemsManagement' | trans }}</h4>
+                <div class="bgc-white bd bdrs-3 p-10 mB-20">
 
-                            <div id="accordion">
-                                {% for bill in bills %}
-                                    <div class="accordin-section">
-                                        <h3 class="
-                                           {% if bills_amounts_summaries[bill.id] is defined  %}
-                                                {% if bills_amounts_summaries[bill.id] <= bill.plannedAmount %}
-                                                    bg-success
-                                                {% elseif bills_amounts_summaries[bill.id] <= ( bill.plannedAmount * percentage_medium ) %}
-                                                    bg-warning
-                                                {% else %}
-                                                    bg-danger
-                                                 {% endif %}
-                                            {% endif %}
-                                        "
-                                        style="color:rgba(0,0,0,0.6);">
-                                            {{ bill.name }} -
-                                            <span class="bill-summary">
-                                                {% if bills_amounts_summaries[bill.id] is defined  %}
-                                                    {{ bills_amounts_summaries[bill.id] }}
-                                                {% else %}
-                                                    0
-                                                {% endif %}
-                                                /
-                                                {{ bill.plannedAmount }}
-                                            </span>
-                                            ({{ bill.startDate|date("Y-m-d") }} - {{ bill.endDate|date("Y-m-d") }})
-                                        </h3>
-                                        <section>
-                                            {% include 'modules/my-payments/components/bills-items-table.html.twig' %}
-                                        </section>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                     <div data-smart-tab="true">
+                        <ul class="nav">
+                           <li><a class="nav-link" href="#tab-1" id="tab-nav-1">
+                               {{ 'payments.bills.tabs.billsManagement.label' | trans }}
+                           </a></li>
+                           <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
+                               {{ 'payments.bills.tabs.billsItemsManagement.label' | trans }}
+                           </a></li>
+                        </ul>
 
+                        <div class="tab-content">
+                           <div id="tab-1" class="tab-pane" role="tabpanel">
+
+                               {# Bills items #}
+                               <div class="row">
+                                   <div class="col-md-12">
+                                       <div class="bgc-white bdrs-3 p-20 mB-20">
+
+                                           <div id="accordion">
+                                               {% for bill in bills %}
+                                                   <div class="accordin-section">
+                                                       <h3 class="
+                                                           {% if bills_amounts_summaries[bill.id] is defined  %}
+                                                                {% if bills_amounts_summaries[bill.id] <= bill.plannedAmount %}
+                                                                    bg-success
+                                                                {% elseif bills_amounts_summaries[bill.id] <= ( bill.plannedAmount * percentage_medium ) %}
+                                                                    bg-warning
+                                                                {% else %}
+                                                                    bg-danger
+                                                                 {% endif %}
+                                                            {% endif %}
+                                                        "
+                                                        style="color:rgba(0,0,0,0.6);">
+                                                            {{ bill.name }} -
+                                                            <span class="bill-summary">
+                                                                {% if bills_amounts_summaries[bill.id] is defined  %}
+                                                                    {{ bills_amounts_summaries[bill.id] }}
+                                                                {% else %}
+                                                                    0
+                                                                {% endif %}
+                                                                /
+                                                                {{ bill.plannedAmount }}
+                                                            </span>
+                                                           ({{ bill.startDate|date("Y-m-d") }} - {{ bill.endDate|date("Y-m-d") }})
+                                                       </h3>
+                                                       <section>
+                                                           {% include 'modules/my-payments/components/bills-items-table.html.twig' %}
+                                                       </section>
+                                                   </div>
+                                               {% endfor %}
+                                           </div>
+
+                                       </div>
+                                   </div>
+                               </div>
+
+                           </div>
+                           <div id="tab-2" class="tab-pane" role="tabpanel">
+
+                               {# Bills #}
+                               <div class="row">
+                                   <div class="col-md-12">
+                                       <div class="bgc-white bdrs-3 p-20 mB-20">
+                                           {% include 'modules/my-payments/components/bills-table.html.twig' %}
+                                       </div>
+                                   </div>
+                               </div>
+
+                           </div>
                         </div>
-                    </div>
-                </div>
+                     </div>
 
-                {# Bills #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.bills.headers.billsManagement' | trans }}</h4>
-                                {% include 'modules/my-payments/components/bills-table.html.twig' %}
-                        </div>
-                    </div>
                 </div>
 
                 {# Forms #}

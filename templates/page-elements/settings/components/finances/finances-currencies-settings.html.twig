@@ -1,4 +1,4 @@
-<div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+<div class="bgc-white bdrs-3 p-20 mB-20 d-flex flex-column">
     <h5 class="c-grey-900 mB-20 align-self-center">{{ 'settings.finances.type.currencies.label' | trans }} </h5>
 
     <table id="settingsFinancesCurrencyTable" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
@@ -61,7 +61,8 @@
 {# Form #}
 <div class="row">
     <div class="col-md-12">
-        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
+        <hr>
+        <div class="bgc-white bdrs-3 p-20 mB-20 d-flex flex-column">
             <h4 class="c-grey-900 mB-20 align-self-center">{{ 'settings.finances.type.currencies.addCurrency' | trans }}</h4>
             <div class="col-md-6 align-self-center add-record-form">
                 {{ form(currency_form, {'attr':{'data-form-target':"settingsFinancesCurrencyForm"}})}}
@@ -69,7 +70,3 @@
         </div>
     </div>
 </div>
-
-{{ form_start(currency_form) }}
-{{ form_end(currency_form) }}
-

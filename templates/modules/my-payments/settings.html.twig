@@ -17,32 +17,50 @@
                     header_translation_string : 'payments.infoBlock.header'
                 } %}
 
-                {# Forms #}
                 <div class="row">
                     <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20">
 
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'payments.settings.headers.currencyMultiplier' | trans }}</h5>
-                            <div class="col-md-6 align-self-center add-record-form">
-                                {{ form_start(currency_multiplier_form, {'attr':{'data-entity':"MyPaymentsSettings"}}) }}
-                                {{ form_end(currency_multiplier_form) }}
+                            <div data-smart-tab="true">
+                                <ul class="nav">
+                                    <li><a class="nav-link" href="#tab-1" id="tab-nav-1">
+                                        {{ 'payments.settings.tab.recurringPayments.label' | trans }}
+                                    </a></li>
+                                    <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
+                                        {{ 'payments.settings.tab.paymentsTypes.label' | trans }}
+                                    </a></li>
+                                    <li><a class="nav-link" href="#tab-3" id="tab-nav-3">
+                                        {{ 'payments.settings.tab.currencyMultiplier.label' | trans }}
+                                    </a></li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <div id="tab-1" class="tab-pane" role="tabpanel">
+                                        {{ recurring_payments_template_view | raw}}
+                                    </div>
+                                    <div id="tab-2" class="tab-pane" role="tabpanel">
+                                        <div class="bgc-white bdrs-3 p-20 mB-20 d-flex flex-column">
+                                            {% include('modules/my-payments/components/types-settings.table.html.twig') %}
+
+                                            <div class="col-md-6 align-self-center add-record-form">
+                                                {{ form_start(payments_types_form,{'attr':{'data-entity':"MyPaymentsSettings"}}) }}
+                                                {{ form_end(payments_types_form) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="tab-3" class="tab-pane" role="tabpanel">
+
+                                        <div class="bgc-white bdrs-3 p-20 mB-20 d-flex flex-column">
+                                            <div class="col-md-6 align-self-center add-record-form">
+                                                {{ form_start(currency_multiplier_form, {'attr':{'data-entity':"MyPaymentsSettings"}}) }}
+                                                {{ form_end(currency_multiplier_form) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column">
-
-                            <h5 class="c-grey-900 mB-20 align-self-center">{{ 'payments.settings.headers.paymentsTypes' | trans }}</h5>
-
-                            {% include('modules/my-payments/components/types-settings.table.html.twig') %}
-
-                            <div class="col-md-6 align-self-center add-record-form">
-                                {{ form_start(payments_types_form,{'attr':{'data-entity':"MyPaymentsSettings"}}) }}
-                                {{ form_end(payments_types_form) }}
-                            </div>
-                        </div>
-
-                        {{ recurring_payments_template_view | raw}}
-
                     </div>
                 </div>
             </div>

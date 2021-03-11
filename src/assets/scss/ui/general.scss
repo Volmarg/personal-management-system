@@ -180,3 +180,9 @@ form legend{
 .scroll-y {
   overflow-y: scroll;
 }
+
+.modal-body .main-content {
+  height: auto;
+  min-height: auto;
+  padding-top: 35px;
+}

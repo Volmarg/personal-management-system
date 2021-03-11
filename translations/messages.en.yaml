@@ -72,11 +72,11 @@ flash:
     download: { fileDoesNotExist: 'Requested file does not exist!' }
     filesController: { folderDoesNotExist: 'Folder does not exist: ' }
 dialogs:
-    createContactCard: { header: 'Create contact card' }
+    createContactCard: { header: 'Create contact card', tabs: { mainInformation: { label: 'Main information' }, contactsData: { label: 'Contacts data' } } }
     editContactCard: { header: 'Edit contact card' }
     addIssue: { header: 'Add issue' }
     addIssueProgress: { header: 'Add issue progress' }
-    addIssueContact: { header: 'Add issue contact' }
+    addIssueContact: { tabs: { contact: { label: 'Add issue contact' }, progress: { label: 'Add issue progress' } } }
     addOrModifyTodo: { add: 'Add todo', modify: 'Modify todo' }
     filesTransfer: { confirm: 'Do You really want to move these files?' }
     removeFiles: { confirm: 'Do You really want to remove these files?' }
@@ -112,7 +112,7 @@ notes:
 contact:
     headers: { addRemove: 'Add/Remove contact' }
     tables: { contact: Contact, description: Description, group: Group, type: Type }
-    settings: { headers: { changeAddContactType: 'Change/Add contact type', changeAddContactGroup: 'Change/Add contact group' }, table: { name: Name, imagePath: 'Image path', preview: Preview, icon: Icon, color: Color }, infoBlock: { header: 'Contacts setttings', text: { mainDescription: "Management of contacts types (the small icons visible on the list below the colored box) and contact groups\n(icons shown in the upper left corner of the contact)\n" } } }
+    settings: { table: { name: Name, imagePath: 'Image path', preview: Preview, icon: Icon, color: Color }, infoBlock: { header: 'Contacts setttings', text: { mainDescription: "Management of contacts types (the small icons visible on the list below the colored box) and contact groups\n(icons shown in the upper left corner of the contact)\n" } }, tab: { changeAddContactType: { label: 'Change/Add contact type' }, changeAddContactGroup: { label: 'Change/Add contact group' } } }
     overview: { infoBlock: { header: Contacts, text: { mainDescription: "Store variety information about personal contacts. Supports marking contacts with icons via grouping,\nassigning multiple contacts types, adding image and coloring the boxes.\n" } } }
 passwords:
     headers: { addRemoveCredentials: 'Add/Remove credentials' }
@@ -132,13 +132,13 @@ travels:
     popovers: { remove: 'Remove record', edit: 'Edit record' }
     buttons: { map: Map, infoBlock: { header: 'Ideas for traveling', text: { mainDescription: "Group Your traveling plans into categories, provide images, map and some location information\nto never miss the postponed travels.\n" } } }
 payments:
-    productsPrices: { headers: { productPrices: 'Products prices', addProduct: 'Add product' }, table: { homeCurrency: 'Home currency' }, infoBlock: { header: 'Products prices', text: { mainDescription: "Organizable lists of assortment allows to keep an eye of the products that should be avoided in case of the\nneed to manage the financial issues, where even shopping the basic goods matters.\n" } } }
-    moneyOwed: { headers: { owedByOthers: 'Money owed by others', owedByMe: 'Money owed by me', addRecord: 'Add record' }, table: { target: Target, amount: Amount, information: Information, date: Date, currency: Currency }, overallSummary: { i: I, owe: Owe, owesMe: 'Owes me', to: To }, infoBlock: { header: 'Money owed', text: { mainDescription: "Track of the money owed to other people and owed by yourself. Consist of separate management groups,\nyields the summaries of financial debts with separation of the target (person / company etc.)\n" } } }
+    productsPrices: { tabs: { acceptedProducts: { label: 'Accepted products' }, rejectedProducts: { label: 'Rejected products' } }, headers: { addProduct: 'Add product' }, table: { homeCurrency: 'Home currency' }, infoBlock: { header: 'Products prices', text: { mainDescription: "Organizable lists of assortment allows to keep an eye of the products that should be avoided in case of the\nneed to manage the financial issues, where even shopping the basic goods matters.\n" } } }
+    moneyOwed: { headers: { owedByOthers: 'Money owed by others', owedByMe: 'Money owed by me', addRecord: 'Add record' }, tab: { owedByOthers: { label: 'Money owed by others' }, owedByMe: { label: 'Money owed by me' } }, table: { target: Target, amount: Amount, information: Information, date: Date, currency: Currency }, overallSummary: { i: I, owe: Owe, owesMe: 'Owes me', to: To }, infoBlock: { header: 'Money owed', text: { mainDescription: "Track of the money owed to other people and owed by yourself. Consist of separate management groups,\nyields the summaries of financial debts with separation of the target (person / company etc.)\n" } } }
     incomes: { headers: { manage: 'Manage records', addRecord: 'Add record' }, table: { amount: Amount, date: Date, currency: Currency, information: Information }, infoBlock: { header: 'Monthly incomes', text: { mainDescription: "Organizable monthly incomes sources, used later on in the reporting\n" } } }
     monthlyPayments: { headers: { addPayment: 'Add payment' }, summary: 'Monthly payments summary:', table: { type: Type, description: Description, money: Money, date: Date }, infoBlock: { header: 'Monthly payments', text: { mainDescription: "Lists of the money spent in each month with separate summary per month and per payment type.\n" } } }
-    bills: { headers: { billsManagement: 'Bills management', billsItemsManagement: 'Items management' }, forms: { bills: 'Add bill' }, table: { startDate: 'Start date', endDate: 'End date', name: Name, information: Information, plannedAmount: 'Planned amount' }, infoBlock: { header: Bills, text: { mainDescription: "Track of money spent on unpredicted or planned things, but not related to the standard monthly payments, like\nrenting, electricity etc.\n" } } }
+    bills: { tabs: { billsManagement: { label: 'Bills management' }, billsItemsManagement: { label: 'Items management' } }, forms: { bills: 'Add bill' }, table: { startDate: 'Start date', endDate: 'End date', name: Name, information: Information, plannedAmount: 'Planned amount' }, infoBlock: { header: Bills, text: { mainDescription: "Track of money spent on unpredicted or planned things, but not related to the standard monthly payments, like\nrenting, electricity etc.\n" } } }
     bills_items: { forms: { bills_items: 'Add bill item' }, table: { amount: Amount, name: Name, bill: Bill, date: Date } }
-    settings: { headers: { changeAddSetting: 'Change/Add settings', currencyMultiplier: 'Currency multiplier', paymentsTypes: 'Payments types', recurringPayments: 'Recurring payments' }, types: { table: { name: Name } }, recurring: { table: { dayOfMonth: 'Day of month', money: Money, description: Description, type: Type } } }
+    settings: { headers: { changeAddSetting: 'Change/Add settings' }, tab: { currencyMultiplier: { label: 'Currency multiplier' }, paymentsTypes: { label: 'Payments types' }, recurringPayments: { label: 'Recurring payments' } }, types: { table: { name: Name } }, recurring: { table: { dayOfMonth: 'Day of month', money: Money, description: Description, type: Type } } }
     infoBlock: { header: 'Payments settings', text: { mainDescription: "Management of payments types visible in the <b>Monthly Payments</b> submodule and the recurring payments which are\nused by the cron to insert certain payments each month automatically (like for example constant renting fee)\n" } }
 reports:
     monthlyPaymentsSummaries: { infoBlock: { header: 'Monthly payments summaries', text: { mainDescription: "This report contains summary of payments from \"<b>Monthly Payments</b>\" and \"<b>Bills</b>\" for each month.\n" } }, table: { monthAndYear: 'Month and year', money: Money } }
@@ -157,8 +157,8 @@ shopping:
     headers: { plannedShoppingItems: 'Planned shopping items', addPlannedItem: 'Add planned item' }
     infoBlock: { header: 'Shopping plans', text: { mainDescription: "Wanted or planned items - when there is a goal to buy something but the finances might not allow to do so at given point\n" } }
 job:
-    afterhours: { headers: { allAfterhours: 'All afterhours', spentAfterhours: 'Spent afterhours', remainingAfterhours: 'Remaining afterhours', addSpendAfterhours: 'Add/Spend afterhours', summary: Summary }, labels: { hours: Hours, days: Days }, info: { daysAreRounded: 'Days are rounded down to the nearest <b>0.25</b>' }, summaryPartials: { iHaveGot: 'I''ve got:', days: day/s, for: for, leftToSpend: 'left to spend' }, infoBlock: { header: Afterhours, text: { mainDescription: "List of collected and spent job afterhours. Contains summaries of afterhours,\ncalculated automatically into days that can be spent as additional free days.\n" } } }
-    holidays: { headers: { summary: 'Holidays summary', spent: 'Holidays spent', spend: 'Spend holidays' }, infoBlock: { header: Holidays, text: { mainDescription: "Track of monthly available / spend holidays days in job\n" } } }
+    afterhours: { headers: { remainingAfterhours: 'Remaining afterhours', addSpendAfterhours: 'Add/Spend afterhours', summary: Summary, tabs: { madeAfterhours: { label: 'Made afterhours' }, spentAfterhours: { label: 'Spent afterhours' } } }, labels: { hours: Hours, days: Days }, info: { daysAreRounded: 'Days are rounded down to the nearest <b>0.25</b>' }, summaryPartials: { iHaveGot: 'I''ve got:', days: day/s, for: for, leftToSpend: 'left to spend' }, infoBlock: { header: Afterhours, text: { mainDescription: "List of collected and spent job afterhours. Contains summaries of afterhours,\ncalculated automatically into days that can be spent as additional free days.\n" } } }
+    holidays: { headers: { spend: 'Spend holidays', tab: { summary: { label: 'Holidays summary' }, spent: { label: 'Holidays spent' } } }, infoBlock: { header: Holidays, text: { mainDescription: "Track of monthly available / spend holidays days in job\n" } } }
     settings: { headers: { manageHolidaysPool: 'Manage holidays pool', addHolidaysPool: 'Add holidays pool' }, infoBlock: { header: 'Job settings', text: { mainDescription: "Settings for job based modules, contains definitions of holidays available for given year in given company\n" } } }
 files:
     label: Files
@@ -183,7 +183,7 @@ fineUpload:
     mb: Mb
     headers: { uploadFiles: 'Upload files' }
 issues:
-    card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { headers: { contacts: Contacts, progress: Progress } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', addOrModifyExistingTodo: 'Add or modify existing todo', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
+    card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { tabs: { contacts: { label: Contacts }, progress: { label: Progress } } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', addOrModifyExistingTodo: 'Add or modify existing todo', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     contactsTable: { icon: Icon, date: Date, information: Information, actions: Actions }
     popover: { createIssue: 'Create issue' }
     infoBlock: { header: 'Pending issues', text: { mainDescription: "Management of the issues that are about to be resolved one day. Allows to track down the contacts and adding\nnotes based information about current progress in given case. Each entry can also contain an <b>Todo list</b> due\nto the fact typically some personal cases require set of actions to be resolved in the process.\n" } }
@@ -235,11 +235,12 @@ codePages:
     error404: { h1: 404, h3: 'Oops Page Not Found', text: 'The page you are looking for does not exist or has been moved.', button: 'Go back', title: '404 - page not found' }
     error500: { h1: 500, h3: 'Internal server error', text: 'Something goes wrong with our servers, please try again later.', button: 'Go back', title: '500 - internal server error' }
 settings:
+    tab: { dashboard: { label: Dashboard }, finances: { label: Finances } }
     label: Settings
-    dashboard: { label: Dashboard, widgets: { visibility: { label: 'Widgets visibility', table: { labels: { name: Name, displayWidget: 'Display widget' } } } } }
+    dashboard: { widgets: { visibility: { label: 'Widgets visibility', table: { labels: { name: Name, displayWidget: 'Display widget' } } } } }
     infoBlock: { header: Settings, text: { mainDescription: "Contains either system wide or special settings not related explicitly to any module\n" } }
     guide: { label: Guide }
-    finances: { label: Finances, type: { currencies: { label: Currencies, table: { name: Name, symbol: Symbol, multiplier: Multiplier, isDefault: 'Is default' }, addCurrency: 'Add currency' }, messages: { couldNotFindCurrencyForGivenName: 'Could not find currency for given name', defaultCurrencyCanNotBeRemove: 'Default currency cannot be removed', couldNotFindSettingWithThisName: 'Could not find setting with this name', canNotUnsetTheTheDefaultPropertyForDefaultCurrency: 'Can not unset the default property for default currency', couldNotHandleAddingNewCurrencyBeingDefaultValue: 'Could not handle adding new currency being default value', currencyWithThisNameAlreadyExist: 'Currency with this name already exist', success: 'Currency record has been successfully updated' } } }
+    finances: { type: { currencies: { label: Currencies, table: { name: Name, symbol: Symbol, multiplier: Multiplier, isDefault: 'Is default' }, addCurrency: 'Add currency' }, messages: { couldNotFindCurrencyForGivenName: 'Could not find currency for given name', defaultCurrencyCanNotBeRemove: 'Default currency cannot be removed', couldNotFindSettingWithThisName: 'Could not find setting with this name', canNotUnsetTheTheDefaultPropertyForDefaultCurrency: 'Can not unset the default property for default currency', couldNotHandleAddingNewCurrencyBeingDefaultValue: 'Could not handle adding new currency being default value', currencyWithThisNameAlreadyExist: 'Currency with this name already exist', success: 'Currency record has been successfully updated' } } }
 db:
     foreignKeyViolation: 'This record cannot be removed - it''s connected with existing records.'
     recordWithThisNameExist: 'Record with this name already exists!'

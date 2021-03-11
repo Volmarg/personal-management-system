@@ -17,22 +17,34 @@
                         header_translation_string : 'job.holidays.infoBlock.header'
                     } %}
 
-                    {# Holidays summary #}
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20 text-center">{{ 'job.holidays.headers.summary' | trans }}</h4>
-                                {% include 'modules/my-job/components/holidays.summary.table.html.twig' %}
-                            </div>
-                        </div>
-                    </div>
+                            <div class="bgc-white bd bdrs-3 p-10 mB-20">
 
-                    {# DataTable Holidays generally #}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20 text-center">{{ 'job.holidays.headers.spent' | trans }}</h4>
-                                {% include 'modules/my-job/components/holidays.table.html.twig' %}
+                                 <div data-smart-tab="true">
+                                    <ul class="nav">
+                                       <li><a class="nav-link" href="#tab-1" id="tab-nav-1">
+                                          {{ 'job.holidays.headers.tab.summary.label' | trans }}
+                                       </a></li>
+                                       <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
+                                           {{ 'job.holidays.headers.tab.spent.label' | trans }}
+                                       </a></li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                       <div id="tab-1" class="tab-pane" role="tabpanel">
+                                           <div class="bgc-white bdrs-3 p-20 mB-20">
+                                               {% include 'modules/my-job/components/holidays.summary.table.html.twig' %}
+                                           </div>
+                                       </div>
+                                       <div id="tab-2" class="tab-pane" role="tabpanel">
+                                           <div class="bgc-white bdrs-3 p-20 mB-20">
+                                               {% include 'modules/my-job/components/holidays.table.html.twig' %}
+                                           </div>
+                                       </div>
+                                    </div>
+                                 </div>
+
                             </div>
                         </div>
                     </div>

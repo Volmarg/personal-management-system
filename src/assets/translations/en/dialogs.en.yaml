@@ -1,6 +1,11 @@
 dialogs:
   createContactCard:
     header: Create contact card
+    tabs:
+      mainInformation:
+        label: Main information
+      contactsData:
+        label: Contacts data
   editContactCard:
     header: Edit contact card
   addIssue:
@@ -8,7 +13,11 @@ dialogs:
   addIssueProgress:
     header: Add issue progress
   addIssueContact:
-    header: Add issue contact
+    tabs:
+      contact:
+        label: Add issue contact
+      progress:
+        label: Add issue progress
   addOrModifyTodo:
     add: Add todo
     modify: Modify todo

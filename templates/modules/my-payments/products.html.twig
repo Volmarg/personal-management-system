@@ -17,18 +17,35 @@
                     header_translation_string : 'payments.productsPrices.infoBlock.header'
                 } %}
 
-                {% set products_types = ['non_rejected','rejected'] %}
-                {# Datatables #}
-                {% for product_type in products_types %}
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                                <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.productsPrices.headers.productPrices' | trans }}</h4>
-                                {% include 'modules/my-payments/components/products.table.html.twig' with {type:product_type} %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
+
+                            <div data-smart-tab="true">
+                                <ul class="nav">
+                                    <li><a class="nav-link" href="#tab-1" id="tab-nav-1">
+                                            {{ 'payments.productsPrices.tabs.acceptedProducts.label' | trans }}
+                                    </a></li>
+                                    <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
+                                            {{ 'payments.productsPrices.tabs.rejectedProducts.label' | trans}}
+                                    </a></li>
+                                </ul>
+
+                                {% set products_types = ['non_rejected','rejected'] %}
+                                {# Datatables #}
+                                {% for index, product_type in products_types %}
+                                    <div class="tab-content">
+                                        <div id="tab-{{ index+1 }}" class="tab-pane" role="tabpanel">
+                                            {% include 'modules/my-payments/components/products.table.html.twig' with {type:product_type} %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
                             </div>
                         </div>
                     </div>
-                {% endfor %}
+                </div>
+
                 {# Form #}
                 <div class="row">
                     <div class="col-md-12">

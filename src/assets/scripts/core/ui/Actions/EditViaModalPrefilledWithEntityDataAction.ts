@@ -6,6 +6,7 @@ import UpdateAction                 from "./UpdateAction";
 import CallableViaDataAttrsDialogs  from "../Dialogs/CallableViaDataAttrsDialogs";
 import BootstrapSelect              from "../../../libs/bootstrap-select/BootstrapSelect";
 import Ajax                         from "../../ajax/Ajax";
+import SmartTab                     from "../../../libs/smarttab/SmartTab";
 
 export default class EditViaModalPrefilledWithEntityDataAction extends AbstractAction {
 
@@ -34,11 +35,14 @@ export default class EditViaModalPrefilledWithEntityDataAction extends AbstractA
                 url     : "/dialog/body/edit-contact-card",
                 method  : "POST",
                 callback: () => {
+                    let smartTab = new SmartTab();
+
                     this.formAppendAction.attachFormViewAppendEvent();
                     this.formAppendAction.attachRemoveParentEvent();
                     JsColor.init();
                     this.updateAction.attachContentSaveEventOnSaveIcon();
                     BootstrapSelect.init();
+                    smartTab.init();
                 }
             },
             MyTravelsIdeasRepository: {

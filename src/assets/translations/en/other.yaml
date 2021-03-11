@@ -50,9 +50,13 @@ codePages:
     title: 500 - internal server error
 
 settings:
+  tab:
+    dashboard:
+      label: Dashboard
+    finances:
+      label: Finances
   label: Settings
   dashboard:
-    label: Dashboard
     widgets:
       visibility:
         label: Widgets visibility
@@ -68,7 +72,6 @@ settings:
   guide:
     label: Guide
   finances:
-    label: Finances
     type:
       currencies:
         label: Currencies

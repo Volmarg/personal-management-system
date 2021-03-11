@@ -17,6 +17,7 @@ import AjaxEvents           from "../../../ajax/AjaxEvents";
 import BootstrapSelect      from "../../../../libs/bootstrap-select/BootstrapSelect";
 import DataTransferDialogs  from "../DataTransferDialogs";
 import Tippy                from "../../../../libs/tippy/Tippy";
+import SmartTab             from "../../../../libs/smarttab/SmartTab";
 
 import * as $ from "jquery";
 
@@ -44,6 +45,7 @@ export default class DialogLogic {
             let flatpicker         = new FlatPicker();
             let fontawesomeAction  = new FontawesomeAction();
             let createAction       = new CreateAction();
+            let smartTab           = new SmartTab();
 
             datatable.init();
             accordion.applyAccordion();
@@ -54,6 +56,7 @@ export default class DialogLogic {
             fontawesomeAction.init();
             flatpicker.init();
             createAction.init();
+            smartTab.init();
         };
 
         let dialogDataDto      = new DialogDataDto();
@@ -79,6 +82,7 @@ export default class DialogLogic {
             let updateAction         = new UpdateAction();
             let removeAction         = new RemoveAction();
             let fontawesomeAction    = new FontawesomeAction();
+            let smartTab           = new SmartTab();
 
             datatable.init();
             accordion.applyAccordion();
@@ -90,6 +94,7 @@ export default class DialogLogic {
             updateAction.init();
             removeAction.init();
             fontawesomeAction.init();
+            smartTab.init();
         };
 
         let dialogDataDto      = new DialogDataDto();

@@ -13,6 +13,7 @@ import Navigation               from "../../../Navigation";
 import CreateAction             from "../../Actions/CreateAction";
 import BootstrapSelect          from "../../../../libs/bootstrap-select/BootstrapSelect";
 import FineUploaderService      from "../../../../libs/fine-uploader/FineUploaderService";
+import SmartTab                 from "../../../../libs/smarttab/SmartTab";
 
 /**
  * @description this class contains definitions of logic used for given widget
@@ -43,10 +44,12 @@ export default class WidgetData {
         let callback = () => {
             let updateAction     = new UpdateAction();
             let formAppendAction = new FormAppendAction();
+            let smartTab         = new SmartTab();
 
             formAppendAction.attachFormViewAppendEvent();
             JsColor.init();
             updateAction.attachContentSaveEventOnSaveIcon();
+            smartTab.init();
         };
 
         let url           = Ajax.getUrlForPathName(RouterStructure.DIALOG_BODY_CREATE_CONTACT_CARD_PATH);

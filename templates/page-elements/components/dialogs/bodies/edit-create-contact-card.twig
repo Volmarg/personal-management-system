@@ -15,7 +15,7 @@
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
                         <h4 class="c-grey-900 mB-20 text-center">
 
-                            {% if editContactCard is defined and editContactCard %}
+                            {% if edit_contact_card is defined and edit_contact_card %}
                                 {{ 'dialogs.editContactCard.header' | trans }}
                             {% else %}
                                 {{ 'dialogs.createContactCard.header' | trans }}
@@ -25,83 +25,105 @@
                         <section id="tiny-mce-wrapper" class="p-20 add-record-form save-parent" data-type="MyContact">
                             {{ form_start(contact_form,{'attr':{' data-entity':"MyContact"}}) }}
 
+                             <div data-smart-tab="true">
+                                    <ul class="nav">
+                                           <li><a class="nav-link" href="#tab-1" id="tab-nav-1">{{ 'dialogs.createContactCard.tabs.mainInformation.label' | trans }}</a></li>
+                                           <li><a class="nav-link" href="#tab-2" id="tab-nav-2">{{ 'dialogs.createContactCard.tabs.contactsData.label' | trans }}</a></li>
+                                        </ul>
 
-                            <div class="row mT-10">
-                                <div class="col-md-4">
-                                    {{ form_label(contact_form[KEY_NAME]) }}
-                                </div>
-                                <div class="col-md-8">
-                                    {{ form_widget(contact_form[KEY_NAME]) }}
-                                </div>
-                            </div>
+                                    <div class="tab-content">
+                                           <div id="tab-1" class="tab-pane" role="tabpanel">
 
-                            <div class="row mT-10">
-                                <div class="col-md-4">
-                                    {{ form_label(contact_form[KEY_DESCRIPTION]) }}
-                                </div>
-                                <div class="col-md-8">
-                                    {{ form_widget(contact_form[KEY_DESCRIPTION]) }}
-                                </div>
-                            </div>
+                                               <div class="row mT-10">
+                                                   <div class="col-md-4">
+                                                       {{ form_label(contact_form[KEY_NAME]) }}
+                                                   </div>
+                                                   <div class="col-md-8">
+                                                       {{ form_widget(contact_form[KEY_NAME]) }}
+                                                   </div>
+                                               </div>
 
-                            <div class="row mT-10">
-                                <div class="col-md-4">
-                                    {{ form_label(contact_form[KEY_IMAGE_PATH]) }}
-                                </div>
-                                <div class="col-md-8">
-                                    {{ form_widget(contact_form[KEY_IMAGE_PATH]) }}
-                                </div>
-                            </div>
+                                               <div class="row mT-10">
+                                                   <div class="col-md-4">
+                                                       {{ form_label(contact_form[KEY_DESCRIPTION]) }}
+                                                   </div>
+                                                   <div class="col-md-8">
+                                                       {{ form_widget(contact_form[KEY_DESCRIPTION]) }}
+                                                   </div>
+                                               </div>
 
-                            <div class="row mT-10">
-                                <div class="col-md-4">
-                                    {{ form_label(contact_form[KEY_GROUP]) }}
-                                </div>
-                                <div class="col-md-8">
-                                    {{ form_widget(contact_form[KEY_GROUP]) }}
-                                </div>
-                            </div>
+                                               <div class="row mT-10">
+                                                   <div class="col-md-4">
+                                                       {{ form_label(contact_form[KEY_IMAGE_PATH]) }}
+                                                   </div>
+                                                   <div class="col-md-8">
+                                                       {{ form_widget(contact_form[KEY_IMAGE_PATH]) }}
+                                                   </div>
+                                               </div>
 
-                            <div class="row mT-10">
-                                <div class="col-md-6">
+                                               <div class="row mT-10">
+                                                   <div class="col-md-4">
+                                                       {{ form_label(contact_form[KEY_GROUP]) }}
+                                                   </div>
+                                                   <div class="col-md-8">
+                                                       {{ form_widget(contact_form[KEY_GROUP]) }}
+                                                   </div>
+                                               </div>
 
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            {{ form_label(contact_form[KEY_NAME_BACKGROUND_COLOR], null, {"label_attr": {"class": "col-form-label col-sm-12"}} ) }}
+                                               <div class="row mT-10">
+                                                   <div class="col-md-6">
+
+                                                       <div class="row">
+                                                           <div class="col-md-8">
+                                                               {{ form_label(contact_form[KEY_NAME_BACKGROUND_COLOR], null, {"label_attr": {"class": "col-form-label col-sm-12"}} ) }}
+                                                           </div>
+                                                           <div class="col-md-4">
+                                                               {{ form_widget(contact_form[KEY_NAME_BACKGROUND_COLOR]) }}
+                                                           </div>
+                                                       </div>
+
+                                                   </div>
+                                               </div>
+
+                                               <div class="row mT-10">
+                                                   <div class="col-md-6">
+
+                                                       <div class="row">
+                                                           <div class="col-md-8">
+                                                               {{ form_label(contact_form[KEY_DESCRIPTION_BACKGROUND_COLOR], null, {"label_attr": {"class": "col-form-label col-sm-12"}} ) }}
+                                                           </div>
+                                                           <div class="col-md-4">
+                                                               {{ form_widget(contact_form[KEY_DESCRIPTION_BACKGROUND_COLOR]) }}
+                                                           </div>
+                                                       </div>
+
+                                                   </div>
+
+                                               </div>
+
+                                           </div>
+                                           <div id="tab-2" class="tab-pane" role="tabpanel">
+
+                                               <section class="contacts-types-wrapper-for-widget mT-20">
+
+                                                   {% if subforms is defined and subforms is not empty %}
+                                                       {% for subform in subforms %}
+                                                           {{ subform | raw }}
+                                                       {% endfor %}
+                                                   {% endif %}
+
+                                               </section>
+
+                                               <button class="append-form btn btn-sm btn-primary"
+                                                       style="font-size:13px;"
+                                                       data-target-selector=".contacts-types-wrapper-for-widget"
+                                                       data-form-name="contactTypeDto">
+                                                   {{ 'forms.MyContactType.labels.addType' | trans }}
+                                               </button>
+
+                                           </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            {{ form_widget(contact_form[KEY_NAME_BACKGROUND_COLOR]) }}
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="row mT-10">
-                                <div class="col-md-6">
-
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            {{ form_label(contact_form[KEY_DESCRIPTION_BACKGROUND_COLOR], null, {"label_attr": {"class": "col-form-label col-sm-12"}} ) }}
-                                        </div>
-                                        <div class="col-md-4">
-                                            {{ form_widget(contact_form[KEY_DESCRIPTION_BACKGROUND_COLOR]) }}
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <section class="contacts-types-wrapper-for-widget mT-20">
-
-                                {% if subforms is defined and subforms is not empty %}
-                                    {% for subform in subforms %}
-                                        {{ subform | raw }}
-                                    {% endfor %}
-                                {% endif %}
-
-                            </section>
+                                 </div>
 
                             <div class="row mT-10 d-flex flex-row flex-nowrap justify-content-end save-record">
                                 <div>
@@ -111,13 +133,6 @@
 
                             {{ form_end(contact_form) }}
                         </section>
-
-                        <button class="append-form btn btn-sm btn-primary"
-                                style="font-size:13px;"
-                                data-target-selector=".contacts-types-wrapper-for-widget"
-                                data-form-name="contactTypeDto">
-                            {{ 'forms.MyContactType.labels.addType' | trans }}
-                        </button>
 
                     </div>
                 </div>

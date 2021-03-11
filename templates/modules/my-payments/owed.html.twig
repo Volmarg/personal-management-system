@@ -17,30 +17,49 @@
                     header_translation_string : 'payments.moneyOwed.infoBlock.header'
                 } %}
 
-                {# Owed by others #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.moneyOwed.headers.owedByOthers' | trans }}</h4>
-                            {% include 'modules/my-payments/components/owed.table.html.twig' with {
-                                'records'   : owed_by_others,
-                                'summarries': summary_owed_by_others
-                            } %}
+                <div class="bgc-white bd bdrs-3 p-10 mB-20">
+
+                     <div data-smart-tab="true">
+                        <ul class="nav">
+                            <li><a class="nav-link" href="#tab-1" id="tab-nav-1">
+                                {{ 'payments.moneyOwed.tab.owedByOthers.label' | trans }}
+                            </a></li>
+                            <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
+                                    {{ 'payments.moneyOwed.tab.owedByMe.label' | trans }}
+                            </a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="tab-1" class="tab-pane" role="tabpanel">
+                                {# Owed by others #}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="bgc-white bdrs-3 p-20 mB-20">
+                                            {% include 'modules/my-payments/components/owed.table.html.twig' with {
+                                                'records'   : owed_by_others,
+                                                'summarries': summary_owed_by_others
+                                            } %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tab-2" class="tab-pane" role="tabpanel">
+                                {# Owed by me #}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="bgc-white bdrs-3 p-20 mB-20">
+                                            {% include 'modules/my-payments/components/owed.table.html.twig' with {
+                                                'records'   : owed_by_me,
+                                                'summarries': summary_owed_by_me
+                                            } %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                {# Owed by me #}
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-20 mB-20">
-                            <h4 class="c-grey-900 mB-20 text-center">{{ 'payments.moneyOwed.headers.owedByMe' | trans }}</h4>
-                            {% include 'modules/my-payments/components/owed.table.html.twig' with {
-                                'records'   : owed_by_me,
-                                'summarries': summary_owed_by_me
-                            } %}
-                        </div>
-                    </div>
-                </div>
+
                 {# Totall summary#}
                 <div class="row">
                     <div class="col-md-12">

@@ -590,6 +590,7 @@ class DialogsAction extends AbstractController
             $contactForm = $this->app->forms->contactForm([], $contact);
 
             $templateData = [
+                'edit_contact_card'  => true,
                 'contact_types_dtos' => $contactTypesDtos, //todo - need to append few type forms with dto data
                 'contact_form'       => $contactForm->createView(),
                 'subforms'           => $formsRenders
