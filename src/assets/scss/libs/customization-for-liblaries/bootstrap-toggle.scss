@@ -1,0 +1,7 @@
+/**
+ this is a fix for a issue where toggle button is inside a tab, with this the automatic height/width calculation does not work
+*/
+.toggle {
+  width: 94.7969px !important;
+  height: 31px !important;
+}

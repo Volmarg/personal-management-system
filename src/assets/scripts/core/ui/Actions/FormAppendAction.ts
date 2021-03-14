@@ -44,7 +44,8 @@ export default class FormAppendAction extends AbstractAction {
             _this.attachRemoveParentEvent();
         };
 
-        $(targetElements.on('click', function(){
+        $(targetElements.on('click', function(event){
+            event.preventDefault();
             let targetElementSelector = $(this).attr('data-target-selector');
             let formName              = $(this).attr('data-form-name');
 
