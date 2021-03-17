@@ -16,6 +16,7 @@ class MyNotesCategoriesController extends AbstractController {
 
     const CATEGORY_ID  = "category_id";
     const CHILDRENS_ID = "childrens_id";
+    const CATEGORY     = "category";
 
     /**
      * @var Application
@@ -65,6 +66,11 @@ class MyNotesCategoriesController extends AbstractController {
 
             $parentsChildrenDtos[] = $parentChildDto;
         }
+
+        // sort alphabetically by name
+        uasort($parentsChildrenDtos, fn(ParentChildDTO $currentElement, ParentChildDTO $nextElement) =>
+            $currentElement->getName() > $nextElement->getName()
+        );
 
         return $parentsChildrenDtos;
     }
@@ -136,6 +142,10 @@ class MyNotesCategoriesController extends AbstractController {
             }
         }
 
+        // sort alphabetically by category name
+        uasort($accessibleCategories, fn(array $currentCategory, array $nextCategory) =>
+            $currentCategory[self::CATEGORY] >= $nextCategory[self::CATEGORY]
+        );
         return $accessibleCategories;
     }
 
@@ -213,7 +223,7 @@ class MyNotesCategoriesController extends AbstractController {
 
             $categoriesDepths[$categoryId] = $depth;
         }
-
+        asort($categoriesDepths); // required to prevent child categories with depth 1+ being added to root (depth 0)
         return $categoriesDepths;
     }
 
