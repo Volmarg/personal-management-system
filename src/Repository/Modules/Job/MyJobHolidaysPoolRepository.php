@@ -107,7 +107,8 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
         $sql = "
             SELECT DISTINCT year
             FROM my_job_holiday_pool
-            WHERE deleted = 0 ;
+            WHERE deleted = 0
+            ORDER BY year DESC
         ";
 
         $statement = $connection->prepare($sql);
