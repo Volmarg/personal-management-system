@@ -6,7 +6,7 @@ use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Core\Application;
 use App\DTO\ParentChildDTO;
 use App\Entity\Modules\Notes\MyNotes;
-use App\Form\Type\IndentchoiceType;
+use App\Form\Type\IndentType\IndentchoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;

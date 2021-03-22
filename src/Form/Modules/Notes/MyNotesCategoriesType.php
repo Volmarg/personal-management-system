@@ -5,10 +5,9 @@ namespace App\Form\Modules\Notes;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Form\Type\FontawesomepickerType;
+use App\Form\Type\IndentType\IndententityType;
 use App\Form\Type\JscolorpickerType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ColorType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,9 +30,9 @@ class MyNotesCategoriesType extends AbstractType {
             ->add('name', TextType::class, [
                 'label' => $this->app->translator->translate('forms.MyNotesCategoriesType.name')
             ])
-            ->add('parent_id', EntityType::class, [
+            ->add('parent_id', IndententityType::class, [
                 'class' => MyNotesCategories::class,
-                'choices' => $this->app->repositories->myNotesCategoriesRepository->findBy(['deleted' => 0]),
+                'choices' => $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted(),
                 'choice_label' => function (MyNotesCategories $noteCategory) {
                     return $noteCategory->getName();
                 },
