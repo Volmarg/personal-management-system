@@ -5,7 +5,11 @@ namespace App\Entity\Modules\Schedules;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
+use Exception;
 
 /**
  * @ORM\Entity(repositoryClass=MyScheduleRepository::class)
@@ -68,6 +72,16 @@ class MySchedule implements SoftDeletableEntityInterface, EntityInterface
      * @ORM\JoinColumn(nullable=false)
      */
     private $calendar;
+
+    /**
+     * @ORM\OneToMany(targetEntity=MyScheduleReminder::class, mappedBy="schedule", orphanRemoval=true)
+     */
+    private $myScheduleReminders;
+
+    public function __construct()
+    {
+        $this->myScheduleReminders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -188,6 +202,78 @@ class MySchedule implements SoftDeletableEntityInterface, EntityInterface
     public function setBody($body): void
     {
         $this->body = $body;
+    }
+
+    /**
+     * @return MyScheduleReminder[]
+     */
+    public function getMyScheduleReminders(): array
+    {
+        if( $this->myScheduleReminders instanceof PersistentCollection ){
+            return $this->myScheduleReminders->getValues();
+        }
+
+        return $this->myScheduleReminders;
+    }
+
+    /**
+     * @param MyScheduleReminder $myScheduleReminder
+     * @return $this
+     */
+    public function addMyScheduleReminder(MyScheduleReminder $myScheduleReminder): self
+    {
+        if (!$this->myScheduleReminders->contains($myScheduleReminder)) {
+            $this->myScheduleReminders[] = $myScheduleReminder;
+            $myScheduleReminder->setSchedule($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Will set reminders in the schedule
+     *
+     * @param MyScheduleReminder[] $reminders
+     */
+    public function setMyScheduleReminders(array $reminders)
+    {
+        $this->myScheduleReminders = $reminders;
+    }
+
+    /**
+     * @param MyScheduleReminder $myScheduleReminder
+     * @return $this
+     */
+    public function removeMyScheduleReminder(MyScheduleReminder $myScheduleReminder): self
+    {
+        if ($this->myScheduleReminders->removeElement($myScheduleReminder)) {
+            // set the owning side to null (unless already changed)
+            if ($myScheduleReminder->getSchedule() === $this) {
+                $myScheduleReminder->setSchedule(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Returns an array where key is id of entity and value is the date
+     * @return array
+     * @throws Exception
+     */
+    public function getRemindersDatesWithIds(): array
+    {
+        $datesWithIds = [];
+        foreach($this->getMyScheduleReminders() as $reminder){
+
+            if( empty($reminder->getId()) ){
+                throw new Exception("This method should not be called in given case as the entity id was not yet set");
+            }
+
+            $datesWithIds[$reminder->getId()] = $reminder->getDate()->format("Y-m-d H:i:s");
+        }
+
+        return $datesWithIds;
     }
 
 }

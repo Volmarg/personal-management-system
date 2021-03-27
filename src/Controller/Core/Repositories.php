@@ -17,6 +17,7 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotesCategories;
+use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Repository\FilesSearchRepository;
@@ -48,6 +49,7 @@ use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Schedules\MyScheduleCalendarRepository;
+use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Todo\MyTodoElementRepository;
@@ -108,6 +110,7 @@ class Repositories extends AbstractController {
     const MY_TODO_REPOSITORY                            = "MyTodoRepository";
     const MY_TODO_ELEMENT_REPOSITORY                    = "MyTodoElementRepository";
     const MODULE_DATA_REPOSITORY                        = "ModuleDataRepository";
+    const MY_SCHEDULE_REMINDERS_CONTROLLER              = "MyScheduleRemindersController";
 
     const PASSWORD_FIELD        = 'password';
     const PARENT_ID_FIELD       = 'parent_id';
@@ -338,6 +341,11 @@ class Repositories extends AbstractController {
     public $moduleDataRepository;
 
     /**
+     * @var MyScheduleReminderRepository $myScheduleReminderRepository
+     */
+    public MyScheduleReminderRepository $myScheduleReminderRepository;
+
+    /**
      * @var EntityValidator $entityValidator
      */
     private $entityValidator;
@@ -387,6 +395,7 @@ class Repositories extends AbstractController {
         ModuleRepository                    $moduleRepository,
         ModuleDataRepository                $moduleDataRepository,
         MyScheduleCalendarRepository        $myScheduleCalendarRepository,
+        MyScheduleReminderRepository        $myScheduleReminderRepository,
         EntityManagerInterface              $entityManager,
         EntityValidator                     $entityValidator,
         LoggerInterface                     $logger
@@ -432,6 +441,7 @@ class Repositories extends AbstractController {
         $this->moduleRepository                     = $moduleRepository;
         $this->moduleDataRepository                 = $moduleDataRepository;
         $this->myScheduleCalendarRepository         = $myScheduleCalendarRepository;
+        $this->myScheduleReminderRepository         = $myScheduleReminderRepository;
         $this->logger                               = $logger;
     }
 
@@ -1049,6 +1059,14 @@ class Repositories extends AbstractController {
                     $this->entityManager->persist($myIssue);
                 }
 
+            }elseif( $entity instanceof MySchedule ){ // this is required to prevent removing calendar related to schedule
+                $reminders = $entity->getMyScheduleReminders();
+
+                foreach($reminders as $reminder){
+                    $reminder->setDeleted(true);
+                    $this->entityManager->persist($reminder);
+                }
+                $this->entityManager->flush();
             }elseif(
                     ($entity instanceof MyIssue)
                 ||  ($entity instanceof MyNotesCategories)

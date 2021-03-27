@@ -125,7 +125,8 @@ achievements:
     infoBlock: { header: Achievements, text: { mainDescription: "Track of personal achievements, both smaller and bigger ones - as it's always nice to remember\nthe successes toward personal goals and dreams.\n" } }
 schedules:
     calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' }, views: { daily: Daily, weekly: Weekly, monthly: Monthly }, actions: { addSchedule: 'Add schedule', settings: 'Calendars settings', view: View, back: 'Go back', today: Today, forward: 'Go forward' }, calendarsList: { viewAll: 'View all' }, infoBlock: { header: Schedules, text: { mainDescription: "Fully interactive calendar with support of schedules groups management\n" } } }
-    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed', scheduleHasBeenUpdated: 'Schedule has been updated', scheduleHasBeenCreated: 'Schedule has been created' } }
+    schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed', scheduleHasBeenUpdated: 'Schedule has been updated', scheduleHasBeenUpdatedUpdateReminders: 'Schedule has been updated, don''t forget to update reminders', scheduleHasBeenCreated: 'Schedule has been created' } }
+    reminder: { reminderWithThisDateAlreadyExist: 'Reminder with this date already exist' }
     modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } }, legend: { legendOfNotificationsColors: 'Legend of notifications colors', over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' } }, panels: { management: Management, addNewCalendar: 'Add new calendar' } }
 travels:
     headers: { addIdea: 'Add idea' }

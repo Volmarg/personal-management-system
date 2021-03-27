@@ -3,6 +3,7 @@
 namespace App\DTO\Modules\Schedules;
 
 use App\Entity\Modules\Schedules\MySchedule;
+use Exception;
 
 class ScheduleDTO {
 
@@ -16,6 +17,7 @@ class ScheduleDTO {
     const KEY_LOCATION       = 'location';
     const KEY_CALENDAR_ID    = 'calendarId';
     const KEY_CALENDAR_COLOR = 'calendarColor';
+    const KEY_REMINDERS      = 'reminders';
 
     /**
      * @var string $id
@@ -66,6 +68,11 @@ class ScheduleDTO {
      * @var string $calendarColor
      */
     private string $calendarColor;
+
+    /**
+     * @var array $reminders
+     */
+    private array $reminders = [];
 
     /**
      * @return string
@@ -228,6 +235,22 @@ class ScheduleDTO {
     }
 
     /**
+     * @return array
+     */
+    public function getReminders(): array
+    {
+        return $this->reminders;
+    }
+
+    /**
+     * @param array $reminders
+     */
+    public function setReminders(array $reminders): void
+    {
+        $this->reminders = $reminders;
+    }
+
+    /**
      * Will build json representation of dto
      */
     public function toJson()
@@ -243,6 +266,7 @@ class ScheduleDTO {
             self::KEY_LOCATION       => $this->getLocation(),
             self::KEY_CALENDAR_ID    => $this->getCalendarId(),
             self::KEY_CALENDAR_COLOR => $this->getCalendarColor(),
+            self::KEY_REMINDERS      => $this->getReminders(),
         ];
 
         return json_encode($dataArray);
@@ -253,6 +277,7 @@ class ScheduleDTO {
      *
      * @param MySchedule $schedule
      * @return ScheduleDTO
+     * @throws Exception
      */
     public static function fromScheduleEntity(MySchedule $schedule): ScheduleDTO
     {
@@ -267,6 +292,7 @@ class ScheduleDTO {
         $dto->setEnd($schedule->getEnd()->format("Y-m-d H:i:s"));
         $dto->setCategory($schedule->getCategory());
         $dto->setCalendarColor($schedule->getCalendar()->getBackgroundColor()); // all colors for calendar are the same
+        $dto->setReminders($schedule->getRemindersDatesWithIds());
 
         return $dto;
     }

@@ -1,3 +1,5 @@
+import ArrayUtils from "../../../core/utils/ArrayUtils";
+
 export default class ScheduleDto
 {
     private _id            : string;
@@ -10,6 +12,7 @@ export default class ScheduleDto
     private _location      : string;
     private _calendarId    : string;
     private _calendarColor : string;
+    private _reminders     : Object;
 
     get id(): string {
         return this._id;
@@ -59,6 +62,28 @@ export default class ScheduleDto
         this._body = value;
     }
 
+    get reminders(): Object {
+        return this._reminders;
+    }
+
+    /**
+     * Returns the reminders dates in form of a string
+     */
+    public remindersDatesAsString(): string {
+        let dates = Object.values(this._reminders);
+
+        if( ArrayUtils.isEmpty(dates) ){
+            return "";
+        }
+
+        let remindersDatesStrings = dates.join(", ");
+        return remindersDatesStrings;
+    }
+
+    set reminders(value: Object) {
+        this._reminders = value;
+    }
+
     /**
      * @description will create dto from json
      */
@@ -77,6 +102,7 @@ export default class ScheduleDto
         dto._location      = object.location;
         dto._calendarId    = object.calendarId;
         dto._calendarColor = object.calendarColor;
+        dto._reminders     = object.reminders;
 
         return dto;
     }
