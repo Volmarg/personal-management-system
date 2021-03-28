@@ -155,5 +155,6 @@
 	<li><a href="https://github.com/petervanderwalt">Petervanderwalt</a> - for adding fontawesome <b>js</b> version support for <a href="https://github.com/furcan/IconPicker">IconPicker</a></li>	
 	<li><a href="https://github.com/SimonHaas">SimonHaas</a> - for providing <b>docker</b> configuration</li>	
 	<li><a href="https://github.com/MohamedElashri">MohamedElashri</a> - for testing <b>docker</b> configuration</li>	
+	<li><a href="https://github.com/rwaight">Rob Waight</a> - for providing changes and documentation for running <b>docker</b> on windows</li>	
 </ul>
 <hr>
