@@ -234,6 +234,7 @@
   }
 
   .navbar-tui-calendar {
+    margin-top: 77px;
     #btn-new-schedule, #btn-settings, #btn-move-previous, #btn-move-next, #btn-move-today, #btn-calendar-view-list {
       background-color: unset;
 
@@ -277,5 +278,20 @@
       opacity: 0.85;
       cursor: pointer;
     }
+  }
+
+  .schedule-mark {
+    outline: 2px rgb(0, 98, 204, 0.6) solid;
+    outline-offset: 5px;
+  }
+
+  #searchResultAutocomplete {
+    position: absolute;
+    z-index: 3;
+    overflow-y: scroll;
+    max-height: 300px;
+    max-width: 411px;
+    margin-left: -26px;
+    background-color: white;
   }
 }

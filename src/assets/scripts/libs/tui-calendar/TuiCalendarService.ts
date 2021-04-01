@@ -13,7 +13,8 @@ import AjaxResponseDto from "../../DTO/AjaxResponseDto";
 import ScheduleDto     from "../../DTO/modules/schedules/ScheduleDto";
 import StringUtils     from "../../core/utils/StringUtils";
 import Dialog          from "../../core/ui/Dialogs/Dialog";
-import ArrayUtils from "../../core/utils/ArrayUtils";
+import ArrayUtils      from "../../core/utils/ArrayUtils";
+import AutocompleteService from "../autocomplete/AutocompleteService";
 
 /**
  * @description handles the calendar logic, keep in mind that the logic assume that there will
@@ -36,12 +37,13 @@ export default class TuiCalendarService
     private readonly DATA_ATTRIBUTE_IS_TUI_CALENDAR = 'data-is-tui-calendar';
     private readonly DATA_ATTRIBUTE_ACTION_MOVE     = 'data-action';
 
-    private readonly DATA_ATTRIBUTE_CALENDAR_ID               = 'data-calendar-id';
+    private readonly DATA_ATTRIBUTE_CALENDAR_ID               = 'data-calendar-id'; // instance of the calendar on list
     private readonly DATA_ATTRIBUTE_CALENDAR_NAME             = 'data-calendar-name';
     private readonly DATA_ATTRIBUTE_CALENDAR_COLOR            = 'data-calendar-color';
     private readonly DATA_ATTRIBUTE_CALENDAR_DRAG_COLOR       = 'data-calendar-drag-color';
     private readonly DATA_ATTRIBUTE_CALENDAR_BORDER_COLOR     = 'data-calendar-border-color';
     private readonly DATA_ATTRIBUTE_CALENDAR_BACKGROUND_COLOR = 'data-calendar-background-color';
+    private readonly DATA_SCHEDULE_ID                         = 'data-schedule-id'
 
     private readonly ACTION_MOVE_TODAY              = 'move-today';
     private readonly ACTION_MOVE_PREVIOUS           = 'move-previous';
@@ -58,6 +60,7 @@ export default class TuiCalendarService
     private readonly POPUP_CONTAINER_SELECTOR       = '.tui-full-calendar-popup-container';
     private readonly CALENDAR_MODAL_SELECTOR        = '#calendar-settings-modal';
     private readonly INPUT_REMINDER_SELECTOR        = ".reminder-calendar";
+    private readonly DATE_RANGE                     = "#dateRange";
 
     private readonly POPUP_CONTAINER_SECTION_TITLE_SELECTOR = '.tui-full-calendar-section-title';
     private readonly POPUP_CONTAINER_SECTION_LOCATION       = '.tui-full-calendar-section-location';
@@ -72,6 +75,12 @@ export default class TuiCalendarService
     private dialog = new Dialog();
 
     private lastClickedScheduleId ?: string  = null;
+    private lastSearchedSchedule ?:ISchedule  = null;
+    private lastHandledCalendarDomElement ?: HTMLElement = null;
+
+    static readonly CALENDAR_VIEW_MONTH = "month";
+    static readonly CALENDAR_VIEW_WEEK  = "week";
+    static readonly CALENDAR_VIEW_DAY   = "day";
 
     /**
      * @description this value is used to get unique schedule id upon inserting in GUI,
@@ -108,8 +117,12 @@ export default class TuiCalendarService
 
         //@ts-ignore
         $allElementsToHandle.each( async (index, elementToHandle) => {
+            this.lastHandledCalendarDomElement = elementToHandle;
+
             let calendarInstance = _this.createCalendarInstance(elementToHandle);
             calendarInstance     = _this.insertICalendarsIntoCalendarInstance(calendarInstance);
+
+            this.updateShownDate(calendarInstance);
 
             Loader.showSubLoader();
             {
@@ -120,6 +133,9 @@ export default class TuiCalendarService
             _this.setLastUsedScheduleId(calendarInstance);
 
             _this.applyBuiltInEventsToCalendarInstance(calendarInstance);
+
+            _this.attachLogicToSearchInput(calendarInstance);
+
             _this.handleCalendarList(calendarInstance);
             _this.createNewScheduleOnNewScheduleClick(calendarInstance);
             _this.attachFilterSchedulesOnViewAllCheckboxInCalendarsList();
@@ -254,7 +270,6 @@ export default class TuiCalendarService
                 }
 
                 let updatedSchedule = _this.buildUpdatedSchedule(event.schedule, changes);
-                console.log(updatedSchedule);
 
                 calendarInstance.deleteSchedule(event.schedule.id, event.schedule.calendarId);
                 _this.saveSchedule(updatedSchedule, ajaxCallUrl, calendarInstance);
@@ -289,13 +304,21 @@ export default class TuiCalendarService
             useDetailPopup   : true,
             taskView         : false,
             scheduleView     : true,
-            defaultView      : "week",
+            defaultView      : TuiCalendarService.CALENDAR_VIEW_WEEK,
             week: {
                 startDayOfWeek: 1
             },
             month: {
                 startDayOfWeek: 1
             },
+            template: {
+                monthDayname: function(dayname) {
+                    return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
+                },
+                timegridDisplayPrimayTime: function(time) {
+                    return time.hour + ':00';
+                },
+            }
         });
     }
 
@@ -345,9 +368,8 @@ export default class TuiCalendarService
      */
     private saveSchedule(scheduleData: ISchedule, ajaxCallUrl: string, calendarInstance: Calendar, createInstance: boolean = true): void
     {
-        let $creationPopupContainer = $(this.POPUP_CONTAINER_SELECTOR);
-        let calendar                = this.findCalendar(scheduleData.calendarId, calendarInstance);
-        let _this                   = this;
+        let calendar = this.findCalendar(scheduleData.calendarId, calendarInstance);
+        let _this    = this;
 
         //@ts-ignore
         let startDate = scheduleData.start.toDate();
@@ -509,6 +531,7 @@ export default class TuiCalendarService
         let $elementToHandle = $(`[${this.DATA_ATTRIBUTE_ACTION_MOVE}^="${this.ACTION_MOVE_NEXT}"]`);
         $elementToHandle.on('click', () => {
             calendarInstance.next();
+            this.updateShownDate(calendarInstance);
         })
     }
 
@@ -520,6 +543,7 @@ export default class TuiCalendarService
         let $elementToHandle = $(`[${this.DATA_ATTRIBUTE_ACTION_MOVE}^="${this.ACTION_MOVE_PREVIOUS}"]`);
         $elementToHandle.on('click', () => {
             calendarInstance.prev();
+            this.updateShownDate(calendarInstance);
         })
     }
 
@@ -531,6 +555,7 @@ export default class TuiCalendarService
         let $elementToHandle = $(`[${this.DATA_ATTRIBUTE_ACTION_MOVE}^="${this.ACTION_MOVE_TODAY}"]`);
         $elementToHandle.on('click', () => {
             calendarInstance.today();
+            this.updateShownDate(calendarInstance);
         })
     }
 
@@ -610,6 +635,7 @@ export default class TuiCalendarService
         let $actionElement = $(`[${this.DATA_ATTRIBUTE_ACTION_MOVE}='${this.ACTION_VIEW_MONTHLY}'`);
         $actionElement.on('click', () => {
             calendarInstance.changeView('month');
+            this.updateShownDate(calendarInstance);
         })
     }
 
@@ -621,6 +647,7 @@ export default class TuiCalendarService
         let $actionElement = $(`[${this.DATA_ATTRIBUTE_ACTION_MOVE}='${this.ACTION_VIEW_WEEKLY}'`);
         $actionElement.on('click', () => {
             calendarInstance.changeView('week');
+            this.updateShownDate(calendarInstance);
         })
     }
 
@@ -632,6 +659,7 @@ export default class TuiCalendarService
         let $actionElement = $(`[${this.DATA_ATTRIBUTE_ACTION_MOVE}='${this.ACTION_VIEW_DAILY}'`);
         $actionElement.on('click', () => {
             calendarInstance.changeView('day');
+            this.updateShownDate(calendarInstance);
         })
     }
 
@@ -966,4 +994,89 @@ export default class TuiCalendarService
 
         return allRemindersArray;
     }
+
+    /**
+     * @description applies the search logic to the calendar instance
+     */
+    private attachLogicToSearchInput(calendarInstance: Calendar): void
+    {
+        let allSchedules = this.getAllSchedulesFromCalendarInstance(calendarInstance);
+        if( null !== this.lastSearchedSchedule ){
+            // this.unmarkScheduleInCalendar(this.lastSearchedSchedule);
+            // this.lastSearchedSchedule.id = null;
+        }
+
+        let arrayOfSchedules  = Object.values(allSchedules); // is object due to indexes not being sorted
+        let selectionCallback = (schedule: ISchedule) => {
+            let startDate             = this.getScheduleStartDate(schedule);
+            this.lastSearchedSchedule = schedule;
+            this.goToDate(calendarInstance, startDate);
+            // this.markScheduleInCalendar(this.lastSearchedSchedule);
+        }
+
+        let searchResultModificationCallback = (searchResultData: Object): Object => {
+            //@ts-ignore
+            let schedule        = searchResultData.value as ISchedule;
+            let starDate        = this.getScheduleStartDate(schedule);
+            let momentStartDate = moment(starDate.toString());
+
+            //@ts-ignore (must be a string instead of nodes)
+            let matchingContent = `<small>${searchResultData.match}</small>`;
+            let dateLine        = `<small class="d-block">${momentStartDate.format("DD.MM.YYYY hh:mm")}</small>`;
+
+            //@ts-ignore
+            searchResultData.match = matchingContent + dateLine;
+            return searchResultData;
+        }
+        AutocompleteService.init(arrayOfSchedules, ["title"], selectionCallback, searchResultModificationCallback);
+    }
+
+    /**
+     * @description will move calendar view to given date
+     */
+    private goToDate(calendar: Calendar, date: Date): void
+    {
+        calendar.changeView(TuiCalendarService.CALENDAR_VIEW_WEEK);
+        calendar.setDate(date);
+        this.updateShownDate(calendar);
+    }
+
+    /**
+     * @description handles showing the date
+     */
+    private updateShownDate(calendarInstance: Calendar): void
+    {
+        let $dateRangeElement = $(this.DATE_RANGE);
+        let currentDateMoment = moment(calendarInstance.getDate().toDate().toDateString());
+
+        let shownDate = currentDateMoment.format("dddd MMMM YYYY");
+        if( TuiCalendarService.CALENDAR_VIEW_MONTH === calendarInstance.getViewName() ){
+            let momentDate = moment(calendarInstance.getDate().toDate().toDateString());
+            shownDate      = `${momentDate.format("MMMM")} ${momentDate.format("YYYY")}`;
+        }else if( TuiCalendarService.CALENDAR_VIEW_WEEK === calendarInstance.getViewName() ){
+            let momentStartDate = moment(calendarInstance.getDateRangeStart().toDate().toDateString());
+            let momentEndDate   = moment(calendarInstance.getDateRangeEnd().toDate());
+
+            shownDate = `${momentStartDate.format("DD MMMM YYYY")} - ${momentEndDate.format("DD MMMM YYYY")}`;
+        }
+
+        $dateRangeElement.html(shownDate);
+    }
+
+    /**
+     * @description Will mark schedule in calendar
+     * Not working so far since there is issue that this gets called before calendar grid dom is updated
+     */
+    private markScheduleInCalendar(schedule: ISchedule): void {
+        $(`[${this.DATA_SCHEDULE_ID}='${schedule.id}']`).addClass("schedule-mark");
+    }
+
+    /**
+     * @description Will unmark schedule in calendar
+     * Not working so far since there is issue that this gets called before calendar grid dom is updated
+     */
+    private unmarkScheduleInCalendar(schedule: ISchedule): void {
+        $(`[${this.DATA_SCHEDULE_ID}='${schedule.id}']`).removeClass("schedule-mark");
+    }
+
 }

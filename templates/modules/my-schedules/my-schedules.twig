@@ -169,6 +169,19 @@
                                 </section>
 
                                 <section class="right-side col-10 p-0">
+                                    {# Current date range #}
+                                    <h4 class="text-center m-0">
+                                        <span id="dateRange"></span>
+                                    </h4>
+
+                                    <section class="calendar-search-bar justify-content-end d-flex">
+                                        {# Search #}
+                                        <span>
+                                            <input id="autoComplete" type="text" class="form-control calendar-search-input" autocomplete="off"/>
+                                            <div id="autoCompleteResult"></div>
+                                        </span>
+                                    </section>
+
                                     <div id="right">
                                         {# This is the calendar wrapper holding the real tui-callendar, rendered by js #}
                                         <section data-is-tui-calendar id="calendar" class="p-20 pL-40"></section>
