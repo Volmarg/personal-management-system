@@ -129,4 +129,56 @@ class MyScheduleRepository extends ServiceEntityRepository {
         return $results;
     }
 
+    /**
+     * Will return incoming schedules information array for a schedules which have incoming reminders
+     * does not return the schedules with due date being NOW()
+     *
+     * @param int $safetyMinutesOffset
+     * @return IncomingScheduleDTO[]
+     * @throws Exception
+     */
+    public function getSchedulesWithRemindersDueDatesInformation(int $safetyMinutesOffset): array
+    {
+        $connection = $this->getEntityManager()->getConnection();
+
+        $sql = "
+            SELECT 
+                sch.id                      AS id,
+                sch.title                   AS title,
+                sch.start                   AS date,
+                DATEDIFF(sch.start ,NOW())  AS daysDiff,
+                mchc.icon                   AS icon,
+                sch.body                    AS body
+
+            FROM my_schedule sch
+            
+            JOIN my_schedule_calendar mchc
+            ON mchc.id = sch.calendar_id
+
+            JOIN my_schedule_reminder msr
+            ON msr.schedule_id = sch.id
+            AND msr.deleted = 0
+            
+            WHERE 
+            NOW() BETWEEN msr.date AND msr.date + INTERVAL :minutesOffset MINUTE
+            AND DATE_FORMAT(msr.date, '%Y-%M-%D') = DATE_FORMAT(NOW(), '%Y-%M-%D')
+            AND sch.deleted  = 0
+            AND mchc.deleted = 0
+        ";
+
+        $bindedValues = [
+            'minutesOffset' => $safetyMinutesOffset,
+        ];
+
+        $parametersTypes = [
+            Types::INTEGER,
+        ];
+
+        $statement = $connection->executeQuery($sql, $bindedValues, $parametersTypes);
+        $results   = $statement->fetchAll(PDO::FETCH_CLASS, IncomingScheduleDTO::class);
+
+        return $results;
+    }
+
+
 }
