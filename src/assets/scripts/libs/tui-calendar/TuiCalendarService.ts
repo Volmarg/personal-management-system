@@ -1022,7 +1022,7 @@ export default class TuiCalendarService
 
             //@ts-ignore (must be a string instead of nodes)
             let matchingContent = `<small>${searchResultData.match}</small>`;
-            let dateLine        = `<small class="d-block">${momentStartDate.format("DD.MM.YYYY hh:mm")}</small>`;
+            let dateLine        = `<small class="d-block">${momentStartDate.format("DD.MM.YYYY HH:mm")}</small>`;
 
             //@ts-ignore
             searchResultData.match = matchingContent + dateLine;
