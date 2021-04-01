@@ -16,8 +16,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
 {
     protected static $defaultName = 'cron:transfer-schedules-to-notifier-proxy-logger';
 
-    const OPTION_TRANSFER_CHANNEL          = "transfer-channel";
-    const OPTION_DUE_DATE_DAYS_TO_TRANSFER = "due-date-days-to-transfer";
+    const OPTION_TRANSFER_CHANNEL = "transfer-channel";
 
     const TRANSFER_CHANNEL_MAIL    = "mail";
     const TRANSFER_CHANNEL_DISCORD = "discord";
@@ -28,14 +27,15 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     ];
 
     /**
+     * This is a temporary solution to create a window for example for cron to read the schedule, instead of having issue
+     * where the cron is running like each 5 min and will never hit the exact date for reminder.
+     */
+    const SCHEDULE_SAFETY_TIME_OFFSET = 10; //in minutes
+
+    /**
      * @var string $channel
      */
     private string $channel;
-
-    /**
-     * @var array $dueDays
-     */
-    private array $dueDays;
 
     /**
      * @var Application $app
@@ -59,12 +59,10 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Will transfer all schedules for date before current date to the NPL')
+            ->setDescription('Will transfer all schedules with reminders to the NPL. With current configuration, cron should be called each 6-7min')
             ->addOption(self::OPTION_TRANSFER_CHANNEL, "type", InputOption::VALUE_REQUIRED, "What channel should be used to send the message later on" )
-            ->addOption(self::OPTION_DUE_DATE_DAYS_TO_TRANSFER, "due-date", InputOption::VALUE_REQUIRED, "How many days before the deadline should the message be sent")
             ->addUsage("--transfer-channel=mail (Will send the schedules via mailing)")
             ->addUsage("--transfer-channel=discord (Will send the schedules via discord)")
-            ->addUsage("--transfer-channel=mail --due-date-days-to-transfer=1,5,7 (Will send the schedules 1,5,7 days before the deadline)")
             ;
     }
 
@@ -75,25 +73,11 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-             $this->channel = $input->getOption(self::OPTION_TRANSFER_CHANNEL, null);
-             $dueDays       = $input->getOption(self::OPTION_DUE_DATE_DAYS_TO_TRANSFER, null);
+         $this->channel = $input->getOption(self::OPTION_TRANSFER_CHANNEL, null);
 
-             if( empty($this->channel) ){
-                 throw new Exception("No transfer channel was provided");
-             }elseif( empty($dueDays) ){
-                 throw new Exception("No due days were provided");
-             }
-
-             $this->dueDays = explode(",", $dueDays);
-             if( empty($this->dueDays) ){
-                 throw new Exception("Got due days parameter but could not build the array from provided value, maybe wrong separator?");
-             }
-
-             foreach($this->dueDays as $days){
-                 if( !is_numeric($days) ){
-                     throw new Exception("One of the days for the due days parameter is not numeric.");
-                 }
-             }
+         if( empty($this->channel) ){
+             throw new Exception("No transfer channel was provided");
+         }
     }
 
     /**
@@ -107,19 +91,16 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         try{
             $this->app->logger->info("Started transferring the schedules to npl");
             {
-                foreach($this->dueDays as $days){
+                $incomingSchedulesDTOS = $this->app->repositories->myScheduleRepository->getSchedulesWithRemindersDueDatesInformation(self::SCHEDULE_SAFETY_TIME_OFFSET);
 
-                    $incomingSchedulesDTOS = $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays($days);
+                if( empty($incomingSchedulesDTOS) ){
+                    $this->app->logger->info("No schedules were found to transfer");
+                    return Command::SUCCESS;
+                }
 
-                    if( empty($incomingSchedulesDTOS) ){
-                        $this->app->logger->info("No results to find for due days: {$days}");
-                        continue;
-                    }
-
-                    foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
-                        $this->app->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}");
-                        $this->handleTransferForChannel($incomingScheduleDTO);
-                    }
+                foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
+                    $this->app->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}");
+                    $this->handleTransferForChannel($incomingScheduleDTO);
                 }
             }
             $this->app->logger->info("Finished transferring the schedules to npl");

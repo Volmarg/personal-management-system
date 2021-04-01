@@ -5,9 +5,11 @@ namespace App\Action\Modules\Schedules;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use App\Controller\Core\Repositories;
 use App\DTO\Modules\Schedules\ScheduleDTO;
 use App\Entity\Modules\Schedules\MySchedule;
-use App\Repository\Modules\Schedules\MyScheduleRepository;
+use App\Entity\Modules\Schedules\MyScheduleReminder;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +30,7 @@ class MySchedulesAction extends AbstractController {
     const KEY_CATEGORY            = 'category';
     const KEY_CALENDAR_ID         = 'calendarId';
     const KEY_LOCATION            = 'location';
+    const KEY_REMINDERS           = 'reminders';
     const KEY_SCHEDULES_DTO_JSONS = "schedulesDtoJsons";
 
     const TWIG_TEMPLATE           = 'modules/my-schedules/my-schedules.twig';
@@ -121,6 +124,7 @@ class MySchedulesAction extends AbstractController {
             $category   = $dataArray[self::KEY_CATEGORY];
             $calendarId = $dataArray[self::KEY_CALENDAR_ID];
             $location   = $dataArray[self::KEY_LOCATION];
+            $reminders  = $dataArray[self::KEY_REMINDERS] ?? ""; // can happen if all reminders are removed in front or none is being sent
 
             $calendar = $this->controllers->getMyScheduleCalendarController()->findCalendarById($calendarId);
             if( is_null($calendar) ){
@@ -146,7 +150,7 @@ class MySchedulesAction extends AbstractController {
                     ]);
                     $ajaxResponse->setMessage($message);
                     $ajaxResponse->setSuccess(false);
-                    $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);;
+                    $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
 
                     return $ajaxResponse->buildJsonResponse();
                 }
@@ -161,16 +165,56 @@ class MySchedulesAction extends AbstractController {
             $schedule->setLocation($location);
             $schedule->setCalendar($calendar);
 
-            $this->controllers->getMySchedulesController()->saveSchedule($schedule);
+            $this->app->beginTransaction();
+            {
+                try{
+                    if( !empty($reminders) ){
+                        $schedule->setMyScheduleReminders([]); //it's easier this way to remove all and set anew
+                        $this->controllers->getMySchedulesController()->saveSchedule($schedule);
+
+                        $remindersDatesArray = explode(",", $reminders);
+                        $remindersDatesArray = array_unique($remindersDatesArray);
+
+                        foreach($remindersDatesArray as $reminderDate){
+                            $reminder = new MyScheduleReminder();
+                            $reminder->setDate(new DateTime($reminderDate));
+                            $reminder->setSchedule($schedule);
+
+                            $this->controllers->getMyScheduleReminderController()->saveReminder($reminder);
+                            $schedule->addMyScheduleReminder($reminder);
+                        }
+
+                    }else{
+                        $this->controllers->getMySchedulesController()->saveSchedule($schedule);
+                    }
+                }catch(Exception|TypeError $e){
+                    $this->app->rollbackTransaction();
+                    throw $e;
+                }
+            }
+            $this->app->commitTransaction();
+
         }catch(Exception | TypeError $e){
             $this->app->logExceptionWasThrown($e);
-            $message = $this->app->translator->translate('messages.general.internalServerError');
 
-            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+            $message = $this->app->translator->translate('messages.general.internalServerError');
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            if($e instanceof NonUniqueResultException){
+                $message = $this->app->translator->translate('schedules.reminder.reminderWithThisDateAlreadyExist');
+                $code    = Response::HTTP_BAD_REQUEST;
+            }
+
+            $ajaxResponse->setCode($code);
             $ajaxResponse->setSuccess(false);
             $ajaxResponse->setMessage($message);
 
             return $ajaxResponse->buildJsonResponse();
+        }
+
+        // there is no logic to update reminders on dragging - thus simple solution to show information
+        if( !empty($schedule->getMyScheduleReminders()) ){
+            $successMessage = $this->app->translator->translate('schedules.schedule.message.scheduleHasBeenUpdatedUpdateReminders');
         }
 
         $ajaxResponse->setMessage($successMessage);
@@ -245,7 +289,7 @@ class MySchedulesAction extends AbstractController {
             $ajaxResponse->setMessage($message);;
             $ajaxResponse->setCode(Response::HTTP_OK);
 
-            $this->app->repositories->deleteById(MyScheduleRepository::class, $scheduleId);
+            $this->app->repositories->deleteById(Repositories::MY_SCHEDULE_REPOSITORY, $scheduleId);
         }catch(Exception | TypeError $e){
             $this->app->logExceptionWasThrown($e);
             $message = $this->app->translator->translate('messages.general.internalServerError');

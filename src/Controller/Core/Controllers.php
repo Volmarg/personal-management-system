@@ -37,6 +37,7 @@ use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Controller\Modules\Payments\MyRecurringPaymentsMonthlyController;
 use App\Controller\Modules\Reports\ReportsController;
 use App\Controller\Modules\Schedules\MyScheduleCalendarController;
+use App\Controller\Modules\Schedules\MyScheduleRemindersController;
 use App\Controller\Modules\Schedules\MySchedulesController;
 use App\Controller\Modules\Shopping\MyShoppingPlansController;
 use App\Controller\Modules\Todo\MyTodoController;
@@ -311,6 +312,11 @@ class Controllers extends AbstractController {
      * @var MyScheduleCalendarController $myScheduleCalendarController
      */
     private MyScheduleCalendarController $myScheduleCalendarController;
+
+    /**
+     * @var MyScheduleRemindersController $myScheduleReminderController
+     */
+    private MyScheduleRemindersController $myScheduleReminderController;
 
     /**
      * @return MyIssuesController
@@ -682,6 +688,14 @@ class Controllers extends AbstractController {
         return $this->myScheduleCalendarController;
     }
 
+    /**
+     * @return MyScheduleRemindersController
+     */
+    public function getMyScheduleReminderController(): MyScheduleRemindersController
+    {
+        return $this->myScheduleReminderController;
+    }
+
     public function __construct(
         AchievementController         $achievementController,
         ReportsController             $reportsController,
@@ -733,7 +747,8 @@ class Controllers extends AbstractController {
         MyScheduleCalendarController  $myScheduleCalendarController,
 
         MyRecurringPaymentsMonthlyController $myRecurringPaymentsMonthlyController,
-        MyPaymentsBillsItemsController       $myPaymentsBillsItemsController
+        MyPaymentsBillsItemsController       $myPaymentsBillsItemsController,
+        MyScheduleRemindersController        $myScheduleReminderController
     ) {
         $this->achievementController        = $achievementController;
         $this->reportsControllers           = $reportsController;
@@ -786,6 +801,7 @@ class Controllers extends AbstractController {
 
         $this->myRecurringPaymentsMonthlyController = $myRecurringPaymentsMonthlyController;
         $this->myPaymentsBillsItemsController       = $myPaymentsBillsItemsController;
+        $this->myScheduleReminderController         = $myScheduleReminderController;
     }
 
 }

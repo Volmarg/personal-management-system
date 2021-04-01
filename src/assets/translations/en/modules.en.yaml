@@ -210,7 +210,10 @@ schedules:
       noScheduleHasBeenFoundForId: "No schedule has been found for given id %id%"
       scheduleHasBeenRemoved: "Schedule has been removed"
       scheduleHasBeenUpdated: Schedule has been updated
+      scheduleHasBeenUpdatedUpdateReminders: Schedule has been updated, don't forget to update reminders
       scheduleHasBeenCreated: Schedule has been created
+  reminder:
+    reminderWithThisDateAlreadyExist: Reminder with this date already exist
   modals:
     calendarSettings:
       header: Calendar settings

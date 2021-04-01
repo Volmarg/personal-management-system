@@ -158,4 +158,28 @@ class Application extends AbstractController {
     {
         $this->tokenStorage->setToken(null);
     }
+
+    /**
+     * Begins a transaction
+     */
+    public function beginTransaction(): void
+    {
+        $this->em->beginTransaction();
+    }
+
+    /**
+     * Commits the transaction
+     */
+    public function commitTransaction(): void
+    {
+        $this->em->commit();
+    }
+
+    /**
+     * Rollback the transaction
+     */
+    public function rollbackTransaction(): void
+    {
+        $this->em->rollback();
+    }
 }
