@@ -81,7 +81,7 @@ class Migrations
 
     /**
      * Will output an sql executed only if column in table does exist
-     * - prevents crashing on cases where column does not exists
+     * - prevents crashing on cases where column does exists
      *
      * @param string $columnName
      * @param string $tableName
@@ -105,9 +105,9 @@ class Migrations
               'SELECT 1',
               '{$executedSql}'
             ));
-            PREPARE executedIfColumnNotExist FROM @preparedStatement;
-            EXECUTE executedIfColumnNotExist;
-            DEALLOCATE PREPARE executedIfColumnNotExist; 
+            PREPARE executedIfColumnExist FROM @preparedStatement;
+            EXECUTE executedIfColumnExist;
+            DEALLOCATE PREPARE executedIfColumnExist; 
         ";
 
         return $sql;
@@ -115,7 +115,7 @@ class Migrations
 
     /**
      * Will output an sql executed only when given table does not exist
-     * - prevents crashing on cases where column already exists
+     * - prevents crashing on cases where table does not exist
      *
      * @param string $tableName
      * @param string $executedSql
@@ -141,6 +141,39 @@ class Migrations
             PREPARE executedIfTableNotExist FROM @preparedStatement;
             EXECUTE executedIfTableNotExist;
             DEALLOCATE PREPARE executedIfTableNotExist; 
+        ";
+
+        return $sql;
+    }
+
+    /**
+     * Will output an sql executed only when given table does exist
+     * - prevents crashing on cases where table does exist
+     *
+     * @param string $tableName
+     * @param string $executedSql
+     * @return string
+     * @throws Exception
+     */
+    public static function buildSqlExecutedIfTableExist(string $tableName, string $executedSql): string
+    {
+        $databaseCredentialsDto = Env::getDatabaseCredentials();
+        $databaseName           = $databaseCredentialsDto->getDatabaseName();
+
+        $sql = "
+            SET @preparedStatement  = (SELECT IF(
+              (
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
+                WHERE
+                            table_name   = '{$tableName}'
+                        AND table_schema = '{$databaseName}'
+              ) >= 1,
+              'SELECT 1',
+              '{$executedSql}'
+            ));
+            PREPARE executedIfTableExist FROM @preparedStatement;
+            EXECUTE executedIfTableExist;
+            DEALLOCATE PREPARE executedIfTableExist; 
         ";
 
         return $sql;

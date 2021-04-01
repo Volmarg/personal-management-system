@@ -6,6 +6,7 @@ namespace DoctrineMigrations;
 
 use App\Controller\Core\Application;
 use App\Controller\Core\Migrations;
+use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Doctrine\Migrations\Version\Version;
@@ -20,6 +21,11 @@ final class Version20210220131953 extends AbstractMigration
         return '';
     }
 
+    /**
+     * @param Schema $schema
+     * @throws Exception
+     * @throws \Exception
+     */
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
@@ -108,8 +114,8 @@ final class Version20210220131953 extends AbstractMigration
             )    
         "));
 
-        $this->addSql("DROP TABLE IF EXISTS my_schedule");
-        $this->addSql("RENAME TABLE schedule TO my_schedule");
+        $this->addSql(Migrations::buildSqlExecutedIfColumnDoesNotExist('calendar_id', 'my_schedule', 'DROP TABLE IF EXISTS my_schedule'));
+        $this->addSql(Migrations::buildSqlExecutedIfTableExist('schedule', 'RENAME TABLE schedule TO my_schedule'));
 
         // no longer used table
         $this->addSql("DROP TABLE IF EXISTS my_schedule_type");
