@@ -3,6 +3,7 @@
 namespace App\Form\Modules\Notes;
 
 use App\Controller\Core\Application;
+use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Form\Type\FontawesomepickerType;
 use App\Form\Type\IndentType\IndententityType;
@@ -20,8 +21,14 @@ class MyNotesCategoriesType extends AbstractType {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var MyNotesCategoriesController $myNotesCategoriesController
+     */
+    private MyNotesCategoriesController $myNotesCategoriesController;
+
+    public function __construct(Application $app, MyNotesCategoriesController $myNotesCategoriesController) {
+        $this->app                         = $app;
+        $this->myNotesCategoriesController = $myNotesCategoriesController;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
@@ -32,8 +39,9 @@ class MyNotesCategoriesType extends AbstractType {
             ])
             ->add('parent_id', IndententityType::class, [
                 'class' => MyNotesCategories::class,
-                'choices' => $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted(),
-                'choice_label' => function (MyNotesCategories $noteCategory) {
+                'parent_child_choices' => $this->myNotesCategoriesController->buildParentsChildrenCategoriesHierarchy(),
+                'choices'              => $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted(),
+                'choice_label'         => function (MyNotesCategories $noteCategory) {
                     return $noteCategory->getName();
                 },
                 'required' => false,

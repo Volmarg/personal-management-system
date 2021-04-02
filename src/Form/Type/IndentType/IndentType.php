@@ -11,15 +11,8 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Todo: maybe it can be used to replace the UploadRecursiveOptionsType - need to check that later
  * This type can be used to output the choice type with indents
- *  use example
- *   [
- *    0 => [
- *          DTO
- *         ]
- *   ]
- *  The indents are created via DTO "indent" param
+ * The indents are created via DTO "indent" param
  * This name of class MUST be written like this (at least in Symfony 4.x) otherwise symfony won't load twig template for this type
  *
  * @package App\Form\Type
@@ -42,7 +35,10 @@ abstract class IndentType extends AbstractType {
         throw new Exception("Implement Your own parent type logic here!");
     }
 
-    const KEY_CHOICES = 'choices';
+    /**
+     * This must be used instead of normal choices as for example EntityType expect choices to be entities
+     * and thanks to this new key it's possible to both keep choices and use dtos to build menu
+     */
     const KEY_CHOICES = 'parent_child_choices';
 
     /**
@@ -85,7 +81,7 @@ abstract class IndentType extends AbstractType {
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            "parent_child_choices" => []
+            self::KEY_CHOICES => []
         ]);
     }
 }

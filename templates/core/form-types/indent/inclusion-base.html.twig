@@ -1,6 +1,6 @@
-<select {{ block('widget_attributes') }} autocomplete="off" class="form-control" >
+<select {{ block_widget_attributes | raw }} autocomplete="off" class="form-control" >
 
-    {% for choice in choices %}
+    {% for choice in parent_child_choices %}
         {% include 'page-elements/components/forms/option-with-indents-for-parent-children-dto.twig' with {"parentChildrenDto": choice} %}
     {% endfor %}
 

@@ -52,6 +52,7 @@ class MyNotesType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyNotesType.labels.body')
             ])
             ->add(self::KEY_CATEGORY, IndentchoiceType::class, [
+                'parent_child_choices' => $choices,
                 'choices' => $choices,
                 "data"    => false,    // this skips some internal validation for choices and allows to save strings, not just int
                 'label'   => $this->app->translator->translate('forms.MyNotesType.labels.category'),
