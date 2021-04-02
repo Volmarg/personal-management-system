@@ -14,3 +14,25 @@
 .bootstrap-select-width-100 {
   width: 100% !important;
 }
+
+/*
+Special handling in table
+- needs to be adjusted
+*/
+//table {
+//
+//  .bootstrap-select .inner.show {
+//    width: 100% !important;
+//    min-height: 200px !important;
+//    position: absolute !important;
+//  }
+//
+//  .bootstrap-select .inner.show ul {
+//    top: 0 !important;;
+//  }
+//
+//  .bootstrap-select .dropdown-menu {
+//    min-height: 200px !important;
+//  }
+//
+//}

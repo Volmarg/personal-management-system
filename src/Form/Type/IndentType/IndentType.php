@@ -1,32 +1,23 @@
 <?php
 
-namespace App\Form\Type;
+namespace App\Form\Type\IndentType;
 
 use App\Controller\Core\Application;
 use App\DTO\ParentChildDTO;
 use Exception;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Todo: maybe it can be used to replace the UploadRecursiveOptionsType - need to check that later
  * This type can be used to output the choice type with indents
- *  use example
- *   [
- *    0 => [
- *          DTO
- *         ]
- *   ]
- *  The indents are created via DTO "indent" param
+ * The indents are created via DTO "indent" param
  * This name of class MUST be written like this (at least in Symfony 4.x) otherwise symfony won't load twig template for this type
  *
- * Class DatalistType
  * @package App\Form\Type
  */
-class IndentchoiceType extends AbstractType {
+abstract class IndentType extends AbstractType {
 
     /**
      * @var Application $app
@@ -37,13 +28,18 @@ class IndentchoiceType extends AbstractType {
         $this->app = $app;
     }
 
-
+    /**
+     * @throws Exception
+     */
     public function getParent() {
-        return ChoiceType::class;
+        throw new Exception("Implement Your own parent type logic here!");
     }
 
-
-    const KEY_CHOICES = 'choices';
+    /**
+     * This must be used instead of normal choices as for example EntityType expect choices to be entities
+     * and thanks to this new key it's possible to both keep choices and use dtos to build menu
+     */
+    const KEY_CHOICES = 'parent_child_choices';
 
     /**
      * @param FormView $view
@@ -82,4 +78,10 @@ class IndentchoiceType extends AbstractType {
         $view->vars[self::KEY_CHOICES] = $options[self::KEY_CHOICES];
     }
 
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            self::KEY_CHOICES => []
+        ]);
+    }
 }

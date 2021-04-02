@@ -6,7 +6,7 @@ use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Core\Application;
 use App\DTO\ParentChildDTO;
 use App\Entity\Modules\Notes\MyNotes;
-use App\Form\Type\IndentchoiceType;
+use App\Form\Type\IndentType\IndentchoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -52,6 +52,7 @@ class MyNotesType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyNotesType.labels.body')
             ])
             ->add(self::KEY_CATEGORY, IndentchoiceType::class, [
+                'parent_child_choices' => $choices,
                 'choices' => $choices,
                 "data"    => false,    // this skips some internal validation for choices and allows to save strings, not just int
                 'label'   => $this->app->translator->translate('forms.MyNotesType.labels.category'),
