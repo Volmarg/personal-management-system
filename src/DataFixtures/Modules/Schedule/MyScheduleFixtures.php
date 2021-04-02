@@ -6,6 +6,7 @@ use App\Controller\Core\Application;
 use App\DataFixtures\Providers\FontawesomeIconsProvider;
 use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Schedules\MySchedule;
+use App\Entity\Modules\Schedules\MyScheduleReminder;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -17,6 +18,9 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
 {
     const COUNT_OF_ENTRIES_FOR_MONTH = 100;
     const COUNT_OF_CALENDARS         = 5;
+    const MAX_COUNT_OF_REMINDERS     = 4;
+    const MAX_REMINDER_HOURS_OFFSET  = 124;
+    const MIN_REMINDER_HOURS_OFFSET  = 1;
 
     /**
      * Factory $faker
@@ -115,7 +119,19 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
             $schedule->setCategory(MySchedule::CATEGORY_TIME);
             $schedule->setLocation($location);
 
-            $manager->persist($schedule);;
+            $countOfReminders = rand(0, self::MAX_COUNT_OF_REMINDERS);
+            $dateForReminder  = clone $startDateTime;
+            for($y = 0; $y < $countOfReminders; $y++){
+                $randomHoursOffset = rand(self::MIN_REMINDER_HOURS_OFFSET, self::MAX_REMINDER_HOURS_OFFSET);
+                $dateForReminder->modify("-{$randomHoursOffset} HOURS");
+
+                $reminder = new MyScheduleReminder();
+                $reminder->setSchedule($schedule);
+                $reminder->setDate($dateForReminder);
+                $manager->persist($reminder);
+            }
+
+            $manager->persist($schedule);
         }
 
         $manager->flush();
