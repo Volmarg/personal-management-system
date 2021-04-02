@@ -15,7 +15,7 @@ class Migrations
 
     /**
      * Will output an sql only if constraint does not exist in given table
-     * - prevents crashing on cases where foreign key is about to be added but it already exists
+     * - prevents crashing on cases where constraint is about to be added but it already exists
      *
      * @param string $constraintType
      * @param string $constraintName
@@ -40,6 +40,38 @@ class Migrations
                 PREPARE executedIfConstraintNotExist FROM @a;
                 EXECUTE executedIfConstraintNotExist;
                 DEALLOCATE PREPARE executedIfConstraintNotExist;
+        ";
+
+        return $sql;
+    }
+
+    /**
+     * Will output an sql only if constraint does exist in given table
+     * - prevent crashing when for example trying to remove not existing constraint
+     *
+     * @param string $constraintType
+     * @param string $constraintName
+     * @param string $executedSql
+     * @return string
+     */
+    public static function buildSqlExecutedIfConstraintDoesExist(string $constraintType, string $constraintName, string $executedSql): string
+    {
+        $sql = "
+            SELECT IF (
+                EXISTS(
+                    SELECT NULL                                                                                                                                                                                     
+                    FROM information_schema.TABLE_CONSTRAINTS                                                                                                                                                       
+                    WHERE                                                                                                                                                                                           
+                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
+                    CONSTRAINT_NAME   = '{$constraintName}' AND                                                                                                                                               
+                    CONSTRAINT_TYPE   = '{$constraintType}'                                                                                                                                                       
+                )
+                ,'{$executedSql}'
+                ,'select ''index index_1 exists'' _______;'
+            ) INTO @a;
+                PREPARE executedIfConstraintExist FROM @a;
+                EXECUTE executedIfConstraintExist;
+                DEALLOCATE PREPARE executedIfConstraintExist;
         ";
 
         return $sql;

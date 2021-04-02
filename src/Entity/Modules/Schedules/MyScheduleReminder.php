@@ -5,8 +5,16 @@ namespace App\Entity\Modules\Schedules;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
+ * @ORM\Table(uniqueConstraints={
+ *     @UniqueConstraint(
+ *       name="unique_record",
+ *       columns={"schedule_id", "date"}
+ *     )
+ *   }
+ * )
  * @ORM\Entity(repositoryClass=MyScheduleReminderRepository::class)
  */
 class MyScheduleReminder implements SoftDeletableEntityInterface
@@ -30,7 +38,7 @@ class MyScheduleReminder implements SoftDeletableEntityInterface
     private $deleted = 0;
 
     /**
-     * @ORM\Column(type="datetime", unique=true)
+     * @ORM\Column(type="datetime")
      */
     private $date;
 
