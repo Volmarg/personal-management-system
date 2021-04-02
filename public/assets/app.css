@@ -95331,6 +95331,10 @@ div[data-notify=container] {
   width: 100% !important;
 }
 
+/*
+Special handling in table
+- needs to be adjusted
+*/
 .fa, .far, .fas {
   font-family: FontAwesome !important;
 }

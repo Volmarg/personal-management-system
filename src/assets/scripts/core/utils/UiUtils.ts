@@ -1,5 +1,4 @@
 import BootstrapNotify from "../../libs/bootstrap-notify/BootstrapNotify";
-var window = window;
 
 export default class UiUtils {
 
@@ -31,7 +30,7 @@ export default class UiUtils {
         bootstrapNotify.showRedNotification(message);
 
         setTimeout(function () {
-            window.location = url;
+            globalThis.window.location.pathname = url;
         }, 3000)
     }
 
