@@ -16,6 +16,11 @@ class IncomingScheduleDTO {
     private string $id;
 
     /**
+     * @var string $reminderId
+     */
+    private string $reminderId;
+
+    /**
      * @var string $title
      */
     private string $title = "";
@@ -156,6 +161,22 @@ class IncomingScheduleDTO {
     public function setId(string $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReminderId(): string
+    {
+        return $this->reminderId;
+    }
+
+    /**
+     * @param string $reminderId
+     */
+    public function setReminderId(string $reminderId): void
+    {
+        $this->reminderId = $reminderId;
     }
 
 }

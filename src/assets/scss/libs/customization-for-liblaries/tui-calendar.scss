@@ -281,8 +281,7 @@
   }
 
   .schedule-mark {
-    outline: 2px rgb(0, 98, 204, 0.6) solid;
-    outline-offset: 5px;
+    animation: pulse 2s infinite ease-in-out;
   }
 
   #searchResultAutocomplete {

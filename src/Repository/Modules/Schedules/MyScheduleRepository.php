@@ -130,20 +130,19 @@ class MyScheduleRepository extends ServiceEntityRepository {
     }
 
     /**
-     * Will return incoming schedules information array for a schedules which have incoming reminders
-     * does not return the schedules with due date being NOW()
+     * Will return incoming schedules information array for a schedules which have incoming/past (unhandled) reminders
      *
-     * @param int $safetyMinutesOffset
      * @return IncomingScheduleDTO[]
      * @throws Exception
      */
-    public function getSchedulesWithRemindersDueDatesInformation(int $safetyMinutesOffset): array
+    public function getSchedulesWithRemindersInformation(): array
     {
         $connection = $this->getEntityManager()->getConnection();
 
         $sql = "
             SELECT 
                 sch.id                      AS id,
+                msr.id                      AS reminderId,                   
                 sch.title                   AS title,
                 sch.start                   AS date,
                 DATEDIFF(sch.start ,NOW())  AS daysDiff,
@@ -158,23 +157,15 @@ class MyScheduleRepository extends ServiceEntityRepository {
             JOIN my_schedule_reminder msr
             ON msr.schedule_id = sch.id
             AND msr.deleted = 0
-            
+            AND msr.processed = 0
+
             WHERE 
-            NOW() BETWEEN msr.date AND msr.date + INTERVAL :minutesOffset MINUTE
-            AND DATE_FORMAT(msr.date, '%Y-%M-%D') = DATE_FORMAT(NOW(), '%Y-%M-%D')
+            DATE_FORMAT(msr.date, '%Y-%m-%d') <= DATE_FORMAT(NOW(), '%Y-%m-%d')
             AND sch.deleted  = 0
             AND mchc.deleted = 0
         ";
 
-        $bindedValues = [
-            'minutesOffset' => $safetyMinutesOffset,
-        ];
-
-        $parametersTypes = [
-            Types::INTEGER,
-        ];
-
-        $statement = $connection->executeQuery($sql, $bindedValues, $parametersTypes);
+        $statement = $connection->executeQuery($sql);
         $results   = $statement->fetchAll(PDO::FETCH_CLASS, IncomingScheduleDTO::class);
 
         return $results;

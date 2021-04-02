@@ -30,7 +30,7 @@ import AutocompleteService from "../autocomplete/AutocompleteService";
  * @link https://www.npmjs.com/package/tui-calendar
  * @link https://github.com/nhn/tui.calendar/blob/master/docs/getting-started.md
  * @link https://github.com/nhn/tui.calendar/tree/master/docs
- * @link https://nhn.github.io/tui.calendar/latest/Calendar
+ * @link https://nhn.github.i o/tui.calendar/latest/Calendar
  */
 export default class TuiCalendarService
 {
@@ -288,6 +288,22 @@ export default class TuiCalendarService
              */
             clickSchedule: (event) => {
                 this.lastClickedScheduleId = event.schedule.id;
+            },
+            /**
+             * @description calendar is rendered, triggers also upon changing view or clicking next / previous etc.
+             *              - but keep in mind that that this is triggered for every single schedule visible
+             *              in the grid so for 50 this gets called 50 times
+             */
+            afterRenderSchedule: (event) => {
+
+                if(
+                        null             !== this.lastSearchedSchedule
+                    &&  event.schedule.id == this.lastSearchedSchedule.id
+                ){
+                    // there is no need to unmark since on each search the grid is being loaded anew
+                    this.markScheduleInCalendar(this.lastSearchedSchedule);
+                    this.scrollToScheduleInCalendar(this.lastSearchedSchedule);
+                }
             }
         });
 
@@ -315,9 +331,25 @@ export default class TuiCalendarService
                 monthDayname: function(dayname) {
                     return '<span class="calendar-week-dayname-name">' + dayname.label + '</span>';
                 },
+                /**
+                 * @description time visible on left side of calendar
+                 */
                 timegridDisplayPrimayTime: function(time) {
                     return time.hour + ':00';
                 },
+                /**
+                 * @description date/time visible in popup
+                 */
+                popupDetailDate: function(isAllDay, start, end) {
+                    var isSameDate = moment(start._date.toString()).isSame(end._date.toString());
+                    var endFormat  = (isSameDate ? '' : 'YYYY.MM.DD ') + 'HH:mm';
+
+                    if (isAllDay) {
+                        return moment(start._date.toString()).format('YYYY.MM.DD') + (isSameDate ? '' : ' - ' + moment(end._date.toString()).format('YYYY.MM.DD'));
+                    }
+
+                    return (moment(start._date.toString()).format('YYYY.MM.DD HH:mm') + ' - ' + moment(end._date.toString()).format(endFormat));
+                }
             }
         });
     }
@@ -1072,11 +1104,10 @@ export default class TuiCalendarService
     }
 
     /**
-     * @description Will unmark schedule in calendar
+     * @description Will mark schedule in calendar
      * Not working so far since there is issue that this gets called before calendar grid dom is updated
      */
-    private unmarkScheduleInCalendar(schedule: ISchedule): void {
-        $(`[${this.DATA_SCHEDULE_ID}='${schedule.id}']`).removeClass("schedule-mark");
+    private scrollToScheduleInCalendar(schedule: ISchedule): void {
+        document.querySelector(`[${this.DATA_SCHEDULE_ID}='${schedule.id}']`).scrollIntoView();
     }
-
 }

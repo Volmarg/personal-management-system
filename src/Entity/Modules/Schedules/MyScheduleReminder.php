@@ -34,6 +34,12 @@ class MyScheduleReminder implements SoftDeletableEntityInterface
      */
     private $date;
 
+    /**
+     * @ORM\Column(type="boolean")
+     * @var bool $processed
+     */
+    private bool $processed = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,4 +80,21 @@ class MyScheduleReminder implements SoftDeletableEntityInterface
     {
         return $this->deleted;
     }
+
+    /**
+     * @return bool
+     */
+    public function isProcessed(): bool
+    {
+        return $this->processed;
+    }
+
+    /**
+     * @param bool $processed
+     */
+    public function setProcessed(bool $processed): void
+    {
+        $this->processed = $processed;
+    }
+
 }

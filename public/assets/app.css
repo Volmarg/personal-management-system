@@ -95301,8 +95301,7 @@ div[data-notify=container] {
   cursor: pointer;
 }
 .tui-calendar-wrapper .schedule-mark {
-  outline: 2px rgba(0, 98, 204, 0.6) solid;
-  outline-offset: 5px;
+  animation: pulse 2s infinite ease-in-out;
 }
 .tui-calendar-wrapper #searchResultAutocomplete {
   position: absolute;
@@ -96672,6 +96671,17 @@ form legend {
   margin-top: -5px;
 }
 
+@keyframes pulse {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
 /* Node packages */
 /* Overwrite node packages styling */
 .st-theme-github > .nav .nav-link.active {

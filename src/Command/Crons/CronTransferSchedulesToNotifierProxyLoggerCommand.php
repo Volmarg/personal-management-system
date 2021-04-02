@@ -3,7 +3,9 @@
 namespace App\Command\Crons;
 
 use App\Controller\Core\Application;
+use App\Controller\Core\Controllers;
 use App\DTO\Modules\Schedules\IncomingScheduleDTO;
+use App\Response\BaseResponse;
 use App\Services\External\NotifierProxyLoggerService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -27,12 +29,6 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     ];
 
     /**
-     * This is a temporary solution to create a window for example for cron to read the schedule, instead of having issue
-     * where the cron is running like each 5 min and will never hit the exact date for reminder.
-     */
-    const SCHEDULE_SAFETY_TIME_OFFSET = 10; //in minutes
-
-    /**
      * @var string $channel
      */
     private string $channel;
@@ -47,7 +43,12 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
      */
     private NotifierProxyLoggerService $notifierProxyLoggerService;
 
-    public function __construct(Application $app, NotifierProxyLoggerService $notifierProxyLoggerService)
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, NotifierProxyLoggerService $notifierProxyLoggerService, Controllers $controllers)
     {
         parent::__construct(self::$defaultName);
 
@@ -59,7 +60,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('Will transfer all schedules with reminders to the NPL. With current configuration, cron should be called each 6-7min')
+            ->setDescription('Will transfer all schedules with reminders to the NPL.')
             ->addOption(self::OPTION_TRANSFER_CHANNEL, "type", InputOption::VALUE_REQUIRED, "What channel should be used to send the message later on" )
             ->addUsage("--transfer-channel=mail (Will send the schedules via mailing)")
             ->addUsage("--transfer-channel=discord (Will send the schedules via discord)")
@@ -91,7 +92,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         try{
             $this->app->logger->info("Started transferring the schedules to npl");
             {
-                $incomingSchedulesDTOS = $this->app->repositories->myScheduleRepository->getSchedulesWithRemindersDueDatesInformation(self::SCHEDULE_SAFETY_TIME_OFFSET);
+                $incomingSchedulesDTOS = $this->app->repositories->myScheduleRepository->getSchedulesWithRemindersInformation();
 
                 if( empty($incomingSchedulesDTOS) ){
                     $this->app->logger->info("No schedules were found to transfer");
@@ -99,8 +100,14 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
                 }
 
                 foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
-                    $this->app->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}");
-                    $this->handleTransferForChannel($incomingScheduleDTO);
+                    $this->app->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}, with reminder of id {$incomingScheduleDTO->getReminderId()}");
+                    $response = $this->handleTransferForChannel($incomingScheduleDTO);
+
+                    if($response->isSuccess()){
+                        $reminder = $this->controllers->getMyScheduleReminderController()->findOneById($incomingScheduleDTO->getReminderId());
+                        $reminder->setProcessed(true);
+                        $this->controllers->getMyScheduleReminderController()->saveReminder($reminder);
+                    }
                 }
             }
             $this->app->logger->info("Finished transferring the schedules to npl");
@@ -117,9 +124,10 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
      * Handle sending the schedule depending on the provided channel in the console (as option)
      *
      * @param IncomingScheduleDTO $incomingScheduleDTO
+     * @return BaseResponse
      * @throws GuzzleException
      */
-    private function handleTransferForChannel(IncomingScheduleDTO $incomingScheduleDTO): void
+    private function handleTransferForChannel(IncomingScheduleDTO $incomingScheduleDTO): BaseResponse
     {
         switch($this->channel)
         {
@@ -142,5 +150,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         $this->app->logger->info("Got response", [
             $response->toJson(),
         ]);
+
+        return $response;
     }
 }
