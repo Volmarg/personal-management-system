@@ -31,7 +31,7 @@ final class Version20210402064914 extends AbstractMigration
         $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesExist(
             Migrations::CONSTRAINT_TYPE_UNIQUE,
             'UNIQ_676F8E0DAA9E377A',
-            'ALTER TABLE schedule DROP CONSTRAINT UNIQ_676F8E0DAA9E377A'
+            'ALTER TABLE my_schedule_reminder DROP CONSTRAINT UNIQ_676F8E0DAA9E377A'
         ));
 
         // add new unique on date + schedule

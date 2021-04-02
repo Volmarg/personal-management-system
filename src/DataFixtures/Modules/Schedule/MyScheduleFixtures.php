@@ -8,6 +8,7 @@ use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Schedules\MyScheduleReminder;
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -21,6 +22,14 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
     const MAX_COUNT_OF_REMINDERS     = 4;
     const MAX_REMINDER_HOURS_OFFSET  = 124;
     const MIN_REMINDER_HOURS_OFFSET  = 1;
+
+    /**
+     * Stores reminders for given loop iteration
+     * This is needed as the reminder has unique key (date-reminder)
+     *
+     * @var array $remindersForIteration
+     */
+    private $remindersForIteration = [];
 
     /**
      * Factory $faker
@@ -120,10 +129,11 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
             $schedule->setLocation($location);
 
             $countOfReminders = rand(0, self::MAX_COUNT_OF_REMINDERS);
-            $dateForReminder  = clone $startDateTime;
+            $dateForReminder  = new DateTimeImmutable($startDateTime->format("Y-m-d H:i:s")); // required to prevent modifying already existing date times
             for($y = 0; $y < $countOfReminders; $y++){
-                $randomHoursOffset = rand(self::MIN_REMINDER_HOURS_OFFSET, self::MAX_REMINDER_HOURS_OFFSET);
-                $dateForReminder->modify("-{$randomHoursOffset} HOURS");
+
+                $dateForReminder                   = $this->getUniqueDateForReminder($dateForReminder, $x);
+                $this->remindersForIteration[$x][] = $dateForReminder->format("Y-m-d H:i:s");
 
                 $reminder = new MyScheduleReminder();
                 $reminder->setSchedule($schedule);
@@ -172,5 +182,27 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
      */
     public function getOrder() {
         return 16;
+    }
+
+    /**
+     * Will generate new date time over and over and over until it's unique date time for reminder
+     * @param DateTimeImmutable $dateForReminder
+     * @param int $iteration
+     * @return DateTimeImmutable
+     */
+    private function getUniqueDateForReminder(DateTimeImmutable $dateForReminder, int $iteration): DateTimeImmutable
+    {
+        $randomHoursOffset = rand(self::MIN_REMINDER_HOURS_OFFSET, self::MAX_REMINDER_HOURS_OFFSET);
+        $dateForReminder->modify("-{$randomHoursOffset} HOURS");
+
+        while(
+                array_key_exists($iteration, $this->remindersForIteration)
+            &&  in_array($dateForReminder->format("Y-m-d H:i:s"), $this->remindersForIteration[$iteration])
+        ){
+            // this is required as DateTimeImmutable is being used
+            $dateForReminder = $dateForReminder->modify("-{$randomHoursOffset} HOURS");
+        }
+
+        return $dateForReminder;
     }
 }

@@ -200,14 +200,14 @@ class Migrations
                             table_name   = '{$tableName}'
                         AND table_schema = '{$databaseName}'
               ) >= 1,
-              'SELECT 1',
-              '{$executedSql}'
+              '{$executedSql}',
+              'SELECT 1'
             ));
             PREPARE executedIfTableExist FROM @preparedStatement;
             EXECUTE executedIfTableExist;
             DEALLOCATE PREPARE executedIfTableExist; 
         ";
-
+dump($sql);
         return $sql;
     }
 
