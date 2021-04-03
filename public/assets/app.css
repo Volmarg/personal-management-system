@@ -95705,8 +95705,16 @@ button.color-picker {
   color: purple !important;
 }
 
-.menu-node-todo-upload {
+.menu-node-upload-icon {
   color: orange !important;
+}
+
+.menu-node-shopping-icon {
+  color: #72777a !important;
+}
+
+.menu-node-job-icon {
+  color: #72777a !important;
 }
 
 .widget-remove-folder {
