@@ -1,11 +1,11 @@
 {% set folders = getAllExistingUploadFolderSubdirectories(moduleType) %}
 
-<table id="FilesModuleLockTable" class="table table-striped table-bordered" cellspacing="0"
+<table id="filesModuleLockTable" class="table table-striped table-bordered" cellspacing="0"
        data-table="true" width="100%">
     <thead>
     <tr>
         <td>{{ 'common.filesModules.settings.lockTables.columns.path.label' | trans }}</td>
-        <td style="width:50px;">{{ 'common.filesModules.settings.lockTables.columns.lock.label' | trans }}</td>
+        <td class="files-module-lock-table-head-cell-lock">{{ 'common.filesModules.settings.lockTables.columns.lock.label' | trans }}</td>
     </tr>
     </thead>
     <tbody>

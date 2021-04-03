@@ -8,10 +8,10 @@
 
 {% block body %}
 
-    <main class='main-content bgc-grey-100'>
+    <main class='main-content bgc-grey-100' id="myImagesMainWrapper">
 
         {% if not is_main_dir %}
-            <div class="masonry-item col-md-12 mB-10" style="font-size: 19px;">
+            <div class="masonry-item col-md-12 mB-10 my-images-masonry-items-not-main-dir">
                 <div class="bgc-white p-10 bd">
                     <span>
                         {% include 'page-elements/components/widgets/remove-folder.twig' with {
@@ -51,13 +51,12 @@
                      data-dialog-call-request-post-parameters=''                             {# dialog attr #}
                      data-call-dialog-on-click="true"                                        {# dialog attr #}
                      data-dialog-name="massActionFilesRemoval"                               {# dialog attr #}
-                     style="margin-top: 10px; background-color: #0062cc; opacity: .5;"       {# dialog attr #}
                      data-toggle-popover="true"                                              {# popover attr #}
                      data-html="true"                                                        {# popover attr #}
                      data-content="{{ 'massActions.removeFiles.label' | trans }}"            {# popover attr #}
                 >
                     <div class="fontawesome-centered">
-                        <i class="far fa-trash-alt" style="font-size: 25px; color: white;"></i>
+                        <i class="far fa-trash-alt"></i>
                     </div>
                 </div>
 
@@ -68,13 +67,12 @@
                      data-dialog-call-request-post-parameters=''                             {# dialog attr #}
                      data-call-dialog-on-click="true"                                        {# dialog attr #}
                      data-dialog-name="massActionDataTransferImagesModule"                   {# dialog attr #}
-                     style="margin-top: 10px; background-color: #0062cc; opacity: .5;"       {# dialog attr #}
                      data-toggle-popover="true"                                              {# popover attr #}
                      data-html="true"                                                        {# popover attr #}
                      data-content="{{ 'massActions.transferFiles.label' | trans }}"          {# popover attr #}
                 >
                     <div class="fontawesome-centered ">
-                        <i class="fa fa-random" style="font-size: 25px; color: white;"></i>
+                        <i class="fa fa-random"></i>
                     </div>
                 </div>
 

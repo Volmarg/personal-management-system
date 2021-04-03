@@ -21,14 +21,14 @@
                     {% if use_popover_description %}
                         {% set popover_description %}
                             {% if todo.description is not null%}
-                                <span style='display:block;'>
+                                <span class='d-block'>
                                 <b>{{ 'todo.list.info.description' | trans }}:</b>
                                 {{ todo.description }}
                             </span>
                             {% endif %}
 
                             {% if todo.myIssue is not null %}
-                                <span style='display:block;'>
+                                <span class='d-block'>
                                 <b>{{ 'todo.list.relatedModules.issues.singular' | trans }}: </b>{{ todo.myIssue.name }}
                             </span>
                             {% endif %}
@@ -40,7 +40,7 @@
                                 and todo.myIssue is null
                                 )
                             %}
-                                <span style='display:block;'>
+                                <span class='d-block'>
                                 <b>{{ 'todo.list.info.notRelatedToAnySpecificRecord' | trans }}</b>
                             </span>
                             {% endif %}

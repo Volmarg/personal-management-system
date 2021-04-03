@@ -1,8 +1,8 @@
-<div class="list-group-item-action col-md-{{ col_size }} one-goal m-5 single-payment d-flex justify-content-center flex-column"> {# remove the css frames #}
-    <b class="row d-flex justify-content-around" style="font-size:15px">{{ payment.name | raw }}</b>
+<div class="list-group-item-action col-md-{{ col_size }} one-goal m-5 single-payment d-flex justify-content-center flex-column single-payment-goal"> {# remove the css frames #}
+    <b class="row d-flex justify-content-around single-payment-goal-name">{{ payment.name | raw }}</b>
     <div class="row d-flex justify-content-around ldBar label-center m-10 align-self-center" data-value="10"
          data-preset="circle">
-        <div class="pool-info" style="margin-top: -15px;">
+        <div class="pool-info single-payment-goal-pool-info">
             <span class="pool-progress">{{ payment.moneyCollected }}</span>
             <span>/</span>
             <span class="pool-target">{{ payment.moneyGoal }}</span>

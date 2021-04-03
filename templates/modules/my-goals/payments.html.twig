@@ -21,8 +21,7 @@
                     header_translation_string : 'goals.payments.infoBlock.header'
                 } %}
 
-                <div class="bgc-white p-20 bd d-flex justify-content-around payments-wrapper"
-                     style="flex-wrap:wrap">
+                <div class="bgc-white p-20 bd d-flex justify-content-around payments-wrapper flex-wrap">
 
                     {% for payment in all_payments %}
                         {% include 'modules/my-goals/calculations/one-payment.html.twig' with {

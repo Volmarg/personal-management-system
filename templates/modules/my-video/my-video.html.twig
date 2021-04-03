@@ -24,10 +24,10 @@
 
 {% block body %}
 
-    <main class='main-content bgc-grey-100'>
+    <main class='main-content bgc-grey-100' id="myVideoModuleMainWrapper">
 
         {% if not is_main_dir %}
-            <div class="masonry-item col-md-12 mB-10" style="font-size: 19px;">
+            <div class="masonry-item col-md-12 mB-10 my-video-module-masonry-not-main-dir">
                 <div class="bgc-white p-10 bd">
                     <span>
                         {% include 'page-elements/components/widgets/remove-folder.twig' with {
@@ -35,7 +35,6 @@
                             'upload_module_dir'     : upload_module_dir,
                             'files_count_in_tree'   : files_count_in_tree,
                             'popoverContent'        : "video.popover.removeFolder"|trans
-
                         } %}
                     </span>
                 </div>
@@ -57,7 +56,7 @@
                                 record_identifier : upload_path,
                                 description       : (module_data is not null ? module_data.getDescription() : "")
                             }%}
-                            <div style="margin-left: 20px;">
+                            <div class="my-video-module-topbar-wrapper">
 
                                 {# Topbar #}
                                 <div class="row">
@@ -104,7 +103,6 @@
                                              data-groups="{{ tags }}"                {# shuffle attr #}
                                              data-date-created="2016-08-12"          {# shuffle attr #}
                                              data-title="{{ video[KEY_FILE_NAME] }}" {# shuffle attr #}
-                                             style="position:relative; margin: 5px;"                             {# shuffle styles #}
                                             >
 
                                             <div class="video-wrapper">
@@ -149,7 +147,7 @@
                                                     </div>
 
                                                     <div class="issue-card-actions-center">
-                                                        <p class="text-center" style="color: black;">
+                                                        <p class="text-center">
                                                             {{ substring(video[KEY_FILE_NAME])  }}
                                                         </p>
                                                     </div>
@@ -207,12 +205,11 @@
                      data-dialog-call-request-post-parameters=''                             {# dialog attr #}
                      data-call-dialog-on-click="true"                                        {# dialog attr #}
                      data-dialog-name="massActionFilesRemoval"                               {# dialog attr #}
-                     style="margin-top: 10px; background-color: #0062cc; opacity: .5;"       {# dialog attr #}
                      data-toggle-popover="true"                                              {# popover attr #}
                      data-content="{{ 'massActions.removeFiles.label' | trans }}"            {# popover attr #}
                 >
                     <div class="fontawesome-centered">
-                        <i class="far fa-trash-alt" style="font-size: 25px; color: white;"></i>
+                        <i class="far fa-trash-alt"></i>
                     </div>
                 </div>
 
@@ -223,12 +220,11 @@
                      data-dialog-call-request-post-parameters=''                             {# dialog attr #}
                      data-call-dialog-on-click="true"                                        {# dialog attr #}
                      data-dialog-name="massActionDataTransferVideoModule"                    {# dialog attr #}
-                     style="margin-top: 10px; background-color: #0062cc; opacity: .5;"       {# dialog attr #}
                      data-toggle-popover="true"                                              {# popover attr #}
                      data-content="{{ 'massActions.transferFiles.label' | trans }}"          {# popover attr #}
                 >
                     <div class="fontawesome-centered ">
-                        <i class="fa fa-random" style="font-size: 25px; color: white;"></i>
+                        <i class="fa fa-random"></i>
                     </div>
                 </div>
 

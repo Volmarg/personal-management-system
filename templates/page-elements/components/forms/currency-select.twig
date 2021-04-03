@@ -7,8 +7,7 @@
 {% set matchingCurrencyWasFound = false %}
 
 <select
-        class="form-control {{ disabled }} option-picker"
-        style="max-width: 65px;"
+        class="form-control {{ disabled }} option-picker form-select-currency"
 >
 
     {% for finance_currency_dto in getFinancesCurrenciesDtos() %}

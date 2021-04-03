@@ -52,11 +52,11 @@
 
 {% if summarries is not empty  %}
     <section class="summary-section d-flex justify-content-center">
-        <div class="">
+        <div class="money-owed-summary">
             <h5><u>{{ 'other.summary' | trans }}</u></h5>
-            <ul style="list-style-type:none;margin:0; padding:0;">
+            <ul>
                 {% for summary in summarries %}
-                    <li style="margin:0; padding:0;font-size:14px;"><b>{{ summary.target }}:</b>
+                    <li><b>{{ summary.target }}:</b>
                         {{ summary.amount }}
 
                         {% set is_currency_present = false %}

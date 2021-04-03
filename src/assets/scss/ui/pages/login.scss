@@ -1,0 +1,29 @@
+#loginPageWrapper {
+  .link-row-login-page {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    height: 25px;
+  }
+
+  .link-login-page {
+    text-decoration: none;
+    color: gray;
+    text-align: center;
+  }
+
+  .login-header {
+    color: #5DACBD;
+    font-weight: 300;
+  }
+
+  .login-logo-image {
+    height: 65px
+  }
+
+  .login-form-wrapper {
+    min-width: 320px;
+    opacity: 0.9;
+  }
+
+}

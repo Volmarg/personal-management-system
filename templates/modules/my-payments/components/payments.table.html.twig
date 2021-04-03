@@ -58,10 +58,9 @@
 
         </tbody>
     </table>
-    <section class="monthly-summary d-flex align-content-end justify-content-around"
-             style="font-size:17px;">
+    <section class="monthly-summary d-flex align-content-end justify-content-around">
         <div>
-            <ul class="d-flex flex-column" style="list-style-type: none;">
+            <ul class="d-flex flex-column list-n list-style-type-none">
 
                 {% for payment_by_type_and_date in payments_by_type_and_date %}
 
@@ -80,7 +79,7 @@
 
                 {% endfor %}
             </ul>
-            <hr style="border-color: lightgray;"/>
+            <hr/>
             <b>
                 <span>{{ 'payments.monthlyPayments.summary' | trans }}</span>
             </b>

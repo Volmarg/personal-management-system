@@ -1,0 +1,19 @@
+.form-type-date-time-picker {
+  background-color: white !important;
+}
+
+.form-type-fontawesome-picker {
+  margin-left: -4px;
+}
+
+/*Fix bug where fontawesome has small icon near the input after selecting some from list*/
+.fontawesome-picker-form-type-block i, .fontawesome-picker-form-type-block svg {
+  display: none;
+}
+
+.form-type-fontawesome-picker-input-field {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}

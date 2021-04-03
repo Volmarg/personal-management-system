@@ -41,36 +41,5 @@
         {% endfor %}
         </tbody>
     </table>
-{#
-    <section class="monthly-summary d-flex align-content-end justify-content-around"
-             style="font-size:17px;">
-        <div>
-            <ul class="d-flex flex-column" style="list-style-type: none;">
-
-                {% for payment_by_type_and_date in payments_by_type_and_date %}
-
-                    {% if date_group.date|date("Y-m") in payment_by_type_and_date.date %}
-                        <li class="align-self-end">
-                            <b>{{ payment_by_type_and_date.type | capitalize }}</b>:
-                            <span class="{{ colors[color_num] }}">{{ payment_by_type_and_date.money }}</span>
-                        </li>
-
-                        {% if color_num == (colors | length -1) %}
-                            {% set color_num = 0 %}
-                        {% else %}
-                            {% set color_num = color_num + 1 %}
-                        {% endif %}
-                    {% endif %}
-
-                {% endfor %}
-            </ul>
-            <hr style="border-color: lightgray;"/>
-            <b>
-                <span>{{ 'payments.monthlyPayments.summary' | trans }}</span>
-            </b>
-            <span class="text-primary amount">{{ summary_payment }}</span>
-        </div>
-    </section>
-#}
 
 </div>

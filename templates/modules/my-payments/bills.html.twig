@@ -43,7 +43,7 @@
                                            <div id="accordion">
                                                {% for bill in bills %}
                                                    <div class="accordin-section">
-                                                       <h3 class="
+                                                       <h3 class="bill-accordion-header
                                                            {% if bills_amounts_summaries[bill.id] is defined  %}
                                                                 {% if bills_amounts_summaries[bill.id] <= bill.plannedAmount %}
                                                                     bg-success
@@ -53,8 +53,7 @@
                                                                     bg-danger
                                                                  {% endif %}
                                                             {% endif %}
-                                                        "
-                                                        style="color:rgba(0,0,0,0.6);">
+                                                        ">
                                                             {{ bill.name }} -
                                                             <span class="bill-summary">
                                                                 {% if bills_amounts_summaries[bill.id] is defined  %}

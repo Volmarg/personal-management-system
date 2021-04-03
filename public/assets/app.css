@@ -95509,37 +95509,294 @@ button.color-picker {
 }
 
 /* My-scsses */
-.single-note-details ol {
-  list-style-type: decimal !important;
-}
-.single-note-details ul {
-  list-style-type: disc;
-}
-.single-note-details ol, .single-note-details ul {
-  display: block;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  margin-left: 0;
-  margin-right: 0;
-  padding-left: 40px;
-}
-.single-note-details .note-button {
+#loader {
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  visibility: visible;
+  position: fixed;
+  height: 100vh;
   width: 100%;
-  height: 30px;
-  text-align: left;
-  text-transform: initial;
-  line-height: 5px;
-  font-size: 14px;
-}
-.single-note-details .modal-body {
-  word-break: break-all;
+  background: #fff;
+  z-index: 90000;
 }
 
-.all-notes {
+#subloader {
+  transition: all 0.3s ease-in-out;
+  opacity: 1;
+  visibility: visible;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+  z-index: 50;
+}
+
+#subloader.fadeOut, #loader.fadeOut {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: calc(50% - 20px);
+  left: calc(50% - 20px);
+  background-color: #333;
+  border-radius: 100%;
+  -webkit-animation: sk-scaleout 1s infinite ease-in-out;
+  animation: sk-scaleout 1s infinite ease-in-out;
+}
+
+@-webkit-keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    opacity: 0;
+  }
+}
+@keyframes sk-scaleout {
+  0% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  100% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+#MyIssuesPreview {
+  padding-top: 20px;
+}
+#MyIssuesPreview .small-header {
+  font-size: 16px;
+}
+
+#editCreateContactCardDialogWrapper button.append-form {
+  font-size: 13px;
+}
+
+#firstLoginInformationDialog {
+  font-size: 13px;
+}
+
+#newFolderDialogWrapper {
+  min-height: auto;
+  padding: 10px;
+}
+
+#systemLockDialog {
+  min-height: auto;
+  padding: 10px;
+}
+
+#fineUploadBodyMainWrapper .fine-upload-body-file-select-and-upload-wrapper {
+  padding-left: 10px;
+}
+#fineUploadBodyMainWrapper .fine-upload-body-file-select-and-upload-wrapper .fine-upload-body-file-select {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+}
+#fineUploadBodyMainWrapper .fine-upload-body-file-select-and-upload-wrapper .fine-upload-body-folder-icon {
+  font-size: 20px;
+  top: auto;
+}
+#fineUploadBodyMainWrapper .fine-upload-body-file-select-and-upload-wrapper .fine-upload-body-upload-submit {
+  margin: 6px 0 6px 0;
+}
+#fineUploadBodyMainWrapper .fine-upload-body-drag-n-drop-area {
+  top: auto !important;
+}
+
+.form-input-currency {
+  max-width: 65px;
+}
+
+.form-select-currency {
+  max-width: 65px;
+}
+
+.form-date-time-picker-input {
+  background-color: white !important;
+  min-width: 160px;
+}
+
+.form-date-picker-input {
+  max-width: 100px;
+}
+
+.form-rounded-checkbox-input {
+  width: 30px;
+}
+
+.form-input-standard-value {
+  max-width: 100px;
+}
+
+.removed-parent button {
+  font-size: 13px;
+}
+
+#sidebarHeaderWrapper .sidebar-header-logo-wrapper {
+  width: 130px;
+}
+
+.menu-node-achievements-icon {
+  color: gold !important;
+}
+
+.menu-node-goals-icon {
+  color: firebrick !important;
+}
+
+.menu-node-my-contacts-icon {
+  color: #e7741b !important;
+}
+
+.menu-node-my-files-icon {
+  color: gold !important;
+}
+
+.menu-node-my-images-icon {
+  color: #85bb65 !important;
+}
+
+.menu-node-my-issues-icon {
+  color: red !important;
+}
+
+.menu-node-my-password-icon {
+  color: gold !important;
+}
+
+.menu-node-my-payments-icon {
+  color: #85bb65 !important;
+}
+
+.menu-node-my-reports-icon {
+  color: blue !important;
+}
+
+.menu-node-my-schedules-icon {
+  color: black !important;
+}
+
+.menu-node-my-travels-icon {
+  color: #40a4df !important;
+}
+
+.menu-node-my-video-icon {
+  color: #b00a0a !important;
+}
+
+.menu-node-my-video-settings-icon {
+  color: #85bb65 !important;
+}
+
+.menu-node-my-video-notes-icon {
+  color: violet !important;
+}
+
+.menu-node-todo-icon {
+  color: purple !important;
+}
+
+.menu-node-todo-upload {
+  color: orange !important;
+}
+
+.widget-remove-folder {
+  width: 25px;
+  height: 25px;
+  z-index: 500;
+}
+
+.new-folder-fontawesome-icon {
+  font-size: 25px;
+  color: white;
+}
+
+.form-type-date-time-picker {
+  background-color: white !important;
+}
+
+.form-type-fontawesome-picker {
+  margin-left: -4px;
+}
+
+/*Fix bug where fontawesome has small icon near the input after selecting some from list*/
+.fontawesome-picker-form-type-block i, .fontawesome-picker-form-type-block svg {
+  display: none;
+}
+
+.form-type-fontawesome-picker-input-field {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+#userSettingsPageElementWrapper .user-settings-wrappers-min-height {
+  min-height: 450px;
+}
+#userSettingsPageElementWrapper .user-settings-avatar-preview-image {
+  max-width: 180px;
+  align-self: center;
+}
+
+.mass-action {
+  margin-top: 10px !important;
+  background-color: #0062cc !important;
+  opacity: 0.5 !important;
+}
+.mass-action .fontawesome-centered i, .mass-action .fontawesome-centered svg {
+  font-size: 25px !important;
+  color: white !important;
+}
+
+#filesModuleLockTable .files-module-lock-table-head-cell-lock {
+  width: 50px !important;
+}
+
+#loginPageWrapper .link-row-login-page {
+  text-align: center;
   display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  padding: 15px;
+  justify-content: center;
+  height: 25px;
+}
+#loginPageWrapper .link-login-page {
+  text-decoration: none;
+  color: gray;
+  text-align: center;
+}
+#loginPageWrapper .login-header {
+  color: #5DACBD;
+  font-weight: 300;
+}
+#loginPageWrapper .login-logo-image {
+  height: 65px;
+}
+#loginPageWrapper .login-form-wrapper {
+  min-width: 320px;
+  opacity: 0.9;
+}
+
+#Achievements tr:hover .actions {
+  display: block !important;
+  position: absolute;
+  right: 10%;
+}
+
+#Achievements .actions {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+#Achievements .achievement-single-data {
+  outline: 5px white solid;
 }
 
 /**
@@ -95549,6 +95806,10 @@ button.color-picker {
   width: 100%;
   height: 100vh;
   position: relative;
+}
+.contact-area .contact-area-group {
+  margin-top: 10px !important;
+  background-color: white !important;
 }
 
 .contact {
@@ -95924,6 +96185,10 @@ button.color-picker {
 .contact-cards-contacts-wrapper {
   background-color: white;
 }
+.contact-cards-contacts-wrapper .contact-cards-contacts-wrapper-icon {
+  width: 35px !important;
+  height: 35px !important;
+}
 
 .contact-cards-contacts-wrapper a {
   margin-top: 5px !important;
@@ -95939,6 +96204,14 @@ button.color-picker {
 .contact-area {
   min-height: 400px !important;
   height: 400px !important;
+}
+.contact-area .contact-image {
+  width: 60px !important;
+  height: 60px !important;
+}
+.contact-area .contact-description {
+  text-transform: none !important;
+  font-size: 12px !important;
 }
 
 /* Widget */
@@ -95990,6 +96263,222 @@ button.color-picker {
 .contact nav {
   overflow: hidden;
   overflow-y: scroll;
+}
+
+.contact-card-wrapper {
+  min-width: 350px;
+  padding-top: 20px;
+  padding-left: 10px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+#myContactTypeSettingTable thead .table-head-preview {
+  width: 50px !important;
+}
+#myContactTypeSettingTable tbody .my-contact-type-setting-table-image-preview {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+#myContactGroupSettingsTable .my-contact-group-settings-table-icon-preview {
+  font-size: 20px !important;
+}
+
+.contact-card-upper-block aside {
+  padding-top: 10px !important;
+}
+.contact-card-upper-block h1 {
+  font-size: 18px !important;
+}
+
+#MyFilesListTable button.file-download {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  display: inline;
+}
+#MyFilesListTable .file-download-form {
+  display: inline;
+}
+#MyFilesListTable .table-head-checkbox-cell, #MyFilesListTable .table-head-icon-cell {
+  width: 10px;
+}
+#MyFilesListTable .table-head-tags-cell {
+  width: 500px;
+}
+#MyFilesListTable .table-body-tags-cell {
+  width: auto;
+  max-width: 500px;
+}
+
+#myFilesListMainWrapper .my-files-list-masonry-is-not-main-dir {
+  font-size: 19px;
+}
+
+.goals-wrapper {
+  flex-wrap: wrap;
+}
+
+.single-payment-goal .single-payment-goal-name {
+  font-size: 15px;
+}
+.single-payment-goal .single-payment-goal-pool-info {
+  margin-top: -15px;
+}
+
+#myImagesMainWrapper .my-images-masonry-items-not-main-dir {
+  font-size: 19px;
+}
+
+/* Initial values */
+#MyIssuesPreview div.accordin-section section {
+  height: auto !important;
+}
+#MyIssuesPreview div.accordin-section section > div {
+  height: 200px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.issue-wrapper {
+  width: 380px;
+  margin-top: 10px;
+  border-color: rgba(51, 181, 229, 0.3457) !important;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.issue-wrapper .content {
+  padding-bottom: 20px;
+  color: white !important;
+  background-color: #33b5e5 !important;
+  height: 35px;
+}
+
+.issue-wrapper .content h1 {
+  font-size: 18px;
+  margin: 0;
+  margin-top: -5px;
+}
+
+#jobAfterhoursMainWrapper .job-afterhours-asterix {
+  font-size: 10px;
+}
+
+.single-note-details ol {
+  list-style-type: decimal !important;
+}
+.single-note-details ul {
+  list-style-type: disc;
+}
+.single-note-details ol, .single-note-details ul {
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 40px;
+}
+.single-note-details .note-button {
+  width: 100%;
+  height: 30px;
+  text-align: left;
+  text-transform: initial;
+  line-height: 5px;
+  font-size: 14px;
+}
+.single-note-details .modal-body {
+  word-break: break-all;
+}
+
+.all-notes {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 15px;
+}
+
+#noteCategory .note-category-content-wrapper {
+  min-height: 160px;
+}
+
+#MyNotesCategoriesTable .my-notes-categories-table-color-cell {
+  width: 50px !important;
+}
+
+.note-edit-modal .note-edit-modal-category-select {
+  float: left;
+  margin-right: 15px;
+}
+
+#MyPaymentsBillsModuleBody div.accordin-section section {
+  height: auto !important;
+}
+#MyPaymentsBillsModuleBody div.accordin-section section > div {
+  height: auto !important;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+#MyPaymentsBillsModuleBody .bill-accordion-header {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+#MyPaymentsMonthlyModuleBody section.monthly-summary {
+  width: 100% !important;
+  font-size: 17px;
+}
+#MyPaymentsMonthlyModuleBody .ui-accordion-content {
+  height: auto !important;
+}
+#MyPaymentsMonthlyModuleBody .monthly-summary hr {
+  border-color: lightgray;
+}
+
+.money-owed-summary ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.money-owed-summary ul li {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+#calendar-settings-modal table thead td.color {
+  width: 50px;
+}
+#calendar-settings-modal .schedules-calendar-settings-colors-legend .green {
+  border-color: green !important;
+  background-color: green !important;
+}
+#calendar-settings-modal .schedules-calendar-settings-colors-legend .orange {
+  border-color: orange !important;
+  background-color: orange !important;
+}
+#calendar-settings-modal .schedules-calendar-settings-colors-legend .red {
+  border-color: red !important;
+  background-color: red !important;
+}
+
+.my-todo-modal-main-wrapper .modal-body {
+  padding: 0;
+}
+.my-todo-modal-main-wrapper .my-todo-modal-toggle-dashboard-button {
+  width: 50px;
+}
+.my-todo-modal-main-wrapper select.module-entity-select {
+  max-width: 100px !important;
+  float: left !important;
+}
+
+.my-todo-one-parent-task-todo .my-todo-one-parent-task-todo-asterix {
+  color: red;
 }
 
 /* Initial values */
@@ -96190,37 +96679,30 @@ button.color-picker {
   font-size: 1.2em !important;
 }
 
-#MyPaymentsMonthlyModuleBody section.monthly-summary {
-  width: 100% !important;
+#myVideoModuleMainWrapper .my-video-module-masonry-not-main-dir {
+  font-size: 19px;
 }
-#MyPaymentsMonthlyModuleBody .ui-accordion-content {
-  height: auto !important;
+#myVideoModuleMainWrapper .my-video-module-topbar-wrapper {
+  margin-left: 20px;
 }
-
-#MyPaymentsBillsModuleBody div.accordin-section section {
-  height: auto !important;
+#myVideoModuleMainWrapper .grid-item {
+  position: relative;
+  margin: 5px;
 }
-#MyPaymentsBillsModuleBody div.accordin-section section > div {
-  height: auto !important;
-  margin-top: 15px;
-  margin-bottom: 15px;
+#myVideoModuleMainWrapper .issue-card-actions-center p {
+  color: black;
 }
 
-#Achievements tr:hover .actions {
-  display: block !important;
-  position: absolute;
-  right: 10%;
+#registerPageWrapper .register-form-header {
+  color: #5DACBD;
+  font-weight: 300;
 }
-
-#Achievements .actions {
-  background-color: rgba(0, 0, 0, 0) !important;
+#registerPageWrapper .register-form-logo {
+  height: 65px;
 }
-
-/**
-  MyGoalsList
- */
-.goals-wrapper {
-  flex-wrap: wrap;
+#registerPageWrapper .register-form-wrapper {
+  min-width: 320px;
+  opacity: 0.9;
 }
 
 *::-webkit-scrollbar {
@@ -96404,6 +96886,30 @@ form legend {
   color: darkorange;
 }
 
+.auto-width {
+  width: auto;
+}
+
+.margin-top-10-px {
+  margin-top: 10px;
+}
+
+.list-style-type-none {
+  list-style-type: none;
+}
+
+.cursor-text {
+  cursor: text;
+}
+
+.border-none {
+  border: none;
+}
+
+.overflow-hidden {
+  overflow: hidden !important;
+}
+
 .file-upload-form .custom-file-input {
   width: 50px;
   height: 50px;
@@ -96451,19 +96957,8 @@ form legend {
   margin-left: -7px;
 }
 
-#MyFiles button.file-download {
-  background: none;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font: inherit;
-  cursor: pointer;
-  outline: inherit;
-  display: inline;
-}
-
-#MyFiles .file-download-form {
-  display: inline;
+#myImagesMainWrapper .my-images-masonry-items-not-main-dir {
+  font-size: 19px;
 }
 
 /**
@@ -96508,6 +97003,27 @@ form legend {
   height: 40px;
   width: 100%;
   text-align: center;
+}
+
+#lightGalleryMainWrapper .light-gallery-all-images {
+  margin-left: 20px;
+}
+#lightGalleryMainWrapper .light-gallery-single-item {
+  position: relative;
+  margin: 5px;
+}
+#lightGalleryMainWrapper .light-gallery-single-item-checkbox-wrapper {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 999999999;
+}
+#lightGalleryMainWrapper .light-gallery-image {
+  height: 200px;
+}
+
+.error-page-header {
+  font-size: 60px;
 }
 
 .search-input {

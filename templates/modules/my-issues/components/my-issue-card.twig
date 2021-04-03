@@ -9,8 +9,8 @@
     {% endif %}
         "
 >
-    <section class="h-100p " style="overflow: hidden; min-height: 128px;">
-        <div class="h-100p " style="overflow: hidden;">
+    <section class="h-100p overflow-hidden" style=" min-height: 128px;">
+        <div class="h-100p overflow-hidden">
             <div class="content bgc-white bd p-10">
                 <h1 class="text-center"
                     data-toggle-popover="true"                                      {# popover attr #}
@@ -49,7 +49,7 @@
             </div>
 
             <div class="title active bgc-white bd bdrs-3 p-10 h-100p">
-                <ul style="list-style-type: none;" class="p-0">
+                <ul class="p-0 list-style-type-none">
                     {% if issueCardDto.getIssueLastContact() is not null %}
                         {% if isCompact is defined and isCompact %}
                             <li class="justify-content-center d-flex">

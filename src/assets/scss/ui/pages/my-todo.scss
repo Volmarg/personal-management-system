@@ -1,0 +1,20 @@
+.my-todo-modal-main-wrapper {
+  .modal-body {
+    padding: 0;
+  }
+
+  .my-todo-modal-toggle-dashboard-button {
+    width: 50px;
+  }
+
+  select.module-entity-select {
+    max-width: 100px !important;
+    float: left !important;
+  }
+}
+
+.my-todo-one-parent-task-todo {
+  .my-todo-one-parent-task-todo-asterix {
+    color: red;
+  }
+}

@@ -2,15 +2,15 @@
 
 {% block content %}
 
-    <div class="peers ai-s fxw-nw h-100vh">
+    <div class="peers ai-s fxw-nw h-100vh" id="registerPageWrapper">
         <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv"
              style='background-image:  url("{{ asset('assets/images/bcgk.jpg') }}")'>
 
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3 pos-a centerXY peer pX-40 pY-60 h-70 bgc-white scrollable add-record-form" style='min-width: 320px; opacity:0.9;'>
+            <div class="col-12 col-md-6 col-lg-6 col-xl-3 pos-a centerXY peer pX-40 pY-60 h-70 bgc-white scrollable add-record-form register-form-wrapper">
 
-                <h3 class="text-center" style="color: #5DACBD;font-weight: 300;">{{ 'login.header.pageName' | trans }}</h3>
-                <div class="d-flex" style="justify-content: space-around;">
-                    <img src="assets/images/logo/smaller.png" style="height: 65px;">
+                <h3 class="text-center register-form-header">{{ 'login.header.pageName' | trans }}</h3>
+                <div class="d-flex justify-content-around">
+                    <img src="assets/images/logo/smaller.png" class="register-form-logo">
                 </div>
                 <h4 class="fw-300 c-grey-900 mB-20">{{ 'register.header.register' | trans }}</h4>
                 {% if error_message is defined and error_message is not empty %}

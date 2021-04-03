@@ -2,15 +2,15 @@
 
 {% block content %}
 
-    <div class="peers ai-s fxw-nw h-100vh">
+    <div class="peers ai-s fxw-nw h-100vh" id="loginPageWrapper">
         <div class="d-n@sm- peer peer-greed h-100 pos-r bgr-n bgpX-c bgpY-c bgsz-cv"
              style='background-image:  url("{{ asset('assets/images/bcgk.jpg') }}")'>
 
-            <div class="col-12 col-md-6 col-lg-6 col-xl-3 pos-a centerXY peer pX-40 pY-60 h-70 bgc-white scrollable" style='min-width: 320px; opacity:0.9;'>
+            <div class="col-12 col-md-6 col-lg-6 col-xl-3 pos-a centerXY peer pX-40 pY-60 h-70 bgc-white scrollable login-form-wrapper">
 
-                <h3 class="text-center" style="color: #5DACBD;font-weight: 300;">{{ 'login.header.pageName' | trans }}</h3>
-                <div class="d-flex" style="justify-content: space-around;">
-                    <img src="assets/images/logo/smaller.png" style="height: 65px;">
+                <h3 class="text-center login-header">{{ 'login.header.pageName' | trans }}</h3>
+                <div class="d-flex justify-content-around">
+                    <img src="assets/images/logo/smaller.png" class="login-logo-image">
                 </div>
                 <h4 class="fw-300 c-grey-900 mB-20 text">{{ 'login.header.login' | trans }}</h4>
                 {% if error_message is defined and error_message is not empty %}
@@ -58,18 +58,16 @@
                     </div>
 
                     {# Links #}
-                    {% set rowStyle  = "text-align: center;display: flex;justify-content: center; height: 25px;"%}
-                    {% set linkStyle = "text-decoration: none; color: gray;text-align: center; " %}
-                    <div class="row" style="{{ rowStyle }}">
+                    <div class="row link-row-login-page">
                         <p>
                             <i class="fab fa-github" aria-hidden="true"></i>
-                            <a href="https://github.com/Volmarg/personal-management-system" style="{{ linkStyle }}" target="_blank"> Github project </a>
+                            <a href="https://github.com/Volmarg/personal-management-system" class="link-login-page" target="_blank">{{ 'page.login.loginForm.githubProject' | trans }}</a>
                         </p>
                     </div>
-                    <div class="row" style="{{ rowStyle }}">
+                    <div class="row link-row-login-page">
                         <p>
                             <i class="fas fa-book" aria-hidden="true"></i>
-                            <a href="https://volmarg.github.io/" style="{{ linkStyle }}" target="_blank">Documentation</a>
+                            <a href="https://volmarg.github.io/" class="link-login-page" target="_blank">{{ 'page.login.loginForm.documentation' | trans }}</a>
                         </p>
                     </div>
 

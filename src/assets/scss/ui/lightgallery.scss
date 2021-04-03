@@ -41,3 +41,29 @@
   width: 100%;
   text-align: center;
 }
+
+#lightGalleryMainWrapper {
+  .light-gallery-all-images {
+    margin-left: 20px;
+  }
+
+  .light-gallery-single-item {
+    position: relative;
+    margin: 5px;
+  }
+
+  .light-gallery-single-item-checkbox-wrapper {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 999999999;
+  }
+
+  .light-gallery-image {
+    height: 200px;
+  }
+}
+
+.error-page-header {
+  font-size: 60px;
+}

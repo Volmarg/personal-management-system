@@ -1,9 +1,9 @@
-<table id="MyContactType" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+<table id="myContactTypeSettingTable" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
     <thead>
     <tr>
         <td class="d-none">{{ 'datatables.table.Id' | trans }}</td>
         <td>{{ 'contact.settings.table.name' | trans }}</td>
-        <td>{{ 'contact.settings.table.preview' | trans }}</td>
+        <td class="table-head-preview">{{ 'contact.settings.table.preview' | trans }}</td>
         <td>{{ 'contact.settings.table.imagePath' | trans }}</td>
         <td>{{ 'datatables.table.actions' | trans }}</td>
     </tr>
@@ -14,7 +14,9 @@
         <tr class="trash-parent editable-parent save-parent" data-type="MyContactType">
             <td class="d-none id">      {{ type.id }}                           </td>
             <td class="name">           {{ type.name | capitalize}}             </td>
-            <td class="data-preview d-flex justify-content-center"> <img src="{{ type.getImagePath() }}" style="width:40px; height:40px;"/>  </td>
+            <td class="data-preview d-flex justify-content-center">
+                <img class="my-contact-type-setting-table-image-preview" src="{{ type.getImagePath() }}"/>
+            </td>
             <td class="image_path">     {{ type.getImagePath() }}               </td>
 
             {% include 'modules/common/components/table-cells/actions.html.twig' with {

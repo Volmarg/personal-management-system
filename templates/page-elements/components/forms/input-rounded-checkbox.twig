@@ -7,8 +7,8 @@
 {% set additionalAttributes = ( additionalAttributes is not defined ? "" : additionalAttributes) %}
 
 <div class="checkbox checkbox-circle checkbox-info peers ai-c" style="{{ wrapperStyles }}">
-    <input type="checkbox" name="inputCheckboxesCall" class="peer {{ classes }}" {{ checked }} style="width: 30px;" data-value="{{ inputDataValue }}" {{ additionalAttributes }}>
-    <label class=" peers peer-greed js-sb ai-c" style="position: absolute;{{ labelStyle }}">
+    <input type="checkbox" name="inputCheckboxesCall" class="peer form-rounded-checkbox-input {{ classes }}" {{ checked }} data-value="{{ inputDataValue }}" {{ additionalAttributes }}>
+    <label class=" peers peer-greed js-sb ai-c position-absolute" style="{{ labelStyle }}">
 
             <span class="peer peer-greed">
                 {{ label }}

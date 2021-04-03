@@ -7,9 +7,7 @@ class ContactGroups {
     const KEY_ICON  = "icon";
     const KEY_COLOR = "color";
 
-    const CONTACT_GROUP_FRIENDS  = 'Friends';
     const CONTACT_GROUP_FAMILY   = 'Family';
-    const CONTACT_GROUP_WORK     = 'Work';
     const CONTACT_GROUP_OTHER    = 'Other';
     const CONTACT_GROUP_SERVICES = 'Services';
 

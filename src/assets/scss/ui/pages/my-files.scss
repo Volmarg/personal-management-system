@@ -1,0 +1,36 @@
+#MyFilesListTable {
+  button.file-download {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    display: inline;
+  }
+
+  .file-download-form {
+    display: inline;
+  }
+
+  .table-head-checkbox-cell, .table-head-icon-cell {
+    width: 10px;
+  }
+
+  .table-head-tags-cell {
+    width: 500px;
+  }
+
+  .table-body-tags-cell {
+    width: auto;
+    max-width: 500px;
+  }
+
+}
+
+#myFilesListMainWrapper {
+  .my-files-list-masonry-is-not-main-dir {
+    font-size: 19px;
+  }
+}

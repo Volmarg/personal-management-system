@@ -10,7 +10,7 @@
 {% set max_filename_len     = 21 %}
 
 
-<div class="container-fluid">
+<div class="container-fluid" id="lightGalleryMainWrapper">
 
     <div class="row">
         <div class="col-md-12">
@@ -25,7 +25,7 @@
                     description       : (module_data is not null ? module_data.getDescription() : "")
                 }%}
 
-                <div class="my-images-all-images lightgallery" style="margin-left: 20px;">
+                <div class="my-images-all-images lightgallery light-gallery-all-images">
 
                                                     {# Topbar #}
                     <div class="row">
@@ -69,11 +69,11 @@
                             {% set tags = ( "" == image[KEY_TAGS] ? "[]" : image[KEY_TAGS] ) %}
                             {% set tags_list = jsonDecode(tags) | join(', ') %}
 
-                            <div class="col-4@sm grid-item"                     {# shuffle + lightgallery classes #}
-                                 data-groups="{{ tags }}"                       {# shuffle attr #}
-                                 data-date-created="2016-08-12"                 {# shuffle attr #}
-                                 data-title="{{ image[KEY_FILE_NAME] }}"        {# shuffle attr #}
-                                 data-src="/{{ image[KEY_FILE_FULL_PATH] }}"    {# lightgallery attr #}
+                            <div class="col-4@sm grid-item light-gallery-single-item"  {# shuffle + lightgallery classes #}
+                                 data-groups="{{ tags }}"                              {# shuffle attr #}
+                                 data-date-created="2016-08-12"                        {# shuffle attr #}
+                                 data-title="{{ image[KEY_FILE_NAME] }}"               {# shuffle attr #}
+                                 data-src="/{{ image[KEY_FILE_FULL_PATH] }}"           {# lightgallery attr #}
                                  data-unique-id="{{ loop.index0 }}"
                                  data-toggle-popover="true"                     {# popover attr #}
                                  data-html="true"                               {# popover attr #}
@@ -85,20 +85,11 @@
                                             <span style='word-break: break-all;'>{{ tags_list }}</span>
                                     </p>
                                  "
-                                 style="                                        {# shuffle styles #}
-                                         position:relative;
-                                         margin: 5px;
-                                         "
                             >
                                 <div class="aspect aspect--16x9">
                                     <div class="aspect__inner">
 
-                                        <section class="image-checkbox" style="
-                                            position: absolute;
-                                            top: 10px;
-                                            left: 10px;
-                                            z-index: 999999999;
-                                        ">
+                                        <section class="image-checkbox light-gallery-single-item-checkbox-wrapper">
                                             {% include 'page-elements/components/forms/input-rounded-checkbox.twig' with {
                                                 "wrapperStyles"         : "padding: 5px;",
                                                 "labelStyle"            : "left: 13px;",
@@ -116,7 +107,7 @@
                                             {% set imgSrc = image[KEY_MINIATURE_PATH] %}
                                         {% endif %}
 
-                                        <img src="/{{ imgSrc }}" data-src-real="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" style="height:200px; "/>
+                                        <img src="/{{ imgSrc }}" data-src-real="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" class="light-gallery-image"/>
 
                                         <div class="caption-wrapper"></div>
                                         <span class="caption-text-holder image_{{ loop.index0 }}" data-filename="{{ image[KEY_FILE_NAME] }}">

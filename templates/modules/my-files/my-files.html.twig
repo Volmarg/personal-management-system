@@ -7,11 +7,11 @@
     {% extends template %}
 
 {% block body %}
-    <main class='main-content bgc-grey-100'>
+    <main class='main-content bgc-grey-100' id="myFilesListMainWrapper">
 
         <!-- ### Top menu bar for adding goals ### !-->
         {% if not is_main_dir %}
-            <div class="masonry-item col-md-12 mB-10" style="font-size: 19px;">
+            <div class="masonry-item col-md-12 mB-10 my-files-list-masonry-is-not-main-dir">
                 <div class="bgc-white p-10 bd">
                     <span>
                         {% include 'page-elements/components/widgets/remove-folder.twig' with {

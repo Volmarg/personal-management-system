@@ -8,7 +8,7 @@
 
     {% block body %}
         <!-- ### $App Screen Content ### -->
-        <main class='main-content bgc-grey-100'>
+        <main class='main-content bgc-grey-100' id="jobAfterhoursMainWrapper">
             <div id='mainContent'>
                 <div class="container-fluid">
 
@@ -63,7 +63,7 @@
                                 <section><span>{{ 'job.afterhours.labels.hours' | trans }}: <b class="text-danger">{{ secondsToTimeFormat(seconds_all) }} </b></span></section>
                                 <section><span>{{ 'job.afterhours.labels.days' | trans }}: <b class="text-danger">{{ roundDownToAny(days_all, 0.25) }}</b></span></section>
                                 <br>
-                                <p style="font-size: 10px;"><span class="text-danger">*</span> <span>{{ 'job.afterhours.info.daysAreRounded'|trans|raw }}</span></p>
+                                <p class="job-afterhours-asterix"><span class="text-danger">*</span> <span>{{ 'job.afterhours.info.daysAreRounded'|trans|raw }}</span></p>
                             </div>
                         </div>
                     </div>

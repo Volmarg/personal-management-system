@@ -21,3 +21,13 @@ massActions:
     label: Transfer files
   removeFiles:
     label: Remove files
+
+workInProgress: This logic is a `Work in progress` and is not part of any release (main) (However I need it now for my private environment).
+maintenanceMode: Demo is under maintenance. There are bugs to be investigated - thanks for understanding.
+
+topbarComponent:
+  notifications:
+    smallHeader: Notifications
+    inDays:
+      in: in
+      days: "day/s"

@@ -12,27 +12,28 @@
 {% endif %}
 
 <script type="text/template" id="qq-template">
-    <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here">
+    <div class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="Drop files here" id="fineUploadBodyMainWrapper">
 
         {# File select and upload #}
-        <div class="col-md-12 d-flex justify-content-center mt-1" style="padding-left: 10px;">
+        <div class="col-md-12 d-flex justify-content-center mt-1 fine-upload-body-file-select-and-upload-wrapper">
             <div class="col-md-{{ formSize }} align-self-center">
                 <section class="d-flex">
-                    <section id="file-upload-file-select" class=" btn btn-sm btn-primary d-flex mL-0" style="width:50px; height:50px; padding: 0; ">
+                    <section id="file-upload-file-select" class="fine-upload-body-file-select btn btn-sm btn-primary d-flex mL-0">
                         <div class="custom-file d-flex justify-content-center flex-column align-items-center h-100 hoverable-pointer qq-upload-button-selector qq-upload-button">
-                            <i class="far fa-folder-open position-absolute align-items-center" style="font-size: 20px; top: auto;"></i>
+                            <i class="far fa-folder-open position-absolute align-items-center fine-upload-body-folder-icon"></i>
                             <div class="custom-file-input h-100 hoverable-pointer"></div>
                         </div>
                     </section>
                     <button type="button"
-                            class="btn btn-sm btn-primary clear-selection col-4 btn qq-upload-button-selector qq-upload-button trigger-manual-upload"
-                            style="width:100%; margin: 6px 0 6px 0;"> {{ 'fineUpload.buttons.upload.label' | trans}} </button>
+                            class="btn btn-sm btn-primary clear-selection col-4 btn qq-upload-button-selector qq-upload-button trigger-manual-upload w-100 fine-upload-body-upload-submit">
+                                {{ 'fineUpload.buttons.upload.label' | trans}}
+                    </button>
                 </section>
             </div>
         </div>
 
         {# Drag n Drop area #}
-        <div class="qq-upload-drop-area-selector qq-upload-drop-area mT-5" qq-hide-dropzone style="top: auto !important;">
+        <div class="qq-upload-drop-area-selector qq-upload-drop-area mT-5 fine-upload-body-drag-n-drop-area" qq-hide-dropzone>
             <span class="qq-upload-drop-area-text-selector"></span>
         </div>
 
@@ -87,7 +88,7 @@
             </li>
         </ul>
 
-        <dialog class="qq-alert-dialog-selector" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel" style="border: none;">
+        <dialog class="border-none qq-alert-dialog-selector" tabindex="-1" role="dialog" aria-hidden="true" aria-labelledby="exampleModalLabel">
             <div class="qq-dialog-message-selector"></div>
             <button type="button" class="qq-cancel-button-selector btn btn-primary" data-dismiss="modal">{{ 'buttons.close' | trans }}</button>
         </dialog>

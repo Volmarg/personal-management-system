@@ -35,7 +35,7 @@
                                         <td class="d-none">{{ 'datatables.table.id' | trans }}</td>
                                         <td>{{ 'schedules.modals.calendarSettings.table.headers.name' | trans }}</td>
                                         <td>{{ 'schedules.modals.calendarSettings.table.headers.icon' | trans }}</td>
-                                        <td style="width: 50px;">{{ 'schedules.modals.calendarSettings.table.headers.color' | trans }}</td>
+                                        <td class="color">{{ 'schedules.modals.calendarSettings.table.headers.color' | trans }}</td>
                                         <td>{{ 'datatables.table.actions' | trans }}</td>
                                     </tr>
                                     </thead>
@@ -82,7 +82,7 @@
 
                     <hr/>
 
-                    <div>
+                    <div class="schedules-calendar-settings-colors-legend">
                         <p>
                             <b>{{ 'schedules.modals.calendarSettings.legend.legendOfNotificationsColors' | trans }}</b>
                         </p>
@@ -90,7 +90,7 @@
                         <div>
                             <label>
                                 <input type="checkbox" checked="checked" class="tui-full-calendar-checkbox-round cursor-default" disabled readonly>
-                                <span class="color-wrapper cursor-default" style="border-color: green; background-color: green;"></span>
+                                <span class="color-wrapper cursor-default green"></span>
                                 <span>{{ 'schedules.modals.calendarSettings.legend.over30' | trans }}</span>
                             </label>
                         </div>
@@ -98,7 +98,7 @@
                         <div>
                             <label>
                                 <input type="checkbox" checked="checked" class="tui-full-calendar-checkbox-round cursor-default" disabled readonly>
-                                <span class="color-wrapper cursor-default" style="border-color: orange; background-color: orange;"></span>
+                                <span class="color-wrapper cursor-default orange"></span>
                                 <span>{{ 'schedules.modals.calendarSettings.legend.over14' | trans }}</span>
                             </label>
                         </div>
@@ -106,7 +106,7 @@
                         <div>
                             <label>
                                 <input type="checkbox" checked="checked" class="tui-full-calendar-checkbox-round cursor-default" disabled readonly>
-                                <span class="color-wrapper cursor-default" style="border-color: red; background-color: red;"></span>
+                                <span class="color-wrapper cursor-default red"></span>
                                 <span>{{ 'schedules.modals.calendarSettings.legend.14' | trans }}</span>
                             </label>
                         </div>

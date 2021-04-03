@@ -1,0 +1,24 @@
+#calendar-settings-modal {
+  table {
+    thead td.color {
+      width: 50px;
+    }
+  }
+
+  .schedules-calendar-settings-colors-legend {
+    .green {
+      border-color: green !important;
+      background-color: green !important;
+    }
+
+    .orange {
+      border-color: orange !important;
+      background-color: orange !important;
+    }
+
+    .red {
+      border-color: red !important;
+      background-color: red !important;
+    }
+  }
+}

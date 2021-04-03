@@ -1,4 +1,4 @@
-<div id="modal-wrapper-button-{{ todo.id }} " class="modal-wrapper-button trash-parent ">
+<div id="modal-wrapper-button-{{ todo.id }} " class="modal-wrapper-button trash-parent my-todo-one-parent-task-todo ">
     <button class="trigger-custom btn cur-p btn-outline-primary todo-title" data-toggle="modal"
             data-target="#todo{{ todo.id }}">
         {{ todo.name }}
@@ -10,7 +10,7 @@
                 and todo.myIssue is null
             )
         %}
-            <span style="color: red;">*</span>
+            <span class="my-todo-one-parent-task-todo-asterix">*</span>
         {% endif %}
     </button>
     <section class="col-md-6 todo-buttons d-flex justify-content-around">

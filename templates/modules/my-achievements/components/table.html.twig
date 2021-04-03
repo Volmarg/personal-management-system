@@ -5,9 +5,9 @@
         {% for achievement in all_achievements %}
             {% if  achievement.type == achievement_type %}
                 <tr class="trash-parent achievement-single-data editable-parent save-parent {{ getClassForAchievementType(achievement.type) }} "
-                    style="outline: 5px white solid;" data-type="Achievements">
+                    data-type="Achievements">
                     {% for column in columns_names %}
-                        <td class="{{ column }} {% if column != 'name' %}d-none{% endif %}" style="border:none;">
+                        <td class="{{ column }} {% if column != 'name' %}d-none{% endif %} border-none">
                             {{ attribute(achievement,column) }}
                         </td>
                     {% endfor %}

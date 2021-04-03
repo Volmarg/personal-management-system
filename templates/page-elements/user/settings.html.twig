@@ -1,7 +1,7 @@
 {% extends getBaseTemplate(ajax_render) %}
 {% block body %}
     <!-- ### $App Screen Content ### -->
-    <main class='main-content bgc-grey-100'>
+    <main class='main-content bgc-grey-100' id="userSettingsPageElementWrapper">
         <div id='mainContent'>
             <div class="container-fluid">
 
@@ -18,7 +18,7 @@
                     {# Forms #}
                     <div class="col-md-6">
 
-                        <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 450px;">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20 user-settings-wrappers-min-height">
                             <h5 class="text-center">{{ 'user.headers.changeSettings' | trans }}</h5>
                             {% if isDemo() %}
                                 <p  class="text-center">
@@ -49,11 +49,11 @@
 
                     <div class="col-md-6">
 
-                        <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 450px;">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20 user-settings-wrappers-min-height">
                             <h5 class="text-center"> {{ 'user.headers.avatarPreview' | trans }} </h5>
                             <div class="d-flex justify-content-around">
                                 <img src="{{ app.user.avatar }}"
-                                     style="max-width:180px; align-self: center;"/>
+                                     class="user-settings-avatar-preview-image"/>
                             </div>
                         </div>
                     </div>

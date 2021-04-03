@@ -2,6 +2,7 @@
   ol {
     list-style-type: decimal !important;
   }
+
   ul {
     list-style-type: disc;
   }
@@ -35,4 +36,23 @@
   justify-content: space-around;
   flex-direction: column;
   padding: 15px;
+}
+
+#noteCategory {
+  .note-category-content-wrapper {
+    min-height: 160px;
+  }
+}
+
+#MyNotesCategoriesTable {
+  .my-notes-categories-table-color-cell {
+    width: 50px !important;
+  }
+}
+
+.note-edit-modal {
+  .note-edit-modal-category-select {
+    float: left;
+    margin-right: 15px;
+  }
 }

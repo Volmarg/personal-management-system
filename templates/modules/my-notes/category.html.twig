@@ -7,13 +7,13 @@
 {% extends template %}
 
 {% block body %}
-    <main class='main-content bgc-grey-100'>
+    <main class='main-content bgc-grey-100' id="noteCategory">
         <div id='mainContent'>
             <div class="container-fluid">
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="bgc-white bd bdrs-3 p-10 mB-20" style="min-height: 160px;">
+                        <div class="bgc-white bd bdrs-3 p-10 mB-20 note-category-content-wrapper">
                             <h4 class="c-grey-900 mB-20 text-center">{{ category | capitalize }}</h4>
 
                             <section class="all-notes">

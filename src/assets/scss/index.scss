@@ -28,22 +28,43 @@
 @import 'libs/customization-for-liblaries/bootstrap-toggle.scss';
 
 /* My-scsses */
+@import "templates/base.html.twig";
+@import "ui/components/dialogs.scss";
+@import "ui/components/fine-upload.scss";
+@import "ui/components/forms.scss";
+@import "ui/components/sidebar.scss";
+@import "ui/components/widgets.scss";
 
-@import 'ui/notes.scss';
-@import 'ui/my-contacts.scss';
-@import 'ui/my-travels-ideas.scss';
-@import 'ui/my-monthly-payments.scss';
-@import 'ui/my-payments-bills.scss';
-@import 'ui/achievements.scss';
-@import 'ui/goals.scss';
+@import "ui/page-elements/form-types.scss";
+@import "ui/page-elements/user-settings.scss";
+
+@import 'ui/pages/common-for-pages.scss';
+@import 'ui/pages/login.scss';
+@import 'ui/pages/my-achievements.scss';
+@import 'ui/pages/my-contacts.scss';
+@import 'ui/pages/my-dashboard.scss';
+@import 'ui/pages/my-files.scss';
+@import 'ui/pages/my-goals.scss';
+@import 'ui/pages/my-images.scss';
+@import 'ui/pages/my-issues.scss';
+@import 'ui/pages/my-job.scss';
+@import 'ui/pages/my-notes.scss';
+@import 'ui/pages/my-payments.scss';
+@import 'ui/pages/my-schedule.scss';
+@import 'ui/pages/my-schedules.scss';
+@import 'ui/pages/my-todo.scss';
+@import 'ui/pages/my-travels-ideas.scss';
+@import 'ui/pages/my-video.scss';
+@import 'ui/pages/register.scss';
+
 @import 'ui/general.scss';
 @import 'ui/files-upload.scss';
-@import 'ui/my-images.scss';
+@import 'ui/pages/my-images.scss';
 @import 'ui/lightgallery.scss';
 @import 'ui/top-bar-files-search.scss';
 @import 'ui/nav.scss';
 @import 'fonts.scss';
-@import 'ui/my-issues.scss';
+@import 'ui/pages/my-issues.scss';
 @import 'ui/forms.scss';
 @import 'ui/animation.scss';
 

@@ -1,4 +1,4 @@
-<section data-is-modal="true"  data-modal-name="noteEdit">
+<section data-is-modal="true"  data-modal-name="noteEdit" class="note-edit-modal">
     <div class="modal-header">
         <h5 class="modal-title note-title" id="exampleModalLongTitle">{{ note.title }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -12,8 +12,7 @@
     </section>
     <div class="d-flex justify-content-end modal-note-details-buttons">
 
-        <select class="form-control d-none note-modal-categories-list note-category selectpicker"
-                style="max-width:100px; float:left;">
+        <select class="form-control d-none note-modal-categories-list note-category selectpicker note-edit-modal-category-select">
             {% set parents_children_dtos = buildParentsChildrenCategoriesHierarchy() %}
 
             {% for parent_children_dto in parents_children_dtos %}

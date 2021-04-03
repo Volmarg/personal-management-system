@@ -22,7 +22,7 @@ export default abstract class AbstractDialogs {
         ids: {
             targetUploadModuleDirInput  : '#move_single_file_target_upload_module_dir',
             targetSubdirectoryTypeInput : '#move_single_file_target_subdirectory_path',
-            systemLockPasswordInput     : '#system_lock_resources_password_systemLockPassword'
+            systemLockPasswordInput     : '#systemLockDialog #system_lock_resources_password_systemLockPassword'
         },
         classes: {
             fileTransferButton      : '.file-transfer',

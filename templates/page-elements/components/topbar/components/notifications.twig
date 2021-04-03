@@ -23,7 +23,7 @@
     <ul class="dropdown-menu">
         <li class="pX-10 pY-15 bdB d-flex justify-content-center">
             <i class="ti-bell pR-10"></i>
-            <span class="fsz-sm fw-600 c-grey-900">Notifications</span>
+            <span class="fsz-sm fw-600 c-grey-900">{{ 'topbarComponent.notifications.smallHeader' | trans }}</span>
         </li>
         <li>
             <ul class="ovY-a pos-r scrollable lis-n p-0 m-0 fsz-sm notifications-bell-list">
@@ -41,7 +41,9 @@
                                 <span style="{{ schedule_in_past_style }}">
                                       <span class="fw-500">{{ incomingScheduleDto.title }}</span>
                                       <span class="c-grey-600" style="{{ schedule_in_past_style }}">
-                                          in <span class="text-dark" style="{{ schedule_in_past_style }}">{{ incomingScheduleDto.daysDiff }}</span> day/s
+                                          {{ 'topbarComponent.notifications.inDays.in' | trans}}
+                                            <span class="text-dark" style="{{ schedule_in_past_style }}">{{ incomingScheduleDto.daysDiff }}</span>
+                                          {{ 'topbarComponent.notifications.inDays.days' | trans }}
                                       </span>
                                 </span>
                             </div>
@@ -51,12 +53,5 @@
 
             </ul>
         </li>
-{#        <li class="pX-20 pY-15 ta-c bdT">#}
-{#            <span>#}
-{#              <a href="" class="c-grey-600 cH-blue fsz-sm td-n">#}
-{#                  View All Notifications #}
-{#                  <i class="ti-angle-right fsz-xs mL-10"></i></a>#}
-{#            </span>#}
-{#        </li>#}
     </ul>
 </li>

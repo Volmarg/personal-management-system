@@ -1,0 +1,16 @@
+#Achievements tr:hover .actions {
+  display: block !important;
+  position: absolute;
+  right: 10%;
+}
+
+#Achievements .actions {
+  background-color: rgba(0, 0, 0, 0) !important;
+
+}
+
+#Achievements {
+  .achievement-single-data {
+    outline: 5px white solid;
+  }
+}

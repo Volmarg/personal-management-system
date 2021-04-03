@@ -7,7 +7,7 @@
 {% set KEY_NAME_BACKGROUND_COLOR        = constant(my_contact_form_class ~ 'KEY_NAME_BACKGROUND_COLOR') %}
 {% set KEY_DESCRIPTION_BACKGROUND_COLOR = constant(my_contact_form_class ~ 'KEY_DESCRIPTION_BACKGROUND_COLOR') %}
 
-<main class='main-content bgc-grey-100'>
+<main class='main-content bgc-grey-100' id="editCreateContactCardDialogWrapper">
     <div id='mainContent'>
         <div class="container-fluid">
             <div class="row">
@@ -115,7 +115,6 @@
                                                </section>
 
                                                <button class="append-form btn btn-sm btn-primary"
-                                                       style="font-size:13px;"
                                                        data-target-selector=".contacts-types-wrapper-for-widget"
                                                        data-form-name="contactTypeDto">
                                                    {{ 'forms.MyContactType.labels.addType' | trans }}

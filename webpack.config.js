@@ -8,6 +8,7 @@ var BundleAnalyzerPlugin    = require('webpack-bundle-analyzer').BundleAnalyzerP
  */
 Encore
     .addEntry('app', './src/assets/app.js') // will create public/build/app.js and public/build/app.css
+    .addEntry('base-template', './src/assets/base-template.js')
     .setOutputPath('public/assets')         // the project directory where all compiled assets will be stored
     .setPublicPath('/assets')               // the public path used by the web server to access the previous directory
     .enableSassLoader()                     // allow sass/scss files to be processed

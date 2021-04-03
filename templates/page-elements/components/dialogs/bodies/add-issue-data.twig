@@ -5,7 +5,7 @@
 {%  set FIELD_ISSUE       = constant(issueProgressContactFormClass ~ 'FIELD_ISSUE') %}
 {%  set FIELD_INFORMATION = constant(issueProgressContactFormClass ~ 'FIELD_INFORMATION') %}
 
-<main class='main-content bgc-grey-100' id="MyIssuesPreview" style="padding-top: 20px ;">
+<main class='main-content bgc-grey-100' id="MyIssuesPreview">
     <div id='mainContent'>
         <div class="container-fluid">
             <div class="row">
@@ -14,7 +14,7 @@
                     {# Main headers #}
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
                         <h4 class="c-grey-900 mB-20 text-center">{{ issueCardDto.getIssue().getName() }}</h4>
-                        <h5 class="text-center" style="font-size: 16px;">{{ issueCardDto.getIssue().getInformation() }}</h5>
+                        <h5 class="text-center small-header">{{ issueCardDto.getIssue().getInformation() }}</h5>
                     </div>
 
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
@@ -48,7 +48,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="row" style="margin-top: 10px;">
+                                                <div class="row margin-top-10-px">
                                                     <div class="col-sm-2">
                                                         {{ form_label(contactForm[FIELD_ISSUE]) }}
                                                     </div>
@@ -64,7 +64,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="row" style="margin-top: 10px;">
+                                                <div class="row margin-top-10-px">
                                                     <div class="col-sm-2">
                                                         {{ form_label(contactForm[FIELD_ICON]) }}
                                                     </div>
@@ -74,7 +74,7 @@
 
                                                 </div>
 
-                                                <div class="d-flex justify-content-center" style="margin-top: 10px;">
+                                                <div class="d-flex justify-content-center margin-top-10-px">
                                                     {{ form_widget(contactForm['submit']) }}
                                                 </div>
 
@@ -102,7 +102,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="row" style="margin-top: 10px;">
+                                                <div class="row margin-top-10-px">
                                                     <div class="col-sm-2">
                                                         {{ form_label(progressForm[FIELD_ISSUE]) }}
                                                     </div>
@@ -118,7 +118,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="d-flex justify-content-center" style="margin-top: 10px;">
+                                                <div class="d-flex justify-content-center margin-top-10-px">
                                                     {{ form_widget(progressForm['submit']) }}
                                                 </div>
 

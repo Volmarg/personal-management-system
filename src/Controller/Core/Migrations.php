@@ -207,7 +207,7 @@ class Migrations
             EXECUTE executedIfTableExist;
             DEALLOCATE PREPARE executedIfTableExist; 
         ";
-dump($sql);
+
         return $sql;
     }
 

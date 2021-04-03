@@ -104,7 +104,6 @@ class MyPaymentsProductsAction extends AbstractController {
      */
     private function reorderPriceColumn($columnNames): array
     {
-        dump($columnNames);
         $priceKey = array_search(static::PRICE_COLUMN_NAME, $columnNames);
 
         if (!in_array(static::PRICE_COLUMN_NAME, $columnNames)) {

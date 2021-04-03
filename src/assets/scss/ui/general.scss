@@ -29,7 +29,7 @@ $scrollForeground: #aaa;
 .sidebar .logo img {
   width: 130px;
   margin: 0 auto;
-  left:0px;
+  left: 0px;
   transition: linear 250ms;
 }
 
@@ -45,13 +45,13 @@ $scrollForeground: #aaa;
   .is-collapsed .sidebar:hover .logo img {
     width: 130px;
     margin: 0 auto;
-    left:0px;
+    left: 0px;
     position: relative;
     transition: linear 250ms;
   }
 }
 
-@media screen and (max-width: 1439px) and (min-width: 992px){
+@media screen and (max-width: 1439px) and (min-width: 992px) {
   .sidebar .sidebar-inner .sidebar-logo a .logo {
     margin-left: -28px;
   }
@@ -67,27 +67,27 @@ $scrollForeground: #aaa;
   font-size: 0.9rem;
 }
 
-body{
+body {
   font-size: 13px;
 }
 
-.ui-widget{
-  font-size:1em;
+.ui-widget {
+  font-size: 1em;
 }
 
-.monthly-summary{
+.monthly-summary {
   font-size: 15px;
 }
 
-table td{
-  font-size:0.8rem;
+table td {
+  font-size: 0.8rem;
 }
 
-h4{
+h4 {
   font-size: 1.3rem;
 }
 
-h3{
+h3 {
   font-size: 1.45rem;
 }
 
@@ -95,19 +95,19 @@ h3{
   font-size: 0.8rem;
 }
 
-.fsz-sm{
+.fsz-sm {
   font-size: 0.77rem !important;
 }
 
-.navbar .dropdown-menu a{
-  font-size:0.8375rem;
+.navbar .dropdown-menu a {
+  font-size: 0.8375rem;
 }
 
 .header, .header .header-container .nav-left > li > a,
 .header .header-container,
 .header .header-container .nav-right,
 .header .header-container .nav-right .dropdown,
-.header .header-container .nav-left > li > a, .header .header-container .nav-right > li > a{
+.header .header-container .nav-left > li > a, .header .header-container .nav-right > li > a {
   min-height: 55px;
   height: 55px;
 }
@@ -121,7 +121,7 @@ h3{
 }
 
 .dataTable tbody tr td .checkbox label::before,
-.dataTable tbody tr td .checkbox label::after{
+.dataTable tbody tr td .checkbox label::after {
   left: inherit !important;
 }
 
@@ -141,7 +141,7 @@ h3{
   cursor: default !important;
 }
 
-form legend{
+form legend {
   font-size: 13px;
 }
 
@@ -189,4 +189,29 @@ form legend{
 
 .text-dark-orange {
   color: darkorange;
+}
+
+.auto-width {
+  width: auto;
+}
+
+.margin-top-10-px {
+  margin-top: 10px;
+}
+
+.list-style-type-none {
+  list-style-type: none;
+}
+
+.cursor-text {
+  cursor: text;
+}
+
+.border-none {
+  border: none;
+}
+
+// the class from bootstrap is not working this - overwriting
+.overflow-hidden {
+  overflow: hidden !important;
 }

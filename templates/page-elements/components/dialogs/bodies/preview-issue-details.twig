@@ -1,4 +1,4 @@
-<main class='main-content bgc-grey-100' id="MyIssuesPreview" style="padding-top: 20px ;">
+<main class='main-content bgc-grey-100' id="MyIssuesPreview">
     <div id='mainContent'>
         <div class="container-fluid">
             <div class="row">
@@ -7,7 +7,7 @@
                     {# Main headers #}
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
                         <h4 class="c-grey-900 mB-20 text-center">{{ issueCardDto.getIssue().getName() }}</h4>
-                        <h5 class="text-center" style="font-size: 16px;">{{ issueCardDto.getIssue().getInformation() }}</h5>
+                        <h5 class="text-center small-header">{{ issueCardDto.getIssue().getInformation() }}</h5>
                     </div>
 
                     <div class="bgc-white bd bdrs-3 p-10 mB-20">
@@ -97,9 +97,9 @@
                                                                 tinyMceInstanceSelector       : "tiny-mce-selector-for-issue-progress-accordion" ~ loop.index0,
                                                                 remove_without_entity_handler : true,
                                                                 trash_attr                    : '
-                                                data-entity-id="' ~ issueProgress.getId()  ~ '"
-                                                data-repository-name="MyIssueProgressRepository"
-                                                data-entity-removal-action="true"'
+                                                                    data-entity-id="' ~ issueProgress.getId()  ~ '"
+                                                                    data-repository-name="MyIssueProgressRepository"
+                                                                    data-entity-removal-action="true"'
                                                             }%}
 
                                                             <section class="justify-content-around">
