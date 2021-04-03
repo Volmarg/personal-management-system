@@ -7,6 +7,7 @@ use App\Entity\Modules\Passwords\MyPasswords;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,7 +30,7 @@ class MyPasswordsType extends AbstractType {
             ->add('login', TextType::class, [
                 'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.login')
             ])
-            ->add('password', TextType::class, [
+            ->add('password', PasswordType::class, [
                 'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.password')
 
             ])
