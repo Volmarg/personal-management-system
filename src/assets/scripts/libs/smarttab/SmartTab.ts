@@ -1,4 +1,5 @@
 import JquerySmartTab from "./src/JquerySmartTab";
+import DomElements from "../../core/utils/DomElements";
 
 /**
  * Handles switching the content via panels
@@ -22,6 +23,7 @@ export default class SmartTab
 {
 
     readonly DATA_ATTRIBUTE_SMART_TAB = "data-smart-tab";
+    readonly TAB_PANE_SELECTOR        = '.tab-pane';
     readonly DEFAULT_ACTIVE_TAB       = 0; // first one
 
     /**
@@ -45,6 +47,12 @@ export default class SmartTab
     {
         let jquerySmartTab = new JquerySmartTab();
         let $element = $(htmlElement);
+
+        // no panes are present - do not initialize as smart tab will throw exceptions otherwise
+        if( !DomElements.doElementsExists($element.find(this.TAB_PANE_SELECTOR)) ){
+            return;
+        }
+
         jquerySmartTab.initForElementAndOptions($element, {
             selected          : this.DEFAULT_ACTIVE_TAB, // Initial selected tab, 0 = first tab (self: note - not working, first tab is always active but that's fine),
             theme             : 'github',                // theme for the tab, related css need to include for other than default theme
