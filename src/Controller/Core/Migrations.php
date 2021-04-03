@@ -6,6 +6,17 @@ namespace App\Controller\Core;
 
 use Exception;
 
+/**
+ * Information: there is a severe BUG here - meaning that sqls executed via stmt are not showing errors such as
+ * - `Column 'body' cannot be null`
+ * - syntax error
+ *
+ * With this migrations will just show "yes done with success"
+ * Todo: find a way to handle showing errors/breaking migrations
+ *
+ * Class Migrations
+ * @package App\Controller\Core
+ */
 class Migrations
 {
 
@@ -99,9 +110,9 @@ class Migrations
                         (table_name   = @tablename)
                   AND   (table_schema = @dbname)
                   AND   (column_name  = @columnname)
-              ) > 0,
-              'SELECT 1',
-              '{$executedSql}'
+              ) = 0,
+              '{$executedSql}',
+              'SELECT 1'
             ));
             PREPARE executedIfColumnNotExist FROM @preparedStatement;
             EXECUTE executedIfColumnNotExist;
@@ -134,8 +145,8 @@ class Migrations
                   AND   (table_schema = @dbname)
                   AND   (column_name  = @columnname)
               ) >= 1,
-              'SELECT 1',
-              '{$executedSql}'
+              '{$executedSql}',
+              'SELECT 1'
             ));
             PREPARE executedIfColumnExist FROM @preparedStatement;
             EXECUTE executedIfColumnExist;

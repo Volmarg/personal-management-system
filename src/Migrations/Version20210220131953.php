@@ -71,8 +71,16 @@ final class Version20210220131953 extends AbstractMigration
         $this->addSql("
             INSERT INTO my_schedule_calendar
             (
+                name,
+                color, 
+                background_color, 
+                drag_background_color, 
+                border_color, 
+                icon, 
+                deleted
+            )
+            (
                 SELECT
-                NULL    AS id,
                 name    AS name,
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS color,
                 CONCAT(LPAD(CONV(ROUND(RAND(md5(name)) * 16777215),10,16),6,0)) AS background_color,
@@ -90,17 +98,27 @@ final class Version20210220131953 extends AbstractMigration
         $this->addSql(Migrations::buildSqlExecutedIfColumnExist('name', 'my_schedule', "
             INSERT INTO schedule
             (
+                calendar_id,
+                title,
+                `body`,
+                all_day,
+                `start`,
+                `end`,
+                category,
+                location,
+                deleted
+            )
+            (
                 SELECT 
-                NULL           AS id,
-                msc.id         AS calendar_id,
-                ms.name        AS title,
-                ms.information AS body,
-                0              AS all_day,
-                CONCAT(ms.`date`, ' 06:00:00') AS `start`,
-                CONCAT(ms.`date`, ' 10:00:00') AS `end`,
-                'time'     AS category,
-                ''         AS location,
-                ms.deleted AS deleted
+                msc.id                                           AS calendar_id,
+                ms.name                                          AS title,
+                IF(ms.information IS NULL, \"\", ms.information) AS `body`,
+                0                                                AS all_day,
+                CONCAT(ms.`date`, \" 06:00:00\")                 AS `start`,
+                CONCAT(ms.`date`, \" 10:00:00\")                 AS `end`,
+                \"time\"                                         AS category,
+                \"\"                                             AS location,
+                ms.deleted                                       AS deleted
 
                 FROM my_schedule ms
 
@@ -114,7 +132,7 @@ final class Version20210220131953 extends AbstractMigration
             )    
         "));
 
-        $this->addSql(Migrations::buildSqlExecutedIfColumnDoesNotExist('calendar_id', 'my_schedule', 'DROP TABLE IF EXISTS my_schedule'));
+        $this->addSql(Migrations::buildSqlExecutedIfColumnExist('schedule_type_id', 'my_schedule', 'DROP TABLE IF EXISTS my_schedule'));
         $this->addSql(Migrations::buildSqlExecutedIfTableExist('schedule', 'RENAME TABLE schedule TO my_schedule'));
 
         // no longer used table
