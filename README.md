@@ -30,6 +30,15 @@
     Secondly, there is no system like that, and I didn't wanted to end up integrating a docker based cloud with CMS. Furthermore I just need an application like that to keep organized and I'm tired of having some very personal data on OneDrive, other data on Google cloud, some notes here, and some notes there. The end goal is to have an application running on terminal or raspberry 24/7 plugged into my home network, without access to internet.
 </p>
 
+<h3>Preview</h3>
+<hr>	
+
+<img src="https://volmarg.github.io/img/project-example-dashboard.jpg">
+
+<img src="https://volmarg.github.io/img/project-example-charts.jpg">
+
+<img src="https://volmarg.github.io/img/project-example-contacts.jpg">
+
 <h3>Available options and modules</h3>
 <hr>
 
@@ -55,21 +64,6 @@
     <li><b>🎬 Video</b> - <span align="justify"><i>Got small video downloaded from internet or recorded on phone? That's a module to store it then - supports most popular web video formats.</i></span> </li><br/>		
     <li><b>📑 Reports</b> - <span align="justify"><i>contains readonly reports created from already existing data in database</i></span> </li><br/>		
 </ol>
-
-<h2>Preview</h2>
-
-<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/1.20_contacts.jpg?raw=true">
-
-<hr>	
-	
-<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/preview2.png?raw=true">
-
-<hr>
-
-<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/preview3.png?raw=true">
-</div>
-
-<hr>
 
 <h2>How to install/documentation</h2>
 
