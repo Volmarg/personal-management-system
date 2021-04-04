@@ -4,15 +4,11 @@
 namespace App\Controller\Core;
 
 
+use App\Kernel;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
- * Information: there is a severe BUG here - meaning that sqls executed via stmt are not showing errors such as
- * - `Column 'body' cannot be null`
- * - syntax error
- *
- * With this migrations will just show "yes done with success"
- * Todo: find a way to handle showing errors/breaking migrations
  *
  * Class Migrations
  * @package App\Controller\Core
@@ -24,6 +20,8 @@ class Migrations
     const CONSTRAINT_TYPE_INDEX       = "INDEX";
     const CONSTRAINT_TYPE_UNIQUE      = "UNIQUE";
 
+    const MYSQL_VAR_NAME_EXECUTED_STMT = "executedStatement";
+
     /**
      * Will output an sql only if constraint does not exist in given table
      * - prevents crashing on cases where constraint is about to be added but it already exists
@@ -32,10 +30,12 @@ class Migrations
      * @param string $constraintName
      * @param string $executedSql
      * @return string
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function buildSqlExecutedIfConstraintDoesNotExist(string $constraintType, string $constraintName, string $executedSql): string
     {
-        $sql = "
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
             SELECT IF (
                 EXISTS(
                     SELECT NULL                                                                                                                                                                                     
@@ -47,10 +47,16 @@ class Migrations
                 )
                 ,'select ''index index_1 exists'' _______;'
                 ,'{$executedSql}'
-            ) INTO @a;
-                PREPARE executedIfConstraintNotExist FROM @a;
-                EXECUTE executedIfConstraintNotExist;
-                DEALLOCATE PREPARE executedIfConstraintNotExist;
+            ) INTO @{$stmtVariableName};
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfConstraintNotExist FROM @{$stmtVariableName};
+            EXECUTE executedIfConstraintNotExist;
+            DEALLOCATE PREPARE executedIfConstraintNotExist;
         ";
 
         return $sql;
@@ -64,10 +70,12 @@ class Migrations
      * @param string $constraintName
      * @param string $executedSql
      * @return string
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function buildSqlExecutedIfConstraintDoesExist(string $constraintType, string $constraintName, string $executedSql): string
     {
-        $sql = "
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
             SELECT IF (
                 EXISTS(
                     SELECT NULL                                                                                                                                                                                     
@@ -79,10 +87,16 @@ class Migrations
                 )
                 ,'{$executedSql}'
                 ,'select ''index index_1 exists'' _______;'
-            ) INTO @a;
-                PREPARE executedIfConstraintExist FROM @a;
-                EXECUTE executedIfConstraintExist;
-                DEALLOCATE PREPARE executedIfConstraintExist;
+            ) INTO @{$stmtVariableName};
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfConstraintExist FROM @{$stmtVariableName};
+            EXECUTE executedIfConstraintExist;
+            DEALLOCATE PREPARE executedIfConstraintExist;
         ";
 
         return $sql;
@@ -96,25 +110,30 @@ class Migrations
      * @param string $tableName
      * @param string $executedSql
      * @return string
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function buildSqlExecutedIfColumnDoesNotExist(string $columnName, string $tableName, string $executedSql): string
     {
-        $sql = "
-            SET @dbname             = DATABASE();
-            SET @tablename          = '{$tableName}';
-            SET @columnname         = '{$columnName}';
-            SET @preparedStatement  = (SELECT IF(
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
+            SET @{$stmtVariableName}  = (SELECT IF(
               (
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE
-                        (table_name   = @tablename)
-                  AND   (table_schema = @dbname)
-                  AND   (column_name  = @columnname)
+                        (table_name   = '{$tableName}')
+                  AND   (table_schema = DATABASE())
+                  AND   (column_name  = '{$columnName}')
               ) = 0,
               '{$executedSql}',
               'SELECT 1'
             ));
-            PREPARE executedIfColumnNotExist FROM @preparedStatement;
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfColumnNotExist FROM @{$stmtVariableName};
             EXECUTE executedIfColumnNotExist;
             DEALLOCATE PREPARE executedIfColumnNotExist; 
         ";
@@ -130,25 +149,30 @@ class Migrations
      * @param string $tableName
      * @param string $executedSql
      * @return string
+     * @throws \Doctrine\DBAL\Exception
      */
     public static function buildSqlExecutedIfColumnExist(string $columnName, string $tableName, string $executedSql): string
     {
-        $sql = "
-            SET @dbname             = DATABASE();
-            SET @tablename          = '{$tableName}';
-            SET @columnname         = '{$columnName}';
-            SET @preparedStatement  = (SELECT IF(
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
+            SET @{$stmtVariableName}  = (SELECT IF(
               (
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
                 WHERE
-                        (table_name   = @tablename)
-                  AND   (table_schema = @dbname)
-                  AND   (column_name  = @columnname)
+                        (table_name   = '{$tableName}')
+                  AND   (table_schema = DATABASE())
+                  AND   (column_name  = '{$columnName}')
               ) >= 1,
               '{$executedSql}',
               'SELECT 1'
             ));
-            PREPARE executedIfColumnExist FROM @preparedStatement;
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfColumnExist FROM @{$stmtVariableName};
             EXECUTE executedIfColumnExist;
             DEALLOCATE PREPARE executedIfColumnExist; 
         ";
@@ -167,21 +191,25 @@ class Migrations
      */
     public static function buildSqlExecutedIfTableNotExist(string $tableName, string $executedSql): string
     {
-        $databaseCredentialsDto = Env::getDatabaseCredentials();
-        $databaseName           = $databaseCredentialsDto->getDatabaseName();
-
-        $sql = "
-            SET @preparedStatement  = (SELECT IF(
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
+            SET @{$stmtVariableName}  = (SELECT IF(
               (
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
                 WHERE
                             table_name   = '{$tableName}'
-                        AND table_schema = '{$databaseName}'
+                        AND table_schema = DATABASE()
               ) > 0,
               'SELECT 1',
               '{$executedSql}'
             ));
-            PREPARE executedIfTableNotExist FROM @preparedStatement;
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfTableNotExist FROM @{$stmtVariableName};
             EXECUTE executedIfTableNotExist;
             DEALLOCATE PREPARE executedIfTableNotExist; 
         ";
@@ -200,21 +228,25 @@ class Migrations
      */
     public static function buildSqlExecutedIfTableExist(string $tableName, string $executedSql): string
     {
-        $databaseCredentialsDto = Env::getDatabaseCredentials();
-        $databaseName           = $databaseCredentialsDto->getDatabaseName();
-
-        $sql = "
-            SET @preparedStatement  = (SELECT IF(
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
+            SET @{$stmtVariableName}  = (SELECT IF(
               (
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
                 WHERE
                             table_name   = '{$tableName}'
-                        AND table_schema = '{$databaseName}'
+                        AND table_schema = DATABASE()
               ) >= 1,
               '{$executedSql}',
               'SELECT 1'
             ));
-            PREPARE executedIfTableExist FROM @preparedStatement;
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfTableExist FROM @{$stmtVariableName};
             EXECUTE executedIfTableExist;
             DEALLOCATE PREPARE executedIfTableExist; 
         ";
@@ -233,25 +265,84 @@ class Migrations
      */
     public static function buildSqlExecutedIfTableIsEmpty(string $tableName, string $executedSql): string
     {
-        $databaseCredentialsDto = Env::getDatabaseCredentials();
-        $databaseName           = $databaseCredentialsDto->getDatabaseName();
-
-        $sql = "
-            SET @preparedStatement  = (SELECT IF(
+        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $setStatementIntoVariableSql = "
+            SET @{$stmtVariableName}  = (SELECT IF(
               (
                 SELECT IF(TABLE_ROWS !='', TABLE_ROWS, 1) -- add 1 to prevent executing if table does not exist 
                 FROM INFORMATION_SCHEMA.TABLES 
                 WHERE TABLE_NAME = '{$tableName}'
-                AND TABLE_SCHEMA = '{$databaseName}'
+                AND TABLE_SCHEMA = DATABASE()
               ) > 0,
               'SELECT 1',
               '{$executedSql}'              
             ));
-            PREPARE executedIfTableIsEmpty FROM @preparedStatement;
+        ";
+
+        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
+
+        $sql = "
+            {$setStatementIntoVariableSql}
+            PREPARE executedIfTableIsEmpty FROM @{$stmtVariableName};
             EXECUTE executedIfTableIsEmpty;
             DEALLOCATE PREPARE executedIfTableIsEmpty; 
         ";
 
         return $sql;
     }
+
+    /**
+     * The logic for calling migrations was changed due to usage of stmts, now the sqls are being called directly in the migration
+     * `addSql` is no longer used, thus due to missing addition Doctrine shows "No sql was executed".
+     *
+     * This method will return sql with success information and will mute that error when called.
+     *
+     * @return string
+     */
+    public static function getSuccessInformationSql(): string
+    {
+        return "SELECT 'Migration executed with success' FROM DUAL";
+    }
+
+    /**
+     * This method tests the sql used within prepared statement, it uses transaction so nothing gets committed to the DB
+     * It's required due to the fact that Doctrine will always say "success" even if the sql in stmt fails,
+     *
+     * @param string $sql
+     * @param string $statementSql
+     * @throws \Doctrine\DBAL\Exception
+     */
+    private static function testCalledSql(string $sql, string $statementSql)
+    {
+        $kernel = new Kernel(Env::getEnvironment(), false);
+        $kernel->boot();
+
+        /**
+         * @var Application $app
+         * @var EntityManagerInterface $em
+         */
+        $app        = $kernel->getContainer()->get('App\Controller\Core\Application');
+        $em         = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $connection = $em->getConnection();
+
+        try{
+            $em->beginTransaction();
+            {
+                // this is required, doctrine does not allow to execute multiple sql in single call
+                $connection->executeQuery($statementSql);
+                $connection->executeQuery("PREPARE testStatement FROM @" . self::MYSQL_VAR_NAME_EXECUTED_STMT);
+                $connection->executeQuery("EXECUTE testStatement");
+                $connection->executeQuery("DEALLOCATE PREPARE testStatement");
+            }
+            $em->rollback();
+        }catch(Exception $e){
+            $em->rollback();
+            $app->logExceptionWasThrown($e);
+            $app->logger->warning("Related SQL: ", [
+                "sql" => $sql,
+            ]);
+            throw $e;
+        }
+    }
+
 }

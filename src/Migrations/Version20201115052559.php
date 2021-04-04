@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Controller\Core\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -22,7 +23,7 @@ final class Version20201115052559 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('
+        $this->connection->executeQuery('
             CREATE TABLE IF NOT EXISTS module_data (
                 id INT AUTO_INCREMENT NOT NULL, 
                 record_type VARCHAR(50) NOT NULL, 
@@ -45,8 +46,10 @@ final class Version20201115052559 extends AbstractMigration
         );
 
         // fix columns lengths
-        $this->addSql('ALTER TABLE my_issue_contact CHANGE information information LONGTEXT DEFAULT NULL');
-        $this->addSql('ALTER TABLE my_issue_progress CHANGE information information LONGTEXT DEFAULT NULL');
+        $this->connection->executeQuery('ALTER TABLE my_issue_contact CHANGE information information LONGTEXT DEFAULT NULL');
+        $this->connection->executeQuery('ALTER TABLE my_issue_progress CHANGE information information LONGTEXT DEFAULT NULL');
+
+        $this->addSql(Migrations::getSuccessInformationSql());
     }
 
     public function down(Schema $schema) : void

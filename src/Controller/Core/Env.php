@@ -160,4 +160,14 @@ class Env extends AbstractController {
         return $areInfoBlocksShown;
     }
 
+    /**
+     * Returns current environment under which the project is running
+     *
+     * @return string
+     */
+    public static function getEnvironment(): string
+    {
+        return $_ENV['APP_ENV'];
+    }
+
 }

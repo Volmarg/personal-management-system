@@ -19,24 +19,25 @@ final class Version20201018124944 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_INDEX,
             'file_path_index',
             'CREATE INDEX file_path_index ON files_tags (full_file_path)'
         ));
 
-        $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_INDEX,
             'locked_resource_index',
             'CREATE INDEX locked_resource_index ON locked_resource(type, record, target)'
         ));
 
-        $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_INDEX,
             'locked_resource_index',
             'CREATE INDEX my_note_category_index ON my_note_category(id)'
         ));
 
+        $this->addSql(Migrations::getSuccessInformationSql());
     }
 
     public function down(Schema $schema) : void

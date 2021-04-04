@@ -16,7 +16,10 @@ class Kernel extends BaseKernel
 
     public function __construct(string $environment, bool $debug) {
         parent::__construct($environment, $debug);
-        define("DOT", '.');
+
+        if( !defined('DOT') ){
+            define("DOT", '.');
+        }
     }
 
     public function getCacheDir()

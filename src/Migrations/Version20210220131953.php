@@ -31,7 +31,7 @@ final class Version20210220131953 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('
+        $this->connection->executeQuery('
             CREATE TABLE IF NOT EXISTS schedule (
                 id INT AUTO_INCREMENT NOT NULL, 
                 calendar_id INT NOT NULL, 
@@ -47,7 +47,7 @@ final class Version20210220131953 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
 
-        $this->addSql('
+        $this->connection->executeQuery('
             CREATE TABLE IF NOT EXISTS my_schedule_calendar (
                 id INT AUTO_INCREMENT NOT NULL, 
                 name VARCHAR(100) NOT NULL, 
@@ -61,14 +61,14 @@ final class Version20210220131953 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
 
-        $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_5A3811FBA40A2C8',
             'ALTER TABLE schedule ADD CONSTRAINT FK_5A3811FBA40A2C8 FOREIGN KEY (calendar_id) REFERENCES my_schedule_calendar (id)'
         ));
 
         // transform my_schedule_type into `my_schedule_calendar`
-        $this->addSql("
+        $this->connection->executeQuery("
             INSERT INTO my_schedule_calendar
             (
                 name,
@@ -95,7 +95,7 @@ final class Version20210220131953 extends AbstractMigration
         ");
 
         // transform old `my_schedule` into new `my_schedule` with calendar usage
-        $this->addSql(Migrations::buildSqlExecutedIfColumnExist('name', 'my_schedule', "
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfColumnExist('name', 'my_schedule', "
             INSERT INTO schedule
             (
                 calendar_id,
@@ -132,11 +132,13 @@ final class Version20210220131953 extends AbstractMigration
             )    
         "));
 
-        $this->addSql(Migrations::buildSqlExecutedIfColumnExist('schedule_type_id', 'my_schedule', 'DROP TABLE IF EXISTS my_schedule'));
-        $this->addSql(Migrations::buildSqlExecutedIfTableExist('schedule', 'RENAME TABLE schedule TO my_schedule'));
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfColumnExist('schedule_type_id', 'my_schedule', 'DROP TABLE IF EXISTS my_schedule'));
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfTableExist('schedule', 'RENAME TABLE schedule TO my_schedule'));
 
         // no longer used table
-        $this->addSql("DROP TABLE IF EXISTS my_schedule_type");
+        $this->connection->executeQuery("DROP TABLE IF EXISTS my_schedule_type");
+
+        $this->addSql(Migrations::getSuccessInformationSql());
     }
 
     public function down(Schema $schema) : void

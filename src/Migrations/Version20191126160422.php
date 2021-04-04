@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Controller\Core\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -21,8 +22,8 @@ final class Version20191126160422 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('ALTER TABLE my_payments_owed CHANGE amount amount DOUBLE PRECISION NOT NULL');
-        $this->addSql('
+        $this->connection->executeQuery('ALTER TABLE my_payments_owed CHANGE amount amount DOUBLE PRECISION NOT NULL');
+        $this->connection->executeQuery('
             UPDATE my_contact_type mct
             SET mct.image_path = CONCAT("/", mct.image_path)
             
@@ -30,12 +31,13 @@ final class Version20191126160422 extends AbstractMigration
             AND mct.image_path LIKE "upload/images/system/contactIcons/%"
         ');
 
-        $this->addSql('
+        $this->connection->executeQuery('
             UPDATE my_contact mc
             SET mc.contacts = REPLACE(mc.contacts, \'"icon_path":"upload\\/images\\/system\\/contactIcons\\/\', \'"icon_path":"\/upload\/images\/system\/contactIcons\/\')
         ');
 
-   }
+        $this->addSql(Migrations::getSuccessInformationSql());
+    }
 
     public function down(Schema $schema) : void
     {

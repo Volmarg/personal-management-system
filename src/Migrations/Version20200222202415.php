@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
+use App\Controller\Core\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -21,13 +22,15 @@ final class Version20200222202415 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('CREATE TABLE IF NOT EXISTS my_payment_income (id INT AUTO_INCREMENT NOT NULL, deleted TINYINT(1) NOT NULL, information VARCHAR(255) NOT NULL, date DATE DEFAULT NULL, amount DOUBLE PRECISION NOT NULL, currency VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_payment_income (id INT AUTO_INCREMENT NOT NULL, deleted TINYINT(1) NOT NULL, information VARCHAR(255) NOT NULL, date DATE DEFAULT NULL, amount DOUBLE PRECISION NOT NULL, currency VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+
+        $this->addSql(Migrations::getSuccessInformationSql());
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('DROP TABLE my_payment_income');
+        $this->connection->executeQuery('DROP TABLE my_payment_income');
     }
 }

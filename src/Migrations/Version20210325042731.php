@@ -23,7 +23,7 @@ final class Version20210325042731 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('
+        $this->connection->executeQuery('
             CREATE TABLE IF NOT EXISTS my_schedule_reminder (
                 id INT AUTO_INCREMENT NOT NULL, 
                 schedule_id INT NOT NULL, 
@@ -34,17 +34,19 @@ final class Version20210325042731 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
 
-        $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_676F8E0DA40BC2D5',
             'ALTER TABLE my_schedule_reminder ADD CONSTRAINT FK_676F8E0DA40BC2D5 FOREIGN KEY (schedule_id) REFERENCES my_schedule (id)'
         ));
 
-        $this->addSql(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
             Migrations::CONSTRAINT_TYPE_UNIQUE,
             'UNIQ_676F8E0DAA9E377A',
             'CREATE UNIQUE INDEX UNIQ_676F8E0DAA9E377A ON my_schedule_reminder (date)'
         ));
+
+        $this->addSql(Migrations::getSuccessInformationSql());
     }
 
     public function down(Schema $schema) : void
