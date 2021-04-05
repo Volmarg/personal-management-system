@@ -300,7 +300,12 @@ class DatabaseExporter {
             $command .= ' -p' . $password;
         }
 
-        $command .= " -h {$host} --port={$port} {$name} > {$dumpFullPath}";
+        $portPattern = "";
+        if( !empty($port) ){
+            $portPattern = "--port={$port}";
+        }
+
+        $command .= " -h {$host} {$portPattern} {$name} > {$dumpFullPath}";
 
         return $command;
     }
