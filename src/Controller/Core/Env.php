@@ -81,21 +81,21 @@ class Env extends AbstractController {
      * @throws Exception
      */
     public static function getDatabaseCredentials(){
-        $regex       = '/^mysql:\/\/(.*):(.*)@(.*):(.*)\/(.*)/';
+        $regex       = '#^mysql:\/\/(.*):(.*)@([^:]*)([:])?(.*)\/(.*)#';
         $databaseUrl = self::getDatabaseUrl();
 
         preg_match($regex, $databaseUrl, $matches);
 
         try{
 
-            $login        = $matches[1];
-            $password     = $matches[2];
-            $host         = $matches[3];
-            $port         = $matches[4];
-            $databaseName = $matches[5];
+            $login        = $matches[1] ?? "";
+            $password     = $matches[2] ?? "";
+            $host         = $matches[3] ?? "";
+            $port         = $matches[5] ?? "";
+            $databaseName = $matches[6] ?? "";
 
         }catch(\Exception $e){
-            throw new Exception("There was ane error while parsing database connection from .env.");
+            throw new Exception("There was ane error while parsing database connection from .env. {$e->getMessage()}");
         }
 
         $dto = new DatabaseCredentialsDTO();
