@@ -4,6 +4,7 @@ namespace App\Command\Assets;
 
 
 use App\Controller\Core\Application;
+use App\Services\Files\Parser\YamlFileParserService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +17,8 @@ use Symfony\Component\Yaml\Parser as YamlParser;
 use Symfony\Component\Yaml\Yaml;
 
 /**
+ * Info: this could be cleaned up someday by replacing some logic with @see YamlFileParserService
+ *
  * Strings present in this command shall not be moved to translation files ad this command DOES generates such
  * and thus it's required to see what's going on in case of crash
  * Class BuildTranslationMessagesYamlFromAssetsCommand

@@ -24,7 +24,7 @@ class CliHandler{
 
     static $successMark = "✓";
 
-    public function initialize(){
+    public static function initialize(){
         self::defineShellColors();
     }
     

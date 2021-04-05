@@ -7,10 +7,20 @@ namespace App;
  * The same goes for the testCheck - this will require later to reimplementing check Env::isTest();
  */
 if( php_sapi_name() === 'cli' ){
+
+    if( !file_exists("vendor/autoload.php") ){
+        throw new Exception("Composer autoload file was not found, did You called `composer install` earlier?");
+    }
+
     include_once 'src/Controller/Utils/CliHandler.php';
+    include_once 'vendor/autoload.php';
+    include_once 'src/Services/Files/Parser/YamlFileParserService.php';
 }
 
 use App\Controller\Utils\CliHandler;
+use App\Services\Files\Parser\YamlFileParserService;
+use Exception;
+
 /**
  * Namespace is omitted here as this is only used by composer
  * The coloring methods are here on purpose, can be extracted if needed, this in other cases Symfony has built in coloring
@@ -59,6 +69,9 @@ class AutoInstaller{
     const ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME = 'APP_SYSTEM_LOCK_SESSION_LIFETIME';
     const ENV_KEY_APP_IPS_ACCESS_RESTRICTION       = 'APP_IPS_ACCESS_RESTRICTION';
 
+    const CONFIG_ENCRYPTION_YAML_PATH       = "config/packages/config/encryption.yaml";
+    const CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY = "parameters.encrypt_key";
+
     static $isNodeInstalled = false;
 
     static $isNpmInstalled = false;
@@ -78,8 +91,6 @@ class AutoInstaller{
     static $mysqlDatabase = '';
 
     static $userSelectedMode = '';
-
-    static $encryptionKey = '';
 
     public static function runDocker(){
 
@@ -336,13 +347,13 @@ class AutoInstaller{
     /**
      * This function will create database
      */
-    private function setDatabase(){
+    private static function setDatabase(){
         CliHandler::infoText("Started configuring the database.");
         {
-            $dropDatabaseCommand   = "bin/console doctrine:database:drop -n --force";
-            $createDatabaseCommand = "bin/console doctrine:database:create -n";
-            $buildTables           = "bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
-            $runMigrations         = "bin/console doctrine:migrations:migrate -n";
+            $dropDatabaseCommand   = "php7.4 bin/console doctrine:database:drop -n --force";
+            $createDatabaseCommand = "php7.4 bin/console doctrine:database:create -n";
+            $buildTables           = "php7.4 bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
+            $runMigrations         = "php7.4 bin/console doctrine:migrations:migrate -n";
 
             shell_exec($dropDatabaseCommand);
             CliHandler::text("Database has been dropped (if You provided the existing one)");
@@ -367,7 +378,7 @@ class AutoInstaller{
     /**
      * This function will install the node packages if this is development mode
      */
-    private function installPackages(){
+    private static function installPackages(){
         if(self::MODE_DEVELOPMENT === self::$userSelectedMode){
             CliHandler::infoText("Started installing node modules.");
             CliHandler::errorText("Yes - You might see some errors here and there, there is nothing I can do about it - it's just the packages dependencies/problems.");
@@ -398,7 +409,7 @@ class AutoInstaller{
     /**
      *  This function will crate all the required folders
      */
-    private function createFolders(){
+    private static function createFolders(){
         CliHandler::infoText("Started creating folders.");
         {
             $uploadDir       = self::PUBLIC_DIR . DIRECTORY_SEPARATOR . self::UPLOAD_DIR;
@@ -425,11 +436,11 @@ class AutoInstaller{
     /**
      * This function will build symfony cache
      */
-    private function buildCache(){
+    private static function buildCache(){
         CliHandler::infoText("Started building cache.");
         {
-            $clearCacheCommand  = "bin/console cache:clear";
-            $warmupCacheCommand = "bin/console cache:warmup";
+            $clearCacheCommand  = "php7.4 bin/console cache:clear";
+            $warmupCacheCommand = "php7.4 bin/console cache:warmup";
 
             shell_exec($clearCacheCommand);
             CliHandler::text("Cache has been cleared.");
@@ -461,7 +472,7 @@ class AutoInstaller{
             CliHandler::text("Group for `var` folder has been set.");
 
             shell_exec($chmodCommandVarFolder);
-            CliHandler::text("Read, write, execute permissions for `var` folder have been set.", false);
+            CliHandler::text("Read, write, execute permissions for `var` folder have been set.");
 
             shell_exec($chownCommandVendorFolder);
             CliHandler::text("Owner for `vendor` folder has been set.");
@@ -482,15 +493,18 @@ class AutoInstaller{
 
     /**
      * This function will generate the key used for encrypting passwords
+     * @throws Exception
      */
     private static function generateEncryptionKey(){
         CliHandler::infoText("Started generating encryption key.");
         {
-            $encryptionKeyGenerationCommand = 'bin/console --env=dev encrypt:genkey';
+            $encryptionKeyGenerationCommand = 'php7.4 bin/console --env=dev encrypt:genkey';
             $encryptionKey = trim( shell_exec($encryptionKeyGenerationCommand) );
+
+            YamlFileParserService::replaceArrayNodeValue(self::CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY, $encryptionKey, self::CONFIG_ENCRYPTION_YAML_PATH);
             CliHandler::text($encryptionKey, false);
         }
-        CliHandler::infoText("Finished generating encryption key.");
+        CliHandler::infoText("Finished generating and setting the encryption key. Copy the key in safe place!");
     }
 
     /**
@@ -501,13 +515,6 @@ class AutoInstaller{
         CliHandler::infoText("
         #########################################################################################################################
         #                             Now this are the things that You need to do manually.                                     # 
-        #                                                                                                                       #
-        #    Password encryption:                                                                                               # 
-        #    Open file: ./config/services.yaml                                                                                  # 
-        #    Modify parameters section, it should look like this now:                                                           #
-        #       locale: 'en'                                                                                                    #
-        #       encrypt_key: 'Your key goes here' (without the [OK] part                                                        #
-        #    Modify parameters section, it should look like this now:                                                           #
         #                                                                                                                       #
         #    User register:                                                                                                     #
         #    Simply open the project in browser and if no user is registered, then You will see register button                 #
@@ -528,12 +535,12 @@ class AutoInstaller{
     /**
      * Check mysql mode
      */
-    private function checkMysqlMode(){
+    private static function checkMysqlMode(){
         CliHandler::infoText("Started checking Mysql mode.");
         {
             $modeToDisable = "ONLY_FULL_GROUP_BY";
 
-            $conn   = new \mysqli(self::$mysqlHost, self::$mysqlLogin);
+            $conn   = new \mysqli(self::$mysqlHost, self::$mysqlLogin, self::$mysqlPassword);
             $sql    = "SELECT @@sql_mode";
 
             $result = $conn->query($sql);
