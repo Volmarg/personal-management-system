@@ -133,7 +133,7 @@ final class Version20210220131953 extends AbstractMigration
         "));
 
         $this->connection->executeQuery(Migrations::buildSqlExecutedIfColumnExist('schedule_type_id', 'my_schedule', 'DROP TABLE IF EXISTS my_schedule'));
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfTableExist('schedule', 'RENAME TABLE schedule TO my_schedule'));
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfTableNotExist('my_schedule', 'RENAME TABLE schedule TO my_schedule'));
 
         // no longer used table
         $this->connection->executeQuery("DROP TABLE IF EXISTS my_schedule_type");

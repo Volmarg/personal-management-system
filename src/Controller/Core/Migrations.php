@@ -43,7 +43,15 @@ class Migrations
                     WHERE                                                                                                                                                                                           
                     CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
                     CONSTRAINT_NAME   = '{$constraintName}' AND                                                                                                                                               
-                    CONSTRAINT_TYPE   = '{$constraintType}'                                                                                                                                                       
+                    CONSTRAINT_TYPE   = '{$constraintType}'                
+
+                    UNION 
+                    
+                    SELECT NULL                                          
+                    FROM information_schema.TABLE_CONSTRAINTS_EXTENSIONS                                                                                                                                                       
+                    WHERE                                                                                                                                                                                           
+                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
+                    CONSTRAINT_NAME   = '{$constraintName}'                           
                 )
                 ,'select ''index index_1 exists'' _______;'
                 ,'{$executedSql}'
@@ -83,7 +91,15 @@ class Migrations
                     WHERE                                                                                                                                                                                           
                     CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
                     CONSTRAINT_NAME   = '{$constraintName}' AND                                                                                                                                               
-                    CONSTRAINT_TYPE   = '{$constraintType}'                                                                                                                                                       
+                    CONSTRAINT_TYPE   = '{$constraintType}'            
+                    
+                    UNION 
+                    
+                    SELECT NULL                                          
+                    FROM information_schema.TABLE_CONSTRAINTS_EXTENSIONS                                                                                                                                                       
+                    WHERE                                                                                                                                                                                           
+                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
+                    CONSTRAINT_NAME   = '{$constraintName}'                        
                 )
                 ,'{$executedSql}'
                 ,'select ''index index_1 exists'' _______;'
