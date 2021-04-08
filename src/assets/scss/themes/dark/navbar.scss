@@ -1,0 +1,24 @@
+.sidebar {
+  background-color: #121923;
+
+  .sidebar-link {
+    color: rgba(255,255,255,0.6);
+  }
+
+  .menu-node-todo-icon {
+    color: #CC3EE2 !important;
+  }
+
+  li.nav-item.open .sidebar-link, li.nav-item .sidebar-link.active {
+    color: white;
+  }
+
+  .menu-node-my-schedules-icon {
+    color: rgba(20,120,220,0.75) !important;
+  }
+
+  hr {
+    border-color: rgba(255,255,255,0.15);
+  }
+
+}
