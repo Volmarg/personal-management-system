@@ -49,6 +49,7 @@ import FineUploaderService          from "./libs/fine-uploader/FineUploaderServi
 import AjaxEvents                   from "./core/ajax/AjaxEvents";
 import TuiCalendarService           from "./libs/tui-calendar/TuiCalendarService";
 import SmartTab                     from "./libs/smarttab/SmartTab";
+import JsSettingsTooltip            from "./core/ui/JsSettingsTooltip";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -171,8 +172,12 @@ export default class Initializer {
 
         let windowEvents   = new WindowEvents();
         let documentEvents = new DocumentEvents();
+        let jsSettings     = new JsSettingsTooltip();
+
+        jsSettings.setThemeFromCookie();
 
         // new
+        jsSettings.init();
         SearchBar.init();
         BootstrapDatepicker.init();
         Scrollbar.init();

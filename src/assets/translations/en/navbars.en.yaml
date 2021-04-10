@@ -89,3 +89,8 @@ topbar:
       setLockPassword: Set lock password
     logout: Logout
     about: About
+
+jsSettings:
+  header: Settings
+  options:
+    colorScheme: Color scheme

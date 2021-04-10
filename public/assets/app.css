@@ -95728,6 +95728,179 @@ button.color-picker {
   color: white;
 }
 
+.settings {
+  display: none;
+  direction: ltr;
+}
+
+@media (min-width: 1200px) {
+  .settings {
+    display: block;
+  }
+}
+.settings-icons {
+  background: #fff;
+  color: #000;
+  position: fixed;
+  top: 50%;
+  right: 0;
+  width: 50px;
+  padding: 0.5rem;
+  border-top-left-radius: 0.2rem;
+  border-bottom-left-radius: 0.2rem;
+  box-shadow: -5px 0 10px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+}
+
+.settings-icons .settings-icon {
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 0.2rem;
+  background: #f2f4f6;
+  color: #000;
+  display: block;
+}
+
+.settings-icons .settings-icon:hover {
+  background: #e9ecef;
+  color: #000;
+}
+
+.settings-icons .settings-icon:first-child {
+  color: #2264c3;
+}
+
+.settings-icons .settings-icon svg {
+  stroke-width: 2;
+}
+
+.settings-panel {
+  background: #fff;
+  border-left: 0 solid transparent;
+  display: block;
+  max-height: 160px;
+  position: fixed;
+  width: 175px;
+  z-index: 800;
+  top: 40%;
+  bottom: 0;
+  right: -175px;
+  border-radius: 5px;
+  transition: 0.5s ease-in-out;
+}
+
+.settings-panel-shown {
+  right: -5px;
+  transition: 0.5s ease-in-out;
+}
+
+.settings.open .settings-panel:before {
+  content: "";
+  background: rgba(0, 0, 0, 0.325);
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.settings.open .settings-panel {
+  right: 0;
+}
+
+.settings-content {
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  background: #fff;
+}
+
+.settings-title {
+  padding: 0.6rem 1.5rem;
+  font-size: 0.875rem;
+  background: #121923;
+  height: 55px;
+}
+
+.settings-options {
+  padding: 1rem 1.5rem;
+}
+
+.js-settings-close {
+  color: white;
+  font-size: 21px;
+}
+.js-settings-close:hover {
+  opacity: 0.5;
+}
+
+.theme-color, .theme-color-light, .theme-color-dark {
+  width: 30px !important;
+  height: 30px !important;
+  border: 1px solid rgba(0, 0, 0, 0.4) !important;
+}
+
+.theme-color-dark {
+  background: black !important;
+}
+
+.theme-color-light {
+  background: white !important;
+}
+.theme-color-light:after {
+  border-color: black !important;
+}
+
+input[type=radio].square-checkbox {
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background: lightgray;
+  height: 16px;
+  width: 16px;
+  border: 1px solid white;
+}
+
+input[type=radio].square-checkbox:checked {
+  background: #aaaaaa;
+}
+
+input[type=checkbox].square-checkbox:hover {
+  filter: brightness(90%);
+}
+
+input[type=checkbox].square-checkbox:disabled {
+  background: #e6e6e6;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+input[type=radio].square-checkbox:after {
+  content: "";
+  position: relative;
+  left: 40%;
+  top: 20%;
+  width: 15%;
+  height: 40%;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  display: none;
+}
+
+input[type=radio].square-checkbox:checked:after {
+  display: block;
+}
+
+input[type=radio].square-checkbox:disabled:after {
+  border-color: #7b7b7b;
+}
+
 .form-type-date-time-picker {
   background-color: white !important;
 }
@@ -97146,6 +97319,10 @@ form legend {
   height: 28px;
 }
 
+.header.navbar {
+  box-shadow: 0 0 2rem 0 rgba(33, 37, 41, 0.1);
+}
+
 /* latin-ext */
 @font-face {
   font-family: "Courgette";
@@ -97210,6 +97387,31 @@ form legend {
 /* Overwrite node packages styling */
 .st-theme-github > .nav .nav-link.active {
   border-top-color: #5dacbd !important;
+}
+
+[data-theme=dark] .sidebar {
+  background-color: #121923;
+}
+[data-theme=dark] .sidebar .sidebar-link {
+  color: rgba(255, 255, 255, 0.6);
+}
+[data-theme=dark] .sidebar .menu-node-todo-icon {
+  color: #CC3EE2 !important;
+}
+[data-theme=dark] .sidebar li.nav-item.open .sidebar-link, [data-theme=dark] .sidebar li.nav-item .sidebar-link.active {
+  color: white;
+}
+[data-theme=dark] .sidebar .menu-node-my-schedules-icon {
+  color: rgba(20, 120, 220, 0.75) !important;
+}
+[data-theme=dark] .sidebar hr {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme=dark] .sidebar .sidebar-logo {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+[data-theme=dark] .bgc-grey-100, [data-theme=dark] .bgcH-grey-100:hover {
+  background-color: #f7f7fc !important;
 }
 /*!
  * Bootstrap-select v1.13.18 (https://developer.snapappointments.com/bootstrap-select)

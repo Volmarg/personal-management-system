@@ -82,3 +82,6 @@ guide:
         This popup is shown only upon first login.
 
         Have a nice day,
+  jsSettings:
+    panel:
+      description: GUI based settings - supports changing theme
