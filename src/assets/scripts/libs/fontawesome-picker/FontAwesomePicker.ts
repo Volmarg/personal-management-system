@@ -1,3 +1,4 @@
+import Dialog                           from "../../core/ui/Dialogs/Dialog";
 import BootboxWrapper                   from "../bootbox/BootboxWrapper";
 import FontAwesomePickerConfigInterface from "./FontAwesomePickerConfigInterface";
 import './src/iconpicker-1.5.0.css';
@@ -493,6 +494,7 @@ export default class FontAwesomePicker {
 
             // first icons listeners
             eachIconEventListener('first');
+            Dialog.preventModalStealingFocusForTargetSelector('.ip-icons-search input');
 
         }
         // IconPicker: Append Library to Body off

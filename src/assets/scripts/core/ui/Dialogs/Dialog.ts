@@ -1,3 +1,5 @@
+import DomElements from "../../utils/DomElements";
+
 /**
  * @description This class covers common logic for all dialogs
  */
@@ -72,6 +74,24 @@ export default class Dialog {
                 $modalBackdrop.remove();
             }
         })
+    }
+
+    /**
+     * @description Bootstrap modal is stealing focus from the search input once the picker is called from withing modal
+     *              so this method will prevent such case to happen
+     */
+    public static preventModalStealingFocusForTargetSelector(selector: string): void
+    {
+        $(document).on('focusin', function(event) {
+            let $iconPickerSearchInput = $(selector);
+            if (
+                    DomElements.doElementsExists($iconPickerSearchInput)
+                &&  $(event.target).hasClass('modal')
+            ) {
+                event.stopImmediatePropagation();
+                $iconPickerSearchInput.focus();
+            }
+        });
     }
 
 }
