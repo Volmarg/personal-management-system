@@ -34,16 +34,18 @@ final class Version20210325042731 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_676F8E0DA40BC2D5',
-            'ALTER TABLE my_schedule_reminder ADD CONSTRAINT FK_676F8E0DA40BC2D5 FOREIGN KEY (schedule_id) REFERENCES my_schedule (id)'
+            'ALTER TABLE my_schedule_reminder ADD CONSTRAINT FK_676F8E0DA40BC2D5 FOREIGN KEY (schedule_id) REFERENCES my_schedule (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_UNIQUE,
             'UNIQ_676F8E0DAA9E377A',
-            'CREATE UNIQUE INDEX UNIQ_676F8E0DAA9E377A ON my_schedule_reminder (date)'
+            'CREATE UNIQUE INDEX UNIQ_676F8E0DAA9E377A ON my_schedule_reminder (date)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->addSql(Migrations::getSuccessInformationSql());

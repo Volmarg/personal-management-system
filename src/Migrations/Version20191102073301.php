@@ -25,10 +25,11 @@ final class Version20191102073301 extends AbstractMigration
 
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_recurring_payment_monthly (id INT AUTO_INCREMENT NOT NULL, type_id INT NOT NULL, date DATE DEFAULT NULL, money DOUBLE PRECISION NOT NULL, description VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, hash VARCHAR(255) NOT NULL, INDEX IDX_4FC64C63C54C8C93 (type_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_4FC64C63C54C8C93',
-            'ALTER TABLE my_recurring_payment_monthly ADD CONSTRAINT FK_4FC64C63C54C8C93 FOREIGN KEY (type_id) REFERENCES my_payments_settings (id)'
+            'ALTER TABLE my_recurring_payment_monthly ADD CONSTRAINT FK_4FC64C63C54C8C93 FOREIGN KEY (type_id) REFERENCES my_payments_settings (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->addSql(Migrations::getSuccessInformationSql());

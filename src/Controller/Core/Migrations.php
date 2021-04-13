@@ -9,12 +9,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 /**
- *
  * Class Migrations
  * @package App\Controller\Core
  */
 class Migrations
 {
+    const CHECK_TYPE_IF_EXIST     = "IF_EXIST";
+    const CHECK_TYPE_IF_NOT_EXIST = "IF_NOT_EXIST";
 
     const CONSTRAINT_TYPE_FOREIGN_KEY = "FOREIGN KEY";
     const CONSTRAINT_TYPE_INDEX       = "INDEX";
@@ -23,8 +24,9 @@ class Migrations
     const MYSQL_VAR_NAME_EXECUTED_STMT = "executedStatement";
 
     /**
-     * Will output an sql only if constraint does not exist in given table
-     * - prevents crashing on cases where constraint is about to be added but it already exists
+     * Will output an sql only if constraint exist or not:
+     * - prevents crashing on cases where constraint is about to be added but it already exists,
+     * - prevents crashing on cases where constraint is about to be removed but it does not exists,
      *
      * @param string $constraintType
      * @param string $constraintName
@@ -32,9 +34,9 @@ class Migrations
      * @return string
      * @throws \Doctrine\DBAL\Exception
      */
-    public static function buildSqlExecutedIfConstraintDoesNotExist(string $constraintType, string $constraintName, string $executedSql): string
+    public static function buildSqlExecutedIfConstraint(string $constraintType, string $constraintName, string $executedSql, string $checkType): string
     {
-        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+        $stmtVariableName = self::MYSQL_VAR_NAME_EXECUTED_STMT;
 
         $selectConstraintFromInformationSchemaSql = "
             SELECT NULL                                                                                                                                                                                     
@@ -53,6 +55,14 @@ class Migrations
             CONSTRAINT_NAME   = \"{$constraintName}\"
         ";
 
+        if(self::CHECK_TYPE_IF_EXIST === $checkType){
+            $trueSql  = "'select ''index index_1 exists'' _______;'";
+            $falseSql = "'{$executedSql}'";
+        }else{
+            $trueSql  = "'{$executedSql}'";
+            $falseSql = "'select ''index index_1 exists'' _______;'";
+        }
+
         $setStatementIntoVariableSql = "
             SELECT IF (
                 EXISTS(
@@ -70,8 +80,8 @@ class Migrations
                         '{$selectConstraintFromInformationSchemaSql}'
                     )
                 )
-                ,'select ''index index_1 exists'' _______;'
-                ,'{$executedSql}'
+                ,{$trueSql}
+                ,{$falseSql}
             ) INTO @{$stmtVariableName};
         ";
 
@@ -79,57 +89,9 @@ class Migrations
 
         $sql = "
             {$setStatementIntoVariableSql}
-            PREPARE executedIfConstraintNotExist FROM @{$stmtVariableName};
-            EXECUTE executedIfConstraintNotExist;
-            DEALLOCATE PREPARE executedIfConstraintNotExist;
-        ";
-
-        return $sql;
-    }
-
-    /**
-     * Will output an sql only if constraint does exist in given table
-     * - prevent crashing when for example trying to remove not existing constraint
-     *
-     * @param string $constraintType
-     * @param string $constraintName
-     * @param string $executedSql
-     * @return string
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public static function buildSqlExecutedIfConstraintDoesExist(string $constraintType, string $constraintName, string $executedSql): string
-    {
-        $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
-        $setStatementIntoVariableSql = "
-            SELECT IF (
-                EXISTS(
-                    SELECT NULL                                                                                                                                                                                     
-                    FROM information_schema.TABLE_CONSTRAINTS                                                                                                                                                       
-                    WHERE                                                                                                                                                                                           
-                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
-                    CONSTRAINT_NAME   = '{$constraintName}' AND                                                                                                                                               
-                    CONSTRAINT_TYPE   = '{$constraintType}'            
-                    
-                    UNION 
-                    
-                    SELECT NULL                                          
-                    FROM information_schema.TABLE_CONSTRAINTS_EXTENSIONS                                                                                                                                                       
-                    WHERE                                                                                                                                                                                           
-                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
-                    CONSTRAINT_NAME   = '{$constraintName}'                        
-                )
-                ,'{$executedSql}'
-                ,'select ''index index_1 exists'' _______;'
-            ) INTO @{$stmtVariableName};
-        ";
-
-        self::testCalledSql($executedSql, $setStatementIntoVariableSql);
-
-        $sql = "
-            {$setStatementIntoVariableSql}
-            PREPARE executedIfConstraintExist FROM @{$stmtVariableName};
-            EXECUTE executedIfConstraintExist;
-            DEALLOCATE PREPARE executedIfConstraintExist;
+            PREPARE executedIfConstraint FROM @{$stmtVariableName};
+            EXECUTE executedIfConstraint;
+            DEALLOCATE PREPARE executedIfConstraint;
         ";
 
         return $sql;

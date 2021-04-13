@@ -27,16 +27,18 @@ final class Version20200425125908 extends AbstractMigration
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_issue (id INT AUTO_INCREMENT NOT NULL, deleted TINYINT(1) NOT NULL, show_on_dashboard TINYINT(1) NOT NULL, resolved TINYINT(1) NOT NULL, name VARCHAR(255) NOT NULL, information VARCHAR(250) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_issue_progress (id INT AUTO_INCREMENT NOT NULL, my_issue_id INT DEFAULT NULL, information TEXT DEFAULT NULL, date DATETIME NOT NULL, deleted TINYINT(1) NOT NULL, INDEX IDX_54AA3EE36C2830C3 (my_issue_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_3BEFD3786C2830C3',
-            'ALTER TABLE my_issue_contact ADD CONSTRAINT FK_3BEFD3786C2830C3 FOREIGN KEY (my_issue_id) REFERENCES my_issue (id)'
+            'ALTER TABLE my_issue_contact ADD CONSTRAINT FK_3BEFD3786C2830C3 FOREIGN KEY (my_issue_id) REFERENCES my_issue (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_54AA3EE36C2830C3',
-            'ALTER TABLE my_issue_progress ADD CONSTRAINT FK_54AA3EE36C2830C3 FOREIGN KEY (my_issue_id) REFERENCES my_issue (id)'
+            'ALTER TABLE my_issue_progress ADD CONSTRAINT FK_54AA3EE36C2830C3 FOREIGN KEY (my_issue_id) REFERENCES my_issue (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->addSql(Migrations::getSuccessInformationSql());

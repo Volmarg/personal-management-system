@@ -43,40 +43,46 @@ final class Version20190717144649 extends AbstractMigration
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_payments_product (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, price VARCHAR(255) NOT NULL, market VARCHAR(255) DEFAULT NULL, products VARCHAR(255) DEFAULT NULL, information VARCHAR(255) DEFAULT NULL, rejected TINYINT(1) DEFAULT NULL, deleted TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS app_user (id INT AUTO_INCREMENT NOT NULL, username VARCHAR(180) NOT NULL, username_canonical VARCHAR(180) NOT NULL, email VARCHAR(180) NOT NULL, email_canonical VARCHAR(180) NOT NULL, enabled TINYINT(1) NOT NULL, salt VARCHAR(255) DEFAULT NULL, password VARCHAR(255) NOT NULL, last_login DATETIME DEFAULT NULL, confirmation_token VARCHAR(180) DEFAULT NULL, password_requested_at DATETIME DEFAULT NULL, roles LONGTEXT NOT NULL COMMENT \'(DC2Type:array)\', avatar VARCHAR(255) DEFAULT NULL, nickname VARCHAR(255) DEFAULT NULL, UNIQUE INDEX UNIQ_88BDF3E992FC23A8 (username_canonical), UNIQUE INDEX UNIQ_88BDF3E9A0D96FBF (email_canonical), UNIQUE INDEX UNIQ_88BDF3E9C05FB297 (confirmation_token), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_112803CFE54D947',
-            'ALTER TABLE my_contacts ADD CONSTRAINT FK_112803CFE54D947 FOREIGN KEY (group_id) REFERENCES my_contacts_groups (id)'
+            'ALTER TABLE my_contacts ADD CONSTRAINT FK_112803CFE54D947 FOREIGN KEY (group_id) REFERENCES my_contacts_groups (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_31320F73EC84B6D2',
-            'ALTER TABLE my_goals_subgoals ADD CONSTRAINT FK_31320F73EC84B6D2 FOREIGN KEY (my_goal_id) REFERENCES my_goals (id)'
+            'ALTER TABLE my_goals_subgoals ADD CONSTRAINT FK_31320F73EC84B6D2 FOREIGN KEY (my_goal_id) REFERENCES my_goals (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_6DDD144812469DE2',
-            'ALTER TABLE my_notes ADD CONSTRAINT FK_6DDD144812469DE2 FOREIGN KEY (category_id) REFERENCES my_notes_categories (id)'
+            'ALTER TABLE my_notes ADD CONSTRAINT FK_6DDD144812469DE2 FOREIGN KEY (category_id) REFERENCES my_notes_categories (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_EA781FE24826A022',
-            'ALTER TABLE my_car ADD CONSTRAINT FK_EA781FE24826A022 FOREIGN KEY (schedule_type_id) REFERENCES my_car_schedules_types (id)'
+            'ALTER TABLE my_car ADD CONSTRAINT FK_EA781FE24826A022 FOREIGN KEY (schedule_type_id) REFERENCES my_car_schedules_types (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_BD32582FE54D947',
-            'ALTER TABLE my_passwords ADD CONSTRAINT FK_BD32582FE54D947 FOREIGN KEY (group_id) REFERENCES my_passwords_groups (id)'
+            'ALTER TABLE my_passwords ADD CONSTRAINT FK_BD32582FE54D947 FOREIGN KEY (group_id) REFERENCES my_passwords_groups (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_6D04DFFAC54C8C93',
-            'ALTER TABLE my_payments_monthly ADD CONSTRAINT FK_6D04DFFAC54C8C93 FOREIGN KEY (type_id) REFERENCES my_payments_settings (id)'
+            'ALTER TABLE my_payments_monthly ADD CONSTRAINT FK_6D04DFFAC54C8C93 FOREIGN KEY (type_id) REFERENCES my_payments_settings (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->addSql(Migrations::getSuccessInformationSql());

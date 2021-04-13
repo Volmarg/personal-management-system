@@ -61,10 +61,11 @@ final class Version20210220131953 extends AbstractMigration
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         ');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_5A3811FBA40A2C8',
-            'ALTER TABLE schedule ADD CONSTRAINT FK_5A3811FBA40A2C8 FOREIGN KEY (calendar_id) REFERENCES my_schedule_calendar (id)'
+            'ALTER TABLE schedule ADD CONSTRAINT FK_5A3811FBA40A2C8 FOREIGN KEY (calendar_id) REFERENCES my_schedule_calendar (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         // transform my_schedule_type into `my_schedule_calendar`

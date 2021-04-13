@@ -28,17 +28,19 @@ final class Version20210402064914 extends AbstractMigration
         "));
 
         // remove previous unique on date
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_UNIQUE,
             'UNIQ_676F8E0DAA9E377A',
-            'ALTER TABLE my_schedule_reminder DROP CONSTRAINT UNIQ_676F8E0DAA9E377A'
+            'ALTER TABLE my_schedule_reminder DROP CONSTRAINT UNIQ_676F8E0DAA9E377A',
+            Migrations::CHECK_TYPE_IF_EXIST
         ));
 
         // add new unique on date + schedule
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_UNIQUE,
             'unique_reminder',
-            'CREATE UNIQUE INDEX unique_reminder ON my_schedule_reminder (schedule_id, date)'
+            'CREATE UNIQUE INDEX unique_reminder ON my_schedule_reminder (schedule_id, date)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->addSql(Migrations::getSuccessInformationSql());

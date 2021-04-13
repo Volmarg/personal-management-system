@@ -30,24 +30,27 @@ final class Version20191110042650 extends AbstractMigration
 
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_contact_group (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(255) NOT NULL, color VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_929F246B5E237E06 (name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_UNIQUE,
             'UNIQ_DCD489F05E237E06',
-            'CREATE UNIQUE INDEX UNIQ_DCD489F05E237E06 ON my_contact_type (name)'
+            'CREATE UNIQUE INDEX UNIQ_DCD489F05E237E06 ON my_contact_type (name)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->connection->executeQuery(Migrations::buildSqlExecutedIfColumnDoesNotExist('group_id', 'my_contact', 'ALTER TABLE my_contact ADD group_id INT DEFAULT NULL'));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_C69B4A14647145D0',
-            'ALTER TABLE my_contact ADD CONSTRAINT FK_C69B4A14647145D0 FOREIGN KEY (group_id) REFERENCES my_contact_group (id)'
+            'ALTER TABLE my_contact ADD CONSTRAINT FK_C69B4A14647145D0 FOREIGN KEY (group_id) REFERENCES my_contact_group (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_INDEX,
             'IDX_C69B4A14647145D0',
-            'CREATE INDEX IDX_C69B4A14647145D0 ON my_contact (group_id)'
+            'CREATE INDEX IDX_C69B4A14647145D0 ON my_contact (group_id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));;
 
         $this->connection->executeQuery("

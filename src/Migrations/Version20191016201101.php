@@ -26,10 +26,11 @@ final class Version20191016201101 extends AbstractMigration
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_payments_bills_items (id INT AUTO_INCREMENT NOT NULL, bill_id INT NOT NULL, amount INT NOT NULL, name VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, date DATETIME NOT NULL, INDEX IDX_32A224731A8C12F5 (bill_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_payments_bills (id INT AUTO_INCREMENT NOT NULL, start_date DATETIME NOT NULL, end_date DATETIME NOT NULL, name VARCHAR(255) NOT NULL, information VARCHAR(255) DEFAULT NULL, deleted TINYINT(1) NOT NULL, planned_amount INT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraintDoesNotExist(
+        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
             Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
             'FK_32A224731A8C12F5',
-            'ALTER TABLE my_payments_bills_items ADD CONSTRAINT FK_32A224731A8C12F5 FOREIGN KEY (bill_id) REFERENCES my_payments_bills (id)'
+            'ALTER TABLE my_payments_bills_items ADD CONSTRAINT FK_32A224731A8C12F5 FOREIGN KEY (bill_id) REFERENCES my_payments_bills (id)',
+            Migrations::CHECK_TYPE_IF_NOT_EXIST
         ));
 
         $this->addSql(Migrations::getSuccessInformationSql());
