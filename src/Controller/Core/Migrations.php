@@ -36,6 +36,15 @@ class Migrations
      */
     public static function buildSqlExecutedIfConstraint(string $constraintType, string $constraintName, string $executedSql, string $checkType): string
     {
+        $kernel = new Kernel(Env::getEnvironment(), false);
+        $kernel->boot();
+
+        /**
+         * @var EntityManagerInterface $em
+         */
+        $em         = $kernel->getContainer()->get('doctrine.orm.entity_manager');
+        $connection = $em->getConnection();
+
         $stmtVariableName = self::MYSQL_VAR_NAME_EXECUTED_STMT;
 
         $selectConstraintFromInformationSchemaSql = "
@@ -55,30 +64,37 @@ class Migrations
             CONSTRAINT_NAME   = \"{$constraintName}\"
         ";
 
+        $blankSql = "'select ''index index_1 exists'' _______;'";
         if(self::CHECK_TYPE_IF_EXIST === $checkType){
-            $trueSql  = "'select ''index index_1 exists'' _______;'";
-            $falseSql = "'{$executedSql}'";
-        }else{
             $trueSql  = "'{$executedSql}'";
-            $falseSql = "'select ''index index_1 exists'' _______;'";
+            $falseSql = $blankSql;
+        }else{
+            $trueSql  = $blankSql;
+            $falseSql = "'{$executedSql}'";
+        }
+
+        $informationSchemaExtensionsExistSql = "
+            SELECT 1 FROM INFORMATION_SCHEMA.TABLES   
+            WHERE TABLE_SCHEMA = 'information_schema' 
+            AND TABLE_NAME = 'TABLE_CONSTRAINTS_EXTENSIONS'
+        ";
+
+        $informationSchemaExtensionsExist = $connection->executeQuery($informationSchemaExtensionsExistSql)->rowCount();
+
+        // depending on DB configuration/versions the `TABLE_CONSTRAINTS_EXTENSIONS` might be missing
+        if($informationSchemaExtensionsExist){
+            $usedConstraintCheckSql =
+                $selectConstraintFromInformationSchemaSql
+                . " UNION "
+                . $selectConstraintFromInformationSchemaExtensionSql;
+        }else {
+            $usedConstraintCheckSql = $selectConstraintFromInformationSchemaSql;
         }
 
         $setStatementIntoVariableSql = "
             SELECT IF (
                 EXISTS(
-                    -- depending on DB configuration/versions the `TABLE_CONSTRAINTS_EXTENSIONS` might be missing
-                    SELECT IF (
-                        EXISTS (
-                            SELECT 1 FROM INFORMATION_SCHEMA.TABLES   
-                            WHERE TABLE_SCHEMA = 'information_schema' 
-                              AND TABLE_NAME = 'TABLE_CONSTRAINTS_EXTENSIONS'
-                        ),
-                        '{$selectConstraintFromInformationSchemaSql}
-                          UNION
-                         {$selectConstraintFromInformationSchemaExtensionSql}
-                        ',
-                        '{$selectConstraintFromInformationSchemaSql}'
-                    )
+                    {$usedConstraintCheckSql}
                 )
                 ,{$trueSql}
                 ,{$falseSql}
