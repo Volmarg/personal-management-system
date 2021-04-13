@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use App\Controller\Core\Migrations;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
@@ -23,37 +22,18 @@ final class Version20191110042650 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_contact (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, contacts LONGTEXT NOT NULL, deleted TINYINT(1) NOT NULL, image_path VARCHAR(255) DEFAULT NULL, name_background_color VARCHAR(255) NOT NULL, description_background_color VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_contact_type (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, image_path VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->connection->executeQuery('DROP TABLE IF EXISTS my_contacts');
-        $this->connection->executeQuery('DROP TABLE IF EXISTS my_contacts_groups');
+        $this->addSql('CREATE TABLE IF NOT EXISTS my_contact (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, description VARCHAR(255) DEFAULT NULL, contacts LONGTEXT NOT NULL, deleted TINYINT(1) NOT NULL, image_path VARCHAR(255) DEFAULT NULL, name_background_color VARCHAR(255) NOT NULL, description_background_color VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE IF NOT EXISTS my_contact_type (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, image_path VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('DROP TABLE IF EXISTS my_contacts');
+        $this->addSql('DROP TABLE IF EXISTS my_contacts_groups');
 
-        $this->connection->executeQuery('CREATE TABLE IF NOT EXISTS my_contact_group (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(255) NOT NULL, color VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_929F246B5E237E06 (name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE IF NOT EXISTS my_contact_group (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, icon VARCHAR(255) NOT NULL, color VARCHAR(255) NOT NULL, deleted TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_929F246B5E237E06 (name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_DCD489F05E237E06 ON my_contact_type (name)');
+        $this->addSql('ALTER TABLE my_contact ADD group_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE my_contact ADD CONSTRAINT FK_C69B4A14647145D0 FOREIGN KEY (group_id) REFERENCES my_contact_group (id)');
+        $this->addSql('CREATE INDEX IDX_C69B4A14647145D0 ON my_contact (group_id)');
 
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
-            Migrations::CONSTRAINT_TYPE_UNIQUE,
-            'UNIQ_DCD489F05E237E06',
-            'CREATE UNIQUE INDEX UNIQ_DCD489F05E237E06 ON my_contact_type (name)',
-            Migrations::CHECK_TYPE_IF_NOT_EXIST
-        ));
-
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfColumnDoesNotExist('group_id', 'my_contact', 'ALTER TABLE my_contact ADD group_id INT DEFAULT NULL'));
-
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
-            Migrations::CONSTRAINT_TYPE_FOREIGN_KEY,
-            'FK_C69B4A14647145D0',
-            'ALTER TABLE my_contact ADD CONSTRAINT FK_C69B4A14647145D0 FOREIGN KEY (group_id) REFERENCES my_contact_group (id)',
-            Migrations::CHECK_TYPE_IF_NOT_EXIST
-        ));
-
-        $this->connection->executeQuery(Migrations::buildSqlExecutedIfConstraint(
-            Migrations::CONSTRAINT_TYPE_INDEX,
-            'IDX_C69B4A14647145D0',
-            'CREATE INDEX IDX_C69B4A14647145D0 ON my_contact (group_id)',
-            Migrations::CHECK_TYPE_IF_NOT_EXIST
-        ));;
-
-        $this->connection->executeQuery("
+        $this->addSql("
             INSERT INTO `my_contact_type` (`id`, `name`, `image_path`, `deleted`) VALUES
             (NULL,	'Discord',	'upload/images/system/contactIcons/discord.png',	0),
             (NULL,	'Steam',	'upload/images/system/contactIcons/steam.png',	0),
@@ -75,7 +55,7 @@ final class Version20191110042650 extends AbstractMigration
             (NULL,	'WhatsApp',	'upload/images/system/contactIcons/whatsapp.png',	0);
         ");
 
-        $this->connection->executeQuery("
+        $this->addSql("
             INSERT INTO `my_contact_group` (`id`, `name`, `icon`, `color`, `deleted`) VALUES
             (NULL,	'Medic',	'far fa-medkit',	'399e05',	0),
             (NULL,	'Work',	'far fa-suitcase',	'be5e05',	0),
@@ -86,16 +66,10 @@ final class Version20191110042650 extends AbstractMigration
             (NULL,	'Game fellow',	'far fa-gamepad',	'f23e4e',	0),
             (NULL,	'Archived',	'far fa-times-circle',	'fb5705',	0);
         ");
-
-        $this->addSql(Migrations::getSuccessInformationSql());
     }
 
     public function down(Schema $schema) : void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
-        $this->connection->executeQuery('DROP TABLE my_contact');
-        $this->connection->executeQuery('DROP TABLE my_contact_type');
+        // no going back
     }
 }

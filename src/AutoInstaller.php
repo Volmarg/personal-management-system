@@ -371,7 +371,6 @@ class AutoInstaller{
         {
             $dropDatabaseCommand   = "php7.4 bin/console doctrine:database:drop -n --force";
             $createDatabaseCommand = "php7.4 bin/console doctrine:database:create -n";
-            $buildTables           = "php7.4 bin/console doctrine:schema:update -n --env=dev --force"; //there is symfony bug so it must be done like this
             $runMigrations         = "php7.4 bin/console doctrine:migrations:migrate -n";
 
             shell_exec($dropDatabaseCommand);
@@ -380,12 +379,7 @@ class AutoInstaller{
             shell_exec($createDatabaseCommand);
             CliHandler::text("Database has been created");
 
-            CliHandler::text("Creating database tables, please wait");
-
-            shell_exec($buildTables);
-            CliHandler::text("Database tables has been created");
-
-            CliHandler::text("Inserting base data into the tables, please wait");
+            CliHandler::text("Creating database structure and inserting base data into the tables, please wait");
 
             shell_exec($runMigrations);
             CliHandler::text("Base data base been inserted into the tables", false);
