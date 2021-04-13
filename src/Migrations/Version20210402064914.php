@@ -27,7 +27,7 @@ final class Version20210402064914 extends AbstractMigration
         ");
 
         // remove previous unique on date
-        $this->addSql('ALTER TABLE my_schedule_reminder DROP CONSTRAINT UNIQ_676F8E0DAA9E377A');
+        $this->addSql('ALTER TABLE my_schedule_reminder DROP INDEX UNIQ_676F8E0DAA9E377A');
 
         // add new unique on date + schedule
         $this->addSql('CREATE UNIQUE INDEX unique_reminder ON my_schedule_reminder (schedule_id, date)');
