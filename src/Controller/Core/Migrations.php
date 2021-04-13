@@ -35,23 +35,40 @@ class Migrations
     public static function buildSqlExecutedIfConstraintDoesNotExist(string $constraintType, string $constraintName, string $executedSql): string
     {
         $stmtVariableName            = self::MYSQL_VAR_NAME_EXECUTED_STMT;
+
+        $selectConstraintFromInformationSchemaSql = "
+            SELECT NULL                                                                                                                                                                                     
+            FROM information_schema.TABLE_CONSTRAINTS                                                                                                                                                       
+            WHERE                                                                                                                                                                                           
+            CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
+            CONSTRAINT_NAME   = \"{$constraintName}\" AND                                                                                                                                               
+            CONSTRAINT_TYPE   = \"{$constraintType}\"              
+        ";
+
+        $selectConstraintFromInformationSchemaExtensionSql = "
+            SELECT NULL                                          
+            FROM information_schema.TABLE_CONSTRAINTS_EXTENSIONS                                                                                                                                                       
+            WHERE                                                                                                                                                                                           
+            CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
+            CONSTRAINT_NAME   = \"{$constraintName}\"
+        ";
+
         $setStatementIntoVariableSql = "
             SELECT IF (
                 EXISTS(
-                    SELECT NULL                                                                                                                                                                                     
-                    FROM information_schema.TABLE_CONSTRAINTS                                                                                                                                                       
-                    WHERE                                                                                                                                                                                           
-                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
-                    CONSTRAINT_NAME   = '{$constraintName}' AND                                                                                                                                               
-                    CONSTRAINT_TYPE   = '{$constraintType}'                
-
-                    UNION 
-                    
-                    SELECT NULL                                          
-                    FROM information_schema.TABLE_CONSTRAINTS_EXTENSIONS                                                                                                                                                       
-                    WHERE                                                                                                                                                                                           
-                    CONSTRAINT_SCHEMA = DATABASE() AND                                                                                                                                                          
-                    CONSTRAINT_NAME   = '{$constraintName}'                           
+                    -- depending on DB configuration/versions the `TABLE_CONSTRAINTS_EXTENSIONS` might be missing
+                    SELECT IF (
+                        EXISTS (
+                            SELECT 1 FROM INFORMATION_SCHEMA.TABLES   
+                            WHERE TABLE_SCHEMA = 'information_schema' 
+                              AND TABLE_NAME = 'TABLE_CONSTRAINTS_EXTENSIONS'
+                        ),
+                        '{$selectConstraintFromInformationSchemaSql}
+                          UNION
+                         {$selectConstraintFromInformationSchemaExtensionSql}
+                        ',
+                        '{$selectConstraintFromInformationSchemaSql}'
+                    )
                 )
                 ,'select ''index index_1 exists'' _______;'
                 ,'{$executedSql}'
