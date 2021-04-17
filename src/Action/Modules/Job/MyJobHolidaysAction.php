@@ -8,7 +8,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Controller\Validators\Entities\EntityValidator;
+use App\Services\Validation\EntityValidatorService;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\DBAL\DBALException;
@@ -37,11 +37,11 @@ class MyJobHolidaysAction extends AbstractController {
     private Controllers $controllers;
 
     /**
-     * @var EntityValidator $entityValidator
+     * @var EntityValidatorService $entityValidator
      */
-    private EntityValidator $entityValidator;
+    private EntityValidatorService $entityValidator;
 
-    public function __construct(Application $app, Controllers $controllers, EntityValidator $entityValidator) {
+    public function __construct(Application $app, Controllers $controllers, EntityValidatorService $entityValidator) {
         $this->app              = $app;
         $this->controllers      = $controllers;
         $this->entityValidator = $entityValidator;
@@ -162,7 +162,7 @@ class MyJobHolidaysAction extends AbstractController {
         if ( $form->isSubmitted() && $form->isValid() ) {
 
             $jobHoliday       = $form->getData();
-            $validationResult = $this->entityValidator->handleValidation($jobHoliday, EntityValidator::ACTION_CREATE);
+            $validationResult = $this->entityValidator->handleValidation($jobHoliday, EntityValidatorService::ACTION_CREATE);
 
             if ( $validationResult->isValid() ){
                 $em = $this->getDoctrine()->getManager();

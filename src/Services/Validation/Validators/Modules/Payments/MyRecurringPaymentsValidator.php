@@ -1,8 +1,9 @@
 <?php
 
 
-namespace App\Controller\Validators\Entities;
+namespace App\Services\Validation\Validators\Modules\Payments;
 
+use App\Services\Validation\Validators\AbstractValidator;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\VO\Validators\ValidationResultVO;

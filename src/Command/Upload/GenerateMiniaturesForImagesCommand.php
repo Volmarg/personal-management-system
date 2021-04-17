@@ -4,7 +4,7 @@ namespace App\Command\Upload;
 
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
-use App\Controller\Validators\FileValidator;
+use App\Services\Validation\FileValidatorService;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\ImageHandler;
@@ -47,11 +47,17 @@ class GenerateMiniaturesForImagesCommand extends Command
      */
     private ImageHandler $imageHandler;
 
-    public function __construct(Application $app, FilesHandler $filesHandler, ImageHandler $imageHandler, string $name = null) {
+    /**
+     * @var FileValidatorService $fileValidator
+     */
+    private FileValidatorService $fileValidator;
+
+    public function __construct(Application $app, FilesHandler $filesHandler, ImageHandler $imageHandler, FileValidatorService $fileValidator, string $name = null) {
         parent::__construct($name);
-        $this->filesHandler = $filesHandler;
-        $this->imageHandler = $imageHandler;
-        $this->app          = $app;
+        $this->filesHandler  = $filesHandler;
+        $this->imageHandler  = $imageHandler;
+        $this->app           = $app;
+        $this->fileValidator = $fileValidator;
     }
 
     protected function configure(): void
@@ -127,12 +133,12 @@ class GenerateMiniaturesForImagesCommand extends Command
                                "to : "  . $targetMiniatureFileAbsolutePath,
                             ]);
 
-                            if( !FileValidator::isFileImage($fileObject) ){
+                            if( !$this->fileValidator->isFileImage($fileObject) ){
                                 $this->io->warning("File is not an image");
                                 continue;
                             }
 
-                            if( !FileValidator::isImageResizable($fileObject) ){
+                            if( !$this->fileValidator->isImageResizable($fileObject) ){
                                 $this->io->warning("Image type is not resizable");
                                 continue;
                             }

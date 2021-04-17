@@ -10,7 +10,7 @@ namespace App\Controller\Core;
 
 
 use App\Controller\Utils\Utils;
-use App\Controller\Validators\Entities\EntityValidator;
+use App\Services\Validation\EntityValidatorService;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Modules\Contacts\MyContact;
@@ -346,7 +346,7 @@ class Repositories extends AbstractController {
     public MyScheduleReminderRepository $myScheduleReminderRepository;
 
     /**
-     * @var EntityValidator $entityValidator
+     * @var EntityValidatorService $entityValidator
      */
     private $entityValidator;
 
@@ -397,7 +397,7 @@ class Repositories extends AbstractController {
         MyScheduleCalendarRepository        $myScheduleCalendarRepository,
         MyScheduleReminderRepository        $myScheduleReminderRepository,
         EntityManagerInterface              $entityManager,
-        EntityValidator                     $entityValidator,
+        EntityValidatorService                     $entityValidator,
         LoggerInterface                     $logger
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -556,7 +556,7 @@ class Repositories extends AbstractController {
             $entity = $this->setEntityPropertiesFromArrayOfFieldsParameters($entity, $parameters);
 
             // check constraints now that the entity is updated
-            $validationResult = $this->entityValidator->handleValidation($entity, EntityValidator::ACTION_UPDATE);
+            $validationResult = $this->entityValidator->handleValidation($entity, EntityValidatorService::ACTION_UPDATE);
 
             if( !$validationResult->isValid() ){
                 $failedValidationMessages = $validationResult->getAllFailedValidationMessagesAsSingleString();

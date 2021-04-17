@@ -1,12 +1,18 @@
 <?php
 
-namespace App\Controller\Validators;
+namespace App\Services\Validation;
 
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints\File as FileConstraint;
 use Symfony\Component\Validator\Validation;
 
-class FileValidator {
+/**
+ * Handles files validations logic
+ *
+ * Class FileValidatorService
+ * @package App\Services\Validation
+ */
+class FileValidatorService {
 
     // Images mime types
     const MIME_TYPE_APNG    = 'image/apng';
@@ -39,19 +45,30 @@ class FileValidator {
     ];
 
     /**
+     * @var ConstraintValidationService $validationService
+     */
+    private ConstraintValidationService $validationService;
+
+    public function __construct(ConstraintValidationService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
+
+    /**
      * Will check if given file is an image by checking it's mime type
      *
      * @param File $file
      * @return bool
      */
-    public static function isFileImage(File $file): bool
+    public function isFileImage(File $file): bool
     {
         $validator      = Validation::createValidator();
         $violationsList = $validator->validate($file, new FileConstraint([
             'mimeTypes' => self::IMAGES_MIME_TYPES,
         ]));
 
-        return AbstractValidator::areViolations($violationsList);
+        $validationResult = $this->validationService->checkConstraintViolationsAndReturnValidationResultVo($violationsList);
+        return $validationResult->isSuccess();
     }
 
     /**
@@ -61,14 +78,15 @@ class FileValidator {
      * @param File $file
      * @return bool
      */
-    public static function isImageResizable(File $file): bool
+    public function isImageResizable(File $file): bool
     {
         $validator      = Validation::createValidator();
         $violationsList = $validator->validate($file, new FileConstraint([
             'mimeTypes' => self::RESIZABLE_MIME_TYPES,
         ]));
 
-        return AbstractValidator::areViolations($violationsList);
+        $validationResult = $this->validationService->checkConstraintViolationsAndReturnValidationResultVo($violationsList);
+        return $validationResult->isSuccess();
     }
 
 }

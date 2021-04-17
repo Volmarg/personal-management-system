@@ -99,6 +99,7 @@ class SecurityController {
      */
     public function canRegisterUser(): bool
     {
+        return true;
         if( Env::isDemo() ){
             return false;
         }

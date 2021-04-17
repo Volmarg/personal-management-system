@@ -6,7 +6,7 @@ use App\Controller\Files\FilesTagsController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
-use App\Controller\Validators\FileValidator;
+use App\Services\Validation\FileValidatorService;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -70,8 +70,20 @@ class FileUploader extends AbstractController {
      */
     private $imageHandler;
 
-    public function __construct(LoggerInterface $logger, Application $app, FilesTagsController $filesTagsController, ImageHandler $imageHandler) {
+    /**
+     * @var FileValidatorService $fileValidator
+     */
+    private FileValidatorService $fileValidator;
+
+    public function __construct(
+        LoggerInterface     $logger,
+        Application         $app,
+        FilesTagsController $filesTagsController,
+        ImageHandler        $imageHandler,
+        FileValidatorService       $fileValidator
+    ) {
         $this->filesTagsController = $filesTagsController;
+        $this->fileValidator       = $fileValidator;
         $this->imageHandler        = $imageHandler;
         $this->finder              = new Finder();
         $this->logger              = $logger;
@@ -148,7 +160,7 @@ class FileUploader extends AbstractController {
 
             // Todo(maybe) in future: make checking which file based module is targeted - generate miniatures only for MyImages, as it will be only used in this case
             $movedFile = new File($fileFullPath);
-            if( FileValidator::isFileImage($movedFile) && FileValidator::isImageResizable($movedFile)){
+            if( $this->fileValidator->isFileImage($movedFile) && $this->fileValidator->isImageResizable($movedFile)){
                 $this->imageHandler->createMiniature($fileFullPath);
             }
 

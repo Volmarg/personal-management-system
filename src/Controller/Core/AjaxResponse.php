@@ -383,6 +383,9 @@ class AjaxResponse extends AbstractController {
 
     /**
      * Will build the ajax response for invalid validation result
+     * At this moment this works only with form being provided here, this was added to dynamically obtain
+     * form prefix - the same prefix is automatically added by symfony in twig, so by sending the prefix with
+     * ajax response it's possible to automatically attach invalid fields to the form
      *
      * @param ValidationResultVO    $validationResult
      * @param FormInterface         $usedForm

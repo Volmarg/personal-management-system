@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller\Validators\Entities;
+namespace App\Services\Validation\Validators;
 
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Services\Core\Translator;

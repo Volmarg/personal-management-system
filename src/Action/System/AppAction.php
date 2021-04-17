@@ -10,9 +10,10 @@ use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
 use App\Controller\Utils\Utils;
+use App\Services\Validation\DtoValidatorService;
+use App\DTO\User\UserRegistrationDTO;
 use App\Entity\User;
 use App\Form\User\UserRegisterType;
-use App\Services\Exceptions\FormValidationException;
 use App\Services\Session\ExpirableSessionsService;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
@@ -123,10 +124,16 @@ class AppAction extends AbstractController {
      */
     private Controllers $controllers;
 
-    public function __construct(Application $app, ExpirableSessionsService $sessions_service, Controllers $controllers)
+    /**
+     * @var DtoValidatorService $dtoValidator
+     */
+    private DtoValidatorService $dtoValidator;
+
+    public function __construct(Application $app, ExpirableSessionsService $sessions_service, Controllers $controllers, DtoValidatorService $dtoValidator)
     {
         $this->app                      = $app;
         $this->controllers              = $controllers;
+        $this->dtoValidator             = $dtoValidator;
         $this->expirableSessionsService = $sessions_service;
     }
 
@@ -472,8 +479,9 @@ class AppAction extends AbstractController {
             return $this->redirectToRoute('login');
         }
 
-        $allUsers     = $this->controllers->getUserController()->getAllUsers();
-        $countOfUsers = count($allUsers);
+        $validationResultVo = null;
+        $allUsers           = $this->controllers->getUserController()->getAllUsers();
+        $countOfUsers       = count($allUsers);
 
         $allowToRegister = true;
         if( !empty($countOfUsers) ){
@@ -500,33 +508,33 @@ class AppAction extends AbstractController {
                     &&  $userRegisterForm->isValid()
                 )
                 {
+
                     /**
-                     * @var User $userEntity
+                     * @var UserRegistrationDTO $userRegistrationDto
                      */
-                    $userEntity = $userRegisterForm->getData();
+                    $userRegistrationDto = $userRegisterForm->getData();
+                    $validationResultVo  = $this->dtoValidator->doValidate($userRegistrationDto);
 
-                    $rawLoginPassword     = $userEntity->getPassword();
-                    $rawLockPassword      = $userEntity->getLockPassword();
-                    $cryptedLoginPassword = $this->controllers->getSecurityController()->hashPassword($rawLoginPassword)->getHashedPassword();
-                    $cryptedLockPassword  = $this->controllers->getSecurityController()->hashPassword($rawLockPassword)->getHashedPassword();
+                    if( $validationResultVo->isValid() ){
+                        $userEntity          = new User();
 
-                    $userEntity->setRoles([User::ROLE_SUPER_ADMIN]);
-                    $userEntity->setPassword($cryptedLoginPassword);
-                    $userEntity->setLockPassword($cryptedLockPassword);;
-                    $userEntity->setUsernameCanonical($userEntity->getUsername());
-                    $userEntity->setEmailCanonical($userEntity->getEmail());
+                        $cryptedLoginPassword = $this->controllers->getSecurityController()->hashPassword($userRegistrationDto->getPassword())->getHashedPassword();
+                        $cryptedLockPassword  = $this->controllers->getSecurityController()->hashPassword($userRegistrationDto->getLockPassword())->getHashedPassword();
 
-                    $this->controllers->getUserController()->saveUser($userEntity);
+                        $userEntity->setRoles([User::ROLE_SUPER_ADMIN]);
+                        $userEntity->setPassword($cryptedLoginPassword);
+                        $userEntity->setLockPassword($cryptedLockPassword);
+
+                        $userEntity->setUsername($userRegistrationDto->getUsername());
+                        $userEntity->setUsernameCanonical($userRegistrationDto->getUsername());
+
+                        $userEntity->setEmail($userRegistrationDto->getEmail());
+                        $userEntity->setEmailCanonical($userRegistrationDto->getEmail());
+
+                        $this->controllers->getUserController()->saveUser($userEntity);
+                    }
                 }
 
-            }catch(FormValidationException $exception){
-                $formValidationViolations = $exception->getFormValidationViolations(true);
-                $success                  = false;
-                $code                     = Response::HTTP_BAD_REQUEST;
-                $routeUrl                 = "";
-                $message                  = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
-
-                $this->app->logger->error("Some of the UserRegistration form inputs are invalid", $formValidationViolations);
             }catch(Exception | TypeError $e){
                 $this->app->logger->critical("Exception was thrown while registering new user", [
                     "message" => $e->getMessage(),
@@ -538,6 +546,19 @@ class AppAction extends AbstractController {
             }
 
             $ajaxResponse = new AjaxResponse();
+            if(
+                    !is_null($validationResultVo)
+                &&  !$validationResultVo->isValid()
+            ){
+                $formValidationViolations = $validationResultVo->getInvalidFieldsMessages();
+                $success                  = false;
+                $code                     = Response::HTTP_BAD_REQUEST;
+                $routeUrl                 = "";
+                $message                  = $this->app->translator->translate('validators.messages.invalidDataHasBeenProvided');
+
+                $this->app->logger->error("Some of the UserRegistration form inputs are invalid", $formValidationViolations);
+            }
+
             $ajaxResponse->setInvalidFormFields($formValidationViolations);
             $ajaxResponse->setMessage($message);
             $ajaxResponse->setCode($code);

@@ -8,7 +8,7 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Controller\Validators\Entities\EntityValidator;
+use App\Services\Validation\EntityValidatorService;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
@@ -36,11 +36,11 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
     private MyPaymentsSettingsAction $myPaymentsSettingsAction;
 
     /**
-     * @var EntityValidator $entityValidator
+     * @var EntityValidatorService $entityValidator
      */
-    private EntityValidator $entityValidator;
+    private EntityValidatorService $entityValidator;
 
-    public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $myPaymentsSettingsAction, EntityValidator $entityValidator) {
+    public function __construct(Application $app, Controllers $controllers, MyPaymentsSettingsAction $myPaymentsSettingsAction, EntityValidatorService $entityValidator) {
         $this->myPaymentsSettingsAction = $myPaymentsSettingsAction;
         $this->entityValidator          = $entityValidator;
         $this->controllers              = $controllers;
@@ -149,7 +149,7 @@ class MyRecurringPaymentsMonthlyAction extends AbstractController {
             $em = $this->getDoctrine()->getManager();
 
             $recurringPayment = $recurringPaymentsForm->getData();
-            $validationResult = $this->entityValidator->handleValidation($recurringPayment, EntityValidator::ACTION_CREATE);
+            $validationResult = $this->entityValidator->handleValidation($recurringPayment, EntityValidatorService::ACTION_CREATE);
 
             if( !$validationResult->isValid() ){
                 return $validationResult;

@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Controller\Validators\Entities;
+namespace App\Services\Validation;
 
 use App\Controller\Core\Repositories;
+use App\Services\Validation\Validators\AbstractValidator;
+use App\Services\Validation\Validators\Modules\Job\MyJobHolidaysValidator;
+use App\Services\Validation\Validators\Modules\Payments\MyRecurringPaymentsValidator;
 use App\Entity\Interfaces\ValidateEntityForCreateInterface;
 use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use App\Entity\Interfaces\ValidateEntityInterface;
@@ -15,11 +18,20 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class EntityValidator extends AbstractController {
+/**
+ * Handles validations of entities
+ *
+ * Class EntityValidatorService
+ * @package App\Services\Validation
+ */
+class EntityValidatorService extends AbstractController {
 
     const ACTION_UPDATE = "update";
     const ACTION_CREATE = "create";
 
+    /**
+     * Contains mapping of entity to validator, if no validator is provided for entity in this mapping then entity is not validated
+     */
     const MAP_ENTITY_TO_VALIDATOR = [
         MyJobHolidays::class             => MyJobHolidaysValidator::class,
         MyRecurringPaymentMonthly::class => MyRecurringPaymentsValidator::class,
