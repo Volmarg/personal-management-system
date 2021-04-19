@@ -97208,7 +97208,7 @@ form legend {
 }
 
 .search-input {
-  width: 200px;
+  width: 250px;
 }
 
 .search-input .selectize-input {
@@ -97220,6 +97220,7 @@ form legend {
 #searchResultListWrapper {
   transition: linear 300ms;
   max-height: 0;
+  width: 250px;
 }
 
 #searchResultListWrapper ul {
@@ -97230,6 +97231,7 @@ form legend {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  width: 242px;
 }
 
 #searchResultListWrapper li {
