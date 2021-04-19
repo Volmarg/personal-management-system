@@ -5,7 +5,7 @@ namespace App\DataFixtures\Modules\Payments;
 use App\DataFixtures\Providers\Modules\PaymentsOwed;
 use App\Entity\Modules\Payments\MyPaymentsOwed;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyPaymentsOwedFixtures extends Fixture

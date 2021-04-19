@@ -7,7 +7,7 @@ use App\Entity\Modules\Payments\MyPaymentsIncome;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\DBAL\DBALException;
 use Exception;
 use Faker\Factory;

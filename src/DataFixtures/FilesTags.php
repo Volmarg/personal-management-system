@@ -3,7 +3,7 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use \App\DataFixtures\Providers\FilesTags as FilesTagsProvider;
 use \App\Entity\FilesTags                 as FilesTagsEntity;
 

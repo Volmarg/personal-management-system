@@ -13,7 +13,7 @@ use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterface

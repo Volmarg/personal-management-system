@@ -9,7 +9,7 @@ use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\Services\Exceptions\ExceptionValueNotAllowed;
 use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Doctrine\DBAL\DBALException;
 
 class SettingFixtures extends Fixture

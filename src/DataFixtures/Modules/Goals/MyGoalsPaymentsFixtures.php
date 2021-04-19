@@ -6,7 +6,7 @@ use App\DataFixtures\Providers\Modules\Goals;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface

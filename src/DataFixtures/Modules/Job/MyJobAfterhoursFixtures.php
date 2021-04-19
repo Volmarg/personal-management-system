@@ -7,7 +7,7 @@ use App\DataFixtures\Providers\Modules\JobAfterhours;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface

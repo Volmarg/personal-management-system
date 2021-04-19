@@ -6,7 +6,7 @@ use App\DataFixtures\Providers\Modules\NotesCategories;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface

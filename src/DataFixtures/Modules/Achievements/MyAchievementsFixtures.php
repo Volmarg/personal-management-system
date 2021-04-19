@@ -6,7 +6,7 @@ use App\DataFixtures\Providers\Modules\Achievements;
 use App\Entity\Modules\Achievements\Achievement;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 
 class MyAchievementsFixtures extends Fixture implements OrderedFixtureInterface
 {

@@ -6,7 +6,7 @@ use App\DataFixtures\Providers\Modules\PaymentsSettings;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterface

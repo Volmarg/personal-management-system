@@ -6,7 +6,7 @@ use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Travels;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyTravelsIdeasFixtures extends Fixture

@@ -6,7 +6,7 @@ use App\DataFixtures\Providers\Modules\PasswordsGroups;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyPasswordsSettingsFixtures extends Fixture implements OrderedFixtureInterface

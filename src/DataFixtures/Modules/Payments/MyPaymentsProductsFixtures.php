@@ -10,7 +10,7 @@ use App\Entity\Modules\Payments\MyPaymentsProduct;
 use Bezhanov\Faker\ProviderCollectionHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterface

@@ -6,7 +6,7 @@ use App\DataFixtures\Providers\Products\ExpensiveProducts;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
 class MyShoppingPlansFixtures extends Fixture implements OrderedFixtureInterface
