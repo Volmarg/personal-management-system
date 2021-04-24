@@ -42,6 +42,11 @@ abstract class IndentType extends AbstractType {
     const KEY_CHOICES = 'parent_child_choices';
 
     /**
+     * If this is set then additional empty option is added to the select list
+     */
+    const KEY_INCLUDE_EMPTY_CHOICE = 'include_empty_choice';
+
+    /**
      * @param FormView $view
      * @param FormInterface $form
      * @param array $options
@@ -75,13 +80,15 @@ abstract class IndentType extends AbstractType {
             throw new Exception($message);
         }
 
-        $view->vars[self::KEY_CHOICES] = $options[self::KEY_CHOICES];
+        $view->vars[self::KEY_CHOICES]              = $options[self::KEY_CHOICES];
+        $view->vars[self::KEY_INCLUDE_EMPTY_CHOICE] = $options[self::KEY_INCLUDE_EMPTY_CHOICE];
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            self::KEY_CHOICES => []
+            self::KEY_CHOICES              => [],
+            self::KEY_INCLUDE_EMPTY_CHOICE => false,
         ]);
     }
 }
