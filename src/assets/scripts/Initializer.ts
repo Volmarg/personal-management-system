@@ -21,7 +21,6 @@ import UploadSettings               from "./modules/Files/UploadSettings";
 import LockedResource               from "./core/locked-resource/LockedResource";
 import CallableViaDataAttrsDialogs  from "./core/ui/Dialogs/CallableViaDataAttrsDialogs";
 import WidgetsDialogs               from "./core/ui/Dialogs/WidgetsDialogs";
-import Modal                        from "./core/ui/Modal/Modal";
 import Dialog                       from "./core/ui/Dialogs/Dialog";
 import FilesTransfer                from "./modules/Files/FilesTransfer";
 import MonthlyPayments              from "./modules/Payments/MonthlyPayments";
@@ -88,7 +87,6 @@ export default class Initializer {
         let lockedResource         = new LockedResource();
         let callableViaAttrDialogs = new CallableViaDataAttrsDialogs();
         let widgetsDialogs         = new WidgetsDialogs();
-        let modal                  = new Modal();
         let dialog                 = new Dialog();
         let domElements            = new DomElements();
         let ajaxEvents             = new AjaxEvents();
@@ -134,7 +132,6 @@ export default class Initializer {
 
         domElements.init();
 
-        modal.init();
         dialog.init();
 
         videoJs.init();

@@ -11,20 +11,14 @@ import MasonryGallery   from "../../libs/masonry/MasonryGallery";
 import BootstrapNotify  from "../../libs/bootstrap-notify/BootstrapNotify";
 import Initializer      from "../../Initializer";
 import AbstractAjax     from "./AbstractAjax";
-import Modal            from "../ui/Modal/Modal";
-import Ajax from "./Ajax";
-import BootboxWrapper from "../../libs/bootbox/BootboxWrapper";
+import Ajax             from "./Ajax";
+import BootboxWrapper   from "../../libs/bootbox/BootboxWrapper";
 
 /**
  * @default This class contains definitions of events and it's logic attached on GUI elements
  *          This could be remain in Ajax.ts however there are issues with circular dependencies event with statics
  */
 export default class AjaxEvents extends AbstractAjax {
-
-    /**
-     * @type Modal
-     */
-    private modal = new Modal();
 
     /**
      * @type BootstrapNotify

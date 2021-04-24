@@ -1,5 +1,3 @@
-import Modal from "./Modal/Modal";
-
 /**
  * @description This class should contain logic responsible for interacting with globally with UI
  *              Consider adding portions of logic which is not bound to any strict class yet is reusable in other places

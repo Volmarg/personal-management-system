@@ -10,11 +10,6 @@ import './Widgets/DirectoriesBased/DirectoriesBasedWidget'
 import './Widgets/DialogBased/WidgetData'
 import './Widgets/DialogBased/WidgetDataLoader'
 
-// ### modal
-import './Modal/ModalLogicLoader'
-import './Modal/Modal'
-import './Modal/ModalLogic'
-
 // ### dialogs
 import './Dialogs/LogicLoader/DialogLogic'
 import './Dialogs/LogicLoader/DialogLogicLoader'
