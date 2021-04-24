@@ -95,6 +95,14 @@ export default class TuiCalendarService
     private lastUsedReminderId: number = 0;
 
     /**
+     * @description indicates if the opened popup is update popup
+     *              possible states of popup are [UPDATE / CREATE], Tui-calendar does not support detecting these difference
+     *              however popup has always title empty when creating new schedule in [CREATE] state, so this is used
+     *              to detect the state.
+     */
+    private isUpdatePopup: boolean;
+
+    /**
      * @description will initialize the calendar instance
      */
     public init(){
@@ -245,14 +253,10 @@ export default class TuiCalendarService
                 // @ts-ignore, handle additional properties, creation popup might not exist, example -> drag schedule
                 changes.body = event.schedule.body;
                 if( DomElements.doElementsExists([$creationPopupContainer]) ) {
-                    if( StringUtils.isEmptyString(changes.body) ){
-                        changes.body = $creationPopupContainer.find('#body').val() as string;
-                    }
+                    changes.body = $creationPopupContainer.find('#body').val() as string;
 
-                    if( StringUtils.isEmptyString(changes.recurrenceRule) ){
-                        let allRemindersArray  = this.getAllRemindersArrayFromCreationPopup();
-                        changes.recurrenceRule = allRemindersArray.join(",");
-                    }
+                    let allRemindersArray  = this.getAllRemindersArrayFromCreationPopup();
+                    changes.recurrenceRule = allRemindersArray.join(",");
                 }
 
                 /**
@@ -714,14 +718,18 @@ export default class TuiCalendarService
             let lastClickedSchedule = this.findSchedule(this.lastClickedScheduleId, calendarInstance);
             let valueForBodyField   = "";
 
+            // check if popup is opened in state of UPDATE or CREATE
+            let containerTitleSection = $(this.POPUP_CONTAINER_SECTION_TITLE_SELECTOR);
+            let scheduleTitle         = containerTitleSection.find("input").val() as string;
+            this.isUpdatePopup        = !StringUtils.isEmptyString(scheduleTitle);
+
             // this is null when creating new schedule via popup
             if(null != lastClickedSchedule){
                 valueForBodyField = lastClickedSchedule[this.POPUP_CUSTOM_FIELD_NAME_BODY];
             }
 
             // BODY
-            let containerTitleSection = $(this.POPUP_CONTAINER_SECTION_TITLE_SELECTOR);
-            let $bodySection          = this.buildInputFieldForPopup(
+            let $bodySection = this.buildInputFieldForPopup(
                 this.POPUP_CUSTOM_FIELD_NAME_BODY,
                 'fas fa-pen',
                 valueForBodyField,
@@ -877,7 +885,10 @@ export default class TuiCalendarService
             .attr('placeholder', StringUtils.capitalizeFirstLetter(fieldName))
             .attr("autocomplete", "off");
 
-        if(null !== dataToPrefill){
+        if(
+               this.isUpdatePopup
+            && null !== dataToPrefill
+        ){
             $input.val(dataToPrefill);
         }
 
@@ -941,7 +952,10 @@ export default class TuiCalendarService
         $containerLocation.parent().before($reminderSection);
 
         let usedDate = null; // on purpose to keep the field empty so that it's known that no reminder is set
-        if( date instanceof Date ){
+        if(
+               this.isUpdatePopup
+            && date instanceof Date
+        ){
             usedDate = date;
         }
 
