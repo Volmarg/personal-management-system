@@ -58,6 +58,8 @@ export default class TinyMce {
       styleCopy: "data-style-copy"
     };
 
+    static readonly TINY_MCE_WRAPPER_ID_NAME = "tiny-mce-wrapper";
+
     /**
      *@description will return the default(common) configuration for tinymce
      *

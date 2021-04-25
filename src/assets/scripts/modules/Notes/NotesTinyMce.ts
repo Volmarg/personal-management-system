@@ -87,10 +87,11 @@ export default class NotesTinyMce {
 
             $(button).click((event) => {
 
-                let clickedButton  = event.target;
-                let modal          = $(clickedButton).closest(TinyMce.classes['note-modal-content']);
-                let noteTitle      = $(modal).find(TinyMce.classes["note-modal-title"]);
-                let categoriesList = $(modal).find(TinyMce.classes["note-modal-categories-list"]);
+                let clickedButton   = event.target;
+                let modal           = $(clickedButton).closest(TinyMce.classes['note-modal-content']);
+                let $tinyMceWrapper = modal.find(`#${TinyMce.TINY_MCE_WRAPPER_ID_NAME}`);
+                let noteTitle       = $(modal).find(TinyMce.classes["note-modal-title"]);
+                let categoriesList  = $(modal).find(TinyMce.classes["note-modal-categories-list"]);
 
                 if ($(categoriesList).hasClass(TinyMce.classes.prefixless.hidden)) {
                     $(categoriesList).removeClass(TinyMce.classes.prefixless.hidden);
@@ -101,6 +102,8 @@ export default class NotesTinyMce {
 
                 let id              = $(button).attr('data-id');
                 let tinyMceSelector = TinyMce.classes["note-modal-tinymce-content"] + id;
+
+                $tinyMceWrapper.addClass("is-edited");
 
                 _this.tinyMce.init(tinyMceSelector);
             })

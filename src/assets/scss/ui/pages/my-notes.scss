@@ -29,6 +29,12 @@
     word-break: break-all;
   }
 
+  #tiny-mce-wrapper:not(.is-edited) {
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: scroll;
+  }
+
 }
 
 .all-notes {

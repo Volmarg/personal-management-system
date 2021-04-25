@@ -96576,6 +96576,11 @@ input[type=radio].square-checkbox:disabled:after {
 .single-note-details .modal-body {
   word-break: break-all;
 }
+.single-note-details #tiny-mce-wrapper:not(.is-edited) {
+  max-height: 300px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
 
 .all-notes {
   display: flex;
