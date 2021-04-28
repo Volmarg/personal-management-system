@@ -15,6 +15,8 @@ import UiUtils         from "../../core/utils/UiUtils";
 import Navigation      from "../../core/Navigation";
 import StringUtils     from "../../core/utils/StringUtils";
 import AjaxEvents      from "../../core/ajax/AjaxEvents";
+import BootboxWrapper  from "../../libs/bootbox/BootboxWrapper";
+import AbstractAction  from "../../core/ui/Actions/AbstractAction";
 
 export default class NotesTinyMce {
 
@@ -179,29 +181,36 @@ export default class NotesTinyMce {
                     'id': noteId,
                 };
 
-                Loader.showMainLoader();
+                BootboxWrapper.confirm({
+                    message:  AbstractAction.messages.doYouWantToRemoveThisRecord(),
+                    backdrop: true,
+                    callback: function (result) {
+                        if (result) {
+                            Loader.showMainLoader();
 
-                $.ajax({
-                    method : Ajax.REQUEST_TYPE_POST,
-                    url    : '/my-notes/delete-note/',
-                    data   : data,
-                }).done(() => {
-                    _this.bootstrapNotify.showGreenNotification(TinyMce.messages["note-delete-success"]);
-                    $(clickedButton).closest(TinyMce.classes["note-wrapper"]).html("");
-                    $(TinyMce.classes["modal-shadow"]).remove();
+                            $.ajax({
+                                method : Ajax.REQUEST_TYPE_POST,
+                                url    : '/my-notes/delete-note/',
+                                data   : data,
+                            }).done(() => {
+                                _this.bootstrapNotify.showGreenNotification(TinyMce.messages["note-delete-success"]);
+                                $(clickedButton).closest(TinyMce.classes["note-wrapper"]).html("");
+                                $(TinyMce.classes["modal-shadow"]).remove();
 
-                    let allNotes = $(TinyMce.classes["note-button"]);
+                                let allNotes = $(TinyMce.classes["note-button"]);
 
-                    if ($(allNotes).length === 0) {
-                        UiUtils.redirectWithMessage('/my-notes/create', 'There are no notes left in this category, You will be redirected in a moment');
+                                if ($(allNotes).length === 0) {
+                                    UiUtils.redirectWithMessage('/my-notes/create', 'There are no notes left in this category, You will be redirected in a moment');
+                                }
+
+                            }).fail(() => {
+                                _this.bootstrapNotify.showRedNotification(TinyMce.messages["note-delete-fail"]);
+                            }).always( () => {
+                                Loader.hideMainLoader();
+                            });
+                        }
                     }
-
-                }).fail(() => {
-                    _this.bootstrapNotify.showRedNotification(TinyMce.messages["note-delete-fail"]);
-                }).always( () => {
-                    Loader.hideMainLoader();
                 });
-
             })
         })
     };
