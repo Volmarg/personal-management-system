@@ -1,22 +1,27 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-issues') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_ISSUES }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.issues.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-                <span class="icon-holder menu-node-my-issues-icon">
-                <i class="fas fa-history fa-sm"></i>
-                </span>
-        <span class="title">{{ 'sidebar.menu.issues.label' | trans }}</span>
-        <span class="arrow">
-                    <i class="ti-angle-right fa-sm"></i>
-                  </span>
-    </a>
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% block nodeContent %}
 
-    <ul class="dropdown-menu">
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-issues-pending') }}">{{ 'sidebar.menu.issues.pending' | trans }}</a>
-        </li>
-    </ul>
-</li>
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-issues') }} sidebar-menu-node-element" data-menu-node-name="{{ menuNodeModuleName }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.issues.description' | trans
+    }%}
+    >
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
+                    <span class="icon-holder menu-node-my-issues-icon">
+                    <i class="fas fa-history fa-sm"></i>
+                    </span>
+            <span class="title">{{ 'sidebar.menu.issues.label' | trans }}</span>
+            <span class="arrow">
+                        <i class="ti-angle-right fa-sm"></i>
+                      </span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-issues-pending') }}">{{ 'sidebar.menu.issues.pending' | trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock nodeContent %}

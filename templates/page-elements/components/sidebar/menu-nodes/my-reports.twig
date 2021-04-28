@@ -1,39 +1,44 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'reports') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_REPORTS }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.reports.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-                <span class="icon-holder menu-node-my-reports-icon">
-                    <i class="far fa-list-alt fa-sm"></i>
-                </span>
-                <span class="title">{{  'sidebar.menu.reports.label' | trans }}</span>
-                <span class="arrow">
-                    <i class="ti-angle-right fa-sm"></i>
-                </span>
-    </a>
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% block nodeContent %}
 
-    <ul class="dropdown-menu">
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('reports-monthly-payments-summaries') }}">
-                {{  'sidebar.menu.reports.monthlyPaymentsSummaries' | trans }}
-            </a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('reports-historical-money-owed') }}">
-                {{  'sidebar.menu.reports.historicalMoneyOwed' | trans }}
-            </a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('reports-payments-charts') }}">
-                {{  'sidebar.menu.reports.paymentsCharts' | trans }}
-            </a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('reports-savings-charts') }}">
-                {{  'sidebar.menu.reports.savingsCharts' | trans }}
-            </a>
-        </li>
-    </ul>
-</li>
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'reports') }} sidebar-menu-node-element" data-menu-node-name="{{ menuNodeModuleName }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.reports.description' | trans
+    }%}
+    >
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
+                    <span class="icon-holder menu-node-my-reports-icon">
+                        <i class="far fa-list-alt fa-sm"></i>
+                    </span>
+                    <span class="title">{{  'sidebar.menu.reports.label' | trans }}</span>
+                    <span class="arrow">
+                        <i class="ti-angle-right fa-sm"></i>
+                    </span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('reports-monthly-payments-summaries') }}">
+                    {{  'sidebar.menu.reports.monthlyPaymentsSummaries' | trans }}
+                </a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('reports-historical-money-owed') }}">
+                    {{  'sidebar.menu.reports.historicalMoneyOwed' | trans }}
+                </a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('reports-payments-charts') }}">
+                    {{  'sidebar.menu.reports.paymentsCharts' | trans }}
+                </a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('reports-savings-charts') }}">
+                    {{  'sidebar.menu.reports.savingsCharts' | trans }}
+                </a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock nodeContent %}

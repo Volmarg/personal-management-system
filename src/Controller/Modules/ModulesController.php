@@ -9,11 +9,11 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Passwords\MyPasswords;
+use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Services\Files\FilesHandler;
-use App\Twig\Modules\Schedules\Schedules;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -25,10 +25,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ModulesController extends AbstractController {
 
     const MODULE_NAME_ACHIEVEMENTS              = "Achievements";
-    const MENU_NODE_MODULE_NAME_MY_SCHEDULES    = "My Schedules"; //todo: rename this const + twig
+    const MODULE_NAME_MY_SCHEDULES              = "My Schedules"; //todo: rename this const + twig
     const MODULE_NAME_CONTACTS                  = "My Contacts";
     const MODULE_NAME_FILES                     = "My Files";
     const MODULE_NAME_GOALS                     = "My Goals";
+    const MODULE_NAME_TODO                      = "My Todo";
     const MODULE_NAME_IMAGES                    = "My Images";
     const MODULE_NAME_VIDEO                     = "My Video";
     const MODULE_NAME_JOB                       = "My Job";
@@ -44,10 +45,11 @@ class ModulesController extends AbstractController {
 
     const ALL_MODULES = [
         self::MODULE_NAME_ACHIEVEMENTS,
-        self::MENU_NODE_MODULE_NAME_MY_SCHEDULES,
+        self::MODULE_NAME_MY_SCHEDULES,
         self::MODULE_NAME_CONTACTS,
         self::MODULE_NAME_FILES,
         self::MODULE_NAME_GOALS,
+        self::MODULE_NAME_TODO,
         self::MODULE_NAME_IMAGES,
         self::MODULE_NAME_VIDEO,
         self::MODULE_NAME_JOB,
@@ -61,10 +63,11 @@ class ModulesController extends AbstractController {
 
     const MODULE_TO_ENTITY_NAMESPACE = [
         self::MODULE_NAME_ACHIEVEMENTS              => Achievement::class,
-        self::MENU_NODE_MODULE_NAME_MY_SCHEDULES    => Schedules::class,
+        self::MODULE_NAME_MY_SCHEDULES              => MySchedule::class,
         self::MODULE_NAME_CONTACTS                  => MyContact::class,
         self::MODULE_NAME_FILES                     => null,
-        self::MODULE_NAME_GOALS                     => MyTodo::class, // this is not a mistake
+        self::MODULE_NAME_GOALS                     => MyTodo::class, // this is not a mistake as goals share basis of todoModule
+        self::MODULE_NAME_TODO                      => MyTodo::class, // this is not a mistake
         self::MODULE_NAME_IMAGES                    => null ,
         self::MODULE_NAME_VIDEO                     => null ,
         self::MODULE_NAME_JOB                       => null,

@@ -1,28 +1,33 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'goals') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_GOALS }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.goals.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-                <span class="icon-holder menu-node-goals-icon">
-                 <i class="fas fa-bullseye fa-sm"></i>
-                </span>
-        <span class="title">{{ 'sidebar.menu.goals.label' | trans }}</span>
-        <span class="arrow">
-                    <i class="ti-angle-right fa-sm"></i>
-                  </span>
-    </a>
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% block nodeContent %}
 
-    <ul class="dropdown-menu">
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('goals_list') }}">{{ 'sidebar.menu.goals.list' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('goals_payments_list') }}">{{ 'sidebar.menu.goals.payments' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('goals_settings') }}">{{ 'sidebar.menu.goals.settings' | trans }}</a>
-        </li>
-    </ul>
-</li>
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'goals') }} sidebar-menu-node-element" data-menu-node-name="{{ menuNodeModuleName }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.goals.description' | trans
+    }%}
+    >
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
+                    <span class="icon-holder menu-node-goals-icon">
+                     <i class="fas fa-bullseye fa-sm"></i>
+                    </span>
+            <span class="title">{{ 'sidebar.menu.goals.label' | trans }}</span>
+            <span class="arrow">
+                        <i class="ti-angle-right fa-sm"></i>
+                      </span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('goals_list') }}">{{ 'sidebar.menu.goals.list' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('goals_payments_list') }}">{{ 'sidebar.menu.goals.payments' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('goals_settings') }}">{{ 'sidebar.menu.goals.settings' | trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock nodeContent %}

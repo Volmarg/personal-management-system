@@ -1,35 +1,40 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'upload') }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.upload.description' | trans
-}%}
->
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% block nodeContent %}
 
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-        <span class="icon-holder menu-node-upload-icon">
-            <i class="fas fa-upload fa-sm"></i>
-        </span>
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'upload') }}" data-menu-node-name="{{ menuNodeModuleName }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.upload.description' | trans
+    }%}
+    >
 
-        <span class="title">{{ 'sidebar.menu.upload.label' | trans }}</span>
-        <span class="arrow">
-              <i class="ti-angle-right fa-sm"></i>
-        </span>
-    </a>
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
+            <span class="icon-holder menu-node-upload-icon">
+                <i class="fas fa-upload fa-sm"></i>
+            </span>
 
-    <ul class="dropdown-menu">
+            <span class="title">{{ 'sidebar.menu.upload.label' | trans }}</span>
+            <span class="arrow">
+                  <i class="ti-angle-right fa-sm"></i>
+            </span>
+        </a>
 
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('upload_fine_upload') }}">
-                {{ 'sidebar.menu.upload.add' | trans }}
-            </a>
-        </li>
+        <ul class="dropdown-menu">
 
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('upload_settings') }}">
-                {{ 'sidebar.menu.upload.manage' | trans }}
-            </a>
-        </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('upload_fine_upload') }}">
+                    {{ 'sidebar.menu.upload.add' | trans }}
+                </a>
+            </li>
 
-    </ul>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('upload_settings') }}">
+                    {{ 'sidebar.menu.upload.manage' | trans }}
+                </a>
+            </li>
 
-</li>
+        </ul>
+
+    </li>
+
+{% endblock nodeContent %}

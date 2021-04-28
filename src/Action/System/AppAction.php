@@ -38,9 +38,11 @@ class AppAction extends AbstractController {
     const KEY_CONSTANT_NAME           = 'constantName';
     const KEY_NAMESPACE               = 'namespace';
 
+    // todo: strange mapping here, could use the module names directly, but then why reporting is not a module, same with schedules?
     const MENU_NODE_MODULE_NAME_ACHIEVEMENTS  = ModulesController::MODULE_NAME_ACHIEVEMENTS;
     const MENU_NODE_MODULE_NAME_GOALS         = ModulesController::MODULE_NAME_GOALS;
-    const MENU_NODE_MODULE_NAME_MY_SCHEDULES  = ModulesController::MENU_NODE_MODULE_NAME_MY_SCHEDULES;
+    const MENU_NODE_MODULE_NAME_TODO          = ModulesController::MODULE_NAME_TODO;
+    const MENU_NODE_MODULE_NAME_MY_SCHEDULES  = ModulesController::MODULE_NAME_MY_SCHEDULES;
     const MENU_NODE_MODULE_NAME_MY_CONTACTS   = ModulesController::MODULE_NAME_CONTACTS;
     const MENU_NODE_MODULE_NAME_MY_FILES      = ModulesController::MODULE_NAME_FILES;
     const MENU_NODE_MODULE_NAME_MY_IMAGES     = ModulesController::MODULE_NAME_IMAGES;
@@ -59,6 +61,7 @@ class AppAction extends AbstractController {
      */
     const MENU_NODE_NAME_ACHIEVEMENTS = 'achievements';
     const MENU_NODE_NAME_GOALS        = 'goals';
+    const MENU_NODE_NAME_TODO         = 'todo';
     const MENU_NODE_NAME_MY_SCHEDULES = 'my-schedules';
     const MENU_NODE_NAME_MY_CONTACTS  = 'my-contacts';
     const MENU_NODE_NAME_MY_FILES     = 'my-files';

@@ -40,13 +40,10 @@ class LockedResourceController extends AbstractController {
 
         switch($type){
             case LockedResource::TYPE_ENTITY:
+            case LockedResource::TYPE_MODULE:
                 $isLockedResource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
+                return !empty($isLockedResource);
 
-                if( empty($isLockedResource) ){
-                    return false;
-                }
-                return true;
-            break;
             // in case of directory we need to check every parent directory for lock
             // if any parent is locked then we also lock given directory
             case LockedResource::TYPE_DIRECTORY:
@@ -69,7 +66,6 @@ class LockedResourceController extends AbstractController {
 
                 return false;
 
-                break;
             default:
                 throw new Exception("This locked resource type is not supported");
         }

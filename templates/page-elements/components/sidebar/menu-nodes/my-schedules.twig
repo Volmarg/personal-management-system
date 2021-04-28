@@ -1,14 +1,19 @@
-<li class="nav-item dropdown sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_SCHEDULES }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.schedules.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="{{ path('my_schedules') }}">
-        <span class="icon-holder menu-node-my-schedules-icon">
-            <i class="far fa-calendar-alt fa-sm"></i>
-        </span>
-        <span class="title">{{ 'sidebar.menu.schedules.label' | trans }}</span>
-    </a>
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% block nodeContent %}
 
-</li>
+    <li class="nav-item dropdown sidebar-menu-node-element" data-menu-node-name="{{ menuNodeModuleName }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.schedules.description' | trans
+    }%}
+    >
+        <a class="sidebar-link left-nav-link" href="{{ path('my_schedules') }}">
+            <span class="icon-holder menu-node-my-schedules-icon">
+                <i class="far fa-calendar-alt fa-sm"></i>
+            </span>
+            <span class="title">{{ 'sidebar.menu.schedules.label' | trans }}</span>
+        </a>
+
+    </li>
+
+{% endblock nodeContent %}
