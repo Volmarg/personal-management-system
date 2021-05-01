@@ -4,6 +4,7 @@
 namespace App\Action\Modules\Payments;
 
 
+use App\Annotation\System\LockedResource;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -17,6 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class MyPaymentsOwedAction
+ * @package App\Action\Modules\Payments
+ * @LockedResource(
+ *     type=App\Entity\System\LockedResource::TYPE_MODULE,
+ *     target=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
+ * )
+ */
 class MyPaymentsOwedAction extends AbstractController {
 
 

@@ -5,6 +5,8 @@ namespace App\Action\Page;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Page\SettingsDashboardController;
+use App\Controller\Page\SettingsLockModuleController;
+use App\DTO\Settings\Lock\SettingsModulesDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,16 +39,18 @@ class SettingsViewAction extends AbstractController {
      * @return Response
      * @throws Exception
      */
-    public function renderSettingsTemplate($ajaxRender = false): Response
+    public function renderSettingsTemplate(bool $ajaxRender = false): Response
     {
 
         $dashboardSettingsView = $this->renderSettingsDashboardTemplate($ajaxRender)->getContent();
         $financesSettingsView  = $this->renderSettingsFinancesTemplate($ajaxRender)->getContent();
+        $modulesSettingsView   = $this->renderSettingsModulesTemplate($ajaxRender)->getContent();
 
         $data = [
             'ajax_render'             => $ajaxRender,
             'dashboard_settings_view' => $dashboardSettingsView,
             'finances_settings_view'  => $financesSettingsView,
+            'modules_settings_view'   => $modulesSettingsView,
         ];
 
         return $this->render(self::TWIG_SETTINGS_TEMPLATE, $data);
@@ -102,4 +106,31 @@ class SettingsViewAction extends AbstractController {
 
         return $this->render(SettingsFinancesAction::TWIG_FINANCES_SETTINGS_TEMPLATE, $data);
     }
+
+    /**
+     * @param bool $ajaxRender
+     * @return Response
+     * @throws Exception
+     */
+    private function renderSettingsModulesTemplate(bool $ajaxRender = false): Response
+    {
+        $settingForModules = $this->app->settings->settingsLoader->getSettingsForModules();
+        $areSettingsInDb   = !empty($settingForModules);
+
+        if( $areSettingsInDb ){
+            $settingJson        = $settingForModules->getValue();
+            $settingsForModules = SettingsModulesDTO::fromJson($settingJson);
+        }else{
+            $arrayOfModuleLockDtos = SettingsLockModuleController::buildArrayOfModulesLockDtosForInitialVisibility(false);
+            $settingsForModules    = SettingsLockModuleController::buildModulesSettingsDto($arrayOfModuleLockDtos);
+        }
+
+        $data = [
+            'ajax_render'          => $ajaxRender,
+            'module_lock_settings' => $settingsForModules->getModuleLockSettings(),
+        ];
+
+        return $this->render(SettingsLockModuleController::TWIG_DASHBOARD_SETTINGS_TEMPLATE, $data);
+    }
+
 }

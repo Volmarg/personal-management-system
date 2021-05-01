@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Setting;
-use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,23 +20,14 @@ class SettingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Will return the setting by name or null if nothing is found
+     *
+     * @param string $settingName
      * @return Setting|null
      */
-    public function getSettingsForDashboard():?Setting {
-        $result = $this->findBy(['name' => SettingsLoader::SETTING_NAME_DASHBOARD]);
-
-        if( empty($result) ){
-            return null;
-        }
-
-        return reset($result);
-    }
-
-    /**
-     * @return Setting|null
-     */
-    public function getSettingsForFinances():?Setting {
-        $result = $this->findBy(['name' => SettingsLoader::SETTING_NAME_FINANCES]);
+    public function getSettingByName(string $settingName): ?Setting
+    {
+        $result = $this->findBy(['name' => $settingName]);
 
         if( empty($result) ){
             return null;

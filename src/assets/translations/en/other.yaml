@@ -51,6 +51,8 @@ codePages:
 
 settings:
   tab:
+    modules:
+      label: Modules
     dashboard:
       label: Dashboard
     finances:
@@ -68,7 +70,7 @@ settings:
     header: Settings
     text:
       mainDescription: |
-        Contains either system wide or special settings not related explicitly to any module
+        Contains system wide or special settings for certain logic
   guide:
     label: Guide
   finances:
@@ -89,7 +91,13 @@ settings:
         couldNotHandleAddingNewCurrencyBeingDefaultValue: "Could not handle adding new currency being default value"
         currencyWithThisNameAlreadyExist: "Currency with this name already exist"
         success: "Currency record has been successfully updated"
-
+  modules:
+    lock:
+      label: Modules Lock
+      tabel:
+        headers:
+          moduleName: Module name
+          lockModule: Lock module
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.
   recordWithThisNameExist: Record with this name already exists!

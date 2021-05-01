@@ -7,7 +7,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\System\LockedResource;
 use App\Repository\AbstractRepository;
 use Doctrine\ORM\Mapping\MappingException;
@@ -16,7 +15,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\LockedResource as LockedResourceAnnotation;
 
+/**
+ * Class MyNotesAction
+ * @package App\Action\Modules\Notes
+ * @LockedResourceAnnotation(
+ *     type=App\Entity\System\LockedResource::TYPE_MODULE,
+ *     target=App\Controller\Modules\ModulesController::MODULE_NAME_NOTES
+ * )
+ */
 class MyNotesAction extends AbstractController {
 
     const KEY_PARAMETER_ID = "id";

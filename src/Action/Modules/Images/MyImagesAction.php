@@ -24,7 +24,16 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\LockedResource as LockedResourceAnnotation;
 
+/**
+ * Class MyImagesAction
+ * @package App\Action\Modules\Images
+ * @LockedResourceAnnotation(
+ *     type=App\Entity\System\LockedResource::TYPE_MODULE,
+ *     target=App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES
+ * )
+ */
 class MyImagesAction extends AbstractController {
 
     const TWIG_TEMPLATE_MY_IMAGES         = 'modules/my-images/my-images.html.twig';

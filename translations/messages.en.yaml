@@ -245,12 +245,13 @@ codePages:
     error404: { h1: 404, h3: 'Oops Page Not Found', text: 'The page you are looking for does not exist or has been moved.', button: 'Go back', title: '404 - page not found' }
     error500: { h1: 500, h3: 'Internal server error', text: 'Something goes wrong with our servers, please try again later.', button: 'Go back', title: '500 - internal server error' }
 settings:
-    tab: { dashboard: { label: Dashboard }, finances: { label: Finances } }
+    tab: { modules: { label: Modules }, dashboard: { label: Dashboard }, finances: { label: Finances } }
     label: Settings
     dashboard: { widgets: { visibility: { label: 'Widgets visibility', table: { labels: { name: Name, displayWidget: 'Display widget' } } } } }
-    infoBlock: { header: Settings, text: { mainDescription: "Contains either system wide or special settings not related explicitly to any module\n" } }
+    infoBlock: { header: Settings, text: { mainDescription: "Contains system wide or special settings for certain logic\n" } }
     guide: { label: Guide }
     finances: { type: { currencies: { label: Currencies, table: { name: Name, symbol: Symbol, multiplier: Multiplier, isDefault: 'Is default' }, addCurrency: 'Add currency' }, messages: { couldNotFindCurrencyForGivenName: 'Could not find currency for given name', defaultCurrencyCanNotBeRemove: 'Default currency cannot be removed', couldNotFindSettingWithThisName: 'Could not find setting with this name', canNotUnsetTheTheDefaultPropertyForDefaultCurrency: 'Can not unset the default property for default currency', couldNotHandleAddingNewCurrencyBeingDefaultValue: 'Could not handle adding new currency being default value', currencyWithThisNameAlreadyExist: 'Currency with this name already exist', success: 'Currency record has been successfully updated' } } }
+    modules: { lock: { label: 'Modules Lock', tabel: { headers: { moduleName: 'Module name', lockModule: 'Lock module' } } } }
 db:
     foreignKeyViolation: 'This record cannot be removed - it''s connected with existing records.'
     recordWithThisNameExist: 'Record with this name already exists!'

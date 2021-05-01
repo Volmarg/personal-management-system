@@ -29,6 +29,9 @@
                                    <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
                                        {{ 'settings.tab.finances.label' | trans }}
                                    </a></li>
+                                   <li><a class="nav-link" href="#tab-3" id="tab-nav-2">
+                                        {{ 'settings.tab.modules.label' | trans }}
+                                   </a></li>
                                 </ul>
 
                                 <div class="tab-content">
@@ -42,6 +45,13 @@
                                            {{ finances_settings_view | raw }}
                                        </div>
                                    </div>
+
+                                    <div id="tab-3" class="tab-pane" role="tabpanel">
+                                        <div class="bgc-white bdrs-3 p-20 mB-20 d-flex flex-column">
+                                            {{ modules_settings_view | raw }}
+                                        </div>
+                                    </div>
+
                                 </div>
 
                              </div>
