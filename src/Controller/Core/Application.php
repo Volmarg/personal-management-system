@@ -130,8 +130,9 @@ class Application extends AbstractController {
     /**
      * Logs the standard exception data
      * @param Throwable $throwable
+     * @param array $dataBag
      */
-    public function logExceptionWasThrown(Throwable $throwable): void
+    public function logExceptionWasThrown(Throwable $throwable, array $dataBag = []): void
     {
         $message = $this->translator->translate('messages.general.internalServerError');
 
@@ -139,6 +140,7 @@ class Application extends AbstractController {
             "exceptionMessage" => $throwable->getMessage(),
             "exceptionCode"    => $throwable->getCode(),
             "exceptionTrace"   => $throwable->getTraceAsString(),
+            "dataBag"          => $dataBag,
         ]);
     }
 

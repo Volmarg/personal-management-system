@@ -2,11 +2,15 @@
 
 namespace App\Listeners;
 
+use App\Annotation\System\LockedResource;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\System\LockedResourceController;
 use App\Entity\User;
+use App\Services\Annotation\AnnotationReaderService;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
+use App\Services\Routing\UrlMatcherService;
 use App\Services\Session\ExpirableSessionsService;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
@@ -58,7 +62,33 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private Application $app;
 
-    public function __construct(Logger $securityLogger, ExpirableSessionsService $sessionsService, UrlGeneratorInterface  $urlGenerator, Application $app) {
+    /**
+     * @var UrlMatcherService $urlMatcherService
+     */
+    private UrlMatcherService $urlMatcherService;
+
+    /**
+     * @var AnnotationReaderService $annotationReaderService
+     */
+    private AnnotationReaderService $annotationReaderService;
+
+    /**
+     * @var LockedResourceController $lockedResourceController
+     */
+    private LockedResourceController $lockedResourceController;
+
+    public function __construct(
+        Logger                      $securityLogger,
+        ExpirableSessionsService    $sessionsService,
+        UrlGeneratorInterface       $urlGenerator,
+        Application                 $app,
+        UrlMatcherService           $urlMatcherService,
+        AnnotationReaderService     $annotationReaderService,
+        LockedResourceController    $lockedResourceController
+    ) {
+        $this->lockedResourceController = $lockedResourceController;
+        $this->annotationReaderService  = $annotationReaderService;
+        $this->urlMatcherService        = $urlMatcherService;
         $this->securityLogger           = $securityLogger->getSecurityLogger();
         $this->expirableSessionsService = $sessionsService;
         $this->urlGenerator             = $urlGenerator;
@@ -81,6 +111,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         $this->blockIp($ev);
+
+        $this->handleAnnotations($ev);
     }
 
     public static function getSubscribedEvents() {
@@ -248,6 +280,55 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
             $this->app->addDangerFlash($message);
             $ev->setResponse($response);
+        }
+    }
+
+    /**
+     * Will handle annotations
+     *
+     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $ev
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function handleAnnotations(RequestEvent $ev)
+    {
+        $this->handleResourceLockAnnotation($ev);
+    }
+
+    /**
+     * Will handle locked resource annotation
+     *
+     * @param RequestEvent $ev
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
+    private function handleResourceLockAnnotation(RequestEvent $ev)
+    {
+        $request     = $ev->getRequest();
+        $classForUrl = $this->urlMatcherService->getClassForCalledUrl($request->getRequestUri());
+
+        if( empty($classForUrl) ){
+            $this->app->logger->warning("No class was found for url: " . $request->getRequestUri());
+        }
+
+        // can happen for web profiler / debug bar routes
+        if( !class_exists($classForUrl) ){
+            return;
+        }
+
+        /** @var ?LockedResource $annotation */
+        $annotation = $this->annotationReaderService->getClassAnnotation($classForUrl, LockedResource::class);
+
+        if( empty($annotation) ){
+            return;
+        }
+
+        if( !$this->lockedResourceController->isAllowedToSeeResource($annotation->getRecord(), $annotation->getType(), $annotation->getTarget(), true) ){
+            $redirectResponse = new RedirectResponse($this->urlGenerator->generate("dashboard"));
+            $ev->setResponse($redirectResponse);
+            $ev->stopPropagation();
+            return;
         }
     }
 
