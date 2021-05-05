@@ -43,17 +43,17 @@ class SettingsModuleLockDTO extends AbstractDTO
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function isLocked(): string
+    public function isLocked(): bool
     {
         return $this->locked;
     }
 
     /**
-     * @param string $locked
+     * @param bool $locked
      */
-    public function setLocked(string $locked): void
+    public function setLocked(bool $locked): void
     {
         $this->locked = $locked;
     }
@@ -65,12 +65,22 @@ class SettingsModuleLockDTO extends AbstractDTO
      */
     public static function fromJson(string $json): self
     {
-        $widgetVisibilityArray = json_decode($json, true);
+        $dataArray = json_decode($json, true);
+        $dto       = self::fromArray($dataArray);
+        return $dto;
+    }
 
-        $name      = self::checkAndGetKey($widgetVisibilityArray, self::KEY_NAME);
-        $IsVisible = self::checkAndGetKey($widgetVisibilityArray, self::KEY_IS_LOCKED);
+    /**
+     * @param array $dataArray
+     * @return SettingsModuleLockDTO
+     * @throws Exception
+     */
+    public static function fromArray(array $dataArray): self
+    {
+        $name      = self::checkAndGetKey($dataArray, self::KEY_NAME);
+        $IsVisible = self::checkAndGetKey($dataArray, self::KEY_IS_LOCKED);
 
-        $dto = new self();
+        $dto = new SettingsModuleLockDTO();
         $dto->setName($name);
         $dto->setLocked($IsVisible);
 

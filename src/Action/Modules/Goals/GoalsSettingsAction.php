@@ -4,7 +4,7 @@
 namespace App\Action\Modules\Goals;
 
 
-use App\Annotation\System\LockedResource;
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -19,9 +19,8 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class GoalsSettingsAction
  * @package App\Action\Modules\Goals
- * @LockedResource(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_GOALS
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_GOALS
  * )
  */
 class GoalsSettingsAction extends AbstractController {

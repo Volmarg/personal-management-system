@@ -1,15 +1,12 @@
-{# Consist of logic shared across all nodes #}
-{% set lock_type = constant('App\\Entity\\System\\LockedResource::TYPE_MODULE') %}
-
 {#
-    Some menu nodes do not have `menuNodeModuleName` defined - that's correct, lock for these nodes is not supported
+    Some menu nodes do not have `menu_node_module_name` defined - that's correct, lock for these nodes is not supported
 #}
 {% if
     (
-            menuNodeModuleName is defined
-        and isAllowedToSeeResource("", lock_type, menuNodeModuleName)
+            menu_node_module_name is defined
+        and not isModuleLocked(menu_node_module_name)
     )
-    or menuNodeModuleName is not defined
+    or menu_node_module_name is not defined
 %}
 
     {% block nodeContent %}

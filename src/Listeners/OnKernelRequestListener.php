@@ -2,10 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Annotation\System\LockedResource;
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
-use App\Controller\System\LockedResourceController;
+use App\Controller\Page\SettingsLockModuleController;
 use App\Entity\User;
 use App\Services\Annotation\AnnotationReaderService;
 use App\Services\Exceptions\SecurityException;
@@ -73,26 +73,26 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private AnnotationReaderService $annotationReaderService;
 
     /**
-     * @var LockedResourceController $lockedResourceController
+     * @var SettingsLockModuleController $settingsLockModuleController
      */
-    private LockedResourceController $lockedResourceController;
+    private SettingsLockModuleController $settingsLockModuleController;
 
     public function __construct(
-        Logger                      $securityLogger,
-        ExpirableSessionsService    $sessionsService,
-        UrlGeneratorInterface       $urlGenerator,
-        Application                 $app,
-        UrlMatcherService           $urlMatcherService,
-        AnnotationReaderService     $annotationReaderService,
-        LockedResourceController    $lockedResourceController
+        Logger                       $securityLogger,
+        ExpirableSessionsService     $sessionsService,
+        UrlGeneratorInterface        $urlGenerator,
+        Application                  $app,
+        UrlMatcherService            $urlMatcherService,
+        AnnotationReaderService      $annotationReaderService,
+        SettingsLockModuleController $settingsLockModuleController
     ) {
-        $this->lockedResourceController = $lockedResourceController;
-        $this->annotationReaderService  = $annotationReaderService;
-        $this->urlMatcherService        = $urlMatcherService;
-        $this->securityLogger           = $securityLogger->getSecurityLogger();
-        $this->expirableSessionsService = $sessionsService;
-        $this->urlGenerator             = $urlGenerator;
-        $this->app                      = $app;
+        $this->settingsLockModuleController = $settingsLockModuleController;
+        $this->annotationReaderService      = $annotationReaderService;
+        $this->urlMatcherService            = $urlMatcherService;
+        $this->securityLogger               = $securityLogger->getSecurityLogger();
+        $this->expirableSessionsService     = $sessionsService;
+        $this->urlGenerator                 = $urlGenerator;
+        $this->app                          = $app;
     }
 
     /**
@@ -317,14 +317,15 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             return;
         }
 
-        /** @var ?LockedResource $annotation */
-        $annotation = $this->annotationReaderService->getClassAnnotation($classForUrl, LockedResource::class);
+        /** @var ?ModuleAnnotation $annotation */
+        $annotation = $this->annotationReaderService->getClassAnnotation($classForUrl, ModuleAnnotation::class);
 
         if( empty($annotation) ){
             return;
         }
 
-        if( !$this->lockedResourceController->isAllowedToSeeResource($annotation->getRecord(), $annotation->getType(), $annotation->getTarget(), true) ){
+        // check locked module + add checking log to the "isAllowedToSeeResource"
+        if( !$this->settingsLockModuleController->isModuleLocked("") ){
             $redirectResponse = new RedirectResponse($this->urlGenerator->generate("dashboard"));
             $ev->setResponse($redirectResponse);
             $ev->stopPropagation();

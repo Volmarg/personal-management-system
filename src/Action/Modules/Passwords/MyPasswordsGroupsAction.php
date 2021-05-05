@@ -14,14 +14,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\System\LockedResource as LockedResourceAnnotation;
+use App\Annotation\System\ModuleAnnotation;
 
 /**
  * Class MyPasswordsGroupsAction
  * @package App\Action\Modules\Passwords
- * @LockedResourceAnnotation(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_PASSWORDS
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PASSWORDS
  * )
  */
 class MyPasswordsGroupsAction extends AbstractController {

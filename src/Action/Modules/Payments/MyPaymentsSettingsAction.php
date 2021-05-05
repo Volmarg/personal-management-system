@@ -4,12 +4,11 @@
 namespace App\Action\Modules\Payments;
 
 
-use App\Annotation\System\LockedResource;
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -20,9 +19,8 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class MyPaymentsSettingsAction
  * @package App\Action\Modules\Payments
- * @LockedResource(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
  * )
  */
 class MyPaymentsSettingsAction extends AbstractController {

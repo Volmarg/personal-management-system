@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Issues;
 
-use App\Annotation\System\LockedResource;
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -16,9 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class MyIssuesContactsAction
  * @package App\Action\Modules\Issues
- * @LockedResource(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_ISSUES
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_ISSUES
  * )
  */
 class MyIssuesContactsAction extends AbstractController

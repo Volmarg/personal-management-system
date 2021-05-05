@@ -14,14 +14,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\System\LockedResource as LockedResourceAnnotation;
+use App\Annotation\System\ModuleAnnotation;
 
 /**
  * Class AchievementAction
  * @package App\Action\Modules\Achievements
- * @LockedResourceAnnotation(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_ACHIEVEMENTS
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_ACHIEVEMENTS
  * )
  */
 class AchievementAction extends AbstractController {

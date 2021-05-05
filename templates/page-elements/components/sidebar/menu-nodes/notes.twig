@@ -1,7 +1,7 @@
 {% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
 {% block nodeContent %}
 
-    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes') }} sidebar-menu-node-element" data-menu-node-name="{{ menuNodeModuleName }}"
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-notes') }} sidebar-menu-node-element" data-menu-node-name="{{ menu_node_module_name }}"
     {% include 'page-elements/components/guide-popup.twig' with {
         popoverAlignment: "right",
         popoverContent  : 'guide.modules.notes.description' | trans

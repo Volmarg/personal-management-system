@@ -15,14 +15,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\System\LockedResource as LockedResourceAnnotation;
+use App\Annotation\System\ModuleAnnotation;
 
 /**
  * Class MyNotesCategoriesAction
  * @package App\Action\Modules\Notes
- * @LockedResourceAnnotation(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_NOTES
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_NOTES
  * )
  */
 class MyNotesCategoriesAction extends AbstractController {

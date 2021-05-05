@@ -74,8 +74,7 @@ class SettingsModulesDTO extends AbstractDTO
         $SettingsModuleDto = new self();
         foreach($moduleLockSettingsArrays as $moduleLockSettingsArray){
 
-            $moduleLockSettingsJson = json_decode($moduleLockSettingsArray);
-            $moduleLockSettingsDto  = SettingsModuleLockDTO::fromJson($moduleLockSettingsJson);
+            $moduleLockSettingsDto = SettingsModuleLockDTO::fromArray($moduleLockSettingsArray);
             $SettingsModuleDto->addModuleLock($moduleLockSettingsDto);
         }
 

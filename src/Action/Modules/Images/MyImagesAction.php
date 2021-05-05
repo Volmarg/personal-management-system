@@ -24,14 +24,13 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\System\LockedResource as LockedResourceAnnotation;
+use App\Annotation\System\ModuleAnnotation;
 
 /**
  * Class MyImagesAction
  * @package App\Action\Modules\Images
- * @LockedResourceAnnotation(
- *     type=App\Entity\System\LockedResource::TYPE_MODULE,
- *     target=App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES
  * )
  */
 class MyImagesAction extends AbstractController {
