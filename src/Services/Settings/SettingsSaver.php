@@ -5,12 +5,16 @@ namespace App\Services\Settings;
 
 use App\Controller\Page\SettingsDashboardController;
 use App\Controller\Page\SettingsFinancesController;
+use App\Controller\Page\SettingsLockModuleController;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
+use App\DTO\Settings\Lock\SettingsModulesDTO;
+use App\DTO\Settings\Lock\Subsettings\SettingsModuleLockDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 
 /**
  * Class SettingsSaver
@@ -71,7 +75,7 @@ class SettingsSaver {
 
     /**
      * @param SettingsWidgetVisibilityDTO[] $arrayOfWidgetsVisibilityDto
-     * @throws \Exception
+     * @throws Exception
      */
     public function saveSettingsForDashboardWidgetsVisibility(array $arrayOfWidgetsVisibilityDto): void {
 
@@ -100,7 +104,7 @@ class SettingsSaver {
 
     /**
      * @param SettingsCurrencyDTO[] $currenciesSettingsDtos
-     * @throws \Exception
+     * @throws Exception
      */
     public function saveFinancesSettingsForCurrenciesSettings(array $currenciesSettingsDtos): void {
 
@@ -121,6 +125,34 @@ class SettingsSaver {
 
         $setting->setName(SettingsLoader::SETTING_NAME_FINANCES);
         $setting->setValue($financesSettingsJson);
+
+        $this->em->persist($setting);
+        $this->em->flush();
+    }
+
+    /**
+     * @param SettingsModuleLockDTO[] $arrayOfModulesLockDto
+     * @throws Exception
+     */
+    public function saveSettingsForModulesLock(array $arrayOfModulesLockDto): void {
+
+        $setting         = $this->settingsLoader->getSettingsForModules();
+        $areSettingsInDb = !empty($setting);
+
+        if( $areSettingsInDb ){
+            $settingJson = $setting->getValue();
+            $dto         = SettingsModulesDTO::fromJson($settingJson);
+
+            $dto->setModuleLockDtos($arrayOfModulesLockDto);
+        }else{
+            $setting = new Setting();
+            $dto     = SettingsLockModuleController::buildModulesSettingsDto($arrayOfModulesLockDto);
+        }
+
+        $modulesLockJson = $dto->toJson();
+
+        $setting->setName(SettingsLoader::SETTING_NAME_MODULES);
+        $setting->setValue($modulesLockJson);
 
         $this->em->persist($setting);
         $this->em->flush();

@@ -302,6 +302,78 @@ export default class SpecialAction extends AbstractDataProcessor {
         processorName: "Setting"
     };
 
+    /**
+     * @description handles updating the module lock in system settings
+     */
+    public static settingsModuleLock: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        /**
+         * data from all records must be sent at once
+         * @param $baseElement {object}
+         */
+        makeUpdateData: function ($baseElement) {
+
+            let table              = $($baseElement).closest('tbody');
+            let modifiedModuleName = $($baseElement).find('.module-name').text();
+
+            let allRows       = $(table).find('tr');
+            let allRowsData   = [];
+
+            if( 0 === table.length || 0 === allRows.length ){
+                throw({
+                    "message": "Either no form or rows were found for modules lock update",
+                    "entity" : "Settings",
+                    "method" : "settingsModuleLock::makeUpdateData"
+                });
+            }
+
+            $.each(allRows, (index, row) => {
+
+                let name            = $(row).find('.module-name').text();
+                let isCheckedInput  = $(row).find('.is-locked').find('input');
+                let isChecked       = DomAttributes.isChecked(isCheckedInput);
+
+                // we make update before the state is changed so we take opposite state for modified setting
+                if( modifiedModuleName === name ){
+                    isChecked = !isChecked;
+                }
+
+                let rowData = {
+                    'name'     : name,
+                    'isLocked' : isChecked,
+                };
+
+                allRowsData.push(rowData);
+            });
+
+            let ajaxData = {
+                'all_rows_data': allRowsData
+            };
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(SpecialAction.settingsModuleLock.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(SpecialAction.settingsModuleLock.processorName);
+
+            let url = '/api/settings-module/update-lock';
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.ajaxData       = ajaxData;
+
+            return dataProcessorsDto
+        },
+        processorName: "Setting"
+    };
+
     public static settingsFinancesCurrencyTable: DataProcessorInterface = {
         makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
             return null;
