@@ -219,6 +219,9 @@ export default class DomAttributes {
             ];
 
             let isInArray = ArrayUtils.inArray(checkedAttr, checkedValues);
+            if( !isInArray){
+                return $(element).prop("checked");
+            }
 
             return isInArray;
         }

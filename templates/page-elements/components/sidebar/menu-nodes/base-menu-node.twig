@@ -1,15 +1,13 @@
 {#
     Some menu nodes do not have `menu_node_module_name` defined - that's correct, lock for these nodes is not supported
 #}
-{% if
+{% set isVisible =
     (
-            menu_node_module_name is defined
+        menu_node_module_name is defined
         and not isModuleLocked(menu_node_module_name)
     )
     or menu_node_module_name is not defined
 %}
 
-    {% block nodeContent %}
-    {% endblock nodeContent %}
-
-{% endif %}
+{% block nodeContent %}
+{% endblock nodeContent %}

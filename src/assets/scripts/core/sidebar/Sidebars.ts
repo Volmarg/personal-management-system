@@ -5,6 +5,11 @@ export default class Sidebars {
 
     private static hrefPatternAttribute : string = 'data-href-pattern';
 
+    private static readonly DATA_ATTRIBUTE_MENU_NODE_NAME = "data-menu-node-name";
+
+    /**
+     * @description this logic was delivered with the GUI meaning this is somehow responsible for handling menu
+     */
     public static init(): void
     {
         // Sidebar links
@@ -118,4 +123,31 @@ export default class Sidebars {
         // set current active
         $(currMenuLink).addClass('active');
     }
+
+    /**
+     * @description will hide menu element for menu node module name
+     */
+    public static hideMenuElementForMenuNodeModuleName(menuNodeModuleName: string): void
+    {
+        let $menuElement = Sidebars.getMenuElementForMenuNodeModuleName(menuNodeModuleName);
+        $menuElement.addClass("d-none");
+    }
+
+    /**
+     * @description will hide menu element for menu node module name
+     */
+    public static showMenuElementForMenuNodeModuleName(menuNodeModuleName: string): void
+    {
+        let $menuElement = Sidebars.getMenuElementForMenuNodeModuleName(menuNodeModuleName);
+        $menuElement.removeClass("d-none");
+    }
+
+    /**
+     * @description will return menu element for menu node module name
+     */
+    private static getMenuElementForMenuNodeModuleName(menuNodeModuleName: string): JQuery<HTMLElement>
+    {
+        return $(`[${this.DATA_ATTRIBUTE_MENU_NODE_NAME}="${menuNodeModuleName.trim()}"]`);
+    }
+
 }

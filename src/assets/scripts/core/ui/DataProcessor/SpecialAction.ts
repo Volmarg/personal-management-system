@@ -7,6 +7,7 @@ import DomAttributes            from "../../utils/DomAttributes";
 import DataProcessorDto         from "../../../DTO/DataProcessorDto";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
 import AjaxEvents               from "../../ajax/AjaxEvents";
+import Sidebars                 from "../../sidebar/Sidebars";
 
 /**
  * @description This class should contain definitions of actions either for special forms or certain elements on the page
@@ -322,7 +323,7 @@ export default class SpecialAction extends AbstractDataProcessor {
         makeUpdateData: function ($baseElement) {
 
             let table              = $($baseElement).closest('tbody');
-            let modifiedModuleName = $($baseElement).find('.module-name').text();
+            let modifiedModuleName = $($baseElement).find('.module-name').text().trim();
 
             let allRows       = $(table).find('tr');
             let allRowsData   = [];
@@ -335,13 +336,14 @@ export default class SpecialAction extends AbstractDataProcessor {
                 });
             }
 
+            let callbacksForMenuElements = [];
             $.each(allRows, (index, row) => {
 
-                let name            = $(row).find('.module-name').text();
+                let name            = $(row).find('.module-name').text().trim();
                 let isCheckedInput  = $(row).find('.is-locked').find('input');
                 let isChecked       = DomAttributes.isChecked(isCheckedInput);
 
-                // we make update before the state is changed so we take opposite state for modified setting
+                // make update before the state is changed in GUI so take opposite state for modified setting
                 if( modifiedModuleName === name ){
                     isChecked = !isChecked;
                 }
@@ -351,6 +353,15 @@ export default class SpecialAction extends AbstractDataProcessor {
                     'isLocked' : isChecked,
                 };
 
+                let callbackForMenuElement = () => {
+                    if(isChecked){
+                        Sidebars.hideMenuElementForMenuNodeModuleName(name);
+                    }else{
+                        Sidebars.showMenuElementForMenuNodeModuleName(name);
+                    }
+                }
+
+                callbacksForMenuElements.push(callbackForMenuElement);
                 allRowsData.push(rowData);
             });
 
@@ -363,11 +374,17 @@ export default class SpecialAction extends AbstractDataProcessor {
 
             let url = '/api/settings-module/update-lock';
 
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
+            let dataProcessorsDto                 = new DataProcessorDto();
+            dataProcessorsDto.successMessage      = successMessage;
+            dataProcessorsDto.failMessage         = failMessage;
+            dataProcessorsDto.url                 = url;
+            dataProcessorsDto.ajaxData            = ajaxData;
+            dataProcessorsDto.reloadModuleContent = false;
+            dataProcessorsDto.callbackAfter       = () => {
+                for(let callback of callbacksForMenuElements){
+                    callback();
+                }
+            };
 
             return dataProcessorsDto
         },
