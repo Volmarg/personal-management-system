@@ -2,7 +2,7 @@
 
 namespace App\Controller\Page;
 
-use App\Controller\Core\Application;
+use App\Controller\Core\Repositories;
 use App\Controller\Modules\ModulesController;
 use App\DTO\Settings\Lock\SettingsModulesDTO;
 use App\DTO\Settings\Lock\Subsettings\SettingsModuleLockDTO;
@@ -27,9 +27,9 @@ class SettingsLockModuleController extends AbstractController {
     ];
 
     /**
-     * @var Application $app
+     * @var Repositories $repositories
      */
-    private Application $app;
+    private Repositories $repositories;
 
     /**
      * @var SettingsModuleLockDTO[] $settingsModuleLockDtos
@@ -42,7 +42,7 @@ class SettingsLockModuleController extends AbstractController {
      */
     public function initializeSettingsModuleLockDtos(): void
     {
-        $moduleSettings = $this->app->repositories->settingRepository->getSettingByName(SettingsLoader::SETTING_NAME_MODULES);
+        $moduleSettings = $this->repositories->settingRepository->getSettingByName(SettingsLoader::SETTING_NAME_MODULES);
         if( empty($moduleSettings) ){
             $this->settingsModuleLockDtos = [];
             return;
@@ -56,11 +56,10 @@ class SettingsLockModuleController extends AbstractController {
 
     /**
      * SettingsLockModuleController constructor.
-     *
-     * @param Application $app
+     * @param Repositories $repositories
      */
-    public function __construct(Application $app) {
-        $this->app = $app;
+    public function __construct(Repositories $repositories) {
+        $this->repositories = $repositories;
     }
 
     /**

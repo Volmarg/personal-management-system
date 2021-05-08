@@ -5,12 +5,15 @@ namespace App\Controller\Modules\Todo;
 use App\Controller\Core\Application;
 use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\LockedResourceController;
 use App\Controller\System\ModuleController;
 use App\DTO\EntityDataDto;
 use App\Entity\Interfaces\Relational\RelatesToMyTodoInterface;
 use App\Entity\Modules\Todo\MyTodo;
+use App\Entity\System\LockedResource;
 use App\Services\Core\Logger;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -33,11 +36,17 @@ class MyTodoController extends AbstractController {
      */
     private MyIssuesController $issuesController;
 
-    public function __construct(Application $app, ModuleController $moduleController, MyIssuesController $issuesController)
+    /**
+     * @var LockedResourceController $lockedResourceController
+     */
+    private LockedResourceController $lockedResourceController;
+
+    public function __construct(Application $app, ModuleController $moduleController, MyIssuesController $issuesController, LockedResourceController $lockedResourceController)
     {
-        $this->app              = $app;
-        $this->issuesController = $issuesController;
-        $this->moduleController = $moduleController;
+        $this->app                      = $app;
+        $this->issuesController         = $issuesController;
+        $this->moduleController         = $moduleController;
+        $this->lockedResourceController = $lockedResourceController;
     }
 
     /**
@@ -71,17 +80,27 @@ class MyTodoController extends AbstractController {
      * - deleted
      * - completed
      * state
+     *
      * @param bool $deleted
      * @return array
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws Exception
      */
     public function getAllGroupedByModuleName(bool $deleted = false): array
     {
         $groupedEntities = [];
         $allEntities     = $this->getAll($deleted);
 
-        foreach($allEntities as $entity)
-        {
-            $moduleName                     = ( is_null($entity->getModule()) ? null : $entity->getModule()->getName()) ;
+        foreach($allEntities as $entity){
+
+            $moduleName = ( is_null($entity->getModule()) ? null : $entity->getModule()->getName()) ;
+            if(
+                    !is_null($moduleName)
+                &&  !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName, false)
+            ){
+                continue;
+            }
+
             $groupedEntities[$moduleName][] = $entity;
         }
 

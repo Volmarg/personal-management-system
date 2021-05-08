@@ -2,6 +2,7 @@
 
 namespace App\Controller\Page;
 
+use App\Controller\Modules\ModulesController;
 use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
@@ -31,8 +32,20 @@ class SettingsDashboardController extends AbstractController {
      */
     private $translator;
 
-    public function __construct(Translator $translator) {
-        $this->translator = $translator;
+    /**
+     * @var SettingsLockModuleController $settingsLockModuleController
+     */
+    private SettingsLockModuleController $settingsLockModuleController;
+
+    /**
+     * SettingsDashboardController constructor.
+     *
+     * @param Translator $translator
+     * @param SettingsLockModuleController $settingsLockModuleController
+     */
+    public function __construct(Translator $translator, SettingsLockModuleController $settingsLockModuleController) {
+        $this->settingsLockModuleController = $settingsLockModuleController;
+        $this->translator                   = $translator;
     }
 
     /**
@@ -41,7 +54,7 @@ class SettingsDashboardController extends AbstractController {
      * @return array
      * 
      */
-    public static function getDashboardWidgetsNames(Translator $translator):array {
+    public function getDashboardWidgetsNames(Translator $translator): array {
 
         $dashboardWidgetsNames = [];
 

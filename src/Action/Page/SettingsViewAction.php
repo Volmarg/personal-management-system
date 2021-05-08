@@ -77,7 +77,7 @@ class SettingsViewAction extends AbstractController {
         }
 
         $widgetsVisibilitySettings = $dashboardSettingsDto->getWidgetSettings()->getWidgetsVisibility();
-        $widgetsNames              = SettingsDashboardController::getDashboardWidgetsNames($this->app->translator);
+        $widgetsNames              = $this->controllers->getSettingsDashboardController()->getDashboardWidgetsNames($this->app->translator);
 
         $data = [
             'ajax_render'                 => $ajaxRender,

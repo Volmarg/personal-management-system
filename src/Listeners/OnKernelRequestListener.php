@@ -6,6 +6,8 @@ use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Page\SettingsLockModuleController;
+use App\Controller\System\LockedResourceController;
+use App\Entity\System\LockedResource;
 use App\Entity\User;
 use App\Services\Annotation\AnnotationReaderService;
 use App\Services\Exceptions\SecurityException;
@@ -73,9 +75,9 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private AnnotationReaderService $annotationReaderService;
 
     /**
-     * @var SettingsLockModuleController $settingsLockModuleController
+     * @var LockedResourceController $lockedResourceController
      */
-    private SettingsLockModuleController $settingsLockModuleController;
+    private LockedResourceController $lockedResourceController;
 
     public function __construct(
         Logger                       $securityLogger,
@@ -84,9 +86,9 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         Application                  $app,
         UrlMatcherService            $urlMatcherService,
         AnnotationReaderService      $annotationReaderService,
-        SettingsLockModuleController $settingsLockModuleController
+        LockedResourceController     $lockedResourceController
     ) {
-        $this->settingsLockModuleController = $settingsLockModuleController;
+        $this->lockedResourceController     = $lockedResourceController;
         $this->annotationReaderService      = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
         $this->securityLogger               = $securityLogger->getSecurityLogger();
@@ -325,7 +327,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         }
 
         // check locked module + add checking log to the "isAllowedToSeeResource"
-        if( $this->settingsLockModuleController->isModuleLocked($annotation->getName()) ){
+        if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $annotation->getName()) ){
 
             $targetUrl = $this->urlGenerator->generate("dashboard");
             if( $request->isXmlHttpRequest() ){

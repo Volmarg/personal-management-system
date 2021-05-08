@@ -2,6 +2,7 @@
 
 namespace App\Action\Modules\Todo;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -14,6 +15,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_TODO
+ * )
+ */
 class MyTodoElementAction extends AbstractController {
 
     const KEY_ID   = "id";

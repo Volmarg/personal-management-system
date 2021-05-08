@@ -2,6 +2,7 @@
 
 namespace App\Action\Modules\Todo;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -15,6 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_TODO
+ * )
+ */
 class MyTodoListAction extends AbstractController {
 
     const KEY_TODO        = "myTodo";
@@ -127,7 +133,6 @@ class MyTodoListAction extends AbstractController {
      */
     private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
-
         $allGroupedTodo  = $this->controllers->getMyTodoController()->getAllGroupedByModuleName();
         $todoForm        = $this->app->forms->todoForm()->createView();
         $todoElementForm = $this->app->forms->todoElementForm();
