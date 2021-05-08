@@ -325,9 +325,18 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         }
 
         // check locked module + add checking log to the "isAllowedToSeeResource"
-        if( !$this->settingsLockModuleController->isModuleLocked("") ){
-            $redirectResponse = new RedirectResponse($this->urlGenerator->generate("dashboard"));
-            $ev->setResponse($redirectResponse);
+        if( $this->settingsLockModuleController->isModuleLocked($annotation->getName()) ){
+
+            $targetUrl = $this->urlGenerator->generate("dashboard");
+            if( $request->isXmlHttpRequest() ){
+                $ajaxResponse = new AjaxResponse();
+                $ajaxResponse->setRouteUrl($targetUrl);
+                $response = $ajaxResponse->buildJsonResponse();
+            }else{
+                $response = new RedirectResponse($targetUrl);
+            }
+
+            $ev->setResponse($response);
             $ev->stopPropagation();
             return;
         }

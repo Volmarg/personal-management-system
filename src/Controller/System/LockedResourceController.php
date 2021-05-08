@@ -111,21 +111,18 @@ class LockedResourceController extends AbstractController {
         $isSystemLocked   = $this->isSystemLocked();
         $isModuleLocked   = $this->settingsLockModuleController->isModuleLocked($target);
 
-
         if(
-                ( $isResourceLocked && !$isSystemLocked )
-            ||  ( $isModuleLocked && !$isSystemLocked )
-            ||  ( !$isResourceLocked )
-            ||  ( !$isModuleLocked )
+                ( $isResourceLocked && $isSystemLocked )
+            ||  ( $isModuleLocked   && $isSystemLocked )
         ){
-            return true;
+            if($showFlashMessage){
+                $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+                $this->app->addDangerFlash($message);
+            }
+            return false;
         }
 
-        if($showFlashMessage){
-            $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
-            $this->app->addDangerFlash($message);
-        }
-        return false;
+        return true;
     }
 
     /**

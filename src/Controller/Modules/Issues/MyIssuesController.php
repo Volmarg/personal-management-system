@@ -3,11 +3,15 @@
 namespace App\Controller\Modules\Issues;
 
 use App\Controller\Core\Application;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Page\SettingsLockModuleController;
+use App\Controller\System\LockedResourceController;
 use App\DTO\Modules\Issues\IssueCardDTO;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
 use App\Entity\Modules\Todo\MyTodo;
+use App\Entity\System\LockedResource;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
@@ -20,9 +24,14 @@ class MyIssuesController extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    /**
+     * @var LockedResourceController $lockedResourceController
+     */
+    private LockedResourceController $lockedResourceController;
 
-        $this->app = $app;
+    public function __construct(Application $app, LockedResourceController $lockedResourceController) {
+        $this->lockedResourceController = $lockedResourceController;
+        $this->app                      = $app;
     }
 
     /**
@@ -30,11 +39,11 @@ class MyIssuesController extends AbstractController {
      * @param bool $includeDeleted
      * @return IssueCardDTO[]
      * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function buildIssuesCardsDtosFromIssues(array $issues, bool $includeDeleted = false): array
     {
         $issuesCardsDtos    = [];
-        $latestContactDate  = null;
         $latestProgressDate = null;
 
         foreach( $issues as $issue ){
@@ -53,6 +62,7 @@ class MyIssuesController extends AbstractController {
                     !empty($issue->getTodo())
                 &&  ($issue->getTodo() instanceof MyTodo)
                 &&  !empty($issue->getTodo()->getMyTodoElement())
+                &&  $this->lockedResourceController->isAllowedToSeeResource($issue->getTodo()->getId(), LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_TODO, false)
             ){
                 foreach($issue->getTodo()->getMyTodoElement() as $todoElement){
                     if( !$todoElement->getCompleted() ){
