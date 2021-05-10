@@ -77,6 +77,9 @@ class AutoInstaller{
     const CONFIG_ENCRYPTION_YAML_PATH       = "config/packages/config/encryption.yaml";
     const CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY = "parameters.encrypt_key";
 
+    const PHP_EXECUTABLE_DEFAULT = "php";
+    const PHP_EXECUTABLE_7_4     = "php7.4";
+
     static $isNodeInstalled = false;
 
     static $isNpmInstalled = false;
@@ -97,8 +100,11 @@ class AutoInstaller{
 
     static $userSelectedMode = '';
 
+    static $phpExecutable = "";
+
     public static function runDocker(){
 
+        self::definePhpExecutable();
         CliHandler::initialize();
 
         CliHandler::newLine();
@@ -134,6 +140,7 @@ class AutoInstaller{
     
     public static function run(){
 
+        self::definePhpExecutable();
         CliHandler::initialize();
 
         CliHandler::newLine();
@@ -369,9 +376,9 @@ class AutoInstaller{
     private static function setDatabase(){
         CliHandler::infoText("Started configuring the database.");
         {
-            $dropDatabaseCommand   = "php7.4 bin/console doctrine:database:drop -n --force";
-            $createDatabaseCommand = "php7.4 bin/console doctrine:database:create -n";
-            $runMigrations         = "php7.4 bin/console doctrine:migrations:migrate -n";
+            $dropDatabaseCommand   = self::$phpExecutable . " bin/console doctrine:database:drop -n --force";
+            $createDatabaseCommand = self::$phpExecutable . " bin/console doctrine:database:create -n";
+            $runMigrations         = self::$phpExecutable . " bin/console doctrine:migrations:migrate -n";
 
             shell_exec($dropDatabaseCommand);
             CliHandler::text("Database has been dropped (if You provided the existing one)");
@@ -452,8 +459,8 @@ class AutoInstaller{
     private static function buildCache(){
         CliHandler::infoText("Started building cache.");
         {
-            $clearCacheCommand  = "php7.4 bin/console cache:clear";
-            $warmupCacheCommand = "php7.4 bin/console cache:warmup";
+            $clearCacheCommand  = self::$phpExecutable . " bin/console cache:clear";
+            $warmupCacheCommand = self::$phpExecutable . " bin/console cache:warmup";
 
             shell_exec($clearCacheCommand);
             CliHandler::text("Cache has been cleared.");
@@ -511,7 +518,7 @@ class AutoInstaller{
     private static function generateEncryptionKey(){
         CliHandler::infoText("Started generating encryption key.");
         {
-            $encryptionKeyGenerationCommand = 'php7.4 bin/console --env=dev encrypt:genkey';
+            $encryptionKeyGenerationCommand = self::$phpExecutable . ' bin/console --env=dev encrypt:genkey';
             $encryptionKey = trim( shell_exec($encryptionKeyGenerationCommand) );
 
             YamlFileParserService::replaceArrayNodeValue(self::CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY, $encryptionKey, self::CONFIG_ENCRYPTION_YAML_PATH);
@@ -572,6 +579,19 @@ class AutoInstaller{
 
         }
         CliHandler::infoText("Finished checking Mysql mode.");
+    }
+
+    /**
+     * Will define the php executable to be called
+     */
+    private static function definePhpExecutable(): void
+    {
+        $php74 = trim(shell_exec("which " . self::PHP_EXECUTABLE_7_4));
+        if( !empty($php74) ){
+            self::$phpExecutable = self::PHP_EXECUTABLE_7_4;
+        }else{
+            self::$phpExecutable = self::PHP_EXECUTABLE_DEFAULT;
+        }
     }
 
 }
