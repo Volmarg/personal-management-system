@@ -101,3 +101,6 @@ settings:
 db:
   foreignKeyViolation: This record cannot be removed - it's connected with existing records.
   recordWithThisNameExist: Record with this name already exists!
+
+demo:
+  disabledFunctionallity: This functionallity has been disabled on demo
