@@ -1,4 +1,6 @@
 {% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% set menu_node_module_name = "" %}
+
 {% block nodeContent %}
 
     <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'upload') }} {{ isVisible ? "" : "d-none" }}" data-menu-node-name="{{ menu_node_module_name }}"

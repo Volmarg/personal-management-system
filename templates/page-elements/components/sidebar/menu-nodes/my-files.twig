@@ -1,4 +1,6 @@
 {% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% set menu_node_module_name = constant("App\\Action\\System\\AppAction::MENU_NODE_MODULE_NAME_MY_FILES") %}
+
 {% block nodeContent %}
 
     <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-files') }} sidebar-menu-node-element {{ isVisible ? "" : "d-none" }}" data-menu-node-name="{{ menu_node_module_name }}"
