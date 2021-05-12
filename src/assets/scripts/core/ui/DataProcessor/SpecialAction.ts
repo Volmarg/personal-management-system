@@ -8,6 +8,7 @@ import DataProcessorDto         from "../../../DTO/DataProcessorDto";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
 import AjaxEvents               from "../../ajax/AjaxEvents";
 import Sidebars                 from "../../sidebar/Sidebars";
+import SystemInformationReader from "../../SystemInformationReader";
 
 /**
  * @description This class should contain definitions of actions either for special forms or certain elements on the page
@@ -355,10 +356,12 @@ export default class SpecialAction extends AbstractDataProcessor {
                 };
 
                 let callbackForMenuElement = () => {
-                    if(isChecked){
-                        Sidebars.hideMenuElementForMenuNodeModuleName(name);
-                    }else{
-                        Sidebars.showMenuElementForMenuNodeModuleName(name);
+                    if( SystemInformationReader.isSystemLocked() ){ // don't manipulate menu on unlocked system
+                        if(isChecked){
+                            Sidebars.hideMenuElementForMenuNodeModuleName(name);
+                        }else{
+                            Sidebars.showMenuElementForMenuNodeModuleName(name);
+                        }
                     }
                 }
 
