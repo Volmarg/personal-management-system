@@ -190,6 +190,7 @@ export default class DomAttributes {
     {
         if( DomAttributes.isCheckbox(element) ){
             $(element).attr("checked", "checked");
+            $(element).prop("checked", true);
         }
     };
 
@@ -202,6 +203,7 @@ export default class DomAttributes {
     {
         if( DomAttributes.isCheckbox(element) ){
             $(element).removeAttr("checked");
+            $(element).prop("checked", false);
         }
     };
 
@@ -213,17 +215,7 @@ export default class DomAttributes {
     public static isChecked(element): boolean
     {
         if( DomAttributes.isCheckbox(element) ){
-            let checkedAttr     = $(element).attr("checked");
-            let checkedValues   = [
-                "true", true, "checked"
-            ];
-
-            let isInArray = ArrayUtils.inArray(checkedAttr, checkedValues);
-            if( !isInArray){
-                return $(element).prop("checked");
-            }
-
-            return isInArray;
+            return $(element).prop("checked");
         }
     };
 
