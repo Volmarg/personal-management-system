@@ -292,11 +292,12 @@ export default class SpecialAction extends AbstractDataProcessor {
 
             let url = '/api/settings-dashboard/update-widgets-visibility';
 
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
+            let dataProcessorsDto                 = new DataProcessorDto();
+            dataProcessorsDto.successMessage      = successMessage;
+            dataProcessorsDto.failMessage         = failMessage;
+            dataProcessorsDto.url                 = url;
+            dataProcessorsDto.ajaxData            = ajaxData;
+            dataProcessorsDto.reloadModuleContent = false;
 
             return dataProcessorsDto
         },
@@ -420,11 +421,12 @@ export default class SpecialAction extends AbstractDataProcessor {
                 'before_update_state' : beforeUpdateState,
             };
 
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
+            let dataProcessorsDto                 = new DataProcessorDto();
+            dataProcessorsDto.successMessage      = successMessage;
+            dataProcessorsDto.failMessage         = failMessage;
+            dataProcessorsDto.url                 = url;
+            dataProcessorsDto.ajaxData            = ajaxData;
+            dataProcessorsDto.reloadModuleContent = false;
 
             return dataProcessorsDto;
         },

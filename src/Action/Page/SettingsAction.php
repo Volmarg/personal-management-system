@@ -62,10 +62,11 @@ class SettingsAction extends AbstractController {
             return $this->settingsViewAction->renderSettingsTemplate();
         }
 
+        $template = $this->settingsViewAction->renderSettingsTemplate(true)->getContent();
         $code     = $callStatusDto->getCode();
         $message  = $callStatusDto->getMessage();
 
-        $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
+        $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $template);
         return $response;
     }
 
