@@ -59,7 +59,7 @@ export default class RemoveAction extends AbstractAction {
             let dataProcessorDto = DataProcessorLoader.getRemoveDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_ENTITY, paramEntityName, $baseElement);
 
             if( !(dataProcessorDto instanceof DataProcessorDto) ){
-                dataProcessorDto = DataProcessorLoader.getUpdateDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, paramEntityName, $baseElement);
+                dataProcessorDto = DataProcessorLoader.getRemoveDataProcessorDto(DataProcessorLoader.PROCESSOR_TYPE_SPECIAL_ACTION, paramEntityName, $baseElement);
             }
 
             let removalMessage = ( dataProcessorDto.isConfirmMessageSet()

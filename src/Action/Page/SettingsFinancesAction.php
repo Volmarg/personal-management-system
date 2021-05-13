@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use TypeError;
 
 class SettingsFinancesAction extends AbstractController {
 
@@ -44,6 +45,7 @@ class SettingsFinancesAction extends AbstractController {
     /**
      * Handles updating settings of dashboard - widgets visibility
      * Contains special logic for handling the "default" currency change
+     *
      * @Route("/api/settings-finances/update-currencies", name="settings_finances_update_currencies", methods="POST")
      * @param Request $request
      * @return Response
@@ -149,40 +151,46 @@ class SettingsFinancesAction extends AbstractController {
      * @Route("/api/settings-finances/remove-currency/{name}", name="settings_finances_remove_currency", methods="POST")
      * @param Request $request
      * @param string $name
-     * @return string
+     * @return JsonResponse
      * @throws Exception
      */
-    public function removeFinancesCurrencySetting(Request $request, string $name){
+    public function removeFinancesCurrencySetting(Request $request, string $name): JsonResponse{
 
-        $currenciesSettingsDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
-        $currencyExisted        = false;
-        $name                   = trim($name);
+        try{
+            $currenciesSettingsDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
+            $currencyExisted        = false;
+            $name                   = trim($name);
 
-        foreach( $currenciesSettingsDtos as $index => $currencySettingDto ){
+            foreach( $currenciesSettingsDtos as $index => $currencySettingDto ){
 
-            if( $currencySettingDto->getName() === $name ){
+                if( $currencySettingDto->getName() === $name ){
 
-                if( $currencySettingDto->isDefault() ){
-                    $message = $this->app->translator->translate("settings.finances.type.messages.defaultCurrencyCanNotBeRemove");
-                    return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
+                    if( $currencySettingDto->isDefault() ){
+                        $message = $this->app->translator->translate("settings.finances.type.messages.defaultCurrencyCanNotBeRemove");
+                        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+                    }
+
+                    unset($currenciesSettingsDtos[$index]);
+                    $currencyExisted = true;
+                    break;
                 }
 
-                unset($currenciesSettingsDtos[$index]);
-                $currencyExisted = true;
-                break;
             }
 
+            if( !$currencyExisted ){
+                $message = $this->app->translator->translate("settings.finances.type.messages.couldNotFindCurrencyForGivenName");
+                return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+            }
+
+            $this->app->settings->settingsSaver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
+        }catch(Exception | TypeError $e){
+            $this->app->logExceptionWasThrown($e);
+
+            $message = $this->app->translator->translate('messages.general.internalServerError');
+            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        if( !$currencyExisted ){
-            $message = $this->app->translator->translate("settings.finances.type.messages.couldNotFindCurrencyForGivenName");
-            return new JsonResponse(["message" => $message], 500); //todo: refactor later with crud logic
-        }
-
-        $this->app->settings->settingsSaver->saveFinancesSettingsForCurrenciesSettings($currenciesSettingsDtos);
-
-        $renderedView = $this->settingsViewAction->renderSettingsTemplate(true);
-        return $renderedView;
+        return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_OK);
     }
 
     /**
