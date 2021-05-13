@@ -3,15 +3,18 @@
 namespace App\Repository;
 
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\FilesSearchController;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
+/**
+ * Todo: use dto searchResult, make interface with common fields like module, record etc to check lock more properly
+ * Class FilesSearchRepository
+ * @package App\Repository
+ */
 class FilesSearchRepository
 {
-
-    const SEARCH_TYPE_FILES = 'files';
-    const SEARCH_TYPE_NOTES = 'notes';
 
     /**
      * @var EntityManagerInterface $em
@@ -41,10 +44,10 @@ class FilesSearchRepository
             $bindedValues[]       = ( $doLikePercent ? "%{$value}%" : $value );
 
             switch($searchType){
-                case self::SEARCH_TYPE_FILES:
+                case FilesSearchController::SEARCH_TYPE_FILES:
                     $tagsSql .= (0 === $index ? " " : " OR ") . " tags LIKE ?";
                     break;
-                case self::SEARCH_TYPE_NOTES:
+                case FilesSearchController::SEARCH_TYPE_NOTES:
                     $tagsSql .= (0 === $index ? " " : " OR ") . " title LIKE ?";
                     break;
                 default:
@@ -57,10 +60,10 @@ class FilesSearchRepository
         $connection = $this->em->getConnection();
 
         switch($searchType){
-            case self::SEARCH_TYPE_FILES:
+            case FilesSearchController::SEARCH_TYPE_FILES:
                 $sql = $this->getSqlForFileSearch($tagsSql);
                 break;
-            case self::SEARCH_TYPE_NOTES:
+            case FilesSearchController::SEARCH_TYPE_NOTES:
                 $sql = $this->getSqlForNotesSearch($tagsSql);
                 break;
             default:
@@ -174,13 +177,16 @@ class FilesSearchRepository
      * @return string
      */
     private function getSqlForNotesSearch(string $tagsSql){
+        $notesModuleName = ModulesController::MODULE_NAME_NOTES;
+
         $sql = "
             SELECT 
-                mn.title    AS title,
-                mn.id       AS noteId,
-                mnc.name    AS category,
-                mnc.id      AS categoryId,
-                'note'      AS type
+                mn.title             AS title,
+                mn.id                AS noteId,
+                mnc.name             AS category,
+                mnc.id               AS categoryId,
+                'note'               AS type,
+                '{$notesModuleName}' AS module  
             
             FROM my_note mn
             

@@ -1,20 +1,3 @@
-{% set app_action = 'App\\Action\\System\\AppAction::' %}
-{% set MENU_NODE_MODULE_NAME_ACHIEVEMENTS      = constant(app_action~"MENU_NODE_MODULE_NAME_ACHIEVEMENTS") %}
-{% set MENU_NODE_MODULE_NAME_GOALS             = constant(app_action~"MENU_NODE_MODULE_NAME_GOALS") %}
-{% set MENU_NODE_MODULE_NAME_MY_CONTACTS       = constant(app_action~"MENU_NODE_MODULE_NAME_MY_CONTACTS") %}
-{% set MENU_NODE_MODULE_NAME_MY_SCHEDULES      = constant(app_action~"MENU_NODE_MODULE_NAME_MY_SCHEDULES") %}
-{% set MENU_NODE_MODULE_NAME_MY_FILES          = constant(app_action~"MENU_NODE_MODULE_NAME_MY_FILES") %}
-{% set MENU_NODE_MODULE_NAME_MY_IMAGES         = constant(app_action~"MENU_NODE_MODULE_NAME_MY_IMAGES") %}
-{% set MENU_NODE_MODULE_NAME_MY_JOB            = constant(app_action~"MENU_NODE_MODULE_NAME_MY_JOB") %}
-{% set MENU_NODE_MODULE_NAME_MY_PASSWORDS      = constant(app_action~"MENU_NODE_MODULE_NAME_MY_PASSWORDS") %}
-{% set MENU_NODE_MODULE_NAME_MY_PAYMENTS       = constant(app_action~"MENU_NODE_MODULE_NAME_MY_PAYMENTS") %}
-{% set MENU_NODE_MODULE_NAME_MY_SHOPPING       = constant(app_action~"MENU_NODE_MODULE_NAME_MY_SHOPPING") %}
-{% set MENU_NODE_MODULE_NAME_MY_TRAVELS        = constant(app_action~"MENU_NODE_MODULE_NAME_MY_TRAVELS") %}
-{% set MENU_NODE_MODULE_NAME_NOTES             = constant(app_action~"MENU_NODE_MODULE_NAME_NOTES") %}
-{% set MENU_NODE_MODULE_NAME_REPORTS           = constant(app_action~"MENU_NODE_MODULE_NAME_REPORTS") %}
-{% set MENU_NODE_MODULE_NAME_MY_ISSUES         = constant(app_action~"MENU_NODE_MODULE_NAME_MY_ISSUES") %}
-{% set MENU_NODE_MODULE_NAME_MY_VIDEO          = constant(app_action~"MENU_NODE_MODULE_NAME_MY_VIDEO") %}
-
 <ul class="sidebar-menu scrollable pos-r">
     <li class="nav-item mT-10 active"
     {% include 'page-elements/components/guide-popup.twig' with {
@@ -32,24 +15,24 @@
 
     <hr class="mT-3 mB-3"/>
 
-    {% include 'page-elements/components/sidebar/menu-nodes/goals.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/todo.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/notes.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-contacts.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/goals.twig'        %}
+    {% include 'page-elements/components/sidebar/menu-nodes/todo.twig'         %}
+    {% include 'page-elements/components/sidebar/menu-nodes/notes.twig'        %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-contacts.twig'  %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-passwords.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/achievements.twig' %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-schedules.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-issues.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-travels.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-payments.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-shopping.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-job.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-reports.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-issues.twig'    %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-travels.twig'   %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-payments.twig'  %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-shopping.twig'  %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-job.twig'       %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-reports.twig'   %}
 
     <hr class="mT-3 mB-3"/>
-    {% include 'page-elements/components/sidebar/menu-nodes/my-files.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-files.twig'  %}
     {% include 'page-elements/components/sidebar/menu-nodes/my-images.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/my-video.twig' %}
-    {% include 'page-elements/components/sidebar/menu-nodes/upload.twig' %}
+    {% include 'page-elements/components/sidebar/menu-nodes/my-video.twig'  %}
+    {% include 'page-elements/components/sidebar/menu-nodes/upload.twig'    %}
 
 </ul>

@@ -6,7 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Passwords\MyPasswords;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
@@ -15,7 +14,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\ModuleAnnotation;
 
+/**
+ * Class MyPasswordsAction
+ * @package App\Action\Modules\Passwords
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PASSWORDS
+ * )
+ */
 class MyPasswordsAction extends AbstractController {
 
     /**

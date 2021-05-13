@@ -1,0 +1,42 @@
+{% set data_type_and_id = ( isDemo() ? "" : "settingsModuleLock" )  %}
+
+<div class="bgc-white bdrs-3 p-20 mB-20 d-flex flex-column">
+    <h5 class="c-grey-900 mB-20 align-self-center">{{ 'settings.modules.lock.label' | trans }} </h5>
+
+    <section class="d-flex justify-content-center">
+        <div class="description text-center text-justify module-description-text-wrapper">
+            <i>
+                {{ 'demo.disabledFunctionallity' | trans }}
+            </i>
+        </div>
+    </section>
+
+    <table id="{{ data_type_and_id }}" class="table table-striped table-bordered" cellspacing="0" data-table="true" width="100%">
+        <thead>
+        <tr>
+            <td> {{ 'settings.modules.lock.tabel.headers.moduleName' | trans }} </td>
+            <td> {{ 'settings.modules.lock.tabel.headers.lockModule' | trans }} </td>
+        </tr>
+        </thead>
+        <tbody>
+
+            {% for module_lock_setting in module_lock_settings %}
+                <tr class="editable-parent save-parent" data-type="{{ data_type_and_id }}">
+
+                    <td class="module-name">
+                        {{ module_lock_setting.getName() }}
+                    </td>
+
+                    <td class="is-locked">
+                        {% include 'page-elements/components/forms/toggle-button.twig' with {
+                            "value"     : module_lock_setting.isLocked(),
+                            "yes_no"    : true,
+                            "classes"   : "fa-save save-record " ~ ( isDemo() ? "disabled readonly" : "")
+                        }%}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>

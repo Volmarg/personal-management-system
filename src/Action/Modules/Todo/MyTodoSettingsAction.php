@@ -2,11 +2,15 @@
 
 namespace App\Action\Modules\Todo;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-// todo
-//  - handle binding of modules  maybe, or at least make it read only at this point
+/**
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_TODO
+ * )
+ */
 class MyTodoSettingsAction extends AbstractController {
 
     /**

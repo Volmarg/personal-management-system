@@ -183,9 +183,11 @@ export default class UpdateAction extends AbstractAction {
                 _this.bootstrapNotify.notify(ajaxResponseDto.message, messageType);
             }
 
-            dataProcessorDto.callbackAfter();
-
-            _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            if(dataProcessorDto.reloadModuleContent){
+                _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
+            }else{
+                Loader.hideMainLoader();
+            }
 
             if( ajaxResponseDto.reloadPage ){
                 if( ajaxResponseDto.isReloadMessageSet() ){
@@ -193,6 +195,11 @@ export default class UpdateAction extends AbstractAction {
                 }
                 location.reload();
             }
+
+            if( $.isFunction(dataProcessorDto.callbackAfter) ){
+                dataProcessorDto.callbackAfter();
+            }
+
         });
     }
 }

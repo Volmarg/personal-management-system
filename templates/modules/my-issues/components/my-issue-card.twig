@@ -1,5 +1,8 @@
-{% set modules_controller = 'App\\Controller\\Modules\\ModulesController::' %}
-{% set MODULE_NAME_ISSUES = constant(modules_controller ~ 'MODULE_NAME_ISSUES') %}
+{% set modules_controller          = 'App\\Controller\\Modules\\ModulesController::' %}
+{% set locked_resource             = 'App\\Entity\\System\\LockedResource::' %}
+{% set MODULE_NAME_ISSUES          = constant(modules_controller ~ 'MODULE_NAME_ISSUES') %}
+{% set MODULE_NAME_TODO            = constant(modules_controller ~ 'MODULE_NAME_TODO') %}
+{% set LOCKED_RESOURCE_TYPE_ENTITY = constant(locked_resource ~ "TYPE_ENTITY") %}
 
 <div
     class="issue-wrapper"
@@ -159,25 +162,27 @@
                                 <i class="fas fa-plus-circle fa-lg"></i>
                             </span>
 
-                            <span class="action pointer"
-                                  data-entity-id="{{ issueCardDto.issue().getId() }}"
-                                  data-entity-detials-action="true"
-                                  data-dialog-call-request-url="{{ path('dialog_body_add_or_modify_todo') }}"
-                                  data-dialog-call-request-method="POST"
-                                  data-dialog-call-request-post-parameters='{
-                                        "entityId": "{{ issueCardDto.issue().getId() }}",
-                                        "actionPathname": "{{ app.request.attributes.get('_route') }}",
-                                        "moduleName": "{{ MODULE_NAME_ISSUES }}"
-                                    }'
-                                  data-call-dialog-on-click="true"
-                                  data-dialog-name="addOrModifyTodo"
-                                  data-toggle-popover="true"                         {# popover attr #}
-                                      data-content="                                 {# popover attr #}
-                                        {{ 'issues.card.popovers.addOrModifyExistingTodo' | trans }}
-                                      "
-                            >
-                                <i class="fas fa-tasks"></i>
-                            </span>
+                            {% if isAllowedToSeeResource(issueCardDto.issue().getId(), LOCKED_RESOURCE_TYPE_ENTITY, MODULE_NAME_TODO) %}
+                                <span class="action pointer"
+                                      data-entity-id="{{ issueCardDto.issue().getId() }}"
+                                      data-entity-detials-action="true"
+                                      data-dialog-call-request-url="{{ path('dialog_body_add_or_modify_todo') }}"
+                                      data-dialog-call-request-method="POST"
+                                      data-dialog-call-request-post-parameters='{
+                                            "entityId": "{{ issueCardDto.issue().getId() }}",
+                                            "actionPathname": "{{ app.request.attributes.get('_route') }}",
+                                            "moduleName": "{{ MODULE_NAME_ISSUES }}"
+                                        }'
+                                      data-call-dialog-on-click="true"
+                                      data-dialog-name="addOrModifyTodo"
+                                      data-toggle-popover="true"                         {# popover attr #}
+                                          data-content="                                 {# popover attr #}
+                                            {{ 'issues.card.popovers.addOrModifyExistingTodo' | trans }}
+                                          "
+                                >
+                                    <i class="fas fa-tasks"></i>
+                                </span>
+                            {% endif %}
 
                             <span class="action pointer"
                                   data-entity-id="{{ issueCardDto.issue().getId() }}"

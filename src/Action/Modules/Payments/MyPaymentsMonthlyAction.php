@@ -4,11 +4,11 @@
 namespace App\Action\Modules\Payments;
 
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Form\Modules\Payments\MyPaymentsMonthlyType;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
@@ -19,6 +19,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class MyPaymentsMonthlyAction
+ * @package App\Action\Modules\Payments
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
+ * )
+ */
 class MyPaymentsMonthlyAction extends AbstractController {
 
     /**

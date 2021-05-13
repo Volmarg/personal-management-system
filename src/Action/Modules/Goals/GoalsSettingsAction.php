@@ -4,11 +4,11 @@
 namespace App\Action\Modules\Goals;
 
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Goals\MyGoalsPayments;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -16,11 +16,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class GoalsSettingsAction
+ * @package App\Action\Modules\Goals
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_GOALS
+ * )
+ */
 class GoalsSettingsAction extends AbstractController {
-
-    const MY_GOALS          = 'MyGoals';
-    const MY_GOALS_SUBGOALS = 'MySubgoals';
-    const MY_GOALS_PAYMENTS = 'MyGoalsPayments';
 
     /**
      * @var Application

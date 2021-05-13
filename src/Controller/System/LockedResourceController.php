@@ -3,6 +3,7 @@
 namespace App\Controller\System;
 
 use App\Controller\Core\Application;
+use App\Controller\Page\SettingsLockModuleController;
 use App\Entity\System\LockedResource;
 use App\Entity\User;
 use App\Services\Session\UserRolesSessionService;
@@ -19,8 +20,14 @@ class LockedResourceController extends AbstractController {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var SettingsLockModuleController $settingsLockModuleController
+     */
+    private SettingsLockModuleController $settingsLockModuleController;
+
+    public function __construct(Application $app, SettingsLockModuleController $settingsLockModuleController) {
+        $this->app                          = $app;
+        $this->settingsLockModuleController = $settingsLockModuleController;
     }
 
     /**
@@ -35,18 +42,14 @@ class LockedResourceController extends AbstractController {
     public function isResourceLocked(string $record, string $type, string $target, Statement $stmt = null): bool
     {
         if( is_null($stmt) ){
-            $stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
+            $stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement($type);
         }
 
         switch($type){
             case LockedResource::TYPE_ENTITY:
                 $isLockedResource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
+                return !empty($isLockedResource);
 
-                if( empty($isLockedResource) ){
-                    return false;
-                }
-                return true;
-            break;
             // in case of directory we need to check every parent directory for lock
             // if any parent is locked then we also lock given directory
             case LockedResource::TYPE_DIRECTORY:
@@ -69,7 +72,14 @@ class LockedResourceController extends AbstractController {
 
                 return false;
 
-                break;
+            case LockedResource::TYPE_MODULE:
+                /**
+                 * Module lock is handled via @see SettingsLockModuleController, but this check was added due to usage of
+                 * @see LockedResourceController::isAllowedToSeeResource()
+                 */
+                return false;
+
+
             default:
                 throw new Exception("This locked resource type is not supported");
         }
@@ -99,19 +109,20 @@ class LockedResourceController extends AbstractController {
     {
         $isResourceLocked = $this->isResourceLocked($record, $type, $target, $stmt);
         $isSystemLocked   = $this->isSystemLocked();
+        $isModuleLocked   = $this->settingsLockModuleController->isModuleLocked($target);
 
         if(
-                ( $isResourceLocked && !$isSystemLocked )
-            ||  ( !$isResourceLocked )
+                ( $isResourceLocked && $isSystemLocked )
+            ||  ( $isModuleLocked   && $isSystemLocked )
         ){
-            return true;
+            if($showFlashMessage){
+                $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+                $this->app->addDangerFlash($message);
+            }
+            return false;
         }
 
-        if($showFlashMessage){
-            $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
-            $this->app->addDangerFlash($message);
-        }
-        return false;
+        return true;
     }
 
     /**

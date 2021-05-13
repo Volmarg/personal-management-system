@@ -1,14 +1,19 @@
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% set menu_node_module_name = constant("App\\Action\\System\\AppAction::MENU_NODE_MODULE_NAME_ACHIEVEMENTS") %}
+{% block nodeContent %}
 
-<li class="nav-item dropdown sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_ACHIEVEMENTS }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.achievements.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="{{ path('achievement') }}">
+    <li class="nav-item dropdown sidebar-menu-node-element {{ isVisible ? "" : "d-none" }}" data-menu-node-name="{{ menu_node_module_name }}"
+            {% include 'page-elements/components/guide-popup.twig' with {
+                popoverAlignment: "right",
+                popoverContent  : 'guide.modules.achievements.description' | trans
+            }%}
+    >
+        <a class="sidebar-link left-nav-link" href="{{ path('achievement') }}">
                 <span class="icon-holder menu-node-achievements-icon">
                     <i class="fas fa-trophy fa-sm"></i>
                 </span>
-        <span class="title">{{ 'sidebar.menu.achievements.label' | trans }}</span>
-    </a>
-</li>
+            <span class="title">{{ 'sidebar.menu.achievements.label' | trans }}</span>
+        </a>
+    </li>
+
+{% endblock nodeContent %}

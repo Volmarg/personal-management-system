@@ -2,11 +2,17 @@
 
 namespace App\Listeners;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
+use App\Controller\Page\SettingsLockModuleController;
+use App\Controller\System\LockedResourceController;
+use App\Entity\System\LockedResource;
 use App\Entity\User;
+use App\Services\Annotation\AnnotationReaderService;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
+use App\Services\Routing\UrlMatcherService;
 use App\Services\Session\ExpirableSessionsService;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
@@ -58,11 +64,37 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private Application $app;
 
-    public function __construct(Logger $securityLogger, ExpirableSessionsService $sessionsService, UrlGeneratorInterface  $urlGenerator, Application $app) {
-        $this->securityLogger           = $securityLogger->getSecurityLogger();
-        $this->expirableSessionsService = $sessionsService;
-        $this->urlGenerator             = $urlGenerator;
-        $this->app                      = $app;
+    /**
+     * @var UrlMatcherService $urlMatcherService
+     */
+    private UrlMatcherService $urlMatcherService;
+
+    /**
+     * @var AnnotationReaderService $annotationReaderService
+     */
+    private AnnotationReaderService $annotationReaderService;
+
+    /**
+     * @var LockedResourceController $lockedResourceController
+     */
+    private LockedResourceController $lockedResourceController;
+
+    public function __construct(
+        Logger                       $securityLogger,
+        ExpirableSessionsService     $sessionsService,
+        UrlGeneratorInterface        $urlGenerator,
+        Application                  $app,
+        UrlMatcherService            $urlMatcherService,
+        AnnotationReaderService      $annotationReaderService,
+        LockedResourceController     $lockedResourceController
+    ) {
+        $this->lockedResourceController     = $lockedResourceController;
+        $this->annotationReaderService      = $annotationReaderService;
+        $this->urlMatcherService            = $urlMatcherService;
+        $this->securityLogger               = $securityLogger->getSecurityLogger();
+        $this->expirableSessionsService     = $sessionsService;
+        $this->urlGenerator                 = $urlGenerator;
+        $this->app                          = $app;
     }
 
     /**
@@ -81,6 +113,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         $this->blockIp($ev);
+
+        $this->handleAnnotations($ev);
     }
 
     public static function getSubscribedEvents() {
@@ -248,6 +282,65 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
             $this->app->addDangerFlash($message);
             $ev->setResponse($response);
+        }
+    }
+
+    /**
+     * Will handle annotations
+     *
+     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $ev
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function handleAnnotations(RequestEvent $ev)
+    {
+        $this->handleResourceLockAnnotation($ev);
+    }
+
+    /**
+     * Will handle locked resource annotation
+     *
+     * @param RequestEvent $ev
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
+     */
+    private function handleResourceLockAnnotation(RequestEvent $ev)
+    {
+        $request     = $ev->getRequest();
+        $classForUrl = $this->urlMatcherService->getClassForCalledUrl($request->getRequestUri());
+
+        if( empty($classForUrl) ){
+            $this->app->logger->warning("No class was found for url: " . $request->getRequestUri());
+        }
+
+        // can happen for web profiler / debug bar routes
+        if( !class_exists($classForUrl) ){
+            return;
+        }
+
+        /** @var ?ModuleAnnotation $annotation */
+        $annotation = $this->annotationReaderService->getClassAnnotation($classForUrl, ModuleAnnotation::class);
+
+        if( empty($annotation) ){
+            return;
+        }
+
+        // check locked module + add checking log to the "isAllowedToSeeResource"
+        if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $annotation->getName()) ){
+
+            $targetUrl = $this->urlGenerator->generate("dashboard");
+            if( $request->isXmlHttpRequest() ){
+                $ajaxResponse = new AjaxResponse();
+                $ajaxResponse->setRouteUrl($targetUrl);
+                $response = $ajaxResponse->buildJsonResponse();
+            }else{
+                $response = new RedirectResponse($targetUrl);
+            }
+
+            $ev->setResponse($response);
+            $ev->stopPropagation();
+            return;
         }
     }
 

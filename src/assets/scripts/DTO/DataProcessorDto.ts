@@ -47,6 +47,11 @@ export default class DataProcessorDto extends AbstractDto {
     private _invokedAlertBody: string = "";
 
     /**
+     * @type boolean
+     */
+    private _reloadModuleContent: boolean = true;
+
+    /**
      * @type string
      */
     private _callback: Function = () => {};
@@ -202,6 +207,14 @@ export default class DataProcessorDto extends AbstractDto {
 
     set processorName(value: string) {
         this._processorName = value;
+    }
+
+    get reloadModuleContent(): boolean {
+        return this._reloadModuleContent;
+    }
+
+    set reloadModuleContent(value: boolean) {
+        this._reloadModuleContent = value;
     }
 
     /**

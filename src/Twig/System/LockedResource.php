@@ -4,6 +4,7 @@
 namespace App\Twig\System;
 
 
+use App\Controller\Page\SettingsLockModuleController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\Core\Application;
 use App\Services\Session\UserRolesSessionService;
@@ -34,16 +35,23 @@ class LockedResource extends AbstractExtension {
      */
     private $lockedResourceController;
 
+    /**
+     * @var SettingsLockModuleController $settingsLockModuleController
+     */
+    private SettingsLockModuleController $settingsLockModuleController;
+
     public function __construct(
         Application                     $app,
         AuthorizationCheckerInterface   $authorizationChecker,
         UserRolesSessionService         $userRolesSessionService,
-        LockedResourceController        $lockedResourceController
+        LockedResourceController        $lockedResourceController,
+        SettingsLockModuleController    $settingsLockModuleController
     ) {
-        $this->lockedResourceController = $lockedResourceController;
-        $this->userRolesSessionService  = $userRolesSessionService;
-        $this->authorizationChecker     = $authorizationChecker;
-        $this->app                      = $app;
+        $this->settingsLockModuleController = $settingsLockModuleController;
+        $this->lockedResourceController     = $lockedResourceController;
+        $this->userRolesSessionService      = $userRolesSessionService;
+        $this->authorizationChecker         = $authorizationChecker;
+        $this->app                          = $app;
     }
 
     public function getFunctions() {
@@ -52,6 +60,7 @@ class LockedResource extends AbstractExtension {
             new TwigFunction('isResourceLocked', [$this, 'isResourceLocked']),
             new TwigFunction('isAllowedToSeeResource', [$this, 'isAllowedToSeeResource']),
             new TwigFunction('isSystemLocked', [$this, 'isSystemLocked']),
+            new TwigFunction('isModuleLocked', [$this, 'isModuleLocked']),
         ];
     }
 
@@ -105,6 +114,15 @@ class LockedResource extends AbstractExtension {
     public function isSystemLocked(): bool
     {
         return $this->lockedResourceController->isSystemLocked();
+    }
+
+    /**
+     * @param string $moduleName
+     * @return bool
+     */
+    public function isModuleLocked(string $moduleName): bool
+    {
+        return $this->settingsLockModuleController->isModuleLocked($moduleName);
     }
 
 }

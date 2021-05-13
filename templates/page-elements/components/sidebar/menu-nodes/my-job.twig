@@ -1,28 +1,35 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-job-afterhours')) }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_JOB }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.job.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-                <span class="icon-holder menu-node-job-icon">
-                    <i class="fas fa-desktop fa-sm"></i>
-                </span>
-        <span class="title">{{ 'sidebar.menu.job.label' | trans }}</span>
-        <span class="arrow">
-                    <i class="ti-angle-right fa-sm"></i>
-                  </span>
-    </a>
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% set menu_node_module_name = constant("App\\Action\\System\\AppAction::MENU_NODE_MODULE_NAME_MY_JOB") %}
 
-    <ul class="dropdown-menu">
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-job-afterhours') }}">{{ 'sidebar.menu.job.afterhours' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-job-holidays') }}">{{ 'sidebar.menu.job.holidays' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-job-settings') }}">{{ 'sidebar.menu.job.settings' | trans }}</a>
-        </li>
-    </ul>
-</li>
+{% block nodeContent %}
+
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, path('my-job-afterhours')) }} sidebar-menu-node-element {{ isVisible ? "" : "d-none" }}" data-menu-node-name="{{ menu_node_module_name }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.job.description' | trans
+    }%}
+    >
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
+                    <span class="icon-holder menu-node-job-icon">
+                        <i class="fas fa-desktop fa-sm"></i>
+                    </span>
+            <span class="title">{{ 'sidebar.menu.job.label' | trans }}</span>
+            <span class="arrow">
+                        <i class="ti-angle-right fa-sm"></i>
+                      </span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-job-afterhours') }}">{{ 'sidebar.menu.job.afterhours' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-job-holidays') }}">{{ 'sidebar.menu.job.holidays' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-job-settings') }}">{{ 'sidebar.menu.job.settings' | trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock nodeContent %}

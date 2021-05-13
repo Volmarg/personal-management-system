@@ -7,6 +7,8 @@ import DomAttributes            from "../../utils/DomAttributes";
 import DataProcessorDto         from "../../../DTO/DataProcessorDto";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
 import AjaxEvents               from "../../ajax/AjaxEvents";
+import Sidebars                 from "../../sidebar/Sidebars";
+import SystemInformationReader from "../../SystemInformationReader";
 
 /**
  * @description This class should contain definitions of actions either for special forms or certain elements on the page
@@ -291,11 +293,102 @@ export default class SpecialAction extends AbstractDataProcessor {
 
             let url = '/api/settings-dashboard/update-widgets-visibility';
 
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
+            let dataProcessorsDto                 = new DataProcessorDto();
+            dataProcessorsDto.successMessage      = successMessage;
+            dataProcessorsDto.failMessage         = failMessage;
+            dataProcessorsDto.url                 = url;
+            dataProcessorsDto.ajaxData            = ajaxData;
+            dataProcessorsDto.reloadModuleContent = false;
+
+            return dataProcessorsDto
+        },
+        processorName: "Setting"
+    };
+
+    /**
+     * @description handles updating the module lock in system settings
+     */
+    public static settingsModuleLock: DataProcessorInterface = {
+        makeCopyData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeCreateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
+            return null;
+        },
+        /**
+         * data from all records must be sent at once
+         * @param $baseElement {object}
+         */
+        makeUpdateData: function ($baseElement) {
+
+            let table              = $($baseElement).closest('tbody');
+            let modifiedModuleName = $($baseElement).find('.module-name').text().trim();
+
+            let allRows       = $(table).find('tr');
+            let allRowsData   = [];
+
+            if( 0 === table.length || 0 === allRows.length ){
+                throw({
+                    "message": "Either no form or rows were found for modules lock update",
+                    "entity" : "Settings",
+                    "method" : "settingsModuleLock::makeUpdateData"
+                });
+            }
+
+            let callbacksForMenuElements = [];
+            $.each(allRows, (index, row) => {
+
+                let name            = $(row).find('.module-name').text().trim();
+                let isCheckedInput  = $(row).find('.is-locked').find('input');
+                let isChecked       = DomAttributes.isChecked(isCheckedInput);
+
+                // make update before the state is changed in GUI so take opposite state for modified setting
+                if( modifiedModuleName === name ){
+                    isChecked = !isChecked;
+                }
+
+                let rowData = {
+                    'name'     : name,
+                    'isLocked' : isChecked,
+                };
+
+                let callbackForMenuElement = () => {
+                    if( SystemInformationReader.isSystemLocked() ){ // don't manipulate menu on unlocked system
+                        if(isChecked){
+                            Sidebars.hideMenuElementForMenuNodeModuleName(name);
+                        }else{
+                            Sidebars.showMenuElementForMenuNodeModuleName(name);
+                        }
+                    }
+                }
+
+                callbacksForMenuElements.push(callbackForMenuElement);
+                allRowsData.push(rowData);
+            });
+
+            let ajaxData = {
+                'all_rows_data': allRowsData
+            };
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(SpecialAction.settingsModuleLock.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(SpecialAction.settingsModuleLock.processorName);
+
+            let url = '/api/settings-module/update-lock';
+
+            let dataProcessorsDto                 = new DataProcessorDto();
+            dataProcessorsDto.successMessage      = successMessage;
+            dataProcessorsDto.failMessage         = failMessage;
+            dataProcessorsDto.url                 = url;
+            dataProcessorsDto.ajaxData            = ajaxData;
+            dataProcessorsDto.reloadModuleContent = false;
+            dataProcessorsDto.callbackAfter       = () => {
+                for(let callback of callbacksForMenuElements){
+                    callback();
+                }
+            };
 
             return dataProcessorsDto
         },
@@ -331,11 +424,12 @@ export default class SpecialAction extends AbstractDataProcessor {
                 'before_update_state' : beforeUpdateState,
             };
 
-            let dataProcessorsDto            = new DataProcessorDto();
-            dataProcessorsDto.successMessage = successMessage;
-            dataProcessorsDto.failMessage    = failMessage;
-            dataProcessorsDto.url            = url;
-            dataProcessorsDto.ajaxData       = ajaxData;
+            let dataProcessorsDto                 = new DataProcessorDto();
+            dataProcessorsDto.successMessage      = successMessage;
+            dataProcessorsDto.failMessage         = failMessage;
+            dataProcessorsDto.url                 = url;
+            dataProcessorsDto.ajaxData            = ajaxData;
+            dataProcessorsDto.reloadModuleContent = false;
 
             return dataProcessorsDto;
         },

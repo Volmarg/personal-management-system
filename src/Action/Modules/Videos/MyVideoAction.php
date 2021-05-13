@@ -19,7 +19,15 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\ModuleAnnotation;
 
+/**
+ * Class MyVideoAction
+ * @package App\Action\Modules\Videos
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_VIDEO
+ * )
+ */
 class MyVideoAction extends AbstractController {
 
     const TWIG_TEMPLATE_MY_VIDEO          = 'modules/my-video/my-video.html.twig';

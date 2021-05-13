@@ -4,11 +4,11 @@
 namespace App\Action\Modules\Payments;
 
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Payments\MyPaymentsSettings;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,6 +16,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class MyPaymentsSettingsAction
+ * @package App\Action\Modules\Payments
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
+ * )
+ */
 class MyPaymentsSettingsAction extends AbstractController {
 
     const TWIG_RECURRING_PAYMENT_TEMPLATE_FOR_SETTINGS = 'modules/my-payments/components/recurring-payments-settings.html.twig';

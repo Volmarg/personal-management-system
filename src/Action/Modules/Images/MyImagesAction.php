@@ -24,7 +24,15 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\ModuleAnnotation;
 
+/**
+ * Class MyImagesAction
+ * @package App\Action\Modules\Images
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES
+ * )
+ */
 class MyImagesAction extends AbstractController {
 
     const TWIG_TEMPLATE_MY_IMAGES         = 'modules/my-images/my-images.html.twig';

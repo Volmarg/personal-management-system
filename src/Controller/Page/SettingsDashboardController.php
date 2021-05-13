@@ -2,11 +2,10 @@
 
 namespace App\Controller\Page;
 
+use App\Controller\Modules\ModulesController;
 use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
-use App\Services\Settings\SettingsLoader;
-use App\Services\Settings\SettingsSaver;
 use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,25 +33,19 @@ class SettingsDashboardController extends AbstractController {
     private $translator;
 
     /**
-     * @var SettingsSaver $settingsSaver
+     * @var SettingsLockModuleController $settingsLockModuleController
      */
-    private $settingsSaver;
+    private SettingsLockModuleController $settingsLockModuleController;
 
     /**
-     * @var SettingsLoader $settingsLoader
+     * SettingsDashboardController constructor.
+     *
+     * @param Translator $translator
+     * @param SettingsLockModuleController $settingsLockModuleController
      */
-    private $settingsLoader;
-
-    /**
-     * @var SettingsViewController $settingsViewController
-     */
-    private $settingsViewController;
-
-    public function __construct(Translator $translator, SettingsSaver $settingsSaver, SettingsLoader $settingsLoader, SettingsViewController $settingsViewController) {
-        $this->settingsViewController = $settingsViewController;
-        $this->settingsLoader         = $settingsLoader;
-        $this->settingsSaver          = $settingsSaver;
-        $this->translator             = $translator;
+    public function __construct(Translator $translator, SettingsLockModuleController $settingsLockModuleController) {
+        $this->settingsLockModuleController = $settingsLockModuleController;
+        $this->translator                   = $translator;
     }
 
     /**
@@ -61,7 +54,7 @@ class SettingsDashboardController extends AbstractController {
      * @return array
      * 
      */
-    public static function getDashboardWidgetsNames(Translator $translator):array {
+    public function getDashboardWidgetsNames(Translator $translator): array {
 
         $dashboardWidgetsNames = [];
 
@@ -70,21 +63,6 @@ class SettingsDashboardController extends AbstractController {
         }
 
         return $dashboardWidgetsNames;
-    }
-
-    /**
-     * Returns array of widgets names with initial visibilities
-     * @param bool $allVisible
-     * @return array
-     */
-    public static function getDashboardWidgetsInitialVisibility($allVisible = true){
-        $dashboardWidgetsVisibility = [];
-
-        foreach( self::ALL_DASHBOARD_WIDGETS_NAMES as $widgetName ){
-            $dashboardWidgetsVisibility[$widgetName] = $allVisible;
-        }
-
-        return $dashboardWidgetsVisibility;
     }
 
     /**

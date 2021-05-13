@@ -9,6 +9,7 @@ use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Utils;
+use App\Entity\System\LockedResource;
 use App\Form\Modules\Contacts\MyContactTypeDtoType;
 use App\Form\Modules\Issues\MyIssueContactType;
 use App\Form\Modules\Issues\MyIssueProgressType;
@@ -48,6 +49,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_FIRST_LOGIN_INFORMATION  = 'page-elements/components/dialogs/bodies/first-login-information.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_EDIT_TRAVEL_IDEA         = 'page-elements/components/dialogs/bodies/edit-travel-idea.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
+    const TWIG_TEMPLATE_UNAUTHORIZED_ACCESS                  = 'page-elements/components/dialogs/bodies/unauthorized-access.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
     const KEY_ENTITY_ID                                      = "entityId";
@@ -773,6 +775,7 @@ class DialogsAction extends AbstractController
      * @Route("/dialog/body/add-or-modify-todo", name="dialog_body_add_or_modify_todo", methods="POST")
      * @param Request $request
      * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function buildAddOrModifyTodoDialogBody(Request $request): JsonResponse
     {
@@ -816,6 +819,15 @@ class DialogsAction extends AbstractController
             $todo = null;
             if( !empty($entityId) ){
                 $todo = $this->controllers->getMyTodoController()->getTodoByModuleNameAndEntityId($moduleName, $entityId);
+            }
+
+            if( !$this->controllers->getLockedResourceController()->isAllowedToSeeResource($entityId, LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_TODO) ){
+                $template = $this->render(self::TWIG_TEMPLATE_UNAUTHORIZED_ACCESS)->getContent();
+                $ajaxResponse->setCode(Response::HTTP_UNAUTHORIZED);
+                $ajaxResponse->setTemplate($template);
+                $ajaxResponse->setSuccess(false);
+
+                return $ajaxResponse->buildJsonResponse();
             }
 
             $todoForm = $this->app->forms->todoForm([

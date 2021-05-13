@@ -4,6 +4,7 @@
 namespace App\Action\Modules\Payments;
 
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -17,6 +18,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class MyPaymentsProductsAction
+ * @package App\Action\Modules\Payments
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
+ * )
+ */
 class MyPaymentsProductsAction extends AbstractController {
 
     const PRICE_COLUMN_NAME = 'price';

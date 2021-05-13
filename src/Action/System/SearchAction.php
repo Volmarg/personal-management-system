@@ -7,8 +7,8 @@ namespace App\Action\System;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\FilesSearchController;
 use App\Entity\System\LockedResource;
-use App\Repository\FilesSearchRepository;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
 use Doctrine\DBAL\Driver\Exception;
@@ -51,8 +51,8 @@ class SearchAction extends AbstractController {
         $tagsString  = $request->request->get(FileTagger::KEY_TAGS);
         $tagsArray   = explode(',', $tagsString);
 
-        $filesSearchResults = $this->controllers->getFilesSearchController()->getSearchResultsDataForTag($tagsArray, FilesSearchRepository::SEARCH_TYPE_FILES, true);
-        $notesSearchResults = $this->controllers->getFilesSearchController()->getSearchResultsDataForTag($tagsArray, FilesSearchRepository::SEARCH_TYPE_NOTES, true);
+        $filesSearchResults = $this->controllers->getFilesSearchController()->getSearchResultsDataForTag($tagsArray, FilesSearchController::SEARCH_TYPE_FILES, true);
+        $notesSearchResults = $this->controllers->getFilesSearchController()->getSearchResultsDataForTag($tagsArray, FilesSearchController::SEARCH_TYPE_NOTES, true);
 
         foreach( $filesSearchResults as $index => $fileSearchResult ){
             $fullFilePath      = $fileSearchResult['fullFilePath'];

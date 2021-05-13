@@ -1,37 +1,44 @@
-<li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-payments') }} sidebar-menu-node-element" data-menu-node-name="{{ MENU_NODE_MODULE_NAME_MY_PAYMENTS }}"
-{% include 'page-elements/components/guide-popup.twig' with {
-    popoverAlignment: "right",
-    popoverContent  : 'guide.modules.payments.description' | trans
-}%}
->
-    <a class="sidebar-link left-nav-link" href="javascript:void(0);">
-                <span class="icon-holder menu-node-my-payments-icon">
-                <i class="fas fa-dollar-sign fa-sm"></i>
-                </span>
-        <span class="title">{{ 'sidebar.menu.payments.label' | trans }}</span>
-        <span class="arrow">
-                    <i class="ti-angle-right fa-sm"></i>
-                  </span>
-    </a>
+{% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
+{% set menu_node_module_name = constant("App\\Action\\System\\AppAction::MENU_NODE_MODULE_NAME_MY_PAYMENTS") %}
 
-    <ul class="dropdown-menu">
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-payments-products') }}">{{ 'sidebar.menu.payments.productsPrices' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" data-href-pattern="{{ path('my-payments-monthly') }}[/]?[0-9]{4}" href="{{ path('my-payments-monthly') }}">{{ 'sidebar.menu.payments.monthlyPayments' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-payments-owed') }}">{{ 'sidebar.menu.payments.moneyOwed' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-payments-income') }}">{{ 'sidebar.menu.payments.incomes' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-payments-bills') }}">{{ 'sidebar.menu.payments.bills' | trans }}</a>
-        </li>
-        <li>
-            <a class="sidebar-link left-nav-link" href="{{ path('my-payments-settings') }}">{{ 'sidebar.menu.payments.settings' | trans }}</a>
-        </li>
-    </ul>
-</li>
+{% block nodeContent %}
+
+    <li class="nav-item dropdown {{ keepMenuOpen(currUrl, '', 'my-payments') }} sidebar-menu-node-element {{ isVisible ? "" : "d-none" }} {{ isVisible ? "" : "d-none" }}" data-menu-node-name="{{ menu_node_module_name }}"
+    {% include 'page-elements/components/guide-popup.twig' with {
+        popoverAlignment: "right",
+        popoverContent  : 'guide.modules.payments.description' | trans
+    }%}
+    >
+        <a class="sidebar-link left-nav-link" href="javascript:void(0);">
+                    <span class="icon-holder menu-node-my-payments-icon">
+                    <i class="fas fa-dollar-sign fa-sm"></i>
+                    </span>
+            <span class="title">{{ 'sidebar.menu.payments.label' | trans }}</span>
+            <span class="arrow">
+                        <i class="ti-angle-right fa-sm"></i>
+                      </span>
+        </a>
+
+        <ul class="dropdown-menu">
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-payments-products') }}">{{ 'sidebar.menu.payments.productsPrices' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" data-href-pattern="{{ path('my-payments-monthly') }}[/]?[0-9]{4}" href="{{ path('my-payments-monthly') }}">{{ 'sidebar.menu.payments.monthlyPayments' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-payments-owed') }}">{{ 'sidebar.menu.payments.moneyOwed' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-payments-income') }}">{{ 'sidebar.menu.payments.incomes' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-payments-bills') }}">{{ 'sidebar.menu.payments.bills' | trans }}</a>
+            </li>
+            <li>
+                <a class="sidebar-link left-nav-link" href="{{ path('my-payments-settings') }}">{{ 'sidebar.menu.payments.settings' | trans }}</a>
+            </li>
+        </ul>
+    </li>
+
+{% endblock nodeContent %}

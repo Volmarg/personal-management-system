@@ -14,7 +14,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\ModuleAnnotation;
 
+/**
+ * Class AchievementAction
+ * @package App\Action\Modules\Achievements
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_ACHIEVEMENTS
+ * )
+ */
 class AchievementAction extends AbstractController {
 
     const PARAMETER_ID = "id";

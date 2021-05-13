@@ -20,7 +20,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Annotation\System\ModuleAnnotation;
 
+/**
+ * Class MyFilesAction
+ * @package App\Action\Modules\Files
+ * @ModuleAnnotation(
+ *     name=App\Controller\Modules\ModulesController::MODULE_NAME_FILES
+ * )
+ */
 class MyFilesAction extends AbstractController {
 
     const TWIG_TEMPLATE_MY_FILES          = 'modules/my-files/my-files.html.twig';
