@@ -29,7 +29,7 @@ export default class DomElements {
      * @param elements
      * @returns {boolean}
      */
-    public static doElementsExists(elements): boolean
+    public static doElementsExists(elements: JQuery<HTMLElement> | JQuery<HTMLElement>[] | JQuery<JQuery<HTMLElement>[]>): boolean
     {
         return 0 !== $(elements).length;
     }

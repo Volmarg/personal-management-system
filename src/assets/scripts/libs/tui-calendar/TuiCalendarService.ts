@@ -231,7 +231,7 @@ export default class TuiCalendarService
                 let ajaxCallUrl = '/modules/schedules/save-schedule';
 
                 let $creationPopupContainer = $(this.POPUP_CONTAINER_SELECTOR);
-                if( DomElements.doElementsExists([$creationPopupContainer]) ){
+                if( DomElements.doElementsExists($creationPopupContainer) ){
                     let allRemindersArray   = this.getAllRemindersArrayFromCreationPopup();
 
                     schedule.body           = $creationPopupContainer.find('#body').val() as string;
@@ -258,7 +258,7 @@ export default class TuiCalendarService
 
                 // @ts-ignore, handle additional properties, creation popup might not exist, example -> drag schedule
                 changes.body = event.schedule.body;
-                if( DomElements.doElementsExists([$creationPopupContainer]) ) {
+                if( DomElements.doElementsExists($creationPopupContainer) ) {
                     changes.body = $creationPopupContainer.find('#body').val() as string;
 
                     let allRemindersArray  = this.getAllRemindersArrayFromCreationPopup();
