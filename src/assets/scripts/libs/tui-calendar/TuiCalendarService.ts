@@ -103,6 +103,12 @@ export default class TuiCalendarService
     private isUpdatePopup: boolean;
 
     /**
+     * @description indicates current active view
+     *              necessary to detect if the view has been switched
+     */
+    private activeView ?:string = null;
+
+    /**
      * @description will initialize the calendar instance
      */
     public init(){
@@ -300,6 +306,11 @@ export default class TuiCalendarService
              */
             afterRenderSchedule: (event) => {
 
+                // set initial view value
+                if( StringUtils.isEmptyString(this.activeView) ){
+                    this.activeView = calendarInstance.getViewName();
+                }
+
                 if(
                         null             !== this.lastSearchedSchedule
                     &&  event.schedule.id == this.lastSearchedSchedule.id
@@ -307,6 +318,11 @@ export default class TuiCalendarService
                     // there is no need to unmark since on each search the grid is being loaded anew
                     this.markScheduleInCalendar(this.lastSearchedSchedule);
                     this.scrollToScheduleInCalendar(this.lastSearchedSchedule);
+                }
+
+                if( this.activeView !== calendarInstance.getViewName() ){
+                    this.activeView = calendarInstance.getViewName(); // to prevent doing this for each schedule - see description
+                    this.modifyScheduleCreationAndDetailPopup(calendarInstance);
                 }
             }
         });
@@ -706,6 +722,14 @@ export default class TuiCalendarService
     private modifyScheduleCreationAndDetailPopup(calendarInstance: Calendar): void
     {
         let parentWrapperObserver = new MutationObserver( (mutations) => {
+
+            for( let mutation of mutations ){
+                if(0 == mutation.target.childNodes.length){
+                    // inactive popup - don't do anything
+                    return;
+                }
+            }
+
             // remove fields
             $('.tui-full-calendar-section-allday').addClass('d-none');
             $('.tui-full-calendar-section-state').addClass('d-none');
@@ -768,10 +792,15 @@ export default class TuiCalendarService
             }
         })
 
-        let htmlDomElement = document.querySelector('.tui-full-calendar-floating-layer');
-        parentWrapperObserver.observe(htmlDomElement, {
-            childList: true,
+        // each view has it's own popover - the active one has child nodes
+        let allPopoverWrappers   = document.querySelectorAll('.tui-full-calendar-floating-layer');
+        allPopoverWrappers.forEach((popoverWrapper) => {
+
+            parentWrapperObserver.observe(popoverWrapper, {
+                childList: true,
+            })
         })
+
     }
 
     /**
