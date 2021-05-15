@@ -17,9 +17,10 @@
                             {% for issue_card_dto in issues_cards_dtos %}
                                 <div>
                                     {% include 'modules/my-issues/components/my-issue-card.twig' with {
-                                        "issueCardDto": issue_card_dto,
-                                        "isCompact"   : true,
-                                        "isReadOnly"  : true
+                                        "issueCardDto"  : issue_card_dto,
+                                        "maxNameLength" : 20,
+                                        "isCompact"     : true,
+                                        "isReadOnly"    : true
                                     } %}
                                 </div>
                             {% endfor %}

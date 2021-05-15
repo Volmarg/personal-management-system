@@ -188,7 +188,7 @@ fineUpload:
     mb: Mb
     headers: { uploadFiles: 'Upload files' }
 issues:
-    card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { tabs: { contacts: { label: Contacts }, progress: { label: Progress } } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', addOrModifyExistingTodo: 'Add or modify existing todo', removeRecord: 'Remove record' }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
+    card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { tabs: { contacts: { label: Contacts }, progress: { label: Progress } } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', addOrModifyExistingTodo: 'Add or modify existing todo', removeRecord: 'Remove record', description: Description, name: Name }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     contactsTable: { icon: Icon, date: Date, information: Information, actions: Actions }
     popover: { createIssue: 'Create issue' }
     infoBlock: { header: 'Pending issues', text: { mainDescription: "Management of the issues that are about to be resolved one day. Allows to track down the contacts and adding\nnotes based information about current progress in given case. Each entry can also contain an <b>Todo list</b> due\nto the fact typically some personal cases require set of actions to be resolved in the process.\n" } }

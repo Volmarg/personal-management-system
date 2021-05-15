@@ -606,6 +606,8 @@ issues:
       addRecords: "Add records"
       addOrModifyExistingTodo: "Add or modify existing todo"
       removeRecord: "Remove record"
+      description: Description
+      name: Name
     ajaxCallMessages:
       dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"
   contactsTable:

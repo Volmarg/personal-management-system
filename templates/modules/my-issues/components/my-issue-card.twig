@@ -4,6 +4,10 @@
 {% set MODULE_NAME_TODO            = constant(modules_controller ~ 'MODULE_NAME_TODO') %}
 {% set LOCKED_RESOURCE_TYPE_ENTITY = constant(locked_resource ~ "TYPE_ENTITY") %}
 
+{% if maxNameLength is not defined %}
+    {% set maxNameLength = 40 %}
+{% endif %}
+
 <div
     class="issue-wrapper"
     style="
@@ -19,7 +23,10 @@
                     data-toggle-popover="true"                                      {# popover attr #}
                     data-content=
                     "                                                  {# popover attr #}
-                        <b>Description: </b>{{  issueCardDto.getIssue().getInformation() }}
+                        <b>{{ 'issues.card.popovers.name' | trans }}: </b>{{  issueCardDto.getIssue().getName() }}
+                        <br/>
+
+                        <b>{{ 'issues.card.popovers.description' | trans }}: </b>{{  issueCardDto.getIssue().getInformation() }}
 
                         {%
                             if  isCompact is defined
@@ -44,11 +51,8 @@
                     "
                     data-placement="top"                                            {# popover attr #}
                 >
-                    {{ issueCardDto.getIssue().getName() }}
+                    {{ substring(issueCardDto.getIssue().getName(), 0, maxNameLength) }}
                 </h1>
-                <p class="text-center p-0 m-0">
-                    {{ issueCardDto.getIssue().getInformation() }}
-                </p>
             </div>
 
             <div class="title active bgc-white bd bdrs-3 p-10 h-100p">
