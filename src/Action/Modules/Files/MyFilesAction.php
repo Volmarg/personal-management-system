@@ -246,7 +246,7 @@ class MyFilesAction extends AbstractController {
             $message = $this->app->translator->translate('flash.filesController.folderDoesNotExist') . $subdirectoryPath;
             $this->addFlash('danger', $message );
 
-            return $this->redirectToRoute('upload');
+            return $this->redirectToRoute('upload_fine_upload');
         }
 
         if (empty($subdirectoryPath)) {
