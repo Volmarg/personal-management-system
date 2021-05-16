@@ -70,7 +70,7 @@ sidebar:
       manage: Manage
     reports:
       label: Reports
-      monthlyPaymentsSummaries: Monthly payments summaries
+      monthlyPaymentsSummaries: Payments summaries
       paymentsCharts: Payments charts
       savingsCharts: Savings charts
       historicalMoneyOwed: Historical money owed

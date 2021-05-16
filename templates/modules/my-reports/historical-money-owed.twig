@@ -22,20 +22,34 @@
                     <div class="col-md-12">
                         <div class="bgc-white bd bdrs-3 p-20 mB-20">
 
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
-                                <h4 class="c-grey-900 mB-20 text-center">{{ 'reports.headers.historicalMoneyOwed.owedByMe' | trans | raw }}</h4>
-                                {% include 'modules/my-reports/components/historical-money-owed-table.html.twig' with {
-                                    data: historical_money_owed_by_me,
-                                    tableId: "historicalMoneyOwedByMe"
-                                }%}
-                            </div>
+                            <div data-smart-tab="true">
+                                <ul class="nav">
+                                    <li><a class="nav-link" href="#tab-1" id="tab-nav-1">
+                                            {{ 'reports.historicalMoneyOwed.tabs.owedByMe' | trans }}
+                                        </a></li>
+                                    <li><a class="nav-link" href="#tab-2" id="tab-nav-2">
+                                            {{ 'reports.historicalMoneyOwed.tabs.owedByOthers' | trans }}
+                                        </a></li>
+                                </ul>
 
-                            <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12">
-                                <h4 class="c-grey-900 mB-20 text-center">{{ 'reports.headers.historicalMoneyOwed.owedByOthers' | trans | raw }}</h4>
-                                {% include 'modules/my-reports/components/historical-money-owed-table.html.twig' with {
-                                    data: historical_money_owed_by_others,
-                                    tableId: "historicalMoneyOwedByOthers"
-                                }%}
+                                <div class="tab-content">
+                                    <div id="tab-1" class="tab-pane" role="tabpanel">
+                                        <div class="bgc-white p-20 mB-20 d-flex flex-column col-12">
+                                            {% include 'modules/my-reports/components/historical-money-owed-table.html.twig' with {
+                                                data: historical_money_owed_by_me,
+                                                tableId: "historicalMoneyOwedByMe"
+                                            }%}
+                                        </div>
+                                    </div>
+                                    <div id="tab-2" class="tab-pane" role="tabpanel">
+                                        <div class="bgc-white p-20 mB-20 d-flex flex-column col-12">
+                                            {% include 'modules/my-reports/components/historical-money-owed-table.html.twig' with {
+                                                data: historical_money_owed_by_others,
+                                                tableId: "historicalMoneyOwedByOthers"
+                                            }%}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                         </div>

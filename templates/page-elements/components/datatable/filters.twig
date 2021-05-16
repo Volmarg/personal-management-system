@@ -1,3 +1,4 @@
+{% set filterDataSet = [] %}
 <table data-filter-target-table-selector="{{ targetTableSelector }}" data-is-filter-for-table="true">
     <tr>
         {% for filterData in filtersData %}
@@ -19,10 +20,14 @@
                         {% for data in filterData.data %}
 
                             {% set value = attribute(data, filterData.key) %}
-                            <option value="{{ value }}">
-                                {{ value }}
-                            </option>
+                            {% if value not in filterDataSet %} {# prevent duplicates #}
 
+                                {% set filterDataSet = filterDataSet | merge([value]) %}
+                                <option value="{{ value }}">
+                                    {{ value }}
+                                </option>
+
+                            {% endif %}
                         {% endfor %}
                     </select>
                 {% endif %}

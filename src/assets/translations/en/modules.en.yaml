@@ -375,7 +375,7 @@ payments:
 reports:
   monthlyPaymentsSummaries:
     infoBlock:
-      header: Monthly payments summaries
+      header: Payments summaries
       text:
         mainDescription: |
           This report contains summary of payments from "<b>Monthly Payments</b>" and "<b>Bills</b>" for each month.
@@ -400,11 +400,9 @@ reports:
       text:
         mainDescription: |
           Historical records of owed money by others and by me
-  headers:
-    historicalMoneyOwed:
+    tabs:
       owedByMe: Owed by me
       owedByOthers: Owed by others
-
 
 charts:
   headers:
