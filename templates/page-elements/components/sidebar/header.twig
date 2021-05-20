@@ -4,8 +4,10 @@
             <a class="sidebar-link td-n ajax-content-load" href="{{ path('dashboard') }}">
                 <div class="peers ai-c fxw-nw d-flex justify-content-around">
                     <div class="peer">
-                        <div class="logo sidebar-header-logo-wrapper">
-                            <img src="{{ asset('assets/images/logo/smaller.png') }}" alt="logo"/>
+                        <div class="mb-1 mt-2">
+                            {% include "page-elements/components/logo.twig" with {
+                                size: 49
+                            } %}
                         </div>
                     </div>
                 </div>
@@ -20,3 +22,5 @@
         </div>
     </div>
 </div>
+
+<hr class="mT-3 mB-3"/>
