@@ -46,8 +46,12 @@ class MyJobSettingsAction extends AbstractController {
             return $this->renderTemplate(false);
         }
 
-        $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getJobSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -65,7 +69,8 @@ class MyJobSettingsAction extends AbstractController {
             'ajax_render'                       => $ajaxRender,
             'all_holidays_pools'                => $allHolidaysPools,
             'job_holidays_pool_form'            => $jobHolidaysPoolForm->createView(),
-            'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs
+            'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
+            'page_title'                        => $this->getJobSettingsPageTitle(),
         ];
 
         return $this->render(static::SETTINGS_TWIG_TEMPLATE, $twigData);
@@ -86,5 +91,15 @@ class MyJobSettingsAction extends AbstractController {
             $em->persist($form->getData());
             $em->flush();
         }
+    }
+
+    /**
+     * Will return job settings page title
+     *
+     * @return string
+     */
+    private function getJobSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('job.settings.title');
     }
 }

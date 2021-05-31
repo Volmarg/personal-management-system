@@ -52,8 +52,12 @@ class GoalsPaymentsAction extends AbstractController {
             return $this->renderTemplate();
         }
 
-        $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPaymentsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -69,9 +73,19 @@ class GoalsPaymentsAction extends AbstractController {
             'all_payments'                   => $allPayments,
             'ajax_render'                    => $ajaxRender,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getPaymentsPageTitle(),
         ];
 
         return $this->render('modules/my-goals/payments.html.twig', $data);
     }
 
+    /**
+     * Will return payments page title
+     *
+     * @return string
+     */
+    private function getPaymentsPageTitle(): string
+    {
+        return $this->app->translator->translate('goals.payments.title');
+    }
 }

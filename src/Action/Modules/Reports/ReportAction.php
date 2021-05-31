@@ -71,7 +71,11 @@ class ReportAction extends AbstractController {
         $renderedTemplate = $this->renderTemplateMonthlyPaymentsSummaries(true);
         $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getMonthlyPaymentsSummariesPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
 
@@ -93,7 +97,11 @@ class ReportAction extends AbstractController {
         $renderedTemplate = $this->renderTemplatePaymentsCharts(true);
         $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPaymentsChartsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -113,7 +121,11 @@ class ReportAction extends AbstractController {
         $renderedTemplate = $this->renderTemplateSavingsCharts(true);
         $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getSavingsChartsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -132,7 +144,11 @@ class ReportAction extends AbstractController {
         $renderedTemplate = $this->renderTemplateHistoricalMoneyOwed(true);
         $templateContent  = $renderedTemplate->getContent();
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getHistoricalMoneyOwedPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -349,7 +365,8 @@ class ReportAction extends AbstractController {
         $data = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
         $templateData = [
             'ajax_render' => $ajaxRender,
-            'data'        => $data
+            'data'        => $data,
+            'page_title'  => $this->getMonthlyPaymentsSummariesPageTitle(),
         ];
 
         $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENT_SUMMARIES, $templateData);
@@ -372,6 +389,7 @@ class ReportAction extends AbstractController {
             'chart_total_payments_amount_for_types'       => $renderedChartTotalPaymentsAmountForTypes->getContent(),
             'rendered_chart_payment_for_type_each_month'  => $renderedChartPaymentForTypeEachMonth->getContent(),
             'rendered_chart_payment_total_for_each_month' => $renderedChartPaymentTotalForEachMonth->getContent(),
+            'page_title'                                  => $this->getPaymentsChartsPageTitle(),
         ];
 
         $renderedTemplate = $this->render(self::TWIG_TEMPLATE_PAYMENTS_CHARTS, $templateData);
@@ -389,10 +407,51 @@ class ReportAction extends AbstractController {
         $templateData = [
             'ajax_render'              => $ajaxRender,
             'chart_savings_each_month' => $renderedChartSavingsEachMonth->getContent(),
+            'page_title'               => $this->getSavingsChartsPageTitle(),
         ];
 
         $renderedTemplate = $this->render(self::TWIG_TEMPLATE_SAVINGS_CHARTS, $templateData);
         return $renderedTemplate;
+    }
+
+    /**
+     * Will return historical money owed page title
+     *
+     * @return string
+     */
+    private function getHistoricalMoneyOwedPageTitle(): string
+    {
+        return $this->app->translator->translate('reports.historicalMoneyOwed.title');
+    }
+
+    /**
+     * Will return monthly payments summaries page title
+     *
+     * @return string
+     */
+    private function getMonthlyPaymentsSummariesPageTitle(): string
+    {
+        return $this->app->translator->translate('reports.monthlyPaymentsSummaries.title');
+    }
+
+    /**
+     * Will return savings charts page title
+     *
+     * @return string
+     */
+    private function getSavingsChartsPageTitle(): string
+    {
+        return $this->app->translator->translate('reports.savingsCharts.title');
+    }
+
+    /**
+     * Will return payments charts page title
+     *
+     * @return string
+     */
+    private function getPaymentsChartsPageTitle(): string
+    {
+        return $this->app->translator->translate('reports.paymentsCharts.title');
     }
 
 }

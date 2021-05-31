@@ -15,6 +15,8 @@ class PhpToTwig extends AbstractExtension {
             new TwigFunction('unsetKeys', [$this, 'unsetKeys']),
             new TwigFunction('jsonDecode', [$this, 'jsonDecode']),
             new TwigFunction('substring', [$this, 'substring']),
+            new TwigFunction('dirname', [$this, 'dirname']),
+            new TwigFunction('basename', [$this, 'basename']),
         ];
     }
 
@@ -74,4 +76,26 @@ class PhpToTwig extends AbstractExtension {
         return $substring;
     }
 
+    /**
+     * @link https://www.php.net/manual/en/function.dirname.php
+     *
+     * @param string $directoryPath
+     * @return string
+     */
+    public function dirname(string $directoryPath): string
+    {
+        return dirname($directoryPath);
+    }
+
+
+    /**
+     * @link https://www.php.net/manual/en/function.basename.php
+     *
+     * @param string $directoryPath
+     * @return string
+     */
+    public function basename(string $directoryPath): string
+    {
+        return basename($directoryPath);
+    }
 }

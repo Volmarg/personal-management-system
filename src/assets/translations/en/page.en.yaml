@@ -1,5 +1,6 @@
 page:
   title: Personal Management System (PMS)
+  titleShort: PMS
   footerCopyright: Copyright © 2019-2021 Built by
   login:
     home:

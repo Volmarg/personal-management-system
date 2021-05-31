@@ -61,7 +61,12 @@ class MyNotesCategoriesAction extends AbstractController {
         $message          = $jsonResponse->getContent();
         $code             = $jsonResponse->getStatusCode();
         $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $templateContent);
+
+        $ajaxResponse     = new AjaxResponse($message, $templateContent);
+        $ajaxResponse->setCode($code);
+        $ajaxResponse->setPageTitle($this->getNotesSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -132,6 +137,7 @@ class MyNotesCategoriesAction extends AbstractController {
                 'column_names'                   => $columnNames,
                 'form'                           => $form->createView(),
                 'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+                'page_title'                     => $this->getNotesSettingsPageTitle(),
             ]
         );
     }
@@ -169,6 +175,16 @@ class MyNotesCategoriesAction extends AbstractController {
         }
 
         return new JsonResponse("",Response::HTTP_OK);
+    }
+
+    /**
+     * Will return notes settings page title
+     *
+     * @return string
+     */
+    private function getNotesSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('notes.settings.title');
     }
 
 }

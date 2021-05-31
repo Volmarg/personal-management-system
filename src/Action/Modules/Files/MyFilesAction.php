@@ -122,14 +122,22 @@ class MyFilesAction extends AbstractController {
      */
     public function displayFiles(? string $encodedSubdirectoryPath, Request $request): Response
     {
+        $decodedSubdirectoryPath = urldecode($encodedSubdirectoryPath);
+        $subdirectoryPath        = FilesHandler::trimFirstAndLastSlash($decodedSubdirectoryPath);
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderCategoryTemplate($encodedSubdirectoryPath);
+            return $this->renderCategoryTemplate($subdirectoryPath);
         }
 
-        $templateContent  = $this->renderCategoryTemplate($encodedSubdirectoryPath, true)->getContent();
-        $message          = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
+        $templateContent = $this->renderCategoryTemplate($subdirectoryPath, true)->getContent();
+        $message         = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
+
+        $ajaxResponse = new AjaxResponse($message, $templateContent);
+        $ajaxResponse->setPageTitle($this->getFilesPageTitle($subdirectoryPath));
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getFilesPageTitle($subdirectoryPath));
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -145,8 +153,12 @@ class MyFilesAction extends AbstractController {
             return $this->renderSettingsTemplate();
         }
 
-        $templateContent  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderSettingsTemplate(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getFilesSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -213,12 +225,13 @@ class MyFilesAction extends AbstractController {
     {
         $data = [
             'ajax_render' => $ajaxRender,
+            'page_title'  => $this->getFilesSettingsPageTitle(),
         ];
         return $this->render(self::TWIG_TEMPLATE_MY_FILES_SETTINGS, $data);
     }
 
     /**
-     * @param string|null $encodedSubdirectoryPath
+     * @param string|null $subdirectoryPath
      * @param bool $ajaxRender
      * @param bool $skipRewritingTwigVarsToJs
      * @return Response
@@ -226,12 +239,10 @@ class MyFilesAction extends AbstractController {
      * @throws Exception
      * @throws \Doctrine\DBAL\Driver\Exception
      */
-    private function renderCategoryTemplate(? string $encodedSubdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    private function renderCategoryTemplate(? string $subdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
     {
 
         $uploadDir                   = Env::getFilesUploadDir();
-        $decodedSubdirectoryPath     = urldecode($encodedSubdirectoryPath);
-        $subdirectoryPath            = FilesHandler::trimFirstAndLastSlash($decodedSubdirectoryPath);
         $subdirPathInModuleUploadDir = FileUploadController::getSubdirectoryPath($uploadDir, $subdirectoryPath);
 
         $moduleUploadDirName = FilesHandler::getModuleUploadDirForUploadPath($uploadDir);
@@ -269,7 +280,7 @@ class MyFilesAction extends AbstractController {
         }
 
         $isMainDir = ( empty($subdirectoryPath) );
-        $uploadPath = Env::getFilesUploadDir() . DIRECTORY_SEPARATOR . $decodedSubdirectoryPath;
+        $uploadPath = Env::getFilesUploadDir() . DIRECTORY_SEPARATOR . $subdirectoryPath;
 
         $moduleData = $this->controllers->getModuleDataController()->getOneByRecordTypeModuleAndRecordIdentifier(
             ModuleData::RECORD_TYPE_DIRECTORY,
@@ -287,9 +298,39 @@ class MyFilesAction extends AbstractController {
             'module_data'           => $moduleData,
             'upload_path'           => $uploadPath,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getFilesPageTitle($subdirectoryPath),
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_FILES, $data);
     }
+
+    /**
+     * Will return the page title for files page
+     *
+     * @param string $subdirectoryPath
+     * @return string
+     */
+    private function getFilesPageTitle(string $subdirectoryPath): string
+    {
+        $pageTitle = $this->app->translator->translate(
+            'files.title',
+            [
+                '{{folder}}' => $subdirectoryPath
+            ]
+        );
+
+        return $pageTitle;
+    }
+
+    /**
+     * Will return settings page title
+     *
+     * @return string
+     */
+    private function getFilesSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('files.settings.title');
+    }
+
 
 }

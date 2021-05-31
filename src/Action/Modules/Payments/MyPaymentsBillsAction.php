@@ -52,7 +52,11 @@ class MyPaymentsBillsAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPaymentsBillsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -220,11 +224,22 @@ class MyPaymentsBillsAction extends AbstractController {
             'bills'                          => $bills,
             'bills_items'                    => $billsItems,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getPaymentsBillsPageTitle(),
         ];
 
         $template = 'modules/my-payments/bills.html.twig';
 
         return $this->render($template, $data );
+    }
+
+    /**
+     * Will return payments bills page title
+     *
+     * @return string
+     */
+    private function getPaymentsBillsPageTitle(): string
+    {
+        return $this->app->translator->translate('payments.bills.title');
     }
 
 }

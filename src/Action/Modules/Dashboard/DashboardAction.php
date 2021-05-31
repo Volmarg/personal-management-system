@@ -46,7 +46,12 @@ class DashboardAction extends AbstractController {
         }
 
         $templateContent  = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+
+        $ajaxResponse = new AjaxResponse("",$templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getDashboardPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -83,9 +88,20 @@ class DashboardAction extends AbstractController {
             'goals_payments'                    => $goalsPayments,
             'issues_cards_dtos'                 => $issuesCardsDtos,
             'ajax_render'                       => $ajaxRender,
+            'page_title'                        => $this->getDashboardPageTitle(),
         ];
 
         return $this->render("modules/my-dashboard/dashboard.html.twig", $data);
+    }
+
+    /**
+     * Will return dashboard page title
+     *
+     * @return string
+     */
+    private function getDashboardPageTitle(): string
+    {
+        return $this->app->translator->translate('dashboardModule.title');
     }
 
 }

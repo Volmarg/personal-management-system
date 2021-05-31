@@ -62,8 +62,11 @@ class MyJobAfterhoursAction extends AbstractController {
             return $this->renderTemplate();
         }
 
-        $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getJobAfterhoursPageTitle());
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -119,6 +122,7 @@ class MyJobAfterhoursAction extends AbstractController {
             'remaining_time_to_spend_per_goal'  => $remainingTimeToSpendPerGoal,
             'ajax_render'                       => $ajaxRender,
             'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
+            'page_title'                        => $this->getJobAfterhoursPageTitle(),
         ];
 
         return $this->render('modules/my-job/afterhours.html.twig', $twigData);
@@ -201,6 +205,16 @@ class MyJobAfterhoursAction extends AbstractController {
             $em->persist($form->getData());
             $em->flush();
         }
+    }
+
+    /**
+     * Will return job settings page title
+     *
+     * @return string
+     */
+    private function getJobAfterhoursPageTitle(): string
+    {
+        return $this->app->translator->translate('job.afterhours.title');
     }
 
 }

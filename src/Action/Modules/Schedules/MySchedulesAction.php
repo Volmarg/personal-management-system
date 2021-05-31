@@ -63,7 +63,11 @@ class MySchedulesAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getSchedulesPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -82,6 +86,7 @@ class MySchedulesAction extends AbstractController {
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
             'calendars_data_dto_array'       => $calendarsDataDtoArray,
             'schedule_calendar_form'         => $scheduleCalendarForm->createView(),
+            'page_title'                     => $this->getSchedulesPageTitle(),
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);
@@ -302,6 +307,16 @@ class MySchedulesAction extends AbstractController {
         }
 
         return $ajaxResponse->buildJsonResponse();
+    }
+
+    /**
+     * Will return schedules page title
+     *
+     * @return string
+     */
+    private function getSchedulesPageTitle(): string
+    {
+        return $this->app->translator->translate('schedules.title');
     }
 
 }

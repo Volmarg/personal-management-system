@@ -97414,9 +97414,6 @@ form legend {
 [data-theme=dark] .sidebar hr {
   border-color: rgba(255, 255, 255, 0.15);
 }
-[data-theme=dark] .sidebar .sidebar-logo {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-}
 [data-theme=dark] .bgc-grey-100, [data-theme=dark] .bgcH-grey-100:hover {
   background-color: #f7f7fc !important;
 }

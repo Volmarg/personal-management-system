@@ -14,8 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SettingsAction extends AbstractController {
 
-    const TWIG_SETTINGS_TEMPLATE  = 'page-elements/settings/layout.html.twig' ;
-
     /**
      * @var Application $app
      */
@@ -66,8 +64,11 @@ class SettingsAction extends AbstractController {
         $code     = $callStatusDto->getCode();
         $message  = $callStatusDto->getMessage();
 
-        $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message, $template);
-        return $response;
+        $ajaxResponse = new AjaxResponse($message, $template);
+        $ajaxResponse->setCode($code);
+        $ajaxResponse->setPageTitle($this->settingsViewAction->getSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**

@@ -59,7 +59,11 @@ class MyPaymentsProductsAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getProductsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -149,6 +153,7 @@ class MyPaymentsProductsAction extends AbstractController {
             'currency_multiplier'            => $currencyMultiplier,
             'ajax_render'                    => $ajaxRender,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getProductsPageTitle(),
         ];
 
         return $this->render('modules/my-payments/products.html.twig', $templateData);
@@ -167,6 +172,16 @@ class MyPaymentsProductsAction extends AbstractController {
             $em->flush();
         }
 
+    }
+
+    /**
+     * Will return products page title
+     *
+     * @return string
+     */
+    public function getProductsPageTitle(): string
+    {
+        return $this->app->translator->translate('payments.title');
     }
 
 }

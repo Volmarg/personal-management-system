@@ -95,9 +95,12 @@ class GoalsSettingsAction extends AbstractController {
     public function display(Request $request) {
         $form              = $this->app->forms->goalPaymentForm();
         $addRecordResponse = $this->addRecord($form, $request);
+        $ajaxResponse      = new AjaxResponse();
 
         if( Response::HTTP_OK !== $addRecordResponse->getStatusCode() ){
-            return AjaxResponse::buildJsonResponseForAjaxCall($addRecordResponse->getStatusCode(), $addRecordResponse->getContent());
+            $ajaxResponse->setCode($addRecordResponse->getStatusCode());
+            $ajaxResponse->setMessage($addRecordResponse->getContent());
+            return $ajaxResponse->buildJsonResponse();
         }
 
         if (!$request->isXmlHttpRequest()) {
@@ -105,7 +108,12 @@ class GoalsSettingsAction extends AbstractController {
         }
 
         $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setTemplate($templateContent);
+        $ajaxResponse->setPageTitle($this->getSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -123,6 +131,7 @@ class GoalsSettingsAction extends AbstractController {
             'goals_payments_form'   => $goalsPaymentsForm->createView(),
             'all_goals_payments'    => $allGoalsPayments,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getSettingsPageTitle(),
         ];
 
         return $this->render('modules/my-goals/settings.html.twig', $data);
@@ -156,5 +165,13 @@ class GoalsSettingsAction extends AbstractController {
         return new Response($formSubmittedMessage,200);
     }
 
+    /**
+     * Will return the settings page title
+     * @return string
+     */
+    private function getSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('goals.settings.title');
+    }
 
 }

@@ -94,6 +94,7 @@ class MyJobHolidaysAction extends AbstractController {
         $ajaxResponse->setCode(Response::HTTP_OK);
         $ajaxResponse->setSuccess(true);
         $ajaxResponse->setTemplate($templateContent);
+        $ajaxResponse->setPageTitle($this->getJobHolidaysPageTitle());
 
         return $ajaxResponse->buildJsonResponse();
     }
@@ -200,9 +201,20 @@ class MyJobHolidaysAction extends AbstractController {
             'job_holidays_summary'              => $jobHolidaysSummary,
             'job_holidays_available_totally'    => $jobHolidaysAvailableTotally,
             'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
+            'page_title'                        => $this->getJobHolidaysPageTitle(),
         ];
 
         return $this->render('modules/my-job/holidays.html.twig', $twigData);
+    }
+
+    /**
+     * Will return job settings page title
+     *
+     * @return string
+     */
+    private function getJobHolidaysPageTitle(): string
+    {
+        return $this->app->translator->translate('job.holidays.title');
     }
 
 }

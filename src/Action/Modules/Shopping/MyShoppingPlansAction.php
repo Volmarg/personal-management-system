@@ -48,7 +48,11 @@ class MyShoppingPlansAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getShoppingPlansPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -71,6 +75,7 @@ class MyShoppingPlansAction extends AbstractController {
             'all_plans'                      => $allPlans,
             'ajax_render'                    => $ajaxRender,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getShoppingPlansPageTitle(),
         ]);
     }
 
@@ -129,6 +134,16 @@ class MyShoppingPlansAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+    }
+
+    /**
+     * Will return shopping plans page title
+     *
+     * @return string
+     */
+    private function getShoppingPlansPageTitle(): string
+    {
+        return $this->app->translator->translate('shopping.title');
     }
 
 }

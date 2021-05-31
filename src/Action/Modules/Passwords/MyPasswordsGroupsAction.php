@@ -55,8 +55,12 @@ class MyPasswordsGroupsAction extends AbstractController {
             return $this->renderTemplate();
         }
 
-        $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setPageTitle($this->getPasswordsSettingsPageTitle());
+        $ajaxResponse->setCode(Response::HTTP_OK);
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -115,6 +119,7 @@ class MyPasswordsGroupsAction extends AbstractController {
             'groups'                         => $groups,
             'groups_form'                    => $passwordGroupForm->createView(),
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getPasswordsSettingsPageTitle(),
         ]);
     }
 
@@ -144,6 +149,16 @@ class MyPasswordsGroupsAction extends AbstractController {
 
         $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
         return new JsonResponse($formSubmittedMessage, 200);
+    }
+
+    /**
+     * Will return passwords settings page title
+     *
+     * @return string
+     */
+    private function getPasswordsSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('passwords.settings.title');
     }
 
 }

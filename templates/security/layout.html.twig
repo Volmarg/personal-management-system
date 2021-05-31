@@ -6,7 +6,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-  <title>{{ 'login.pageTitle' | trans }}</title>
+  <title>
+    {% block title %}{{ 'page.titleShort' | trans }}
+      {% if
+            page_title is defined
+        and page_title is not empty
+      %}
+        - {{ page_title }}
+      {% endif %}
+    {% endblock %}
+  </title>
   <link rel="stylesheet" href="{{ asset('assets/app.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/base-template.css') }}" />
   <link rel="icon" href="logo.svg" sizes="any" type="image/svg+xml">

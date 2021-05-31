@@ -60,7 +60,11 @@ class MyPaymentsMonthlyAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate($year, true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPaymentsMonthlyPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -106,6 +110,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
             'years'                          => $years,
             'active_year'                    => $usedYear,
+            'page_title'                     => $this->getPaymentsMonthlyPageTitle(),
         ]);
     }
 
@@ -172,6 +177,26 @@ class MyPaymentsMonthlyAction extends AbstractController {
     private function getForm(): FormInterface
     {
         return $this->createForm(MyPaymentsMonthlyType::class);
+    }
+
+    /**
+     * Will return payments monthly page title
+     *
+     * @return string
+     */
+    private function getPaymentsMonthlyPageTitle(): string
+    {
+        return $this->app->translator->translate('payments.monthlyPayments.title');
+    }
+
+    /**
+     * Will return payments charts page title
+     *
+     * @return string
+     */
+    private function getPaymentsChartsPageTitle(): string
+    {
+        return $this->app->translator->translate('reports.paymentsCharts.title');
     }
 
 }

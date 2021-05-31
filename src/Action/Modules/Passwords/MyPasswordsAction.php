@@ -62,7 +62,11 @@ class MyPasswordsAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPasswordsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -126,6 +130,7 @@ class MyPasswordsAction extends AbstractController {
             'passwords'                      => $passwords,
             'groups'                         => $groups,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getPasswordsPageTitle(),
         ]);
 
     }
@@ -163,6 +168,16 @@ class MyPasswordsAction extends AbstractController {
             $em->flush();
         }
 
+    }
+
+    /**
+     * Will return passwords page title
+     *
+     * @return string
+     */
+    private function getPasswordsPageTitle(): string
+    {
+        return $this->app->translator->translate('passwords.title');
     }
 
 }

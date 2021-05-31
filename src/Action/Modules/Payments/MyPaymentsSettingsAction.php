@@ -79,7 +79,11 @@ class MyPaymentsSettingsAction extends AbstractController {
         }
 
         $templateContent = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPaymentsSettingsTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -169,6 +173,7 @@ class MyPaymentsSettingsAction extends AbstractController {
             'payments_types'                    => $paymentsTypes,
             'ajax_render'                       => $ajaxRender,
             'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
+            'page_title'                        => $this->getPaymentsSettingsTitle(),
         ]);
     }
 
@@ -191,5 +196,14 @@ class MyPaymentsSettingsAction extends AbstractController {
         ]);
     }
 
+    /**
+     * Will return payments settings page title
+     *
+     * @return string
+     */
+    private function getPaymentsSettingsTitle(): string
+    {
+        return $this->app->translator->translate('payments.settings.title');
+    }
 
 }

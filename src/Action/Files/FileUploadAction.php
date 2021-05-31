@@ -131,7 +131,11 @@ class FileUploadAction extends AbstractController {
         }
 
         $templateContent = $this->renderFineUploadTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getUploadPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -154,6 +158,7 @@ class FileUploadAction extends AbstractController {
             'module_and_directory_select_form' => $moduleAndDirectorySelectForm,
             'max_upload_size_mb'               => $maxUploadSizeMb,
             'max_upload_size_bytes'            => $maxUploadSizeBytes,
+            'page_title'                       => $this->getUploadPageTitle(),
         ];
 
         $template = $twigTemplate ?? self::FINE_UPLOAD_PAGE_TWIG_TEMPLATE;
@@ -209,5 +214,16 @@ class FileUploadAction extends AbstractController {
             $this->addFlash($flashType, $message);
         }
     }
+
+    /**
+     * Will return upload page title
+     *
+     * @return string
+     */
+    private function getUploadPageTitle(): string
+    {
+        return $this->app->translator->translate('fineUpload.title');
+    }
+
 
 }

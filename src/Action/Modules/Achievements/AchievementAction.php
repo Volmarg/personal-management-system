@@ -72,7 +72,12 @@ class AchievementAction extends AbstractController {
         }
 
         $templateContent = $this->renderAchievementPageTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setPageTitle($this->getAchievementsPageTitle());
+        $ajaxResponse->setCode(Response::HTTP_OK);
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -135,6 +140,7 @@ class AchievementAction extends AbstractController {
             'columns_names'     => $columnsNames,
             'all_achievements'  => $allAchievements,
             'achievement_types' => $this->enumTypes,
+            'page_title'        => $this->getAchievementsPageTitle(),
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ]);
     }
@@ -153,6 +159,16 @@ class AchievementAction extends AbstractController {
             $em->persist($achievementForm->getData());
             $em->flush();
         }
+    }
+
+    /**
+     * Will return achievements page title
+     *
+     * @return string
+     */
+    private function getAchievementsPageTitle(): string
+    {
+        return $this->app->translator->translate('achievements.title');
     }
 
 }

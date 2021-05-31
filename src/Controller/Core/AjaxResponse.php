@@ -27,6 +27,7 @@ class AjaxResponse extends AbstractController {
     const KEY_ROUTE_URL             = "route_url";
     const KEY_CONSTANT_VALUE        = "constant_value";
     const KEY_DATA_BAG              = "data_bag";
+    const KEY_PAGE_TITLE            = "page_title";
 
     const XML_HTTP_HEADER_KEY   = "X-Requested-With";
     const XML_HTTP_HEADER_VALUE = "XMLHttpRequest";
@@ -90,6 +91,11 @@ class AjaxResponse extends AbstractController {
      * @var array $dataBag
      */
     private $dataBag = [];
+
+    /**
+     * @var string $pageTitle
+     */
+    private string $pageTitle = "";
 
     /**
      * @return int
@@ -276,6 +282,28 @@ class AjaxResponse extends AbstractController {
     }
 
     /**
+     * @return string
+     */
+    public function getPageTitle(): string
+    {
+        return $this->pageTitle;
+    }
+
+    /**
+     * @param string $pageTitle
+     */
+    public function setPageTitle(string $pageTitle): void
+    {
+        $this->pageTitle = $pageTitle;
+    }
+
+    public function __construct(string  $message = "", string $template = "")
+    {
+        $this->message  = $message;
+        $this->template = $template;
+    }
+
+    /**
      * @param int $code
      * @param string $message
      * @param string|null $template
@@ -301,7 +329,8 @@ class AjaxResponse extends AbstractController {
         string  $formTemplate        = "",
         string  $validatedFormPrefix = "",
         array   $invalidFormFields   = [],
-        array   $dataBag             = []
+        array   $dataBag             = [],
+        string  $pageTitle           = ""
     ): JsonResponse {
 
         $responseData = [
@@ -332,6 +361,7 @@ class AjaxResponse extends AbstractController {
         $responseData[self::KEY_VALIDATED_FORM_PREFIX] = $validatedFormPrefix;
         $responseData[self::KEY_INVALID_FORM_FIELDS]   = $invalidFormFields;
         $responseData[self::KEY_DATA_BAG]              = $dataBag;
+        $responseData[self::KEY_PAGE_TITLE]            = $pageTitle;
 
         $response = new JsonResponse($responseData, 200);
         return $response;
@@ -375,6 +405,7 @@ class AjaxResponse extends AbstractController {
             self::KEY_ROUTE_URL             => $this->getRouteUrl(),
             self::KEY_CONSTANT_VALUE        => $this->getConstantValue(),
             self::KEY_DATA_BAG              => $this->getDataBag(),
+            self::KEY_PAGE_TITLE            => $this->getPageTitle(),
         ];
 
         $response = new JsonResponse($responseData, 200);

@@ -61,11 +61,15 @@ class FilesUploadSettingsAction extends AbstractController {
     public function displaySettings(Request $request) {
 
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderSettingsPage(false, $request);
+            return $this->renderSettingsPage(false);
         }
 
-        $templateContent = $this->renderSettingsPage(true, $request)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderSettingsPage(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getFilesUploadSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -92,9 +96,20 @@ class FilesUploadSettingsAction extends AbstractController {
             'copy_data_form'                    => $copyDataForm->createView(),
             'create_subdir_form'                => $createSubdirForm->createView(),
             "menu_node_modules_names_to_reload" => Utils::escapedDoubleQuoteJsonEncode($menuNodeModulesNamesToReload),
+            'page_title'                        => $this->getFilesUploadSettingsPageTitle(),
         ];
 
         return $this->render(static::TWIG_TEMPLATE_FILE_UPLOAD_SETTINGS, $data);
+    }
+
+    /**
+     * Will return files upload settings page title
+     *
+     * @return string
+     */
+    private function getFilesUploadSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('upload.settings.title');
     }
 
 }

@@ -57,7 +57,12 @@ class MyIssuesAction extends AbstractController
             return $this->renderTemplate( );
         }
         $templateContent = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+
+        $ajaxResponse  = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getIssuesPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -74,7 +79,8 @@ class MyIssuesAction extends AbstractController
         $data = [
             'ajax_render'                    => $ajaxRender,
             'issues_cards_dtos'              => $issuesCardsDtos,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getIssuesPageTitle(),
         ];
 
         return $this->render(self::TWIG_TEMPLATE_PENDING_ISSUES, $data);
@@ -127,6 +133,16 @@ class MyIssuesAction extends AbstractController
             $issueContact = $form->getData();
             $this->controllers->getMyIssuesController()->saveIssueContact($issueContact);;
         }
+    }
+
+    /**
+     * Will return issues page title
+     *
+     * @return string
+     */
+    private function getIssuesPageTitle(): string
+    {
+        return $this->app->translator->translate('issues.title');
     }
 
 }

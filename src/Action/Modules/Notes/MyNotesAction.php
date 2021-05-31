@@ -59,7 +59,11 @@ class MyNotesAction extends AbstractController {
 
         $renderedTemplate = $this->renderCreateNoteTemplate(true);
         $templateContent  = $renderedTemplate->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse     = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getNoteCreatePageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -78,8 +82,12 @@ class MyNotesAction extends AbstractController {
             return $this->renderCategoryTemplate($category, $categoryId);
         }
 
-        $templateContent  = $this->renderCategoryTemplate($category, $categoryId, true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderCategoryTemplate($category, $categoryId, true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getNoteCategoryPageTitle($category));
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -175,6 +183,7 @@ class MyNotesAction extends AbstractController {
             'category_id'   => $categoryId,
             'ajax_render'   => $ajaxRender,
             'notes'         => $notes,
+            'page_title'    => $this->getNoteCategoryPageTitle($category),
         ]);
     }
 
@@ -192,6 +201,7 @@ class MyNotesAction extends AbstractController {
             'ajax_render'                    => $ajaxRender,
             'form'                           => $formView,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getNoteCreatePageTitle(),
         ];
 
         return $this->render('modules/my-notes/new-note.html.twig', $templateData);
@@ -214,4 +224,29 @@ class MyNotesAction extends AbstractController {
         }
     }
 
+    /**
+     * Will return note create page title
+     *
+     * @return string
+     */
+    private function getNoteCreatePageTitle(): string
+    {
+        return $this->app->translator->translate('notes.create.headers.title');
+    }
+
+    /**
+     * Will return note create page title
+     *
+     * @param string $categoryName
+     * @return string
+     */
+    private function getNoteCategoryPageTitle(string $categoryName): string
+    {
+        return $this->app->translator->translate(
+            'notes.category.title',
+            [
+              "{{categoryName}}" => ucfirst($categoryName),
+            ]
+        );
+    }
 }

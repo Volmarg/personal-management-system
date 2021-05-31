@@ -57,7 +57,11 @@ class MyTravelsIdeasAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getTravelsIdeasPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -83,6 +87,7 @@ class MyTravelsIdeasAction extends AbstractController {
             'all_ideas'     => $allIdeas,
             'ajax_render'   => $ajaxRender,
             'categories'    => $categories,
+            'page_title'    => $this->getTravelsIdeasPageTitle(),
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
         ];
 
@@ -203,6 +208,16 @@ class MyTravelsIdeasAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
         }
         return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+    }
+
+    /**
+     * Will return travels ideas page title
+     *
+     * @return string
+     */
+    private function getTravelsIdeasPageTitle(): string
+    {
+        return $this->app->translator->translate('travels.title');
     }
 
 }

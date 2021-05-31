@@ -57,7 +57,11 @@ class MyPaymentsIncomeAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getPaymentsIncomePageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -120,6 +124,7 @@ class MyPaymentsIncomeAction extends AbstractController {
             'form'                           => $form->createView(),
             'currencies_dtos'                => $currenciesDtos,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getPaymentsIncomePageTitle(),
         ]);
     }
 
@@ -137,5 +142,15 @@ class MyPaymentsIncomeAction extends AbstractController {
             $em->flush();
         }
 
+    }
+
+    /**
+     * Will return payments income page title
+     *
+     * @return string
+     */
+    private function getPaymentsIncomePageTitle(): string
+    {
+        return $this->app->translator->translate('payments.incomes.title');
     }
 }

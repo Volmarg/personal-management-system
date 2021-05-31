@@ -6,8 +6,6 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Core\Repositories;
-use App\Entity\Modules\Contacts\MyContactGroup;
-use App\Entity\Modules\Contacts\MyContactType;
 use App\Services\Files\FilesHandler;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
@@ -23,8 +21,6 @@ class MyContactsSettingsAction extends AbstractController
     const TWIG_TEMPLATE_SETTINGS             = 'modules/my-contacts/settings.html.twig';
     const TWIG_TEMPLATE_CONTACT_TYPES_TABLE  = 'modules/my-contacts/components/settings/types-settings.table.html.twig';
     const TWIG_TEMPLATE_CONTACT_GROUPS_TABLE = 'modules/my-contacts/components/settings/groups-settings.table.html.twig';
-
-    const KEY_MESSAGE = "message";
 
     /**
      * @var Application
@@ -154,7 +150,12 @@ class MyContactsSettingsAction extends AbstractController
         }
 
         $templateContent = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setPageTitle($this->getContactsSettingsPageTitle());
+        $ajaxResponse->setCode(Response::HTTP_OK);
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -172,7 +173,8 @@ class MyContactsSettingsAction extends AbstractController
             'group_form'           => $groupForm->createView(),
             'ajax_render'          => $ajaxRender,
             'contact_types_table'  => $this->renderContactTypeTemplate()->getContent(),
-            'contact_groups_table' => $this->renderContactGroupTemplate()->getContent()
+            'contact_groups_table' => $this->renderContactGroupTemplate()->getContent(),
+            'page_title'           => $this->getContactsSettingsPageTitle(),
         ];
 
         return $this->render(self::TWIG_TEMPLATE_SETTINGS, $data);
@@ -278,6 +280,16 @@ class MyContactsSettingsAction extends AbstractController
 
         $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
         return new Response($formSubmittedMessage, 200);
+    }
+
+    /**
+     * Will return contacts settings page title
+     *
+     * @return string
+     */
+    private function getContactsSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('contact.settings.title');
     }
 
 }

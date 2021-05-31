@@ -56,7 +56,11 @@ class SettingsAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -104,9 +108,20 @@ class SettingsAction extends AbstractController {
             'password_form'      => $passwordForm->createView(),
             'nickname_form'      => $nicknameForm->createView(),
             'lock_password_form' => $lockPasswordForm->createView(),
+            'page_title'         => $this->getSettingsPageTitle(),
         ];
 
         return $this->render('page-elements/user/settings.html.twig', $data);
+    }
+
+    /**
+     * Will return page title
+     *
+     * @return string
+     */
+    private function getSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('user.title');
     }
 
 }

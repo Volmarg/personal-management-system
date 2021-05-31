@@ -56,8 +56,12 @@ class MyTodoListAction extends AbstractController {
             return $this->renderTemplate();
         }
 
-        $templateContent  = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderTemplate(true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getTodoListPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -148,6 +152,7 @@ class MyTodoListAction extends AbstractController {
             'all_modules'                                  => $allModules,
             'all_relatable_entities_data_dtos_for_modules' => $allRelatableEntitiesDataDtosForModules,
             'skip_rewriting_twig_vars_to_js'               => $skipRewritingTwigVarsToJs,
+            'page_title'                                   => $this->getTodoListPageTitle(),
         ];
 
         return $this->render('modules/my-todo/list.html.twig', $data);
@@ -177,6 +182,26 @@ class MyTodoListAction extends AbstractController {
             $todoElement = $todoElementForm->getData();
             $this->controllers->getMyTodoElementController()->save($todoElement);
         }
+    }
+
+    /**
+     * Will todo list page title
+     *
+     * @return string
+     */
+    private function getTodoListPageTitle(): string
+    {
+        return $this->app->translator->translate('todo.list.title');
+    }
+
+    /**
+     * Will todo settings page title
+     *
+     * @return string
+     */
+    private function getTodoSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('todo.settings.title');
     }
 
 }

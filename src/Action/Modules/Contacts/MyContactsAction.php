@@ -58,7 +58,12 @@ class MyContactsAction extends AbstractController
             return $this->renderTemplate( );
         }
         $templateContent = $this->renderTemplate( true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setPageTitle($this->getContactsPageTitle());
+        $ajaxResponse->setCode(Response::HTTP_OK);
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -211,10 +216,21 @@ class MyContactsAction extends AbstractController
         $data = [
             self::KEY_AJAX_RENDER            => $ajaxRender,
             self::KEY_CONTACTS               => $contacts,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getContactsPageTitle(),
         ];
 
         return $this->render(self::TWIG_TEMPLATE, $data);
+    }
+
+    /**
+     * Will return the contacts page title
+     *
+     * @return string
+     */
+    private function getContactsPageTitle(): string
+    {
+        return $this->app->translator->translate('contact.title');
     }
 
 }

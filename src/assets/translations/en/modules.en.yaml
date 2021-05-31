@@ -1,4 +1,8 @@
+dashboardModule:
+  title: Dashboard
+
 user:
+  title: Profile settings
   headers:
     profileSettings: User profile settings
     changeSettings: Change settings
@@ -8,9 +12,11 @@ user:
 
 goals:
   list:
+    title: Goals
     headers:
       todolist: Goals list
   payments:
+    title: 'Goals payments'
     timeElapsed: time elapsed
     daysLeft: days left
     days: days
@@ -27,6 +33,7 @@ goals:
       addSubgoal: Add subgoal
       addPaymentGoal: Add payment goal
       managePaymentGoals:  Manage payments goals
+    title: 'Goals settings'
     infoBlock:
       header: Goals settings
       text:
@@ -52,6 +59,7 @@ goals:
 
 todo:
   list:
+    title: Todo
     headers:
       label: Todo list
       addTodo: Add todo
@@ -64,6 +72,8 @@ todo:
       description: Description
     ajaxCallMessages:
       dashboardVisibilityHasBeenToggled: "Dashboard visibility has been toggled"
+  settings:
+    title: Todo settings
   widget:
     add:
       label: Add
@@ -79,6 +89,7 @@ notes:
   create:
     headers:
       newNote: Add new note
+      title: Create new note
   infoBlock:
     text:
       mainDescription: |
@@ -97,6 +108,7 @@ notes:
       categoryWithThisNameAlreadyExistsInThisParent: "Category with this name already exists in this parent"
     popover:
       createNote: Create note
+    title: 'Notes: {{categoryName}}'
   settings:
     headers:
       settings:
@@ -105,6 +117,7 @@ notes:
         label: Categories
         editCategory: Edit categories
         addCategory: Add category
+    title: 'Notes settings'
     text:
       mainDescription: |
         Mangement of categories to which the notes are assignable to. Allows to pick an icon, color and relation
@@ -113,6 +126,7 @@ notes:
         required to reload the page upon adding the new category - this is not handled automatically.
 
 contact:
+  title: Contacts
   headers:
     addRemove: Add/Remove contact
   tables:
@@ -121,6 +135,7 @@ contact:
     group: Group
     type: Type
   settings:
+    title: Contacts settings
     table:
       name: Name
       imagePath: Image path
@@ -147,6 +162,7 @@ contact:
           assigning multiple contacts types, adding image and coloring the boxes.
 
 passwords:
+  title: Passwords
   headers:
     addRemoveCredentials: Add/Remove credentials
   table:
@@ -162,6 +178,7 @@ passwords:
         Management of personal credentials. Support project-unique logic which is fetching, <br/>decrypting the password and
         inserting it directly into the clipboard (just press <b>CTRL +V</b>).
   settings:
+    title: Passwords settings
     headers:
       changeAddCredentialsGroup: Change/Add credentials group
     table:
@@ -174,6 +191,7 @@ passwords:
   hiddenPassword: '*****'
 
 achievements:
+  title: Achievements
   headers:
     addAchievement: Add achievements
   infoBlock:
@@ -184,6 +202,7 @@ achievements:
         the successes toward personal goals and dreams.
 
 schedules:
+  title: Schedules
   calendar:
     messages:
       noCalendarHasBeenFoundForId: "No calendar has been found for given id %id%"
@@ -232,6 +251,7 @@ schedules:
       addNewCalendar: Add new calendar
 
 travels:
+  title: Travel ideas
   headers:
     addIdea: Add idea
   popovers:
@@ -247,6 +267,7 @@ travels:
           to never miss the postponed travels.
 
 payments:
+  title: Products prices
   productsPrices:
     tabs:
       acceptedProducts:
@@ -264,6 +285,7 @@ payments:
           Organizable lists of assortment allows to keep an eye of the products that should be avoided in case of the
           need to manage the financial issues, where even shopping the basic goods matters.
   moneyOwed:
+    title: Money owed
     headers:
       owedByOthers: Money owed by others
       owedByMe: Money owed by me
@@ -291,6 +313,7 @@ payments:
           Track of the money owed to other people and owed by yourself. Consist of separate management groups,
           yields the summaries of financial debts with separation of the target (person / company etc.)
   incomes:
+    title: Incomes
     headers:
       manage: Manage records
       addRecord: Add record
@@ -305,6 +328,7 @@ payments:
         mainDescription: |
           Organizable monthly incomes sources, used later on in the reporting
   monthlyPayments:
+    title: Monthly payments
     headers:
       addPayment: Add payment
     summary: 'Monthly payments summary:'
@@ -319,6 +343,7 @@ payments:
         mainDescription: |
           Lists of the money spent in each month with separate summary per month and per payment type.
   bills:
+    title: Bills
     tabs:
       billsManagement:
         label: Bills management
@@ -347,6 +372,7 @@ payments:
       bill: Bill
       date: Date
   settings:
+    title: Payments settings
     headers:
       changeAddSetting: Change/Add settings
     tab:
@@ -374,6 +400,7 @@ payments:
 
 reports:
   monthlyPaymentsSummaries:
+    title: 'Report: Monthly payments summaries'
     infoBlock:
       header: Payments summaries
       text:
@@ -383,18 +410,21 @@ reports:
       monthAndYear: Month and year
       money: Money
   paymentsCharts:
+    title: 'Report: Payments charts'
     infoBlock:
       header: Payments charts
       text:
         mainDescription: |
           Charts based on data from payments modules
   savingsCharts:
+    title: 'Report: Savings charts'
     infoBlock:
       header: Savings charts
       text:
         mainDescription: |
           Charts based on data from incomes/payments modules
   historicalMoneyOwed:
+    title: 'Report: Historical money owed'
     infoBlock:
       header: Historical money owed
       text:
@@ -428,6 +458,7 @@ datatables:
   filterByColumnValue: "Filter by column value"
 
 shopping:
+  title: Shopping plans
   headers:
     plannedShoppingItems: Planned shopping items
     addPlannedItem: Add planned item
@@ -448,6 +479,7 @@ job:
           label: Made afterhours
         spentAfterhours:
           label: Spent afterhours
+    title: Job afterhours
     labels:
       hours: Hours
       days: Days
@@ -472,6 +504,7 @@ job:
           label: Holidays summary
         spent:
           label: Holidays spent
+    title: Job holidays
     infoBlock:
       header: Holidays
       text:
@@ -481,6 +514,7 @@ job:
     headers:
       manageHolidaysPool: Manage holidays pool
       addHolidaysPool: Add holidays pool
+    title: Job settings
     infoBlock:
       header: Job settings
       text:
@@ -489,6 +523,7 @@ job:
 
 files:
   label: Files
+  title: 'Files {{folder}}'
   table:
     name: Name
     extension: Extension
@@ -503,6 +538,7 @@ files:
     remove: Remove files
     transferFiles: Transfer files
   settings:
+    title: 'Files settings'
     infoBlock:
       header: Files settings
       text:
@@ -510,6 +546,7 @@ files:
           Show or hide the directories from the menu by using the <b>System lock</b>
 
 images:
+  title: 'Images {{folder}}'
   popover:
     removeFolder: Remove folder
     addFiles: Add files
@@ -517,6 +554,7 @@ images:
     removeFiles: Remove files
     transferFiles: Transfer files
   settings:
+    title: 'Images settings'
     infoBlock:
       header: Images settings
       text:
@@ -524,6 +562,7 @@ images:
           Show or hide the directories from the menu by using the <b>System lock</b>
 
 video:
+  title: 'Video {{folder}}'
   popover:
     removeFolder: Remove folder
     addFiles: Add files
@@ -537,6 +576,7 @@ video:
     headers:
       main: Video
   settings:
+    title: 'Video settings'
     infoBlock:
       header: Video settings
       text:
@@ -545,6 +585,7 @@ video:
 
 upload:
   settings:
+    title: Upload management
     copyFolderData:
       label: Copy folder data
       from: From
@@ -561,6 +602,7 @@ upload:
           in modules
 
 fineUpload:
+  title: Upload
   buttons:
     upload:
       label: Upload
@@ -589,6 +631,7 @@ fineUpload:
     uploadFiles: Upload files
 
 issues:
+  title: Pending issues
   card:
     lastContactDate: "Last contact date: "
     lastProgressDate: "Last progress date: "

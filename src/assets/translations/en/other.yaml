@@ -1,4 +1,5 @@
 login:
+  title: Login
   header:
     pageName: Personal Management System
     login: Login
@@ -19,6 +20,7 @@ login:
     register: register
 
 register:
+  title: Register
   header:
     register: Register
   messages:
@@ -50,6 +52,7 @@ codePages:
     title: 500 - internal server error
 
 settings:
+  title: System settings
   tab:
     modules:
       label: Modules

@@ -70,12 +70,18 @@ class MyImagesAction extends AbstractController {
      * @throws Exception
      */
     public function displayImages(? string $encodedSubdirectoryPath, Request $request) {
+
+        $decodedSubdirectoryPath = FilesHandler::trimFirstAndLastSlash(urldecode($encodedSubdirectoryPath));
         if (!$request->isXmlHttpRequest()) {
-            return $this->renderCategoryTemplate($encodedSubdirectoryPath);
+            return $this->renderCategoryTemplate($decodedSubdirectoryPath);
         }
 
-        $templateContent = $this->renderCategoryTemplate($encodedSubdirectoryPath, true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $templateContent = $this->renderCategoryTemplate($decodedSubdirectoryPath, true)->getContent();
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getImagesCategoryPageTitle($decodedSubdirectoryPath));
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -92,7 +98,11 @@ class MyImagesAction extends AbstractController {
         }
 
         $templateContent  = $this->renderSettingsTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getSettingsPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -103,22 +113,22 @@ class MyImagesAction extends AbstractController {
     {
         $data = [
             'ajax_render' => $ajaxRender,
+            'page_title'  => $this->getSettingsPageTitle(),
         ];
         return $this->render(static::TWIG_TEMPLATE_MY_FILES_SETTINGS, $data);
     }
 
     /**
-     * @param string|null $encodedSubdirectoryPath
+     * @param string|null $decodedSubdirectoryPath
      * @param bool $ajaxRender
      * @param bool $skipRewritingTwigVarsToJs
      * @return array|RedirectResponse|Response
      *
      * @throws Exception|\Doctrine\DBAL\Driver\Exception
      */
-    private function renderCategoryTemplate(? string $encodedSubdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
+    private function renderCategoryTemplate(? string $decodedSubdirectoryPath, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
 
         $moduleUploadDir                   = Env::getImagesUploadDir();
-        $decodedSubdirectoryPath           = FilesHandler::trimFirstAndLastSlash(urldecode($encodedSubdirectoryPath));
         $subdirectoryPathInModuleUploadDir = FileUploadController::getSubdirectoryPath($moduleUploadDir, $decodedSubdirectoryPath);
 
         $moduleUploadDirName = FilesHandler::getModuleUploadDirForUploadPath($moduleUploadDir);
@@ -171,7 +181,8 @@ class MyImagesAction extends AbstractController {
             'upload_path'                    => $uploadPath,
             'upload_module_dir'              => MyImagesController::TARGET_UPLOAD_DIR,
             'is_main_dir'                    => $isMainDir,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs
+            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getImagesCategoryPageTitle($decodedSubdirectoryPath),
         ];
 
         return $this->render(static::TWIG_TEMPLATE_MY_IMAGES, $data);
@@ -212,6 +223,34 @@ class MyImagesAction extends AbstractController {
         }
 
         return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
+    }
+
+    /**
+     * Will return the page title for images category page
+     *
+     * @param string $subdirectoryPath
+     * @return string
+     */
+    private function getImagesCategoryPageTitle(string $subdirectoryPath): string
+    {
+        $pageTitle = $this->app->translator->translate(
+            'images.title',
+            [
+                '{{folder}}' => $subdirectoryPath
+            ]
+        );
+
+        return $pageTitle;
+    }
+
+    /**
+     * Will return settings page title
+     *
+     * @return string
+     */
+    private function getSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('images.settings.title');
     }
 
 }

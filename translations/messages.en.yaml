@@ -1,27 +1,85 @@
-validators:
-    UserRegisterTypeValidator: { email: { isEmpty: 'Email cannot be empty', invalidSyntax: 'Email address is syntethically incorrect', alreadyInUse: 'This Email is already in use' }, username: { isEmpty: 'Username cannot be empty', alreadyExist: 'This username already exist' }, password: { isEmpty: 'Password cannot be empty' }, repeatPassword: { doesNotMatch: 'Repeated password does not match the password' }, lockPassword: { isEmpty: 'Password cannot be empty' }, repeatLockPassword: { doesNotMatch: 'Repeated lock password does not match the password' } }
-    messages: { invalidDataHasBeenProvided: 'Invalid data has been provided' }
-messages:
-    SettingValidationDTO: { success: 'Validation has been passed', failure: { duplicatedValue: 'Duplicated value has been found for given key: ', exceptionWaThrown: 'Exception was thrown with message' } }
-    ajax: { success: { recordHasBeenCreated: 'Record has been created', recordHasBeenRemoved: 'Record has been removed' }, failure: { duplicatedRecord: 'Duplicated record', formValidationFailed: 'Form validation failed', internalServerError: 'Internal server error', undefinedError: 'Undefined error', couldNotRemoveRecord: 'Could not remove record', badRequest: 'Bad Request' } }
-    lock: { resourceHasBeenLocked: 'Resource has been locked', resourceHasBeenUnlocked: 'Resource has been unlocked', couldNotLockResource: 'Could not lock resource', wholeSystemWasLocked: 'Whole system was locked', wholeSystemHasBeenUnlocked: 'Whole system has been unlocked', failedToToggleLockForWholeSystem: 'Failed to toggle lock for whole system', unlockExpiredReloadingPage: 'Unlock expired, reloading page', unauthorizedAccess: 'Unauthorized access!' }
-    general: { noEntityWasFoundForId: 'No entity was found for id: ', noSuchRepositoryWasFound: 'No such repository was found: ', givenClassIsNotEntity: 'Given class is not a entity: ', noColumnWithThisNameWasFoundInGivenTable: 'No column with this name was found in given table: ', thisFieldIsNotBoolean: 'This field is not boolean: ', internalServerError: 'Internal server error', noSuchMethodExistsForGivenClass: 'No such method exists for given class: ', noSuchGetterAndIsserAvailableForClass: 'No getter and isser available for class: ', boolValueHasBeenToggled: 'Bool value has been toggled', couldNotHandleTheRequest: 'Could not handle the request', yourSessionHasExpiredYouWereLoggedOut: 'Your session has expired, You were logged out' }
-sidebar:
-    menu: { dashboard: { label: Dashboard }, achievements: { label: Achievements }, goals: { label: Goals, list: List, payments: Payments, settings: Settings }, todo: { label: Todo, list: List, settings: Settings }, car: { label: Car, schedules: Schedules, settings: Settings }, schedules: { label: Schedules, submodule: { car: { label: Car } }, settings: Settings }, contacts: { label: Contacts, settings: Settings }, files: { label: Files, mainDir: 'Main folder' }, images: { label: Images, mainDir: 'Main folder' }, video: { label: Video, settings: Settings, mainDir: 'Main folder' }, job: { label: Job, afterhours: Afterhours, holidays: Holidays, settings: Settings }, passwords: { label: Passwords, passwords: Passwords, settings: Settings }, payments: { label: Payments, productsPrices: 'Products prices', monthlyPayments: 'Monthly payments', moneyOwed: 'Money owed', incomes: Incomes, bills: Bills, settings: Settings }, shopping: { label: Shopping, plans: Plans }, travels: { label: Travels, ideas: Ideas }, notes: { label: Notes, new: 'Create new', settings: Settings, categories: Categories }, upload: { label: Upload, add: Add, manage: Manage }, reports: { label: Reports, monthlyPaymentsSummaries: 'Payments summaries', paymentsCharts: 'Payments charts', savingsCharts: 'Savings charts', historicalMoneyOwed: 'Historical money owed' }, issues: { label: Issues, pending: Pending } }
-topbar:
-    search: { placeholder: 'Search for files by tags...' }
-    user: { profile: Profile, settings: Settings, resources: { locked: Locked, unlocked: Unlocked, setLockPassword: 'Set lock password' }, logout: Logout, about: About }
-jsSettings:
-    header: Settings
-    options: { colorScheme: 'Color scheme' }
+login:
+    title: Login
+    header: { pageName: 'Personal Management System', login: Login }
+    labels: { username: 'Username:', password: 'Password:', remember: 'Remember Me' }
+    placeholders: { username: Username, password: Password }
+    submit: Login
+    pageTitle: 'Sign In'
+    errors: { invalidPassword: 'Invalid password', userNotFound: 'No such user was found', noExistingUserWasFoundPleaseContinueWithRegistration: 'No existing user was found, please continue with registaration' }
+    buttons: { register: register }
+register:
+    title: Register
+    header: { register: Register }
+    messages: { notAllowedToRegisterAdditionalUsers: 'Not allowed to register additional users' }
+codePages:
+    error: { h1: Oops, h3: 'Page Error', text: 'We track these errors automatically, but if the problem persists feel free to contact us.', button: 'Go back' }
+    error403: { h1: 403, h3: 'Access Denied', text: 'Full authentication is required to access this resource.', button: 'Go back', title: 'Access Denied' }
+    error404: { h1: 404, h3: 'Oops Page Not Found', text: 'The page you are looking for does not exist or has been moved.', button: 'Go back', title: '404 - page not found' }
+    error500: { h1: 500, h3: 'Internal server error', text: 'Something goes wrong with our servers, please try again later.', button: 'Go back', title: '500 - internal server error' }
+settings:
+    title: 'System settings'
+    tab: { modules: { label: Modules }, dashboard: { label: Dashboard }, finances: { label: Finances } }
+    label: Settings
+    dashboard: { widgets: { visibility: { label: 'Widgets visibility', table: { labels: { name: Name, displayWidget: 'Display widget' } } } } }
+    infoBlock: { header: Settings, text: { mainDescription: "Contains system wide or special settings for certain logic\n" } }
+    guide: { label: Guide }
+    finances: { type: { currencies: { label: Currencies, table: { name: Name, symbol: Symbol, multiplier: Multiplier, isDefault: 'Is default' }, addCurrency: 'Add currency' }, messages: { couldNotFindCurrencyForGivenName: 'Could not find currency for given name', defaultCurrencyCanNotBeRemove: 'Default currency cannot be removed', couldNotFindSettingWithThisName: 'Could not find setting with this name', canNotUnsetTheTheDefaultPropertyForDefaultCurrency: 'Can not unset the default property for default currency', couldNotHandleAddingNewCurrencyBeingDefaultValue: 'Could not handle adding new currency being default value', currencyWithThisNameAlreadyExist: 'Currency with this name already exist', success: 'Currency record has been successfully updated' } } }
+    modules: { lock: { label: 'Modules Lock', tabel: { headers: { moduleName: 'Module name', lockModule: 'Lock module' } } } }
+db:
+    foreignKeyViolation: 'This record cannot be removed - it''s connected with existing records.'
+    recordWithThisNameExist: 'Record with this name already exists!'
+demo:
+    disabledFunctionallity: 'This functionallity has been disabled on demo'
+logs:
+    upload: { startedUploadingToSubdirectory: 'Started uploading files to subdirectory: ', triedToUploadForUnknownUploadType: 'Performed upload action for not supported upload type: ', finishedUploading: 'Finished uploading data.' }
+    directories: { removedFolderDoesNotExist: 'Removed folder does not exist.', folderRemovalHasBeenBlockedThereAreFilesInside: 'Folder removal has been blocked - there are still files in tree.', couldNotRemoveFolder: 'Could not remove folder: ', finishedRemovingFolder: 'Finished removing folder.', startedRemovingFolder: 'Started removing folder', startedRenamingFolder: 'Started renaming folder', finishedRenamingFolder: 'Finished renaming folder', startedCreatingSubdirectory: 'Started creating subdirectory.', finishedCreatingSubdirectory: 'Finished creating subdirectory.', subdirectoryNameWillNotChange: 'Subdirectory name will not change - renaming aborted.', subdirectoryNewNameIsEmptyString: 'Subdirectory new name is an empty string - renaming aborted.', subdirectoryCurrentNameIsEmptyString: 'Subdirectory current name is an empty string - renaming aborted.', missingUploadModuleType: 'Upload type has not been provided - renaming aborted.', thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.', renamedTargetDirectoryDoesNotExist: 'Target directory for which user tried to change name does not exist', subdirectoryWithThisNameDoesNotExist: 'Subdirectory with this name does not exist!', renamingSubdirectoryWithThisNameAlreadyExist: 'Subdirectory with this name already exists.', thereWasAnErrorWhileCreatingFolder: 'Exception was thrown while creating folder.', createFoldedThisNameAlreadyExist: 'Subdirectory with this name already exists.' }
+    files: { thereWasAnErrorWhileTryingToMoveSingleFile: 'There was an error while trying to move single file: ', startedCopyingDataBetweenFoldersViaPost: 'Started copying data between folders via Post Request.', currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.', targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.', exceptionWasThrownWhileMovingDataBetweenFolders: 'Exception was thrown while moving data between folders', finishedCopyingData: 'Finished copying data.' }
+    download: { startedDownloading: 'Started downloading data.', finishedDownloading: 'Finished downloading data.', exceptionWasThrownWhileDownloadingFile: 'Exception was thrown while downloading file.' }
+    security: { visitedPageWithUnallowedIp: 'Visited page with unallowed ip', visitedPageWithUnallowedMethod: 'Visited page with unallowed method' }
+    notes: { parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: 'Parent child hierarchy - category has children but it is missing in categories depths' }
+    sessions: { removingRolesFromSession: 'Removing roles from session', noSessionDataWasFoundForGivenKey: 'No session data was found for given key', sessionsDataForGivenKeyHasExpired: 'Session data for given key has expired' }
+    validators: { providedVariableIsNotAnObject: 'Provided variable is not an object: ', objectOfGivenClassIsNotEntity: 'Object of given class is not entity: ', thereIsNoValidationLogicForThisEntity: 'There is no validation logic for this entity: ', undefinedActionOrInterfaceForEntityValidationIsMissing: 'Undefined action or interface for entity validation is missing' }
 guide:
     modules: { goals: { description: 'You can use todolist to keep track of your goals progress or keep an eye of the money amount to collect.' }, todo: { description: 'Create a todo list to either track a goals, issues or any personal things to un-check.' }, notes: { description: 'Here, you can keep any small information that you need, it can be either quick notes some personal data.' }, contacts: { description: 'With this simple module you can organize your personal contacts.' }, passwords: { description: 'You can keep Your passwords encrypted in Your database, and retrieve them via decryption.' }, achievements: { description: 'Want to keep a track on anything cool you did - put in this module!' }, schedules: { description: 'This module purpose is to keep track of any recurring things you got to do like car oil changes.' }, issues: { description: 'In this section You can track any ongiong/pending cases that have to be eventually resolved.' }, travels: { description: 'Having some ideas of places to visit but without any specific plans to it? Add it to this Module.' }, payments: { description: 'Used to store money spend monthly on given shoppings, track owed money, bills, incomes.' }, shopping: { description: 'Perfect spot to store anything interesting to come back to it later.' }, job: { description: 'Track the job afterhours or spent/left holidays for given year.' }, reports: { description: 'Contains readonly reports created from already existing data in database' }, files: { description: 'Perfect for storing any kind of documents - keep it organized with tags.' }, images: { description: 'Organize Your photos/scans/downloaded pics in form of masonry galleries.' }, video: { description: 'A place to store Your short videos.' }, upload: { description: 'Management of uploaded files and images, allows to create folders, quickly copy data between directories.' }, dashboard: { description: 'The main page of admin panel, with overview of data available in form of widgets.' } }
     system: { profile: { description: 'Profile settings - password, avatar, nick etc.' }, lock: { description: 'Special second layer password. Unlocks the hidden entries, allows to show them back. See <b>Notes</b> module.' }, settings: { description: 'System settings - for example shown widgets.' }, logout: { description: 'Bye Bye!' }, about: { description: 'You will be moved to the external page with guide related to this project.' }, notifications: { description: 'Contains the count/quick overview of incomming schedules entries.' }, search: { description: 'Click here, enter searched word and hit enter.' }, hamburger: { description: 'Click here to fade-in/out the menu on left.' } }
     firstTimeLogin: { global: { description: "Hello, <br/><br/>\n\nSeems like this is the first time that You are logging into the project.\nPlease keep in mind that the <b>Guide</b> mode is turned on, therefore You will see\npopups when hovering upon certain elements. <br/><br/>\n\nIn order to turn this off You need to edit the <code>.env</code> file and replace the <code>APP_GUIDE=true</code>\nto <code>APP_GUIDE=false</code><br/><br/>\n\nThis popup is shown only upon first login.\n\nHave a nice day,\n" }, demo: { description: "Hello, <br/><br/>\n\nSeems like this is the first time that You are logging into the project.\nPlease keep in mind that the <b>Guide</b> mode is turned on, therefore You will see\npopups when hovering upon certain elements. <br/><br/>\n\nYou are on the demo right now. Beware that some functionality has been disabled for demo,\nfor example: changing password, registering users, etc. <br/><br/>\n\nThis popup is shown only upon first login.\n\nHave a nice day,\n" } }
     jsSettings: { panel: { description: 'GUI based settings - supports changing theme' } }
-validations:
-    myJobHolidaysValidator: { greaterThan: 'Amount of days to spend must be bigger than %value%', lessThanOrEqual: 'You don''t have this amount of days left to spend for this year. Days left: %daysLeft%' }
-    myRecurringPaymentsValidator: { dayOfMonth: { greaterThanOrEqual: 'Given day of month must be bigger or equal than %value%', lessThanOrEqual: 'Provided day of month must be lesser or equal than %value%' } }
+messages:
+    SettingValidationDTO: { success: 'Validation has been passed', failure: { duplicatedValue: 'Duplicated value has been found for given key: ', exceptionWaThrown: 'Exception was thrown with message' } }
+    ajax: { success: { recordHasBeenCreated: 'Record has been created', recordHasBeenRemoved: 'Record has been removed' }, failure: { duplicatedRecord: 'Duplicated record', formValidationFailed: 'Form validation failed', internalServerError: 'Internal server error', undefinedError: 'Undefined error', couldNotRemoveRecord: 'Could not remove record', badRequest: 'Bad Request' } }
+    lock: { resourceHasBeenLocked: 'Resource has been locked', resourceHasBeenUnlocked: 'Resource has been unlocked', couldNotLockResource: 'Could not lock resource', wholeSystemWasLocked: 'Whole system was locked', wholeSystemHasBeenUnlocked: 'Whole system has been unlocked', failedToToggleLockForWholeSystem: 'Failed to toggle lock for whole system', unlockExpiredReloadingPage: 'Unlock expired, reloading page', unauthorizedAccess: 'Unauthorized access!' }
+    general: { noEntityWasFoundForId: 'No entity was found for id: ', noSuchRepositoryWasFound: 'No such repository was found: ', givenClassIsNotEntity: 'Given class is not a entity: ', noColumnWithThisNameWasFoundInGivenTable: 'No column with this name was found in given table: ', thisFieldIsNotBoolean: 'This field is not boolean: ', internalServerError: 'Internal server error', noSuchMethodExistsForGivenClass: 'No such method exists for given class: ', noSuchGetterAndIsserAvailableForClass: 'No getter and isser available for class: ', boolValueHasBeenToggled: 'Bool value has been toggled', couldNotHandleTheRequest: 'Could not handle the request', yourSessionHasExpiredYouWereLoggedOut: 'Your session has expired, You were logged out' }
+responses:
+    files: { filePathIsAnEmptyString: 'File path is an empty string', filePathIsIncorrectFileDoesNotExist: 'File provided in filepath is incorrect - such file does not exist', fileSuccessfullyRemoved: 'Files has been successfully removed', fileDoesNotExist: 'File does not exist.', thereWasAnErrorWhileRemovingFile: 'There was an error while removing the file.', thereWasAnErrorWhileRenamingFile: 'There was an error while renaming the file.', filenameRemainsTheSame: 'File name remains the same.', filenameCannotBeEmpty: 'File name cannot be empty!', fileSuccessfullyRename: 'File has been successfully renamed.', fileWithThisNameAlreadyExist: 'File with this name already exist.', fileYouTryingToMoveDoesNotExist: 'The file You trying to move does not exist.', fileWithThisNameAlreadyExistInTargetDirectory: 'File with this name already exists in target directory.', fileHasBeenSuccesfullyMoved: 'File has been successfully moved', filesHasBeenSuccesfullyMoved: 'Files has been successfully moved', couldNotMoveTheFile: 'Could not move the file.', couldNotMoveSomeFiles: 'Could not move some files.', couldNotTheFiles: 'Could not move the files.', thereWasAnErrorWhileTryingToMoveFile: 'There was an error while trying to move file', currentUploadTypeIsMissingInRequest: 'Current upload type is missing in request.', targetUploadTypeIsMissingInRequest: 'Target upload type is missing in request.', currentSubdirectoryPathIsMissingInRequest: 'Current subdirectory path in module upload dir is missing in request.', targetSubdirectoryPathIsMissingInRequest: 'Target subdirectory path in module upload dir is missing in request.', cannotCopyDataToTheSameFolderForGivenModule: 'Cannot copy data to the same folder for given module.', currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.', targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.', thereWasAnErrorWhileMovingDataBetweenFolders: 'There was an error while moving files from one folder to another.', finishedCopyingData: 'Data has been successfully copied to new directory', subdirectoryCurrentPathInModuleUploadDirIsMissingInRequest: 'Subdirectory current path in module upload dir is missing in request.', thereWasAnErrorWhileCopyingAndRemovingDataViaPost: 'Then was an error while copying and removing data.', thereWasAnErrorWhileCopyingData: 'Then was an error while copying data.', dataHasBeenSuccesfulyCopiedAndRemoved: 'Data has been successfully copied and removed afterward.' }
+    directories: { cannotRemoveMainFolder: 'Cannot remove main folder!', youNeedToSelectUploadType: 'You need to select upload type!', subdirectoryDoesNotExistForThisModule: 'This subdirectory does not exist for selected module.', errorWhileRemovingSubdirectory: 'There was and error when trying to remove subdirectory!', subdirectoryHasBeenRemove: 'Subdirectory has been successfully removed.', subdirectoryNameWillNotChange: 'You are trying to change folder name to the same that there already is - action aborted.', subdirectoryNewNameIsEmptyString: 'New name is an empty string - action aborted', subdirectoryCurrentNameIsEmptyString: 'Current name is an empty string - action aborted', missingUploadModuleType: 'Upload type is an empty string - action aborted', thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.', folderNameHasBeenSuccessfullyChanged: 'Folder name has been successfully changed', renamedTargetDirectoryDoesNotExist: 'Target directory for which You try to change name does not exist', subdirectoryWithThisNameDoesNotExist: 'Subdirectory with this name does not exist!', renamingSubdirectoryWithThisNameAlreadyExist: 'Cannot change subdirectory name! Subdirectory with this name already exist.', thereWasAnErrorWhileCreatingFolder: 'There was an error while trying to create new folder for given module', createFoldedThisNameAlreadyExist: 'Subdirectory with this name for selected upload typ already exists.', subdirectoryForModuleSuccessfullyCreated: 'Subdirectory for selected module has been successfully created', directoryWithThisNameAlreadyExistInTargetFolder: 'Directory with this name already exist in target folder', theDirectoryYouTryToMoveDoesNotExist: 'The directory that You try to move does not exist', directoryHasBeenSuccessfullyMoved: 'Directory has been successfully moved', cannotMoveModuleMainUploadDir: 'Cannot move module main upload dir', currentDirectoryPathIsTheSameAsNewPath: 'Current directory path is the same as new path', cannotMoveFolderInsideItsOwnSubfolder: 'Cannot move folder inside its own subfolder' }
+    tags: { errorWhileTryingToUpdateTagsViaApi: 'There was an error while trying to update tags via api call' }
+    upload: { noFilesWereUploaded: 'No files were uploaded', tryingToUploadMoreFilesThanAllowedTo: 'You are trying to upload more files than You are allowed to!', moduleNameIsIncorrect: 'Module name is incorrect.', invalidFileHasBeenSkipped: 'File is invalid, and has been skipped', finishedUploading: 'File upload has been successfully finished' }
+    general: { missingRequiredParameter: 'Missing request parameter named: ', missingFormInput: 'Missing form input named: ', arrayInResponseIsMissingParameterNamed: 'Array in response in missing parameter named: ', invalidParameterValue: 'Invalid Parameter Value', youAreNotAllowedToCallThisLogic: 'You are not allowed to call this logic' }
+    repositories: { recordDeletedSuccessfully: 'Record was deleted successfully', couldNotDeleteRecord: 'Record could not been deleted', recordUpdateSuccess: 'Record has been updated', recordUpdateFail: 'Record could not been updated', repositoryWithGivenClassNameDoesNotExist: 'Repository with given class name does not exist' }
+    password: { changeHasBeenCanceled: 'Password change has been canceled due to the field validations!' }
+    tagger: { allTagsHaveBeenRemoved: 'All tags have been removed.', noTagsToAdd: 'There were no new tags to add', tagsHaveBeenCreated: 'Tags have been created successfully.', noTagsToRemove: 'There were no tags to remove', tagsUpdated: 'Tags have been updated successfully' }
+    notes: { couldNotFindNoteForId: 'Could not find note for id: ' }
+    menu: { nodeHasBeenRendered: 'Menu has been rendered', menuNodeWithNameWasNotFound: 'Menu node with given name was not found', thisModuleNameIsNotMappedToMenuNodePath: 'This module name is not mapped to menu node path: ' }
+    lockResource: { invalidPassword: 'Invalid password', passwordIsMissing: 'Password is missing', youAreNotAllowedToSeeThisResource: 'You are not allowed to see this resource', passwordHasBeenCreated: 'Password has been created', passwordHasBeenUpdated: 'Password has been updated', failedToSetLockPassword: 'Failed to set lock password' }
+    todo: { todoElementStatusHasBeenChanged: 'Todo element status has been changed', todoElementStatusCouldNotBeenChanged: 'Todo element status could not been changed', allTodoElementsAreDoneTodoIsCompleted: 'All todo elements are done, todo has been marked as completed', todoElementUncheckedTodoNoLongerCompleted: 'You have unchecked one of todo elements therefore todo status has been marked as not completed', moduleWithSuchNameDoesNotExist: 'Module witch such name does not exist: ' }
+lightgallery:
+    headers: { images: Images }
+    labels: { tags: Tags, search: Search }
+dashboard:
+    widgets: { incoming-schedules: { label: Schedules }, my-goals-payments: { label: 'Goals payments' }, my-goals: { label: 'Goals progress' }, pending-issues: { label: 'Pending issues' } }
+massActions:
+    transferFiles: { label: 'Transfer files' }
+    removeFiles: { label: 'Remove files' }
+workInProgress: 'This logic is a `Work in progress` and is not part of any release (main) (However I need it now for my private environment).'
+maintenanceMode: 'Demo is under maintenance. There are bugs to be investigated - thanks for understanding.'
+topbarComponent:
+    notifications: { smallHeader: Notifications, inDays: { in: in, days: day/s } }
+flash:
+    download: { fileDoesNotExist: 'Requested file does not exist!' }
+    filesController: { folderDoesNotExist: 'Folder does not exist: ' }
+validators:
+    UserRegisterTypeValidator: { email: { isEmpty: 'Email cannot be empty', invalidSyntax: 'Email address is syntethically incorrect', alreadyInUse: 'This Email is already in use' }, username: { isEmpty: 'Username cannot be empty', alreadyExist: 'This username already exist' }, password: { isEmpty: 'Password cannot be empty' }, repeatPassword: { doesNotMatch: 'Repeated password does not match the password' }, lockPassword: { isEmpty: 'Password cannot be empty' }, repeatLockPassword: { doesNotMatch: 'Repeated lock password does not match the password' } }
+    messages: { invalidDataHasBeenProvided: 'Invalid data has been provided' }
 forms:
     MyGoalsPaymentsType: { collectionStartDate: 'Collection start date', displayOnDashboard: 'Display on dashboard', deadline: Deadline, name: Name, moneyGoal: 'Money goal', moneyCollected: 'Money collected' }
     MyGoalsType: { displayOnDashboard: 'Display on dashboard', name: Name, description: Description }
@@ -72,9 +130,9 @@ forms:
     MyScheduleCalendarType: { name: { label: Name }, icon: { label: Icon }, color: { label: Color } }
 Types:
     indentChoice: { errors: { choiceIsNotInstanceOfIndentChoiceTypeDTO: 'Choice is not instance of IndentChoiceTypeDTO', choicesIsNotArray: 'Choices is not array', choicesAreMissing: 'Choices are missing' } }
-flash:
-    download: { fileDoesNotExist: 'Requested file does not exist!' }
-    filesController: { folderDoesNotExist: 'Folder does not exist: ' }
+validations:
+    myJobHolidaysValidator: { greaterThan: 'Amount of days to spend must be bigger than %value%', lessThanOrEqual: 'You don''t have this amount of days left to spend for this year. Days left: %daysLeft%' }
+    myRecurringPaymentsValidator: { dayOfMonth: { greaterThanOrEqual: 'Given day of month must be bigger or equal than %value%', lessThanOrEqual: 'Provided day of month must be lesser or equal than %value%' } }
 dialogs:
     createContactCard: { header: 'Create contact card', tabs: { mainInformation: { label: 'Main information' }, contactsData: { label: 'Contacts data' } } }
     editContactCard: { header: 'Edit contact card' }
@@ -85,6 +143,27 @@ dialogs:
     filesTransfer: { confirm: 'Do You really want to move these files?' }
     removeFiles: { confirm: 'Do You really want to remove these files?' }
     editTravelIdea: { header: 'Edit travel idea' }
+buttons:
+    close: Close
+    edit: Edit
+    delete: Delete
+    saveChanges: 'Save changes'
+    save: Save
+    submit: Submit
+    toggle: { 'yes': 'Yes', 'no': 'No', 'on': 'On', 'off': 'Off' }
+page:
+    title: 'Personal Management System (PMS)'
+    titleShort: PMS
+    footerCopyright: 'Copyright © 2019-2021 Built by'
+    login: { home: { title: 'Log in!', loggedIn: { youAreLoggedInAs: 'You are logged in as', logout: Logout }, form: { header: 'Please sign in', username: Username, password: Password, signIn: 'Sign in' } }, loginForm: { githubProject: 'Github project', documentation: Documentation } }
+sidebar:
+    menu: { dashboard: { label: Dashboard }, achievements: { label: Achievements }, goals: { label: Goals, list: List, payments: Payments, settings: Settings }, todo: { label: Todo, list: List, settings: Settings }, car: { label: Car, schedules: Schedules, settings: Settings }, schedules: { label: Schedules, submodule: { car: { label: Car } }, settings: Settings }, contacts: { label: Contacts, settings: Settings }, files: { label: Files, mainDir: 'Main folder' }, images: { label: Images, mainDir: 'Main folder' }, video: { label: Video, settings: Settings, mainDir: 'Main folder' }, job: { label: Job, afterhours: Afterhours, holidays: Holidays, settings: Settings }, passwords: { label: Passwords, passwords: Passwords, settings: Settings }, payments: { label: Payments, productsPrices: 'Products prices', monthlyPayments: 'Monthly payments', moneyOwed: 'Money owed', incomes: Incomes, bills: Bills, settings: Settings }, shopping: { label: Shopping, plans: Plans }, travels: { label: Travels, ideas: Ideas }, notes: { label: Notes, new: 'Create new', settings: Settings, categories: Categories }, upload: { label: Upload, add: Add, manage: Manage }, reports: { label: Reports, monthlyPaymentsSummaries: 'Payments summaries', paymentsCharts: 'Payments charts', savingsCharts: 'Savings charts', historicalMoneyOwed: 'Historical money owed' }, issues: { label: Issues, pending: Pending } }
+topbar:
+    search: { placeholder: 'Search for files by tags...' }
+    user: { profile: Profile, settings: Settings, resources: { locked: Locked, unlocked: Unlocked, setLockPassword: 'Set lock password' }, logout: Logout, about: About }
+jsSettings:
+    header: Settings
+    options: { colorScheme: 'Color scheme' }
 exceptions:
     general: { missingRequiredParameter: 'Missing request parameter named: ', providedEntityIsNotAnObject: 'Provided entity is not an object', thisEntityIsNotSoftDeletable: 'This entity is not soft deletable!' }
     files: { subdirectoryLocationMissingInRequest: 'Subdirectory location is missing in request.', cannotRemoveMainFolder: 'Cannot remove main folder!' }
@@ -97,59 +176,69 @@ exceptions:
     MyGoalsSettingsController: { thisGoalTypeIsNotAllowed: 'This goal type is not allowed' }
     dtoValidation: { unsupportedSetting: 'Unsupported settings: ' }
     security: { youAreNotAllowedToSeeThis: 'You are not allowed to see this! Your attempt to access this resource was logged!' }
+dashboardModule:
+    title: Dashboard
 user:
+    title: 'Profile settings'
     headers: { profileSettings: 'User profile settings', changeSettings: 'Change settings', avatarPreview: 'Your avatar preview' }
     texts: { passwordDisabledForDemo: 'Password changing has been disabled for demo' }
 goals:
     list: { headers: { todolist: 'Goals list' } }
-    payments: { timeElapsed: 'time elapsed', daysLeft: 'days left', days: days, paymentStartsIn: 'Payment starts in', infoBlock: { header: 'Goals list', text: { mainDescription: "Overview (readonly) of all defined payments based goals. Contains information about the goal,\ntarget amount, gathered cash, and deadline date.\n" } } }
-    settings: { headers: { addGoal: 'Add goal', addSubgoal: 'Add subgoal', addPaymentGoal: 'Add payment goal', managePaymentGoals: 'Manage payments goals' }, infoBlock: { header: 'Goals settings', text: { mainDescription: "Goals management / settings panel. Create or process already existing entries of the <b>Payments Goals</b> submodule.\n" } }, goalsSection: { table: { name: Name, description: Description, displayOnDashboard: 'Display on Dashboard' } }, subGoalsSection: { table: { name: Name, goal: Goal } }, goalsPaymentsSection: { table: { name: Name, collectionStartDate: 'Collection start date', deadline: Deadline, moneyGoal: 'Money goal', moneyCollected: 'Money collected', displayOnDashboard: 'Display on dashboard' } } }
+    payments: { title: 'Goals payments', timeElapsed: 'time elapsed', daysLeft: 'days left', days: days, paymentStartsIn: 'Payment starts in', infoBlock: { header: 'Goals list', text: { mainDescription: "Overview (readonly) of all defined payments based goals. Contains information about the goal,\ntarget amount, gathered cash, and deadline date.\n" } } }
+    settings: { headers: { addGoal: 'Add goal', addSubgoal: 'Add subgoal', addPaymentGoal: 'Add payment goal', managePaymentGoals: 'Manage payments goals' }, title: 'Goals settings', infoBlock: { header: 'Goals settings', text: { mainDescription: "Goals management / settings panel. Create or process already existing entries of the <b>Payments Goals</b> submodule.\n" } }, goalsSection: { table: { name: Name, description: Description, displayOnDashboard: 'Display on Dashboard' } }, subGoalsSection: { table: { name: Name, goal: Goal } }, goalsPaymentsSection: { table: { name: Name, collectionStartDate: 'Collection start date', deadline: Deadline, moneyGoal: 'Money goal', moneyCollected: 'Money collected', displayOnDashboard: 'Display on dashboard' } } }
 todo:
-    list: { headers: { label: 'Todo list', addTodo: 'Add todo', addElement: 'Add element' }, relatedModules: { issues: { singular: Issue } }, info: { notRelatedToAnySpecificRecord: 'Not related to any specific record', description: Description }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
+    list: { title: 'Goals / Todo', headers: { label: 'Todo list', addTodo: 'Add todo', addElement: 'Add element' }, relatedModules: { issues: { singular: Issue } }, info: { notRelatedToAnySpecificRecord: 'Not related to any specific record', description: Description }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
+    settings: { title: 'Todo settings' }
     widget: { add: { label: Add } }
     infoBlock: { header: 'Todo list', text: { mainDescription: "Each of the todo has managable subelements and can also be related to some of the allowed modules. Upon\nimplementing special functionallity the todo data can be accessed also in related module, like it's for example\nsolved for the issues module. This logic is also partially shared with the <b>Goals List</b> submodule.\n" } }
 notes:
-    create: { headers: { newNote: 'Add new note' } }
+    create: { headers: { newNote: 'Add new note', title: 'Create new note' } }
     infoBlock: { text: { mainDescription: "The editor supports rich text formatting and special functionallity such as for example formatting the code\nand pasting images from clipboard. Keep in mind that categories without notes are hidden, upon adding the note,\ndue to current implemen the page must be hard reloaded to make the category visible.\n" } }
-    category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected', categoryWithThisNameAlreadyExistsInThisParent: 'Category with this name already exists in this parent' }, popover: { createNote: 'Create note' } }
-    settings: { headers: { settings: { label: 'Notes settings' }, categories: { label: Categories, editCategory: 'Edit categories', addCategory: 'Add category' } }, text: { mainDescription: "Mangement of categories to which the notes are assignable to. Allows to pick an icon, color and relation\nbetween other categories (parent-child). Keep in mind that empty categories (without notes) are not being\nshown in the navbar on left but are still visible in settigs / note creation panels. At this moment it's\nrequired to reload the page upon adding the new category - this is not handled automatically.\n" } }
+    category: { table: { category: Category, icon: Icon, color: Color, parent: Parent }, error: { categoryWithThisNameOrIdExist: 'Category with this name or id does not exist!', categoryIsEmpty: 'The category which You''ve just tried to enter is empty, therefore You were redirected', categoryWithThisNameAlreadyExistsInThisParent: 'Category with this name already exists in this parent' }, popover: { createNote: 'Create note' }, title: 'Notes: {{categoryName}}' }
+    settings: { headers: { settings: { label: 'Notes settings' }, categories: { label: Categories, editCategory: 'Edit categories', addCategory: 'Add category' } }, title: 'Notes settings', text: { mainDescription: "Mangement of categories to which the notes are assignable to. Allows to pick an icon, color and relation\nbetween other categories (parent-child). Keep in mind that empty categories (without notes) are not being\nshown in the navbar on left but are still visible in settigs / note creation panels. At this moment it's\nrequired to reload the page upon adding the new category - this is not handled automatically.\n" } }
 contact:
+    title: Contacts
     headers: { addRemove: 'Add/Remove contact' }
     tables: { contact: Contact, description: Description, group: Group, type: Type }
-    settings: { table: { name: Name, imagePath: 'Image path', preview: Preview, icon: Icon, color: Color }, infoBlock: { header: 'Contacts setttings', text: { mainDescription: "Management of contacts types (the small icons visible on the list below the colored box) and contact groups\n(icons shown in the upper left corner of the contact)\n" } }, tab: { changeAddContactType: { label: 'Change/Add contact type' }, changeAddContactGroup: { label: 'Change/Add contact group' } } }
+    settings: { title: 'Contacts settings', table: { name: Name, imagePath: 'Image path', preview: Preview, icon: Icon, color: Color }, infoBlock: { header: 'Contacts setttings', text: { mainDescription: "Management of contacts types (the small icons visible on the list below the colored box) and contact groups\n(icons shown in the upper left corner of the contact)\n" } }, tab: { changeAddContactType: { label: 'Change/Add contact type' }, changeAddContactGroup: { label: 'Change/Add contact group' } } }
     overview: { infoBlock: { header: Contacts, text: { mainDescription: "Store variety information about personal contacts. Supports marking contacts with icons via grouping,\nassigning multiple contacts types, adding image and coloring the boxes.\n" } } }
 passwords:
+    title: Passwords
     headers: { addRemoveCredentials: 'Add/Remove credentials' }
     table: { login: Login, password: Password, url: Url, description: Description, group: Group }
     infoBlock: { header: Passwords, text: { mainDescription: "Management of personal credentials. Support project-unique logic which is fetching, <br/>decrypting the password and\ninserting it directly into the clipboard (just press <b>CTRL +V</b>).\n" } }
-    settings: { headers: { changeAddCredentialsGroup: 'Change/Add credentials group' }, table: { name: Name }, infoBlock: { header: 'Passwords settings', text: { mainDescription: "Management of the credentials groups\n" } } }
+    settings: { title: 'Passwords settings', headers: { changeAddCredentialsGroup: 'Change/Add credentials group' }, table: { name: Name }, infoBlock: { header: 'Passwords settings', text: { mainDescription: "Management of the credentials groups\n" } } }
     hiddenPassword: '*****'
 achievements:
+    title: Achievements
     headers: { addAchievement: 'Add achievements' }
     infoBlock: { header: Achievements, text: { mainDescription: "Track of personal achievements, both smaller and bigger ones - as it's always nice to remember\nthe successes toward personal goals and dreams.\n" } }
 schedules:
+    title: Schedules
     calendar: { messages: { noCalendarHasBeenFoundForId: 'No calendar has been found for given id %id%' }, views: { daily: Daily, weekly: Weekly, monthly: Monthly }, actions: { addSchedule: 'Add schedule', settings: 'Calendars settings', view: View, back: 'Go back', today: Today, forward: 'Go forward' }, calendarsList: { viewAll: 'View all' }, infoBlock: { header: Schedules, text: { mainDescription: "Fully interactive calendar with support of schedules groups management\n" } } }
     schedule: { message: { noScheduleHasBeenFoundForId: 'No schedule has been found for given id %id%', scheduleHasBeenRemoved: 'Schedule has been removed', scheduleHasBeenUpdated: 'Schedule has been updated', scheduleHasBeenUpdatedUpdateReminders: 'Schedule has been updated, don''t forget to update reminders', scheduleHasBeenCreated: 'Schedule has been created' } }
     reminder: { reminderWithThisDateAlreadyExist: 'Reminder with this date already exist' }
     modals: { calendarSettings: { header: 'Calendar settings', table: { headers: { name: Name, color: Color, icon: Icon } }, legend: { legendOfNotificationsColors: 'Legend of notifications colors', over30: 'In 30 - 60 days', over14: 'In 14 -30 days', 14: 'In 14 days' } }, panels: { management: Management, addNewCalendar: 'Add new calendar' } }
 travels:
+    title: 'Travel ideas'
     headers: { addIdea: 'Add idea' }
     popovers: { remove: 'Remove record', edit: 'Edit record' }
     buttons: { map: Map, infoBlock: { header: 'Ideas for traveling', text: { mainDescription: "Group Your traveling plans into categories, provide images, map and some location information\nto never miss the postponed travels.\n" } } }
 payments:
+    title: 'Products prices'
     productsPrices: { tabs: { acceptedProducts: { label: 'Accepted products' }, rejectedProducts: { label: 'Rejected products' } }, headers: { addProduct: 'Add product' }, table: { homeCurrency: 'Home currency' }, infoBlock: { header: 'Products prices', text: { mainDescription: "Organizable lists of assortment allows to keep an eye of the products that should be avoided in case of the\nneed to manage the financial issues, where even shopping the basic goods matters.\n" } } }
-    moneyOwed: { headers: { owedByOthers: 'Money owed by others', owedByMe: 'Money owed by me', addRecord: 'Add record' }, tab: { owedByOthers: { label: 'Money owed by others' }, owedByMe: { label: 'Money owed by me' } }, table: { target: Target, amount: Amount, information: Information, date: Date, currency: Currency }, overallSummary: { i: I, owe: Owe, owesMe: 'Owes me', to: To }, infoBlock: { header: 'Money owed', text: { mainDescription: "Track of the money owed to other people and owed by yourself. Consist of separate management groups,\nyields the summaries of financial debts with separation of the target (person / company etc.)\n" } } }
-    incomes: { headers: { manage: 'Manage records', addRecord: 'Add record' }, table: { amount: Amount, date: Date, currency: Currency, information: Information }, infoBlock: { header: 'Monthly incomes', text: { mainDescription: "Organizable monthly incomes sources, used later on in the reporting\n" } } }
-    monthlyPayments: { headers: { addPayment: 'Add payment' }, summary: 'Monthly payments summary:', table: { type: Type, description: Description, money: Money, date: Date }, infoBlock: { header: 'Monthly payments', text: { mainDescription: "Lists of the money spent in each month with separate summary per month and per payment type.\n" } } }
-    bills: { tabs: { billsManagement: { label: 'Bills management' }, billsItemsManagement: { label: 'Items management' } }, forms: { bills: 'Add bill' }, table: { startDate: 'Start date', endDate: 'End date', name: Name, information: Information, plannedAmount: 'Planned amount' }, infoBlock: { header: Bills, text: { mainDescription: "Track of money spent on unpredicted or planned things, but not related to the standard monthly payments, like\nrenting, electricity etc.\n" } } }
+    moneyOwed: { title: 'Money owed', headers: { owedByOthers: 'Money owed by others', owedByMe: 'Money owed by me', addRecord: 'Add record' }, tab: { owedByOthers: { label: 'Money owed by others' }, owedByMe: { label: 'Money owed by me' } }, table: { target: Target, amount: Amount, information: Information, date: Date, currency: Currency }, overallSummary: { i: I, owe: Owe, owesMe: 'Owes me', to: To }, infoBlock: { header: 'Money owed', text: { mainDescription: "Track of the money owed to other people and owed by yourself. Consist of separate management groups,\nyields the summaries of financial debts with separation of the target (person / company etc.)\n" } } }
+    incomes: { title: Incomes, headers: { manage: 'Manage records', addRecord: 'Add record' }, table: { amount: Amount, date: Date, currency: Currency, information: Information }, infoBlock: { header: 'Monthly incomes', text: { mainDescription: "Organizable monthly incomes sources, used later on in the reporting\n" } } }
+    monthlyPayments: { title: 'Monthly payments', headers: { addPayment: 'Add payment' }, summary: 'Monthly payments summary:', table: { type: Type, description: Description, money: Money, date: Date }, infoBlock: { header: 'Monthly payments', text: { mainDescription: "Lists of the money spent in each month with separate summary per month and per payment type.\n" } } }
+    bills: { title: Bills, tabs: { billsManagement: { label: 'Bills management' }, billsItemsManagement: { label: 'Items management' } }, forms: { bills: 'Add bill' }, table: { startDate: 'Start date', endDate: 'End date', name: Name, information: Information, plannedAmount: 'Planned amount' }, infoBlock: { header: Bills, text: { mainDescription: "Track of money spent on unpredicted or planned things, but not related to the standard monthly payments, like\nrenting, electricity etc.\n" } } }
     bills_items: { forms: { bills_items: 'Add bill item' }, table: { amount: Amount, name: Name, bill: Bill, date: Date } }
-    settings: { headers: { changeAddSetting: 'Change/Add settings' }, tab: { currencyMultiplier: { label: 'Currency multiplier' }, paymentsTypes: { label: 'Payments types' }, recurringPayments: { label: 'Recurring payments' } }, types: { table: { name: Name } }, recurring: { table: { dayOfMonth: 'Day of month', money: Money, description: Description, type: Type } } }
+    settings: { title: 'Payments settings', headers: { changeAddSetting: 'Change/Add settings' }, tab: { currencyMultiplier: { label: 'Currency multiplier' }, paymentsTypes: { label: 'Payments types' }, recurringPayments: { label: 'Recurring payments' } }, types: { table: { name: Name } }, recurring: { table: { dayOfMonth: 'Day of month', money: Money, description: Description, type: Type } } }
     infoBlock: { header: 'Payments settings', text: { mainDescription: "Management of payments types visible in the <b>Monthly Payments</b> submodule and the recurring payments which are\nused by the cron to insert certain payments each month automatically (like for example constant renting fee)\n" } }
 reports:
-    monthlyPaymentsSummaries: { infoBlock: { header: 'Payments summaries', text: { mainDescription: "This report contains summary of payments from \"<b>Monthly Payments</b>\" and \"<b>Bills</b>\" for each month.\n" } }, table: { monthAndYear: 'Month and year', money: Money } }
-    paymentsCharts: { infoBlock: { header: 'Payments charts', text: { mainDescription: "Charts based on data from payments modules\n" } } }
-    savingsCharts: { infoBlock: { header: 'Savings charts', text: { mainDescription: "Charts based on data from incomes/payments modules\n" } } }
-    historicalMoneyOwed: { infoBlock: { header: 'Historical money owed', text: { mainDescription: "Historical records of owed money by others and by me\n" } }, tabs: { owedByMe: 'Owed by me', owedByOthers: 'Owed by others' } }
+    monthlyPaymentsSummaries: { title: 'Report: Monthly payments summaries', infoBlock: { header: 'Payments summaries', text: { mainDescription: "This report contains summary of payments from \"<b>Monthly Payments</b>\" and \"<b>Bills</b>\" for each month.\n" } }, table: { monthAndYear: 'Month and year', money: Money } }
+    paymentsCharts: { title: 'Report: Payments charts', infoBlock: { header: 'Payments charts', text: { mainDescription: "Charts based on data from payments modules\n" } } }
+    savingsCharts: { title: 'Report: Savings charts', infoBlock: { header: 'Savings charts', text: { mainDescription: "Charts based on data from incomes/payments modules\n" } } }
+    historicalMoneyOwed: { title: 'Report: Historical money owed', infoBlock: { header: 'Historical money owed', text: { mainDescription: "Historical records of owed money by others and by me\n" } }, tabs: { owedByMe: 'Owed by me', owedByOthers: 'Owed by others' } }
 charts:
     headers: { totalPaymentsAmountForTypes: 'Total payments percentage for types', paymentsForTypesEachMonth: 'Payments by types for each month', paymentsTotalAmountForEachMonth: 'Payments total amount for each month', savingsEachMonth: 'Saving each month' }
     paymentsForTypesEachMonth: { axis: { titles: { 'y': Amount, x: Month-Year } } }
@@ -158,28 +247,33 @@ datatables:
     table: { idHash: '#', id: Id, actions: Actions }
     filterByColumnValue: 'Filter by column value'
 shopping:
+    title: 'Shopping plans'
     headers: { plannedShoppingItems: 'Planned shopping items', addPlannedItem: 'Add planned item' }
     infoBlock: { header: 'Shopping plans', text: { mainDescription: "Wanted or planned items - when there is a goal to buy something but the finances might not allow to do so at given point\n" } }
 job:
-    afterhours: { headers: { remainingAfterhours: 'Remaining afterhours', addSpendAfterhours: 'Add/Spend afterhours', summary: Summary, tabs: { madeAfterhours: { label: 'Made afterhours' }, spentAfterhours: { label: 'Spent afterhours' } } }, labels: { hours: Hours, days: Days }, info: { daysAreRounded: 'Days are rounded down to the nearest <b>0.25</b>' }, summaryPartials: { iHaveGot: 'I''ve got:', days: day/s, for: for, leftToSpend: 'left to spend' }, infoBlock: { header: Afterhours, text: { mainDescription: "List of collected and spent job afterhours. Contains summaries of afterhours,\ncalculated automatically into days that can be spent as additional free days.\n" } } }
-    holidays: { headers: { spend: 'Spend holidays', tab: { summary: { label: 'Holidays summary' }, spent: { label: 'Holidays spent' } } }, infoBlock: { header: Holidays, text: { mainDescription: "Track of monthly available / spend holidays days in job\n" } } }
-    settings: { headers: { manageHolidaysPool: 'Manage holidays pool', addHolidaysPool: 'Add holidays pool' }, infoBlock: { header: 'Job settings', text: { mainDescription: "Settings for job based modules, contains definitions of holidays available for given year in given company\n" } } }
+    afterhours: { headers: { remainingAfterhours: 'Remaining afterhours', addSpendAfterhours: 'Add/Spend afterhours', summary: Summary, tabs: { madeAfterhours: { label: 'Made afterhours' }, spentAfterhours: { label: 'Spent afterhours' } } }, title: 'Job afterhours', labels: { hours: Hours, days: Days }, info: { daysAreRounded: 'Days are rounded down to the nearest <b>0.25</b>' }, summaryPartials: { iHaveGot: 'I''ve got:', days: day/s, for: for, leftToSpend: 'left to spend' }, infoBlock: { header: Afterhours, text: { mainDescription: "List of collected and spent job afterhours. Contains summaries of afterhours,\ncalculated automatically into days that can be spent as additional free days.\n" } } }
+    holidays: { headers: { spend: 'Spend holidays', tab: { summary: { label: 'Holidays summary' }, spent: { label: 'Holidays spent' } } }, title: 'Job holidays', infoBlock: { header: Holidays, text: { mainDescription: "Track of monthly available / spend holidays days in job\n" } } }
+    settings: { headers: { manageHolidaysPool: 'Manage holidays pool', addHolidaysPool: 'Add holidays pool' }, title: 'Job settings', infoBlock: { header: 'Job settings', text: { mainDescription: "Settings for job based modules, contains definitions of holidays available for given year in given company\n" } } }
 files:
     label: Files
+    title: 'Files {{folder}}'
     table: { name: Name, extension: Extension, size: 'Size (mb)', tags: Tags }
     popover: { modified: Modified, removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder' }
     massActions: { remove: 'Remove files', transferFiles: 'Transfer files' }
-    settings: { infoBlock: { header: 'Files settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
+    settings: { title: 'Files settings', infoBlock: { header: 'Files settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
 images:
+    title: 'Images {{folder}}'
     popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files' }
-    settings: { infoBlock: { header: 'Images settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
+    settings: { title: 'Images settings', infoBlock: { header: 'Images settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
 video:
+    title: 'Video {{folder}}'
     popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files', editTags: 'Edit tags' }
     labels: { search: Search, tags: Tags, headers: { main: Video } }
-    settings: { infoBlock: { header: 'Video settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
+    settings: { title: 'Video settings', infoBlock: { header: 'Video settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
 upload:
-    settings: { copyFolderData: { label: 'Copy folder data', from: From, to: To }, renameFolder: { label: 'Rename folder' }, createFolder: { label: 'Create folder for module' }, infoBlock: { header: 'Upload management', text: { mainDescription: "Management of uploaded data. Allows to rename folders, create new ones or copy / move data between directories\nin modules\n" } } }
+    settings: { title: 'Upload management', copyFolderData: { label: 'Copy folder data', from: From, to: To }, renameFolder: { label: 'Rename folder' }, createFolder: { label: 'Create folder for module' }, infoBlock: { header: 'Upload management', text: { mainDescription: "Management of uploaded data. Allows to rename folders, create new ones or copy / move data between directories\nin modules\n" } } }
 fineUpload:
+    title: Upload
     buttons: { upload: { label: Upload } }
     uploadedRow: { filename: { label: Filename }, tags: { label: Tags } }
     tippy: { actions: { remove: { label: Remove }, retry: { label: Retry } } }
@@ -187,6 +281,7 @@ fineUpload:
     mb: Mb
     headers: { uploadFiles: 'Upload files' }
 issues:
+    title: 'Pending issues'
     card: { lastContactDate: 'Last contact date: ', lastProgressDate: 'Last progress date: ', preview: { tabs: { contacts: { label: Contacts }, progress: { label: Progress } } }, popovers: { toggleDashboardVisibility: 'Toggle dashboard visibility', previewAndEdit: 'Preview and edit', addRecords: 'Add records', addOrModifyExistingTodo: 'Add or modify existing todo', removeRecord: 'Remove record', description: Description, name: Name }, ajaxCallMessages: { dashboardVisibilityHasBeenToggled: 'Dashboard visibility has been toggled' } }
     contactsTable: { icon: Icon, date: Date, information: Information, actions: Actions }
     popover: { createIssue: 'Create issue' }
@@ -198,78 +293,3 @@ actions:
     popover: { edit: Edit, editWithTinyMce: 'Edit with TinyMCE', remove: Remove, fontawesome: 'Pick fontawesome icon', copy: Copy, save: Save, lockRecord: 'Toggle lock', download_file_subdirectory: Download, download: Download }
 common:
     filesModules: { settings: { lockTables: { columns: { path: { label: Path }, lock: { label: Lock } } } } }
-lightgallery:
-    headers: { images: Images }
-    labels: { tags: Tags, search: Search }
-dashboard:
-    widgets: { incoming-schedules: { label: Schedules }, my-goals-payments: { label: 'Goals payments' }, my-goals: { label: 'Goals progress' }, pending-issues: { label: 'Pending issues' } }
-massActions:
-    transferFiles: { label: 'Transfer files' }
-    removeFiles: { label: 'Remove files' }
-workInProgress: 'This logic is a `Work in progress` and is not part of any release (main) (However I need it now for my private environment).'
-maintenanceMode: 'Demo is under maintenance. There are bugs to be investigated - thanks for understanding.'
-topbarComponent:
-    notifications: { smallHeader: Notifications, inDays: { in: in, days: day/s } }
-page:
-    title: 'Personal Management System (PMS)'
-    footerCopyright: 'Copyright © 2019-2021 Built by'
-    login: { home: { title: 'Log in!', loggedIn: { youAreLoggedInAs: 'You are logged in as', logout: Logout }, form: { header: 'Please sign in', username: Username, password: Password, signIn: 'Sign in' } }, loginForm: { githubProject: 'Github project', documentation: Documentation } }
-responses:
-    files: { filePathIsAnEmptyString: 'File path is an empty string', filePathIsIncorrectFileDoesNotExist: 'File provided in filepath is incorrect - such file does not exist', fileSuccessfullyRemoved: 'Files has been successfully removed', fileDoesNotExist: 'File does not exist.', thereWasAnErrorWhileRemovingFile: 'There was an error while removing the file.', thereWasAnErrorWhileRenamingFile: 'There was an error while renaming the file.', filenameRemainsTheSame: 'File name remains the same.', filenameCannotBeEmpty: 'File name cannot be empty!', fileSuccessfullyRename: 'File has been successfully renamed.', fileWithThisNameAlreadyExist: 'File with this name already exist.', fileYouTryingToMoveDoesNotExist: 'The file You trying to move does not exist.', fileWithThisNameAlreadyExistInTargetDirectory: 'File with this name already exists in target directory.', fileHasBeenSuccesfullyMoved: 'File has been successfully moved', filesHasBeenSuccesfullyMoved: 'Files has been successfully moved', couldNotMoveTheFile: 'Could not move the file.', couldNotMoveSomeFiles: 'Could not move some files.', couldNotTheFiles: 'Could not move the files.', thereWasAnErrorWhileTryingToMoveFile: 'There was an error while trying to move file', currentUploadTypeIsMissingInRequest: 'Current upload type is missing in request.', targetUploadTypeIsMissingInRequest: 'Target upload type is missing in request.', currentSubdirectoryPathIsMissingInRequest: 'Current subdirectory path in module upload dir is missing in request.', targetSubdirectoryPathIsMissingInRequest: 'Target subdirectory path in module upload dir is missing in request.', cannotCopyDataToTheSameFolderForGivenModule: 'Cannot copy data to the same folder for given module.', currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.', targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.', thereWasAnErrorWhileMovingDataBetweenFolders: 'There was an error while moving files from one folder to another.', finishedCopyingData: 'Data has been successfully copied to new directory', subdirectoryCurrentPathInModuleUploadDirIsMissingInRequest: 'Subdirectory current path in module upload dir is missing in request.', thereWasAnErrorWhileCopyingAndRemovingDataViaPost: 'Then was an error while copying and removing data.', thereWasAnErrorWhileCopyingData: 'Then was an error while copying data.', dataHasBeenSuccesfulyCopiedAndRemoved: 'Data has been successfully copied and removed afterward.' }
-    directories: { cannotRemoveMainFolder: 'Cannot remove main folder!', youNeedToSelectUploadType: 'You need to select upload type!', subdirectoryDoesNotExistForThisModule: 'This subdirectory does not exist for selected module.', errorWhileRemovingSubdirectory: 'There was and error when trying to remove subdirectory!', subdirectoryHasBeenRemove: 'Subdirectory has been successfully removed.', subdirectoryNameWillNotChange: 'You are trying to change folder name to the same that there already is - action aborted.', subdirectoryNewNameIsEmptyString: 'New name is an empty string - action aborted', subdirectoryCurrentNameIsEmptyString: 'Current name is an empty string - action aborted', missingUploadModuleType: 'Upload type is an empty string - action aborted', thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.', folderNameHasBeenSuccessfullyChanged: 'Folder name has been successfully changed', renamedTargetDirectoryDoesNotExist: 'Target directory for which You try to change name does not exist', subdirectoryWithThisNameDoesNotExist: 'Subdirectory with this name does not exist!', renamingSubdirectoryWithThisNameAlreadyExist: 'Cannot change subdirectory name! Subdirectory with this name already exist.', thereWasAnErrorWhileCreatingFolder: 'There was an error while trying to create new folder for given module', createFoldedThisNameAlreadyExist: 'Subdirectory with this name for selected upload typ already exists.', subdirectoryForModuleSuccessfullyCreated: 'Subdirectory for selected module has been successfully created', directoryWithThisNameAlreadyExistInTargetFolder: 'Directory with this name already exist in target folder', theDirectoryYouTryToMoveDoesNotExist: 'The directory that You try to move does not exist', directoryHasBeenSuccessfullyMoved: 'Directory has been successfully moved', cannotMoveModuleMainUploadDir: 'Cannot move module main upload dir', currentDirectoryPathIsTheSameAsNewPath: 'Current directory path is the same as new path', cannotMoveFolderInsideItsOwnSubfolder: 'Cannot move folder inside its own subfolder' }
-    tags: { errorWhileTryingToUpdateTagsViaApi: 'There was an error while trying to update tags via api call' }
-    upload: { noFilesWereUploaded: 'No files were uploaded', tryingToUploadMoreFilesThanAllowedTo: 'You are trying to upload more files than You are allowed to!', moduleNameIsIncorrect: 'Module name is incorrect.', invalidFileHasBeenSkipped: 'File is invalid, and has been skipped', finishedUploading: 'File upload has been successfully finished' }
-    general: { missingRequiredParameter: 'Missing request parameter named: ', missingFormInput: 'Missing form input named: ', arrayInResponseIsMissingParameterNamed: 'Array in response in missing parameter named: ', invalidParameterValue: 'Invalid Parameter Value', youAreNotAllowedToCallThisLogic: 'You are not allowed to call this logic' }
-    repositories: { recordDeletedSuccessfully: 'Record was deleted successfully', couldNotDeleteRecord: 'Record could not been deleted', recordUpdateSuccess: 'Record has been updated', recordUpdateFail: 'Record could not been updated', repositoryWithGivenClassNameDoesNotExist: 'Repository with given class name does not exist' }
-    password: { changeHasBeenCanceled: 'Password change has been canceled due to the field validations!' }
-    tagger: { allTagsHaveBeenRemoved: 'All tags have been removed.', noTagsToAdd: 'There were no new tags to add', tagsHaveBeenCreated: 'Tags have been created successfully.', noTagsToRemove: 'There were no tags to remove', tagsUpdated: 'Tags have been updated successfully' }
-    notes: { couldNotFindNoteForId: 'Could not find note for id: ' }
-    menu: { nodeHasBeenRendered: 'Menu has been rendered', menuNodeWithNameWasNotFound: 'Menu node with given name was not found', thisModuleNameIsNotMappedToMenuNodePath: 'This module name is not mapped to menu node path: ' }
-    lockResource: { invalidPassword: 'Invalid password', passwordIsMissing: 'Password is missing', youAreNotAllowedToSeeThisResource: 'You are not allowed to see this resource', passwordHasBeenCreated: 'Password has been created', passwordHasBeenUpdated: 'Password has been updated', failedToSetLockPassword: 'Failed to set lock password' }
-    todo: { todoElementStatusHasBeenChanged: 'Todo element status has been changed', todoElementStatusCouldNotBeenChanged: 'Todo element status could not been changed', allTodoElementsAreDoneTodoIsCompleted: 'All todo elements are done, todo has been marked as completed', todoElementUncheckedTodoNoLongerCompleted: 'You have unchecked one of todo elements therefore todo status has been marked as not completed', moduleWithSuchNameDoesNotExist: 'Module witch such name does not exist: ' }
-login:
-    header: { pageName: 'Personal Management System', login: Login }
-    labels: { username: 'Username:', password: 'Password:', remember: 'Remember Me' }
-    placeholders: { username: Username, password: Password }
-    submit: Login
-    pageTitle: 'Sign In'
-    errors: { invalidPassword: 'Invalid password', userNotFound: 'No such user was found', noExistingUserWasFoundPleaseContinueWithRegistration: 'No existing user was found, please continue with registaration' }
-    buttons: { register: register }
-register:
-    header: { register: Register }
-    messages: { notAllowedToRegisterAdditionalUsers: 'Not allowed to register additional users' }
-codePages:
-    error: { h1: Oops, h3: 'Page Error', text: 'We track these errors automatically, but if the problem persists feel free to contact us.', button: 'Go back' }
-    error403: { h1: 403, h3: 'Access Denied', text: 'Full authentication is required to access this resource.', button: 'Go back', title: 'Access Denied' }
-    error404: { h1: 404, h3: 'Oops Page Not Found', text: 'The page you are looking for does not exist or has been moved.', button: 'Go back', title: '404 - page not found' }
-    error500: { h1: 500, h3: 'Internal server error', text: 'Something goes wrong with our servers, please try again later.', button: 'Go back', title: '500 - internal server error' }
-settings:
-    tab: { modules: { label: Modules }, dashboard: { label: Dashboard }, finances: { label: Finances } }
-    label: Settings
-    dashboard: { widgets: { visibility: { label: 'Widgets visibility', table: { labels: { name: Name, displayWidget: 'Display widget' } } } } }
-    infoBlock: { header: Settings, text: { mainDescription: "Contains system wide or special settings for certain logic\n" } }
-    guide: { label: Guide }
-    finances: { type: { currencies: { label: Currencies, table: { name: Name, symbol: Symbol, multiplier: Multiplier, isDefault: 'Is default' }, addCurrency: 'Add currency' }, messages: { couldNotFindCurrencyForGivenName: 'Could not find currency for given name', defaultCurrencyCanNotBeRemove: 'Default currency cannot be removed', couldNotFindSettingWithThisName: 'Could not find setting with this name', canNotUnsetTheTheDefaultPropertyForDefaultCurrency: 'Can not unset the default property for default currency', couldNotHandleAddingNewCurrencyBeingDefaultValue: 'Could not handle adding new currency being default value', currencyWithThisNameAlreadyExist: 'Currency with this name already exist', success: 'Currency record has been successfully updated' } } }
-    modules: { lock: { label: 'Modules Lock', tabel: { headers: { moduleName: 'Module name', lockModule: 'Lock module' } } } }
-db:
-    foreignKeyViolation: 'This record cannot be removed - it''s connected with existing records.'
-    recordWithThisNameExist: 'Record with this name already exists!'
-demo:
-    disabledFunctionallity: 'This functionallity has been disabled on demo'
-logs:
-    upload: { startedUploadingToSubdirectory: 'Started uploading files to subdirectory: ', triedToUploadForUnknownUploadType: 'Performed upload action for not supported upload type: ', finishedUploading: 'Finished uploading data.' }
-    directories: { removedFolderDoesNotExist: 'Removed folder does not exist.', folderRemovalHasBeenBlockedThereAreFilesInside: 'Folder removal has been blocked - there are still files in tree.', couldNotRemoveFolder: 'Could not remove folder: ', finishedRemovingFolder: 'Finished removing folder.', startedRemovingFolder: 'Started removing folder', startedRenamingFolder: 'Started renaming folder', finishedRenamingFolder: 'Finished renaming folder', startedCreatingSubdirectory: 'Started creating subdirectory.', finishedCreatingSubdirectory: 'Finished creating subdirectory.', subdirectoryNameWillNotChange: 'Subdirectory name will not change - renaming aborted.', subdirectoryNewNameIsEmptyString: 'Subdirectory new name is an empty string - renaming aborted.', subdirectoryCurrentNameIsEmptyString: 'Subdirectory current name is an empty string - renaming aborted.', missingUploadModuleType: 'Upload type has not been provided - renaming aborted.', thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.', renamedTargetDirectoryDoesNotExist: 'Target directory for which user tried to change name does not exist', subdirectoryWithThisNameDoesNotExist: 'Subdirectory with this name does not exist!', renamingSubdirectoryWithThisNameAlreadyExist: 'Subdirectory with this name already exists.', thereWasAnErrorWhileCreatingFolder: 'Exception was thrown while creating folder.', createFoldedThisNameAlreadyExist: 'Subdirectory with this name already exists.' }
-    files: { thereWasAnErrorWhileTryingToMoveSingleFile: 'There was an error while trying to move single file: ', startedCopyingDataBetweenFoldersViaPost: 'Started copying data between folders via Post Request.', currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.', targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.', exceptionWasThrownWhileMovingDataBetweenFolders: 'Exception was thrown while moving data between folders', finishedCopyingData: 'Finished copying data.' }
-    download: { startedDownloading: 'Started downloading data.', finishedDownloading: 'Finished downloading data.', exceptionWasThrownWhileDownloadingFile: 'Exception was thrown while downloading file.' }
-    security: { visitedPageWithUnallowedIp: 'Visited page with unallowed ip', visitedPageWithUnallowedMethod: 'Visited page with unallowed method' }
-    notes: { parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: 'Parent child hierarchy - category has children but it is missing in categories depths' }
-    sessions: { removingRolesFromSession: 'Removing roles from session', noSessionDataWasFoundForGivenKey: 'No session data was found for given key', sessionsDataForGivenKeyHasExpired: 'Session data for given key has expired' }
-    validators: { providedVariableIsNotAnObject: 'Provided variable is not an object: ', objectOfGivenClassIsNotEntity: 'Object of given class is not entity: ', thereIsNoValidationLogicForThisEntity: 'There is no validation logic for this entity: ', undefinedActionOrInterfaceForEntityValidationIsMissing: 'Undefined action or interface for entity validation is missing' }
-buttons:
-    close: Close
-    edit: Edit
-    delete: Delete
-    saveChanges: 'Save changes'
-    save: Save
-    submit: Submit
-    toggle: { 'yes': 'Yes', 'no': 'No', 'on': 'On', 'off': 'Off' }

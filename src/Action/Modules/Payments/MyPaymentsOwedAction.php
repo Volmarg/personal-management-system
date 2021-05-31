@@ -58,7 +58,11 @@ class MyPaymentsOwedAction extends AbstractController {
         }
 
         $templateContent = $this->renderTemplate(true)->getContent();
-        return AjaxResponse::buildJsonResponseForAjaxCall(200, "", $templateContent);
+        $ajaxResponse    = new AjaxResponse("", $templateContent);
+        $ajaxResponse->setCode(Response::HTTP_OK);
+        $ajaxResponse->setPageTitle($this->getMoneyOwedPageTitle());
+
+        return $ajaxResponse->buildJsonResponse();
     }
 
     /**
@@ -147,6 +151,7 @@ class MyPaymentsOwedAction extends AbstractController {
             'summary_overall_owed_by_me'     => $summaryOverallOwedByMe,
             'summary_overall_owed_by_others' => $summaryOverallOwedByOthers,
             'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
+            'page_title'                     => $this->getMoneyOwedPageTitle(),
         ]);
     }
 
@@ -164,6 +169,16 @@ class MyPaymentsOwedAction extends AbstractController {
             $em->flush();
         }
 
+    }
+
+    /**
+     * Will return payments owed page title
+     *
+     * @return string
+     */
+    public function getMoneyOwedPageTitle(): string
+    {
+        return $this->app->translator->translate('payments.moneyOwed.title');
     }
 
 }

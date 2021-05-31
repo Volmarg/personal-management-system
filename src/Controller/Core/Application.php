@@ -52,6 +52,7 @@ class Application extends AbstractController {
     public $settings;
 
     /**
+     * @deprecated should no longer be used, needs to be checked if there is some old service to be removed / replaced
      */
     public $translations;
 

@@ -51,6 +51,7 @@ class SettingsViewAction extends AbstractController {
             'dashboard_settings_view' => $dashboardSettingsView,
             'finances_settings_view'  => $financesSettingsView,
             'modules_settings_view'   => $modulesSettingsView,
+            'page_title'              => $this->getSettingsPageTitle(),
         ];
 
         return $this->render(self::TWIG_SETTINGS_TEMPLATE, $data);
@@ -131,6 +132,16 @@ class SettingsViewAction extends AbstractController {
         ];
 
         return $this->render(SettingsLockModuleController::TWIG_DASHBOARD_SETTINGS_TEMPLATE, $data);
+    }
+
+    /**
+     * Will return page title
+     *
+     * @return string
+     */
+    public function getSettingsPageTitle(): string
+    {
+        return $this->app->translator->translate('settings.title');
     }
 
 }
