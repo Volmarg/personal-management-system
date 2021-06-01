@@ -13,6 +13,7 @@ import Initializer      from "../../Initializer";
 import AbstractAjax     from "./AbstractAjax";
 import Ajax             from "./Ajax";
 import BootboxWrapper   from "../../libs/bootbox/BootboxWrapper";
+import Application      from "../Application";
 
 /**
  * @default This class contains definitions of events and it's logic attached on GUI elements
@@ -131,6 +132,10 @@ export default class AjaxEvents extends AbstractAjax {
                     callbackAfterReinitialize();
                 }
             });
+
+            if( ajaxResponseDto.isTitleSet() ){
+                Application.setTitle(ajaxResponseDto.pageTitle);
+            }
 
             if( ajaxResponseDto.reloadPage ){
                 if( ajaxResponseDto.isReloadMessageSet() ){

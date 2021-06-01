@@ -315,7 +315,7 @@ class MyFilesAction extends AbstractController {
         $pageTitle = $this->app->translator->translate(
             'files.title',
             [
-                '{{folder}}' => $subdirectoryPath
+                '{{folder}}' => basename($subdirectoryPath),
             ]
         );
 

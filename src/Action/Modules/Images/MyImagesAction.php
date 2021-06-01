@@ -236,7 +236,7 @@ class MyImagesAction extends AbstractController {
         $pageTitle = $this->app->translator->translate(
             'images.title',
             [
-                '{{folder}}' => $subdirectoryPath
+                '{{folder}}' => basename($subdirectoryPath),
             ]
         );
 

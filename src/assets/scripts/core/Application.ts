@@ -14,4 +14,15 @@ export default class Application {
         }
     }
 
+    /**
+     * @description will set page title in <HEAD> tag
+     *
+     * @param title
+     */
+    public static setTitle(title: string): void
+    {
+        let $titleTag = $('title');
+        $titleTag.text("PMS - " + title);
+    }
+
 }

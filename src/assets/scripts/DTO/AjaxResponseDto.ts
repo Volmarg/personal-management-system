@@ -1,4 +1,5 @@
 import AbstractDto from "./AbstractDto";
+import StringUtils from "../core/utils/StringUtils";
 
 /**
  * @description Main object used to convert standard array response from backend (upon ajax calls)
@@ -73,6 +74,11 @@ export default class AjaxResponseDto extends AbstractDto {
     public dataBag;
 
     /**
+     * @type string
+     */
+    public pageTitle: string = "";
+
+    /**
      * Builds DTO from data array
      * @param array
      * @returns {AjaxResponseDto}
@@ -92,6 +98,7 @@ export default class AjaxResponseDto extends AbstractDto {
         ajaxResponseDto.invalidFormFields   = ajaxResponseDto.getFromArray(array, 'invalid_form_fields', []);
         ajaxResponseDto.routeUrl            = ajaxResponseDto.getFromArray(array, 'route_url', "");
         ajaxResponseDto.constantValue       = ajaxResponseDto.getFromArray(array, 'constant_value', "");
+        ajaxResponseDto.pageTitle           = ajaxResponseDto.getFromArray(array, 'page_title', "");
         ajaxResponseDto.dataBag             = ajaxResponseDto.getFromArray(array, 'data_bag', {});
 
         return ajaxResponseDto;
@@ -205,4 +212,11 @@ export default class AjaxResponseDto extends AbstractDto {
         return (0 !== Object.keys(this.dataBag).length);
     }
 
+    /**
+     * @returns {string}
+     */
+    public isTitleSet(): boolean
+    {
+        return !StringUtils.isEmptyString(this.pageTitle);
+    }
 }

@@ -186,7 +186,7 @@ class MyVideoAction extends AbstractController {
         $pageTitle = $this->app->translator->translate(
             'video.title',
             [
-                '{{folder}}' => $subdirectoryPath
+                '{{folder}}' => basename($subdirectoryPath),
             ]
         );
 
