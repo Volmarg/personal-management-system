@@ -73,7 +73,7 @@ export default class TinyMce {
             selector: selector,
             mode: "specific_textareas",
             plugins: ['lists', 'table', 'image', 'preview', 'paste', 'codesample'],
-            toolbar: 'bold italic | formatselect fontselect | forecolor colorpicker | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | image | codesample | preview',
+            toolbar: 'bold italic strikethrough | formatselect fontselect | forecolor colorpicker | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent | removeformat | image | codesample | preview',
             toolbar_mode: 'wrap',
             height: 400,
             forced_root_block: '',
