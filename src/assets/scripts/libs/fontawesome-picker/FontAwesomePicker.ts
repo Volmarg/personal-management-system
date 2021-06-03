@@ -495,6 +495,7 @@ export default class FontAwesomePicker {
             // first icons listeners
             eachIconEventListener('first');
             Dialog.preventModalStealingFocusForTargetSelector('.ip-icons-search input');
+            $('#IconPickerSearch').focus();
 
         }
         // IconPicker: Append Library to Body off
