@@ -1,8 +1,5 @@
 <p align="center">
-<img src="https://github.com/Volmarg/personal-management-system/blob/beta1.0/public/assets/images/logo/smaller.png?raw=true" width="150px;" />
-</p>
-<p align="center">
-<img src="https://github.com/Volmarg/personal-management-system/blob/main/github/bar.jpg?raw=true" />
+<img src="https://github.com/Volmarg/personal-management-system/blob/main/public/logo-small.png?raw=true" width="100px"/>
 </p>
 
 <h1 align="center"> Personal Management System</h1>
