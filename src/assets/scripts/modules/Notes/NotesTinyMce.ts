@@ -39,7 +39,12 @@ export default class NotesTinyMce {
      * @type TinyMce
      */
     private tinyMce = new TinyMce();
-    
+
+    /**
+     * @description partial selector of list element (requires adding id on the end)
+     */
+    static readonly NOTE_LIST_ELEMENT_PARTIAL_SELECTOR = "#noteListElement";
+
     /**
      * Main initialization logic
      */
@@ -145,17 +150,19 @@ export default class NotesTinyMce {
                         },
                     };
 
+                    Loader.showMainLoader();
+
                     $.ajax({
                         method: 'POST',
                         url: '/my-notes/update/',
                         data: data,
                     }).done(() => {
                         _this.bootstrapNotify.showGreenNotification(TinyMce.messages["note-update-success"]);
-                        _this.ajaxEvents.loadModuleContentByUrl(location.pathname);
-                        $(modalCloseButton).click();
-                        $('.modal-backdrop').remove();
+                        _this.setNoteTitleForNoteOnList(noteId, noteTitle.text());
                     }).fail(() => {
                         _this.bootstrapNotify.showRedNotification(TinyMce.messages["note-update-fail"]);
+                    }).always(() => {
+                        Loader.hideMainLoader();
                     });
 
                 }
@@ -214,5 +221,18 @@ export default class NotesTinyMce {
             })
         })
     };
+
+    /**
+     * @description will set title of note with given id
+     *
+     * @param noteId {string}
+     * @param newTitle {string}
+     * @private
+     */
+    private setNoteTitleForNoteOnList(noteId: string, newTitle: string): void
+    {
+        let $listElement = $(`${NotesTinyMce.NOTE_LIST_ELEMENT_PARTIAL_SELECTOR}${noteId}`);
+        $listElement.find('span').text(newTitle);
+    }
 
 }
