@@ -376,23 +376,25 @@ class DirectoriesHandler {
         {
             if ( $node->isDir() && !$node->isDot() )
             {
-                $pathname   = $node->getPathname();
-                $moduleName = FileUploadController::getUploadModuleNameForFilePath($pathname);
+                $pathname           = $node->getPathname();
+                $normalizedPathname = self::normalizeDirectorySeparator($pathname);
+
+                $moduleName = FileUploadController::getUploadModuleNameForFilePath($normalizedPathname);
                 $foldername = $node->getFilename();
-                $key        = ( $useFoldername ? $foldername : $pathname);
+                $key        = ( $useFoldername ? $foldername : $normalizedPathname);
 
                 if(
                         !$includeLocked
-                    &&  !self::$lockedResourceController->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $moduleName, false)
+                    &&  !self::$lockedResourceController->isAllowedToSeeResource($normalizedPathname, LockedResource::TYPE_DIRECTORY, $moduleName, false)
                 ) {
                     continue; // skip that folder
                 }
 
                 if( !$flatten ){
-                    $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                    $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $normalizedPathname ) );
                 }else{
                     $data[]          = $key;
-                    $recursionResult = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                    $recursionResult = static::buildFoldersTreeForDirectory( new DirectoryIterator( $normalizedPathname ) );
                     $data            = array_merge($data, array_keys($recursionResult));
                     $data            = array_filter($data);
                     $data            = array_unique($data);
@@ -523,5 +525,17 @@ class DirectoriesHandler {
         return null;
     }
 
+    /**
+     * Will normalize directory separator in path
+     * This is needed as windows can have different directory separator (but supports both of them).
+     * It must be the `/` to make the things work
+     *
+     * @param string $pathName
+     * @return string
+     */
+    private static function normalizeDirectorySeparator(string $pathName): string
+    {
+        return str_replace('\\', '/', $pathName);
+    }
 
 }
