@@ -8997,12 +8997,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Volmarg/personal-management-system-io-bridge.git",
-                "reference": "fe3768f857e90e0ba2f398aabeb97d3311468518"
+                "reference": "b3e03595e2d5ea89ef9dee66175490408291b828"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/fe3768f857e90e0ba2f398aabeb97d3311468518",
-                "reference": "fe3768f857e90e0ba2f398aabeb97d3311468518",
+                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/b3e03595e2d5ea89ef9dee66175490408291b828",
+                "reference": "b3e03595e2d5ea89ef9dee66175490408291b828",
                 "shasum": ""
             },
             "require": {
@@ -9031,7 +9031,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "App\\": "src/"
+                    "App\\PmsIo\\": "src/"
                 }
             },
             "autoload-dev": {
@@ -9059,7 +9059,7 @@
                 "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/main",
                 "issues": "https://github.com/Volmarg/personal-management-system-io-bridge/issues"
             },
-            "time": "2021-06-05T09:21:00+00:00"
+            "time": "2021-06-12T14:29:24+00:00"
         },
         {
             "name": "webimpress/safe-writer",
