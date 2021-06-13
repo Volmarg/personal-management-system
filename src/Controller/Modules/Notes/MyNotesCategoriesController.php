@@ -238,4 +238,12 @@ class MyNotesCategoriesController extends AbstractController {
         return $this->app->repositories->myNotesCategoriesRepository->findOneById($id);
     }
 
+    /**
+     * @return MyNotesCategories[]
+     */
+    public function findAllNotDeleted(): array
+    {
+        return $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
+    }
+
 }

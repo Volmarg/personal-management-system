@@ -190,7 +190,8 @@ class PmsIoService
                 $encryptedName = $this->encryptor->encrypt($noteCategory->getName());
 
                 $noteCategoryDto = new NoteCategoryDTO();
-                $noteCategoryDto->setParentId($noteCategory->getParentId());
+                $noteCategoryDto->setId($noteCategory->getId());
+                $noteCategoryDto->setParentId($noteCategory->getParentId() ?? "");
                 $noteCategoryDto->setColor($noteCategory->getColor());
                 $noteCategoryDto->setIcon($noteCategory->getIcon());
                 $noteCategoryDto->setName($encryptedName);

@@ -67,4 +67,15 @@ class MyNotesRepository extends ServiceEntityRepository {
         return $this->find($id);
     }
 
+    /**
+     * Will return all not deleted entities
+     *
+     * @return MyNotes[]
+     */
+    public function findAllNotDeleted(): array
+    {
+        $entities = $this->findBy([MyNotes::KEY_DELETED => 0]);
+        return $entities;
+    }
+
 }
