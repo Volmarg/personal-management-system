@@ -68,7 +68,7 @@ class FileValidatorService {
         ]));
 
         $validationResult = $this->validationService->checkConstraintViolationsAndReturnValidationResultVo($violationsList);
-        return $validationResult->isSuccess();
+        return $validationResult->isValid();
     }
 
     /**
@@ -86,7 +86,7 @@ class FileValidatorService {
         ]));
 
         $validationResult = $this->validationService->checkConstraintViolationsAndReturnValidationResultVo($violationsList);
-        return $validationResult->isSuccess();
+        return $validationResult->isValid();
     }
 
 }
