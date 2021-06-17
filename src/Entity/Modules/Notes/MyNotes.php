@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyNotes implements SoftDeletableEntityInterface, EntityInterface
 {
+    const KEY_DELETED = "deleted";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

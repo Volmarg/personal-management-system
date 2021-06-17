@@ -117,4 +117,12 @@ class MyNotesController extends AbstractController {
     {
         return $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
     }
+
+    /**
+     * @return MyNotes[]
+     */
+    public function findAllNotDeleted(): array
+    {
+        return $this->app->repositories->myNotesRepository->findAllNotDeleted();
+    }
 }

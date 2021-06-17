@@ -126,7 +126,7 @@ class MyNotesCategoriesAction extends AbstractController {
         $columnNames = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
         Repositories::removeHelperColumnsFromView($columnNames);
 
-        $categories          = $this->app->repositories->myNotesCategoriesRepository->findAllNotDeleted();
+        $categories          = $this->controllers->getMyNotesCategoriesController()->findAllNotDeleted();
         $parentsChildrenDtos = $this->controllers->getMyNotesCategoriesController()->buildParentsChildrenCategoriesHierarchy();
 
         return $this->render('modules/my-notes/settings.html.twig',

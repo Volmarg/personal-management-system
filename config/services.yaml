@@ -78,6 +78,16 @@ services:
             $loggerName: 'NotifierProxyLogger'
             $baseUrl: 'http://127.0.0.1:8010/'
 
+    App\PmsIo\PmsIoBridge:
+        public: true
+        arguments:
+            $logFilePath: '%kernel.logs_dir%/pms-io-bridge.log'
+            $loggerName: 'PmsIoLogger'
+            $baseUrl: 'http://127.0.0.1:8001/'
+            $login: 'login'
+            $password: 'password'
+            $secret: 'add-secret-here'
+
     App\Services\External\NotifierProxyLoggerService:
         arguments:
             $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'

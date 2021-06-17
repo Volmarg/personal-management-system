@@ -685,6 +685,9 @@
     "volmarg/notifier-proxy-logger-bridge": {
         "version": "v1.0.1"
     },
+    "volmarg/personal-management-system-io-bridge": {
+        "version": "dev-main"
+    },
     "webimpress/safe-writer": {
         "version": "2.1.0"
     },
