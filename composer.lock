@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78408e10722de3af614bce6f5c6fbe5a",
+    "content-hash": "740f1e876c920391bb1f64ad69aca74d",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -9030,16 +9030,16 @@
         },
         {
             "name": "volmarg/personal-management-system-io-bridge",
-            "version": "dev-main",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Volmarg/personal-management-system-io-bridge.git",
-                "reference": "b3e03595e2d5ea89ef9dee66175490408291b828"
+                "reference": "d8b73c8db8a1ad1e7a44bbc7fd2d0c35002f9ded"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/b3e03595e2d5ea89ef9dee66175490408291b828",
-                "reference": "b3e03595e2d5ea89ef9dee66175490408291b828",
+                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/d8b73c8db8a1ad1e7a44bbc7fd2d0c35002f9ded",
+                "reference": "d8b73c8db8a1ad1e7a44bbc7fd2d0c35002f9ded",
                 "shasum": ""
             },
             "require": {
@@ -9058,7 +9058,6 @@
             "conflict": {
                 "symfony/symfony": "*"
             },
-            "default-branch": true,
             "type": "library",
             "extra": {
                 "symfony": {
@@ -9093,10 +9092,10 @@
             ],
             "description": "Bridge between PMS-IO and PMS",
             "support": {
-                "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/main",
+                "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/v1.0.0",
                 "issues": "https://github.com/Volmarg/personal-management-system-io-bridge/issues"
             },
-            "time": "2021-06-12T14:29:24+00:00"
+            "time": "2021-06-13T07:55:14+00:00"
         },
         {
             "name": "webimpress/safe-writer",
@@ -10132,8 +10131,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "specshaper/encrypt-bundle": 20,
-        "volmarg/personal-management-system-io-bridge": 20
+        "specshaper/encrypt-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

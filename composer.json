@@ -56,7 +56,7 @@
         "tinymce/tinymce": "^5.0",
         "twig/extensions": "^1.5",
         "volmarg/notifier-proxy-logger-bridge": "^1.0",
-        "volmarg/personal-management-system-io-bridge": "dev-main"
+        "volmarg/personal-management-system-io-bridge": "^1.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.2",
