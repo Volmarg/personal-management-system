@@ -86,6 +86,11 @@ abstract class Archivizer {
     protected $app;
 
     /**
+     * @var int $minimalArchiveSize
+     */
+    private int $minimalArchiveSize = self::MINIMUM_ARCHIVE_SIZE;
+
+    /**
      * @return string
      */
     public function getArchivingStatus(): string {
@@ -238,6 +243,22 @@ abstract class Archivizer {
     }
 
     /**
+     * @return int
+     */
+    public function getMinimalArchiveSize(): int
+    {
+        return $this->minimalArchiveSize;
+    }
+
+    /**
+     * @param int $minimalArchiveSize
+     */
+    public function setMinimalArchiveSize(int $minimalArchiveSize): void
+    {
+        $this->minimalArchiveSize = $minimalArchiveSize;
+    }
+
+    /**
      * @param string $archiveName
      */
     public abstract function setArchiveName(string $archiveName): void;
@@ -326,7 +347,7 @@ abstract class Archivizer {
         }else{
             $archiveSize = filesize($this->getArchiveFullPath());
 
-            if( self::MINIMUM_ARCHIVE_SIZE > $archiveSize ){
+            if( $this->getMinimalArchiveSize() > $archiveSize ){
                 $this->setIsArchivedSuccessfully(false);
                 $this->setArchivingStatus(self::EXPORT_MESSAGE_EXPORTED_DATABASE_IS_TO_SMALL);
                 return;
