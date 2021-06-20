@@ -10,6 +10,8 @@ parameters:
     security.restricted_ips: '%env(APP_IPS_ACCESS_RESTRICTION)%'
     system.from_email: 'no-reply@personal-management-system.localhost'
 
+    project.name: "Personal Management System"
+
 # Resolving deprecation for moving from 4.4x to 5.x
 sensio_framework_extra:
     router:

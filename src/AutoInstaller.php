@@ -46,33 +46,35 @@ class AutoInstaller{
 
     const APP_SECRET        = 'b9abc19ae10d53eb7cf5b5684ec6511f';
 
-    const SYSTEM_LOCK_SESSION_LIFETIME = 900;
-    const USER_LOGIN_SESSION_LIFETIME  = 1800;
-    const IPS_ACCESS_RESTRICTION       = "[]";
-    const NPL_DEFAULT_RECEIVER         = '[\"your@email.com\"]';
+    const SYSTEM_LOCK_SESSION_LIFETIME      = 900;
+    const USER_LOGIN_SESSION_LIFETIME       = 1800;
+    const IPS_ACCESS_RESTRICTION            = "[]";
+    const NPL_DEFAULT_RECEIVER              = '[\"your@email.com\"]';
+    const DEFAULT_EMERGENCY_EMAILS_RECEIVER = 'your@email.com';
 
     const ENV_DEV   = "dev";
     const ENV_PROD  = "prod";
 
-    const ENV_KEY_APP_ENV                          = 'APP_ENV';
-    const ENV_KEY_APP_DEBUG                        = 'APP_DEBUG';
-    const ENV_KEY_APP_SECRET                       = 'APP_SECRET';
-    const ENV_KEY_APP_DEMO                         = 'APP_DEMO';
-    const ENV_KEY_APP_MAINTENANCE                  = 'APP_MAINTENANCE';
-    const ENV_KEY_APP_GUIDE                        = 'APP_GUIDE';
-    const ENV_KEY_MAILER_URL                       = 'MAILER_URL';
-    const ENV_KEY_DATABASE_URL                     = 'DATABASE_URL';
-    const ENV_KEY_UPLOAD_DIR                       = 'UPLOAD_DIR';
-    const ENV_KEY_IMAGES_UPLOAD_DIR                = 'IMAGES_UPLOAD_DIR';
-    const ENV_KEY_FILES_UPLOAD_DIR                 = 'FILES_UPLOAD_DIR';
-    const ENV_KEY_VIDEOS_UPLOAD_DIR                = 'VIDEOS_UPLOAD_DIR';
-    const ENV_KEY_MINIATURES_UPLOAD_DIR            = 'MINIATURES_UPLOAD_DIR';
-    const ENV_KEY_PUBLIC_ROOT_DIR                  = 'PUBLIC_ROOT_DIR';
-    const ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME  = 'APP_USER_LOGIN_SESSION_LIFETIME';
-    const ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME = 'APP_SYSTEM_LOCK_SESSION_LIFETIME';
-    const ENV_KEY_APP_IPS_ACCESS_RESTRICTION       = 'APP_IPS_ACCESS_RESTRICTION';
-    const ENV_KEY_APP_SHOW_INFO_BLOCKS             = 'APP_SHOW_INFO_BLOCKS';
-    const ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS  = 'APP_DEFAULT_NPL_RECEIVER_EMAILS';
+    const ENV_KEY_APP_ENV                             = 'APP_ENV';
+    const ENV_KEY_APP_DEBUG                           = 'APP_DEBUG';
+    const ENV_KEY_APP_SECRET                          = 'APP_SECRET';
+    const ENV_KEY_APP_DEMO                            = 'APP_DEMO';
+    const ENV_KEY_APP_MAINTENANCE                     = 'APP_MAINTENANCE';
+    const ENV_KEY_APP_GUIDE                           = 'APP_GUIDE';
+    const ENV_KEY_MAILER_URL                          = 'MAILER_URL';
+    const ENV_KEY_DATABASE_URL                        = 'DATABASE_URL';
+    const ENV_KEY_UPLOAD_DIR                          = 'UPLOAD_DIR';
+    const ENV_KEY_IMAGES_UPLOAD_DIR                   = 'IMAGES_UPLOAD_DIR';
+    const ENV_KEY_FILES_UPLOAD_DIR                    = 'FILES_UPLOAD_DIR';
+    const ENV_KEY_VIDEOS_UPLOAD_DIR                   = 'VIDEOS_UPLOAD_DIR';
+    const ENV_KEY_MINIATURES_UPLOAD_DIR               = 'MINIATURES_UPLOAD_DIR';
+    const ENV_KEY_PUBLIC_ROOT_DIR                     = 'PUBLIC_ROOT_DIR';
+    const ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME     = 'APP_USER_LOGIN_SESSION_LIFETIME';
+    const ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME    = 'APP_SYSTEM_LOCK_SESSION_LIFETIME';
+    const ENV_KEY_APP_IPS_ACCESS_RESTRICTION          = 'APP_IPS_ACCESS_RESTRICTION';
+    const ENV_KEY_APP_SHOW_INFO_BLOCKS                = 'APP_SHOW_INFO_BLOCKS';
+    const ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS     = 'APP_DEFAULT_NPL_RECEIVER_EMAILS';
+    const ENV_KEY_APP_EMERGENCY_EMAILS_RECEIVER_EMAIL = 'APP_EMERGENCY_EMAILS_RECEIVER_EMAIL';
 
     const CONFIG_ENCRYPTION_YAML_PATH       = "config/packages/config/encryption.yaml";
     const CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY = "parameters.encrypt_key";
@@ -360,11 +362,12 @@ class AutoInstaller{
             fwrite($fileHandler,self::ENV_KEY_MINIATURES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_MINIATURES  . PHP_EOL);
             fwrite($fileHandler,self::ENV_KEY_PUBLIC_ROOT_DIR       . "="  . self::PUBLIC_DIR             . PHP_EOL);
 
-            fwrite($fileHandler,self::ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME   . "="  . self::USER_LOGIN_SESSION_LIFETIME  . PHP_EOL);
-            fwrite($fileHandler,self::ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME  . "="  . self::SYSTEM_LOCK_SESSION_LIFETIME . PHP_EOL);
-            fwrite($fileHandler,self::ENV_KEY_APP_IPS_ACCESS_RESTRICTION        . "="  . self::IPS_ACCESS_RESTRICTION       . PHP_EOL);
-            fwrite($fileHandler,self::ENV_KEY_APP_SHOW_INFO_BLOCKS              . "="  . "true"                             . PHP_EOL);
-            fwrite($fileHandler,self::ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS   . "="  . self::NPL_DEFAULT_RECEIVER         . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME     . "="  . self::USER_LOGIN_SESSION_LIFETIME       . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME    . "="  . self::SYSTEM_LOCK_SESSION_LIFETIME      . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_IPS_ACCESS_RESTRICTION          . "="  . self::IPS_ACCESS_RESTRICTION            . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_SHOW_INFO_BLOCKS                . "="  . "true"                                  . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS     . "="  . self::NPL_DEFAULT_RECEIVER              . PHP_EOL);
+            fwrite($fileHandler,self::ENV_KEY_APP_EMERGENCY_EMAILS_RECEIVER_EMAIL . "="  . self::DEFAULT_EMERGENCY_EMAILS_RECEIVER . PHP_EOL);
         }
         fclose($fileHandler);
         CliHandler::infoText('Env file has been created.');
