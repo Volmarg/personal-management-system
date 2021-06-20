@@ -25,7 +25,7 @@
                             <section class="mB-20">
                                 {% for year in years %}
                                     <a href="{{ path("my-payments-monthly", {"year" : year}) }}" class="ajax-content-load">
-                                        <button class="trigger-custom btn cur-p {{ (active_year == year ? 'btn-primary' : 'btn-outline-primary') }}">
+                                        <button class="trigger-custom btn cur-p {{ (active_year == year ? 'btn-primary active-year' : 'btn-outline-primary') }}">
                                             {{ year }}
                                         </button>
                                     </a>

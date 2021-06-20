@@ -206,7 +206,7 @@ export default class Entity extends AbstractDataProcessor {
                     'id'            : $(paymentType).val(),
                 },
             };
-            
+
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
@@ -217,12 +217,14 @@ export default class Entity extends AbstractDataProcessor {
             return dataProcessorsDto;
         },
         makeRemoveData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id              = $($baseElement).find('.id').html();
-            let url             = '/my-payments-monthly/remove/';
-            let successMessage  = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsMonthly.processorName);
-            let failMessage     = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsMonthly.processorName);
-            let ajaxData        = {
-                id: id
+            let id                = $($baseElement).find('.id').html();
+            let url               = '/my-payments-monthly/remove/';
+            let currentActiveYear = $("#MyPaymentsMonthlyModuleBody .active-year").text().trim();
+            let successMessage    = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyPaymentsMonthly.processorName);
+            let failMessage       = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyPaymentsMonthly.processorName);
+            let ajaxData          = {
+                id                : id,
+                currentActiveYear : currentActiveYear
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -547,7 +549,7 @@ export default class Entity extends AbstractDataProcessor {
                 'information'   : information,
                 'id'            : id,
             };
-            
+
             let dataProcessorsDto            = new DataProcessorDto();
             dataProcessorsDto.url            = url;
             dataProcessorsDto.successMessage = successMessage;
@@ -562,7 +564,7 @@ export default class Entity extends AbstractDataProcessor {
             let url            = '/my-job/holidays/remove/';
             let failMessage    = AbstractDataProcessor.messages.entityRemoveFail(Entity.MyJobHolidays.processorName);
             let successMessage = AbstractDataProcessor.messages.entityRemoveSuccess(Entity.MyJobHolidays.processorName);
-            
+
             let ajaxData       = {
                 id: id
             };

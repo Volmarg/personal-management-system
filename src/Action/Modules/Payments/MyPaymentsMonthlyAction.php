@@ -28,6 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MyPaymentsMonthlyAction extends AbstractController {
 
+    const KEY_CURRENT_ACTIVE_YEAR = "currentActiveYear";
+
     /**
      * @var Application $app
      */
@@ -143,10 +145,11 @@ class MyPaymentsMonthlyAction extends AbstractController {
             $request->request->get('id')
         );
 
-        $message = $response->getContent();
+        $message           = $response->getContent();
+        $currentActiveYear = $request->request->get(self::KEY_CURRENT_ACTIVE_YEAR);
 
         if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
+            $renderedTemplate = $this->renderTemplate($currentActiveYear, true, true);
             $templateContent  = $renderedTemplate->getContent();
 
             return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
