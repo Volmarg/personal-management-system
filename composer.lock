@@ -9193,16 +9193,16 @@
         },
         {
             "name": "volmarg/personal-management-system-io-bridge",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Volmarg/personal-management-system-io-bridge.git",
-                "reference": "d8b73c8db8a1ad1e7a44bbc7fd2d0c35002f9ded"
+                "reference": "d06d67efe335f6da52a22f3c13bf4c07cdde4d6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/d8b73c8db8a1ad1e7a44bbc7fd2d0c35002f9ded",
-                "reference": "d8b73c8db8a1ad1e7a44bbc7fd2d0c35002f9ded",
+                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/d06d67efe335f6da52a22f3c13bf4c07cdde4d6d",
+                "reference": "d06d67efe335f6da52a22f3c13bf4c07cdde4d6d",
                 "shasum": ""
             },
             "require": {
@@ -9255,10 +9255,10 @@
             ],
             "description": "Bridge between PMS-IO and PMS",
             "support": {
-                "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/v1.0.0",
+                "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/v1.0.1",
                 "issues": "https://github.com/Volmarg/personal-management-system-io-bridge/issues"
             },
-            "time": "2021-06-13T07:55:14+00:00"
+            "time": "2021-06-24T15:46:06+00:00"
         },
         {
             "name": "webimpress/safe-writer",

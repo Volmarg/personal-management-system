@@ -60,6 +60,7 @@ class CronTransferDataToPmsIoCommand extends Command
             {
                 $this->insertNotesData();
                 $this->insertPasswordsData();
+                $this->pmsIoService->setTransferDoneState();
             }
             $this->app->logger->info("Finished transferring data to PMS-IO");
 

@@ -16,10 +16,12 @@ use App\PmsIo\Request\Notes\InsertNotesCategoriesRequest;
 use App\PmsIo\Request\Notes\InsertNotesRequest;
 use App\PmsIo\Request\Passwords\InsertPasswordsGroupsRequest;
 use App\PmsIo\Request\Passwords\InsertPasswordsRequest;
+use App\PmsIo\Request\System\SetTransferDoneStateRequest;
 use App\PmsIo\Response\Notes\InsertNotesCategoriesResponse;
 use App\PmsIo\Response\Notes\InsertNotesResponse;
 use App\PmsIo\Response\Passwords\InsertPasswordsGroupsResponse;
 use App\PmsIo\Response\Passwords\InsertPasswordsResponse;
+use App\PmsIo\Response\System\SetTransferDoneStateResponse;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
@@ -201,6 +203,26 @@ class PmsIoService
 
             $insertNotesRequest->setCategoriesDtos($notesCategoriesToInsert);
             $response = $this->pmsIoBridge->insertNotesCategories($insertNotesRequest);
+        }catch(Exception $e){
+            $this->app->logExceptionWasThrown($e);
+            throw $e;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Will set the transfer status to done in PMS-IO
+     *
+     * @return SetTransferDoneStateResponse
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    public function setTransferDoneState(): SetTransferDoneStateResponse
+    {
+        try{
+            $request = new SetTransferDoneStateRequest();
+            $response = $this->pmsIoBridge->setTransferDoneState($request);
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
             throw $e;
