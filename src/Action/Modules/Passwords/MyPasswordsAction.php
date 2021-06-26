@@ -145,9 +145,8 @@ class MyPasswordsAction extends AbstractController {
     public function getPasswordForId($id): JsonResponse
     {
         try {
-            $encryptedPassword = $this->controller->getMyPasswordsController()->getPasswordForId($id);
-            $decryptedPassword = $this->encryptor->decrypt($encryptedPassword);
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, "", null, $decryptedPassword);
+            $password = $this->controller->getMyPasswordsController()->getPasswordForId($id);
+            return AjaxResponse::buildJsonResponseForAjaxCall(200, "", null, $password);
         } catch (Exception $e) {
             $exceptionMessage = $e->getMessage();
             return AjaxResponse::buildJsonResponseForAjaxCall(500, $exceptionMessage);

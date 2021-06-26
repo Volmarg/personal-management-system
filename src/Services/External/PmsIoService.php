@@ -81,12 +81,13 @@ class PmsIoService
                 $encryptedLogin       = $this->encryptor->encrypt($password->getLogin());
                 $encryptedUrl         = $this->encryptor->encrypt($password->getUrl());
                 $encryptedDescription = $this->encryptor->encrypt($password->getDescription());
+                $encryptedPassword    = $this->encryptor->encrypt($password->getPassword());
 
                 $passwordDto = new PasswordDTO();
                 $passwordDto->setDescription($encryptedDescription);
                 $passwordDto->setGroupId($password->getGroup()->getId());
                 $passwordDto->setId($password->getId());
-                $passwordDto->setPassword($password->getPassword());
+                $passwordDto->setPassword($encryptedPassword);
                 $passwordDto->setLogin($encryptedLogin);
                 $passwordDto->setUrl($encryptedUrl);
 
