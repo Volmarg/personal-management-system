@@ -95408,6 +95408,11 @@ button.color-picker {
   border: rgba(0, 0, 0, 0.05) solid 1px;
 }
 
+/** Fixes proper showing of color below the picker */
+[data-color-holder] {
+  width: 75px !important;
+}
+
 .dropdown-list {
   position: relative;
   overflow: hidden;
@@ -96595,6 +96600,16 @@ input[type=radio].square-checkbox:disabled:after {
 
 #MyNotesCategoriesTable .my-notes-categories-table-color-cell {
   width: 50px !important;
+}
+#MyNotesCategoriesTable .parent-td .bootstrap-select {
+  position: absolute;
+}
+#MyNotesCategoriesTable .icon, #MyNotesCategoriesTable .color {
+  max-width: 150px;
+}
+#MyNotesCategoriesTable .category {
+  max-width: 200px;
+  width: 200px;
 }
 
 .note-edit-modal .note-edit-modal-category-select {

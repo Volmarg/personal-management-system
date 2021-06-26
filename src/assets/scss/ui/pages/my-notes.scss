@@ -54,6 +54,19 @@
   .my-notes-categories-table-color-cell {
     width: 50px !important;
   }
+
+  .parent-td .bootstrap-select {
+    position: absolute;
+  }
+
+  .icon, .color {
+    max-width: 150px;
+  }
+
+  .category {
+    max-width: 200px;
+    width: 200px;
+  }
 }
 
 .note-edit-modal {

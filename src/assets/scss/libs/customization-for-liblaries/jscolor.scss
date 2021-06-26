@@ -1,3 +1,8 @@
 button.color-picker {
   border: rgba(0, 0, 0, 0.05) solid 1px;
 }
+
+/** Fixes proper showing of color below the picker */
+[data-color-holder] {
+  width: 75px !important;
+}
