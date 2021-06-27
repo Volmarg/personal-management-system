@@ -10,6 +10,8 @@ dialogs:
     header: Edit contact card
   addIssue:
     header: Add issue
+  editIssue:
+    header: Edit issue
   addIssueProgress:
     header: Add issue progress
   addIssueContact:

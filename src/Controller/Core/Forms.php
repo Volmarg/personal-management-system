@@ -3,6 +3,7 @@ namespace App\Controller\Core;
 
 use App\Action\Core\FormsAction;
 use App\Entity\Modules\Contacts\MyContact;
+use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
@@ -181,8 +182,8 @@ class Forms extends AbstractController {
         return $this->createForm(UploadFormType::class, null, $params);
     }
 
-    public function issueForm(array $params = []): FormInterface {
-        return $this->createForm(MyIssueType::class, null, $params);
+    public function issueForm(array $params = [], ?MyIssue $data = null): FormInterface {
+        return $this->createForm(MyIssueType::class, $data, $params);
     }
 
     public function issueProgressForm(array $params = []): FormInterface {

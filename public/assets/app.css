@@ -96552,6 +96552,11 @@ input[type=radio].square-checkbox:disabled:after {
   margin-top: -5px;
 }
 
+.issue-edit {
+  top: 0;
+  right: 0;
+}
+
 #jobAfterhoursMainWrapper .job-afterhours-asterix {
   font-size: 10px;
 }
@@ -97392,6 +97397,11 @@ form legend {
   font-size: 18px;
   margin: 0;
   margin-top: -5px;
+}
+
+.issue-edit {
+  top: 0;
+  right: 0;
 }
 
 @keyframes pulse {

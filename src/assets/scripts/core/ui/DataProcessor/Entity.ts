@@ -1765,7 +1765,7 @@ export default class Entity extends AbstractDataProcessor {
             let successMessage     = AbstractDataProcessor.messages.entityCreatedRecordSuccess(Entity.MyIssueProgress.processorName);
             let failMessage        = AbstractDataProcessor.messages.entityCreatedRecordFail(Entity.MyIssueProgress.processorName);
             let callbackAfter      = () => {
-                BootboxWrapper.hideAll();;
+                BootboxWrapper.hideAll();
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -1779,7 +1779,35 @@ export default class Entity extends AbstractDataProcessor {
             return dataProcessorsDto;
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            return null;
+            let id              = $($baseElement).find('.id').val();
+            let name            = $($baseElement).find('.name input').val();
+            let information     = $($baseElement).find('.information input').val();
+            let showOnDashboard = $($baseElement).find('.show-on-dashboard input').prop('checked');
+
+            let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyIssueProgress.processorName);
+            let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyIssueProgress.processorName);
+
+            let url = '/my-issues/update/';
+            let ajaxData = {
+                'id'              : id,
+                'name'            : name,
+                'information'     : information,
+                'showOnDashboard' : showOnDashboard,
+            };
+
+            let callbackAfter = () => {
+                BootboxWrapper.hideAll();
+            };
+
+            let dataProcessorsDto            = new DataProcessorDto();
+            dataProcessorsDto.url            = url;
+            dataProcessorsDto.ajaxData       = ajaxData;
+            dataProcessorsDto.successMessage = successMessage;
+            dataProcessorsDto.failMessage    = failMessage;
+            dataProcessorsDto.callbackAfter  = callbackAfter;
+            dataProcessorsDto.processorName  = this.processorName;
+
+            return dataProcessorsDto;
         },
         processorName: "Issue"
     };

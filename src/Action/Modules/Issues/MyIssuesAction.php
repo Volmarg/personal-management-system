@@ -6,10 +6,12 @@ use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -84,6 +86,22 @@ class MyIssuesAction extends AbstractController
         ];
 
         return $this->render(self::TWIG_TEMPLATE_PENDING_ISSUES, $data);
+    }
+
+    /**
+     * @Route("/my-issues/update/", name="my-issues-pending-update")
+     * @param Request $request
+     * @return JsonResponse
+     * @throws MappingException
+     */
+    public function update(Request $request): JsonResponse
+    {
+        $parameters = $request->request->all();
+        $entityId   = trim($parameters['id']);
+        $entity     = $this->controllers->getMyIssuesController()->findIssueById($entityId);
+        $response   = $this->app->repositories->update($parameters, $entity);
+
+        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }
 
     /**

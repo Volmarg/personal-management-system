@@ -19,7 +19,7 @@
     <section class="h-100p overflow-hidden" style=" min-height: 128px;">
         <div class="h-100p overflow-hidden">
             <div class="content bgc-white bd p-10">
-                <h1 class="text-center"
+                <h1 class="text-center position-relative"
                     data-toggle-popover="true"                                      {# popover attr #}
                     data-content=
                     "                                                  {# popover attr #}
@@ -52,6 +52,25 @@
                     data-placement="top"                                            {# popover attr #}
                 >
                     {{ substring(issueCardDto.getIssue().getName(), 0, maxNameLength) }}
+
+                    <span class="action pointer float-right position-absolute issue-edit"
+                          data-entity-id="{{ issueCardDto.issue().getId() }}"
+                          data-entity-detials-action="true"
+                          data-dialog-call-request-url="{{ path('dialog_body_update_issue') }}"
+                          data-dialog-call-request-method="POST"
+                          data-dialog-call-request-post-parameters='{
+                                "entityId": "{{ issueCardDto.issue().getId() }}"
+                            }'
+                          data-call-dialog-on-click="true"
+                          data-dialog-name="updateIssue"
+
+                          data-toggle-popover="true"                          {# popover attr #}
+                          data-content="{{ 'actions.popover.edit' | trans }}" {# popover attr #}
+                          data-placement="right"                              {# popover attr #}
+                    >
+                          <i class="far fa-edit"></i>
+                    </span>
+
                 </h1>
             </div>
 

@@ -42,6 +42,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_SYSTEM_LOCK_CREATE_PASSWORD   = 'page-elements/components/dialogs/bodies/system-lock-create-password.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_PREVIEW_ISSUE_DETAILS    = 'page-elements/components/dialogs/bodies/preview-issue-details.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA           = 'page-elements/components/dialogs/bodies/add-issue-data.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_ISSUE             = 'page-elements/components/dialogs/bodies/update-issue.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE             = 'page-elements/components/dialogs/bodies/create-issue.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_NOTE              = 'page-elements/components/dialogs/bodies/create-note.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD             = 'page-elements/components/dialogs/bodies/upload.twig';
@@ -680,6 +681,7 @@ class DialogsAction extends AbstractController
      * @param Request $request
      * @return JsonResponse
      *
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function buildAddIssueDataDialogBody(Request $request): JsonResponse
     {
@@ -723,6 +725,64 @@ class DialogsAction extends AbstractController
             ];
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA, $templateData)->getContent();
+
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajaxResponse->setCode($code);
+        $ajaxResponse->setTemplate($template);
+        $ajaxResponse->setSuccess($success);
+
+        $jsonResponse = $ajaxResponse->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/update-issue", name="dialog_body_update_issue", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function buildUpdateIssueDataDialogBody(Request $request): JsonResponse
+    {
+        $ajaxResponse = new AjaxResponse();
+        $code         = Response::HTTP_OK;
+        $template     = "";
+        $success      = true;
+
+        try{
+            if( !$request->request->has(self::KEY_ENTITY_ID) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+
+                $ajaxResponse->setMessage($message);
+                $ajaxResponse->setSuccess(false);
+                $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajaxResponse->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $entityId = $request->request->get(self::KEY_ENTITY_ID);
+            $issue    = $this->controllers->getMyIssuesController()->findIssueById($entityId);
+
+            if( is_null($issue) ){
+                $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
+
+                $ajaxResponse->setMessage($message . $entityId);
+                $ajaxResponse->setSuccess(false);
+                $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajaxResponse->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $templateData = [
+                'issue_form' => $this->app->forms->issueForm([], $issue)->createView(),
+                'id'         => $entityId,
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_ISSUE, $templateData)->getContent();
 
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;

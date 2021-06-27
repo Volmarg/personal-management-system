@@ -2,7 +2,7 @@
 {% block roundcheckbox_widget %}
 
     <div class="checkbox checkbox-circle checkbox-info peers ai-c">
-        <input type="checkbox" class="peer" {{ block('widget_attributes') }} >
+        <input type="checkbox" class="peer" {{ block('widget_attributes') }} {{ checked ? 'checked' : '' }}>
         <label class=" peers peer-greed js-sb ai-c">
 
             <span class="peer peer-greed">
