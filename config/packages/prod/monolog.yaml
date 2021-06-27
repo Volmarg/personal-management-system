@@ -2,8 +2,9 @@ monolog:
     handlers:
         main:
             type: fingers_crossed
-            action_level: critical
+            action_level: warning
             handler: nested
+            channels: [ "!event", "!doctrine", "!security" ]
             excluded_404s:
                 # regex: exclude all 404 errors from the logs
                 - ^/
@@ -11,6 +12,7 @@ monolog:
             type: stream
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
+            channels: [ "!event", "!doctrine" ]
         console:
             type: console
             process_psr_3_messages: false
