@@ -8,6 +8,10 @@
     {% set maxNameLength = 40 %}
 {% endif %}
 
+{% if isReadOnly is not defined %}
+    {% set isReadOnly = false %}
+{% endif %}
+
 <div
     class="issue-wrapper"
     style="
@@ -53,10 +57,7 @@
                 >
                     {{ substring(issueCardDto.getIssue().getName(), 0, maxNameLength) }}
 
-                    {% if
-                            isReadOnly is defined
-                        and not isReadOnly
-                    %}
+                    {% if not isReadOnly %}
                         <span class="action pointer float-right position-absolute issue-edit"
                               data-entity-id="{{ issueCardDto.issue().getId() }}"
                               data-entity-detials-action="true"
