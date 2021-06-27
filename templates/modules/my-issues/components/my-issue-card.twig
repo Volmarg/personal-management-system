@@ -53,23 +53,28 @@
                 >
                     {{ substring(issueCardDto.getIssue().getName(), 0, maxNameLength) }}
 
-                    <span class="action pointer float-right position-absolute issue-edit"
-                          data-entity-id="{{ issueCardDto.issue().getId() }}"
-                          data-entity-detials-action="true"
-                          data-dialog-call-request-url="{{ path('dialog_body_update_issue') }}"
-                          data-dialog-call-request-method="POST"
-                          data-dialog-call-request-post-parameters='{
+                    {% if
+                            isReadOnly is defined
+                        and not isReadOnly
+                    %}
+                        <span class="action pointer float-right position-absolute issue-edit"
+                              data-entity-id="{{ issueCardDto.issue().getId() }}"
+                              data-entity-detials-action="true"
+                              data-dialog-call-request-url="{{ path('dialog_body_update_issue') }}"
+                              data-dialog-call-request-method="POST"
+                              data-dialog-call-request-post-parameters='{
                                 "entityId": "{{ issueCardDto.issue().getId() }}"
                             }'
-                          data-call-dialog-on-click="true"
-                          data-dialog-name="updateIssue"
+                              data-call-dialog-on-click="true"
+                              data-dialog-name="updateIssue"
 
-                          data-toggle-popover="true"                          {# popover attr #}
+                              data-toggle-popover="true"                      {# popover attr #}
                           data-content="{{ 'actions.popover.edit' | trans }}" {# popover attr #}
                           data-placement="right"                              {# popover attr #}
-                    >
+                        >
                           <i class="far fa-edit"></i>
-                    </span>
+                        </span>
+                    {% endif %}
 
                 </h1>
             </div>
