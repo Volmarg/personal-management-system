@@ -128,7 +128,9 @@ export default class BootstrapSelect
     {
         // the confusing part to understand here is that Select in DOM uses `attr` but bootstrapselect uses `prop`
         if ( DomAttributes.isDisabledAttribute($element) ) {
+            let $bootstrapSelectButton = $element.closest('.bootstrap-select').find('button');
             $element.prop('disabled', true)
+            $bootstrapSelectButton.addClass('disabled');
         }
     }
 }
