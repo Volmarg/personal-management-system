@@ -866,7 +866,7 @@ class DialogsAction extends AbstractController
             return $jsonResponse;
         }
 
-        $entityId       = $request->request->get(self::KEY_ENTITY_ID);
+        $entityId       = $request->request->get(self::KEY_ENTITY_ID, "");
         $actionPathname = $request->request->get(self::KEY_ACTION_PATHNAME);
         $moduleName     = $request->request->get(self::KEY_MODULE_NAME);
 
