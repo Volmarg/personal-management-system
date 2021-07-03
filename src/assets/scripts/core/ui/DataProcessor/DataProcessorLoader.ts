@@ -18,6 +18,7 @@ export default class DataProcessorLoader {
      * @description Will fetch DataProcessorDto for update Data, for given processorType/name and/or baseElement
      * @see SpecialAction.settingsDashboardWidgetsVisibility
      * @see SpecialAction.settingsFinancesCurrencyTable
+     * @see SpecialAction.CopyDataBetweenFolders
      * @see SpecialAction.UserLockPassword
      * @see SpecialAction.UserPassword
      * @see SpecialAction.UserNickname

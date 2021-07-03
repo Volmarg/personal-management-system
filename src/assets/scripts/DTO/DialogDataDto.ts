@@ -5,7 +5,8 @@ import AbstractDto from "./AbstractDto";
  */
 export default class DialogDataDto extends AbstractDto{
 
-    private _callback = ($dialogWrapper?: JQuery<HTMLElement>) => {};
+    private _callback      = ($dialogWrapper?: JQuery<HTMLElement>) => {};
+    private _callbackAfter = ($dialogWrapper?: JQuery<HTMLElement>) => {};
 
     /**
      * @type Object
@@ -27,5 +28,13 @@ export default class DialogDataDto extends AbstractDto{
 
     set ajaxData(value: Object) {
         this._ajaxData = value;
+    }
+
+    get callbackAfter(): ($dialogWrapper?: JQuery<HTMLElement>) => void {
+        return this._callbackAfter;
+    }
+
+    set callbackAfter(value: ($dialogWrapper?: JQuery<HTMLElement>) => void) {
+        this._callbackAfter = value;
     }
 }

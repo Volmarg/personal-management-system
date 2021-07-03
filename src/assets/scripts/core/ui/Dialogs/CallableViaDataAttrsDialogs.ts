@@ -18,6 +18,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
         let elements = $("[" + this.data.callDialogOnClick + "=true]");
         let _this    = this;
 
+        elements.off('click');
         elements.on('click', function(event){
             let $clickedElement = $(event.currentTarget);
 
@@ -28,18 +29,19 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
             let dialogDataDto  = _this.dialogLogicLoader.getDialogDataDto(dialogName);
             let callback       = ( !(dialogDataDto instanceof DialogDataDto) ? () => {} : dialogDataDto.callback );
+            let callbackAfter  = ( !(dialogDataDto instanceof DialogDataDto) ? () => {} : dialogDataDto.callbackAfter );
 
             let usedParameters = null;
             let url            = null;
-            let data           = null;
+            let data           = {};
 
             switch( requestMethod ){
                 case Ajax.REQUEST_TYPE_POST:
                 {
-                    if( StringUtils.isEmptyString(postParameters) ){
-                        data = dialogDataDto.ajaxData;
-                    }else{
+                    if( !StringUtils.isEmptyString(postParameters) ){
                         data = JSON.parse(postParameters);
+                    }else if(typeof dialogDataDto.ajaxData !== 'undefined'){
+                        data = dialogDataDto.ajaxData;
                     }
 
                     usedParameters = postParameters;
@@ -60,7 +62,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
                 url    : url,
                 data   : data
             }).always((data) => {
-                _this.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDialog);
+                _this.handleCommonAjaxCallLogicForBuildingDialog(data, callback, _this.callDialog, false, null , callbackAfter);
             })
         });
     };
@@ -96,10 +98,11 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
      * Call the dialog and insert template in it's body
      * @param template {string}
      * @param callback {function}
+     * @param callbackAfter {function}
      * @param center {boolean}
      * @param dialogButtonLabel {string}
      */
-    private callDialog(template, callback = null, center :boolean = false, dialogButtonLabel :string = CallableViaDataAttrsDialogs.ALERT_CANCEL_BUTTON_STRING) {
+    private callDialog(template, callback = null, center :boolean = false, dialogButtonLabel :string = CallableViaDataAttrsDialogs.ALERT_CANCEL_BUTTON_STRING, callbackAfter = null) {
 
         if( StringUtils.isEmptyString(dialogButtonLabel) )
         {
@@ -133,6 +136,11 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
             dialog.addClass("." + Dialog.classesNames.modalMovedBackdrop);
             callableViaDataAttrsDialogs.forms.init();
+
+            if(  $.isFunction(callbackAfter) ){
+                callbackAfter();
+            }
+
         });
 
         if( center )

@@ -1,0 +1,22 @@
+{% if reloaded_menu_node is not defined %}
+    {% set reloaded_menu_node = "" %}
+{% endif %}
+
+<div class="widget action pointer mass-action"
+     data-entity-detials-action="true"                                       {# dialog attr #}
+     data-dialog-call-request-url="{{ path('dialog_body_upload_module_settings') }}" {# dialog attr #}
+     data-dialog-call-request-method="POST"                                  {# dialog attr #}
+     data-dialog-call-request-post-parameters='{                             {# dialog attr #}
+        "reloadedMenuNode" : "{{ reloaded_menu_node }}"
+    }'
+     data-call-dialog-on-click="true"                                        {# dialog attr #}
+     data-dialog-name="moveFolder"                                           {# dialog attr #}
+     data-toggle-popover="true"                                              {# popover attr #}
+     data-html="true"                                                        {# popover attr #}
+     data-content="{{ popover_translation_string | trans }}"                 {# popover attr #}
+     data-placement="left"                                                   {# popover attr #}
+>
+    <div class="fontawesome-centered ">
+        <i class="fas fa-cog"></i>
+    </div>
+</div>

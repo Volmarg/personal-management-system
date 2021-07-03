@@ -24,6 +24,7 @@ export default class DialogLogicLoader {
          * @see DialogLogic.massActionDataTransferImagesModule()
          * @see DialogLogic.massActionDataTransferVideoModule()
          * @see DialogLogic.massActionFilesRemoval()
+         * @see DialogLogic.moveFolder()
          */
         let dialogDataBuilder = DialogLogic[dialogName];
 

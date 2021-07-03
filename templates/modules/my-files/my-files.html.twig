@@ -63,7 +63,11 @@
                     'id'             : "my-files-new-folder-widget",
                     'style'          : "margin-top: 10px; background-color: #0062cc; opacity: .5;",
                     "popoverContent" : 'files.popover.addFolder' | trans
+                } %}
 
+                {% include 'page-elements/components/upload-modules/settings.twig' with {
+                    reloaded_menu_node         : constant("App\\Action\\System\\AppAction::MENU_NODE_MODULE_NAME_MY_FILES"),
+                    popover_translation_string : "files.popover.settings"
                 } %}
             </div>
 

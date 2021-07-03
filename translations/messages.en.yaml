@@ -86,6 +86,7 @@ dialogs:
     filesTransfer: { confirm: 'Do You really want to move these files?' }
     removeFiles: { confirm: 'Do You really want to remove these files?' }
     editTravelIdea: { header: 'Edit travel idea' }
+    uploadModuleSettings: { moveFolder: { header: 'Move folder' } }
 exceptions:
     general: { missingRequiredParameter: 'Missing request parameter named: ', providedEntityIsNotAnObject: 'Provided entity is not an object', thisEntityIsNotSoftDeletable: 'This entity is not soft deletable!' }
     files: { subdirectoryLocationMissingInRequest: 'Subdirectory location is missing in request.', cannotRemoveMainFolder: 'Cannot remove main folder!' }
@@ -180,16 +181,16 @@ files:
     label: Files
     title: 'Files {{folder}}'
     table: { name: Name, extension: Extension, size: 'Size (mb)', tags: Tags }
-    popover: { modified: Modified, removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder' }
+    popover: { modified: Modified, removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', settings: Settings }
     massActions: { remove: 'Remove files', transferFiles: 'Transfer files' }
     settings: { title: 'Files settings', infoBlock: { header: 'Files settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
 images:
     title: 'Images {{folder}}'
-    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files' }
+    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files', settings: Settings }
     settings: { title: 'Images settings', infoBlock: { header: 'Images settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
 video:
     title: 'Video {{folder}}'
-    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files', editTags: 'Edit tags' }
+    popover: { removeFolder: 'Remove folder', addFiles: 'Add files', addFolder: 'Add folder', removeFiles: 'Remove files', transferFiles: 'Transfer files', editTags: 'Edit tags', settings: Settings }
     labels: { search: Search, tags: Tags, headers: { main: Video } }
     settings: { title: 'Video settings', infoBlock: { header: 'Video settings', text: { mainDescription: "Show or hide the directories from the menu by using the <b>System lock</b>\n" } } }
 upload:

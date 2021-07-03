@@ -18,8 +18,11 @@ import BootstrapSelect      from "../../../../libs/bootstrap-select/BootstrapSel
 import DataTransferDialogs  from "../DataTransferDialogs";
 import Tippy                from "../../../../libs/tippy/Tippy";
 import SmartTab             from "../../../../libs/smarttab/SmartTab";
+import DirectoriesBasedWidget from "../../Widgets/DirectoriesBased/DirectoriesBasedWidget";
+import FormsUtils             from "../../../utils/FormsUtils";
 
 import * as $ from "jquery";
+import Sidebars from "../../../sidebar/Sidebars";
 
 /**
  * @description This class contains definitions of logic for given dialogs loaded/created via html data attrs.
@@ -200,6 +203,34 @@ export default class DialogLogic {
 
         let dialogDataDto      = new DialogDataDto();
         dialogDataDto.callback = callback;
+
+        return dialogDataDto;
+    }
+
+    /**
+     * @description contains definition of logic for moving folder
+     */
+    public static moveFolder(): DialogDataDto
+    {
+        let dialogDataDto = new DialogDataDto();
+        dialogDataDto.callbackAfter = () => {
+            let fromModuleSelectSelector    = '#upload_subdirectory_copy_data_current_upload_module_dir';
+            let fromDirectorySelectSelector = '#upload_subdirectory_copy_data_subdirectory_current_path_in_module_upload_dir';
+
+            let toModuleSelectSelector    = '#upload_subdirectory_copy_data_target_upload_module_dir';
+            let toDirectorySelectSelector = '#upload_subdirectory_copy_data_subdirectory_target_path_in_module_upload_dir';
+
+            let updateAction           = new UpdateAction();
+            let formUtils              = new FormsUtils();
+            let directoriesBasedWidget = new DirectoriesBasedWidget();
+
+            BootstrapSelect.init();
+            updateAction.init();
+            formUtils.init();
+
+            directoriesBasedWidget.selectCurrentModuleAndUploadDirOption(fromModuleSelectSelector, fromDirectorySelectSelector);
+            directoriesBasedWidget.selectCurrentModuleAndUploadDirOption(toModuleSelectSelector, toDirectorySelectSelector, true);
+        };
 
         return dialogDataDto;
     }

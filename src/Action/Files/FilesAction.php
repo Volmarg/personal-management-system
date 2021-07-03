@@ -13,6 +13,7 @@ use App\Form\Files\UploadSubdirectoryCreateType;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Files\FileTagger;
+use App\Services\Routing\UrlMatcherService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -53,18 +54,25 @@ class FilesAction extends AbstractController {
      */
     private Controllers $controllers;
 
+    /**
+     * @var UrlMatcherService $urlMatcherService
+     */
+    private UrlMatcherService $urlMatcherService;
+
     public function __construct(
         Application        $app,
         FilesHandler       $filesHandler,
         FileTagger         $fileTagger,
         DirectoriesHandler $directoriesHandler,
-        Controllers        $controllers
+        Controllers        $controllers,
+        UrlMatcherService  $urlMatcherService
     ) {
         $this->app                = $app;
         $this->filesHandler       = $filesHandler;
         $this->fileTagger         = $fileTagger;
         $this->directoriesHandler = $directoriesHandler;
         $this->controllers        = $controllers;
+        $this->urlMatcherService  = $urlMatcherService;
     }
 
     /**
@@ -286,7 +294,7 @@ class FilesAction extends AbstractController {
      * @Route("/files/actions/create-folder", name="action_create_subdirectory", methods="POST")
      * @param Request $request
      * @return Response
-     * 
+     *
      * @throws \Exception
      */
     public function createSubdirectoryByPostRequest(Request $request){
@@ -425,22 +433,33 @@ class FilesAction extends AbstractController {
 
         try{
             if( $doMoveEntireFolder ){
-
-                $uploadDirs        = Env::getUploadDirs();
                 $currentFolderPath = $currentDirectoryPathInModuleUploadDir;
                 $targetFolderPath  = $targetDirectoryPathInModuleUploadDir;
 
                 //if not main folder then add upload dir
-                if( !in_array($currentDirectoryPathInModuleUploadDir, $uploadDirs) ){
+                if( !$this->isMainUploadDirectory($currentDirectoryPathInModuleUploadDir) ){
                     $currentFolderPath =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $currentUploadModuleDir . DIRECTORY_SEPARATOR . $currentDirectoryPathInModuleUploadDir;
                 }
 
                 //if not main folder then add upload dir
-                if( !in_array($targetDirectoryPathInModuleUploadDir, $uploadDirs) ){
+                if( !$this->isMainUploadDirectory($targetDirectoryPathInModuleUploadDir) ){
                     $targetFolderPath  =  Env::getUploadDir() . DIRECTORY_SEPARATOR . $targetUploadModuleDir . DIRECTORY_SEPARATOR . $targetDirectoryPathInModuleUploadDir;
                 }
 
-                $response = $this->directoriesHandler->moveDirectory($currentFolderPath, $targetFolderPath);
+                $response     = $this->directoriesHandler->moveDirectory($currentFolderPath, $targetFolderPath);
+                $ajaxResponse = AjaxResponse::initializeFromResponse($response);
+                if( empty($ajaxResponse->getRouteUrl()) ){
+                    $targetUrl = $this->getRouteUrlRedirectForMovingFolder(
+                        $request,
+                        $currentDirectoryPathInModuleUploadDir,
+                        $targetDirectoryPathInModuleUploadDir
+                    );
+
+                    if( !empty($targetUrl) ){
+                        $ajaxResponse->setRouteUrl($targetUrl);
+                    }
+                }
+
             }else{
                 /**
                  * In this case files are copied between directories, some actions are skipped here, for example:
@@ -449,6 +468,8 @@ class FilesAction extends AbstractController {
                 $response = $this->filesHandler->copyData(
                     $currentUploadModuleDir, $targetUploadModuleDir, $currentDirectoryPathInModuleUploadDir, $targetDirectoryPathInModuleUploadDir
                 );
+
+                $ajaxResponse = AjaxResponse::initializeFromResponse($response);
             }
 
         }catch(\Exception | TypeError $e ){
@@ -463,7 +484,67 @@ class FilesAction extends AbstractController {
             return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_INTERNAL_SERVER_ERROR, $message);
         }
 
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+        return $ajaxResponse->buildJsonResponse();
+    }
+
+    /**
+     * Will return the route that will be used to redirect/reload after the folder has been moved
+     *
+     * @param Request $request
+     * @param string $currentDirectoryPathInModuleUploadDir
+     * @param string $targetDirectoryPathInModuleUploadDir
+     * @return string|null
+     * @throws \Exception
+     */
+    private function getRouteUrlRedirectForMovingFolder(Request $request, string $currentDirectoryPathInModuleUploadDir, string $targetDirectoryPathInModuleUploadDir): ?string
+    {
+        if( !$request->request->has(FilesHandler::KEY_URL_CALLED_FROM) ){
+            return null;
+        }
+
+        $urlCalledFrom                 = urldecode($request->request->get(FilesHandler::KEY_URL_CALLED_FROM));
+        $routeForOverviewPage          = $this->urlMatcherService->getRouteForUploadBasedModuleUrlOverviewPage($urlCalledFrom);
+        $targetSubdirectoryPath        = ( $this->isMainUploadDirectory($targetDirectoryPathInModuleUploadDir) ? null : $targetDirectoryPathInModuleUploadDir ); //if main folder then subdirectory is null
+        $encodedTargetSubdirectoryPath = ( is_null($targetSubdirectoryPath) ? null : urlencode($targetSubdirectoryPath) );
+        $encodedTargetSubdirectoryPath = $this->normalizeCharactersInStringForUrl($encodedTargetSubdirectoryPath);
+
+        if(
+                !empty($routeForOverviewPage)
+            &&  $this->urlMatcherService->isUrlEqualToAnyUploadModuleOverviewPage($urlCalledFrom, $currentDirectoryPathInModuleUploadDir)
+        ){
+            $targetEncodedSubdirectoryPath = $encodedTargetSubdirectoryPath . urlencode(DIRECTORY_SEPARATOR . basename($currentDirectoryPathInModuleUploadDir));
+            $urlForTargetSubdirectoryPath  = $this->generateUrl($routeForOverviewPage, [
+                UrlMatcherService::ROUTE_PARAM_ENCODED_SUBDIRECTORY_PATH => $targetEncodedSubdirectoryPath,
+            ]);
+
+            $normalizedUrlForTargetSubdirectoryPath = $this->normalizeCharactersInStringForUrl($urlForTargetSubdirectoryPath);
+            return $normalizedUrlForTargetSubdirectoryPath;
+        }
+
+        return $urlCalledFrom;
+    }
+
+    /**
+     * Will check if given directory in module upload dir is actually main directory or not
+     *
+     * @param string $directoryPathInModuleUploadDir
+     * @return bool
+     */
+    private function isMainUploadDirectory(string $directoryPathInModuleUploadDir): bool
+    {
+        $uploadDirs = Env::getUploadDirs();
+        return in_array($directoryPathInModuleUploadDir, $uploadDirs);
+    }
+
+    /**
+     * Now the problem is that if folder has name with space-bar, then any of the urlencoded methods replaces it with special character
+     * this then passed to the route generator replaces that character as well - so this causes issues with front
+     * navigation where (+) is replaced twice by symfony routing logic
+     */
+    private function normalizeCharactersInStringForUrl(string $urlString): string
+    {
+        $normalizedString = str_replace("+", " ", $urlString);
+        return $normalizedString;
     }
 
 }

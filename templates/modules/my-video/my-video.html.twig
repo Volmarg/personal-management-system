@@ -198,6 +198,11 @@
                     'popoverContent' : "video.popover.addFolder"|trans
                 } %}
 
+                {% include 'page-elements/components/upload-modules/settings.twig' with {
+                    reloaded_menu_node         : constant("App\\Action\\System\\AppAction::MENU_NODE_MODULE_NAME_MY_VIDEO"),
+                    popover_translation_string : "files.popover.settings"
+                } %}
+
                 <div class="widget action pointer mass-action disabled"
                      data-entity-detials-action="true"                                       {# dialog attr #}
                      data-dialog-call-request-url="{{ path('dialog_body_files_removal') }}"  {# dialog attr #}

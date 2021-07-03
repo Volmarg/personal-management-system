@@ -6,9 +6,7 @@ export default class UiUtils {
      * @description Will keep open menu elements built from folders structure
      */
     public keepUploadBasedMenuOpen(){
-        let openedMenu       = $('.folder-based-menu .open');
-        let openedMenuParent = openedMenu;
-
+        let openedMenuParent = $('.folder-based-menu .active').closest('li');
         while( $(openedMenuParent).hasClass('folder-based-menu-element') ){
             openedMenuParent = $(openedMenuParent).parent();
             $(openedMenuParent).addClass('open');

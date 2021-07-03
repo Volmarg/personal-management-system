@@ -76,6 +76,12 @@ class AppAction extends AbstractController {
     const MENU_NODE_NAME_REPORTS      = 'my-reports';
     const MENU_NODE_NAME_MY_ISSUES    = 'my-issues';
 
+    const MENU_NODES_UPLOAD_BASED_MODULES_URL_PARTIALS = [
+        self::MENU_NODE_NAME_MY_FILES,
+        self::MENU_NODE_NAME_MY_IMAGES,
+        self::MENU_NODE_NAME_MY_VIDEO,
+    ];
+
     const MENU_NODE_MODULES_NAMES_INTO_CONST_NAMES = [
         self::MENU_NODE_MODULE_NAME_ACHIEVEMENTS  => 'MENU_NODE_MODULE_NAME_ACHIEVEMENTS',
         self::MENU_NODE_MODULE_NAME_GOALS         => 'MENU_NODE_MODULE_NAME_GOALS',

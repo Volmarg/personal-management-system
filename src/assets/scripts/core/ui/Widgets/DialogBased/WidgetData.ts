@@ -111,7 +111,7 @@ export default class WidgetData {
             forms.init();
             fineUploaderService.init(true);
 
-            directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);
+            directoriesBasedWidget.selectCurrentModuleAndUploadDirOption(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);
 
             let $mainContentInModal = $('.bootbox-body main.main-content');
             $mainContentInModal.css({
@@ -184,7 +184,7 @@ export default class WidgetData {
             createAction.init(false);  // dont reinitialize logic
             forms.init();
             BootstrapSelect.init();
-            directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector, directorySelectSelector);
+            directoriesBasedWidget.selectCurrentModuleAndUploadDirOption(moduleSelectSelector, directorySelectSelector);
 
             let $mainContentInModal = $('.bootbox-body main.main-content');
             $mainContentInModal.css({

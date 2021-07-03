@@ -1,6 +1,6 @@
-import StringUtils  from "./StringUtils";
-import DomElements  from "./DomElements";
-import ArrayUtils   from "./ArrayUtils";
+import StringUtils     from "./StringUtils";
+import DomElements     from "./DomElements";
+import ArrayUtils      from "./ArrayUtils";
 import BootstrapSelect from "../../libs/bootstrap-select/BootstrapSelect";
 
 export default class FormsUtils {
@@ -85,7 +85,7 @@ export default class FormsUtils {
             let select                  = $(visibleOptgroup).closest('select');
             let form                    = $(select).closest('form');
             let input                   = $(form).find('input');
-            let submit                  = $(form).find('button');
+            let submit                  = $(form).find('button[type="submit"]');
             let noOptionsOption         = $('<option>').html('No folders!').attr('class','helper-option');
 
             if( !DomElements.doElementsExists($(visibleOptgroupOptions)) ){

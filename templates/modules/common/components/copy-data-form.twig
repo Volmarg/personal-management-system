@@ -1,96 +1,136 @@
 {# moving files between folders form #}
+{% if force_move_folder is not defined %}
+    {% set force_move_folder = false %}
+{% endif %}
+
+{% if from_disabled is not defined %}
+    {% set from_disabled = true %}
+{% endif %}
+
+{% set col_size = 6 %}
+{% if column_layout is not defined %}
+    {% set column_layout = false %}
+{% elseif column_layout %}
+    {% set col_size = 8 %}
+{% endif %}
+
+{% if header is not defined %}
+    {% set header = 'upload.settings.copyFolderData.label' | trans %}
+{% endif %}
 
     <div class="bgc-white bd bdrs-3 p-20 mB-20 d-flex flex-column col-12 handle-single-form-via-ajax update-record-form">
-        <h4 class="c-grey-900 mB-20 align-self-center">{{ 'upload.settings.copyFolderData.label' | trans }}</h4>
+        <h4 class="c-grey-900 mB-20 align-self-center">{{ header }}</h4>
         {{ form_start(copy_data_form, {
             attr: {
                 'data-form-target': "CopyDataBetweenFolders"
             }
         })}}
 
-        <section class="d-flex justify-content-around flex-row">
+        <input type="hidden" value="{{ reloaded_menu_node }}" class="reloaded-menu-node"/>
+
+        <section class="
+                        d-flex
+                        justify-content-around
+                        {% if column_layout %}
+                            flex-column
+                        {% else %}
+                            flex-row
+                        {% endif %}
+        ">
 
             {# Inputs on left #}
-            <div class="copy-from col-5">
+            <div class="copy-from {% if not column_layout %}col-5{% endif %}">
                 <h4>{{ 'upload.settings.copyFolderData.from' | trans }}</h4>
 
-                <div class="row">
-                    <div class="col-sm-6">
-                        {{ form_label(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR],
-                            null,
-                            {
-                                'label_attr':
+                <section class="{% if column_layout %}d-flex justify-content-around{% endif %}">
+                    <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
+                        <div class="col-sm-col_{{col_size}}">
+                            {{ form_label(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR],
+                                null,
                                 {
-                                    'class': 'col-form-label col-sm-12 required'
+                                    'label_attr':
+                                    {
+                                        'class': 'col-form-label col-sm-12 required'
+                                    }
                                 }
-                            }
-                        ) }}
+                            ) }}
+                        </div>
+                        <div class="col-sm-col_{{col_size}} current-upload-module-dir">
+                            {{ form_widget(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR], {
+                                attr: {
+                                    disabled: from_disabled
+                                }
+                            }) }}
+                        </div>
                     </div>
-                    <div class="col-sm-6 current-upload-module-dir">
-                        {{ form_widget(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR]) }}
-                    </div>
-                </div>
 
-                <br/>
+                    <br/>
 
-                <div class="row">
-                    <div class="col-sm-6">
-                        {{ form_label(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR],
-                            null,
-                            {
-                                'label_attr':
+                    <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
+                        <div class="col-sm-col_{{col_size}}">
+                            {{ form_label(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR],
+                                null,
                                 {
-                                    'class': 'col-form-label col-sm-12 required'
+                                    'label_attr':
+                                    {
+                                        'class': 'col-form-label col-sm-12 required'
+                                    }
                                 }
-                            }
-                        ) }}
+                            ) }}
+                        </div>
+                        <div class="col-sm-col_{{col_size}} subdirectory-current-path-in-module-upload-dir">
+                            {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR], {
+                                attr: {
+                                    disabled: from_disabled
+                                }
+                            }) }}
+                        </div>
                     </div>
-                    <div class="col-sm-6 subdirectory-current-path-in-module-upload-dir">
-                        {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR]) }}
-                    </div>
-                </div>
+                </section>
 
             </div>
 
             {# Inputs on right #}
-            <div class="copy-to col-5">
+            <div class="copy-to {% if not column_layout %}col-5{% endif %}">
                 <h4>{{ 'upload.settings.copyFolderData.to' | trans }}</h4>
-
-                <div class="row">
-                    <div class="col-sm-6">
-                        {{ form_label(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR],
-                            null,
-                            {
-                                'label_attr':
+                <section class="{% if column_layout %}d-flex justify-content-around{% endif %}">
+                    <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
+                        <div class="col-sm-col_{{col_size}}">
+                            {{ form_label(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR],
+                                null,
                                 {
-                                    'class': 'col-form-label col-sm-12 required'
+                                    'label_attr':
+                                    {
+                                        'class': 'col-form-label col-sm-12 required'
+                                    }
                                 }
-                            }
-                        ) }}
+                            ) }}
+                        </div>
+                        <div class="col-sm-col_{{col_size}} target-upload-module-dir">
+                            {{ form_widget(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
+                        </div>
                     </div>
-                    <div class="col-sm-6 target-upload-module-dir">
-                        {{ form_widget(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
-                    </div>
-                </div>
 
-                <br/>
+                    <br/>
 
-                <div class="row">
-                    <div class="col-sm-6">
-                        {{ form_label(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR],
-                            null,
-                            {
-                                'label_attr':
+                    <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
+                        <div class="col-sm-col_{{col_size}}">
+                            {{ form_label(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR],
+                                null,
                                 {
-                                    'class': 'col-form-label col-sm-12 required'
+                                    'label_attr':
+                                    {
+                                        'class': 'col-form-label col-sm-12 required'
+                                    }
                                 }
-                            }
-                        ) }}
+                            ) }}
+                        </div>
+                        <div class="col-sm-col_{{col_size}} subdirectory-target-path-in-module-upload-dir">
+                            {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
+                        </div>
                     </div>
-                    <div class="col-sm-6 subdirectory-target-path-in-module-upload-dir">
-                        {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
-                    </div>
-                </div>
+                </section>
+
             </div>
 
         </section>
@@ -98,8 +138,12 @@
         <br/>
 
         <section class="d-flex justify-content-center flex-column align-items-center">
-            <span class="move-folder-checkbox-wrapper">
-                {{ form_widget(copy_data_form[KEY_MOVE_FOLDER]) }}
+            <span class="move-folder-checkbox-wrapper {% if force_move_folder %} d-none {% endif %}">
+                {{ form_widget(copy_data_form[KEY_MOVE_FOLDER], {
+                    attr: {
+                        checked : force_move_folder,
+                    }
+                }) }}
             </span>
 
             {{ form_widget(copy_data_form['submit']) }}

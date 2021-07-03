@@ -4,7 +4,7 @@ import ModulesStructure from "../../BackendStructure/ModulesStructure";
 import RouterStructure  from "../../BackendStructure/RouterStructure";
 import StringUtils      from "../../../utils/StringUtils";
 import Application      from "../../../Application";
-import BootstrapSelect from "../../../../libs/bootstrap-select/BootstrapSelect";
+import BootstrapSelect  from "../../../../libs/bootstrap-select/BootstrapSelect";
 
 export default class DirectoriesBasedWidget {
 
@@ -12,7 +12,7 @@ export default class DirectoriesBasedWidget {
      * @description When using in upload directory - this will select currently
      *              opened directory for given module from the list
      */
-    public selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(moduleSelectSelector: string, directorySelectSelector: string) {
+    public selectCurrentModuleAndUploadDirOption(moduleSelectSelector: string, directorySelectSelector: string, forceSelectMainDirectory: boolean = false) {
 
         let moduleSelect            = $(moduleSelectSelector);
         let directorySelect         = $(directorySelectSelector);
@@ -48,7 +48,10 @@ export default class DirectoriesBasedWidget {
 
         optgroupForModule.attr('class', '');
 
-        if( StringUtils.isEmptyString(directoryPath) ){ // main dir
+        if(
+                StringUtils.isEmptyString(directoryPath)
+            ||  forceSelectMainDirectory
+        ){
             // main dir is always first on list so I just select it
             let $firstOption = $(options[0]);
             directoryPath    = $firstOption.val() as string;

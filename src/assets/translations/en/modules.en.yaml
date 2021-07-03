@@ -534,6 +534,7 @@ files:
     removeFolder: Remove folder
     addFiles: Add files
     addFolder: Add folder
+    settings: Settings
   massActions:
     remove: Remove files
     transferFiles: Transfer files
@@ -553,6 +554,7 @@ images:
     addFolder: Add folder
     removeFiles: Remove files
     transferFiles: Transfer files
+    settings: Settings
   settings:
     title: 'Images settings'
     infoBlock:
@@ -570,6 +572,7 @@ video:
     removeFiles: Remove files
     transferFiles: Transfer files
     editTags: Edit tags
+    settings: Settings
   labels:
     search: Search
     tags: Tags

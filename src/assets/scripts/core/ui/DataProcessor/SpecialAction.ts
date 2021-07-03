@@ -8,7 +8,8 @@ import DataProcessorDto         from "../../../DTO/DataProcessorDto";
 import BootboxWrapper           from "../../../libs/bootbox/BootboxWrapper";
 import AjaxEvents               from "../../ajax/AjaxEvents";
 import Sidebars                 from "../../sidebar/Sidebars";
-import SystemInformationReader from "../../SystemInformationReader";
+import SystemInformationReader  from "../../SystemInformationReader";
+import UiUtils                  from "../../utils/UiUtils";
 
 /**
  * @description This class should contain definitions of actions either for special forms or certain elements on the page
@@ -570,42 +571,45 @@ export default class SpecialAction extends AbstractDataProcessor {
             let failMessage     = AbstractDataProcessor.messages.entityCreatedRecordFail(SpecialAction.RenameFolder.processorName);
 
             let currentUploadModuleDir                   = $baseElement.find('.current-upload-module-dir select').val();
-            let targetUploadModuleDir                    = $baseElement.find('.target-upload-module-dir select').val();
+            let targetUploadModuleDir                    = $baseElement.find('.target-upload-module-dir select').val() as string;
             let subdirectoryCurrentPathInModuleUploadDir = $baseElement.find('.subdirectory-current-path-in-module-upload-dir select').val();
             let subdirectoryTargetPathInModuleUploadDir  = $baseElement.find('.subdirectory-target-path-in-module-upload-dir select').val();
             let moveFolder                               = $baseElement.find('.move-folder-checkbox-wrapper input').prop('checked');
+            let reloadedMenuNode                         = $baseElement.find('.reloaded-menu-node').val() as string;
 
             let ajaxData = {
                 current_upload_module_dir                      : currentUploadModuleDir,
                 target_upload_module_dir                       : targetUploadModuleDir,
                 subdirectory_current_path_in_module_upload_dir : subdirectoryCurrentPathInModuleUploadDir,
                 subdirectory_target_path_in_module_upload_dir  : subdirectoryTargetPathInModuleUploadDir,
-                move_folder                                    : moveFolder
+                move_folder                                    : moveFolder,
+                url_called_from                                : decodeURI(location.pathname),
             };
 
             let callback = (dataCallbackParams) => {
-                let ajax       = new Ajax();
-                let ajaxEvents = new AjaxEvents();
-
+                let ajax = new Ajax();
                 if(
-                    null !== dataCallbackParams
+                        null !== dataCallbackParams
                     &&  "undefined" !== typeof dataCallbackParams
                 ){
                     let menuNodeModuleName           = dataCallbackParams.menuNodeModuleName;
                     let menuNodeModulesNamesToReload = dataCallbackParams.menuNodeModulesNamesToReload;
 
                     if( !StringUtils.isEmptyString(menuNodeModuleName)){
-                        ajax.singleMenuNodeReload(menuNodeModuleName);
+                        ajax.singleMenuNodeReload(menuNodeModuleName, false);
                     }else if( !StringUtils.isEmptyString(menuNodeModulesNamesToReload) ){
                         let arrayOfMenuNodeModuleNames = JSON.parse(menuNodeModulesNamesToReload);
                         $.each(arrayOfMenuNodeModuleNames, function(index, menuNodeModuleName){
-                            ajax.singleMenuNodeReload(menuNodeModuleName);
+                            ajax.singleMenuNodeReload(menuNodeModuleName, false);
                         })
+                    }
+                }else{
+                    if( !StringUtils.isEmptyString(reloadedMenuNode) ){
+                        ajax.singleMenuNodeReload(reloadedMenuNode, false);
                     }
                 }
 
                 BootboxWrapper.hideAll();
-                ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri());
             };
 
             let dataProcessorsDto            = new DataProcessorDto();
@@ -620,7 +624,7 @@ export default class SpecialAction extends AbstractDataProcessor {
         makeCreateData: function (): DataProcessorDto | null {
             return null
         },
-        processorName: "Rename folder"
+        processorName: "Copy data between folders"
     };
 
 }

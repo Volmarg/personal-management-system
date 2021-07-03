@@ -77,8 +77,10 @@ export default class Ajax extends AbstractAjax{
      * Will reload menu node
      * @param menuNodeModuleName {string}
      * @param returnNotification {boolean}
+     * @param callbackAfter
+     * @param async
      */
-    public singleMenuNodeReload(menuNodeModuleName:string = null, returnNotification:boolean = false): void
+    public singleMenuNodeReload(menuNodeModuleName:string = null, returnNotification:boolean = false, callbackAfter: Function = () => {}, async: boolean = true): void
     {
         let $menuNode = $('.sidebar-menu-node-element[data-menu-node-name^="' + menuNodeModuleName + '"]');
 
@@ -112,6 +114,7 @@ export default class Ajax extends AbstractAjax{
             url:    url,
             method: method,
             data:   data,
+            async: async,
         }).always((data) => {
 
             let ajaxResponseDto  = AjaxResponseDto.fromArray(data);
@@ -146,6 +149,7 @@ export default class Ajax extends AbstractAjax{
                 }
                 location.reload();
             }
+            callbackAfter();
         });
     }
 

@@ -36,4 +36,12 @@ export default class StringUtils {
         return string[0].toUpperCase() + string.slice(1);
     }
 
+    /**
+     * @description will check if target string contains searched string
+     */
+    public static stringContain(targetString: string, searchedString: string): boolean
+    {
+        return (targetString.indexOf(searchedString) !== -1);
+    }
+
 }

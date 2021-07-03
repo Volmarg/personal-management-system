@@ -2,8 +2,10 @@
 
 namespace App\Services\Routing;
 
+use App\Action\System\AppAction;
 use App\Controller\Core\Application;
 use Exception;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
 /**
@@ -16,6 +18,18 @@ class UrlMatcherService
 {
     const URL_MATCHER_RESULT_CONTROLLER_WITH_METHOD = "_controller";
 
+    const ROUTE_NAME_FILES_OVERVIEW_PAGE            = "modules_my_files";
+    const ROUTE_NAME_VIDEOS_OVERVIEW_PAGE           = "modules_my_video";
+    const ROUTE_NAME_IMAGES_OVERVIEW_PAGE           = "modules_my_images";
+
+    const ALL_UPLOAD_MODULES_OVERVIEW_PAGE_ROUTES = [
+        self::ROUTE_NAME_FILES_OVERVIEW_PAGE,
+        self::ROUTE_NAME_VIDEOS_OVERVIEW_PAGE,
+        self::ROUTE_NAME_IMAGES_OVERVIEW_PAGE,
+    ];
+
+    const ROUTE_PARAM_ENCODED_SUBDIRECTORY_PATH = "encodedSubdirectoryPath";
+
     /**
      * @var Application $app
      */
@@ -26,10 +40,16 @@ class UrlMatcherService
      */
     private UrlMatcherInterface $urlMatcher;
 
-    public function __construct(UrlMatcherInterface $urlMatcher, Application $app)
+    /**
+     * @var UrlGeneratorInterface $urlGenerator
+     */
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(UrlMatcherInterface $urlMatcher, Application $app, UrlGeneratorInterface $urlGenerator)
     {
-        $this->app        = $app;
-        $this->urlMatcher = $urlMatcher;
+        $this->app          = $app;
+        $this->urlGenerator = $urlGenerator;
+        $this->urlMatcher   = $urlMatcher;
     }
 
     /**
@@ -71,6 +91,77 @@ class UrlMatcherService
         $class                  = $explodedClassAndMethod[0];
 
         return $class;
+    }
+
+    /**
+     * Will return route name of upload based module overview page for given url
+     * Null is returned if given url won't match the upload module
+     *
+     * @param string $url
+     * @return string|null
+     * @throws Exception
+     */
+    public function getRouteForUploadBasedModuleUrlOverviewPage(string $url): ?string
+    {
+        $matchingModuleMenuNodePartial = null;
+        foreach(AppAction::MENU_NODES_UPLOAD_BASED_MODULES_URL_PARTIALS as $uploadBasedModuleMenuNodePartial){
+            if( preg_match("#^\/?{$uploadBasedModuleMenuNodePartial}#", $url) ){
+                $matchingModuleMenuNodePartial = $uploadBasedModuleMenuNodePartial;
+                break;
+            }
+        }
+
+        if( empty($matchingModuleMenuNodePartial) ){
+            return null;
+        }
+
+        switch($matchingModuleMenuNodePartial){
+            case AppAction::MENU_NODE_NAME_MY_FILES:
+            {
+                return self::ROUTE_NAME_FILES_OVERVIEW_PAGE;
+            }
+
+            case AppAction::MENU_NODE_NAME_MY_VIDEO:
+            {
+                return self::ROUTE_NAME_VIDEOS_OVERVIEW_PAGE;
+            }
+
+            case AppAction::MENU_NODE_NAME_MY_IMAGES:
+            {
+                return self::ROUTE_NAME_IMAGES_OVERVIEW_PAGE;
+            }
+
+            default:
+                throw new Exception("This module name is not supported: {$matchingModuleMenuNodePartial}");
+        }
+    }
+
+    /**
+     * Will check if given url is an url of overview page of any of the upload modules
+     *
+     * @param string $url
+     * @param string $currentDirectoryPathInModuleUploadDir
+     * @return bool
+     */
+    public function isUrlEqualToAnyUploadModuleOverviewPage(string $url, string $currentDirectoryPathInModuleUploadDir): bool
+    {
+        foreach(self::ALL_UPLOAD_MODULES_OVERVIEW_PAGE_ROUTES as $routeName){
+            $urlForRoute = $this->urlGenerator->generate($routeName, [
+                self::ROUTE_PARAM_ENCODED_SUBDIRECTORY_PATH => urlencode($currentDirectoryPathInModuleUploadDir),
+            ]);
+
+            /**
+             * Double the decode because
+             * - route param encodedSubdirectory is already encoded
+             * - symfony takes that param and encodes the % as well etc.
+             */
+            $decodedUrlForRoute = urldecode(urldecode($urlForRoute));
+            if($decodedUrlForRoute === $url){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

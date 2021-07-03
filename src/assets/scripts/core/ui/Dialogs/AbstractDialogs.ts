@@ -120,7 +120,7 @@ export default abstract class AbstractDialogs {
      */
     protected ajaxEvents = new AjaxEvents();
 
-    protected handleCommonAjaxCallLogicForBuildingDialog(data, callback, callDialogCallback, center: boolean = false, dialogButtonLabel:string = null){
+    protected handleCommonAjaxCallLogicForBuildingDialog(data, callback, callDialogCallback, center: boolean = false, dialogButtonLabel:string = null, callbackAfter = null){
         Loader.toggleMainLoader();
 
         try{
@@ -135,7 +135,7 @@ export default abstract class AbstractDialogs {
         if( ajaxResponseDto.isRouteSet() ){
             this.ajaxEvents.loadModuleContentByUrl(ajaxResponseDto.routeUrl)
         }else if( ajaxResponseDto.isTemplateSet() ){
-            callDialogCallback(ajaxResponseDto.template, callback, center, dialogButtonLabel);
+            callDialogCallback(ajaxResponseDto.template, callback, center, dialogButtonLabel, callbackAfter);
         } else if( !ajaxResponseDto.success) {
             this.bootstrapNotify.showRedNotification(ajaxResponseDto.message);
         }else{

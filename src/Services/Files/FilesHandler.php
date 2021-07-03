@@ -24,6 +24,7 @@ class FilesHandler {
 
     const KEY_CURRENT_UPLOAD_MODULE_DIR = 'current_upload_module_dir';
     const KEY_TARGET_MODULE_UPLOAD_DIR  = 'target_upload_module_dir';
+    const KEY_URL_CALLED_FROM           = 'url_called_from';
     const KEY_CURRENT_SUBDIRECTORY_NAME = 'current_subdirectory_name';
     const KEY_TARGET_SUBDIRECTORY_NAME  = 'target_subdirectory_name';
     const KEY_FILE_FULL_PATH            = 'file_full_path';

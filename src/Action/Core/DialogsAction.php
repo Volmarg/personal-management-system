@@ -44,6 +44,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_ADD_ISSUE_DATA           = 'page-elements/components/dialogs/bodies/add-issue-data.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_ISSUE             = 'page-elements/components/dialogs/bodies/update-issue.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_ISSUE             = 'page-elements/components/dialogs/bodies/create-issue.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPLOAD_MODULE_SETTINGS   = 'page-elements/components/dialogs/bodies/upload-modules/settings.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_CREATE_NOTE              = 'page-elements/components/dialogs/bodies/create-note.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_FILES_UPLOAD             = 'page-elements/components/dialogs/bodies/upload.twig';
     const TWIG_TEMPLATE_DIALOG_BODY_ADD_OR_MODIFY_TODO       = 'page-elements/components/dialogs/bodies/add-or-modify-todo.twig';
@@ -56,6 +57,7 @@ class DialogsAction extends AbstractController
     const KEY_ENTITY_ID                                      = "entityId";
     const KEY_ACTION_PATHNAME                                = 'actionPathname';
     const KEY_IS_UPDATE_ACTION                               = 'isUpdateAction';
+    const KEY_RELOADED_MENU_NODE                             = 'reloadedMenuNode';
 
     /**
      * @var Application $app
@@ -1022,6 +1024,41 @@ class DialogsAction extends AbstractController
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_EDIT_TRAVEL_IDEA, $templateData)->getContent();
 
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajaxResponse->setCode($code);
+        $ajaxResponse->setTemplate($template);
+        $ajaxResponse->setSuccess($success);
+
+        $jsonResponse = $ajaxResponse->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/upload-module-settings", name="dialog_body_upload_module_settings", methods="POST")
+     * @return JsonResponse
+     */
+    public function buildUploadModuleSettingsDialogBody(Request $request): JsonResponse
+    {
+        $ajaxResponse = new AjaxResponse();
+        $code         = Response::HTTP_OK;
+        $template     = "";
+        $success      = true;
+
+        try{
+            $copyDataForm = $this->app->forms->copyUploadSubdirectoryDataForm();
+
+            $templateData = [
+                'copy_data_form'     => $copyDataForm->createView(),
+                'reloaded_menu_node' => $request->request->get(self::KEY_RELOADED_MENU_NODE, ""),
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_UPLOAD_MODULE_SETTINGS, $templateData)->getContent();
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
             $success = false;

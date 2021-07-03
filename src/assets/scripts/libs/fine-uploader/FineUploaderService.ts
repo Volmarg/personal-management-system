@@ -196,7 +196,7 @@ export default class FineUploaderService
                             Loader.hideMainLoader();
                             if(reloadPageAfterSuccessfulUpload){
                                 let afterReinitializeCallback = () => {
-                                    _this.directoriesBasedWidget.selectCurrentModuleAndUploadDirOptionForQuickCreateFolder(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);
+                                    _this.directoriesBasedWidget.selectCurrentModuleAndUploadDirOption(FineUploaderService.selectors.moduleSelectSelector, FineUploaderService.selectors.directorySelectSelector);
                                 };
                                 _this.ajaxEvents.loadModuleContentByUrl(Navigation.getCurrentUri(), undefined, false, afterReinitializeCallback);
                             }

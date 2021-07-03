@@ -1,0 +1,22 @@
+{% set files_handler_service  = 'App\\Services\\Files\\FilesHandler' %}
+{% set file_upload_controller = 'App\\Controller\\Files\\FileUploadController' %}
+
+{% set KEY_CURRENT_UPLOAD_MODULE_DIR = constant(files_handler_service~"::KEY_CURRENT_UPLOAD_MODULE_DIR") %}
+{% set KEY_TARGET_MODULE_UPLOAD_DIR  = constant(files_handler_service~"::KEY_TARGET_MODULE_UPLOAD_DIR") %}
+
+{% set KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR = constant(file_upload_controller~"::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR") %}
+{% set KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR  = constant(file_upload_controller~"::KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR") %}
+
+{% set KEY_MOVE_FOLDER = constant("App\\Form\\Files\\UploadSubdirectoryCopyDataType::KEY_MOVE_FOLDER") %}
+
+{% include 'modules/common/components/copy-data-form.twig' with {
+    header                                             : 'dialogs.uploadModuleSettings.moveFolder.header' | trans,
+    copy_data_form                                     : copy_data_form,
+    force_move_folder                                  : true,
+    column_layout                                      : true,
+    reloaded_menu_node                                 : reloaded_menu_node,
+    KEY_CURRENT_UPLOAD_MODULE_DIR                      : KEY_CURRENT_UPLOAD_MODULE_DIR,
+    KEY_TARGET_MODULE_UPLOAD_DIR                       : KEY_TARGET_MODULE_UPLOAD_DIR,
+    KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR : KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR,
+    KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR  : KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR,
+} %}

@@ -14,6 +14,7 @@ import AbstractAjax     from "./AbstractAjax";
 import Ajax             from "./Ajax";
 import BootboxWrapper   from "../../libs/bootbox/BootboxWrapper";
 import Application      from "../Application";
+import UiUtils          from "../utils/UiUtils";
 
 /**
  * @default This class contains definitions of events and it's logic attached on GUI elements
@@ -30,6 +31,11 @@ export default class AjaxEvents extends AbstractAjax {
      * @type Initializer
      */
     private initializer = new Initializer();
+
+    /**
+     * @type UiUtils
+     */
+    private uiUtils = new UiUtils();
 
     public init()
     {
@@ -127,6 +133,7 @@ export default class AjaxEvents extends AbstractAjax {
                 clearTimeout(showLoaderTimeout);
                 history.pushState({}, null, url);
                 Sidebars.markCurrentMenuElementAsActive();
+                _this.uiUtils.keepUploadBasedMenuOpen();
                 MasonryGallery.init();
                 if( $.isFunction(callbackAfterReinitialize) ){
                     callbackAfterReinitialize();

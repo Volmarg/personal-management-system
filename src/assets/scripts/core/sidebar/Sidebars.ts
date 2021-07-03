@@ -93,7 +93,7 @@ export default class Sidebars {
      */
     public static markCurrentMenuElementAsActive(): void
     {
-        let currUrl       = window.location.pathname;
+        let currUrl       = this.getMatchingMenuLink();
         let currMenuLink  = $('.sidebar-link[href="' + currUrl + '"');
 
         let currActiveMenuLink = $('.sidebar-menu li.nav-item a.active');
@@ -140,6 +140,30 @@ export default class Sidebars {
     {
         let $menuElement = Sidebars.getMenuElementForMenuNodeModuleName(menuNodeModuleName);
         $menuElement.removeClass("d-none");
+    }
+
+    /**
+     * @description will get sidebar element which matches currently visited url
+     *              returns the url used to find match (will try to get the match few times, using decodeUri on each attempt)
+     * @private
+     */
+    private static getMatchingMenuLink(): string
+    {
+        let currentAttempt = 0;
+        let attempts       = 5;
+        let currUrl        = window.location.pathname;
+        while( currentAttempt < attempts )
+        {
+            let currMenuLink   = $('.sidebar-link[href="' + currUrl + '"');
+            let isMatchingLink = (0 !== currMenuLink.length);
+            if(isMatchingLink) {
+                break;
+            }
+            currUrl = decodeURI(currUrl);
+            currentAttempt++;
+        }
+
+        return currUrl;
     }
 
     /**
