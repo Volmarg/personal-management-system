@@ -139,7 +139,7 @@ class AutoInstaller{
         self::installerAreaLine();
         CliHandler::newLine();
     }
-    
+
     public static function run(){
 
         self::definePhpExecutable();
@@ -561,21 +561,15 @@ class AutoInstaller{
     private static function checkMysqlMode(){
         CliHandler::infoText("Started checking Mysql mode.");
         {
-            $modeToDisable = "ONLY_FULL_GROUP_BY";
+            $modeToDisable    = "ONLY_FULL_GROUP_BY";
+            $commandToExecute = "mysql -u " . self::$mysqlLogin .  " --password=" . self::$mysqlPassword .  " --execute='SELECT @@sql_mode' 2> /dev/null | grep {$modeToDisable}";
+            $commandResult    = shell_exec($commandToExecute);
 
-            $conn   = new \mysqli(self::$mysqlHost, self::$mysqlLogin, self::$mysqlPassword);
-            $sql    = "SELECT @@sql_mode";
-
-            $result = $conn->query($sql);
-            $row    = mysqli_fetch_assoc($result);
-
-            $modes = reset($row);
-
-            if( !strstr($modeToDisable, $modes) ){
+            if( empty($commandResult) ){
                 echo "Seems like Mysql mode is ok";
                 CliHandler::newLine();
             }else{
-                CliHandler::errorText("Your database mode is incorrect: ". $modes);
+                CliHandler::errorText("Your database mode is incorrect!");
                 CliHandler::errorText("Check problems section at: https://volmarg.github.io/installation/");
                 CliHandler::errorText("Fix that later or the project won't run correctly");
             }
