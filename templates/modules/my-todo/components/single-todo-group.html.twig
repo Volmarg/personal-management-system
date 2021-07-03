@@ -49,7 +49,7 @@
 
                     <div class="single-parent-task"
                         data-toggle-popover="true"                                {# popover attr #}
-                        data-content="{{ popover_description }}"                  {# popover attr #}
+                        data-content="{{ popover_description | escape }}"         {# popover attr #}
                         data-placement="top"                                      {# popover attr #}
                     >
                         {% include 'modules/my-todo/components/one-parent-task-todo.html.twig' with {
