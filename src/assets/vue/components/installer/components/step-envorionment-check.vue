@@ -67,7 +67,10 @@ export default {
      * @description will return environment check result data
      */
     getEnvironmentCheckResultData(){
-      axios.get(this.urls.getEnvironmentCheckResultData).then( (response) => {
+      let dataBag = this.$parent.$refs.stepDatabase.loadStepDataFromSession();
+      console.log(dataBag);
+
+      axios.post(this.urls.getEnvironmentCheckResultData, dataBag).then( (response) => {
         let isSuccess        = response.data.resultCheckData;
         this.resultCheckData = response.data.resultCheckData;
       })

@@ -42,4 +42,25 @@ class InstallerAction
         ]);
     }
 
+    /**
+     * Will execute configuration / system preparation logic
+     *
+     * @return string
+     */
+    public static function configureAndPrepareSystem(): string
+    {
+        $isSuccess               = true;
+        $requirementsCheckResult = [];
+
+        try{
+            $requirementsCheckResult = InstallerController::checkProductionBasedRequirements();
+        }catch(Exception | TypeError $e){
+            $isSuccess = false;
+        }
+
+        return json_encode([
+            self::KEY_RESULT_CHECK_DATA => $requirementsCheckResult,
+            self::KEY_SUCCESS           => $isSuccess,
+        ]);
+    }
 }

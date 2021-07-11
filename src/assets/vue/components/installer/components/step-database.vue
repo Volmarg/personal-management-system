@@ -25,6 +25,14 @@
            v-model="databaseName"
     >
 
+    <label class="text-normal text-dark">Database login:</label>
+    <input type="text"
+           class="form-control"
+           placeholder="Login"
+           required="required"
+           v-model="databaseLogin"
+    >
+
     <label class="text-normal text-dark">Database password:</label>
     <input type="password"
            class="form-control"
@@ -51,6 +59,7 @@ export default {
       databaseHost     : "",
       databasePort     : "",
       databaseName     : "",
+      databaseLogin    : "",
       databasePassword : "",
       sessionStorage: {
         stepDataKey: "stepData" + this.stepName,
@@ -78,6 +87,7 @@ export default {
         databasePort     : this.databasePort,
         databaseName     : this.databaseName,
         databasePassword : this.databasePassword,
+        databaseLogin    : this.databaseLogin,
       };
 
       let stepDataString = JSON.stringify(stepData);

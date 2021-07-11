@@ -18,4 +18,50 @@ class ShellBinConsoleService extends ShellAbstractService
     {
         return self::EXECUTABLE_BINARY_NAME;
     }
+
+    /**
+     * Will drop database
+     *
+     * @return bool success or false
+     */
+    public static function dropDatabase(): bool
+    {
+        $binaryName      = self::getExecutableBinaryName();
+        $executedCommand = $binaryName . " doctrine:database:drop -n --force";
+        $result          = self::executeShellCommand($executedCommand);
+        // todo: check if result is success - strstr + grep
+
+        return self::EXECUTABLE_BINARY_NAME;
+    }
+
+    /**
+     * Will create database
+     *
+     * @return bool success or false
+     */
+    public static function createDatabase(): bool
+    {
+        $binaryName      = self::getExecutableBinaryName();
+        $executedCommand = $binaryName . " doctrine:database:create -n";
+        $result          = self::executeShellCommand($executedCommand);
+        // todo: check if result is success - strstr + grep
+
+        return self::EXECUTABLE_BINARY_NAME;
+    }
+
+    /**
+     * Will create database
+     *
+     * @return bool success or false
+     */
+    public static function executeMigrations(): bool
+    {
+        $binaryName      = self::getExecutableBinaryName();
+        $executedCommand = $binaryName . " doctrine:migrations:migrate -n";
+        $result          = self::executeShellCommand($executedCommand);
+        // todo: check if result is success - strstr + grep
+
+        return self::EXECUTABLE_BINARY_NAME;
+    }
+
 }
