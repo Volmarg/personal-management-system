@@ -5,6 +5,14 @@ use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
+if(
+        !file_exists("../.env")
+    ||  !file_exists("../vendor")
+){
+    header("Location: /installer.php");
+    return;
+}
+
 require __DIR__.'/../vendor/autoload.php';
 
 // The check is to ensure we don't use .env in production

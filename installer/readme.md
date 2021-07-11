@@ -1,0 +1,2 @@
+These files MUST remain out of symfony context, because they exist explicitly for the installer page / process.
+This logic should not be used anywhere else inside symfony due to manually added inclusions etc.

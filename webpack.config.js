@@ -2,6 +2,7 @@ var Encore                  = require('@symfony/webpack-encore');
 var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 var CopyPlugin              = require('copy-webpack-plugin');
 var BundleAnalyzerPlugin    = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+var WebpackNotifierPlugin   = require('webpack-notifier');
 
 /**
  * This is the standard configuration of Personal Management System UI
@@ -9,6 +10,7 @@ var BundleAnalyzerPlugin    = require('webpack-bundle-analyzer').BundleAnalyzerP
 Encore
     .addEntry('app', './src/assets/app.js') // will create public/build/app.js and public/build/app.css
     .addEntry('base-template', './src/assets/base-template.js')
+    .addEntry('installer', './src/assets/vue/apps/Installer.ts')
     .setOutputPath('public/assets')         // the project directory where all compiled assets will be stored
     .setPublicPath('/assets')               // the public path used by the web server to access the previous directory
     .enableSassLoader()                     // allow sass/scss files to be processed
@@ -16,6 +18,7 @@ Encore
         typeScriptConfigOptions.transpileOnly = true;
         typeScriptConfigOptions.configFile    = 'tsconfig.json';
     })
+    .enableVueLoader()
     .enableSourceMaps(!Encore.isProduction())
     .cleanupOutputBeforeBuild() // empty the outputPath dir before each build
     .autoProvideVariables({
@@ -64,6 +67,12 @@ Encore
     //     // see: https://digitalfortress.tech/debug/how-to-use-webpack-analyzer-bundle/
     //     new BundleAnalyzerPlugin()
     // )
+    .addPlugin(
+        new WebpackNotifierPlugin({
+            title: "Webpack",
+            emoji: true,
+        })
+    )
     .enableBuildNotifications()
     .enableSingleRuntimeChunk();
 
