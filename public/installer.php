@@ -7,13 +7,13 @@
 include_once("../installer/Action/InstallerAction.php");
 
 // already installed
-//if(
-//        file_exists("../.env")
-//    ||  file_exists("../vendor")
-//){
-//    header("Location: /login");
-//    return;
-//}
+if(
+        file_exists("../.env")
+    ||  file_exists("../vendor")
+){
+    header("Location: /login");
+    return;
+}
 
 use Installer\Action\Installer\InstallerAction;
 
