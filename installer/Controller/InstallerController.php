@@ -1,15 +1,26 @@
 <?php
 
-namespace App\Controller\Installer;
+namespace Installer\Controller\Installer;
 
-include_once("../installer/Services/ShellMysqlService.php");
-include_once("../installer/Services/ShellPhpService.php");
-include_once("../installer/Services/ShellComposerService.php");
+// for compatibility with AutoInstaller
+if( "cli" !== php_sapi_name() ) {
+    include_once("../installer/Services/ShellMysqlService.php");
+    include_once("../installer/Services/ShellPhpService.php");
+    include_once("../installer/Services/ShellComposerService.php");
+    include_once("../installer/Services/ShellBinConsoleService.php");
+    include_once("../installer/Services/EnvBuilder.php");
+    include_once("../installer/DTO/DatabaseDataDTO.php");
+}
 
-use App\Services\Shell\ShellComposerService;
-use App\Services\Shell\ShellMysqlService;
-use App\Services\Shell\ShellPhpService;
+use Installer\Controller\DTO\DatabaseDataDTO;
+use App\Services\Files\Parser\YamlFileParserService;
+use Installer\Services\Shell\EnvBuilder;
+use Installer\Services\Shell\ShellBinConsoleService;
+use Installer\Services\Shell\ShellComposerService;
+use Installer\Services\Shell\ShellMysqlService;
+use Installer\Services\Shell\ShellPhpService;
 use Exception;
+use TypeError;
 
 /**
  * Handler of installer logic
@@ -22,23 +33,22 @@ class InstallerController
     const PRODUCTION_REQUIREMENT_MYSQL_MODE_DISABLED = "Mysql mode has " . ShellMysqlService::MYSQL_MODE_ONLY_FULL_GROUP_BY . " disabled";
     const PRODUCTION_REQUIREMENT_PHP                 = "Php7.4 installed";
     const PRODUCTION_REQUIREMENT_COMPOSER            = "Composer global executable exists";
-    const PRODUCTION_REQUIREMENT_LINUX               = "Linux OS";
 
-    const PARAM_DB_LOGIN    = "databaseLogin";
-    const PARAM_DB_NAME     = "databaseName";
-    const PARAM_DB_PASSWORD = "databasePassword";
-    const PARAM_DB_PORT     = "databasePort";
-    const PARAM_DB_HOST     = "databaseHost";
+    const CONFIGURE_PREPARE_COMPOSER_PACKAGES        = "Composer packages";
+    const CONFIGURE_PREPARE_ENV_FILE                 = "Env file";
+    const CONFIGURE_PREPARE_CREATE_FOLDERS           = "Create folders";
+    const CONFIGURE_PREPARE_DROP_DATABASE_IF_EXISTS  = "Drop database if exists";
+    const CONFIGURE_PREPARE_CREATE_DATABASE          = "Create database";
+    const CONFIGURE_PREPARE_BUILD_DATABASE_STRUCTURE = "Build database structure";
+    const CONFIGURE_PREPARE_CLEAR_CACHE              = "Clear cache";
+    const CONFIGURE_PREPARE_BUILD_CACHE              = "Build cache";
+    const CONFIGURE_PREPARE_GENERATE_ENCRYPTION_KEY  = "Generate encryption key";
+    const CONFIGURE_PREPARE_SAVE_ENCRYPTION_KEY      = "Save encryption key";
 
-    /**
-     * Will check if provided database credentials are valid
-     * @return bool
-     */
-    public static function areDatabaseCredentialsValid(): bool
-    {
+    const FOLDER_VAR_CACHE = "var/cache";
 
-        return true;
-    }
+    const CONFIG_ENCRYPTION_YAML_PATH       = "config/packages/config/encryption.yaml";
+    const CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY = "parameters.encrypt_key";
 
     /**
      * Will return array of production based environments data, with information if conditions are meet or not
@@ -50,29 +60,31 @@ class InstallerController
     {
         $isMysqlInstalled            = ShellMysqlService::isExecutableForServicePresent();
         $isProperPhpVersionInstalled = ShellPhpService::isProperPhpVersion();
-        $isComposerInstalled         = ShellComposerService::isExecutableForServicePresent();
-
 
         $returnedData = [
-            self::PRODUCTION_REQUIREMENT_PHP      => $isProperPhpVersionInstalled,
-            self::PRODUCTION_REQUIREMENT_MYSQL    => $isMysqlInstalled,
-            self::PRODUCTION_REQUIREMENT_COMPOSER => $isComposerInstalled,
+            self::PRODUCTION_REQUIREMENT_PHP   => $isProperPhpVersionInstalled,
+            self::PRODUCTION_REQUIREMENT_MYSQL => $isMysqlInstalled,
         ];
 
         if($isMysqlInstalled){
-            $requestJson = file_get_contents("php://input");
-            $requestData = json_decode($requestJson, true);
+            $requestJson     = file_get_contents("php://input");
+            $databaseDataDto = DatabaseDataDTO::fromJson($requestJson);
 
-            $databaseLogin    = $requestData[self::PARAM_DB_LOGIN];
-            $databasePassword = $requestData[self::PARAM_DB_PASSWORD];
-            $databasePort     = $requestData[self::PARAM_DB_PORT];
-            $databaseHost     = $requestData[self::PARAM_DB_HOST];
-
-            $isDbPasswordValid                                             = ShellMysqlService::isDbAccessValid($databaseLogin, $databaseHost, $databasePort, $databasePassword);
+            $isDbPasswordValid = ShellMysqlService::isDbAccessValid(
+                $databaseDataDto->getDatabaseLogin(),
+                $databaseDataDto->getDatabaseHost(),
+                $databaseDataDto->getDatabasePort(),
+                $databaseDataDto->getDatabasePassword()
+            );
             $returnedData[self::PRODUCTION_REQUIREMENT_MYSQL_ACCESS_VALID] = $isDbPasswordValid;
 
             if($isDbPasswordValid){
-                $isOnlyFullGroupByMysqlModeSet                                  = ShellMysqlService::isOnlyFullGroupByMysqlModeDisabled($databaseLogin, $databaseHost, $databasePort, $databasePassword);
+                $isOnlyFullGroupByMysqlModeSet = ShellMysqlService::isOnlyFullGroupByMysqlModeDisabled(
+                    $databaseDataDto->getDatabaseLogin(),
+                    $databaseDataDto->getDatabaseHost(),
+                    $databaseDataDto->getDatabasePort(),
+                    $databaseDataDto->getDatabasePassword()
+                );
                 $returnedData[self::PRODUCTION_REQUIREMENT_MYSQL_MODE_DISABLED] = $isOnlyFullGroupByMysqlModeSet;
             }
 
@@ -85,15 +97,182 @@ class InstallerController
      * Will execute configuration / system preparation logic
      *
      * @return array
+     * @throws Exception
      */
     public static function configureAndPrepareSystem(): array
     {
+        $resultData      = [];
+        $requestJson     = file_get_contents("php://input");
+        $databaseDataDto = DatabaseDataDTO::fromJson($requestJson);
 
-        return [];
+        $isComposerInstallSuccess = ShellComposerService::installPackages();
+        $resultData[self::CONFIGURE_PREPARE_COMPOSER_PACKAGES] = $isComposerInstallSuccess;
+        if(!$isComposerInstallSuccess){
+            return $resultData;
+        }
+
+        $createEnvCallback = function() use($databaseDataDto): bool {
+            $isEnvFileCreated = EnvBuilder::buildEnv(
+                $databaseDataDto->getDatabaseLogin(),
+                $databaseDataDto->getDatabasePassword(),
+                $databaseDataDto->getDatabaseHost(),
+                $databaseDataDto->getDatabasePort(),
+                $databaseDataDto->getDatabaseName()
+            );
+
+            return $isEnvFileCreated;
+        };
+
+        $isEnvFileCreated = self::executeCallbackWithSupportOfDirectoryChange($createEnvCallback);
+        $resultData[self::CONFIGURE_PREPARE_ENV_FILE] = $isEnvFileCreated;
+        if(!$isEnvFileCreated){
+            return $resultData;
+        }
+
+        $areFoldersCreated = self::createFolders();
+        $resultData[self::CONFIGURE_PREPARE_CREATE_FOLDERS] = $areFoldersCreated;
+        if(!$areFoldersCreated){
+            return $resultData;
+        }
+
+        $isDatabaseDroppedIfExists = ShellBinConsoleService::dropDatabase();
+        $resultData[self::CONFIGURE_PREPARE_DROP_DATABASE_IF_EXISTS] = $isDatabaseDroppedIfExists;
+        if(!$isDatabaseDroppedIfExists){
+            return $resultData;
+        }
+
+        $isDatabaseCreated = ShellBinConsoleService::createDatabase();
+        $resultData[self::CONFIGURE_PREPARE_CREATE_DATABASE] = $isDatabaseCreated;
+        if(!$isDatabaseCreated){
+            return $resultData;
+        }
+
+        $isDatabaseStructureBuilt = ShellBinConsoleService::executeMigrations();
+        $resultData[self::CONFIGURE_PREPARE_BUILD_DATABASE_STRUCTURE] = $isDatabaseStructureBuilt;
+        if(!$isDatabaseStructureBuilt){
+            return $resultData;
+        }
+
+        $isCacheCleared = ShellBinConsoleService::clearCache();
+        $resultData[self::CONFIGURE_PREPARE_CLEAR_CACHE] = $isCacheCleared;
+        if(!$isCacheCleared){
+            return $resultData;
+        }
+
+        $isCacheBuilt = ShellBinConsoleService::buildCache();
+        $resultData[self::CONFIGURE_PREPARE_BUILD_CACHE] = $isCacheBuilt;
+        if(!$isCacheBuilt){
+            return $resultData;
+        }
+
+        $generatedEncryptionKey = ShellBinConsoleService::generateEncryptionKey();
+        $resultData[self::CONFIGURE_PREPARE_GENERATE_ENCRYPTION_KEY] = !empty($generatedEncryptionKey);
+        if( empty($generatedEncryptionKey) ){
+            return $resultData;
+        }
+
+        $isEncryptionKeySaved = self::setEncryptionKey($generatedEncryptionKey);
+        $resultData[self::CONFIGURE_PREPARE_SAVE_ENCRYPTION_KEY] = $isEncryptionKeySaved;
+
+        return $resultData;
     }
 
-    public static function buildEnvFile(){
+    /**
+     * Will attempt to create folders, send created/existing folders array
+     *
+     * @return bool
+     */
+    public static function createFolders(): bool
+    {
+        $callback = function(): bool {
 
+            $uploadDir       = EnvBuilder::PUBLIC_DIR . DIRECTORY_SEPARATOR . EnvBuilder::UPLOAD_DIR;
+            $uploadFilesDir  = EnvBuilder::PUBLIC_DIR . DIRECTORY_SEPARATOR . EnvBuilder::UPLOAD_DIR_FILES;
+            $uploadImagesDir = EnvBuilder::PUBLIC_DIR . DIRECTORY_SEPARATOR . EnvBuilder::UPLOAD_DIR_IMAGES;
+            $uploadVideosDir = EnvBuilder::PUBLIC_DIR . DIRECTORY_SEPARATOR . EnvBuilder::UPLOAD_DIR_VIDEOS;
+
+            try{
+                if( !file_exists($uploadDir) ){
+                    mkdir($uploadDir);
+                }
+                if( !file_exists($uploadFilesDir) ){
+                    mkdir($uploadFilesDir);
+                }
+                if( !file_exists($uploadImagesDir) ){
+                    mkdir($uploadImagesDir);
+                }
+                if( !file_exists($uploadVideosDir) ){
+                    mkdir($uploadVideosDir);
+                }
+                if( !file_exists(self::FOLDER_VAR_CACHE) ){
+                    mkdir(self::FOLDER_VAR_CACHE, 0777, true);
+                }
+                return true;
+            }catch(Exception | TypeError $e){
+                return false;
+            }
+
+        };
+
+        $callbackResult = self::executeCallbackWithSupportOfDirectoryChange($callback);
+        return $callbackResult;
+    }
+
+    /**
+     * Will save the encryption key to file
+     *
+     * @param string $encryptionKey
+     * @return bool
+     */
+    public static function setEncryptionKey(string $encryptionKey): bool
+    {
+        $callback = function() use($encryptionKey): bool {
+            /**
+             * Must be here because with the command the dir changes to root dir of project
+             * The inclusion belongs explicitly to the callback
+             */
+            include_once("vendor/autoload.php");
+
+            $isEncryptionKeySaved = YamlFileParserService::replaceArrayNodeValue(self::CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY, $encryptionKey, self::CONFIG_ENCRYPTION_YAML_PATH);
+            return $isEncryptionKeySaved;
+        };
+
+        $isEncryptionKeySaved = self::executeCallbackWithSupportOfDirectoryChange($callback);
+        return $isEncryptionKeySaved;
+    }
+
+    /**
+     * Some logic requires to go to root project dir,
+     * but then it's needed to go back to work properly with all the `includes` etc
+     *
+     * So this method will go to project root dir, execute callback and comes back in dir structure,
+     *
+     * @param callable $callback
+     * @return mixed
+     */
+    public static function executeCallbackWithSupportOfDirectoryChange(callable $callback)
+    {
+        /**
+         * For cli just execute the code
+         */
+        if( "cli" === php_sapi_name() ){
+            $callbackResult = $callback();
+            return $callbackResult;
+        }
+
+        /**
+         * For GUI based logic dir must be changed before executing code
+         */
+        $previousDirectory = getcwd();
+        $rootDirectory     = $previousDirectory . "/../";
+
+        chdir($rootDirectory);
+        {
+            $callbackResult = $callback();
+        }
+        chdir($previousDirectory);
+
+        return $callbackResult;
     }
 
 }

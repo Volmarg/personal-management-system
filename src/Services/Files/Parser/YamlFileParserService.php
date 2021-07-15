@@ -5,6 +5,7 @@ namespace App\Services\Files\Parser;
 use App\Controller\Utils\ArrayUtils;
 use Exception;
 use Symfony\Component\Yaml\Yaml;
+use TypeError;
 
 /**
  * Handles parsing the yaml files,
@@ -46,21 +47,26 @@ class YamlFileParserService
      * @param string $replacedNode
      * @param string $newValueOfReplacedNode
      * @param string $filePath
-     * @throws Exception
+     * @return bool
      */
-    public static function replaceArrayNodeValue(string $replacedNode, string $newValueOfReplacedNode, string $filePath): void
+    public static function replaceArrayNodeValue(string $replacedNode, string $newValueOfReplacedNode, string $filePath): bool
     {
-        $fileDataArray     = self::getFileContentAsArray($filePath);
-        $replacedNodeArray = self::buildMultidimensionalArrayStructureForYamlNode($replacedNode, $newValueOfReplacedNode);
-        if( empty($replacedNodeArray) ){
-            $message = "Something is wrong with replaced node! Got node: {$replacedNode}, could not build replacedNodeArray";
-            throw new Exception($message);
+        try{
+            $fileDataArray     = self::getFileContentAsArray($filePath);
+            $replacedNodeArray = self::buildMultidimensionalArrayStructureForYamlNode($replacedNode, $newValueOfReplacedNode);
+            if( empty($replacedNodeArray) ){
+                $message = "Something is wrong with replaced node! Got node: {$replacedNode}, could not build replacedNodeArray";
+                throw new Exception($message);
+            }
+
+            $replacedArray  = array_replace_recursive($fileDataArray, $replacedNodeArray);
+            $fileNewContent = Yaml::dump($replacedArray);
+
+            file_put_contents($filePath, $fileNewContent);
+            return true;
+        }catch(Exception | TypeError $e){
+            return false;
         }
-
-        $replacedArray  = array_replace_recursive($fileDataArray, $replacedNodeArray);
-        $fileNewContent = Yaml::dump($replacedArray);
-
-        file_put_contents($filePath, $fileNewContent);
     }
 
     /**

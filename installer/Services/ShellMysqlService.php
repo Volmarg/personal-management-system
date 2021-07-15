@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Services\Shell;
+namespace Installer\Services\Shell;
 
 use Exception;
 use PDO;
 use TypeError;
 
-include_once("../installer/Services/ShellAbstractService.php");
+// for compatibility with AutoInstaller
+if( "cli" !== php_sapi_name() ) {
+    include_once("../installer/Services/ShellAbstractService.php");
+}
 
 /**
  * Handles shell calls to php
@@ -35,7 +38,6 @@ class ShellMysqlService extends ShellAbstractService
      */
     public static function getSqlMode(string $login, string $password): string
     {
-        $modeToDisable    = "ONLY_FULL_GROUP_BY";
         $commandToExecute = "mysql -u " . $login .  " --password=" . $password .  " --execute='SELECT @@sql_mode' 2> /dev/null | grep " . self::MYSQL_MODE_ONLY_FULL_GROUP_BY;
         $commandResult    = shell_exec($commandToExecute);
 

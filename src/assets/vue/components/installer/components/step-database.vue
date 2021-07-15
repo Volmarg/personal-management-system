@@ -61,15 +61,20 @@ export default {
       databaseName     : "",
       databaseLogin    : "",
       databasePassword : "",
-      sessionStorage: {
-        stepDataKey: "stepData" + this.stepName,
-      }
     }
   },
   emits: [
     "step-finished",
     "step-mounted",
   ],
+  computed: {
+    /**
+     * @description will return session storage key under which the step data is being stored
+     */
+    sessionStorageStepDataKey(){
+      return "stepData" + this.stepName;
+    }
+  },
   methods: {
     /**
      * @description will go to next step
@@ -91,13 +96,13 @@ export default {
       };
 
       let stepDataString = JSON.stringify(stepData);
-      sessionStorage.setItem(this.sessionStorage.stepDataKey, stepDataString);
+      sessionStorage.setItem(this.sessionStorageStepDataKey, stepDataString);
     },
     /**
      * @description will load step data from session
      */
     loadStepDataFromSession(){
-      let stepDataJson = sessionStorage.getItem(this.sessionStorage.stepDataKey);
+      let stepDataJson = sessionStorage.getItem(this.sessionStorageStepDataKey);
 
       if("undefined" === stepDataJson){
         return null;
@@ -107,6 +112,15 @@ export default {
     }
   },
   mounted(){
+    let stepData = this.loadStepDataFromSession();
+    if(null !== stepData){
+      this.databaseHost     = stepData.databaseHost;
+      this.databasePort     = stepData.databasePort;
+      this.databaseName     = stepData.databaseName;
+      this.databasePassword = stepData.databasePassword;
+      this.databaseLogin    = stepData.databaseLogin;
+    }
+
     this.$emit("step-mounted", this.stepName);
   }
 }

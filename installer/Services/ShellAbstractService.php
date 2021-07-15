@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Shell;
+namespace Installer\Services\Shell;
 
 use Exception;
 
@@ -16,6 +16,13 @@ abstract class ShellAbstractService
      * Used to look for path to provided binary name
      */
     const EXECUTABLE_BINARY_WHICH = "which";
+
+    const KEY_EXECUTED_COMMAND    = "command";
+    const KEY_OUTPUT_RESULT       = "output";
+    const KEY_OUTPUT_CODE         = "code";
+    const KEY_OUTPUT_SUCCESS      = "success";
+
+    const EXEC_CODE_SUCCESS = 0;
 
     /**
      * Will retrieve executable binary used in child class
@@ -63,6 +70,21 @@ abstract class ShellAbstractService
     {
         $output = trim(shell_exec($calledCommand));
         return $output;
+    }
+
+    /**
+     * @param string $calledCommand
+     * @return array
+     */
+    protected static function executeShellCommandWithFullOutputLinesAndCodeAsArray(string $calledCommand): array
+    {
+        exec($calledCommand . "  2>&1", $outputLines, $outputCode);
+        return [
+            self::KEY_EXECUTED_COMMAND => $calledCommand,
+            self::KEY_OUTPUT_RESULT    => $outputLines,
+            self::KEY_OUTPUT_CODE      => $outputCode,
+            self::KEY_OUTPUT_SUCCESS   => ($outputCode == self::EXEC_CODE_SUCCESS),
+        ];
     }
 
     /**

@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Services\Shell;
+namespace Installer\Services\Shell;
 
-include_once("../installer/Services/ShellAbstractService.php");
+// for compatibility with AutoInstaller
+if( "cli" !== php_sapi_name() ) {
+    include_once("../installer/Services/ShellAbstractService.php");
+}
 
 use Exception;
 

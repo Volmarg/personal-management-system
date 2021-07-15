@@ -4,7 +4,6 @@
   <h4 class="text-center mt-1"> {{ stepName }} </h4>
   <hr/>
 
-  <!-- todo: pass "active" as prop to trigger step logic -->
   <step-database
       v-show="isMounted && isThisStepActive($refs.stepDatabase.stepName)"
       @step-finished="onStepDatabaseFinished"
@@ -19,20 +18,29 @@
       ref="stepEnvironmentCheck"
     />
 
+  <step-configuration-execution-component
+      v-show="isMounted && isThisStepActive($refs.stepConfigurationExecution.stepName)"
+      @step-cancelled="onStepConfigurationExecutionCancelled"
+      :perform-configuration="performConfigurationExecution"
+      ref="stepConfigurationExecution"
+  />
+
 </template>
 
 <script>
 
-import StepDatabaseComponent         from "./components/step-database.vue";
-import StepEnvironmentCheckComponent from "./components/step-envorionment-check.vue";
+import StepDatabaseComponent               from "./components/step-database.vue";
+import StepEnvironmentCheckComponent       from "./components/step-envorionment-check.vue";
+import StepConfigurationExecutionComponent from "./components/step-configuration-execution.vue";
 
 export default {
   data(){
     return {
-      performEnvironmentCheck : false,
-      stepName                : "test",
-      currentActiveStepName   : "Database",
-      isMounted               : false,
+      performEnvironmentCheck       : false,
+      performConfigurationExecution : false,
+      stepName                      : "test",
+      currentActiveStepName         : "Database",
+      isMounted                     : false,
       stepsNames : {
         environmentCheck  : "Environment check",
         database          : "Database",
@@ -41,8 +49,9 @@ export default {
     };
   },
   components: {
-    "step-database"                    : StepDatabaseComponent,
-    "step-environment-check-component" : StepEnvironmentCheckComponent,
+    "step-database"                          : StepDatabaseComponent,
+    "step-environment-check-component"       : StepEnvironmentCheckComponent,
+    "step-configuration-execution-component" : StepConfigurationExecutionComponent,
   },
   methods: {
     /**
@@ -70,6 +79,7 @@ export default {
      */
     onStepEnvironmentCheckFinished(nextStepName){
       this.stepSwitch(nextStepName);
+      this.performConfigurationExecution = true;
     },
     /**
      * @description handles the case when the environment check step is cancelled
@@ -79,7 +89,15 @@ export default {
       this.stepSwitch(previousStepName);
       this.performEnvironmentCheck = false;
     },
-
+    /**
+     * @description handles the case when the environment check step is cancelled
+     * @param previousStepName {String}
+     */
+    onStepConfigurationExecutionCancelled(previousStepName){
+      this.stepSwitch(previousStepName);
+      this.performEnvironmentCheck       = false;
+      this.performConfigurationExecution = false;
+    },
     /**
      * @description will change current step
      * @param stepName

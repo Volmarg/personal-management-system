@@ -14,6 +14,11 @@
           @click="goToPreviousStep"
   >Back</button>
 
+  <button class="btn btn-primary"
+          ref="buttonNext"
+          @click="goToNextStep"
+  >Next</button>
+
 </div>
 </template>
 
@@ -26,7 +31,7 @@ export default {
   data(){
     return {
       stepName         : "Environment check",
-      nextStepName     : "todo",
+      nextStepName     : "Configuration execution",
       previousStepName : "Database",
       resultCheckData  : {},
       urls: {
@@ -68,8 +73,6 @@ export default {
      */
     getEnvironmentCheckResultData(){
       let dataBag = this.$parent.$refs.stepDatabase.loadStepDataFromSession();
-      console.log(dataBag);
-
       axios.post(this.urls.getEnvironmentCheckResultData, dataBag).then( (response) => {
         let isSuccess        = response.data.resultCheckData;
         this.resultCheckData = response.data.resultCheckData;
@@ -82,6 +85,7 @@ export default {
   watch: {
     performCheck(newValue){
       if(newValue){
+        this.resultCheckData = {};
         this.getEnvironmentCheckResultData();
       }
     }

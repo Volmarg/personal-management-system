@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Utils;
+namespace Installer\Controller\Utils;
 
 /**
  * This is non object based class
@@ -8,7 +8,7 @@ namespace App\Controller\Utils;
  * Class CliHandler
  * @package App\Controller\Utils
  */
-class CliHandler{
+class CliHandlerService {
 
     static $foregroundColors = array();
 
@@ -27,7 +27,7 @@ class CliHandler{
     public static function initialize(){
         self::defineShellColors();
     }
-    
+
     private static function defineShellColors(){
         // Set up shell colors
         self::$foregroundColors['black'] = '0;30';
@@ -175,8 +175,7 @@ class CliHandler{
      * @return string
      */
     public static function getUserInput($message){
-        echo "{$message}: ";
-        $line = readline();
+        $line = readline("{$message}: ");
         return $line;
     }
 
@@ -203,8 +202,7 @@ class CliHandler{
 
         echo PHP_EOL;
             while( !array_key_exists($selectedOptionIndex, $choices) ){
-                echo "Select correct option: ";
-                $selectedOptionIndex = readline();
+                $selectedOptionIndex = readline("Select correct option: ");
             }
 
         $selectedOption = $choices[$selectedOptionIndex];

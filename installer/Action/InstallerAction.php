@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Action\Installer;
+namespace Installer\Action\Installer;
 
-use App\Controller\Installer\InstallerController;
+use Installer\Controller\Installer\InstallerController;
 use Exception;
 use TypeError;
 
@@ -49,17 +49,17 @@ class InstallerAction
      */
     public static function configureAndPrepareSystem(): string
     {
-        $isSuccess               = true;
-        $requirementsCheckResult = [];
+        $isSuccess                         = true;
+        $configurationAndPreparationResult = [];
 
         try{
-            $requirementsCheckResult = InstallerController::checkProductionBasedRequirements();
+            $configurationAndPreparationResult = InstallerController::configureAndPrepareSystem();
         }catch(Exception | TypeError $e){
             $isSuccess = false;
         }
 
         return json_encode([
-            self::KEY_RESULT_CHECK_DATA => $requirementsCheckResult,
+            self::KEY_RESULT_CHECK_DATA => $configurationAndPreparationResult,
             self::KEY_SUCCESS           => $isSuccess,
         ]);
     }
