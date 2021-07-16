@@ -196,26 +196,6 @@ class InstallerController
             return $resultData;
         }
 
-        InstallerLogger::addLogEntry("Started clearing cache");
-        {
-            $isCacheCleared = ShellBinConsoleService::clearCache();
-            $resultData[self::CONFIGURE_PREPARE_CLEAR_CACHE] = $isCacheCleared;
-        }
-        InstallerLogger::addLogEntry("Finished clearing cache", ["status" => $isCacheCleared]);
-        if(!$isCacheCleared){
-            return $resultData;
-        }
-
-        InstallerLogger::addLogEntry("Started building cache");
-        {
-            $isCacheBuilt = ShellBinConsoleService::buildCache();
-            $resultData[self::CONFIGURE_PREPARE_BUILD_CACHE] = $isCacheBuilt;
-        }
-        InstallerLogger::addLogEntry("Finished building cache", ["status" => $isCacheBuilt]);
-        if(!$isCacheBuilt){
-            return $resultData;
-        }
-
         InstallerLogger::addLogEntry("Started generating encryption key");
         {
             $generatedEncryptionKey = ShellBinConsoleService::generateEncryptionKey();
@@ -233,6 +213,26 @@ class InstallerController
         }
         InstallerLogger::addLogEntry("Finished saving encryption key", ["status" => $isEncryptionKeySaved]);
         if( empty($isEncryptionKeySaved) ){
+            return $resultData;
+        }
+
+        InstallerLogger::addLogEntry("Started clearing cache");
+        {
+            $isCacheCleared = ShellBinConsoleService::clearCache();
+            $resultData[self::CONFIGURE_PREPARE_CLEAR_CACHE] = $isCacheCleared;
+        }
+        InstallerLogger::addLogEntry("Finished clearing cache", ["status" => $isCacheCleared]);
+        if(!$isCacheCleared){
+            return $resultData;
+        }
+
+        InstallerLogger::addLogEntry("Started building cache");
+        {
+            $isCacheBuilt = ShellBinConsoleService::buildCache();
+            $resultData[self::CONFIGURE_PREPARE_BUILD_CACHE] = $isCacheBuilt;
+        }
+        InstallerLogger::addLogEntry("Finished building cache", ["status" => $isCacheBuilt]);
+        if(!$isCacheBuilt){
             return $resultData;
         }
 
