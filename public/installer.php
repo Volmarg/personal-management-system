@@ -5,17 +5,17 @@
  */
 
 include_once("../installer/Action/InstallerAction.php");
+include_once("../installer/Controller/InstallerController.php");
+include_once("../installer/Services/EnvBuilder.php");
 
-// already installed
-if(
-        file_exists("../.env")
-    ||  file_exists("../vendor")
-){
+use Installer\Action\Installer\InstallerAction;
+use Installer\Controller\Installer\InstallerController;
+
+$envFilePath = "../.env";
+if( InstallerController::isInstalled($envFilePath) ){
     header("Location: /login");
     return;
 }
-
-use Installer\Action\Installer\InstallerAction;
 
 const KEY_GET_ENVIRONMENT_STATUS       = "GET_ENVIRONMENT_STATUS";
 const KEY_STEP_CONFIGURATION_EXECUTION = "STEP_CONFIGURATION_EXECUTION";

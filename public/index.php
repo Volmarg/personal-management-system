@@ -1,14 +1,15 @@
 <?php
 
+include_once "../installer/Controller/InstallerController.php";
+
 use App\Kernel;
+use Installer\Controller\Installer\InstallerController;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
-if(
-        !file_exists("../.env")
-    ||  !file_exists("../vendor")
-){
+$envFilePath = "../.env";
+if( !InstallerController::isInstalled($envFilePath) ){
     header("Location: /installer.php");
     return;
 }

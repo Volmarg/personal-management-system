@@ -1,7 +1,9 @@
 <template>
+<div class="installer-wrapper">
+  <loader ref="loader"/>
 
-  <h3 class="text-center mt-3">Installer</h3>
-  <h4 class="text-center mt-1"> {{ stepName }} </h4>
+  <h3 class="text-center mt-3 text-dark">Installer</h3>
+  <h4 class="text-center mt-1 text-dark"> {{ stepName }} </h4>
   <hr/>
 
   <step-database
@@ -16,7 +18,7 @@
       @step-cancelled="onStepEnvironmentCheckCancelled"
       :perform-check="performEnvironmentCheck"
       ref="stepEnvironmentCheck"
-    />
+  />
 
   <step-configuration-execution-component
       v-show="isMounted && isThisStepActive($refs.stepConfigurationExecution.stepName)"
@@ -25,6 +27,7 @@
       ref="stepConfigurationExecution"
   />
 
+</div>
 </template>
 
 <script>
@@ -32,6 +35,7 @@
 import StepDatabaseComponent               from "./components/step-database.vue";
 import StepEnvironmentCheckComponent       from "./components/step-envorionment-check.vue";
 import StepConfigurationExecutionComponent from "./components/step-configuration-execution.vue";
+import LoaderComponent                     from "./components/loader.vue";
 
 export default {
   data(){
@@ -49,6 +53,7 @@ export default {
     };
   },
   components: {
+    "loader"                                 : LoaderComponent,
     "step-database"                          : StepDatabaseComponent,
     "step-environment-check-component"       : StepEnvironmentCheckComponent,
     "step-configuration-execution-component" : StepConfigurationExecutionComponent,
@@ -112,3 +117,10 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+.installer-wrapper {
+  position: relative;
+}
+</style>

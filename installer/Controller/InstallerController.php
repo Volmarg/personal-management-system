@@ -46,6 +46,7 @@ class InstallerController
     const CONFIGURE_PREPARE_SAVE_ENCRYPTION_KEY      = "Save encryption key";
 
     const FOLDER_VAR_CACHE = "var/cache";
+    const USER_WWW_DATA    = "www-data";
 
     const CONFIG_ENCRYPTION_YAML_PATH       = "config/packages/config/encryption.yaml";
     const CONFIG_ENCRYPTION_KEY_ENCRYPT_KEY = "parameters.encrypt_key";
@@ -174,6 +175,17 @@ class InstallerController
         $isEncryptionKeySaved = self::setEncryptionKey($generatedEncryptionKey);
         $resultData[self::CONFIGURE_PREPARE_SAVE_ENCRYPTION_KEY] = $isEncryptionKeySaved;
 
+        $callback = function(): void {
+            /**
+             * Must be here because with the command the dir changes to root dir of project
+             * The inclusion belongs explicitly to the callback
+             */
+            include_once("vendor/autoload.php");
+            EnvBuilder::addVariableToEnvFile(EnvBuilder::ENV_KEY_APP_IS_INSTALLED, EnvBuilder::DEFAULT_APP_IS_INSTALLED);
+        };
+
+        self::executeCallbackWithSupportOfDirectoryChange($callback);
+
         return $resultData;
     }
 
@@ -194,19 +206,38 @@ class InstallerController
             try{
                 if( !file_exists($uploadDir) ){
                     mkdir($uploadDir);
+                    chown($uploadDir, self::USER_WWW_DATA);
+                    chgrp($uploadDir, self::USER_WWW_DATA);
                 }
+
                 if( !file_exists($uploadFilesDir) ){
                     mkdir($uploadFilesDir);
+                    chown($uploadFilesDir, self::USER_WWW_DATA);
+                    chgrp($uploadFilesDir, self::USER_WWW_DATA);
                 }
+
                 if( !file_exists($uploadImagesDir) ){
                     mkdir($uploadImagesDir);
+                    chown($uploadImagesDir, self::USER_WWW_DATA);
+                    chgrp($uploadImagesDir, self::USER_WWW_DATA);
                 }
+
                 if( !file_exists($uploadVideosDir) ){
                     mkdir($uploadVideosDir);
+                    chown($uploadVideosDir, self::USER_WWW_DATA);
+                    chgrp($uploadVideosDir, self::USER_WWW_DATA);
                 }
-                if( !file_exists(self::FOLDER_VAR_CACHE) ){
-                    mkdir(self::FOLDER_VAR_CACHE, 0777, true);
-                }
+
+                $callback = function(): void {
+                    if( !file_exists(self::FOLDER_VAR_CACHE) ){
+                        mkdir(self::FOLDER_VAR_CACHE, 0777, true);
+                        chown(self::FOLDER_VAR_CACHE, self::USER_WWW_DATA);
+                        chgrp(self::FOLDER_VAR_CACHE, self::USER_WWW_DATA);
+                    }
+                };
+
+                self::executeCallbackWithSupportOfDirectoryChange($callback);
+
                 return true;
             }catch(Exception | TypeError $e){
                 return false;
@@ -273,6 +304,24 @@ class InstallerController
         chdir($previousDirectory);
 
         return $callbackResult;
+    }
+
+    /**
+     * Will check if the installer has completed the installation
+     *
+     * @param string $envFilePath
+     * @return bool
+     */
+    public static function isInstalled(string $envFilePath): bool
+    {
+        if(
+                file_exists($envFilePath)
+            &&  strstr(file_get_contents($envFilePath), EnvBuilder::ENV_KEY_APP_IS_INSTALLED)
+        ){
+           return true;
+        }
+
+        return false;
     }
 
 }

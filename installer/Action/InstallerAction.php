@@ -36,6 +36,13 @@ class InstallerAction
             $isSuccess = false;
         }
 
+        foreach($requirementsCheckResult as $result){
+            if(!$result){
+                $isSuccess = false;
+                break;
+            }
+        }
+
         return json_encode([
             self::KEY_RESULT_CHECK_DATA => $requirementsCheckResult,
             self::KEY_SUCCESS           => $isSuccess,
@@ -56,6 +63,13 @@ class InstallerAction
             $configurationAndPreparationResult = InstallerController::configureAndPrepareSystem();
         }catch(Exception | TypeError $e){
             $isSuccess = false;
+        }
+
+        foreach($configurationAndPreparationResult as $result){
+            if(!$result){
+                $isSuccess = false;
+                break;
+            }
         }
 
         return json_encode([

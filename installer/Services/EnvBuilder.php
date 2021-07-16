@@ -32,6 +32,7 @@ class EnvBuilder
     const IPS_ACCESS_RESTRICTION            = "[]";
     const NPL_DEFAULT_RECEIVER              = '[\"your@email.com\"]';
     const DEFAULT_EMERGENCY_EMAILS_RECEIVER = 'your@email.com';
+    const DEFAULT_APP_IS_INSTALLED          = 1;
 
     const ENV_DEV   = "dev";
     const ENV_PROD  = "prod";
@@ -56,6 +57,7 @@ class EnvBuilder
     const ENV_KEY_APP_SHOW_INFO_BLOCKS                = 'APP_SHOW_INFO_BLOCKS';
     const ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS     = 'APP_DEFAULT_NPL_RECEIVER_EMAILS';
     const ENV_KEY_APP_EMERGENCY_EMAILS_RECEIVER_EMAIL = 'APP_EMERGENCY_EMAILS_RECEIVER_EMAIL';
+    const ENV_KEY_APP_IS_INSTALLED                    = 'APP_IS_INSTALLED';
 
     /**
      * Will build entire base .env file
@@ -106,6 +108,21 @@ class EnvBuilder
         }catch(Exception | TypeError $e){
             return false;
         }
+    }
+
+    /**
+     * Will add new variable to the .env file, however WILL NOT check if variable is already present
+     *
+     * @param string $variableName
+     * @param string $variableValue
+     */
+    public static function addVariableToEnvFile(string $variableName, string $variableValue): void
+    {
+        $fileHandler = fopen(self::ENV_FILE_NAME, 'a+');
+        {
+            fwrite($fileHandler,$variableName . "=" . $variableValue . PHP_EOL);
+        }
+        fclose($fileHandler);
     }
 
     /**

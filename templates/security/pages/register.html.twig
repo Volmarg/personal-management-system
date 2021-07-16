@@ -9,10 +9,12 @@
 
             <div class="col-12 col-md-6 col-lg-6 col-xl-3 pos-a centerXY peer pX-40 pY-60 h-70 bgc-white scrollable add-record-form register-form-wrapper">
 
-                <h3 class="text-center register-form-header">{{ 'login.header.pageName' | trans }}</h3>
-                <div class="d-flex justify-content-around">
-                    <img src="assets/images/logo/smaller.png" class="register-form-logo">
+                <div class="d-flex justify-content-around mb-2">
+                    {% include "page-elements/components/logo.twig" with {
+                        size: 65
+                    } %}
                 </div>
+                <h3 class="text-center register-form-header">{{ 'login.header.pageName' | trans }}</h3>
                 <h4 class="fw-300 c-grey-900 mB-20">{{ 'register.header.register' | trans }}</h4>
                 {% if error_message is defined and error_message is not empty %}
                     <div class="alert alert-danger">{{ error_message }}</div>

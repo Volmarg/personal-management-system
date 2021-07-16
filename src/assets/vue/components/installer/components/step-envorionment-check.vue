@@ -2,21 +2,27 @@
 <div>
 
   <ul v-for="(data, index) in resultCheckData">
-    <li>
-      <b>{{ index }}</b>:
-      <ok v-if="data" />
-      <fail v-else />
+    <li class="text-dark">
+      <b>
+        {{ index }}:
+        <ok v-if="data" />
+        <fail v-else />
+      </b>
     </li>
   </ul>
+
+  <br/>
 
   <button class="btn btn-primary"
           ref="buttonNext"
           @click="goToPreviousStep"
+          v-if="isBackButtonVisible"
   >Back</button>
 
   <button class="btn btn-primary"
           ref="buttonNext"
           @click="goToNextStep"
+          v-if="isNextButtonVisible"
   >Next</button>
 
 </div>
@@ -30,10 +36,13 @@ import OkMarkComponent   from "./ok-mark.vue";
 export default {
   data(){
     return {
-      stepName         : "Environment check",
-      nextStepName     : "Configuration execution",
-      previousStepName : "Database",
-      resultCheckData  : {},
+      loaderText           : "Checking environment...",
+      isNextButtonVisible  : false,
+      isBackButtonVisible  : true,
+      stepName             : "Environment check",
+      nextStepName         : "Configuration execution",
+      previousStepName     : "Database",
+      resultCheckData      : {},
       urls: {
         getEnvironmentCheckResultData: "/installer.php?GET_ENVIRONMENT_STATUS",
       }
@@ -73,9 +82,16 @@ export default {
      */
     getEnvironmentCheckResultData(){
       let dataBag = this.$parent.$refs.stepDatabase.loadStepDataFromSession();
+
+      this.$parent.$refs.loader.setText(this.loaderText);
+      this.$parent.$refs.loader.show();
+
       axios.post(this.urls.getEnvironmentCheckResultData, dataBag).then( (response) => {
-        let isSuccess        = response.data.resultCheckData;
-        this.resultCheckData = response.data.resultCheckData;
+        this.$parent.$refs.loader.hide();
+        this.$parent.$refs.loader.clearText();
+
+        this.resultCheckData     = response.data.resultCheckData;
+        this.isNextButtonVisible = response.data.success;
       })
     }
   },

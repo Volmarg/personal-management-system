@@ -1,7 +1,7 @@
 <template>
 
   <div class="form-group">
-    <label class="text-normal text-dark">Database host:</label>
+    <label class="text-normal text-dark">Database host<span class="text-danger">*</span> :</label>
     <input type="text"
            class="form-control"
            placeholder="Host"
@@ -9,7 +9,7 @@
            v-model="databaseHost"
     >
 
-    <label class="text-normal text-dark">Database port:</label>
+    <label class="text-normal text-dark">Database port<span class="text-danger">*</span>:</label>
     <input type="text"
            class="form-control"
            placeholder="Port"
@@ -17,7 +17,7 @@
            v-model="databasePort"
     >
 
-    <label class="text-normal text-dark">Database name:</label>
+    <label class="text-normal text-dark">Database name<span class="text-danger">*</span>:</label>
     <input type="text"
            class="form-control"
            placeholder="Name"
@@ -25,7 +25,7 @@
            v-model="databaseName"
     >
 
-    <label class="text-normal text-dark">Database login:</label>
+    <label class="text-normal text-dark">Database login<span class="text-danger">*</span>:</label>
     <input type="text"
            class="form-control"
            placeholder="Login"
@@ -33,7 +33,7 @@
            v-model="databaseLogin"
     >
 
-    <label class="text-normal text-dark">Database password:</label>
+    <label class="text-normal text-dark">Database password<span class="text-danger">*</span>:</label>
     <input type="password"
            class="form-control"
            placeholder="Password"
@@ -41,9 +41,14 @@
            v-model="databasePassword"
     >
 
+    <span class="text-danger">*</span> <i>These fields are required</i>
+
+    <br/>
+
     <button class="btn btn-primary"
             ref="buttonNext"
             @click="goToNextStep"
+            v-if="isDatabaseDataSet()"
     >Next</button>
 
   </div>
@@ -77,6 +82,19 @@ export default {
   },
   methods: {
     /**
+     * @description will check if all required fields are set
+     * @return {boolean}
+     */
+    isDatabaseDataSet(){
+      return (
+              this.databaseHost
+          &&  this.databasePort
+          &&  this.databaseName
+          &&  this.databaseLogin
+          &&  this.databasePassword
+      )
+    },
+    /**
      * @description will go to next step
      */
     goToNextStep(){
@@ -109,6 +127,12 @@ export default {
       }
 
       return JSON.parse(stepDataJson);
+    },
+    /**
+     * @description will remove step data from session
+     */
+    clearStepDataFromSession(){
+      sessionStorage.removeItem(this.sessionStorageStepDataKey);
     }
   },
   mounted(){

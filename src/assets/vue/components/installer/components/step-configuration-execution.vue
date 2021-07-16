@@ -1,21 +1,36 @@
 <template>
 <div>
 
-  <h5>Configuring environment - please wait</h5>
-  <!-- todo: add small loader for waiting (add some general component)-->
-
   <ul v-for="(data, index) in resultCheckData">
-    <li>
-      <b>{{ index }}</b>:
-      <ok v-if="data" />
-      <fail v-else />
+    <li class="text-dark">
+      <b>
+        {{ index }}:
+        <ok v-if="data" />
+        <fail v-else />
+      </b>
     </li>
   </ul>
+
+  <br/>
+
+  <p v-if="isSuccessTextVisible">
+    <i>Installation has been completed - proceed to the login page.</i>
+  </p>
+
+  <p v-if="isFailTextVisible">
+    <i>Installation could not been finished - something went wrong!</i>
+  </p>
 
   <button class="btn btn-primary"
           ref="buttonNext"
           @click="goToPreviousStep"
+          v-if="isBackButtonVisible"
   >Back</button>
+
+  <a class="btn btn-primary"
+     href="/login"
+     v-if="isLoginButtonVisible"
+  >Login</a>
 
 </div>
 </template>
@@ -30,10 +45,19 @@ import OkMarkComponent   from "./ok-mark.vue";
 export default {
   data(){
     return {
-      stepName         : "Configuration execution",
-      nextStepName     : "todo",
-      previousStepName : "Environment check",
-      resultCheckData  : {},
+      loaderText       : `
+                            Configuring system, please wait...
+                            <br/>
+                            <span class="d-flex justify-content-center"> Approximately (1-3 min)... </span>
+                        `,
+      isSuccessTextVisible : false,
+      isFailTextVisible    : false,
+      isBackButtonVisible  : true,
+      isLoginButtonVisible : false,
+      stepName             : "Configuration execution",
+      nextStepName         : "todo",
+      previousStepName     : "Environment check",
+      resultCheckData      : {},
       urls: {
         configureAndPrepareSystem: "/installer.php?STEP_CONFIGURATION_EXECUTION",
       }
@@ -61,8 +85,31 @@ export default {
      */
     configureAndPrepareSystem(){
       let dataBag = this.$parent.$refs.stepDatabase.loadStepDataFromSession();
+
+      this.$parent.$refs.loader.setText(this.loaderText);
+      this.$parent.$refs.loader.show();
+
       axios.post(this.urls.configureAndPrepareSystem, dataBag).then( (response) => {
+        this.$parent.$refs.loader.hide();
+        this.$parent.$refs.loader.clearText();
+
         this.resultCheckData = response.data.resultCheckData;
+
+        if(response.data.success){
+          this.$parent.$refs.stepDatabase.clearStepDataFromSession();
+
+          this.isBackButtonVisible  = false
+          this.isLoginButtonVisible = true;
+          this.isSuccessTextVisible = true;
+          this.isFailTextVisible    = false;
+
+        }else{
+          this.isBackButtonVisible  = true
+          this.isLoginButtonVisible = false;
+          this.isSuccessTextVisible = false;
+          this.isFailTextVisible    = true;
+        }
+
       })
     },
     /**
