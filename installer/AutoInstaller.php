@@ -14,10 +14,10 @@ if( php_sapi_name() === 'cli' ){
 
     // order of the inclusions is important!
     include_once 'Services/CliHandlerService.php';
-    include_once 'Services/ShellAbstractService.php';
-    include_once 'Services/ShellBinConsoleService.php';
-    include_once 'Services/ShellPhpService.php';
-    include_once 'Services/ShellMysqlService.php';
+    include_once 'Services/Shell/ShellAbstractService.php';
+    include_once 'Services/Shell/ShellBinConsoleService.php';
+    include_once 'Services/Shell/ShellPhpService.php';
+    include_once 'Services/Shell/ShellMysqlService.php';
     include_once 'Controller/InstallerController.php';
     include_once 'vendor/autoload.php'; // this works properly because installer changes the working directory to root dir
     include_once 'src/Services/Files/Parser/YamlFileParserService.php'; // this works properly because installer changes the working directory to root dir
@@ -308,6 +308,7 @@ class AutoInstaller {
         }
 
         EnvBuilder::buildEnv(self::$mysqlLogin, self::$mysqlPassword, self::$mysqlHost, self::$mysqlPort, self::$mysqlDatabase, $env, $debug);
+        InstallerController::setEnvKeyAppIsInstalled();
         CliHandlerService::infoText('Env file has been created.');
     }
 
