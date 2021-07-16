@@ -3,7 +3,12 @@
 namespace Installer\Services\Shell;
 
 use Exception;
+use Installer\Services\InstallerLogger;
 
+if( "cli" !== php_sapi_name() )
+{
+    include_once("../installer/Services/InstallerLogger.php");
+}
 /**
  * Main / Common logic of the shell executable logic
  *  - every class extending from this one should only have static methods are these can be later used in CLI based installer
@@ -51,7 +56,9 @@ abstract class ShellAbstractService
     protected static function isExecutablePresent(string $executableCommand): bool
     {
         if( !self::isWhichExecutablePresent() ){
-            throw new Exception("Executable binary: " . self::EXECUTABLE_BINARY_WHICH . " is not present in the shell!");
+            $message = "Executable binary: " . self::EXECUTABLE_BINARY_WHICH . " is not present in the shell!";
+            InstallerLogger::addLogEntry($message);
+            throw new Exception($message);
         }
 
         $isExecutablePresent = self::executeShellCommand(self::EXECUTABLE_BINARY_WHICH . " " . $executableCommand);

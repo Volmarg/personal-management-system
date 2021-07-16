@@ -15,6 +15,14 @@
       "js": [
         "/assets/base-template.js"
       ]
+    },
+    "installer": {
+      "css": [
+        "/assets/installer.css"
+      ],
+      "js": [
+        "/assets/installer.js"
+      ]
     }
   }
 }

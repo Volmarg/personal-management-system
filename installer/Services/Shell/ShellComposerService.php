@@ -4,12 +4,14 @@ namespace Installer\Services\Shell;
 
 use Installer\Controller\Installer\InstallerController;
 use Exception;
+use Installer\Services\InstallerLogger;
 
 // for compatibility with AutoInstaller
 if( "cli" !== php_sapi_name() ) {
-    include_once("../installer/Services/ShellAbstractService.php");
-    include_once("../installer/Services/ShellPhpService.php");
+    include_once("../installer/Services/Shell/ShellAbstractService.php");
+    include_once("../installer/Services/Shell/ShellPhpService.php");
     include_once("../installer/Controller/InstallerController.php");
+    include_once("../installer/Services/InstallerLogger.php");
 }
 
 /**
@@ -41,6 +43,14 @@ class ShellComposerService extends ShellAbstractService
     {
         $executablePhpBinary = ShellPhpService::getExecutableBinaryName();
         $commandData         = self::executeShellCommandWithFullOutputLinesAndCodeAsArray("{$executablePhpBinary} " . self::getExecutableBinaryName() . " {$calledCommand}");
+
+        $isSuccess = $commandData[self::KEY_OUTPUT_SUCCESS];
+        if(!$isSuccess){
+            InstallerLogger::addLogEntry("Could not install composer packages", [
+                "commandData" => $commandData,
+            ]);
+        }
+
         return $commandData;
     }
 

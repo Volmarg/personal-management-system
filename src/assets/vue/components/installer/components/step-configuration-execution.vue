@@ -13,14 +13,6 @@
 
   <br/>
 
-  <p v-if="isSuccessTextVisible">
-    <i>Installation has been completed - proceed to the login page.</i>
-  </p>
-
-  <p v-if="isFailTextVisible">
-    <i>Installation could not been finished - something went wrong!</i>
-  </p>
-
   <button class="btn btn-primary"
           ref="buttonNext"
           @click="goToPreviousStep"
@@ -71,6 +63,7 @@ export default {
     }
   },
   emits: [
+    "step-failed",
     "step-finished",
     "step-cancelled",
     "step-mounted",
@@ -103,20 +96,17 @@ export default {
           this.isSuccessTextVisible = true;
           this.isFailTextVisible    = false;
 
+          this.$emit("step-finished");
         }else{
           this.isBackButtonVisible  = true
           this.isLoginButtonVisible = false;
           this.isSuccessTextVisible = false;
           this.isFailTextVisible    = true;
+
+          this.$emit("step-failed");
         }
 
       })
-    },
-    /**
-     * @description will go to next step
-     */
-    goToNextStep(){
-      this.$emit("step-finished", this.nextStepName);
     },
     /**
      * @description will go to previous step

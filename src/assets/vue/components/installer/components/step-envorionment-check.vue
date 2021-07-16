@@ -92,6 +92,10 @@ export default {
 
         this.resultCheckData     = response.data.resultCheckData;
         this.isNextButtonVisible = response.data.success;
+
+        if(!response.data.success){
+          this.$emit("step-failed");
+        }
       })
     }
   },

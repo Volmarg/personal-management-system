@@ -3,6 +3,8 @@
   "assets/app.js": "/assets/app.js",
   "assets/base-template.css": "/assets/base-template.css",
   "assets/base-template.js": "/assets/base-template.js",
+  "assets/installer.css": "/assets/installer.css",
+  "assets/installer.js": "/assets/installer.js",
   "assets/css/tinymce-editor.css": "/assets/css/tinymce-editor.css",
   "assets/fonts/fontawesome-webfont.1e59d233.ttf": "/assets/fonts/fontawesome-webfont.1e59d233.ttf",
   "assets/fonts/fontawesome-webfont.20fd1704.woff2": "/assets/fonts/fontawesome-webfont.20fd1704.woff2",

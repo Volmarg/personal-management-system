@@ -4,10 +4,12 @@ namespace Installer\Services\Shell;
 
 // for compatibility with AutoInstaller
 if( "cli" !== php_sapi_name() ) {
-    include_once("../installer/Services/ShellAbstractService.php");
+    include_once("../installer/Services/Shell/ShellAbstractService.php");
+    include_once("../installer/Services/InstallerLogger.php");
 }
 
 use Exception;
+use Installer\Services\InstallerLogger;
 
 /**
  * Handles shell calls to php
@@ -64,7 +66,9 @@ class ShellPhpService extends ShellAbstractService
             }
         }
 
-        throw new Exception("Could not find php executable!");
+        $message = "Could not find php executable!";
+        InstallerLogger::addLogEntry($message);
+        throw new Exception($message);
     }
 
 }

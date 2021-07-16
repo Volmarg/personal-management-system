@@ -3,12 +3,14 @@
 namespace Installer\Services\Shell;
 
 use Exception;
+use Installer\Services\InstallerLogger;
 use PDO;
 use TypeError;
 
 // for compatibility with AutoInstaller
 if( "cli" !== php_sapi_name() ) {
-    include_once("../installer/Services/ShellAbstractService.php");
+    include_once("../installer/Services/Shell/ShellAbstractService.php");
+    include_once("../installer/Services/InstallerLogger.php");
 }
 
 /**
@@ -29,19 +31,6 @@ class ShellMysqlService extends ShellAbstractService
     public static function getExecutableBinaryName(): string
     {
         return self::EXECUTABLE_BINARY_NAME;
-    }
-
-    /**
-     * Get sql mode of database
-     *
-     * @Return string
-     */
-    public static function getSqlMode(string $login, string $password): string
-    {
-        $commandToExecute = "mysql -u " . $login .  " --password=" . $password .  " --execute='SELECT @@sql_mode' 2> /dev/null | grep " . self::MYSQL_MODE_ONLY_FULL_GROUP_BY;
-        $commandResult    = shell_exec($commandToExecute);
-
-        return $commandResult;
     }
 
     /**
@@ -67,6 +56,9 @@ class ShellMysqlService extends ShellAbstractService
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]);
         }catch(Exception | TypeError $e){
+            InstallerLogger::addLogEntry("Something went wrong while checking db access", [
+                "message" => $e->getMessage(),
+            ]);
             return false;
         }
 
@@ -97,6 +89,9 @@ class ShellMysqlService extends ShellAbstractService
 
             return !strstr($mode, self::MYSQL_MODE_ONLY_FULL_GROUP_BY);
         }catch(Exception | TypeError $e){
+            InstallerLogger::addLogEntry("Something went wrong while checking db mode", [
+                "message" => $e->getMessage(),
+            ]);
             return false;
         }
     }

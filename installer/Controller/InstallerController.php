@@ -4,10 +4,11 @@ namespace Installer\Controller\Installer;
 
 // for compatibility with AutoInstaller
 if( "cli" !== php_sapi_name() ) {
-    include_once("../installer/Services/ShellMysqlService.php");
-    include_once("../installer/Services/ShellPhpService.php");
-    include_once("../installer/Services/ShellComposerService.php");
-    include_once("../installer/Services/ShellBinConsoleService.php");
+    include_once("../installer/Services/Shell/ShellMysqlService.php");
+    include_once("../installer/Services/Shell/ShellPhpService.php");
+    include_once("../installer/Services/Shell/ShellComposerService.php");
+    include_once("../installer/Services/Shell/ShellBinConsoleService.php");
+    include_once("../installer/Services/InstallerLogger.php");
     include_once("../installer/Services/EnvBuilder.php");
     include_once("../installer/DTO/DatabaseDataDTO.php");
 }
@@ -15,6 +16,7 @@ if( "cli" !== php_sapi_name() ) {
 use Installer\Controller\DTO\DatabaseDataDTO;
 use App\Services\Files\Parser\YamlFileParserService;
 use Installer\Services\Shell\EnvBuilder;
+use Installer\Services\InstallerLogger;
 use Installer\Services\Shell\ShellBinConsoleService;
 use Installer\Services\Shell\ShellComposerService;
 use Installer\Services\Shell\ShellMysqlService;
@@ -59,6 +61,9 @@ class InstallerController
      */
     public static function checkProductionBasedRequirements(): array
     {
+        InstallerLogger::clearLogFile();
+        InstallerLogger::addLogEntry("Started checking production requirements, starting with mysql and php");
+
         $isMysqlInstalled            = ShellMysqlService::isExecutableForServicePresent();
         $isProperPhpVersionInstalled = ShellPhpService::isProperPhpVersion();
 
@@ -67,9 +72,13 @@ class InstallerController
             self::PRODUCTION_REQUIREMENT_MYSQL => $isMysqlInstalled,
         ];
 
+        InstallerLogger::addLogEntry("Checking for mysql and php version is done", $returnedData);
+
         if($isMysqlInstalled){
             $requestJson     = file_get_contents("php://input");
             $databaseDataDto = DatabaseDataDTO::fromJson($requestJson);
+
+            InstallerLogger::addLogEntry("Checking if database access is valid");
 
             $isDbPasswordValid = ShellMysqlService::isDbAccessValid(
                 $databaseDataDto->getDatabaseLogin(),
@@ -79,17 +88,25 @@ class InstallerController
             );
             $returnedData[self::PRODUCTION_REQUIREMENT_MYSQL_ACCESS_VALID] = $isDbPasswordValid;
 
+            InstallerLogger::addLogEntry("Done checking if database access is valid", [ "status" => $isDbPasswordValid]);
+
             if($isDbPasswordValid){
+                InstallerLogger::addLogEntry("Started checking ONLY_FULL_GROUP_BY mode");
+
                 $isOnlyFullGroupByMysqlModeSet = ShellMysqlService::isOnlyFullGroupByMysqlModeDisabled(
                     $databaseDataDto->getDatabaseLogin(),
                     $databaseDataDto->getDatabaseHost(),
                     $databaseDataDto->getDatabasePort(),
                     $databaseDataDto->getDatabasePassword()
                 );
+
+                InstallerLogger::addLogEntry("Done checking ONLY_FULL_GROUP_BY mode", [ "status" => $isOnlyFullGroupByMysqlModeSet]);
+
                 $returnedData[self::PRODUCTION_REQUIREMENT_MYSQL_MODE_DISABLED] = $isOnlyFullGroupByMysqlModeSet;
             }
 
         }
+        InstallerLogger::addLogEntry("Done checking environment ");
 
         return $returnedData;
     }
@@ -106,85 +123,124 @@ class InstallerController
         $requestJson     = file_get_contents("php://input");
         $databaseDataDto = DatabaseDataDTO::fromJson($requestJson);
 
-        $isComposerInstallSuccess = ShellComposerService::installPackages();
-        $resultData[self::CONFIGURE_PREPARE_COMPOSER_PACKAGES] = $isComposerInstallSuccess;
+        InstallerLogger::addLogEntry("Started configuring and preparing system");
+        InstallerLogger::addLogEntry("Installing composer packages");
+        {
+            $isComposerInstallSuccess = ShellComposerService::installPackages();
+            $resultData[self::CONFIGURE_PREPARE_COMPOSER_PACKAGES] = $isComposerInstallSuccess;
+        }
+        InstallerLogger::addLogEntry("Done installing composer packages", ["status" => $isComposerInstallSuccess]);
         if(!$isComposerInstallSuccess){
             return $resultData;
         }
 
-        $createEnvCallback = function() use($databaseDataDto): bool {
-            $isEnvFileCreated = EnvBuilder::buildEnv(
-                $databaseDataDto->getDatabaseLogin(),
-                $databaseDataDto->getDatabasePassword(),
-                $databaseDataDto->getDatabaseHost(),
-                $databaseDataDto->getDatabasePort(),
-                $databaseDataDto->getDatabaseName()
-            );
+        InstallerLogger::addLogEntry("Started building env file");
+        {
+            $createEnvCallback = function() use($databaseDataDto): bool {
+                $isEnvFileCreated = EnvBuilder::buildEnv(
+                    $databaseDataDto->getDatabaseLogin(),
+                    $databaseDataDto->getDatabasePassword(),
+                    $databaseDataDto->getDatabaseHost(),
+                    $databaseDataDto->getDatabasePort(),
+                    $databaseDataDto->getDatabaseName()
+                );
 
-            return $isEnvFileCreated;
-        };
+                return $isEnvFileCreated;
+            };
 
-        $isEnvFileCreated = self::executeCallbackWithSupportOfDirectoryChange($createEnvCallback);
-        $resultData[self::CONFIGURE_PREPARE_ENV_FILE] = $isEnvFileCreated;
+            $isEnvFileCreated = self::executeCallbackWithSupportOfDirectoryChange($createEnvCallback);
+            $resultData[self::CONFIGURE_PREPARE_ENV_FILE] = $isEnvFileCreated;
+        }
+        InstallerLogger::addLogEntry("Done building env file", ["status" => $isEnvFileCreated]);
         if(!$isEnvFileCreated){
             return $resultData;
         }
 
-        $areFoldersCreated = self::createFolders();
-        $resultData[self::CONFIGURE_PREPARE_CREATE_FOLDERS] = $areFoldersCreated;
+        InstallerLogger::addLogEntry("Started creating folders");
+        {
+            $areFoldersCreated = self::createFolders();
+            $resultData[self::CONFIGURE_PREPARE_CREATE_FOLDERS] = $areFoldersCreated;
+        }
+        InstallerLogger::addLogEntry("Done creating folders", ["status" => $areFoldersCreated]);
         if(!$areFoldersCreated){
             return $resultData;
         }
 
-        $isDatabaseDroppedIfExists = ShellBinConsoleService::dropDatabase();
-        $resultData[self::CONFIGURE_PREPARE_DROP_DATABASE_IF_EXISTS] = $isDatabaseDroppedIfExists;
+        InstallerLogger::addLogEntry("Started dropping database");
+        {
+            $isDatabaseDroppedIfExists = ShellBinConsoleService::dropDatabase();
+            $resultData[self::CONFIGURE_PREPARE_DROP_DATABASE_IF_EXISTS] = $isDatabaseDroppedIfExists;
+        }
+        InstallerLogger::addLogEntry("Finished dropping database", ["status" => $isDatabaseDroppedIfExists]);
         if(!$isDatabaseDroppedIfExists){
             return $resultData;
         }
 
-        $isDatabaseCreated = ShellBinConsoleService::createDatabase();
-        $resultData[self::CONFIGURE_PREPARE_CREATE_DATABASE] = $isDatabaseCreated;
+        InstallerLogger::addLogEntry("Started creating database");
+        {
+            $isDatabaseCreated = ShellBinConsoleService::createDatabase();
+            $resultData[self::CONFIGURE_PREPARE_CREATE_DATABASE] = $isDatabaseCreated;
+        }
+        InstallerLogger::addLogEntry("Done creating database", ["status" => $isDatabaseCreated]);
         if(!$isDatabaseCreated){
             return $resultData;
         }
 
-        $isDatabaseStructureBuilt = ShellBinConsoleService::executeMigrations();
-        $resultData[self::CONFIGURE_PREPARE_BUILD_DATABASE_STRUCTURE] = $isDatabaseStructureBuilt;
+        InstallerLogger::addLogEntry("Started executing migrations");
+        {
+            $isDatabaseStructureBuilt = ShellBinConsoleService::executeMigrations();
+            $resultData[self::CONFIGURE_PREPARE_BUILD_DATABASE_STRUCTURE] = $isDatabaseStructureBuilt;
+        }
+        InstallerLogger::addLogEntry("Finished executing migrations", ["status" => $isDatabaseStructureBuilt]);
         if(!$isDatabaseStructureBuilt){
             return $resultData;
         }
 
-        $isCacheCleared = ShellBinConsoleService::clearCache();
-        $resultData[self::CONFIGURE_PREPARE_CLEAR_CACHE] = $isCacheCleared;
+        InstallerLogger::addLogEntry("Started clearing cache");
+        {
+            $isCacheCleared = ShellBinConsoleService::clearCache();
+            $resultData[self::CONFIGURE_PREPARE_CLEAR_CACHE] = $isCacheCleared;
+        }
+        InstallerLogger::addLogEntry("Finished clearing cache", ["status" => $isCacheCleared]);
         if(!$isCacheCleared){
             return $resultData;
         }
 
-        $isCacheBuilt = ShellBinConsoleService::buildCache();
-        $resultData[self::CONFIGURE_PREPARE_BUILD_CACHE] = $isCacheBuilt;
+        InstallerLogger::addLogEntry("Started building cache");
+        {
+            $isCacheBuilt = ShellBinConsoleService::buildCache();
+            $resultData[self::CONFIGURE_PREPARE_BUILD_CACHE] = $isCacheBuilt;
+        }
+        InstallerLogger::addLogEntry("Finished building cache", ["status" => $isCacheBuilt]);
         if(!$isCacheBuilt){
             return $resultData;
         }
 
-        $generatedEncryptionKey = ShellBinConsoleService::generateEncryptionKey();
-        $resultData[self::CONFIGURE_PREPARE_GENERATE_ENCRYPTION_KEY] = !empty($generatedEncryptionKey);
+        InstallerLogger::addLogEntry("Started generating encryption key");
+        {
+            $generatedEncryptionKey = ShellBinConsoleService::generateEncryptionKey();
+            $resultData[self::CONFIGURE_PREPARE_GENERATE_ENCRYPTION_KEY] = !empty($generatedEncryptionKey);
+        }
+        InstallerLogger::addLogEntry("Finished generating encryption key", ["status" => !empty($generatedEncryptionKey)]);
         if( empty($generatedEncryptionKey) ){
             return $resultData;
         }
 
-        $isEncryptionKeySaved = self::setEncryptionKey($generatedEncryptionKey);
-        $resultData[self::CONFIGURE_PREPARE_SAVE_ENCRYPTION_KEY] = $isEncryptionKeySaved;
+        InstallerLogger::addLogEntry("Started saving encryption key");
+        {
+            $isEncryptionKeySaved = self::setEncryptionKey($generatedEncryptionKey);
+            $resultData[self::CONFIGURE_PREPARE_SAVE_ENCRYPTION_KEY] = $isEncryptionKeySaved;
+        }
+        InstallerLogger::addLogEntry("Finished saving encryption key", ["status" => $isEncryptionKeySaved]);
+        if( empty($isEncryptionKeySaved) ){
+            return $resultData;
+        }
 
-        $callback = function(): void {
-            /**
-             * Must be here because with the command the dir changes to root dir of project
-             * The inclusion belongs explicitly to the callback
-             */
-            include_once("vendor/autoload.php");
-            EnvBuilder::addVariableToEnvFile(EnvBuilder::ENV_KEY_APP_IS_INSTALLED, EnvBuilder::DEFAULT_APP_IS_INSTALLED);
-        };
-
-        self::executeCallbackWithSupportOfDirectoryChange($callback);
+        InstallerLogger::addLogEntry("Now marking installation as finished");
+        {
+            self::setEnvKeyAppIsInstalled();
+        }
+        InstallerLogger::addLogEntry("Installation finished!");
 
         return $resultData;
     }
@@ -247,6 +303,22 @@ class InstallerController
 
         $callbackResult = self::executeCallbackWithSupportOfDirectoryChange($callback);
         return $callbackResult;
+    }
+
+    /**
+     * Will set env key marking installation as done
+     */
+    public static function setEnvKeyAppIsInstalled(): void {
+        $callback = function(): void {
+            /**
+             * Must be here because with the command the dir changes to root dir of project
+             * The inclusion belongs explicitly to the callback
+             */
+            include_once("vendor/autoload.php");
+            EnvBuilder::addVariableToEnvFile(EnvBuilder::ENV_KEY_APP_IS_INSTALLED, EnvBuilder::DEFAULT_APP_IS_INSTALLED);
+        };
+
+        self::executeCallbackWithSupportOfDirectoryChange($callback);
     }
 
     /**
@@ -319,6 +391,25 @@ class InstallerController
             &&  strstr(file_get_contents($envFilePath), EnvBuilder::ENV_KEY_APP_IS_INSTALLED)
         ){
            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Will check if project was already installed
+     *
+     * @param string $envFilePath
+     * @return bool
+     */
+    public static function wasAlreadyInstalled(string $envFilePath): bool
+    {
+        if(
+                file_exists($envFilePath)
+            &&  !strstr(file_get_contents($envFilePath), EnvBuilder::ENV_KEY_APP_IS_INSTALLED)
+            &&  file_exists("../vendor")
+        ){
+            return true;
         }
 
         return false;

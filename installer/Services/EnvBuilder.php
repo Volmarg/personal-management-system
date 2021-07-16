@@ -2,7 +2,14 @@
 
 namespace Installer\Services\Shell;
 
+// for compatibility with AutoInstaller
+if( "cli" !== php_sapi_name() ) {
+    include_once("../installer/Services/InstallerLogger.php");
+}
+
 use Exception;
+use Installer\Controller\Installer\InstallerController;
+use Installer\Services\InstallerLogger;
 use TypeError;
 
 /**
@@ -106,6 +113,9 @@ class EnvBuilder
 
             return true;
         }catch(Exception | TypeError $e){
+            InstallerLogger::addLogEntry("Could not build env file", [
+                "exceptionMessage" => $e->getMessage(),
+            ]);
             return false;
         }
     }
@@ -120,7 +130,7 @@ class EnvBuilder
     {
         $fileHandler = fopen(self::ENV_FILE_NAME, 'a+');
         {
-            fwrite($fileHandler,$variableName . "=" . $variableValue . PHP_EOL);
+            fwrite($fileHandler,PHP_EOL . $variableName . "=" . $variableValue . PHP_EOL);
         }
         fclose($fileHandler);
     }
@@ -141,4 +151,24 @@ class EnvBuilder
         return $databaseUrl;
     }
 
+    /**
+     * Will remove env file
+     */
+    public static function removeEnvFile(): void
+    {
+            InstallerLogger::addLogEntry("Removing env file");
+            {
+                $callback = function(){
+
+                    $isRemoved = true; // if doesnt exist then it's success anyway
+                    if( file_exists(self::ENV_FILE_NAME) ){
+                        $isRemoved = unlink(self::ENV_FILE_NAME);
+                    }
+
+                    return $isRemoved;
+                };
+                $isRemoved= InstallerController::executeCallbackWithSupportOfDirectoryChange($callback);
+            InstallerLogger::addLogEntry("Done removing env file", ["status" => $isRemoved]);
+        }
+    }
 }

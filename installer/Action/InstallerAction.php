@@ -4,9 +4,13 @@ namespace Installer\Action\Installer;
 
 use Installer\Controller\Installer\InstallerController;
 use Exception;
+use Installer\Services\InstallerLogger;
+use Installer\Services\Shell\EnvBuilder;
 use TypeError;
 
 include_once("../installer/Controller/InstallerController.php");
+include_once("../installer/Services/EnvBuilder.php");
+include_once("../installer/Services/InstallerLogger.php");
 
 /**
  * Actions for handling the GUI based installation process
@@ -19,6 +23,7 @@ class InstallerAction
 {
     const KEY_SUCCESS           = "success";
     const KEY_RESULT_CHECK_DATA = "resultCheckData";
+    const KEY_LOG_FILE_CONTENT  = "logFileContent";
 
     /**
      * Will return requirements check result
@@ -33,6 +38,9 @@ class InstallerAction
         try{
             $requirementsCheckResult = InstallerController::checkProductionBasedRequirements();
         }catch(Exception | TypeError $e){
+            InstallerLogger::addLogEntry("Exception was throw while checking requirements", [
+                "message" => $e->getMessage(),
+            ]);
             $isSuccess = false;
         }
 
@@ -41,6 +49,10 @@ class InstallerAction
                 $isSuccess = false;
                 break;
             }
+        }
+
+        if( empty($requirementsCheckResult) ){
+            $isSuccess = false;
         }
 
         return json_encode([
@@ -62,6 +74,10 @@ class InstallerAction
         try{
             $configurationAndPreparationResult = InstallerController::configureAndPrepareSystem();
         }catch(Exception | TypeError $e){
+            InstallerLogger::addLogEntry("Exception was throw while configuring and preparing system", [
+                "message" => $e->getMessage(),
+            ]);
+
             $isSuccess = false;
         }
 
@@ -72,9 +88,32 @@ class InstallerAction
             }
         }
 
+        if( empty($configurationAndPreparationResult) ){
+            $isSuccess = false;
+        }
+
+        if(!$isSuccess){
+            EnvBuilder::removeEnvFile();
+        }
+
         return json_encode([
             self::KEY_RESULT_CHECK_DATA => $configurationAndPreparationResult,
             self::KEY_SUCCESS           => $isSuccess,
+        ]);
+    }
+
+    /**
+     * Will return log file content
+     *
+     * @return string
+     */
+    public static function getLogFileContent(): string {
+        $logFilePath    = InstallerLogger::findLogFilePath();
+        $logFileContent = file_get_contents($logFilePath);
+        $formattedLog   = nl2br($logFileContent);
+
+        return json_encode([
+            self::KEY_LOG_FILE_CONTENT => $formattedLog,
         ]);
     }
 }

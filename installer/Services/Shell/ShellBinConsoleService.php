@@ -4,13 +4,15 @@ namespace Installer\Services\Shell;
 
 use Installer\Controller\Installer\InstallerController;
 use Exception;
+use Installer\Services\InstallerLogger;
 
 // for compatibility with AutoInstaller
 if( "cli" !== php_sapi_name() )
 {
-    include_once("../installer/Services/ShellAbstractService.php");
-    include_once("../installer/Services/ShellPhpService.php");
+    include_once("../installer/Services/Shell/ShellAbstractService.php");
+    include_once("../installer/Services/Shell/ShellPhpService.php");
     include_once("../installer/Controller/InstallerController.php");
+    include_once("../installer/Services/InstallerLogger.php");
 }
 
 /**
@@ -63,6 +65,9 @@ class ShellBinConsoleService extends ShellAbstractService
                 }
             }
 
+            InstallerLogger::addLogEntry("Dropping database was not successful", [
+                "commandResult" => $result
+            ]);
             return false;
         };
 
@@ -138,6 +143,10 @@ class ShellBinConsoleService extends ShellAbstractService
                 }
             }
 
+            InstallerLogger::addLogEntry("Getting encryption key was not successful", [
+                "commandResult" => $result
+            ]);
+
             return null;
         };
 
@@ -160,8 +169,16 @@ class ShellBinConsoleService extends ShellAbstractService
             $executedCommand = $phpBinaryExecutable . " " . $binaryName . " $commandToExecute -n";
             $result          = self::executeShellCommandWithFullOutputLinesAndCodeAsArray($executedCommand);
 
-            $code = $result[self::KEY_OUTPUT_CODE];
-            return (0 == $code);
+            $code      = $result[self::KEY_OUTPUT_CODE];
+            $isSuccess = (0 == $code);
+
+            if(!$isSuccess){
+                InstallerLogger::addLogEntry("Failed executing command", [
+                    "commandResult" => $result
+                ]);
+            }
+
+            return $isSuccess;
         };
 
         $callbackResult = InstallerController::executeCallbackWithSupportOfDirectoryChange($callback);
