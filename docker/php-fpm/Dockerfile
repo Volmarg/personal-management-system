@@ -14,7 +14,7 @@ RUN apt-get update -y && apt-get install -y libpng-dev
 
 RUN apt-get update && \
     apt-get install -y \
-        zlib1g-dev 
+        zlib1g-dev
 
 RUN docker-php-ext-install gd
 
@@ -24,6 +24,10 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && mv composer /usr/local/bin/composer
 
 COPY php.ini /usr/local/etc/php/conf.d/php.ini
+
+RUN pecl install apcu
+
+RUN pear config-set php_ini /application/docker/php-fpm/php.ini
 
 CMD ["php-fpm"]
 
