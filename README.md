@@ -18,11 +18,6 @@
 </li>
 </ul>
 
-<h3>Contact</h3>
-<hr>
-
-- <p align="left"><b>Mail</b> - <a href="mailto:personal.management.system.pms@gmail.com"><i>personal.management.system.pms@gmail.com</i></a></p>
-
 <h3>Description</h3>
 <hr>
 <p align="justify">
@@ -161,4 +156,8 @@
 	<li><a href="https://github.com/MohamedElashri">MohamedElashri</a> - for testing <b>docker</b> configuration</li>	
 	<li><a href="https://github.com/rwaight">Rob Waight</a> - for providing changes and documentation for running <b>docker</b> on windows</li>	
 </ul>
+
+<h3>Contact</h3>
 <hr>
+
+- <p align="left"><b>Mail</b> - <a href="mailto:personal.management.system.pms@gmail.com"><i>personal.management.system.pms@gmail.com</i></a></p>
