@@ -27,10 +27,10 @@
                     data-toggle-popover="true"                                      {# popover attr #}
                     data-content=
                     "                                                  {# popover attr #}
-                        <b>{{ 'issues.card.popovers.name' | trans }}: </b>{{  issueCardDto.getIssue().getName() }}
+                        <b>{{ 'issues.card.popovers.name' | trans }}: </b>{{  issueCardDto.getIssue().getName() | escape }}
                         <br/>
 
-                        <b>{{ 'issues.card.popovers.description' | trans }}: </b>{{  issueCardDto.getIssue().getInformation() }}
+                        <b>{{ 'issues.card.popovers.description' | trans }}: </b>{{  issueCardDto.getIssue().getInformation() | escape }}
 
                         {%
                             if  isCompact is defined
