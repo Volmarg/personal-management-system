@@ -115,6 +115,11 @@ export default class AjaxEvents extends AbstractAjax {
                 })
             }
 
+            if( ajaxResponseDto.isRouteSet() ){
+                this.loadModuleContentByUrl(ajaxResponseDto.routeUrl);
+                return;
+            }
+
             if( ajaxResponseDto.isTemplateSet() ){
                 Ui.insertIntoMainContent(ajaxResponseDto.template);
             }

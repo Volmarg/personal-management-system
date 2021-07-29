@@ -2,6 +2,7 @@
 
 namespace App\Action\Files;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -22,6 +23,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use TypeError;
 
+/**
+ * @ModuleAnnotation(
+ *     relatedModules={
+ *          App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES,
+ *          App\Controller\Modules\ModulesController::MODULE_NAME_VIDEO,
+ *          App\Controller\Modules\ModulesController::MODULE_NAME_FILES,
+ *     }
+ * )
+ */
 class FilesAction extends AbstractController {
 
     const KEY_RESPONSE_CODE         = 'response_code';

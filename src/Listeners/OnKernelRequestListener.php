@@ -152,7 +152,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     /**
      * @param RequestEvent $event
      * @throws SecurityException
-     * 
+     *
      */
     private function blockRequestTypes(RequestEvent $event): void
     {
@@ -326,22 +326,51 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             return;
         }
 
-        // check locked module + add checking log to the "isAllowedToSeeResource"
+        // check if module itself is locked
         if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $annotation->getName()) ){
-
-            $targetUrl = $this->urlGenerator->generate("dashboard");
-            if( $request->isXmlHttpRequest() ){
-                $ajaxResponse = new AjaxResponse();
-                $ajaxResponse->setRouteUrl($targetUrl);
-                $response = $ajaxResponse->buildJsonResponse();
-            }else{
-                $response = new RedirectResponse($targetUrl);
-            }
-
-            $ev->setResponse($response);
-            $ev->stopPropagation();
+            $this->handleNotAllowedToSeeResource($ev);
             return;
         }
+
+        // check if all related modules are locked - if yes then the module/logic itself is not accessible
+        $countOfLockedRelatedModules = 0;
+        $countOfRelatedModules       = count($annotation->getRelatedModules());
+        foreach($annotation->getRelatedModules() as $index => $relatedModule){
+
+            $showFlashMessage = ( $index < 1 );
+            if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, $showFlashMessage) ){
+                $countOfLockedRelatedModules++;
+            }
+        }
+
+        if(
+                !empty($annotation->getRelatedModules())
+            &&  $countOfLockedRelatedModules == $countOfRelatedModules
+        ){
+            $this->handleNotAllowedToSeeResource($ev);
+            return;
+        }
+    }
+
+    /**
+     * Handle the case when user is not allowed to see the resource
+     * @param RequestEvent $ev
+     */
+    private function handleNotAllowedToSeeResource(RequestEvent $ev): void
+    {
+        $request = $ev->getRequest();
+
+        $targetUrl = $this->urlGenerator->generate("dashboard");
+        if( $request->isXmlHttpRequest() ){
+            $ajaxResponse = new AjaxResponse();
+            $ajaxResponse->setRouteUrl($targetUrl);
+            $response = $ajaxResponse->buildJsonResponse();
+        }else{
+            $response = new RedirectResponse($targetUrl);
+        }
+
+        $ev->setResponse($response);
+        $ev->stopPropagation();
     }
 
 }

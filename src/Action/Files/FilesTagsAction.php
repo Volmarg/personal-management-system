@@ -4,6 +4,7 @@
 namespace App\Action\Files;
 
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
@@ -15,6 +16,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @ModuleAnnotation(
+ *     relatedModules={
+ *          App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES,
+ *          App\Controller\Modules\ModulesController::MODULE_NAME_VIDEO,
+ *          App\Controller\Modules\ModulesController::MODULE_NAME_FILES,
+ *     }
+ * )
+ */
 class FilesTagsAction extends AbstractController {
 
 
