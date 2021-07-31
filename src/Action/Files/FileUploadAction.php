@@ -25,11 +25,7 @@ use TypeError;
 
 /**
  * @ModuleAnnotation(
- *     relatedModules={
- *          App\Controller\Modules\ModulesController::MODULE_NAME_IMAGES,
- *          App\Controller\Modules\ModulesController::MODULE_NAME_VIDEO,
- *          App\Controller\Modules\ModulesController::MODULE_NAME_FILES,
- *     }
+ *     relatedModules=App\Controller\Modules\ModulesController::UPLOAD_MENU_RELATED_MODULES
  * )
  */
 class FileUploadAction extends AbstractController {

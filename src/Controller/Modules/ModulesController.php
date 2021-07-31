@@ -43,6 +43,12 @@ class ModulesController extends AbstractController {
 
     const MODULE_ENTITY_NOTES_CATEGORY          = "My Notes Categories"; //todo: rename this const + twig (subentity) or menu node
 
+    const UPLOAD_MENU_RELATED_MODULES = [
+        self::MODULE_NAME_FILES,
+        self::MODULE_NAME_IMAGES,
+        self::MODULE_NAME_VIDEO,
+    ];
+
     const ALL_MODULES = [
         self::MODULE_NAME_ACHIEVEMENTS,
         self::MODULE_NAME_MY_SCHEDULES,

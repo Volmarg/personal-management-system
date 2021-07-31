@@ -1,5 +1,6 @@
 {% extends 'page-elements/components/sidebar/menu-nodes/base-menu-node.twig' %}
 {% set menu_node_module_name = "" %}
+{% set menu_node_related_modules = constant("App\\Controller\\Modules\\ModulesController::UPLOAD_MENU_RELATED_MODULES") %}
 
 {% block nodeContent %}
 

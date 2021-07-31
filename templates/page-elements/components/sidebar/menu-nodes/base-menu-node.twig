@@ -4,13 +4,40 @@
 {% set locked_resource    = 'App\\Entity\\System\\LockedResource::' %}
 {% set LOCKED_TYPE_ENTITY = constant(locked_resource ~ 'TYPE_ENTITY') %}
 
-{% set isVisible =
+{% set isVisible = false %}
+
+{# Check if module itself is locked #}
+{% if
     (
             menu_node_module_name is defined
         and isAllowedToSeeResource("", LOCKED_TYPE_ENTITY, menu_node_module_name)
     )
     or menu_node_module_name is not defined
 %}
+    {% set isVisible = true %}
+{% endif %}
+
+{# Check if by any chance all related modules are locked #}
+{% if   menu_node_related_modules is defined
+    and menu_node_related_modules is not empty
+%}
+
+    {% set related_locked_modules_count = 0 %}
+    {% for related_module_name in menu_node_related_modules %}
+
+        {% if not isAllowedToSeeResource("", LOCKED_TYPE_ENTITY, related_module_name) %}
+            {% set related_locked_modules_count = related_locked_modules_count + 1 %}
+        {% endif %}
+
+    {% endfor %}
+
+    {% if related_locked_modules_count < menu_node_related_modules | length %}
+        {% set isVisible = true %}
+    {% else %}
+        {% set isVisible = false %}
+    {% endif %}
+
+{% endif %}
 
 {% block nodeContent %}
 {% endblock nodeContent %}
