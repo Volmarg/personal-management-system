@@ -46,7 +46,7 @@
 
                 <section class="{% if column_layout %}d-flex justify-content-around{% endif %}">
                     <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
-                        <div class="col-sm-col_{{col_size}}">
+                        <div class="col-sm-{{col_size}}">
                             {{ form_label(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR],
                                 null,
                                 {
@@ -57,7 +57,7 @@
                                 }
                             ) }}
                         </div>
-                        <div class="col-sm-col_{{col_size}} current-upload-module-dir">
+                        <div class="col-sm-{{col_size}} current-upload-module-dir">
                             {{ form_widget(copy_data_form[KEY_CURRENT_UPLOAD_MODULE_DIR], {
                                 attr: {
                                     disabled: from_disabled
@@ -69,7 +69,7 @@
                     <br/>
 
                     <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
-                        <div class="col-sm-col_{{col_size}}">
+                        <div class="col-sm-{{col_size}}">
                             {{ form_label(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR],
                                 null,
                                 {
@@ -80,7 +80,7 @@
                                 }
                             ) }}
                         </div>
-                        <div class="col-sm-col_{{col_size}} subdirectory-current-path-in-module-upload-dir">
+                        <div class="col-sm-{{col_size}} subdirectory-current-path-in-module-upload-dir">
                             {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR], {
                                 attr: {
                                     disabled: from_disabled
@@ -97,7 +97,7 @@
                 <h4>{{ 'upload.settings.copyFolderData.to' | trans }}</h4>
                 <section class="{% if column_layout %}d-flex justify-content-around{% endif %}">
                     <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
-                        <div class="col-sm-col_{{col_size}}">
+                        <div class="col-sm-{{col_size}}">
                             {{ form_label(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR],
                                 null,
                                 {
@@ -108,7 +108,7 @@
                                 }
                             ) }}
                         </div>
-                        <div class="col-sm-col_{{col_size}} target-upload-module-dir">
+                        <div class="col-sm-{{col_size}} target-upload-module-dir">
                             {{ form_widget(copy_data_form[KEY_TARGET_MODULE_UPLOAD_DIR]) }}
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                     <br/>
 
                     <div class="row {% if column_layout %}d-flex flex-column{% endif %}">
-                        <div class="col-sm-col_{{col_size}}">
+                        <div class="col-sm-{{col_size}}">
                             {{ form_label(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR],
                                 null,
                                 {
@@ -127,7 +127,7 @@
                                 }
                             ) }}
                         </div>
-                        <div class="col-sm-col_{{col_size}} subdirectory-target-path-in-module-upload-dir">
+                        <div class="col-sm-{{col_size}} subdirectory-target-path-in-module-upload-dir">
                             {{ form_widget(copy_data_form[KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR]) }}
                         </div>
                     </div>
