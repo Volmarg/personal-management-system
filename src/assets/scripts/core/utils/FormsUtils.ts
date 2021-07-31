@@ -95,7 +95,6 @@ export default class FormsUtils {
 
                 $(select).append(noOptionsOption);
                 noOptionsOption.attr('selected','selected');
-                return;
             }else{
                 $(select).removeClass('disabled');
                 $(submit).removeClass('disabled');
