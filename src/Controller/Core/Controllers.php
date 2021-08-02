@@ -5,6 +5,7 @@ namespace App\Controller\Core;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FilesUploadSettingsController;
+use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\Achievements\AchievementController;
 use App\Controller\Modules\Contacts\MyContactGroupController;
 use App\Controller\Modules\Contacts\MyContactsController;
@@ -317,6 +318,11 @@ class Controllers extends AbstractController {
      * @var MyScheduleRemindersController $myScheduleReminderController
      */
     private MyScheduleRemindersController $myScheduleReminderController;
+
+    /**
+     * @var FileUploadController $fileUploadController
+     */
+    private FileUploadController $fileUploadController;
 
     /**
      * @return MyIssuesController
@@ -696,6 +702,22 @@ class Controllers extends AbstractController {
         return $this->myScheduleReminderController;
     }
 
+    /**
+     * @return FileUploadController
+     */
+    public function getFileUploadController(): FileUploadController
+    {
+        return $this->fileUploadController;
+    }
+
+    /**
+     * @param FileUploadController $fileUploadController
+     */
+    public function setFileUploadController(FileUploadController $fileUploadController): void
+    {
+        $this->fileUploadController = $fileUploadController;
+    }
+
     public function __construct(
         AchievementController         $achievementController,
         ReportsController             $reportsController,
@@ -748,7 +770,8 @@ class Controllers extends AbstractController {
 
         MyRecurringPaymentsMonthlyController $myRecurringPaymentsMonthlyController,
         MyPaymentsBillsItemsController       $myPaymentsBillsItemsController,
-        MyScheduleRemindersController        $myScheduleReminderController
+        MyScheduleRemindersController        $myScheduleReminderController,
+        FileUploadController                 $fileUploadController
     ) {
         $this->achievementController        = $achievementController;
         $this->reportsControllers           = $reportsController;
@@ -802,6 +825,7 @@ class Controllers extends AbstractController {
         $this->myRecurringPaymentsMonthlyController = $myRecurringPaymentsMonthlyController;
         $this->myPaymentsBillsItemsController       = $myPaymentsBillsItemsController;
         $this->myScheduleReminderController         = $myScheduleReminderController;
+        $this->fileUploadController                 = $fileUploadController;
     }
 
 }

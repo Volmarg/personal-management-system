@@ -2,7 +2,6 @@
 
 namespace App\Services\Files;
 
-use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
@@ -66,18 +65,13 @@ class FilesHandler {
      */
     private $imageHandler;
 
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
 
-    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, LoggerInterface $logger, FileTagger $fileTagger, ImageHandler $imageHandler, Controllers $controllers) {
+    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, LoggerInterface $logger, FileTagger $fileTagger, ImageHandler $imageHandler) {
         $this->application       = $application;
         $this->directoriesHandle = $directoriesHandler;
         $this->imageHandler      = $imageHandler;
         $this->logger            = $logger;
         $this->fileTagger        = $fileTagger;
-        $this->controllers       = $controllers;
     }
 
     /**

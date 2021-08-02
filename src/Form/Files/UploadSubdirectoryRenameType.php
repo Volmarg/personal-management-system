@@ -2,9 +2,11 @@
 
 namespace App\Form\Files;
 
+use App\Controller\Core\Controllers;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Form\Type\UploadrecursiveoptionsType;
+use Doctrine\DBAL\Driver\Exception;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,15 +21,27 @@ class UploadSubdirectoryRenameType extends AbstractType {
      */
     private $app;
 
-    public function __construct(Application $app) {
-        $this->app = $app;
+    /**
+     * @var Controllers $controllers
+     */
+    private Controllers $controllers;
+
+    public function __construct(Application $app, Controllers $controllers) {
+        $this->controllers = $controllers;
+        $this->app         = $app;
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
         $builder
             ->add(FileUploadController::KEY_UPLOAD_MODULE_DIR, ChoiceType::class, [
-                'choices' => FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES,
+                'choices' => $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule(),
                 'attr'    => [
                     'class'                                          => 'form-control listFilterer selectpicker',
                     'data-dependent-list-selector'                   => '#upload_subdirectory_rename_subdirectory_current_path_in_module_upload_dir',

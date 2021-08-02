@@ -335,10 +335,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         // check if all related modules are locked - if yes then the module/logic itself is not accessible
         $countOfLockedRelatedModules = 0;
         $countOfRelatedModules       = count($annotation->getRelatedModules());
-        foreach($annotation->getRelatedModules() as $index => $relatedModule){
-
-            $showFlashMessage = ( $index < 1 );
-            if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, $showFlashMessage) ){
+        foreach($annotation->getRelatedModules() as $relatedModule){
+            if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, false) ){
                 $countOfLockedRelatedModules++;
             }
         }

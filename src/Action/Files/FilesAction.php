@@ -260,6 +260,7 @@ class FilesAction extends AbstractController {
      * @param Request $request
      * @return Response
      * @throws \Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function removeFolderByPostRequest(string $uploadModuleDir, Request $request) {
 
@@ -271,7 +272,7 @@ class FilesAction extends AbstractController {
         }else{
 
             $currentDirectoryPathInModuleUploadDir = $request->request->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-            if( in_array($currentDirectoryPathInModuleUploadDir, FileUploadController::MODULES_UPLOAD_DIRS) ) {
+            if( in_array( $currentDirectoryPathInModuleUploadDir, $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule() ) ) {
                 $message = $this->app->translator->translate('exceptions.files.cannotRemoveMainFolder');
                 $response = new Response($message, 500);
             }

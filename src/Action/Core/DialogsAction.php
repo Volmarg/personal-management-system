@@ -103,6 +103,7 @@ class DialogsAction extends AbstractController
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function buildDataTransferDialogBody(Request $request): JsonResponse
     {
@@ -135,7 +136,7 @@ class DialogsAction extends AbstractController
 
             $moduleName = $request->request->get(static::KEY_MODULE_NAME);
 
-            if( !array_key_exists($moduleName, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+            if( !array_key_exists($moduleName, $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule()) ){
                 $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
 
                 $ajaxResponse->setMessage($message);
@@ -164,7 +165,7 @@ class DialogsAction extends AbstractController
                 }
             }
 
-            $allUploadBasedModules = FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES;
+            $allUploadBasedModules = $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule();
 
             $formData = [
                 FilesHandler::KEY_MODULES_NAMES => $allUploadBasedModules
@@ -198,6 +199,7 @@ class DialogsAction extends AbstractController
      * @param Request $request
      * @return JsonResponse
      * @throws Exception
+     * @throws \Doctrine\DBAL\Driver\Exception
      */
     public function buildTagsUpdateDialogBody(Request $request): JsonResponse
     {
@@ -218,7 +220,7 @@ class DialogsAction extends AbstractController
             }
 
             $moduleName = $request->request->get(static::KEY_MODULE_NAME);
-            if( !array_key_exists($moduleName, FileUploadController::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES) ){
+            if( !array_key_exists($moduleName, $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule()) ){
                 $message = $this->app->translator->translate('responses.upload.moduleNameIsIncorrect');
 
                 $ajaxResponse->setMessage($message);

@@ -8,10 +8,11 @@ use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModulesController;
+use App\Controller\System\LockedResourceController;
+use App\Entity\System\LockedResource;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
 use App\Services\Core\Translator;
-use DirectoryIterator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -42,12 +43,6 @@ class FileUploadController extends AbstractController {
     const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH         = "[\/]?upload\/(?<" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME . ">[a-zA-z]+)\/";
     const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME = "DIR_NAME";
 
-    const MODULES_UPLOAD_DIRS = [
-        self::MODULE_UPLOAD_DIR_FOR_IMAGES => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
-        self::MODULE_UPLOAD_DIR_FOR_VIDEO  => self::MODULE_UPLOAD_DIR_FOR_VIDEO,
-        self::MODULE_UPLOAD_DIR_FOR_FILES  => self::MODULE_UPLOAD_DIR_FOR_FILES
-    ];
-
     const MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES = [
         MyImagesController::MODULE_NAME       => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
         MyFilesController::MODULE_NAME        => self::MODULE_UPLOAD_DIR_FOR_FILES,
@@ -75,10 +70,16 @@ class FileUploadController extends AbstractController {
      */
     private $directoriesHandler;
 
-    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app) {
-        $this->app                = $app;
-        $this->filesHandler       = $filesHandler;
-        $this->directoriesHandler = $directoriesHandler;
+    /**
+     * @var LockedResourceController $lockedResourceController
+     */
+    private LockedResourceController $lockedResourceController;
+
+    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app, LockedResourceController $lockedResourceController) {
+        $this->app                      = $app;
+        $this->filesHandler             = $filesHandler;
+        $this->directoriesHandler       = $directoriesHandler;
+        $this->lockedResourceController = $lockedResourceController;
     }
 
     /**
@@ -127,47 +128,6 @@ class FileUploadController extends AbstractController {
     }
 
     /**
-     * @param bool $groupedByModuleUploadDirs
-     * @param bool $includeMainFolder
-     * @return array
-     * @throws Exception
-     */
-    public static function getFoldersTreesForAllUploadModulesDirs($groupedByModuleUploadDirs = false, $includeMainFolder = false){
-
-        $subdirectories = [];
-
-        if( !$groupedByModuleUploadDirs ){
-            foreach(static::MODULES_UPLOAD_DIRS as $moduleUploadDir){
-                $subdirectories = array_merge($subdirectories, static::getFoldersTreesForUploadModuleDir($moduleUploadDir, $includeMainFolder) );
-            }
-        }else{
-            foreach(static::MODULES_UPLOAD_DIRS as $moduleUploadDir){
-                $subdirectories[$moduleUploadDir] = static::getFoldersTreesForUploadModuleDir($moduleUploadDir, $includeMainFolder);
-            }
-        }
-
-        return $subdirectories;
-    }
-
-    /**
-     * @param string $uploadModuleDir
-     * @param bool $includeMainFolder
-     * @return array|false
-     * @throws Exception
-     */
-    public static function getFoldersTreesForUploadModuleDir(string $uploadModuleDir, $includeMainFolder = false)
-    {
-        $targetDirectoryForModuleUploadDir = static::getTargetDirectoryForUploadModuleDir($uploadModuleDir);
-        $foldersTrees                      = DirectoriesHandler::buildFoldersTreeForDirectory( new DirectoryIterator( $targetDirectoryForModuleUploadDir ), true );
-
-        if( $includeMainFolder ){
-            $subdirectories[static::KEY_MAIN_FOLDER] = "";
-        }
-
-        return $foldersTrees;
-    }
-
-    /**
      * Will return the upload module name for file path
      *
      * @param string $filepath
@@ -188,4 +148,24 @@ class FileUploadController extends AbstractController {
 
         return $moduleName;
     }
+
+    /**
+     * Will return upload dirs ony for unlocked modules
+     *
+     * @return array
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getUploadModulesDirsForNonLockedModule(): array
+    {
+        $uploadDirsForModulesNames = [];
+        foreach(self::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES as $moduleName => $uploadDir){
+            if( $this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName, false) ){
+                $uploadDirsForModulesNames[$moduleName] = $uploadDir;
+            }
+        }
+
+        return $uploadDirsForModulesNames;
+    }
+
 }
