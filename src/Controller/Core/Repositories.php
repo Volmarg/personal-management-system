@@ -1147,26 +1147,30 @@ class Repositories extends AbstractController {
             if( $classMeta->hasField($parameter) ){
                 $fieldMapping = $classMeta->getFieldMapping($parameter);
                 $fieldType    = $fieldMapping['type'];
+                $usedProperty = $parameter;
             }elseif( $classMeta->hasField($ucFirstParameter) ){
                 $fieldMapping = $classMeta->getFieldMapping($ucFirstParameter);
                 $fieldType    = $fieldMapping['type'];
+                $usedProperty = $ucFirstParameter;
             }elseif( $classMeta->hasField($camelCasedParameter) ){
                 $fieldMapping = $classMeta->getFieldMapping($camelCasedParameter);
                 $fieldType    = $fieldMapping['type'];
+                $usedProperty = $camelCasedParameter;
             }elseif(
                     $classMeta->hasAssociation($parameter)
                 ||  $classMeta->hasAssociation($ucFirstParameter)
                 ||  $classMeta->hasAssociation($camelCasedParameter)
             ){
-                $fieldType = self::FIELD_TYPE_ENTITY;
+                $fieldType    = self::FIELD_TYPE_ENTITY;
+                $usedProperty = $ucFirstParameter;
             }else{
                 throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
             }
 
-            $methodName  = 'set' . $ucFirstParameter;
-
-            if( !property_exists($recordClassName, $methodName) ){
-                $methodName = 'set' . ucfirst($ucFirstParameter);
+            if( property_exists($recordClassName, $usedProperty) ){
+                $methodName = 'set' . ucfirst($usedProperty);
+            }else{
+                throw new Exception("Could not build the setter for property: {$usedProperty}, as no such property exists in class: {$recordClassName}");
             }
 
             $hasRelation = strstr($methodName, '_id');
