@@ -449,6 +449,8 @@ charts:
     types:
       withBills: With bills
       withoutBills: Without bills
+  savings:
+    label: Saved
 
 datatables:
   table:

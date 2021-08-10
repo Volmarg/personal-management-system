@@ -242,7 +242,7 @@ class ReportAction extends AbstractController {
     /**
      * @return Response
      * @throws DBALException
-     * 
+     *
      */
     private function renderChartPaymentsTotalAmountForEachMonth(): Response {
 
@@ -302,7 +302,7 @@ class ReportAction extends AbstractController {
         $paymentsTotalForEachMonth = $this->controllers->getReportsControllers()->buildPaymentsSummariesForMonthsAndYears();
         $allIncomes                = $this->controllers->getMyPaymentsIncomeController()->getAllNotDeletedSummedByYearAndMonth();
         $customColor               = Utils::randomHexColor();
-        $groupName                 = $this->app->translator->translate("reports.saviingsCharts.group");
+        $groupName                 = $this->app->translator->translate("charts.savings.label");
 
         $chartValues = [
             $groupName => [] // required by front js lib - shown on amount box hover
