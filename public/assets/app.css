@@ -95513,6 +95513,10 @@ button.color-picker {
   height: 31px !important;
 }
 
+.apexcharts-tooltip .apexcharts-tooltip-series-group {
+  height: 22px;
+}
+
 /* My-scsses */
 #loader {
   transition: all 0.3s ease-in-out;

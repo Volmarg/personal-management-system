@@ -231,13 +231,6 @@ export default class ApexChartsHandler {
                 min: 0,
                 max: Math.ceil((maxValueInSets + 1/3 * maxValueInSets))
             },
-            tooltip: {
-                shared: false,
-                intersect: true,
-                x: {
-                    show: false
-                }
-            },
             legend: {
                 horizontalAlign: "center",
                 offsetY: 0,
