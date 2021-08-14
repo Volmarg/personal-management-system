@@ -53,10 +53,7 @@ export default class EditViaTinyMceAction extends AbstractAction {
                     _this.prismHighlight.highlightCode();
                 }
 
-                // used for example to suppress propagating accordion open/close
-                if( preventFurtherEventPropagation ){
-                    event.stopPropagation();
-                }
+                AbstractAction.preventAccordionEventPropagation(event);
             });
         });
     };

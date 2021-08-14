@@ -32,3 +32,5 @@ dialogs:
   uploadModuleSettings:
     moveFolder:
       header: Move folder
+  editBill:
+    header: Edit bill

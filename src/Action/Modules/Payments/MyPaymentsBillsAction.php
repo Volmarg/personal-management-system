@@ -173,11 +173,10 @@ class MyPaymentsBillsAction extends AbstractController {
      * @throws MappingException
      */
     public function updateBill(Request $request) {
-        $parameters    = $request->request->all();
-        $entityId      = trim(trim($parameters['id']));
-
-        $entity         = $this->controllers->getMyPaymentsBillsController()->findOneById($entityId);
-        $response       = $this->app->repositories->update($parameters, $entity);
+        $parameters = $request->request->all();
+        $entityId   = $request->request->getInt("id");
+        $entity     = $this->controllers->getMyPaymentsBillsController()->findOneById($entityId);
+        $response   = $this->app->repositories->update($parameters, $entity);
 
         return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
     }

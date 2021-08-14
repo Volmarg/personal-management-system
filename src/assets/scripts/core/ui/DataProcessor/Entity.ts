@@ -1566,12 +1566,12 @@ export default class Entity extends AbstractDataProcessor {
             return null;
         },
         makeUpdateData($baseElement?: JQuery<HTMLElement>): DataProcessorDto | null {
-            let id              = $($baseElement).find('.id').html();
-            let name            = $($baseElement).find('.name').html();
-            let information     = $($baseElement).find('.information').html();
-            let startDate       = $($baseElement).find('.startDate').val();
-            let endDate         = $($baseElement).find('.endDate').val();
-            let plannedAmount   = $($baseElement).find('.plannedAmount').html();
+            let id              = $($baseElement).find('.id').val();
+            let name            = $($baseElement).find('.name input').val();
+            let information     = $($baseElement).find('.information input').val();
+            let startDate       = $($baseElement).find('.start-date input').val();
+            let endDate         = $($baseElement).find('.end-date input').val();
+            let plannedAmount   = $($baseElement).find('.planned-amount input').val();
 
             let successMessage = AbstractDataProcessor.messages.entityUpdateSuccess(Entity.MyPaymentsBills.processorName);
             let failMessage    = AbstractDataProcessor.messages.entityUpdateFail(Entity.MyPaymentsBills.processorName);

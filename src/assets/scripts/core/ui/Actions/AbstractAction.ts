@@ -8,11 +8,15 @@ import DataProcessorLoader          from "../DataProcessor/DataProcessorLoader";
 import StringUtils                  from "../../utils/StringUtils";
 import DataProcessorDto             from "../../../DTO/DataProcessorDto";
 import AjaxEvents                   from "../../ajax/AjaxEvents";
+import Accordion                    from "../../../libs/accordion/Accordion";
+import ClickEvent = JQuery.ClickEvent;
 
 /**
  * @description Contain logic/ attributes/ variables etc. common for all the actions which are extending inheriting from it
  */
 export default abstract class AbstractAction {
+
+    static readonly DATA_ATTRIBUTE_IS_ACCORDION_ACTION = "data-is-accordion-action"
 
     /**
      * @type Object
@@ -244,5 +248,21 @@ export default abstract class AbstractAction {
         this.bootstrapNotify.showGreenNotification(message);
     };
 
+    /**
+     * @description Will attach logic which prevents the accordion to expand when clicking on action button
+     */
+    public static preventAccordionEventPropagation(event: ClickEvent){
+        let $targetElement    = $(event.currentTarget);
+        let $accordionSection = $targetElement.closest(Accordion.selectors.classes.accordionSectionClass);
+        if(
+                DomElements.doElementsExists($accordionSection)
+            &&  (
+                        $targetElement.is(`[${AbstractAction.DATA_ATTRIBUTE_IS_ACCORDION_ACTION}]`)
+                    ||  DomElements.doElementsExists($targetElement.closest(`[${AbstractAction.DATA_ATTRIBUTE_IS_ACCORDION_ACTION}]`))
+                )
+        ){
+            event.stopPropagation();
+        }
+    };
 
 }

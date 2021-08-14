@@ -147,6 +147,22 @@ export default class DialogLogic {
     }
 
     /**
+     * @description contains definition of logic for update bill dialog
+     */
+    public static updateBill()
+    {
+        let callback = (dialogWrapper?: JQuery<HTMLElement>) => {
+            let updateAction  = new UpdateAction();
+            updateAction.init();
+        };
+
+        let dialogDataDto = new DialogDataDto();
+        dialogDataDto.callback = callback
+
+        return dialogDataDto;
+    }
+
+    /**
      * @description contains definition of updating tags via dialog
      */
     public static tagsUpdate(): DialogDataDto

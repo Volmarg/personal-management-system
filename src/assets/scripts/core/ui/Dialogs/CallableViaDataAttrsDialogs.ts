@@ -4,7 +4,8 @@ import Ajax             from "../../ajax/Ajax";
 import DialogDataDto    from "../../../DTO/DialogDataDto";
 import BootboxWrapper   from "../../../libs/bootbox/BootboxWrapper";
 import Dialog           from "./Dialog";
-import StringUtils     from "../../utils/StringUtils";
+import StringUtils      from "../../utils/StringUtils";
+import AbstractAction   from "../Actions/AbstractAction";
 
 export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
 
@@ -21,6 +22,7 @@ export default class CallableViaDataAttrsDialogs extends AbstractDialogs {
         elements.off('click');
         elements.on('click', function(event){
             let $clickedElement = $(event.currentTarget);
+            AbstractAction.preventAccordionEventPropagation(event);
 
             let requestMethod  = $clickedElement.attr(_this.data.requestMethod);
             let requestUrl     = $clickedElement.attr(_this.data.requestUrl);

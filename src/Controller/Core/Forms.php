@@ -4,6 +4,7 @@ namespace App\Controller\Core;
 use App\Action\Core\FormsAction;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Issues\MyIssue;
+use App\Entity\Modules\Payments\MyPaymentsBills as MyPaymentsBillsEntity;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Form\Files\MoveSingleFileType;
 use App\Form\Files\UpdateTagsType;
@@ -82,8 +83,8 @@ class Forms extends AbstractController {
         return $this->createForm(MyNotesType::class, null, $params);
     }
 
-    public function paymentsBillsForm(array $params = []): FormInterface {
-        return $this->createForm(MyPaymentsBills::class, null, $params);
+    public function paymentsBillsForm(array $params = [], ?MyPaymentsBillsEntity $data = null): FormInterface {
+        return $this->createForm(MyPaymentsBills::class, $data, $params);
     }
 
     public function paymentsBillsItemsForm(array $params = []): FormInterface {

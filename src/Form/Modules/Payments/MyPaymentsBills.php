@@ -41,7 +41,7 @@ class MyPaymentsBills extends AbstractType {
                     'autocomplete'              => 'off'
                 ],
                 'widget'    => 'single_text',
-                'format'    => 'y-M-d',
+                'format'    => 'y-MM-dd',
                 'label'     => $this->app->translator->translate('forms.MyPaymentsBills.labels.startDate'),
                 'html5'     => false,
             ])
@@ -54,7 +54,7 @@ class MyPaymentsBills extends AbstractType {
                     'autocomplete'              => 'off'
                 ],
                 'widget'    => 'single_text',
-                'format'    => 'y-M-d',
+                'format'    => 'y-MM-dd',
                 'label'     => $this->app->translator->translate('forms.MyPaymentsBills.labels.endDate'),
                 'html5'     => false,
             ])

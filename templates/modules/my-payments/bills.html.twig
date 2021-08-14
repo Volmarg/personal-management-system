@@ -65,6 +65,26 @@
                                                                 {{ bill.plannedAmount }}
                                                             </span>
                                                            ({{ bill.startDate|date("Y-m-d") }} - {{ bill.endDate|date("Y-m-d") }})
+
+                                                           {# Actions #}
+                                                           <span class="action pointer float-right bill-edit"
+                                                                 data-is-accordion-action
+                                                                 data-entity-id="{{ bill.id }}"
+                                                                 data-entity-detials-action="true"
+                                                                 data-dialog-call-request-url="{{ path('dialog_body_update_bill') }}"
+                                                                 data-dialog-call-request-method="POST"
+                                                                 data-dialog-call-request-post-parameters='{
+                                                                    "entityId": "{{ bill.id }}"
+                                                                }'
+                                                                data-call-dialog-on-click="true"
+                                                                data-dialog-name="updateBill"
+                                                                data-toggle-popover="true"                          {# popover attr #}
+                                                                data-content="{{ 'actions.popover.edit' | trans }}" {# popover attr #}
+                                                                data-placement="right"                              {# popover attr #}
+                                                            >
+                                                              <i class="far fa-edit"></i>
+                                                            </span>
+
                                                        </h3>
                                                        <section>
                                                            {% include 'modules/my-payments/components/bills-items-table.html.twig' %}

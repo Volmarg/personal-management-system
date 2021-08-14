@@ -52,6 +52,7 @@ class DialogsAction extends AbstractController
     const TWIG_TEMPLATE_DIALOG_BODY_EDIT_TRAVEL_IDEA         = 'page-elements/components/dialogs/bodies/edit-travel-idea.twig';
     const TWIG_TEMPLATE_NOTE_EDIT_MODAL                      = 'modules/my-notes/components/note-edit-modal-body.html.twig';
     const TWIG_TEMPLATE_UNAUTHORIZED_ACCESS                  = 'page-elements/components/dialogs/bodies/unauthorized-access.twig';
+    const TWIG_TEMPLATE_DIALOG_BODY_UPDATE_BILL              = 'page-elements/components/dialogs/bodies/update-bill.twig';
     const KEY_FILE_CURRENT_PATH                              = 'fileCurrentPath';
     const KEY_MODULE_NAME                                    = 'moduleName';
     const KEY_ENTITY_ID                                      = "entityId";
@@ -787,6 +788,64 @@ class DialogsAction extends AbstractController
             ];
 
             $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_ISSUE, $templateData)->getContent();
+
+        }catch(Exception $e){
+            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $success = false;
+            $this->app->logExceptionWasThrown($e);
+        }
+
+        $ajaxResponse->setCode($code);
+        $ajaxResponse->setTemplate($template);
+        $ajaxResponse->setSuccess($success);
+
+        $jsonResponse = $ajaxResponse->buildJsonResponse();
+
+        return $jsonResponse;
+    }
+
+    /**
+     * @Route("/dialog/body/update-bill", name="dialog_body_update_bill", methods="POST")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function buildUpdateBillDataDialogBody(Request $request): JsonResponse
+    {
+        $ajaxResponse = new AjaxResponse();
+        $code         = Response::HTTP_OK;
+        $template     = "";
+        $success      = true;
+
+        try{
+            if( !$request->request->has(self::KEY_ENTITY_ID) ){
+                $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_ENTITY_ID;
+
+                $ajaxResponse->setMessage($message);
+                $ajaxResponse->setSuccess(false);
+                $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajaxResponse->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $entityId = $request->request->getInt(self::KEY_ENTITY_ID);
+            $bill     = $this->controllers->getMyPaymentsBillsController()->findOneById($entityId);
+
+            if( is_null($bill) ){
+                $message = $this->app->translator->translate("messages.general.noEntityWasFoundForId");
+
+                $ajaxResponse->setMessage($message . $entityId);
+                $ajaxResponse->setSuccess(false);
+                $ajaxResponse->setCode(Response::HTTP_BAD_REQUEST);
+                $jsonResponse = $ajaxResponse->buildJsonResponse();
+                return $jsonResponse;
+            }
+
+            $templateData = [
+                'bill_form' => $this->app->forms->paymentsBillsForm([], $bill)->createView(),
+                'id'        => $entityId,
+            ];
+
+            $template = $this->render(self::TWIG_TEMPLATE_DIALOG_BODY_UPDATE_BILL, $templateData)->getContent();
 
         }catch(Exception $e){
             $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
