@@ -52,7 +52,6 @@
         "symfony/twig-bundle": "^5.0",
         "symfony/validator": "^5.0",
         "symfony/webpack-encore-bundle": "^1.4",
-        "symfony/webpack-encore-pack": "^1.0",
         "symfony/yaml": "^5.0",
         "tinymce/tinymce": "^5.0",
         "twig/extensions": "^1.5",
