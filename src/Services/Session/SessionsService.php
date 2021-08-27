@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Services\Session;
-
 
 use App\Controller\Core\Application;
 use DateTime;
@@ -10,13 +8,13 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-
-
 /**
  * Class SessionsService
  * @package App\Services\Session
  */
 class SessionsService extends AbstractController {
+
+    const KEY_ENCRYPTION_KEY = "ENCRYPTION_KEY";
 
     /**
      * @var SessionInterface $session
@@ -52,4 +50,27 @@ class SessionsService extends AbstractController {
         $this->app     = $app;
     }
 
+    /**
+     * @param string $encryptionKey
+     */
+    public function setEncryptionKey(string $encryptionKey): void
+    {
+        $this->session->set(self::KEY_ENCRYPTION_KEY, $encryptionKey);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasEncryptionKey(): bool
+    {
+        return $this->session->has(self::KEY_ENCRYPTION_KEY);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEncryptionKey()
+    {
+        return $this->session->get(self::KEY_ENCRYPTION_KEY);
+    }
 }

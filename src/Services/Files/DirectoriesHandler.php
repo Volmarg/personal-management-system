@@ -377,22 +377,22 @@ class DirectoriesHandler {
             if ( $node->isDir() && !$node->isDot() )
             {
                 $pathname   = $node->getPathname();
-                $moduleName = FileUploadController::getUploadModuleNameForFilePath($pathname);
                 $foldername = $node->getFilename();
                 $key        = ( $useFoldername ? $foldername : $pathname);
 
-                if(
-                        !$includeLocked
-                    &&  !self::$lockedResourceController->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $moduleName, false)
-                ) {
-                    continue; // skip that folder
+                if(!$includeLocked){
+                    $moduleName = FileUploadController::getUploadModuleNameForFilePath($pathname);
+
+                    if( !self::$lockedResourceController->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $moduleName, false) ) {
+                        continue; // skip that folder
+                    }
                 }
 
                 if( !$flatten ){
-                    $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                    $data[$key] = static::buildFoldersTreeForDirectory( new DirectoryIterator($pathname), false, false, $includeLocked );
                 }else{
                     $data[]          = $key;
-                    $recursionResult = static::buildFoldersTreeForDirectory( new DirectoryIterator( $pathname ) );
+                    $recursionResult = static::buildFoldersTreeForDirectory( new DirectoryIterator($pathname), false, false, $includeLocked );
                     $data            = array_merge($data, array_keys($recursionResult));
                     $data            = array_filter($data);
                     $data            = array_unique($data);

@@ -140,7 +140,7 @@ class FileUploadController extends AbstractController {
         $uploadModuleDir = $matches[self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME];
 
         if( !array_key_exists($uploadModuleDir,FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME) ){
-            $message = "Given upload_module_dir is not an upload module dir";
+            $message = "Given upload_module_dir is not an upload module dir: " . $filepath;
             throw new Exception($message);
         }
 
