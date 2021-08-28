@@ -73,7 +73,10 @@
                                  data-groups="{{ tags }}"                              {# shuffle attr #}
                                  data-date-created="2016-08-12"                        {# shuffle attr #}
                                  data-title="{{ image[KEY_FILE_NAME] }}"               {# shuffle attr #}
-                                 data-src="/{{ image[KEY_FILE_FULL_PATH] }}"           {# lightgallery attr #}
+                                 data-src="{{ generateUrlForGettingDecryptedFileContent('/' ~ image[KEY_FILE_FULL_PATH], getSessionId()) }}" {# lightgallery attr #}
+                                 data-download-url="{{ url('download_decrypted_file', {
+                                     filePath: ('/' ~ image[KEY_FILE_FULL_PATH])
+                                 }) }}"
                                  data-unique-id="{{ loop.index0 }}"
                                  data-toggle-popover="true"                     {# popover attr #}
                                  data-html="true"                               {# popover attr #}
@@ -107,7 +110,10 @@
                                             {% set imgSrc = image[KEY_MINIATURE_PATH] %}
                                         {% endif %}
 
-                                        <img src="/{{ imgSrc }}" data-src-real="/{{ image[KEY_FILE_FULL_PATH] }}" alt="{{ image[KEY_FILE_NAME] }}" class="light-gallery-image"/>
+                                        <img src="{{ generateUrlForGettingDecryptedFileContent('/' ~ imgSrc, getSessionId()) }}"
+                                             data-src-real="/{{ image[KEY_FILE_FULL_PATH] }}"
+                                             alt="{{ image[KEY_FILE_NAME] }}"
+                                             class="light-gallery-image"/>
 
                                         <div class="caption-wrapper"></div>
                                         <span class="caption-text-holder image_{{ loop.index0 }}" data-filename="{{ image[KEY_FILE_NAME] }}">

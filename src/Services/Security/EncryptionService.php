@@ -121,6 +121,36 @@ class EncryptionService
     }
 
     /**
+     * Will decrypt the file
+     *
+     * @param string $encryptedFilePath
+     * @return string
+     */
+    public function decryptFileContent(string $encryptedFilePath): string
+    {
+        try{
+
+            if( !file_exists($encryptedFilePath) ){
+                $message = "Encrypted file does not exist: " . $encryptedFilePath;
+                $this->logger->warning($message);
+                throw new Exception($message);
+            }
+
+            $encryptedFileContent = file_get_contents($encryptedFilePath);
+            $decryptedFileContent = $this->encryptor->decrypt($encryptedFileContent);
+
+            return $decryptedFileContent;
+
+        }catch(Exception | \TypeError $e){
+            $this->logger->critical("Exception was thrown", [
+                "message" => $e->getMessage(),
+                "trace"   => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
      * Will set encryption based on settings / provided data, decides how key will be obtained:
      * - from session (if provided via form etc.)
      * - from yaml (if hardcoded in configuration files)
@@ -128,7 +158,7 @@ class EncryptionService
      *
      * @param string|null $encryptionKey
      */
-    private function setEncryptionKey(?string $encryptionKey = null): void
+    public function setEncryptionKey(?string $encryptionKey = null): void
     {
         $this->encryptionKey = $encryptionKey;
         if( is_null($encryptionKey) ){

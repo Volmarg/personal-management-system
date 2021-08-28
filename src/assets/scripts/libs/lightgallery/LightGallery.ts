@@ -22,6 +22,9 @@ import 'lightgallery/modules/lg-zoom'
 import 'lightgallery/dist/css/lightgallery.min.css'
 import 'lightgallery/dist/css/lg-transitions.min.css'
 
+/**
+ * @link https://sachinchoolur.github.io/lightgallery.js/docs/api.html - old but still useful
+ */
 export default class LightGallery {
 
     /**
@@ -67,7 +70,7 @@ export default class LightGallery {
     };
 
     /**
-     * @type Object 
+     * @type Object
      */
     private keys = {
         KEY_FILE_FULL_PATH : "file_full_path"
@@ -143,7 +146,7 @@ export default class LightGallery {
 
     private addPlugins(){
         this.addPluginRemoveFile();
-        this.addPluginRenameFile(); 
+        this.addPluginRenameFile();
         this.addPluginTransferFile();
         this.addPluginManageFileTags();
     };
@@ -562,8 +565,8 @@ export default class LightGallery {
             event.stopImmediatePropagation();
         })
 
-    }; 
-     
+    };
+
     /**
      * This function will handle toggling disability for mass action buttons, at least one image must be checked
      * to remove the disabled class.

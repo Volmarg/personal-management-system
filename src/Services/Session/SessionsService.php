@@ -4,7 +4,6 @@ namespace App\Services\Session;
 
 use App\Controller\Core\Application;
 use DateTime;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -29,7 +28,7 @@ class SessionsService extends AbstractController {
     /**
      * @var Application $app
      */
-    protected $app;
+    protected $app = null;
 
     /**
      * @return SessionInterface
@@ -41,10 +40,9 @@ class SessionsService extends AbstractController {
     /**
      * SessionsService constructor.
      * @param SessionInterface $session
-     * @param Application $app
-     * @throws Exception
+     * @param Application|null $app
      */
-    public function __construct(SessionInterface $session, Application $app) {
+    public function __construct(SessionInterface $session, ?Application $app) {
         $this->session = $session;
         $this->now     = new DateTime();
         $this->app     = $app;
