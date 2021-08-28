@@ -53,6 +53,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         parent::__construct(self::$defaultName);
 
         $this->app                        = $app;
+        $this->controllers                = $controllers;
         $this->notifierProxyLoggerService = $notifierProxyLoggerService;
     }
 
