@@ -24,6 +24,8 @@ use GuzzleHttp\Exception\GuzzleException;
 class NotifierProxyLoggerService
 {
 
+    const MESSAGE_TITLE_PREFIX_SCHEDULE = "[PMS Calendar schedule] ";
+
     /**
      * @var NotifierProxyLoggerBridge $notifierProxyLoggerBridge
      */
@@ -61,7 +63,7 @@ class NotifierProxyLoggerService
             $request           = new InsertDiscordMessageRequest();
 
             $discordMessageDto->setWebhookName(NotifierProxyLoggerBridge::WEBHOOK_NAME_ALL_NOTIFICATIONS);
-            $discordMessageDto->setMessageTitle($incomingScheduleDTO->getTitle());
+            $discordMessageDto->setMessageTitle(self::MESSAGE_TITLE_PREFIX_SCHEDULE . $incomingScheduleDTO->getTitle());
             $discordMessageDto->setMessageContent($incomingScheduleDTO->getBody());
             $discordMessageDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
 
@@ -92,7 +94,7 @@ class NotifierProxyLoggerService
             $mailDto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
             $mailDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
             $mailDto->setFromEmail($this->app->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
-            $mailDto->setSubject($incomingScheduleDTO->getTitle());
+            $mailDto->setSubject(self::MESSAGE_TITLE_PREFIX_SCHEDULE . $incomingScheduleDTO->getTitle());
             $mailDto->setBody($incomingScheduleDTO->getBody());
 
             $request->setMailDto($mailDto);
