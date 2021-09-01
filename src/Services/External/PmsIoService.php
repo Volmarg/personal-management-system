@@ -154,7 +154,7 @@ class PmsIoService
             $insertNotesRequest = new InsertNotesRequest();
             foreach($notes as $note){
                 $encryptedTitle = $this->encryptor->encrypt($note->getTitle());
-                $encryptedBody  = $this->encryptor->encrypt($note->getBody());
+                $encryptedBody  = $this->encryptor->encrypt($note->getBody() ?? "");
 
                 $noteDto = new NoteDTO();
                 $noteDto->setId($note->getId());
