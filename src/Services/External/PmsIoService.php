@@ -79,8 +79,8 @@ class PmsIoService
             $insertPasswordsRequest = new InsertPasswordsRequest();
             foreach($passwords as $password){
                 $encryptedLogin       = $this->encryptor->encrypt($password->getLogin());
-                $encryptedUrl         = $this->encryptor->encrypt($password->getUrl());
-                $encryptedDescription = $this->encryptor->encrypt($password->getDescription());
+                $encryptedUrl         = $this->encryptor->encrypt($password->getUrl()) ?? "";
+                $encryptedDescription = $this->encryptor->encrypt($password->getDescription() ?? "");
                 $encryptedPassword    = $this->encryptor->encrypt($password->getPassword());
 
                 $passwordDto = new PasswordDTO();
@@ -195,8 +195,8 @@ class PmsIoService
                 $noteCategoryDto = new NoteCategoryDTO();
                 $noteCategoryDto->setId($noteCategory->getId());
                 $noteCategoryDto->setParentId($noteCategory->getParentId() ?? "");
-                $noteCategoryDto->setColor($noteCategory->getColor());
-                $noteCategoryDto->setIcon($noteCategory->getIcon());
+                $noteCategoryDto->setColor($noteCategory->getColor() ?? "");
+                $noteCategoryDto->setIcon($noteCategory->getIcon() ?? "");
                 $noteCategoryDto->setName($encryptedName);
 
                 $notesCategoriesToInsert[] = $noteCategoryDto;
