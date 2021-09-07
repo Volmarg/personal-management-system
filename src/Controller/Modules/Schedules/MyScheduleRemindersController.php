@@ -51,4 +51,15 @@ class MyScheduleRemindersController extends AbstractController {
         return $this->app->repositories->myScheduleReminderRepository->findOneById($id);
     }
 
+    /**
+     * Will remove the reminder entity
+     *
+     * @param MyScheduleReminder $reminder
+     * @throws ORMException
+     */
+    public function removeReminder(MyScheduleReminder $reminder): void
+    {
+        $this->app->repositories->myScheduleReminderRepository->removeReminder($reminder);
+    }
+
 }

@@ -147,7 +147,7 @@ class MySchedulesAction extends AbstractController {
             $successMessage = $this->app->translator->translate('schedules.schedule.message.scheduleHasBeenCreated');
             if( !empty($scheduleId) ){
                 $successMessage = $this->app->translator->translate('schedules.schedule.message.scheduleHasBeenUpdated');
-                $schedule = $this->controllers->getMySchedulesController()->findOneScheduleById($scheduleId);
+                $schedule       = $this->controllers->getMySchedulesController()->findOneScheduleById($scheduleId);
                 if( empty($schedule) ){
 
                     $message = $this->app->translator->translate('schedules.schedule.message.noScheduleHasBeenFoundForId', [
@@ -173,12 +173,25 @@ class MySchedulesAction extends AbstractController {
             $this->app->beginTransaction();
             {
                 try{
-                    if( !empty($reminders) ){
-                        $schedule->setMyScheduleReminders([]); //it's easier this way to remove all and set anew
-                        $this->controllers->getMySchedulesController()->saveSchedule($schedule);
 
+                    $reminderEntitiesToSave = [];
+                    if( !empty($reminders) ){
                         $remindersDatesArray = explode(",", $reminders);
                         $remindersDatesArray = array_unique($remindersDatesArray);
+
+                        foreach($schedule->getMyScheduleReminders() as $existingScheduleReminder){
+                            $reminderAsDateTimeString = $existingScheduleReminder->getDate()->format("Y-m-d H:i"); // seconds are not delivered from front
+
+                            // handle old existing reminders, decide new to create, remove no longer present on front
+                            if( in_array($reminderAsDateTimeString, $remindersDatesArray) ){
+                                $reminderEntitiesToSave[]         = $existingScheduleReminder;
+                                $keyFromDateInRemindersDatesArray = array_search($reminderAsDateTimeString, $remindersDatesArray);
+
+                                unset($remindersDatesArray[$keyFromDateInRemindersDatesArray]);
+                            }else{
+                                $this->controllers->getMyScheduleReminderController()->removeReminder($existingScheduleReminder);
+                            }
+                        }
 
                         foreach($remindersDatesArray as $reminderDate){
                             $reminder = new MyScheduleReminder();
@@ -186,12 +199,12 @@ class MySchedulesAction extends AbstractController {
                             $reminder->setSchedule($schedule);
 
                             $this->controllers->getMyScheduleReminderController()->saveReminder($reminder);
-                            $schedule->addMyScheduleReminder($reminder);
+                            $reminderEntitiesToSave[] = $reminder;
                         }
-
-                    }else{
-                        $this->controllers->getMySchedulesController()->saveSchedule($schedule);
                     }
+
+                    $schedule->setMyScheduleReminders($reminderEntitiesToSave);
+                    $this->controllers->getMySchedulesController()->saveSchedule($schedule);
                 }catch(Exception|TypeError $e){
                     $this->app->rollbackTransaction();
                     throw $e;

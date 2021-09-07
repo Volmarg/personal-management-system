@@ -60,4 +60,16 @@ class MyScheduleReminderRepository extends ServiceEntityRepository
         return $results;
     }
 
+    /**
+     * Will remove the reminder entity
+     *
+     * @param MyScheduleReminder $reminder
+     * @throws ORMException
+     */
+    public function removeReminder(MyScheduleReminder $reminder): void
+    {
+        $this->_em->remove($reminder);
+        $this->_em->flush();
+    }
+
 }
