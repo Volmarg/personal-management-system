@@ -2,7 +2,7 @@ monolog:
     handlers:
         main:
             type: fingers_crossed
-            action_level: warning
+            action_level: info
             handler: nested
             channels: [ "!event", "!doctrine", "!security" ]
             excluded_404s:
