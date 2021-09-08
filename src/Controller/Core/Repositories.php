@@ -1165,7 +1165,7 @@ class Repositories extends AbstractController {
                 ||  $classMeta->hasAssociation($ucFirstParameter)
                 ||  $classMeta->hasAssociation($camelCasedParameter)
             ){
-                $fieldType    = self::FIELD_TYPE_ENTITY;
+                $fieldType = self::FIELD_TYPE_ENTITY;
                 if( property_exists($recordClassName, $parameter) ){
                     $usedProperty = $parameter;
                 }elseif( property_exists($recordClassName, $ucFirstParameter) ){
@@ -1173,7 +1173,7 @@ class Repositories extends AbstractController {
                 }elseif( property_exists($recordClassName, $camelCasedParameter) ){
                     $usedProperty = $camelCasedParameter;
                 }else{
-                    throw new Exception("Non of given properties: {$jsonsOfAllPossiblePropertyForms} ,exists in class, as no such property exists in class: {$recordClassName}");
+                    throw new Exception("Non of given properties: {$jsonsOfAllPossiblePropertyForms} exists in class: {$recordClassName}");
                 }
             }else{
                 throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
