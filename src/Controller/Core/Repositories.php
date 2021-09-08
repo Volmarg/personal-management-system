@@ -1143,6 +1143,10 @@ class Repositories extends AbstractController {
             $ucFirstParameter    = ucfirst($parameter);
             $camelCasedParameter = Application::snakeCaseToCamelCaseConverter($parameter);
 
+            $jsonsOfAllPossiblePropertyForms = json_encode([
+               $parameter, $ucFirstParameter, $camelCasedParameter
+            ]);
+
             // this is needed to detect the type of field as doctrine sometimes want objects for it's internal mapping
             if( $classMeta->hasField($parameter) ){
                 $fieldMapping = $classMeta->getFieldMapping($parameter);
@@ -1162,17 +1166,20 @@ class Repositories extends AbstractController {
                 ||  $classMeta->hasAssociation($camelCasedParameter)
             ){
                 $fieldType    = self::FIELD_TYPE_ENTITY;
-                $usedProperty = $ucFirstParameter;
+                if( property_exists($recordClassName, $parameter) ){
+                    $usedProperty = $parameter;
+                }elseif( property_exists($recordClassName, $ucFirstParameter) ){
+                    $usedProperty = $ucFirstParameter;
+                }elseif( property_exists($recordClassName, $camelCasedParameter) ){
+                    $usedProperty = $camelCasedParameter;
+                }else{
+                    throw new Exception("Non of given properties: {$jsonsOfAllPossiblePropertyForms} ,exists in class, as no such property exists in class: {$recordClassName}");
+                }
             }else{
                 throw new Exception("There is no field mapping at all for this parameter ({$parameter})?");
             }
 
-            if( property_exists($recordClassName, $usedProperty) ){
-                $methodName = 'set' . ucfirst($usedProperty);
-            }else{
-                throw new Exception("Could not build the setter for property: {$usedProperty}, as no such property exists in class: {$recordClassName}");
-            }
-
+            $methodName  = 'set' . ucfirst($usedProperty);
             $hasRelation = strstr($methodName, '_id');
             $methodName  = ( $hasRelation ? str_replace('_id', 'Id', $methodName) : $methodName);
 
