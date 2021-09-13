@@ -31,7 +31,7 @@ class MyPaymentsOwedType extends AbstractType
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * 
+     *
      * @throws Exception
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -85,6 +85,7 @@ class MyPaymentsOwedType extends AbstractType
                     'class'                                          => 'selectpicker',
                     'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
                     'data-append-classes-to-bootstrap-select-button' => 'm-0',
+                    'data-live-search'                               => 'true',
                 ],
             ])
             ->add('owedByMe', RoundcheckboxType::class, [

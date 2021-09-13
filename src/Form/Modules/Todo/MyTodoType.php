@@ -83,7 +83,8 @@ class MyTodoType extends AbstractType
                     'data-hide-dom-element'                          => '',
                     'data-hide-dom-element-target-selector'          => '#' . $displayOnDashboardId,
                     'data-hide-dom-element-target-parent-selector'   => '.row',
-                    'data-hide-dom-element-for-options-values'       => $toggleDisplayOnDashboardForModulesIds
+                    'data-hide-dom-element-for-options-values'       => $toggleDisplayOnDashboardForModulesIds,
+                    'data-live-search'                               => 'true',
                 ]
             ])
             ->add(MyTodo::FIELD_DISPLAY_ON_DASHBOARD,RoundcheckboxType::class,[

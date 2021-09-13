@@ -31,7 +31,7 @@ class AchievementType extends AbstractType {
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
-     * 
+     *
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
 
@@ -49,6 +49,7 @@ class AchievementType extends AbstractType {
                     "class" => 'selectpicker',
                     'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
                     'data-append-classes-to-bootstrap-select-button' => 'm-0',
+                    'data-live-search'                               => 'true',
                 ]
             ])
             ->add(self::KEY_SUBMIT, SubmitType::class, [

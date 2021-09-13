@@ -44,7 +44,8 @@ class MoveSingleFileType extends AbstractType
                 'choices' => $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule(),
                 'attr'    => [
                     'class'                        => 'form-control listFilterer selectpicker',
-                    'data-dependent-list-selector' => '#move_single_file_target_subdirectory_path'
+                    'data-dependent-list-selector' => '#move_single_file_target_subdirectory_path',
+                    'data-live-search'             => 'true',
                 ],
                 'label' => $this->app->translator->translate('forms.MoveSingleFileType.labels.targetUploadModuleDir')
             ])

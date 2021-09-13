@@ -37,7 +37,8 @@ class MyTodoElementType extends AbstractType
                 },
                 'label' => $this->app->translator->translate('forms.MyTodoElementType.todo'),
                 "attr"  => [
-                    "class" => 'selectpicker'
+                    "class"            => 'selectpicker',
+                    'data-live-search' => 'true',
                 ]
             ])
             ->add('add', SubmitType::class, [

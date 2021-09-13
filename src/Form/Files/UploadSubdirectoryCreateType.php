@@ -47,7 +47,7 @@ class UploadSubdirectoryCreateType extends AbstractType
                     'data-dependent-list-selector'                   => '#upload_subdirectory_create_subdirectory_target_path_in_module_upload_dir',
                     'data-append-classes-to-bootstrap-select-parent' => 'bootstrap-select-width-100',
                     'data-append-classes-to-bootstrap-select-button' => 'm-0',
-
+                    'data-live-search'                               => 'true',
                 ],
                 'label' => $this->app->translator->translate('forms.UploadSubdirectoryCreateType.labels.uploadModuleDir')
             ])

@@ -47,7 +47,8 @@ class UploadSubdirectoryCopyDataType extends AbstractType
                 'choices' => $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule(),
                 'attr'    => [
                     'class'                        => 'form-control listFilterer selectpicker',
-                    'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_current_path_in_module_upload_dir'
+                    'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_current_path_in_module_upload_dir',
+                    'data-live-search'             => 'true',
                 ],
                 'label' => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.currentUploadModuleDir')
             ])
@@ -55,7 +56,8 @@ class UploadSubdirectoryCopyDataType extends AbstractType
                 'choices' => $this->controllers->getFileUploadController()->getUploadModulesDirsForNonLockedModule(),
                 'attr'    => [
                     'class'                        => 'form-control listFilterer selectpicker',
-                    'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_target_path_in_module_upload_dir'
+                    'data-dependent-list-selector' => '#upload_subdirectory_copy_data_subdirectory_target_path_in_module_upload_dir',
+                    'data-live-search'             => 'true',
                 ],
                 'label' => $this->app->translator->translate('forms.UploadSubdirectoryCopyDataType.labels.targetUploadModuleDir')
             ])
