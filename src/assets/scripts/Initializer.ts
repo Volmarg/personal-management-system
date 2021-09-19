@@ -49,6 +49,7 @@ import AjaxEvents                   from "./core/ajax/AjaxEvents";
 import TuiCalendarService           from "./libs/tui-calendar/TuiCalendarService";
 import SmartTab                     from "./libs/smarttab/SmartTab";
 import JsSettingsTooltip            from "./core/ui/JsSettingsTooltip";
+import PasswordPreview              from "./core/ui/Form/PasswordPreview";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -90,6 +91,7 @@ export default class Initializer {
         let dialog                 = new Dialog();
         let domElements            = new DomElements();
         let ajaxEvents             = new AjaxEvents();
+        let passwordPreview        = new PasswordPreview();
 
         // modules
         let todoChecklist       = new TodoChecklist();
@@ -140,6 +142,7 @@ export default class Initializer {
         ajaxEvents.init();
         tuiCalendar.init();
         smartTab.init();
+        passwordPreview.init();
     }
 
     /**

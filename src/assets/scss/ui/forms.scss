@@ -1,0 +1,30 @@
+/* Input with appended element */
+
+.input-group-append {
+  border: 1px solid #ced4da;
+  border-left: none;
+  border-radius: .025rem;
+
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.appended-input {
+  border-right: none;
+}
+
+.input-group-appended-element:hover {
+  opacity: 0.5;
+  cursor: pointer;
+  transition: opacity 200ms linear;
+}
+
+.input-group-appended-element {
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 3px;
+
+  opacity: 1;
+  transition: opacity 200ms linear;
+}

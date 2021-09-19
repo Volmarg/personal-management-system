@@ -12,6 +12,7 @@ twig:
         'core/form-types/jsondto/fields.html.twig',
         'core/form-types/datetimepicker/fields.html.twig',
         'core/form-types/indent/indententity.html.twig',
+        'core/form-types/passwordpreview/passwordpreview.html.twig',
         'core/form-types/indent/indentchoice.html.twig']
     globals:
         id_column: 'id'
