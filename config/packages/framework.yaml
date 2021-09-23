@@ -34,3 +34,6 @@ framework:
 
     csrf_protection:
         enabled: true
+
+    router:
+        utf8: true

@@ -89,6 +89,7 @@
     "flatpickr": "^4.6.6",
     "fontawesome-iconpicker": "^3.2.0",
     "fullcalendar": "^5.3.2",
+    "generate-password": "^1.6.1",
     "imagesloaded": "^4.1.4",
     "izimodal": "^1.5.1",
     "jquery": "^3.5.1",

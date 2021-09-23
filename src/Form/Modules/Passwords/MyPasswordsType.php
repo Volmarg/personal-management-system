@@ -31,7 +31,8 @@ class MyPasswordsType extends AbstractType {
                 'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.login')
             ])
             ->add('password', PasswordpreviewType::class, [
-                'label' => $this->app->translator->translate('forms.MyPasswordsType.labels.password')
+                'label'                                               => $this->app->translator->translate('forms.MyPasswordsType.labels.password'),
+                PasswordpreviewType::OPTION_INCLUDE_GENERATE_PASSWORD => true,
             ])
             ->add('url', TextType::class, [
                 'required' => false,

@@ -50,6 +50,7 @@ import TuiCalendarService           from "./libs/tui-calendar/TuiCalendarService
 import SmartTab                     from "./libs/smarttab/SmartTab";
 import JsSettingsTooltip            from "./core/ui/JsSettingsTooltip";
 import PasswordPreview              from "./core/ui/Form/PasswordPreview";
+import GeneratePassword             from "./libs/generate-password/GeneratePassword";
 
 import EditViaModalPrefilledWithEntityDataAction from "./core/ui/Actions/EditViaModalPrefilledWithEntityDataAction";
 /**
@@ -81,6 +82,7 @@ export default class Initializer {
         let fineUploadService = new FineUploaderService();
         let tuiCalendar       = new TuiCalendarService();
         let smartTab          = new SmartTab();
+        let generatePassword  = new GeneratePassword();
 
         // core
         let search                 = new Search();
@@ -143,6 +145,7 @@ export default class Initializer {
         tuiCalendar.init();
         smartTab.init();
         passwordPreview.init();
+        generatePassword.init();
     }
 
     /**
