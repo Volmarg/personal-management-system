@@ -6,6 +6,7 @@ namespace App\Command\Crons;
 use App\Controller\Core\Application;
 use Exception;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -15,7 +16,8 @@ class CronServerResourcesCheckCommand extends Command
 {
     protected static $defaultName = 'cron:check-server-resources';
 
-    const LEFT_SERVER_DISC_SPACE_DANGER_VALUE_MBYTES = 122000;
+    const ARGUMENT_LOW_DISC_SPACE_DANGER_MBYTES = "dangerLowSpace";
+    const ARGUMENT_CHECKED_PATH                 = "checkedPath";
 
     /**
      * @var SymfonyStyle $io
@@ -35,7 +37,10 @@ class CronServerResourcesCheckCommand extends Command
     protected function configure()
     {
         $this
-            ->setDescription('This command allows to make backup of files for given upload modules and database, must be called as sudo to ensure directories creating. ');
+            ->setDescription('This command checks the free resources left on the server')
+            ->addArgument(self::ARGUMENT_CHECKED_PATH, InputArgument::REQUIRED, "Path that should be checked for space left")
+            ->addArgument(self::ARGUMENT_LOW_DISC_SPACE_DANGER_MBYTES, InputArgument::REQUIRED, "Number of MBytes left for which mail is being sent")
+            ->addUsage(" '/' 2000");
     }
 
     /**
@@ -54,12 +59,14 @@ class CronServerResourcesCheckCommand extends Command
      * @return int
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->note("Started checking server resources");
         {
             try{
-                $this->checkServerDiscSpaceLeft();
+                $dangerLowSpace = $input->getArgument(self::ARGUMENT_LOW_DISC_SPACE_DANGER_MBYTES);
+                $checkedPath    = $input->getArgument(self::ARGUMENT_CHECKED_PATH);
+                $this->checkServerDiscSpaceLeft($dangerLowSpace, $checkedPath);
             }catch(Exception | TypeError $e){
                 $this->app->logger->emergency("Exception was thrown while trying to check the server resources.", [
                     "exceptionMessage" => $e->getMessage(),
@@ -77,15 +84,15 @@ class CronServerResourcesCheckCommand extends Command
      * Will check how much left disc space is there,
      * Triggers emergency logger if value is below given threshold
      */
-    private function checkServerDiscSpaceLeft(): void
+    private function checkServerDiscSpaceLeft(int $dangerLowSpace, string $checkedPath): void
     {
-        $discFreeSpaceInBytes  = disk_free_space("/");
+        $discFreeSpaceInBytes  = disk_free_space($checkedPath);
         $discFreeSpaceInMBytes = round($discFreeSpaceInBytes / 1024 / 1024);
 
-        if( $discFreeSpaceInMBytes <= self::LEFT_SERVER_DISC_SPACE_DANGER_VALUE_MBYTES ){
+        if( $discFreeSpaceInMBytes <= $dangerLowSpace ){
             $this->app->logger->emergency("Low disc space!", [
                 "discSpaceLeft" => $discFreeSpaceInMBytes,
-                "warningValue"  => self::LEFT_SERVER_DISC_SPACE_DANGER_VALUE_MBYTES,
+                "warningValue"  => $dangerLowSpace,
             ]);
         }
     }
