@@ -16,11 +16,13 @@ use App\PmsIo\Request\Notes\InsertNotesCategoriesRequest;
 use App\PmsIo\Request\Notes\InsertNotesRequest;
 use App\PmsIo\Request\Passwords\InsertPasswordsGroupsRequest;
 use App\PmsIo\Request\Passwords\InsertPasswordsRequest;
+use App\PmsIo\Request\System\IsAllowedToInsertRequest;
 use App\PmsIo\Request\System\SetTransferDoneStateRequest;
 use App\PmsIo\Response\Notes\InsertNotesCategoriesResponse;
 use App\PmsIo\Response\Notes\InsertNotesResponse;
 use App\PmsIo\Response\Passwords\InsertPasswordsGroupsResponse;
 use App\PmsIo\Response\Passwords\InsertPasswordsResponse;
+use App\PmsIo\Response\System\IsAllowedToInsertResponse;
 use App\PmsIo\Response\System\SetTransferDoneStateResponse;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -224,6 +226,26 @@ class PmsIoService
         try{
             $request = new SetTransferDoneStateRequest();
             $response = $this->pmsIoBridge->setTransferDoneState($request);
+        }catch(Exception $e){
+            $this->app->logExceptionWasThrown($e);
+            throw $e;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Will check if any data can be inserted at all
+     *
+     * @return IsAllowedToInsertResponse
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    public function isAllowedToInsert(): IsAllowedToInsertResponse
+    {
+        try{
+            $request  = new IsAllowedToInsertRequest();
+            $response = $this->pmsIoBridge->isAllowedToInsert($request);
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e);
             throw $e;

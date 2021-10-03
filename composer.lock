@@ -9095,16 +9095,16 @@
         },
         {
             "name": "volmarg/notifier-proxy-logger-bridge",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Volmarg/notifier-proxy-logger-bridge.git",
-                "reference": "b0362af6831173cf6edea9718c3ec08510de9d9e"
+                "reference": "497b024284412f1d1c26880686ea7f782bf89595"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Volmarg/notifier-proxy-logger-bridge/zipball/b0362af6831173cf6edea9718c3ec08510de9d9e",
-                "reference": "b0362af6831173cf6edea9718c3ec08510de9d9e",
+                "url": "https://api.github.com/repos/Volmarg/notifier-proxy-logger-bridge/zipball/497b024284412f1d1c26880686ea7f782bf89595",
+                "reference": "497b024284412f1d1c26880686ea7f782bf89595",
                 "shasum": ""
             },
             "require": {
@@ -9157,23 +9157,23 @@
             ],
             "description": "Bridge between NotifierProxyLogger and other projects",
             "support": {
-                "source": "https://github.com/Volmarg/notifier-proxy-logger-bridge/tree/v1.0.1",
+                "source": "https://github.com/Volmarg/notifier-proxy-logger-bridge/tree/v1.0.2",
                 "issues": "https://github.com/Volmarg/notifier-proxy-logger-bridge/issues"
             },
-            "time": "2021-02-04T17:16:54+00:00"
+            "time": "2021-02-20T07:50:07+00:00"
         },
         {
             "name": "volmarg/personal-management-system-io-bridge",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Volmarg/personal-management-system-io-bridge.git",
-                "reference": "d06d67efe335f6da52a22f3c13bf4c07cdde4d6d"
+                "reference": "439946c52f6a62c0bf4436ec17f9e18c775de168"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/d06d67efe335f6da52a22f3c13bf4c07cdde4d6d",
-                "reference": "d06d67efe335f6da52a22f3c13bf4c07cdde4d6d",
+                "url": "https://api.github.com/repos/Volmarg/personal-management-system-io-bridge/zipball/439946c52f6a62c0bf4436ec17f9e18c775de168",
+                "reference": "439946c52f6a62c0bf4436ec17f9e18c775de168",
                 "shasum": ""
             },
             "require": {
@@ -9226,10 +9226,10 @@
             ],
             "description": "Bridge between PMS-IO and PMS",
             "support": {
-                "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/v1.0.1",
+                "source": "https://github.com/Volmarg/personal-management-system-io-bridge/tree/v1.0.2",
                 "issues": "https://github.com/Volmarg/personal-management-system-io-bridge/issues"
             },
-            "time": "2021-06-24T15:46:06+00:00"
+            "time": "2021-10-03T08:45:19+00:00"
         },
         {
             "name": "webimpress/safe-writer",

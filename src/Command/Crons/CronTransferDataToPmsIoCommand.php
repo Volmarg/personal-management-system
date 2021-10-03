@@ -58,6 +58,11 @@ class CronTransferDataToPmsIoCommand extends Command
         try{
             $this->app->logger->info("Started transferring data to PMS-IO");
             {
+                $isAllowedToInsertResponse = $this->pmsIoService->isAllowedToInsert();
+                if( !$isAllowedToInsertResponse->isSuccess() ){
+                    return Command::SUCCESS;
+                }
+
                 $this->insertNotesData();
                 $this->insertPasswordsData();
                 $this->pmsIoService->setTransferDoneState();
