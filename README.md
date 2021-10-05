@@ -1,11 +1,3 @@
-<div align="center">
-<a href="https://ko-fi.com/volmarg">
-<img src="https://ko-fi.com/img/githubbutton_sm.svg">
-</a>
-</div>
-
-<hr>
-
 <p align="center">
 <img src="https://github.com/Volmarg/personal-management-system/blob/main/public/logo-small.png?raw=true" width="100px"/>
 </p>
