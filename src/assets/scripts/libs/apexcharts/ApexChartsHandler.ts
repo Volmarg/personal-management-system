@@ -70,13 +70,15 @@ export default class ApexChartsHandler {
         switch(chartType){
             case ApexChartsHandler.charts.types.pie:
             {
+                let chartColorsJson = $chartToHandle.attr(ApexChartsHandler.selectors.attributes.dataApexChartColors);
                 let chartLabelsJson = $chartToHandle.attr(ApexChartsHandler.selectors.attributes.dataApexChartLabels);
                 let chartValuesJson = $chartToHandle.attr(ApexChartsHandler.selectors.attributes.dataApexChartValues);
 
                 let chartLabelsArray = JSON.parse(chartLabelsJson);
                 let chartValuesArray = JSON.parse(chartValuesJson);
+                let chartColorsArray = JSON.parse(chartColorsJson);
 
-                options = this.buildOptionsForPieChart(chartLabelsArray, chartValuesArray);
+                options = this.buildOptionsForPieChart(chartLabelsArray, chartValuesArray, chartColorsArray);
             }
                 break;
 
@@ -117,9 +119,10 @@ export default class ApexChartsHandler {
      *
      * @param chartValuesArray      {array}
      * @param chartLabelsArray      {array}
+     * @param chartColorsArray      {array}
      * @returns                     {object}
      */
-    private buildOptionsForPieChart(chartLabelsArray: Array<any>, chartValuesArray: Array<string>): Object
+    private buildOptionsForPieChart(chartLabelsArray: Array<any>, chartValuesArray: Array<string>, chartColorsArray: Array <any>,): Object
     {
 
        let normalizedChartValuesArray = this.normalizeChartValues(chartValuesArray);
@@ -131,6 +134,7 @@ export default class ApexChartsHandler {
                 type: ApexChartsHandler.charts.types.pie,
             },
             labels: chartLabelsArray,
+            colors: chartColorsArray,
             responsive: [{
                 breakpoint: 480,
                 options: {

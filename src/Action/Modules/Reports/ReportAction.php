@@ -160,6 +160,7 @@ class ReportAction extends AbstractController {
         $totalPaymentsAmountForTypes = $this->controllers->getReportsControllers()->fetchTotalPaymentsAmountForTypes();
         $chartLabels = [];
         $chartValues = [];
+        $chartColors = [];
 
         foreach($totalPaymentsAmountForTypes as $totalPaymentsAmountForType){
             $chartLabel = $totalPaymentsAmountForType[self::KEY_TYPE];
@@ -167,9 +168,11 @@ class ReportAction extends AbstractController {
 
             $chartLabels[] = $chartLabel;
             $chartValues[] = $chartValue;
+            $chartColors[] = Utils::randomHexColor();
         }
 
         $templateData = [
+            'chart_colors' => $chartColors,
             'chart_labels' => $chartLabels,
             'chart_values' => $chartValues,
         ];
@@ -216,7 +219,7 @@ class ReportAction extends AbstractController {
             $amount = $paymentsForTypeEachMonth[self::KEY_AMOUNT];
 
             $ChartXAxisValues[] = $date;
-            $chartColors[]        = Utils::randomHexColor();
+            $chartColors[]      = Utils::randomHexColor();
 
             if( !array_key_exists($type, $chartValues) ){
                 $chartValues[$type] = [];
