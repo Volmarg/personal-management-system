@@ -96,19 +96,20 @@ class MyJobAfterhoursAction extends AbstractController {
             MyJobAfterhours::TYPE_MADE
         ]);
 
-        $daysAll    = 0;
+        $hoursAll   = 0;
         $secondsAll = 0;
         foreach($afterhoursAll as $afterhour)
         {
             if( MyJobAfterhours::TYPE_MADE === $afterhour->getType() ){
                 $secondsAll += $afterhour->getSeconds();
-                $daysAll    += $afterhour->getDays();
+                $hoursAll   += $afterhour->getHours();
             }else{
                 $secondsAll -= $afterhour->getSeconds();
-                $daysAll    -= $afterhour->getDays();
+                $hoursAll   -= $afterhour->getHours();
             }
         }
 
+        $daysAll                     = $hoursAll / 8; // 8h working day
         $remainingTimeToSpendPerGoal = $this->controllers->getMyJobAfterhoursController()->getTimeToSpend();
 
         $twigData = [
