@@ -42,7 +42,7 @@
     "html-webpack-plugin": "^4.5.0",
     "imagemin-webpack-plugin": "2.4.2",
     "madge": "^4.0.2",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "postcss-cssnext": "3.1.0",
     "postcss-loader": "^4.0.4",
     "prism-loader": "^0.2.0",
