@@ -30,7 +30,7 @@ RUN pecl install apcu
 
 RUN pear config-set php_ini /application/docker/php-fpm/php.ini
 
-RUN git clone https://github.com/Volmarg/personal-management-system.git /application
+RUN git clone https://github.com/csayre/personal-management-system.git /application
 
 CMD ["php-fpm"]
 
