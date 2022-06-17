@@ -21,11 +21,9 @@ services:
       - "8001:80"
 
   php-fpm:
-    build: ./docker/php-fpm
+    image: csayre/pms:latest
     container_name: php-fpm
     working_dir: /application
-    volumes:
-      - .:/application
 
   adminer:
     container_name: adminer

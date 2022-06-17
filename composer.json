@@ -75,6 +75,10 @@
             "*": "dist"
         },
         "sort-packages": true
+        "allow-plugins": {
+            "cweagans/composer-patches": true,
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {
