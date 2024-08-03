@@ -5,6 +5,11 @@
 <h1 align="center"> Personal Management System</h1>
 <p align="center"><i>Your central point for managing personal data <br> (if current modules allow to do that).</i></p>
 
+<div align="center">
+<i>Check out my other tools</i><br>
+<a href="http://voltigo.pl/"><img src="https://img.shields.io/badge/Voltigo-0078D7?style=for-the-badge&logoColor=white"></a>
+</div>
+
 <h3>Documentation / Demo</h3>
 <hr>
 
