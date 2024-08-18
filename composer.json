@@ -30,7 +30,6 @@
         "doctrine/doctrine-bundle": "^2",
         "doctrine/doctrine-migrations-bundle": "^2",
         "doctrine/orm": "^2",
-        "google/apiclient": "^2.0",
         "gumlet/php-image-resize": "^2.0",
         "phpunit/phpunit": "^8.5",
         "ramsey/uuid": "^3.8",
