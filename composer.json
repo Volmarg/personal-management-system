@@ -3,18 +3,16 @@
     "authors": [{
         "name": "Dariusz Włodarczyk",
         "email": "dwlodarczyk12@gmail.com",
-        "role": "Developer"
+        "role": "Owner && Developer"
     }],
     "description": "Personal Management System - Your central point for managing personal data",
     "license": "MIT",
     "keywords": [
-        "symfony",
-        "template",
-        "bootstrap",
-        "responsive",
-        "admin",
-        "user",
-        "ui"
+        "Personal Management System",
+        "Management System",
+        "Data management",
+        "Private date",
+        "Privacy"
     ],
     "type": "project",
     "require": {
@@ -88,13 +86,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "Installer\\": "installer/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "App\\Tests\\": "tests/"
+            "App\\": "src/"
         }
     },
     "replace": {
@@ -104,25 +96,12 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
-        "after-install-script": [
-          "echo -e '\\033[1;33m\n\nTesting if after-install-script can be called\n\\033[0m'; if test -f .env; then echo -e '\\033[1;33m\n\nRunning after-install-script\n\\033[0m'; bin/console cache:clear && bin/console cache:warmup && bin/console security:check; else echo -e '\\033[1;33m\n\n.env file does not exist\n\\033[0m'; fi"
-        ],
         "post-install-cmd": [
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "post-update-cmd": [
             "SlowProg\\CopyFile\\ScriptHandler::copy"
-        ],
-        "pms-installer": "php -r \"include_once 'installer//AutoInstaller.php'; use Installer\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",
-        "pms-installer-docker": "php -r \"include_once 'installer//AutoInstaller.php'; use Installer\\AutoInstaller; AutoInstaller::runDocker();\" < /dev/tty",
-        "pms-frontend-validate-circular-reference": "./node_modules/.bin/madge ./src/assets/scripts --webpack-config ./webpack.config.js --ts-config ./tsconfig.json  --circular --extensions ts,js",
-        "pms-frontend-generate-production-css-js-assets": "./node_modules/.bin/encore production"
-    },
-    "scripts-descriptions": {
-        "pms-installer": "Script for easier project installation",
-        "pms-frontend-validate-circular-reference": "Checks if there are some circular references in javascript scripts",
-        "pms-frontend-generate-production-css-js-assets": "Generates bundle js/css files for production - can take up to 3 min to compile",
-        "pms-rebuild-backend": "Handles rebuilding the assets, caching etc. for backend"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"
