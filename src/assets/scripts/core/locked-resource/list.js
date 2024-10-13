@@ -1,2 +1,0 @@
-import './LockedResource'
-import './LockedResourceAjaxCall'
