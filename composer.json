@@ -116,8 +116,7 @@
         "pms-installer": "php -r \"include_once 'installer//AutoInstaller.php'; use Installer\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",
         "pms-installer-docker": "php -r \"include_once 'installer//AutoInstaller.php'; use Installer\\AutoInstaller; AutoInstaller::runDocker();\" < /dev/tty",
         "pms-frontend-validate-circular-reference": "./node_modules/.bin/madge ./src/assets/scripts --webpack-config ./webpack.config.js --ts-config ./tsconfig.json  --circular --extensions ts,js",
-        "pms-frontend-generate-production-css-js-assets": "./node_modules/.bin/encore production",
-        "pms-rebuild-backend": "php7.4 bin/console assets:build-translation-messages-yaml; chmod 777 translations -R; sudo -u www-data php7.4 bin/console cache:clear; sudo -u www-data php7.4 bin/console cache:warmup;"
+        "pms-frontend-generate-production-css-js-assets": "./node_modules/.bin/encore production"
     },
     "scripts-descriptions": {
         "pms-installer": "Script for easier project installation",
