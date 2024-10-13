@@ -9,9 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Env extends AbstractController {
 
-    const APP_ENV_TEST                    = "test";
     const APP_DEFAULT_NPL_RECEIVER_EMAILS = "APP_DEFAULT_NPL_RECEIVER_EMAILS";
-    const APP_SHOW_INFO_BLOCKS            = 'APP_SHOW_INFO_BLOCKS';
 
     public static function getUploadDirs() {
         $dirs = [
@@ -64,19 +62,6 @@ class Env extends AbstractController {
     }
 
     /**
-     * Returns the information whether the guide mode is on/off
-     * @return bool
-     */
-    public static function isGuide() {
-        try {
-            $isGuide = Utils::getBoolRepresentationOfBoolString($_ENV['APP_GUIDE']);
-        } catch (\Exception $e) {
-            $isGuide = false;
-        }
-        return $isGuide;
-    }
-
-    /**
      * @return DatabaseCredentialsDTO
      * @throws Exception
      */
@@ -121,21 +106,6 @@ class Env extends AbstractController {
     }
 
     /**
-     * @description Special check if the `test` mode for phpunit is turned on,
-     *              some code elements requires special handling for such case
-     *
-     * @return bool
-     */
-    public static function isTest(): bool {
-        try {
-            $isTest = $_ENV['APP_ENV'] === self::APP_ENV_TEST;
-        } catch (\Exception $e) {
-            $isTest = false;
-        }
-        return $isTest;
-    }
-
-    /**
      * @return bool
      */
     public static function isMaintenance(): bool {
@@ -145,19 +115,6 @@ class Env extends AbstractController {
             $isMaintenance = false;
         }
         return $isMaintenance;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function areInfoBlocksShown(): bool
-    {
-        try {
-            $areInfoBlocksShown = Utils::getBoolRepresentationOfBoolString($_ENV[self::APP_SHOW_INFO_BLOCKS]);
-        } catch (\Exception $e) {
-            $areInfoBlocksShown = false;
-        }
-        return $areInfoBlocksShown;
     }
 
     /**

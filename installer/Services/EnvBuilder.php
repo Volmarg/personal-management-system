@@ -49,7 +49,6 @@ class EnvBuilder
     const ENV_KEY_APP_SECRET                          = 'APP_SECRET';
     const ENV_KEY_APP_DEMO                            = 'APP_DEMO';
     const ENV_KEY_APP_MAINTENANCE                     = 'APP_MAINTENANCE';
-    const ENV_KEY_APP_GUIDE                           = 'APP_GUIDE';
     const ENV_KEY_MAILER_URL                          = 'MAILER_URL';
     const ENV_KEY_DATABASE_URL                        = 'DATABASE_URL';
     const ENV_KEY_UPLOAD_DIR                          = 'UPLOAD_DIR';
@@ -58,10 +57,7 @@ class EnvBuilder
     const ENV_KEY_VIDEOS_UPLOAD_DIR                   = 'VIDEOS_UPLOAD_DIR';
     const ENV_KEY_MINIATURES_UPLOAD_DIR               = 'MINIATURES_UPLOAD_DIR';
     const ENV_KEY_PUBLIC_ROOT_DIR                     = 'PUBLIC_ROOT_DIR';
-    const ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME     = 'APP_USER_LOGIN_SESSION_LIFETIME';
-    const ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME    = 'APP_SYSTEM_LOCK_SESSION_LIFETIME';
     const ENV_KEY_APP_IPS_ACCESS_RESTRICTION          = 'APP_IPS_ACCESS_RESTRICTION';
-    const ENV_KEY_APP_SHOW_INFO_BLOCKS                = 'APP_SHOW_INFO_BLOCKS';
     const ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS     = 'APP_DEFAULT_NPL_RECEIVER_EMAILS';
     const ENV_KEY_APP_EMERGENCY_EMAILS_RECEIVER_EMAIL = 'APP_EMERGENCY_EMAILS_RECEIVER_EMAIL';
     const ENV_KEY_APP_IS_INSTALLED                    = 'APP_IS_INSTALLED';
@@ -92,7 +88,6 @@ class EnvBuilder
                 fwrite($fileHandler,self::ENV_KEY_DATABASE_URL . "="  . $databaseUrl      . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_UPLOAD_DIR   . "="  . self::UPLOAD_DIR  . PHP_EOL);
 
-                fwrite($fileHandler,self::ENV_KEY_APP_GUIDE       . "="  . "false"  . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_APP_DEMO        . "="  . "false"  . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_APP_MAINTENANCE . "="  . "false"  . PHP_EOL);
 
@@ -102,10 +97,7 @@ class EnvBuilder
                 fwrite($fileHandler,self::ENV_KEY_MINIATURES_UPLOAD_DIR . "="  . self::UPLOAD_DIR_MINIATURES  . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_PUBLIC_ROOT_DIR       . "="  . self::PUBLIC_DIR             . PHP_EOL);
 
-                fwrite($fileHandler,self::ENV_KEY_APP_USER_LOGIN_SESSION_LIFETIME     . "="  . self::USER_LOGIN_SESSION_LIFETIME       . PHP_EOL);
-                fwrite($fileHandler,self::ENV_KEY_APP_SYSTEM_LOCK_SESSION_LIFETIME    . "="  . self::SYSTEM_LOCK_SESSION_LIFETIME      . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_APP_IPS_ACCESS_RESTRICTION          . "="  . self::IPS_ACCESS_RESTRICTION            . PHP_EOL);
-                fwrite($fileHandler,self::ENV_KEY_APP_SHOW_INFO_BLOCKS                . "="  . "true"                                  . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_APP_DEFAULT_NPL_RECEIVER_EMAILS     . "="  . self::NPL_DEFAULT_RECEIVER              . PHP_EOL);
                 fwrite($fileHandler,self::ENV_KEY_APP_EMERGENCY_EMAILS_RECEIVER_EMAIL . "="  . self::DEFAULT_EMERGENCY_EMAILS_RECEIVER . PHP_EOL);
             }
