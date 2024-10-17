@@ -9,7 +9,6 @@ use TypeError;
 
 /**
  * Handles parsing the yaml files,
- * methods must be static as this logic is used in autoinstaller which is not configured to work with DI
  *
  * Class YamlFileParserService
  */

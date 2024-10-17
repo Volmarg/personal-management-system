@@ -1,18 +1,9 @@
 <?php
 
-include_once "../installer/Controller/InstallerController.php";
-
 use App\Kernel;
-use Installer\Controller\Installer\InstallerController;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;
-
-$envFilePath = "../.env";
-if( !InstallerController::isInstalled($envFilePath) ){
-    header("Location: /installer.php");
-    return;
-}
 
 require __DIR__.'/../vendor/autoload.php';
 
