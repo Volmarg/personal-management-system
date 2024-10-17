@@ -32,3 +32,5 @@ RUN pear config-set php_ini /application/docker/php-fpm/php.ini
 CMD ["php-fpm"]
 
 EXPOSE 9000
+
+RUN apt-get install -y nano less;

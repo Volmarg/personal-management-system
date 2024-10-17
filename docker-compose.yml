@@ -1,35 +1,50 @@
 version: "3.1"
 services:
-  mariadb:
-    image: mariadb
-    container_name: mariadb
+  pms-database-mariadb:
+    image: mariadb:11.5.2
+    container_name: pms-database-mariadb
+    hostname: pms-database-mariadb
     restart: always
-    environment: 
+    tty: true
+    environment:
       - MYSQL_DATABASE=pms
       - MYSQL_ROOT_PASSWORD=password
-    volumes: 
+    volumes:
       - ./data:/var/lib/mysql
 
-  nginx:
+  pms-nginx:
     image: nginx:alpine
-    container_name: nginx
+    container_name: pms-nginx
+    hostname: pms-nginx
     working_dir: /application
+    restart: always
+    tty: true
     volumes:
       - .:/application
       - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - "8001:80"
+      - "8002:80"
 
-  php-fpm:
+  pms-php-fpm:
     build: ./docker/php-fpm
-    container_name: php-fpm
+    container_name: pms-php-fpm
+    hostname: pms-php-fpm
+    # Executing original entrypoint, else php won't work, then executing my entrypoint and finally run the php-fpm thus also keep container alive
+    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && touch /tmp/log.log && php-fpm"
     working_dir: /application
+    restart: always
+    tty: true
+    depends_on:
+      - pms-database-mariadb
+      - pms-nginx
     volumes:
       - .:/application
 
-  adminer:
-    container_name: adminer
+  pms-adminer:
+    container_name: pms-adminer
+    hostname: pms-adminer
     image: adminer
     restart: always
+    tty: true
     ports:
       - 8081:8080
