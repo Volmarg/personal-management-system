@@ -30,7 +30,7 @@ services:
     container_name: pms-php-fpm
     hostname: pms-php-fpm
     # Executing original entrypoint, else php won't work, then executing my entrypoint and finally run the php-fpm thus also keep container alive
-    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && touch /tmp/log.log && php-fpm"
+    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && ./docker/php-fpm/entrypoint.bash && php-fpm"
     working_dir: /application
     restart: always
     tty: true

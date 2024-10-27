@@ -91,6 +91,11 @@ function setEncryptionKey() {
   sed -i "s${SED_SEPARATOR_CHARACTER}encrypt_key:${SED_SEPARATOR_CHARACTER}encrypt_key: '${KEY}'${SED_SEPARATOR_CHARACTER}" "${ENCRYPTION_CONF_FILE_PATH}"
 }
 
+function generateJwtKeyPair() {
+  logDebug "Generating jwt key pair - only if non exists yet."
+  $BIN_CONSOLE_PATH lexik:jwt:generate-keypair --skip-if-exists;
+}
+
 # Break execution if any step crashes
 set -e;
 
@@ -99,7 +104,7 @@ logDebug "Installing composer packages"
 composer install --ignore-platform-reqs;
 
 logDebug "Doing: composer dump-autoload"
-composer dump-autoload;
+composer dump-autoload --ignore-platform-reqs;
 
 # That's a must for some composer packages
 logDebug "Setting up vendor dir rights"
@@ -123,3 +128,4 @@ chown www-data:www-data var/* -R
 
 createDirs
 setEncryptionKey
+generateJwtKeyPair
