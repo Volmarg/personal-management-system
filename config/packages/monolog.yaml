@@ -30,7 +30,13 @@ monolog:
       max_files: 10
       path: "%kernel.logs_dir%/%kernel.environment%/main.log"
       level: info
-      channels: [ "!event", "!doctrine", "!security", "!deprecation"]
+      channels: [ "!event", "!doctrine", "!security", "!deprecation", "!request"]
+    request:
+      type: rotating_file
+      max_files: 10
+      path: "%kernel.logs_dir%/%kernel.environment%/request.log"
+      level: info
+      channels: ["request"]
     deduplicated:
       type:    deduplication
       handler: symfony_mailer
