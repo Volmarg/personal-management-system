@@ -18,7 +18,6 @@ use App\Entity\User;
 use App\Form\User\UserRegisterType;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -134,7 +133,7 @@ class AppAction extends AbstractController {
      */
     private DtoValidatorService $dtoValidator;
 
-    public function __construct(Application $app, Controllers $controllers, DtoValidatorService $dtoValidator, private readonly LoggerInterface $logger)
+    public function __construct(Application $app, Controllers $controllers, DtoValidatorService $dtoValidator)
     {
         $this->app                      = $app;
         $this->controllers              = $controllers;
