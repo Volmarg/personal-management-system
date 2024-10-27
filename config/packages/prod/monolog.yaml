@@ -13,6 +13,8 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
             channels: [ "!event", "!doctrine" ]
+        deduplicated:
+            handler: symfony_mailer
         console:
             type: console
             process_psr_3_messages: false
@@ -30,11 +32,3 @@ monolog:
             path: "%kernel.logs_dir%/%kernel.environment%.security.log"
             channels: ["security"]
             max_level: info
-        swift:
-            type: swift_mailer
-            from_email: "errors@personal-management-system.pl"
-            to_email: '%env(APP_EMERGENCY_EMAILS_RECEIVER_EMAIL)%'
-            subject: '[%project.name%] An Error Occurred!'
-            level: emergency
-            formatter:  monolog.formatter.html
-            content_type: text/html

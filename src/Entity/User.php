@@ -30,6 +30,11 @@ class User implements UserInterface, EntityInterface {
     const DEMO_PASSWORD = "admin";
 
     /**
+     * @var bool $getRoleGuaranteeRoleUser
+     */
+    private bool $getRoleGuaranteeRoleUser = true;
+
+    /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -355,6 +360,30 @@ class User implements UserInterface, EntityInterface {
     public function setSalt(?string $salt): void
     {
         $this->salt = $salt;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGetRoleGuaranteeRoleUser(): bool
+    {
+        return $this->getRoleGuaranteeRoleUser;
+    }
+
+    /**
+     * @param bool $getRoleGuaranteeRoleUser
+     */
+    public function setGetRoleGuaranteeRoleUser(bool $getRoleGuaranteeRoleUser): void
+    {
+        $this->getRoleGuaranteeRoleUser = $getRoleGuaranteeRoleUser;
     }
 
 }

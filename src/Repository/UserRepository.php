@@ -34,21 +34,6 @@ class UserRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param string $email
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function removeByEmail(string $email)
-    {
-        $entity = $this->findOneBy([self::FIELD_EMAIL => $email]);
-
-        if( !empty($entity) ){
-            $this->_em->remove($entity);
-            $this->_em->flush();
-        }
-    }
-
-    /**
      * Will return all existing users
      * @return User[]
      */

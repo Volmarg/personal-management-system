@@ -1,31 +1,44 @@
 security:
-    role_hierarchy:
-        ROLE_ADMIN:       ROLE_USER
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
-
-    encoders:
-        App\Entity\User: bcrypt
+    enable_authenticator_manager: true
+    password_hashers:
+        App\Entity\User:
+            algorithm: auto
     providers:
-        users:
-            entity: { class: App\Entity\User, property: username }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
 
     firewalls:
         dev:
             pattern: ^/(_(wdt)|css|images|js|_profiler)/
             security: false
+        login:
+            user_checker: App\Security\UserChecker\LoginUserChecker
+            provider: app_user_provider
+            pattern: ^/login
+            stateless: true
+            json_login:
+                check_path: /login
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
         main:
-            anonymous: true
-            logout:
-                path: /logout
-                target: /login
-                invalidate_session: true
+            pattern: ^(?!/api)
+            stateless: true
+            provider: app_user_provider
             guard:
                 authenticators:
-                    - App\Security\LoginFormAuthenticator
+                    - 'App\Security\LexitBundleJwtTokenAuthenticator'
 
+    # >WARNING< cannot rely on user logic in `allow_if` in here, as it will not have the token in request at this point (dunno why)
     access_control:
-        - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/register$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/resetting$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/.*, role: ROLE_ADMIN }
+        # public routes
+        - { path: ^/login$, role: PUBLIC_ACCESS }
+        - { path: ^/register-user, roles: PUBLIC_ACCESS }
+        - { path: ^/reset-password, roles: PUBLIC_ACCESS }
+        - { path: ^/user/base-data/email/change, roles: PUBLIC_ACCESS }
+        - { path: ^/download, roles: PUBLIC_ACCESS }
+
+          # special paths
+        - { path: ^/.*, roles: IS_AUTHENTICATED_FULLY } # all other paths - must always be last

@@ -3,24 +3,18 @@
 namespace App\Listeners;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
-use App\Controller\Page\SettingsLockModuleController;
 use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
-use App\Entity\User;
+use App\Response\Security\LockedResourceDeniedResponse;
 use App\Services\Annotation\AnnotationReaderService;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
 use App\Services\Routing\UrlMatcherService;
-use App\Services\Session\ExpirableSessionsService;
-use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -50,11 +44,6 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private $securityLogger;
 
     /**
-     * @var ExpirableSessionsService $expirableSessionsService
-     */
-    private $expirableSessionsService;
-
-    /**
      * @var UrlGeneratorInterface $urlGenerator
      */
     private UrlGeneratorInterface $urlGenerator;
@@ -81,7 +70,6 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
     public function __construct(
         Logger                       $securityLogger,
-        ExpirableSessionsService     $sessionsService,
         UrlGeneratorInterface        $urlGenerator,
         Application                  $app,
         UrlMatcherService            $urlMatcherService,
@@ -92,34 +80,29 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $this->annotationReaderService      = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
         $this->securityLogger               = $securityLogger->getSecurityLogger();
-        $this->expirableSessionsService     = $sessionsService;
         $this->urlGenerator                 = $urlGenerator;
         $this->app                          = $app;
     }
 
     /**
      * @param RequestEvent $ev
-     * @throws SecurityException
-     * @throws Exception
      *
+     * @throws SecurityException
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     public function onRequest(RequestEvent $ev)
     {
-        $isSystemLockUnlockedBeforeHandlingExpiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
-
-        $this->handleSessionsLifetimes($ev);
-        $this->handleLogoutUserOnExpiredLoginSession($ev);
-        $this->handleTurnLockOffOnExpiredUnlockSession($ev, $isSystemLockUnlockedBeforeHandlingExpiration);
         $this->logRequest($ev);
         $this->blockRequestTypes($ev);
         $this->blockIp($ev);
-
         $this->handleAnnotations($ev);
     }
 
     public static function getSubscribedEvents() {
         return [
-          KernelEvents::REQUEST => ['onRequest']
+          // KernelEvents::REQUEST => ['onRequest']
         ];
     }
 
@@ -186,11 +169,11 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $request       = $event->getRequest();
         $ip            = $request->getClientIp();
 
-        if( empty($restrictedIps) ){
+        if (empty($restrictedIps)) {
             return;
         }
 
-        if( !in_array($ip, $restrictedIps) ){
+        if (!in_array($ip, $restrictedIps)) {
             $response = new Response();
             $response->setContent("");
 
@@ -204,84 +187,6 @@ class OnKernelRequestListener implements EventSubscriberInterface {
                 "ip" => $ip,
             ]);
             throw new SecurityException($exceptionMessage);
-        }
-
-    }
-
-    /**
-     * This method will either extend session lifetime, or invalidate data in session after given idle time
-     * @param RequestEvent $event
-     * @throws Exception
-     */
-    private function handleSessionsLifetimes(RequestEvent $event): void
-    {
-        $request = $event->getRequest();
-        $this->expirableSessionsService->handleSessionExpiration($request);
-    }
-
-    /**
-     * Will force logout user if:
-     * - expirable user session lifetime has passed,
-     * - user is logged in
-     *
-     * @param RequestEvent $ev
-     * @throws Exception
-     */
-    private function handleLogoutUserOnExpiredLoginSession(RequestEvent $ev): void
-    {
-        $request = $ev->getRequest();
-
-        if(
-                !$this->expirableSessionsService->hasExpirableSession(ExpirableSessionsService::KEY_SESSION_USER_LOGIN_LIFETIME)
-            &&  !empty($this->app->getCurrentlyLoggedInUser())
-        ) {
-            $message = $this->app->translator->translate('messages.general.yourSessionHasExpiredYouWereLoggedOut');
-
-            $this->app->logoutCurrentlyLoggedInUser();
-            $logoutUrl = $this->urlGenerator->generate("login");
-
-            if( $request->isXmlHttpRequest() ){
-                $ajaxResponse = new AjaxResponse();
-                $ajaxResponse->setCode(Response::HTTP_TEMPORARY_REDIRECT);
-                $ajaxResponse->setReloadPage(true);;
-
-                $response = $ajaxResponse->buildJsonResponse();
-            }else{
-                $response = new RedirectResponse($logoutUrl);
-            }
-
-            $this->app->addDangerFlash($message);
-            $ev->setResponse($response);
-        }
-    }
-
-    /**
-     * @param RequestEvent $ev
-     * @param bool $isSystemLockUnlockedBeforeHandlingExpiration
-     */
-    private function handleTurnLockOffOnExpiredUnlockSession(RequestEvent $ev, bool $isSystemLockUnlockedBeforeHandlingExpiration)
-    {
-        $request                                     = $ev->getRequest();
-        $isSystemLockUnlockedAfterHandlingExpiration = UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
-
-        if(
-                $isSystemLockUnlockedBeforeHandlingExpiration
-            &&  !$isSystemLockUnlockedAfterHandlingExpiration
-        ){
-            $message = $this->app->translator->translate('messages.lock.unlockExpiredReloadingPage');
-
-            if( $request->isXmlHttpRequest() ){
-                $ajaxResponse = new AjaxResponse();
-                $ajaxResponse->setCode(Response::HTTP_TEMPORARY_REDIRECT);
-                $ajaxResponse->setReloadPage(true);
-
-                $response = $ajaxResponse->buildJsonResponse();
-            }else{
-                $response = new RedirectResponse($request->getUri()); // the same page - just reload
-            }
-
-            $this->app->addDangerFlash($message);
-            $ev->setResponse($response);
         }
     }
 
@@ -309,20 +214,18 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     {
         $request     = $ev->getRequest();
         $classForUrl = $this->urlMatcherService->getClassForCalledUrl($request->getRequestUri());
-
-        if( empty($classForUrl) ){
+        if (empty($classForUrl)) {
             $this->app->logger->warning("No class was found for url: " . $request->getRequestUri());
         }
 
         // can happen for web profiler / debug bar routes
-        if( !class_exists($classForUrl) ){
+        if (!class_exists($classForUrl)) {
             return;
         }
 
         /** @var ?ModuleAnnotation $annotation */
         $annotation = $this->annotationReaderService->getClassAnnotation($classForUrl, ModuleAnnotation::class);
-
-        if( empty($annotation) ){
+        if (empty($annotation)) {
             return;
         }
 
@@ -336,7 +239,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $countOfLockedRelatedModules = 0;
         $countOfRelatedModules       = count($annotation->getRelatedModules());
         foreach($annotation->getRelatedModules() as $relatedModule){
-            if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, false) ){
+            if (!$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, false)){
                 $countOfLockedRelatedModules++;
             }
         }
@@ -356,17 +259,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function handleNotAllowedToSeeResource(RequestEvent $ev): void
     {
-        $request = $ev->getRequest();
-
-        $targetUrl = $this->urlGenerator->generate("dashboard");
-        if( $request->isXmlHttpRequest() ){
-            $ajaxResponse = new AjaxResponse();
-            $ajaxResponse->setRouteUrl($targetUrl);
-            $response = $ajaxResponse->buildJsonResponse();
-        }else{
-            $response = new RedirectResponse($targetUrl);
-        }
-
+        $response = LockedResourceDeniedResponse::build()->toJsonResponse();
         $ev->setResponse($response);
         $ev->stopPropagation();
     }

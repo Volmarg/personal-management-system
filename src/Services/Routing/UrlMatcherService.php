@@ -4,6 +4,7 @@ namespace App\Services\Routing;
 
 use App\Action\System\AppAction;
 use App\Controller\Core\Application;
+use App\Services\Core\Logger;
 use Exception;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -30,6 +31,8 @@ class UrlMatcherService
 
     const ROUTE_PARAM_ENCODED_SUBDIRECTORY_PATH = "encodedSubdirectoryPath";
 
+    const URL_MATCHER_RESULT_ROUTE = "_route";
+
     /**
      * @var Application $app
      */
@@ -45,7 +48,12 @@ class UrlMatcherService
      */
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct(UrlMatcherInterface $urlMatcher, Application $app, UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        UrlMatcherInterface $urlMatcher,
+        Application $app,
+        UrlGeneratorInterface $urlGenerator,
+        private readonly Logger $logger
+    )
     {
         $this->app          = $app;
         $this->urlGenerator = $urlGenerator;
@@ -162,6 +170,29 @@ class UrlMatcherService
         }
 
         return false;
+    }
+
+    /**
+     * Will return matching route for called uri
+     *
+     * @param string $uri
+     * @return string|null
+     */
+    public function getRouteForCalledUri(string $uri): ?string
+    {
+        try{
+            $uriWithoutQueryParams = preg_replace("#\?.*#", "", $uri);
+
+            $dataArray = $this->urlMatcher->match($uriWithoutQueryParams);
+            $route     = $dataArray[self::URL_MATCHER_RESULT_ROUTE];
+        } catch (Exception) {
+            $this->logger->getLogger()->warning("No route found for called uri", [
+                "uri" => $uri,
+            ]);
+            return null;
+        }
+
+        return $route;
     }
 
 }

@@ -4,25 +4,26 @@
 namespace App\Action\System;
 
 
+use App\Attribute\JwtAuthenticationDisabledAttribute;
 use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
 use App\Controller\Utils\Utils;
+use App\Response\Base\BaseResponse;
 use App\Services\Validation\DtoValidatorService;
 use App\DTO\User\UserRegistrationDTO;
 use App\Entity\User;
 use App\Form\User\UserRegisterType;
-use App\Services\Session\ExpirableSessionsService;
 use App\Services\Session\UserRolesSessionService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use TypeError;
 
 class AppAction extends AbstractController {
@@ -124,11 +125,6 @@ class AppAction extends AbstractController {
     private Application $app;
 
     /**
-     * @var ExpirableSessionsService $expirableSessionsService
-     */
-    private ExpirableSessionsService $expirableSessionsService;
-
-    /**
      * @var Controllers $controllers
      */
     private Controllers $controllers;
@@ -138,12 +134,11 @@ class AppAction extends AbstractController {
      */
     private DtoValidatorService $dtoValidator;
 
-    public function __construct(Application $app, ExpirableSessionsService $sessions_service, Controllers $controllers, DtoValidatorService $dtoValidator)
+    public function __construct(Application $app, Controllers $controllers, DtoValidatorService $dtoValidator, private readonly LoggerInterface $logger)
     {
         $this->app                      = $app;
         $this->controllers              = $controllers;
         $this->dtoValidator             = $dtoValidator;
-        $this->expirableSessionsService = $sessions_service;
     }
 
     /**
@@ -152,7 +147,8 @@ class AppAction extends AbstractController {
      */
     public function index(): Response
     {
-        return $this->redirectToRoute('dashboard');
+        $response = BaseResponse::buildBadRequestErrorResponse("No such url");
+        return $response->toJsonResponse();
     }
 
     /**
@@ -277,7 +273,9 @@ class AppAction extends AbstractController {
                 UserRolesSessionService::addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
 
                 $systemLockSessionLifetime = $this->app->configLoaders->getConfigLoaderSession()->getSystemLockLifetime();
-                $this->expirableSessionsService->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME, $systemLockSessionLifetime, [User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
+
+                // todo: pass the lock/unlock state somewhere, example: session, add to jwt and then on request read payload
+                // $this->expirableSessionsService->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME, $systemLockSessionLifetime, [User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
 
                 $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
 
@@ -437,41 +435,15 @@ class AppAction extends AbstractController {
     }
 
     /**
-     * The login page
      * @Route("/login", name="login")
-     * @param AuthenticationUtils $authenticationUtils
-     * @return Response
-     * @throws Exception
+     * This route is used by the {@see LexikJWTAuthenticationBundle}
+     *
+     * @return JsonResponse
      */
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    #[JwtAuthenticationDisabledAttribute]
+    public function login(): JsonResponse
     {
-        $error        = $authenticationUtils->getLastAuthenticationError();
-        $errorMessage = "";
-
-        $allUsers     = $this->controllers->getUserController()->getAllUsers();
-        $countOfUsers = count($allUsers);
-
-        $showRegisterButton = true;
-        if( empty($countOfUsers) ){
-            $showRegisterButton = false;
-        }
-
-        if(
-                empty($error)
-            &&  empty($countOfUsers)
-        ){
-            $errorMessage = $this->app->translator->translate('login.errors.noExistingUserWasFoundPleaseContinueWithRegistration');
-        }elseif(!empty($error)){
-            $errorMessage = $this->app->translator->translate($error->getMessage(), $error->getMessageData(), 'security');
-        }
-
-        $template     = "security/pages/login.html.twig";
-        $templateData = [
-            'error_message'         => $errorMessage,
-            'show_register_button'  => $showRegisterButton
-        ];
-
-        return $this->render($template, $templateData);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**

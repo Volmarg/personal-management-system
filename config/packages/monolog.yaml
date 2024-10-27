@@ -1,0 +1,17 @@
+monolog:
+  channels: [deprecation]
+  handlers:
+    deprecation:
+      channels: [deprecation]
+      type: rotating_file
+      max_files: 1
+      path: '%kernel.logs_dir%/%kernel.environment%/deprecation.log'
+      level: debug
+    symfony_mailer:
+      type:       symfony_mailer
+      from_email: 'logger@pms.pms'
+      to_email:   'mailpit@pms.pms'
+      subject: '[%project.name%] An Error Occurred!'
+      level:      warning
+      formatter:  monolog.formatter.html
+      content_type: text/html
