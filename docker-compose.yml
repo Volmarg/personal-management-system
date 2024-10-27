@@ -48,3 +48,23 @@ services:
     tty: true
     ports:
       - 8081:8080
+
+  pms-mailpit:
+    container_name: pms-mailpit
+    hostname: pms-mailpit
+    restart: always
+    tty: true
+    command: >
+      mailpit 
+        --smtp-auth-allow-insecure 
+        --db-file=/mailpit/mail.db
+
+    build: ./docker/mailpit
+    ports:
+      - "8082:8025"
+
+    volumes:
+      - pms-mailpit-db:/mailpit/mail.db
+
+volumes:
+  pms-mailpit-db:
