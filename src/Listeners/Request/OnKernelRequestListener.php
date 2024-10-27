@@ -1,52 +1,33 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Listeners\Request;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\Application;
 use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
+use App\Response\Base\BaseResponse;
 use App\Response\Security\LockedResourceDeniedResponse;
 use App\Services\Annotation\AnnotationReaderService;
-use App\Services\Exceptions\SecurityException;
 use App\Services\Core\Logger;
+use App\Services\Exceptions\SecurityException;
 use App\Services\Routing\UrlMatcherService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Security layer for logging every single page call
  *  - first of all for security reason
  *  - second the request data might end up in log so if something fails during insert it might be recovered this way
- * Class OnKernelRequestListener
  */
 class OnKernelRequestListener implements EventSubscriberInterface {
-
-    const LOGGER_REQUEST_URL       = "requestUrl";
-    const LOGGER_REQUEST_METHOD    = "requestMethod";
-    const LOGGER_REQUEST_GET_DATA  = "requestGetData";
-    const LOGGER_REQUEST_POST_DATA = "requestPostData";
-    const LOGGER_REQUEST_IP        = "requestIp";
-    const LOGGER_REQUEST_CONTENT   = "requestContent";
-    const LOGGER_REQUEST_HEADERS   = "requestHeaders";
-
-    const ALLOWED_REQUEST_TYPES = [
-        "POST",
-        "GET",
-    ];
-
     /**
-     * @var Logger $securityLogger
+     * @var LoggerInterface $securityLogger
      */
-    private $securityLogger;
-
-    /**
-     * @var UrlGeneratorInterface $urlGenerator
-     */
-    private UrlGeneratorInterface $urlGenerator;
+    private LoggerInterface $securityLogger;
 
     /**
      * @var Application $app
@@ -70,17 +51,16 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
     public function __construct(
         Logger                       $securityLogger,
-        UrlGeneratorInterface        $urlGenerator,
         Application                  $app,
         UrlMatcherService            $urlMatcherService,
         AnnotationReaderService      $annotationReaderService,
-        LockedResourceController     $lockedResourceController
+        LockedResourceController     $lockedResourceController,
+        private readonly LoggerInterface $requestLogger
     ) {
         $this->lockedResourceController     = $lockedResourceController;
         $this->annotationReaderService      = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
         $this->securityLogger               = $securityLogger->getSecurityLogger();
-        $this->urlGenerator                 = $urlGenerator;
         $this->app                          = $app;
     }
 
@@ -92,17 +72,17 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
-    public function onRequest(RequestEvent $ev)
+    public function onRequest(RequestEvent $ev): void
     {
         $this->logRequest($ev);
-        $this->blockRequestTypes($ev);
         $this->blockIp($ev);
         $this->handleAnnotations($ev);
     }
 
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents(): array
+    {
         return [
-          // KernelEvents::REQUEST => ['onRequest']
+            KernelEvents::REQUEST => ['onRequest'],
         ];
     }
 
@@ -121,40 +101,15 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $headers  = json_encode($request->headers->all());
         $url      = $request->getUri();
 
-        $this->securityLogger->info("Visited url", [
-            self::LOGGER_REQUEST_URL       => $url,
-            self::LOGGER_REQUEST_METHOD    => $method,
-            self::LOGGER_REQUEST_GET_DATA  => $getData,
-            self::LOGGER_REQUEST_POST_DATA => $postData,
-            self::LOGGER_REQUEST_IP        => $ip,
-            self::LOGGER_REQUEST_CONTENT   => $content,
-            self::LOGGER_REQUEST_HEADERS   => $headers,
+        $this->requestLogger->info("Visited url", [
+            "requestUrl"      => $url,
+            "requestMethod"   => $method,
+            "requestGetData"  => $getData,
+            "requestPostData" => $postData,
+            "requestIp"       => $ip,
+            "requestContent"  => $content,
+            "requestHeaders"  => $headers,
         ]);
-    }
-
-    /**
-     * @param RequestEvent $event
-     * @throws SecurityException
-     *
-     */
-    private function blockRequestTypes(RequestEvent $event): void
-    {
-        $requestMethod = $event->getRequest()->getMethod();
-        if( !in_array($requestMethod, self::ALLOWED_REQUEST_TYPES) ){
-
-            $response = new Response();
-            $response->setContent("");
-
-            $event->stopPropagation();
-            $event->setResponse($response);
-
-            $logMessage       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedMethod");
-            $exceptionMessage = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
-
-            $this->securityLogger->info($logMessage);
-            throw new SecurityException($exceptionMessage);
-        }
-
     }
 
     /**
@@ -174,19 +129,15 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         }
 
         if (!in_array($ip, $restrictedIps)) {
-            $response = new Response();
-            $response->setContent("");
+            $msg      = "Not allowed to access from this ip: {$ip}";
+            $response = BaseResponse::buildAccessDeniedResponse($msg);
 
             $event->stopPropagation();
-            $event->setResponse($response);
+            $event->setResponse($response->toJsonResponse());
 
-            $logMessage       = $this->app->translator->translate("logs.security.visitedPageWithUnallowedIp");
-            $exceptionMessage = $this->app->translator->translate('exceptions.security.youAreNotAllowedToSeeThis');
-
-            $this->securityLogger->info($logMessage, [
+            $this->securityLogger->info($msg, [
                 "ip" => $ip,
             ]);
-            throw new SecurityException($exceptionMessage);
         }
     }
 
