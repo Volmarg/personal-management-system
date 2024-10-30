@@ -36,6 +36,8 @@ class JwtAuthenticationService
     const JWT_KEY_USERNAME = "username";
     const JWT_KEY_EXPIRES  = "exp";
 
+    public const JWT_IS_SYSTEM_LOCKED = "isSystemLocked";
+
     const HEADER_AUTHENTICATION = "authorization"; // must be lowercase, due to how php turns all headers keys to lowercase
     const HEADER_KEY_BEARER     = "Bearer";        // remains ucfirst to properly extract token from header
 
@@ -310,6 +312,24 @@ class JwtAuthenticationService
         }
 
         return (new DateTime())->getTimestamp() > $expirationEpoch;
+    }
+
+    /**
+     * Check if system is locked or not for user
+     *
+     * @return bool
+     *
+     * @throws JWTDecodeFailureException
+     */
+    public function isSystemLocked(): bool
+    {
+        $token = $this->extractJwtFromRequest();
+        if (!$token) {
+            return false;
+        }
+
+        $payload = $this->getPayloadFromToken($token);
+        return $payload[self::JWT_IS_SYSTEM_LOCKED] ?? true;
     }
 
     /**

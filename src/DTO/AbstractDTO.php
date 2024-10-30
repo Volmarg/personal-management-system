@@ -3,6 +3,9 @@
 namespace App\DTO;
 
 use Exception;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class AbstractDTO{
 
@@ -29,6 +32,42 @@ class AbstractDTO{
         }
 
         return $value;
+    }
+
+    /**
+     * Takes the json and deserializes it into calling class dto
+     *
+     * @param string $json
+     *
+     * @return static
+     */
+    public static function deserialize(string $json): static
+    {
+        return self::getSerializer()->deserialize($json, static::class, "json");
+    }
+
+    /**
+     * Turns current calling class into json
+     *
+     * @return string
+     */
+    public function serialize(): string
+    {
+        return self::getSerializer()->serialize($this, "json");
+    }
+
+    /**
+     * Serializer used in context of dto
+     *
+     * @return Serializer
+     */
+    private static function getSerializer(): Serializer
+    {
+        return new Serializer([
+            new ObjectNormalizer(),
+        ], [
+            new JsonEncoder(),
+        ]);
     }
 
 }

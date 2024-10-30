@@ -10,13 +10,15 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\SecurityController;
-use App\Controller\Utils\Utils;
+use App\DTO\User\SessionDataDTO;
 use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\Security\JwtAuthenticationService;
+use App\Services\Session\SessionsService;
 use App\Services\Validation\DtoValidatorService;
 use App\DTO\User\UserRegistrationDTO;
 use App\Entity\User;
 use App\Form\User\UserRegisterType;
-use App\Services\Session\UserRolesSessionService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +35,6 @@ class AppAction extends AbstractController {
 
     const KEY_CURR_URL                = 'currUrl';
     const KEY_SYSTEM_LOCK_PASSWORD    = 'systemLockPassword';
-    const KEY_SYSTEM_LOCK_IS_UNLOCKED = 'isUnlocked';
     const KEY_PATH_NAME               = 'pathName';
     const KEY_CONSTANT_NAME           = 'constantName';
     const KEY_NAMESPACE               = 'namespace';
@@ -133,7 +134,13 @@ class AppAction extends AbstractController {
      */
     private DtoValidatorService $dtoValidator;
 
-    public function __construct(Application $app, Controllers $controllers, DtoValidatorService $dtoValidator)
+    public function __construct(
+        Application                               $app,
+        Controllers                               $controllers,
+        DtoValidatorService                       $dtoValidator,
+        private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly SessionsService $sessionsService
+    )
     {
         $this->app                      = $app;
         $this->controllers              = $controllers;
@@ -212,7 +219,8 @@ class AppAction extends AbstractController {
      * This method will either:
      * - set system in unlock state where locked resources are accessible,
      * - set system in lock state where locked resources are hidden,
-     * @Route("/api/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
+     *
+     * @Route("/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
      * @param Request $request
      * @param SecurityController $securityController
      * @return JsonResponse
@@ -220,76 +228,32 @@ class AppAction extends AbstractController {
      */
     public function toggleResourcesLock(Request $request, SecurityController $securityController): Response
     {
-        if( !$request->isXmlHttpRequest() ){
-            $message  = $this->app->translator->translate('responses.general.youAreNotAllowedToCallThisLogic');
-            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
-            return $response;
-        }
-
-        if( !$request->request->has(self::KEY_SYSTEM_LOCK_PASSWORD) ){
+        $dataArray = RequestService::tryFromJsonBody($request);
+        if (!$dataArray[self::KEY_SYSTEM_LOCK_PASSWORD]) {
             $message  = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
-            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
-            return $response;
+            return BaseResponse::buildBadRequestErrorResponse($message)->toJsonResponse();
         }
 
-        if( !$request->request->has(self::KEY_SYSTEM_LOCK_IS_UNLOCKED) ){
-            $message  = $this->app->translator->translate('responses.general.missingRequiredParameter'. self::KEY_SYSTEM_LOCK_IS_UNLOCKED);
-            $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
-            return $response;
+        $user = $this->jwtAuthenticationService->getUserFromRequest();
+        if (!$this->jwtAuthenticationService->isSystemLocked()) {
+            $this->sessionsService->setForUser($user->getId(), SessionDataDTO::KEY_IS_SYSTEM_LOCKED, true);
+            $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
+            return BaseResponse::buildOkResponse($message)->toJsonResponse();
         }
 
-        $isUnlockedOnFront = Utils::getBoolRepresentationOfBoolString($request->request->get(self::KEY_SYSTEM_LOCK_IS_UNLOCKED));
-        $code              = Response::HTTP_OK;
-
-        try{
-
-            if( $isUnlockedOnFront ){
-
-                // the session has expired - force to reload gui
-                if( !UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES) ) {
-                    $message = $this->app->translator->translate("messages.lock.unlockExpiredReloadingPage");
-                }else{
-                    $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
-                }
-
-                UserRolesSessionService::removeRolesFromSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
-            }else{
-
-                /**
-                 * @var User $user
-                 */
-                $user            = $this->getUser();
-                $userPassword    = $user->getLockPassword();
-                $password        = $request->request->get(self::KEY_SYSTEM_LOCK_PASSWORD);
-                $isPasswordValid = $securityController->isPasswordValid($user, $userPassword, $password);
-
-                if( !$isPasswordValid ){
-                    $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
-                    $response = AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_UNAUTHORIZED, $message);
-                    return $response;
-                }
-
-                UserRolesSessionService::addRolesToSession([User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
-
-                $systemLockSessionLifetime = $this->app->configLoaders->getConfigLoaderSession()->getSystemLockLifetime();
-
-                // todo: pass the lock/unlock state somewhere, example: session, add to jwt and then on request read payload
-                // $this->expirableSessionsService->addSessionLifetime(ExpirableSessionsService::KEY_SESSION_SYSTEM_LOCK_LIFETIME, $systemLockSessionLifetime, [User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES]);
-
-                $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
-
-            }
-        } catch(Exception $e){
-            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
-            $message = $this->app->translator->translate("messages.lock.failedToToggleLockForWholeSystem");
-            $this->app->logger->info($message, [
-                "exceptionMessage"  => $e->getMessage(),
-                "exceptionCode"     => $e->getCode(),
-            ]);
+        /** @var User $user */
+        $user            = $this->getUser();
+        $userPassword    = $user->getLockPassword();
+        $password        = $dataArray[self::KEY_SYSTEM_LOCK_PASSWORD];
+        $isPasswordValid = $securityController->isPasswordValid($user, $userPassword, $password);
+        if (!$isPasswordValid) {
+            $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
+            return BaseResponse::buildUnauthorizedResponse($message)->toJsonResponse();
         }
 
-        $response = AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
-        return $response;
+        $this->sessionsService->setForUser($user->getId(), SessionDataDTO::KEY_IS_SYSTEM_LOCKED, false);
+        $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
+        return BaseResponse::buildOkResponse($message)->toJsonResponse();
     }
 
     /**
@@ -442,6 +406,8 @@ class AppAction extends AbstractController {
     #[JwtAuthenticationDisabledAttribute]
     public function login(): JsonResponse
     {
+        $user = $this->jwtAuthenticationService->getUserFromRequest();
+        $this->sessionsService->clearForUser($user->getId());
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
