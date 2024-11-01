@@ -118,6 +118,16 @@ class Env extends AbstractController {
     }
 
     /**
+     * Check if the project is running in dev mode
+     *
+     * @return bool
+     */
+    public static function isDev(): bool
+    {
+        return (strtolower(self::getEnvironment()) == "dev");
+    }
+
+    /**
      * Returns current environment under which the project is running
      *
      * @return string

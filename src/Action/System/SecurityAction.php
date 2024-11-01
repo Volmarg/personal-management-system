@@ -4,35 +4,26 @@
 namespace App\Action\System;
 
 
-use App\Controller\Core\Controllers;
-use App\Entity\User;
+use App\Listeners\Response\JwtTokenResponseListener;
+use App\Response\Base\BaseResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route("/security", name: "security")]
 class SecurityAction extends AbstractController {
 
     /**
-     * @var Controllers $controllers
+     * Handles jwt token refresh. The content of this method is actually correct, because the jwt
+     * refresh happens in {@see JwtTokenResponseListener}, so no need to do anything here.
+     *
+     * So why does this route exists? Because some url must be called for the listener to work.
+     *
+     * @return JsonResponse
      */
-    private Controllers $controllers;
-
-    public function __construct(Controllers $controllers)
+    #[Route("/jwt/refresh", name: "jwt.refresh")]
+    public function refreshJwtToken(): JsonResponse
     {
-        $this->controllers = $controllers;
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
-
-    /**
-     * @Route("/api/system/validate-password", name="system_validate_password")
-     * @param User $user
-     * @param string $userPassword
-     * @param string $usedPassword
-     * @param string|null $saltForUsedPassword
-     * @return bool
-     */
-    public function isPasswordValid(User $user, string $userPassword, string $usedPassword, ?string $saltForUsedPassword = null): bool
-    {
-        $isPasswordValid = $this->controllers->getSecurityController()->isPasswordValid($user, $userPassword, $usedPassword, $saltForUsedPassword);
-        return $isPasswordValid;
-    }
-
 }

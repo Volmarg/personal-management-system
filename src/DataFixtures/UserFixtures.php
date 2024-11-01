@@ -16,7 +16,7 @@ class UserFixtures extends Fixture
     const AVATAR                = NULL;
     const NICKNAME              = NULL;
     const PASSWORD              = '$2y$13$.VnnN5tJ8evchXidKXZnZePceiQ1FFzr/9SLg8DNGyeKpbnqBelDW'; #admin
-    const ROLES                 = 'ROLE_SUPER_ADMIN';
+    const ROLES                 = 'ROLE_USER';
     const USERNAME              = 'admin';
     const EMAIL                 = 'admin@admin.admin';
 

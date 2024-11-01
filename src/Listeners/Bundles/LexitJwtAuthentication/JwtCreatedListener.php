@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Bundles\LexitJwtAuthentication;
 
+use App\Controller\Core\Env;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Services\Security\JwtAuthenticationService;
@@ -51,6 +52,10 @@ class JwtCreatedListener implements EventSubscriberInterface
             self::JWT_KEY_NICKNAME                     => $user->getNickname(),
             self::JWT_KEY_PROFILE_PIC_PATH             => $profilePicturePath,
         ]);
+
+        if (Env::isDev() && array_key_exists('roles', $newData)) {
+            $newData['roles'][] = User::ROLE_DEVELOPER;
+        }
 
         $event->setData($newData);
     }

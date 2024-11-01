@@ -136,7 +136,7 @@ class JwtAuthenticationService
          * This role is required for each user, so if the token does not contain it then it's some special purpose token,
          * and it should not be refreshed
          */
-        if (!in_array(User::ROLE_SUPER_ADMIN, $userRoles)) {
+        if (!in_array(User::ROLE_USER, $userRoles)) {
             return $tokenRaw;
         }
 
@@ -149,11 +149,11 @@ class JwtAuthenticationService
      *
      * This kind of tokens might be handy when there is some need to generate token for certain actions only,
      * where given token should be used precisely for given thing (like reset password), without letting user
-     * use the token on the page when logged-in, thus it's possible to strip out the base {@see User::ROLE_SUPER_ADMIN} etc.
+     * use the token on the page when logged-in, thus it's possible to strip out the base {@see User::ROLE_USER} etc.
      *
      * @param User  $user
      * @param array $rolesAndRights
-     * @param bool  $includeBaseRole - {@see User::ROLE_SUPER_ADMIN}
+     * @param bool  $includeBaseRole - {@see User::ROLE_USER}
      *
      * @return string
      */

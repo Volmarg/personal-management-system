@@ -11,18 +11,21 @@ use App\Entity\Interfaces\EntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @ORM\Entity
  * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"username", "email"}, message="There is already an account with this username and email")
  */
-class User implements UserInterface, EntityInterface {
+class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface {
 
     const PASSWORD_FIELD   = 'password';
     const USERNAME_FIELD   = "username";
     const EMAIL_FIELD      = "email";
-    const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
+
+    const ROLE_USER      = "ROLE_USER";
+    const ROLE_DEVELOPER = "ROLE_DEVELOPER";
 
     const DEMO_LOGIN    = "admin";
     const DEMO_PASSWORD = "admin";
