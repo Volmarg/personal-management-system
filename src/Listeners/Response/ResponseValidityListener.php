@@ -12,7 +12,6 @@ use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationFailureRespon
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -58,10 +57,6 @@ class ResponseValidityListener implements EventSubscriberInterface
         // options must ALWAYS be first, else it causes issues with CORS
         $request  = $event->getRequest();
         $response = $event->getResponse();
-        if( Request::METHOD_OPTIONS === $request->getMethod() ){
-            return;
-        }
-
         if (!$this->responseService->canHandleAsBaseResponse($request)) {
             return;
         }
