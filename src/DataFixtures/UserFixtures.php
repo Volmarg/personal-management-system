@@ -18,6 +18,7 @@ class UserFixtures extends Fixture
     const PASSWORD              = '$2y$13$.VnnN5tJ8evchXidKXZnZePceiQ1FFzr/9SLg8DNGyeKpbnqBelDW'; #admin
     const ROLES                 = 'ROLE_SUPER_ADMIN';
     const USERNAME              = 'admin';
+    const EMAIL                 = 'admin@admin.admin';
 
 
     public function load(ObjectManager $manager)
@@ -25,8 +26,8 @@ class UserFixtures extends Fixture
         $appUser  = new User();
         $appUser->setUsername(static::USERNAME);
         $appUser->setUsernameCanonical(static::USERNAME);
-        $appUser->setEmail(static::USERNAME);
-        $appUser->setEmailCanonical(static::USERNAME);
+        $appUser->setEmail(static::EMAIL);
+        $appUser->setEmailCanonical(static::EMAIL);
         $appUser->setEnabled(static::ENABLED);
         $appUser->setSalt(static::SALT);
         $appUser->setPassword(static::PASSWORD);
