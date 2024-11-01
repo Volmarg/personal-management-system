@@ -27,4 +27,8 @@ class ArrayTypeProcessor
         return $defaultValue;
     }
 
+    public static function get(array $source, string $key): mixed {
+
+    }
+
 }

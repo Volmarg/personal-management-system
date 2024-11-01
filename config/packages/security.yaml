@@ -27,6 +27,7 @@ security:
             pattern: ^(?!/api)
             stateless: true
             provider: app_user_provider
+            methods: [^OPTIONS]
             guard:
                 authenticators:
                     - 'App\Security\LexitBundleJwtTokenAuthenticator'
