@@ -17,6 +17,7 @@ class ResponseService
      */
     private const ACCESS_CONTROL_ORIGIN_HEADER  = "Access-Control-Allow-Origin";
     private const ACCESS_CONTROL_ALLOW_HEADERS  = "Access-Control-Allow-Headers";
+    private const ACCESS_CONTROL_ALLOW_METHODS  = "Access-Control-Allow-Methods";
     private const HEADER_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
     /**
@@ -75,6 +76,7 @@ class ResponseService
         // todo: allowing any for now, should be set properly at some point in time
         $response->headers->set(self::ACCESS_CONTROL_ALLOW_HEADERS, "*");
         $response->headers->set(self::ACCESS_CONTROL_ORIGIN_HEADER, "*");
+        $response->headers->set(self::ACCESS_CONTROL_ALLOW_METHODS, "*");
 
         return $response;
     }
