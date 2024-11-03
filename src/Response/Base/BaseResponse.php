@@ -4,10 +4,11 @@
 namespace App\Response\Base;
 
 use App\Listeners\Response\JwtTokenResponseListener;
-use App\Services\TypeProcessor\ArrayTypeProcessor;
+use App\Services\TypeProcessor\ArrayHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -30,8 +31,10 @@ class BaseResponse
         self::KEY_TOKEN,
     ];
 
-    const KEY_DATA_REDIRECT_ROUTE_NAME = "redirectRouteName";
+    const KEY_DATA_RELOAD_VIEW = "reloadView";
     const KEY_DATA_BASE64 = "base64";
+    private const KEY_DATA_ALL_RECORDS = "allRecords";
+    private const KEY_DATA_SINGLE_RECORD = 'singleRecord';
 
     const DEFAULT_CODE         = Response::HTTP_BAD_REQUEST;
     const DEFAULT_MESSAGE      = "Bad request";
@@ -173,10 +176,10 @@ class BaseResponse
     }
 
     /**
-     * @param string                     $key
-     * @param string|int|float|bool|null $value
+     * @param string $key
+     * @param mixed  $value
      */
-    public function addData(string $key, string|null|int|float|bool $value): void
+    public function addData(string $key, mixed $value): void
     {
         $this->data[$key] = $value;
     }
@@ -357,23 +360,6 @@ class BaseResponse
     }
 
     /**
-     * Will build unauthorized json response
-     *
-     * @param string $routeName
-     * @param string $message
-     * @return static
-     */
-    public static function buildRedirectResponse(string $routeName, string $message = ""): static
-    {
-        $response = new static();
-        $response->setCode(Response::HTTP_MOVED_PERMANENTLY);
-        $response->setMessage($message);
-        $response->setSuccess(true);
-        $response->setRedirectRoute($routeName);
-        return $response;
-    }
-
-    /**
      * Will build bad request response, but let easily setting the invalid fields that can be handled on front
      *
      * @param string $message
@@ -403,7 +389,10 @@ class BaseResponse
             new JsonEncoder()
         ]);
 
-        $json  = $serializer->serialize($this, "json");
+        $json  = $serializer->serialize($this, "json", [
+            AbstractNormalizer::CIRCULAR_REFERENCE_LIMIT => 10,
+        ]);
+
         $array = json_decode($json, true);
 
         return new JsonResponse($array, $responseCode);
@@ -420,10 +409,10 @@ class BaseResponse
     {
         $dataArray = json_decode($json, true);
 
-        $message = ArrayTypeProcessor::checkAndGetKey($dataArray, self::KEY_MESSAGE, self::DEFAULT_MESSAGE);
-        $code    = ArrayTypeProcessor::checkAndGetKey($dataArray, self::KEY_CODE, self:: DEFAULT_CODE);
-        $success = ArrayTypeProcessor::checkAndGetKey($dataArray, self::KEY_SUCCESS, false);
-        $data    = ArrayTypeProcessor::checkAndGetKey($dataArray, self::KEY_DATA, []);
+        $message = ArrayHandler::checkAndGetKey($dataArray, self::KEY_MESSAGE, self::DEFAULT_MESSAGE);
+        $code    = ArrayHandler::checkAndGetKey($dataArray, self::KEY_CODE, self:: DEFAULT_CODE);
+        $success = ArrayHandler::checkAndGetKey($dataArray, self::KEY_SUCCESS, false);
+        $data    = ArrayHandler::checkAndGetKey($dataArray, self::KEY_DATA, []);
 
         $response = new BaseResponse();
         $response->setMessage($message);
@@ -452,15 +441,12 @@ class BaseResponse
     }
 
     /**
-     * Will set redirect route by using data bag array
-     *
-     * @param string $routeName
+     * Will set data key that should force front to reload the vue view.
+     * Keep in mind, that this is not equal page reload.
      */
-    public function setRedirectRoute(string $routeName): void
+    public function reloadView(): void
     {
-        $this->setData([
-            self::KEY_DATA_REDIRECT_ROUTE_NAME => $routeName
-        ]);
+        $this->addData(self::KEY_DATA_RELOAD_VIEW, true);
     }
 
     /**
@@ -470,9 +456,27 @@ class BaseResponse
      */
     public function setBase64(string $base64): void
     {
-        $this->setData([
-            self::KEY_DATA_BASE64 => $base64
-        ]);
+        $this->addData(self::KEY_DATA_BASE64, $base64);
+    }
+
+    /**
+     * Will set all records data using data bag array
+     *
+     * @param array $recordsData
+     */
+    public function setAllRecordsData(array $recordsData): void
+    {
+        $this->addData(self::KEY_DATA_ALL_RECORDS, $recordsData);
+    }
+
+    /**
+     * Will set single record data using data bag array
+     *
+     * @param array $recordData
+     */
+    public function setSingleRecordData(array $recordData): void
+    {
+        $this->addData(self::KEY_DATA_SINGLE_RECORD, $recordData);
     }
 
     /**

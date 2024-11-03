@@ -77,7 +77,7 @@ class DashboardAction extends AbstractController {
         $goalsPayments = $this->controllers->getDashboardController()->getGoalsPayments();
 
         $pendingIssues   = $this->controllers->getDashboardController()->getPendingIssues();
-        $issuesCardsDtos = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues($pendingIssues);
+        $issuesCardsDtos = $this->controllers->getMyIssuesController()->getIssuesData($pendingIssues);
 
         $schedulesForPages = array_chunk($schedules, self::INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE);
 

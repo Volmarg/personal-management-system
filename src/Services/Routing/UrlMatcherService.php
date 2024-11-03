@@ -6,6 +6,7 @@ use App\Action\System\AppAction;
 use App\Controller\Core\Application;
 use App\Services\Core\Logger;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
@@ -185,10 +186,28 @@ class UrlMatcherService
 
             $dataArray = $this->urlMatcher->match($uriWithoutQueryParams);
             $route     = $dataArray[self::URL_MATCHER_RESULT_ROUTE];
-        } catch (Exception) {
-            $this->logger->getLogger()->warning("No route found for called uri", [
-                "uri" => $uri,
-            ]);
+        } catch (Exception $exc) {
+            /**
+             * This is added because browsers are doing {@see Request::METHOD_OPTIONS} calls by default,
+             * and there is special handling of such requests in this project. Everything works fine but the OPTIONS calls
+             * are running in here and are generating a bunch of useless warns.
+             */
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() !== Request::METHOD_OPTIONS) {
+                $this->logger->getLogger()->warning("No route found for called uri", [
+                    "uri"       => $uri,
+                    "request"   => [
+                        "method" => $request->getMethod(),
+                    ],
+                    'exception' => [
+                        "message" => $exc->getMessage(),
+                        "trace"   => explode("\n", $exc->getTraceAsString()),
+                        "class"   => $exc::class,
+                    ],
+
+                ]);
+            }
+
             return null;
         }
 

@@ -467,7 +467,7 @@ class AppAction extends AbstractController {
                         $cryptedLoginPassword = $this->controllers->getSecurityController()->hashPassword($userRegistrationDto->getPassword())->getHashedPassword();
                         $cryptedLockPassword  = $this->controllers->getSecurityController()->hashPassword($userRegistrationDto->getLockPassword())->getHashedPassword();
 
-                        $userEntity->setRoles([User::ROLE_SUPER_ADMIN]);
+                        $userEntity->setRoles([User::ROLE_USER]);
                         $userEntity->setPassword($cryptedLoginPassword);
                         $userEntity->setLockPassword($cryptedLockPassword);
 

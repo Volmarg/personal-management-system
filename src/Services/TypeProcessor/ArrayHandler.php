@@ -2,10 +2,12 @@
 
 namespace App\Services\TypeProcessor;
 
+use Exception;
+
 /**
  * Contains logic for handling the arrays
  */
-class ArrayTypeProcessor
+class ArrayHandler
 {
     /**
      * This function will check if the key in array exists
@@ -27,8 +29,19 @@ class ArrayTypeProcessor
         return $defaultValue;
     }
 
-    public static function get(array $source, string $key): mixed {
+    /**
+     * Returns value under given key in source array.
+     * Throws exception, ff target key does not exist in the source.
+     *
+     * @throws Exception
+     */
+    public static function get(array $source, string $key): mixed
+    {
+        if (!array_key_exists($key, $source)) {
+            throw new Exception("Key {$key} not found in the array");
+        }
 
+        return $source[$key];
     }
 
 }
