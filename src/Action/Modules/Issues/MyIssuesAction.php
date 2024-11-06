@@ -37,13 +37,15 @@ class MyIssuesAction extends AbstractController
     #[Route("", name: "new", methods: [Request::METHOD_POST])]
     public function new(Request $request): JsonResponse
     {
-        $dataArray   = RequestService::tryFromJsonBody($request);
-        $name        = ArrayHandler::get($dataArray, 'name');
-        $information = ArrayHandler::get($dataArray, 'information');
+        $dataArray       = RequestService::tryFromJsonBody($request);
+        $name            = ArrayHandler::get($dataArray, 'name');
+        $information     = ArrayHandler::get($dataArray, 'information');
+        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
 
         $issue = new MyIssue();
         $issue->setName($name);
         $issue->setInformation($information);
+        $issue->setShowOnDashboard($showOnDashboard);
 
         $this->em->persist($issue);
         $this->em->flush();

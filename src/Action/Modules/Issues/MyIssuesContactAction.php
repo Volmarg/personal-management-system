@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-issues/contact", name: "module.my_issues.contact.")]
-class MyIssuesContact extends AbstractController
+class MyIssuesContactAction extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $em

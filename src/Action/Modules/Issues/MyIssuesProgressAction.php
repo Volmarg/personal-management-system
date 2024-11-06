@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-issues/progress", name: "module.my_issues.progress.")]
-class MyIssuesProgress extends AbstractController
+class MyIssuesProgressAction extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $em
