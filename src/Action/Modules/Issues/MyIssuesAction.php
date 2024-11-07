@@ -37,29 +37,17 @@ class MyIssuesAction extends AbstractController
     #[Route("", name: "new", methods: [Request::METHOD_POST])]
     public function new(Request $request): JsonResponse
     {
-        $dataArray       = RequestService::tryFromJsonBody($request);
-        $name            = ArrayHandler::get($dataArray, 'name');
-        $information     = ArrayHandler::get($dataArray, 'information');
-        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
-
-        $issue = new MyIssue();
-        $issue->setName($name);
-        $issue->setInformation($information);
-        $issue->setShowOnDashboard($showOnDashboard);
-
-        $this->em->persist($issue);
-        $this->em->flush();
-
+        $this->createOrUpdate($request);
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**
-     * @return Response
+     * @return JsonResponse
      *
      * @throws \Doctrine\DBAL\Driver\Exception
      */
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
-    public function getAll(): Response
+    public function getAll(): JsonResponse
     {
         $allOngoingIssues = $this->controllers->getMyIssuesController()->findAllNotDeletedAndNotResolved();
         $issuesData       = $this->controllers->getMyIssuesController()->getIssuesData($allOngoingIssues);
@@ -80,18 +68,7 @@ class MyIssuesAction extends AbstractController
     #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
     public function update(MyIssue $issue, Request $request): JsonResponse
     {
-        $dataArray       = RequestService::tryFromJsonBody($request);
-        $name            = ArrayHandler::get($dataArray, 'name');
-        $information     = ArrayHandler::get($dataArray, 'information');
-        $isForDashboard  = ArrayHandler::get($dataArray, 'isForDashboard');
-
-        $issue->setName($name);
-        $issue->setInformation($information);
-        $issue->setShowOnDashboard($isForDashboard);
-
-        $this->em->persist($issue);
-        $this->em->flush();
-
+        $this->createOrUpdate($request, $issue);
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
@@ -108,6 +85,33 @@ class MyIssuesAction extends AbstractController
         $this->em->flush();
 
         return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * Create new entry or update existing
+     *
+     * @param Request      $request
+     * @param MyIssue|null $issue
+     *
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyIssue $issue = null): void
+    {
+        if (!$issue) {
+            $issue = new MyIssue();
+        }
+
+        $dataArray      = RequestService::tryFromJsonBody($request);
+        $name           = ArrayHandler::get($dataArray, 'name');
+        $information    = ArrayHandler::get($dataArray, 'information');
+        $isForDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
+
+        $issue->setName($name);
+        $issue->setInformation($information);
+        $issue->setShowOnDashboard($isForDashboard);
+
+        $this->em->persist($issue);
+        $this->em->flush();
     }
 
 }
