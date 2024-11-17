@@ -35,9 +35,13 @@ class ArrayHandler
      *
      * @throws Exception
      */
-    public static function get(array $source, string $key): mixed
+    public static function get(array $source, string $key, bool $allowDefault = false, mixed $default = null): mixed
     {
         if (!array_key_exists($key, $source)) {
+            if ($allowDefault) {
+                return $default;
+            }
+
             throw new Exception("Key {$key} not found in the array");
         }
 

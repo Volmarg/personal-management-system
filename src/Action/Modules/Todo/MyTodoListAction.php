@@ -3,205 +3,181 @@
 namespace App\Action\Modules\Todo;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Todo\MyTodoController;
+use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
+use App\Entity\System\Module;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_TODO
- * )
- */
+#[Route("/module/my-todo", name: "module.my_todo.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_TODO])]
 class MyTodoListAction extends AbstractController {
 
-    const KEY_TODO        = "myTodo";
-    const KEY_MODULE_NAME = "moduleName";
-    const KEY_ID          = "id";
-
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly MyTodoController       $todoController
+    ) {
     }
 
     /**
-     * @Route("admin/todo/list", name="todo_list")
      * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function display(Request $request): Response
-    {
-        $this->handleForms($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getTodoListPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * Called when updating the @see MyTodo
      *
-     * @Route("/admin/todo/update", name="my-todo-update")
-     * @param Request $request
      * @return JsonResponse
      * @throws Exception
      */
-    public function updateTodo(Request $request): JsonResponse
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        if( !$request->request->has(self::KEY_ID) ){
-            $message = $this->app->translator->translate('responses.general.missingRequiredParameter') . self::KEY_TODO;
-            $this->app->logger->error("Request is missing `todo` key");
-            return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
-        }
+        $this->createOrUpdate($request);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
 
-        $ajaxResponse = new AjaxResponse();
-        $message      = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-        $code         = Response::HTTP_OK;
-
-        $parameters = $request->request->all();
-
-        $moduleName = $request->request->get(self::KEY_MODULE_NAME, null);
-        $todoId     = $request->request->get(self::KEY_ID);
-
-        try{
-            /**
-             * Some parameters are passed only to build final entity, must be unset before passing to repository update
-             */
-            if( array_key_exists(self::KEY_MODULE_NAME, $parameters) ){
-                unset($parameters[self::KEY_MODULE_NAME]);
-            }
-
-            $moduleEntity = null;
-            if( !empty($moduleName) ){
-                $moduleEntity = $this->controllers->getModuleController()->getOneByName($moduleName);
-
-                if( empty($moduleEntity) ){
-                    $message = $this->app->translator->translate('responses.todo.moduleWithSuchNameDoesNotExist' . $moduleName);
-
-                    $this->app->logger->critical($message);;
-                    return AjaxResponse::buildJsonResponseForAjaxCall(Response::HTTP_BAD_REQUEST, $message);
+    /**
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $entriesData = [];
+        foreach ($this->todoController->getAll() as $todo) {
+            $elements = [];
+            foreach ($todo->getMyTodoElement() as $element) {
+                if ($element->isDeleted()) {
+                    continue;
                 }
+
+                $elements[] = [
+                    'id' => $element->getId(),
+                    'name' => $element->getName() ?? '',
+                    'isDone' => $element->getCompleted() ?? false,
+                ];
             }
 
-            $todo = $this->controllers->getMyTodoController()->findOneById($todoId);
-            $todo->setModule($moduleEntity);
-
-            $updateResponse = $this->app->repositories->update($parameters, $todo);
-
-            if( Response::HTTP_OK != $updateResponse->getStatusCode() ){
-                return AjaxResponse::initializeFromResponse($updateResponse)->buildJsonResponse();
-            }
-
-        }catch(Exception $e){
-            $message = $this->app->translator->translate('responses.todo.elementCouldNotBeUpdated'); //todo: add trans.
-            $code    = Response::HTTP_INTERNAL_SERVER_ERROR;
-            $this->app->logExceptionWasThrown($e);
+            $entriesData[] = [
+                'id'              => $todo->getId(),
+                'name'            => $todo->getName() ?? '',
+                'description'     => $todo->getDescription() ?? '',
+                'showOnDashboard' => $todo->getDisplayOnDashboard() ?? false,
+                'elements'        => $elements,
+                'module'          => [
+                    'id'   => $todo->getModule()?->getId() ?? null,
+                    'name' => $todo->getModule()?->getName() ?? null,
+                    'entryId' => $todo->getRelatedEntityId()
+                ],
+            ];
         }
 
-        $ajaxResponse->setMessage($message);
-        $ajaxResponse->setCode($code);
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
 
-        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
+        return $response->toJsonResponse();
     }
 
     /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-        $allGroupedTodo  = $this->controllers->getMyTodoController()->getAllGroupedByModuleName();
-        $todoForm        = $this->app->forms->todoForm()->createView();
-        $todoElementForm = $this->app->forms->todoElementForm();
-        $allModules      = $this->controllers->getModuleController()->getAllActive();
-
-        $allRelatableEntitiesDataDtosForModules = $this->controllers->getMyTodoController()->getAllRelatableEntitiesDataDtosForModulesNames();
-
-        $data = [
-            'all_grouped_todo'                             => $allGroupedTodo,
-            'todo_form'                                    => $todoForm,
-            'todo_element_form'                            => $todoElementForm, // direct object must be passed to render form multiple time
-            'ajax_render'                                  => $ajaxRender,
-            'all_modules'                                  => $allModules,
-            'all_relatable_entities_data_dtos_for_modules' => $allRelatableEntitiesDataDtosForModules,
-            'skip_rewriting_twig_vars_to_js'               => $skipRewritingTwigVarsToJs,
-            'page_title'                                   => $this->getTodoListPageTitle(),
-        ];
-
-        return $this->render('modules/my-todo/list.html.twig', $data);
-    }
-
-    /**
-     * Will handle the forms for list view when these are submitted
-     *
+     * @param MyTodo  $todo
      * @param Request $request
-     * @throws ORMException
-     * @throws OptimisticLockException
+     *
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function handleForms(Request $request)
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyTodo $todo, Request $request): JsonResponse
     {
-        $todoForm        = $this->app->forms->todoForm();
-        $todoElementForm = $this->app->forms->todoElementForm();
-
-        $todoForm->handleRequest($request);
-        $todoElementForm->handleRequest($request);
-
-        if($todoForm->isSubmitted() && $todoForm->isValid()){
-            $todo = $todoForm->getData();
-            $this->controllers->getMyTodoController()->save($todo);
-        }
-
-        if($todoElementForm->isSubmitted() && $todoElementForm->isValid()){
-            $todoElement = $todoElementForm->getData();
-            $this->controllers->getMyTodoElementController()->save($todoElement);
-        }
+        $this->createOrUpdate($request, $todo);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**
-     * Will todo list page title
+     * @param MyTodo $todo
      *
-     * @return string
+     * @return JsonResponse
      */
-    private function getTodoListPageTitle(): string
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyTodo $todo): JsonResponse
     {
-        return $this->app->translator->translate('todo.list.title');
+        $todo->setDeleted(true);
+        $this->em->persist($todo);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**
-     * Will todo settings page title
+     * @param Request $request
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function getTodoSettingsPageTitle(): string
+    #[Route("/relation-entries", name: "relation    _entries", methods: [Request::METHOD_POST])]
+    public function getPossibleRelationEntries(Request $request): JsonResponse
     {
-        return $this->app->translator->translate('todo.settings.title');
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $includedIds = ArrayHandler::checkAndGetKey($dataArray, 'includedIds', []);
+
+        $entries = $this->todoController->getPossibleRelationEntries($includedIds);
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entries);
+
+        return $response->toJsonResponse();
     }
 
+    /**
+     * @param Request     $request
+     * @param MyTodo|null $todo
+     *
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyTodo $todo = null): void
+    {
+        if (!$todo) {
+            $todo = new MyTodo();
+        }
+
+        // cleanup old previous todo relation else duplication exception gets thrown
+        if (!is_null($todo->getMyIssue())) {
+            $todo->getMyIssue()->setTodo(null);
+        }
+
+        $dataArray       = RequestService::tryFromJsonBody($request);
+        $moduleId        = ArrayHandler::get($dataArray, 'moduleId', true);
+        $recordId        = ArrayHandler::get($dataArray, 'recordId', true);
+        $name            = ArrayHandler::get($dataArray, 'name');
+        $description     = ArrayHandler::get($dataArray, 'description');
+        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
+
+        $module = null;
+        if ($moduleId) {
+            $module = $this->em->find(Module::class, $moduleId);
+            if (!$module) {
+                throw new Exception("No module found for id: {$moduleId}");
+            }
+        }
+
+        $todo->setName($name);
+        $todo->setModule($module);
+        $todo->setDescription($description);
+        $todo->setDisplayOnDashboard($showOnDashboard);
+
+        $this->em->persist($todo);
+
+        // only issue records can relate to the todo so, not sending module name etc.
+        if ($recordId) {
+            $record = $this->em->find(MyIssue::class, $recordId);
+            if ($record) {
+                $record->setTodo($todo);
+                $this->em->persist($record);
+            }
+        }
+
+        $this->em->flush();
+    }
 }

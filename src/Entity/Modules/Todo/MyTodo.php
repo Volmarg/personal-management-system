@@ -199,7 +199,11 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
      * @return int|null
      */
     public function getRelatedEntityId():? int {
-        return $this->relatedEntityId;
+        if ($this->getMyIssue()) {
+            return $this->getMyIssue()->getId();
+        }
+
+        return null;
     }
 
     /**
