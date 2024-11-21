@@ -47,35 +47,8 @@ class MyTodoListAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $entriesData = [];
-        foreach ($this->todoController->getAll() as $todo) {
-            $elements = [];
-            foreach ($todo->getMyTodoElement() as $element) {
-                if ($element->isDeleted()) {
-                    continue;
-                }
-
-                $elements[] = [
-                    'id' => $element->getId(),
-                    'name' => $element->getName() ?? '',
-                    'isDone' => $element->getCompleted() ?? false,
-                ];
-            }
-
-            $entriesData[] = [
-                'id'              => $todo->getId(),
-                'name'            => $todo->getName() ?? '',
-                'description'     => $todo->getDescription() ?? '',
-                'showOnDashboard' => $todo->getDisplayOnDashboard() ?? false,
-                'elements'        => $elements,
-                'module'          => [
-                    'id'   => $todo->getModule()?->getId() ?? null,
-                    'name' => $todo->getModule()?->getName() ?? null,
-                    'entryId' => $todo->getRelatedEntityId()
-                ],
-            ];
-        }
-
+        $allTodo     = $this->todoController->getAll();
+        $entriesData = $this->todoController->buildFrontDataArray($allTodo);
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($entriesData);
 

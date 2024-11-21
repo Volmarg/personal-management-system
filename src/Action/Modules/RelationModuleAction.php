@@ -12,9 +12,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @description this action refers to {@see Module}
- */
 #[Route("/module/relation", name: "module.relation.")]
 #[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_ISSUES])]
 class RelationModuleAction extends AbstractController
