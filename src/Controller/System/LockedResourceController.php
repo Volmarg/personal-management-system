@@ -7,6 +7,7 @@ use App\Controller\Page\SettingsLockModuleController;
 use App\Entity\System\LockedResource;
 use App\Services\Security\JwtAuthenticationService;
 use Doctrine\DBAL\Statement;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
@@ -28,7 +29,8 @@ class LockedResourceController extends AbstractController {
     public function __construct(
         Application                               $app,
         SettingsLockModuleController              $settingsLockModuleController,
-        private readonly JwtAuthenticationService $jwtAuthenticationService
+        private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly EntityManagerInterface   $em
     ) {
         $this->app                          = $app;
         $this->settingsLockModuleController = $settingsLockModuleController;
@@ -88,6 +90,36 @@ class LockedResourceController extends AbstractController {
                 throw new Exception("This locked resource type is not supported");
         }
 
+    }
+
+    /**
+     * @description either create or remove the lock
+     *
+     * @param string $record
+     * @param string $type
+     * @param string $target
+     *
+     * @return bool
+     */
+    public function toggleLock(string $record, string $type, string $target): bool
+    {
+        $entity = $this->em->getRepository(LockedResource::class)->findOneEntity($record, $type, $target);
+        if (!empty($entity)) {
+            $this->em->remove($entity);
+            $this->em->flush();
+
+            return false;
+        }
+
+        $lockedResource = new LockedResource();
+        $lockedResource->setRecord($record);
+        $lockedResource->setType($type);
+        $lockedResource->setTarget($target);
+
+        $this->em->persist($lockedResource);
+        $this->em->flush();
+
+        return true;
     }
 
     /**

@@ -35,6 +35,7 @@ class BaseResponse
     const KEY_DATA_BASE64 = "base64";
     private const KEY_DATA_ALL_RECORDS = "allRecords";
     private const KEY_DATA_SINGLE_RECORD = 'singleRecord';
+    private const KEY_DATA_IS_LOCKED = 'isLocked';
 
     const DEFAULT_CODE         = Response::HTTP_BAD_REQUEST;
     const DEFAULT_MESSAGE      = "Bad request";
@@ -315,6 +316,26 @@ class BaseResponse
         $response->setCode(Response::HTTP_OK);
         $response->setSuccess(true);
         $response->setMessage($message);
+
+        return $response;
+    }
+
+    /**
+     * Will build toggle lock response
+     *
+     * @param bool $isLocked
+     *
+     * @return static
+     *
+     * @var string $message
+     */
+    public static function buildToggleLockResponse(bool $isLocked, string $message = self::MESSAGE_OK): static
+    {
+        $response = new static();
+        $response->setCode(Response::HTTP_OK);
+        $response->setSuccess(true);
+        $response->setMessage($message);
+        $response->addData(self::KEY_DATA_IS_LOCKED, $isLocked);
 
         return $response;
     }
