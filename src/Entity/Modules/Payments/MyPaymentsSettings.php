@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyPaymentsSettings implements SoftDeletableEntityInterface, EntityInterface
 {
+    public const TYPE_PAYMENT_TYPE = 'type';
+    public const TYPE_CURRENCY_MULTIPLIER = 'currency_multiplier';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
