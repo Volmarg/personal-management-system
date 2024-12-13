@@ -1,0 +1,9 @@
+module:
+  system:
+    settings:
+      finances:
+        currencies:
+          msg:
+            noRemovingDefault: "Default currency cannot be removed"
+            nameAlreadyInUse: "Currency with this name already exists"
+            noDefaultCurrency: "Cannot save, since there would be no default currency - provide one"
