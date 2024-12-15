@@ -5,180 +5,129 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\Payments\MyPaymentsOwed;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class MyPaymentsOwedAction
- * @package App\Action\Modules\Payments
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
- * )
- */
-class MyPaymentsOwedAction extends AbstractController {
+#[Route("/module/payment/owed", name: "module.payment.owed.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
+class MyPaymentsOwedAction extends AbstractController
+{
 
-
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     /**
-     * @Route("/my-payments-owed", name="my-payments-owed")
      * @param Request $request
-     * @return Response
-     * @throws DBALException
-     * @throws Exception
-     */
-    public function display(Request $request) {
-        $this->add($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getMoneyOwedPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-payments-owed/remove/", name="my-payments-owed-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function remove(Request $request): Response
-    {
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_PAYMENTS_OWED_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
-
-        $message = $response->getContent();
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @Route("my-payments-owed/update/" ,name="my-payments-owed-update")
-     * @param Request $request
+     *
      * @return JsonResponse
-     *
-     * @throws MappingException
-     */
-    public function update(Request $request) {
-        $parameters    = $request->request->all();
-        $entityId      = trim($parameters['id']);
-
-        $entity         = $this->controllers->getMyPaymentsOwedController()->findOneById($entityId);
-        $response       = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     * @throws DBALException
      * @throws Exception
      */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-
-        $form         = $this->app->forms->moneyOwedForm();
-        $owedByMe     = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(true);
-        $owedByOthers = $this->controllers->getMyPaymentsOwedController()->findAllNotDeletedFilteredByOwedStatus(false);
-
-        $summaryOwedByOthers = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(false);
-        $summaryOwedByMe     = $this->controllers->getMyPaymentsOwedController()->getMoneyOwedSummaryForTargetsAndOwningSide(true);
-
-        $summaryOverall        = $this->controllers->getMyPaymentsOwedController()->fetchSummaryWhoOwesHowMuch();
-
-        $summaryOverallOwedByMe     = [];
-        $summaryOverallOwedByOthers = [];
-
-        foreach( $summaryOverall as $summary ){
-            $isSummaryOwedByMe = $summary['summaryOwedByMe'];
-
-            if($isSummaryOwedByMe){
-                $summaryOverallOwedByMe[] = $summary;
-                continue;
-            }
-
-            $summaryOverallOwedByOthers[] = $summary;
-        }
-
-        $currenciesDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
-
-        return $this->render('modules/my-payments/owed.html.twig', [
-            'ajax_render'       => $ajaxRender,
-            'form'              => $form->createView(),
-            'owed_by_me'        => $owedByMe,
-            'owed_by_others'    => $owedByOthers,
-            'summary_owed_by_others' => $summaryOwedByOthers,
-            'summary_owed_by_me'     => $summaryOwedByMe,
-            'currencies_dtos'        => $currenciesDtos,
-            'summary_overall_owed_by_me'     => $summaryOverallOwedByMe,
-            'summary_overall_owed_by_others' => $summaryOverallOwedByOthers,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'page_title'                     => $this->getMoneyOwedPageTitle(),
-        ]);
+        return $this->createOrUpdate($request)->toJsonResponse();
     }
 
     /**
-     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function add(Request $request) {
-        $form = $this->app->forms->moneyOwedForm();
-        $form->handleRequest($request);
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $entries = $this->em->getRepository(MyPaymentsOwed::class)->findBy(['deleted' => false]);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($formData);
-            $em->flush();
+        $entriesData = [];
+        foreach ($entries as $owedEntry) {
+            $entriesData[] = [
+                'id'          => $owedEntry->getId(),
+                'owedByMe'    => $owedEntry->getOwedByMe() ?? false,
+                'target'      => $owedEntry->getTarget(),
+                'amount'      => $owedEntry->getAmount(),
+                'information' => $owedEntry->getInformation(),
+                'date'        => $owedEntry->getDate()?->format("Y-m-d"),
+                'currency'    => $owedEntry->getCurrency(),
+            ];
         }
 
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
     }
 
     /**
-     * Will return payments owed page title
+     * @param MyPaymentsOwed $owedEntry
+     * @param Request        $request
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    public function getMoneyOwedPageTitle(): string
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyPaymentsOwed $owedEntry, Request $request): JsonResponse
     {
-        return $this->app->translator->translate('payments.moneyOwed.title');
+        return $this->createOrUpdate($request, $owedEntry)->toJsonResponse();
+    }
+
+    /**
+     * @param MyPaymentsOwed $owedEntry
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyPaymentsOwed $owedEntry): JsonResponse
+    {
+        $owedEntry->setDeleted(true);
+        $this->em->persist($owedEntry);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request             $request
+     * @param MyPaymentsOwed|null $owedEntry
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyPaymentsOwed $owedEntry = null): BaseResponse
+    {
+        if (!$owedEntry) {
+            $owedEntry = new MyPaymentsOwed();
+        }
+
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $target      = ArrayHandler::get($dataArray, 'target');
+        $information = ArrayHandler::get($dataArray, 'information');
+        $dateString  = ArrayHandler::get($dataArray, 'date');
+        $amount      = ArrayHandler::get($dataArray, 'amount');
+        $currency    = ArrayHandler::get($dataArray, 'currency');
+        $owedByMe    = ArrayHandler::get($dataArray, 'owedByMe');
+
+        $owedEntry->setDate(new DateTime($dateString));
+        $owedEntry->setTarget($target);
+        $owedEntry->setInformation($information);
+        $owedEntry->setAmount((int)$amount);
+        $owedEntry->setCurrency($currency);
+        $owedEntry->setOwedByMe((bool)$owedByMe);
+
+        $this->em->persist($owedEntry);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
     }
 
 }
