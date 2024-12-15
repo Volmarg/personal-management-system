@@ -1,0 +1,6 @@
+module:
+  reports:
+    payments:
+      byTypePerMonth:
+        withBills: "With bills"
+        withoutBills: "Without bills"
