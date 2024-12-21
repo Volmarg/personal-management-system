@@ -7,26 +7,23 @@ use App\Controller\Modules\ModulesController;
 use App\Controller\Modules\Reports\ReportsController;
 use App\Response\Base\BaseResponse;
 use App\Services\Chart\LinearChartDataHandler;
-use DateTimeImmutable;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route("/module/reports/payments/total-per-month", name: "module.reports.payments.total-per-month")]
+#[Route("/module/reports/payments/total-per-type", name: "module.reports.payments.total-per-type")]
 #[ModuleAnnotation(values: ["name" => ModulesController::MENU_NODE_MODULE_NAME_REPORTS])]
-class TotalPerMonth extends AbstractController {
+class MonthlyPerTypeAction extends AbstractController {
 
     public function __construct(
         private readonly ReportsController   $reportsController,
-        private readonly TranslatorInterface $translator
     ) {
     }
 
     /**
-     * Contains some legacy code
+     * Contains some legacy code.
      *
      * @return JsonResponse
      * @throws Exception
@@ -34,37 +31,34 @@ class TotalPerMonth extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $paymentsPerMonth = $this->reportsController->buildPaymentsSummariesForMonthsAndYears();
-        $billsGroupName   = $this->translator->trans("module.reports.payments.byTypePerMonth.withBills");
-        $noBillsGroupName = $this->translator->trans("module.reports.payments.byTypePerMonth.withoutBills");
-
-        $entriesData = [
-            $noBillsGroupName => [],
-            $billsGroupName   => [],
-        ];
-
+        $amountsForTypes   = $this->reportsController->fetchTotalPaymentsAmountForTypes();
+        $entriesData       = [];
         $lowestDate        = null;
         $highestDate       = null;
         $existingTypeDates = [];
 
-        foreach ($paymentsPerMonth as $idx => $monthPayments) {
-            $yearAndMonth = $monthPayments['yearAndMonth'];
+        foreach($amountsForTypes as $idx => $amountsForType){
+            $type   = $amountsForType['type'];
+            $amount = $amountsForType['amount'];
+            $date   = $amountsForType['date'];
+
+            $existingTypeDates[$type][] = $date;
+
             if (is_null($lowestDate)) {
-                $lowestDate = new DateTimeImmutable($yearAndMonth);
+                $lowestDate = new \DateTimeImmutable($date);
             }
 
-            if ($idx === count($paymentsPerMonth) - 1) {
-                $highestDate = new DateTimeImmutable($yearAndMonth);
+            if ($idx === count($amountsForTypes) - 1) {
+                $highestDate = new \DateTimeImmutable($date);
             }
 
-            $entriesData[$noBillsGroupName][] = [
-                'value' => $monthPayments['moneyWithoutBills'],
-                'label' => $yearAndMonth,
-            ];
+            if (!array_key_exists($type, $entriesData)) {
+                $entriesData[$type] = [];
+            }
 
-            $entriesData[$billsGroupName][] = [
-                'value' => $monthPayments['money'],
-                'label' => $yearAndMonth,
+            $entriesData[$type][] = [
+              'value' => $amount,
+              'label' => $date,
             ];
         }
 
