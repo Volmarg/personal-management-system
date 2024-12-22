@@ -4,83 +4,116 @@
 namespace App\Action\Modules\Job;
 
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use Doctrine\ORM\Mapping\MappingException;
-use Doctrine\ORM\NonUniqueResultException;
+use App\Annotation\System\ModuleAnnotation;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\Job\MyJobHolidaysPool;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route("/module/job/holidays/pool", name: "module.job.holidays.pool.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_JOB])]
 class MyJobHolidaysPoolAction extends AbstractController {
 
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var MyJobSettingsAction $myJobSettingsAction
-     */
-    private MyJobSettingsAction $myJobSettingsAction;
-
-    /**
-     * @var Controllers $controllerss
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers, MyJobSettingsAction $myJobSettingsAction) {
-        $this->app                 = $app;
-        $this->controllers         = $controllers;
-        $this->myJobSettingsAction = $myJobSettingsAction;
+    public function __construct(
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     /**
-     * @Route("/my-job/holidays-pool/update/",name="my-job-holidays-pool-update")
      * @param Request $request
+     *
      * @return JsonResponse
-     * @throws MappingException
-     * @throws NonUniqueResultException
-     */
-    public function update(Request $request) {
-        $parameters = $request->request->all();
-        $entityId   = trim($parameters['id']);
-
-        $entity     = $this->controllers->getMyJobHolidaysPoolController()->findOneEntityById($entityId);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-job/holidays-pool/remove/",name="my-job-holidays-pool-remove")
-     * @param Request $request
-     * @return Response
      * @throws Exception
      */
-    public function remove(Request $request): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
+        $this->createOrUpdate($request);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
 
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-
-            $renderedTemplate = $this->myJobSettingsAction->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
+    /**
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $entriesData = [];
+        $pools       = $this->em->getRepository(MyJobHolidaysPool::class)->getAllNotDeleted();
+        foreach ($pools as $pool) {
+            $entriesData[] = [
+                'id'          => $pool->getId(),
+                'year'        => $pool->getYear(),
+                'days'        => $pool->getDaysInPool(),
+                'companyName' => $pool->getCompanyName(),
+            ];
         }
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * @param MyJobHolidaysPool $holidayPool
+     * @param Request           $request
+     *
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyJobHolidaysPool $holidayPool, Request $request): JsonResponse
+    {
+        $this->createOrUpdate($request, $holidayPool);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param MyJobHolidaysPool $holidayPool
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyJobHolidaysPool $holidayPool): JsonResponse
+    {
+        $holidayPool->setDeleted(true);
+        $this->em->persist($holidayPool);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request                $request
+     * @param MyJobHolidaysPool|null $holidayPool
+     *
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyJobHolidaysPool $holidayPool = null): void
+    {
+        if (!$holidayPool) {
+            $holidayPool = new MyJobHolidaysPool();
+        }
+
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $year        = ArrayHandler::get($dataArray, 'year');
+        $days        = ArrayHandler::get($dataArray, 'days');
+        $companyName = ArrayHandler::get($dataArray, 'companyName');
+
+        $holidayPool->setYear($year);
+        $holidayPool->setDaysInPool($days);
+        $holidayPool->setCompanyName($companyName);
+
+        $this->em->persist($holidayPool);
+        $this->em->flush();
     }
 
 }
