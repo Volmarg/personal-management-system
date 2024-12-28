@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("/module/job/holidays/pool", name: "module.job.holidays.pool.")]
+#[Route("/module/job/settings/holidays/pool", name: "module.job.holidays.pool.")]
 #[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_JOB])]
 class MyJobHolidaysPoolAction extends AbstractController {
 

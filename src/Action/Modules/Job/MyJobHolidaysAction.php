@@ -4,217 +4,127 @@
 namespace App\Action\Modules\Job;
 
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use App\Services\Validation\EntityValidatorService;
+use App\Annotation\System\ModuleAnnotation;
+use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Job\MyJobHolidays;
-use App\VO\Validators\ValidationResultVO;
-use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\Mapping\MappingException;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\ORMException;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use App\Services\Validation\EntityValidatorService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route("/module/job/holidays/days-spent", name: "module.job.holidays.days_spent.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_JOB])]
 class MyJobHolidaysAction extends AbstractController {
 
-    const KEY_CHOICES = 'choices';
-
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    /**
-     * @var EntityValidatorService $entityValidator
-     */
-    private EntityValidatorService $entityValidator;
-
-    public function __construct(Application $app, Controllers $controllers, EntityValidatorService $entityValidator) {
-        $this->app              = $app;
-        $this->controllers      = $controllers;
-        $this->entityValidator = $entityValidator;
+    public function __construct(
+        private readonly EntityValidatorService $entityValidator,
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     /**
-     * @Route("/my-job/holidays", name="my-job-holidays")
      * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function display(Request $request): Response
-    {
-        $allPoolsYears    = $this->controllers->getMyJobHolidaysPoolController()->getAllPoolsYears();
-        $ajaxResponse     = new AjaxResponse();
-        $validationResult = $this->add($request, $allPoolsYears);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        try{
-            $templateContent = $this->renderTemplate(true)->getContent();
-
-            if( !$validationResult->isValid() ){
-                 $form = $this->app->forms->jobHolidaysForm([
-                    self::KEY_CHOICES => $allPoolsYears,
-                 ]);
-
-                $ajaxResponseForValidation = AjaxResponse::buildAjaxResponseForValidationResult(
-                    $validationResult,
-                    $form,
-                    $this->app->translator,
-                    $templateContent
-                );
-
-                return $ajaxResponseForValidation->buildJsonResponse();
-            }
-        }catch (Exception $e){
-            $this->app->logExceptionWasThrown($e);
-            $message = $this->app->translator->translate('messages.general.internalServerError');
-
-            $ajaxResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            $ajaxResponse->setSuccess(false);
-            $ajaxResponse->setMessage($message);
-
-            return $ajaxResponse->buildJsonResponse();
-        }
-
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setSuccess(true);
-        $ajaxResponse->setTemplate($templateContent);
-        $ajaxResponse->setPageTitle($this->getJobHolidaysPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-job/holidays/update/",name="my-job-holidays-update")
-     * @param Request $request
+     *
      * @return JsonResponse
-     *
-     * @throws MappingException
-     * @throws NonUniqueResultException
-     * @throws ORMException
+     * @throws Exception
      */
-    public function update(Request $request): JsonResponse
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        $parameters = $request->request->all();
-        $entityId   = trim($parameters['id']);
-
-        $entity     = $this->controllers->getMyJobHolidaysController()->findOneEntityByIdOrNull($entityId);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+        return $this->createOrUpdate($request)->toJsonResponse();
     }
 
     /**
-     * @Route("/my-job/holidays/remove/",name="my-job-holidays-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
+     * @return JsonResponse
      */
-    public function remove(Request $request): Response
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
     {
-
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_JOB_HOLIDAYS_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
-
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
+        $holidays    = $this->em->getRepository(MyJobHolidays::class)->getAllNotDeleted();
+        $entriesData = [];
+        foreach ($holidays as $holiday) {
+            $entriesData[] = [
+                'id'          => $holiday->getId(),
+                'year'        => $holiday->getYear(),
+                'daysSpent'   => $holiday->getDaysSpent(),
+                'information' => $holiday->getInformation(),
+            ];
         }
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
     }
 
     /**
-     * @param Request $request
-     * @param array $allPoolsYears
-     * @return ValidationResultVO
+     * @param MyJobHolidays $holidayEntry
+     * @param Request     $request
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    private function add(Request $request, array $allPoolsYears): ValidationResultVO
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyJobHolidays $holidayEntry, Request $request): JsonResponse
     {
+        return $this->createOrUpdate($request, $holidayEntry)->toJsonResponse();
+    }
 
-        $form = $this->app->forms->jobHolidaysForm([
-            static::KEY_CHOICES => $allPoolsYears
-        ]);
+    /**
+     * @param MyJobHolidays $holidayEntry
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyJobHolidays $holidayEntry): JsonResponse
+    {
+        $holidayEntry->setDeleted(true);
+        $this->em->persist($holidayEntry);
+        $this->em->flush();
 
-        $form->handleRequest($request);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
 
-        if ( $form->isSubmitted() && $form->isValid() ) {
+    /**
+     * @param Request            $request
+     * @param MyJobHolidays|null $holidayEntry
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyJobHolidays $holidayEntry = null): BaseResponse
+    {
+        $isNew = is_null($holidayEntry);
+        if ($isNew) {
+            $holidayEntry = new MyJobHolidays();
+        }
 
-            $jobHoliday       = $form->getData();
-            $validationResult = $this->entityValidator->handleValidation($jobHoliday, EntityValidatorService::ACTION_CREATE);
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $year        = ArrayHandler::get($dataArray, 'year');
+        $days        = ArrayHandler::get($dataArray, 'daysSpent');
+        $information = ArrayHandler::get($dataArray, 'information');
 
-            if ( $validationResult->isValid() ){
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($jobHoliday);
-                $em->flush();
+        $holidayEntry->setYear($year);
+        $holidayEntry->setDaysSpent($days);
+        $holidayEntry->setInformation($information);
+
+        if ($isNew) {
+            $validationResult = $this->entityValidator->handleValidation($holidayEntry,EntityValidatorService::ACTION_CREATE);
+            if (!$validationResult->isValid()) {
+                return BaseResponse::buildBadRequestErrorResponse($validationResult->getAllFailedValidationMessagesAsSingleString());
             }
-
-            return $validationResult;
         }
 
-        return ValidationResultVO::buildValidResult();
-    }
+        $this->em->persist($holidayEntry);
+        $this->em->flush();
 
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     * @throws DBALException
-     */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
-
-        $allPoolsYears               = $this->controllers->getMyJobHolidaysPoolController()->getAllPoolsYears();
-        $allHolidaysSpent            = $this->controllers->getMyJobHolidaysController()->getAllNotDeleted();
-        $jobHolidaysSummary          = $this->controllers->getMyJobHolidaysPoolController()->getHolidaysSummaryGroupedByYears();
-        $jobHolidaysAvailableTotally = $this->controllers->getMyJobHolidaysPoolController()->getAvailableDaysTotally();
-
-        $jobHolidaysForm  = $this->app->forms->jobHolidaysForm([
-            static::KEY_CHOICES => $allPoolsYears
-        ]);
-
-        $twigData = [
-            'ajax_render'                       => $ajaxRender,
-            'all_holidays_spent'                => $allHolidaysSpent,
-            'job_holidays_form'                 => $jobHolidaysForm->createView(),
-            'job_holidays_summary'              => $jobHolidaysSummary,
-            'job_holidays_available_totally'    => $jobHolidaysAvailableTotally,
-            'skip_rewriting_twig_vars_to_js'    => $skipRewritingTwigVarsToJs,
-            'page_title'                        => $this->getJobHolidaysPageTitle(),
-        ];
-
-        return $this->render('modules/my-job/holidays.html.twig', $twigData);
-    }
-
-    /**
-     * Will return job settings page title
-     *
-     * @return string
-     */
-    private function getJobHolidaysPageTitle(): string
-    {
-        return $this->app->translator->translate('job.holidays.title');
+        return BaseResponse::buildOkResponse();
     }
 
 }
