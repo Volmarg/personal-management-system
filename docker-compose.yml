@@ -43,7 +43,7 @@ services:
   pms-adminer:
     container_name: pms-adminer
     hostname: pms-adminer
-    image: adminer
+    image: adminer:4.8.0
     restart: always
     tty: true
     ports:
