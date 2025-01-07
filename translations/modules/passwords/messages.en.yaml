@@ -1,0 +1,5 @@
+module:
+  passwords:
+    groups:
+      createdUpdate:
+        nameExist: "Group with this name already exists"
