@@ -205,14 +205,10 @@ class MySchedule implements SoftDeletableEntityInterface, EntityInterface
     }
 
     /**
-     * @return MyScheduleReminder[]
+     * @return ArrayCollection|PersistentCollection
      */
-    public function getMyScheduleReminders(): array
+    public function getMyScheduleReminders(): ArrayCollection|PersistentCollection
     {
-        if( $this->myScheduleReminders instanceof PersistentCollection ){
-            return $this->myScheduleReminders->getValues();
-        }
-
         return $this->myScheduleReminders;
     }
 
