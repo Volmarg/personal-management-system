@@ -2,222 +2,127 @@
 
 namespace App\Action\Modules\Travels;
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use App\Controller\Utils\Utils;
+use App\Annotation\System\ModuleAnnotation;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Travels\MyTravelsIdeasController;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
-use Doctrine\DBAL\DBALException;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route("/module/travels/ideas", name: "module.travels.ideas.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_TRAVELS])]
 class MyTravelsIdeasAction extends AbstractController {
 
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly EntityManagerInterface   $em,
+        private readonly MyTravelsIdeasController $travelIdeasController
+    ) {
     }
 
     /**
-     * @return FormInterface
-     * @throws DBALException
-     */
-    private function getForm() {
-        $categories      = $this->controllers->getMyTravelsIdeasController()->getAllCategories(true);
-        $travelIdeasForm = $this->app->forms->travelIdeasForm(['categories' => $categories]);
-        return $travelIdeasForm;
-    }
-
-    /**
-     * @Route("/my-travels/ideas", name="my-travels-ideas")
      * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function display(Request $request): Response
-    {
-        $this->addFormDataToDB($request);
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getTravelsIdeasPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     * @throws DBALException
-     */
-    protected function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-        $form     = $this->getForm();
-        $formView = $form->createView();
-
-        $columnsNames = $this->app->em->getClassMetadata(MyTravelsIdeas::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columnsNames);
-
-        $allIdeas   = $this->controllers->getMyTravelsIdeasController()->getAllNotDeleted();
-        $categories = $this->controllers->getMyTravelsIdeasController()->getAllCategories();
-
-        $data = [
-            'form_view'     => $formView,
-            'columns_names' => $columnsNames,
-            'all_ideas'     => $allIdeas,
-            'ajax_render'   => $ajaxRender,
-            'categories'    => $categories,
-            'page_title'    => $this->getTravelsIdeasPageTitle(),
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-        ];
-
-        return $this->render('modules/my-travels/ideas.html.twig', $data);
-    }
-
-    /**
-     * @param $request
-     * @return void
-     * @throws DBALException
-     */
-    protected function addFormDataToDB(Request $request): void {
-
-        $form = $this->getForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $travelIdea = $form->getData();
-
-            $this->app->em->persist($travelIdea);
-            $this->app->em->flush();
-        }
-    }
-
-    /**
-     * @Route("/my-travels/ideas/update/",name="my-travels-ideas-update")
-     * @param Request $request
-     * @return Response
      *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function update(Request $request): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        $responseCode = Response::HTTP_OK;
-        $message      = $this->app->translator->translate('responses.repositories.recordUpdateSuccess');
-
-        try{
-            $id = trim($request->request->get('id', null));
-
-            if( empty($id) ){
-                $message = "Parameter `id` is either missing or is malformed";
-                $this->app->logger->critical($message, [
-                    "id" => $id
-                ]);
-                throw new Exception($message);
-            }
-
-            $existingEntity = $this->controllers->getMyTravelsIdeasController()->findOneById($id);
-            if( empty($existingEntity) ){
-                $message = "There is no entity for given entity id: {$id}";
-                $this->app->logger->critical($message);
-                throw new Exception($message);
-            }
-
-            // Whole form is being sent as serialized data - must be turned back to array
-            $travelIdeaForm = $this->getForm();
-            $allRequestData = $request->request->all();
-
-            if( !array_key_exists(Repositories::KEY_SERIALIZED_FORM_DATA, $allRequestData) ){
-                $message = "Data from request does not belong to processed form - wrong prefix has been used, probably incorrect form is being used on backend";
-                $this->app->logger->critical($message);
-                throw new Exception($message);
-            }
-
-            $travelIdeaFormSerializedData = $allRequestData[Repositories::KEY_SERIALIZED_FORM_DATA];
-            parse_str($travelIdeaFormSerializedData, $formDataArrayWithFormPrefix);
-
-            // set data back to request to return entity from form
-            $travelIdeaFormPrefix = Utils::formClassToFormPrefix(MyTravelsIdeas::class);
-            $travelIdeaFormData   = $formDataArrayWithFormPrefix[$travelIdeaFormPrefix];
-
-            $request->request->set($travelIdeaFormPrefix, $travelIdeaFormData);
-
-            /**
-             * @var MyTravelsIdeas $modifiedEntity
-             */
-            $modifiedEntity = $travelIdeaForm->handleRequest($request)->getData();
-
-            // set new properties to existing entity to prevent saving new one upon submitting form
-            $existingEntity->setMap($modifiedEntity->getMap());
-            $existingEntity->setLocation($modifiedEntity->getLocation());
-            $existingEntity->setImage($modifiedEntity->getImage());
-            $existingEntity->setCountry($modifiedEntity->getCountry());
-            $existingEntity->setCategory($modifiedEntity->getCategory());
-
-            $this->controllers->getMyTravelsIdeasController()->save($existingEntity);
-        }catch(Exception $e){
-            $message       = $this->app->translator->translate('responses.repositories.recordUpdateFail');
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-            $this->app->logExceptionWasThrown($e);
-        }
-
-        $renderedTemplate = $this->renderTemplate(true)->getContent();
-
-        return AjaxResponse::buildJsonResponseForAjaxCall($responseCode, $message, $renderedTemplate);
+        return $this->createOrUpdate($request)->toJsonResponse();
     }
 
     /**
-     * @Route("/my-travels/ideas/remove/",name="my-travels-ideas-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
+     * @return JsonResponse
      */
-    public function remove(Request $request): Response
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
     {
-        $id         = trim($request->request->get('id'));
-        $response   = $this->app->repositories->deleteById(
-            Repositories::MY_TRAVELS_IDEAS_REPOSITORY_NAME,
-            $id
-        );
+        $allIdeas = $this->travelIdeasController->getAllNotDeleted();
 
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
+        $entriesData = [];
+        foreach ($allIdeas as $idea) {
+            $entriesData[] = [
+                'id'       => $idea->getId(),
+                'location' => $idea->getLocation(),
+                'country'  => $idea->getCountry(),
+                'imageUrl' => $idea->getImage(),
+                'mapUrl'   => $idea->getMap(),
+                'category' => $idea->getCategory(),
+            ];
         }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
     }
 
     /**
-     * Will return travels ideas page title
+     * @param MyTravelsIdeas $idea
+     * @param Request        $request
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function getTravelsIdeasPageTitle(): string
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyTravelsIdeas $idea, Request $request): JsonResponse
     {
-        return $this->app->translator->translate('travels.title');
+        return $this->createOrUpdate($request, $idea)->toJsonResponse();
+    }
+
+    /**
+     * @param MyTravelsIdeas $idea
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyTravelsIdeas $idea): JsonResponse
+    {
+        $idea->setDeleted(true);
+        $this->em->persist($idea);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request             $request
+     * @param MyTravelsIdeas|null $idea
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyTravelsIdeas $idea = null): BaseResponse
+    {
+        $isNew = is_null($idea);
+        if ($isNew) {
+            $idea = new MyTravelsIdeas();
+        }
+
+        $dataArray = RequestService::tryFromJsonBody($request);
+        $location  = ArrayHandler::get($dataArray, 'location');
+        $country   = ArrayHandler::get($dataArray, 'country');
+        $imageUrl  = ArrayHandler::get($dataArray, 'imageUrl');
+        $mapUrl    = ArrayHandler::get($dataArray, 'mapUrl');
+        $category  = ArrayHandler::get($dataArray, 'category');
+
+        $idea->setLocation($location);
+        $idea->setCountry($country);
+        $idea->setImage($imageUrl);
+        $idea->setMap($mapUrl);
+        $idea->setCategory($category);
+
+        $this->em->persist($idea);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
     }
 
 }
