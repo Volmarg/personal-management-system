@@ -50,8 +50,9 @@ class GroupAction extends AbstractController
         $entriesData = [];
         foreach ($groups as $group) {
             $entriesData[] = [
-                'id'   => $group->getId(),
-                'name' => $group->getName(),
+                'id'    => $group->getId(),
+                'name'  => $group->getName(),
+                'color' => $group->getColor(),
             ];
         }
 
@@ -105,6 +106,7 @@ class GroupAction extends AbstractController
 
         $dataArray = RequestService::tryFromJsonBody($request);
         $name      = ArrayHandler::get($dataArray, 'name');
+        $color     = ArrayHandler::get($dataArray, 'color', true, 'BFDBFE');
 
         $entity = $this->em->getRepository(MyContactGroup::class)->getOneByName($name);
 
@@ -114,7 +116,7 @@ class GroupAction extends AbstractController
         }
 
         $group->setName($name);
-        $group->setColor('');
+        $group->setColor(str_replace("#", "" , $color));
         $group->setIcon('');
 
         $this->em->persist($group);
