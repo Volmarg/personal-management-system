@@ -145,7 +145,9 @@ class ManageCalendarsAction extends AbstractController
         $name      = ArrayHandler::get($dataArray, 'name');
         $color     = ArrayHandler::get($dataArray, 'color');
 
-        if (!is_null($this->em->getRepository(MyScheduleCalendar::class)->findOneBy(['name' => $name]))) {
+        $entity = $this->em->getRepository(MyScheduleCalendar::class)->findOneBy(['name' => $name]);
+        // only allow saving already existing entity with unchanged name
+        if ((!is_null($entity) && $isNew) || (!$isNew && $calendar->getName() !== $name && !is_null($entity)) ) {
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.calendar.settings.manageCalendars.createdUpdate.nameExist'));
         }
 
