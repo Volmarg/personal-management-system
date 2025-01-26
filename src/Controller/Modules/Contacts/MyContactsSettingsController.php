@@ -35,7 +35,7 @@ class MyContactsSettingsController extends AbstractController {
 
         foreach($contactsToUpdate as $contactToUpdate)
         {
-            $contactsTypesDtos = $contactToUpdate->getContacts()->getContactTypeDtos();
+            $contactsTypesDtos = $contactToUpdate->getContactTypesDto()->getContactTypeDtos();
 
             foreach($contactsTypesDtos as $index => $contactTypeDto){
                 if( strtolower($contactTypeDto->getName()) === strtolower($previousContactTypeName) )

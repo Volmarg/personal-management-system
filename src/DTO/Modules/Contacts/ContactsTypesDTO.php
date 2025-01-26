@@ -64,6 +64,9 @@ class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
      * @throws \Exception
      */
     public static function fromJson(string $json):ContactsTypesDTO {
+        if (empty($json)) {
+            return new ContactsTypesDTO();
+        }
 
         $arrayOfContactsTypes = json_decode($json, true);
         $contactsTypesDtos    = new ContactsTypesDTO();
