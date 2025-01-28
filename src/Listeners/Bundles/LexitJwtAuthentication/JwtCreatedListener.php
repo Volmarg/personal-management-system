@@ -53,10 +53,6 @@ class JwtCreatedListener implements EventSubscriberInterface
             self::JWT_KEY_PROFILE_PIC_PATH             => $profilePicturePath,
         ]);
 
-        if (Env::isDev() && array_key_exists('roles', $newData)) {
-            $newData['roles'][] = User::ROLE_DEVELOPER;
-        }
-
         $event->setData($newData);
     }
 

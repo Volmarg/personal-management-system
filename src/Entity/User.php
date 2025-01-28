@@ -7,14 +7,17 @@
 
 namespace App\Entity;
 
+use App\Controller\Core\Env;
 use App\Entity\Interfaces\EntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\UserRepository;
+
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"username", "email"}, message="There is already an account with this username and email")
  */
@@ -51,12 +54,12 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected ?string $avatar;
+    protected ?string $avatar = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected ?string $nickname;
+    protected ?string $nickname = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -66,7 +69,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @ORM\Column(type="serialized_json")
      */
-    private array $roles = [];
+    private array $roles = [self::ROLE_USER];
 
     /**
      * @var string $email
@@ -96,7 +99,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      * @var bool $enabled
      * @ORM\Column(type="boolean")
      */
-    private $enabled = 1;
+    private $enabled = true;
 
     /**
      * @var string|null $salt
@@ -198,8 +201,11 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        return array_unique($roles);
+        if (Env::isDev()) {
+            $this->roles[] = self::ROLE_DEVELOPER;
+        }
+
+        return array_unique($this->roles);
     }
 
     public function setRoles(array $roles): self

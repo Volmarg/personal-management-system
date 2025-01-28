@@ -1,0 +1,9 @@
+security:
+  user:
+    register:
+      msg:
+        passwordMismatch: "'Password' and 'confirmed password' are not equal"
+        lockPasswordMismatch: "'Lock password' and 'lock confirmed password' are not equal"
+        emailSyntaxInvalid: "This E-Mail address synthetically invalid"
+        activeUserExists: "Found existing active user. Only one active user is allowed!"
+        userWithEmailExists: "User with this E-Mail address already exists"

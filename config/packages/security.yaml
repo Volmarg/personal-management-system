@@ -37,6 +37,7 @@ security:
         # public routes
         - { path: ^/login$, role: PUBLIC_ACCESS }
         - { path: ^/register-user, roles: PUBLIC_ACCESS }
+        - { path: ^/register-user, roles: PUBLIC_ACCESS }
         - { path: ^/reset-password, roles: PUBLIC_ACCESS }
         - { path: ^/user/base-data/email/change, roles: PUBLIC_ACCESS }
         - { path: ^/download, roles: PUBLIC_ACCESS }

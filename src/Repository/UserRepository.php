@@ -72,4 +72,11 @@ class UserRepository extends ServiceEntityRepository {
         return $entity;
     }
 
+    /**
+     * @return User|null
+     */
+    public function findOneActive(): ?User
+    {
+        return $this->findOneBy(['enabled' => true]);
+    }
 }
