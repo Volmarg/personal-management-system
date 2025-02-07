@@ -2,14 +2,15 @@
 
 namespace App\Listeners\Bundles\LexitJwtAuthentication;
 
-use App\Controller\Core\Env;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Services\Files\PathService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Session\SessionsService;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Handles the action when jwt has been created -> manipulates the payload / adds new fields
@@ -38,11 +39,14 @@ class JwtCreatedListener implements EventSubscriberInterface
         $user = $event->getUser();
         $data = $event->getData();
 
-        // $profilePicture     = $user->getFirstProfileImage(); //todo: at some point
-        // $profilePicturePath = $profilePicture?->getLinkedPathWithFileName(); //todo: at some point
-        $profilePicture = '';
-        $profilePicturePath = '';
-        $userSessionData = $this->sessionsService->getForUser($user->getId());
+        $userSessionData    = $this->sessionsService->getForUser($user->getId());
+        $profilePicturePath = '/dummy-user.png';
+        $isUpload = false;
+        foreach (Finder::create()->files()->in(PathService::getProfileImageUploadDir()) as $file) {
+            $profilePicturePath = $file->getRealPath();
+            $isUpload = true;
+            break;
+        }
 
         $newData = array_merge($data, [
             JwtAuthenticationService::JWT_KEY_EMAIL        => $user->getEmail(),
@@ -50,7 +54,7 @@ class JwtCreatedListener implements EventSubscriberInterface
             JwtAuthenticationService::JWT_IS_SYSTEM_LOCKED => $userSessionData->isSystemLocked(),
             self::JWT_KEY_USER_ID                      => $user->getId(),
             self::JWT_KEY_NICKNAME                     => $user->getNickname(),
-            self::JWT_KEY_PROFILE_PIC_PATH             => $profilePicturePath,
+            self::JWT_KEY_PROFILE_PIC_PATH             => PathService::getPublicPath($profilePicturePath, $isUpload),
         ]);
 
         $event->setData($newData);

@@ -10,6 +10,8 @@ parameters:
 
     project.name: "Personal Management System"
 
+    upload.tmp.dir: '/tmp/pms-upload'
+
     # in seconds
     # whenever this has to be changed, don't forget about adjusting frontend logic
     # as the fronted is silently updating the jwt token when user clicks on page to keep the user logged in.

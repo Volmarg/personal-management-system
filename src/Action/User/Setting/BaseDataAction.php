@@ -3,13 +3,17 @@
 namespace App\Action\User\Setting;
 
 use App\Response\Base\BaseResponse;
+use App\Services\Files\PathService;
 use App\Services\RequestService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Services\Validation\ValidationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
+use SplFileInfo;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -25,6 +29,7 @@ class BaseDataAction extends AbstractController
         private readonly TranslatorInterface      $translator,
         private readonly EntityManagerInterface   $entityManager,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly LoggerInterface          $logger
     ){}
 
     /**
@@ -53,6 +58,47 @@ class BaseDataAction extends AbstractController
         $this->entityManager->flush();
 
         $msg = $this->translator->trans('user.settings.personalData.msg.updateSuccess');
+        return BaseResponse::buildOkResponse($msg)->toJsonResponse();
+    }
+
+    /**
+     * Changes the user profile image to the one that was recently uploaded.
+     * This route is called directly after the file upload.
+     *
+     * It handles:
+     * - removing file that is currently used for user profile image,
+     * - setting new image as profile,
+     *
+     * @return JsonResponse
+     */
+    #[Route("/user/base-data/profile-image/change", name: "user.base_data.profile_image.change", methods: [Request::METHOD_OPTIONS, Request::METHOD_GET])]
+    public function changeProfileImage(): JsonResponse
+    {
+        /** @var null | SplFileInfo $latestFile */
+        $finder       = Finder::create();
+        $latestFile   = null;
+        $allFilesPath = [];
+        foreach ($finder->files()->in(PathService::getProfileImageUploadDir()) as $file) {
+            if (is_null($latestFile) || $latestFile->getCTime() < $file->getCTime()) {
+                $latestFile = $file;
+            }
+            $allFilesPath[] = $file->getRealPath();
+        }
+
+        if (is_null($latestFile)) {
+            $msg = $this->translator->trans('user.settings.personalData.msg.profileImage.noProfileImageWasFound');
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        $allFilesPath = array_filter($allFilesPath, fn(string $path) => $path != $latestFile->getRealPath());
+        foreach ($allFilesPath as $filePath) {
+            $isremoved = unlink($filePath);
+            if (!$isremoved) {
+                $this->logger->warning("Could not remove profile image: {$filePath}");
+            }
+        }
+
+        $msg = $this->translator->trans('user.settings.personalData.msg.profileImage.updateSuccess');
         return BaseResponse::buildOkResponse($msg)->toJsonResponse();
     }
 
