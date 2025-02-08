@@ -59,6 +59,7 @@ class UploadedFileAction extends AbstractController
         $fileSizeBytes   = ArrayHandler::get($dataArray, 'fileSize');
         $uploadConfigId  = ArrayHandler::get($dataArray, 'uploadConfigId');
         $userDefinedName = ArrayHandler::get($dataArray, 'userDefinedName', true);
+        $tags            = ArrayHandler::get($dataArray, 'tags', true, []);
         // todo: extend with tags needed later in storage
 
         $decodedFileContent = base64_decode($encodedContent);

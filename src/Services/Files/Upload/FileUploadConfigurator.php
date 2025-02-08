@@ -49,6 +49,7 @@ class FileUploadConfigurator
             allowNaming: false,
             source: UploadedFileSourceEnum::PROFILE_IMAGE->value,
             uploadDir: PathService::getUploadDir(),
+            allowTagging: false,
             allowedExtensions: ["jpg", "png", "jpeg" ],
             allowedMimeTypes: ["image/png", "image/jpg", "image/jpeg"]
         );

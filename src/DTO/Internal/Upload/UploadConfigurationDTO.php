@@ -15,6 +15,7 @@ readonly class UploadConfigurationDTO
         private bool   $allowNaming,
         private string $source,
         private string $uploadDir,
+        private bool   $allowTagging,
         private array  $allowedExtensions = [],
         private array  $allowedMimeTypes = [],
     ) {
@@ -82,6 +83,14 @@ readonly class UploadConfigurationDTO
     public function getUploadDir(): string
     {
         return $this->uploadDir;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowTagging(): bool
+    {
+        return $this->allowTagging;
     }
 
 }
