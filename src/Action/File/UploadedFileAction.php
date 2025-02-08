@@ -69,7 +69,10 @@ class UploadedFileAction extends AbstractController
         $response     = UploadResponse::buildOkResponse();
 
         try {
-            $usedFileName = (!empty($userDefinedName) ? $userDefinedName : $fileName);
+            $usedFileName = $fileName;
+            if (!empty($userDefinedName)) {
+                $usedFileName = $userDefinedName . "." . pathinfo($fileName, PATHINFO_EXTENSION);
+            }
 
             $uploadedTmpFile = $this->temporaryFileHandlerService->saveFile($decodedFileContent, $fileName);
             $filePath = $this->fileUploadService->handleUpload($uploadedTmpFile, $uploadConfigId, $usedFileName, $fileSizeBytes);
