@@ -154,7 +154,7 @@ class LockedResourceController extends AbstractController {
             ||  ( $isModuleLocked   && $isSystemLocked )
         ){
             if($showFlashMessage){
-                $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+                $message = $this->app->translator->translate("security.lockResource.youAreNotAllowedToSeeThisResource");
                 $this->app->addDangerFlash($message);
             }
             return false;

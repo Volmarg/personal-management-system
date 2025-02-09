@@ -9,12 +9,12 @@ use App\Controller\Core\AjaxResponse;
 use App\Controller\Core\Application;
 use App\Controller\Core\Controllers;
 use App\Controller\System\SecurityController;
-use App\DTO\User\SessionDataDTO;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Security\PasswordHashingService;
 use App\Services\Session\SessionsService;
+use App\Services\Storage\RequestSessionStorage;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Services\Validation\DtoValidatorService;
 use App\Entity\User;
@@ -80,7 +80,7 @@ class AppAction extends AbstractController
      * - set system in unlock state where locked resources are accessible,
      * - set system in lock state where locked resources are hidden,
      *
-     * @Route("/system/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
+     * @Route("/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
      * @param Request $request
      * @param SecurityController $securityController
      * @return JsonResponse
@@ -88,31 +88,28 @@ class AppAction extends AbstractController
      */
     public function toggleResourcesLock(Request $request, SecurityController $securityController): Response
     {
+        RequestSessionStorage::$IS_TOGGLE_LOCK_CALL = true;
+
         $dataArray = RequestService::tryFromJsonBody($request);
-        if (!$dataArray[self::KEY_SYSTEM_LOCK_PASSWORD]) {
-            $message  = $this->app->translator->translate('responses.lockResource.passwordIsMissing');
-            return BaseResponse::buildBadRequestErrorResponse($message)->toJsonResponse();
-        }
+        $password  = ArrayHandler::get($dataArray, 'password');
 
         $user = $this->jwtAuthenticationService->getUserFromRequest();
         if (!$this->jwtAuthenticationService->isSystemLocked()) {
-            $this->sessionsService->setForUser($user->getId(), SessionDataDTO::KEY_IS_SYSTEM_LOCKED, true);
-            $message = $this->app->translator->translate("messages.lock.wholeSystemWasLocked");
+            RequestSessionStorage::$IS_SYSTEM_LOCKED = true;
+            $message = $this->app->translator->translate("security.lockResource.wholeSystemWasLocked");
             return BaseResponse::buildOkResponse($message)->toJsonResponse();
         }
 
-        /** @var User $user */
-        $user            = $this->getUser();
         $userPassword    = $user->getLockPassword();
-        $password        = $dataArray[self::KEY_SYSTEM_LOCK_PASSWORD];
         $isPasswordValid = $securityController->isPasswordValid($user, $userPassword, $password);
         if (!$isPasswordValid) {
-            $message = $this->app->translator->translate('responses.lockResource.invalidPassword');
-            return BaseResponse::buildUnauthorizedResponse($message)->toJsonResponse();
+            $message = $this->app->translator->translate('security.lockResource.invalidPassword');
+            return BaseResponse::buildBadRequestErrorResponse($message)->toJsonResponse();
         }
 
-        $this->sessionsService->setForUser($user->getId(), SessionDataDTO::KEY_IS_SYSTEM_LOCKED, false);
-        $message = $this->app->translator->translate("messages.lock.wholeSystemHasBeenUnlocked");
+        RequestSessionStorage::$IS_SYSTEM_LOCKED = false;
+
+        $message = $this->app->translator->translate("security.lockResource.wholeSystemHasBeenUnlocked");
         return BaseResponse::buildOkResponse($message)->toJsonResponse();
     }
 

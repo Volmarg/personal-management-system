@@ -2,13 +2,14 @@
 
 namespace App\Listeners\Bundles\LexitJwtAuthentication;
 
+use App\Controller\System\LockedResourceController;
 use App\Entity\User;
-use App\Repository\UserRepository;
 use App\Services\Files\PathService;
 use App\Services\Security\JwtAuthenticationService;
-use App\Services\Session\SessionsService;
+use App\Services\Storage\RequestSessionStorage;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -24,8 +25,8 @@ class JwtCreatedListener implements EventSubscriberInterface
     private const JWT_KEY_PROFILE_PIC_PATH = "profilePicturePath";
 
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly SessionsService $sessionsService
+        private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly LockedResourceController $lockedResourceController
     ){}
 
     /**
@@ -39,7 +40,6 @@ class JwtCreatedListener implements EventSubscriberInterface
         $user = $event->getUser();
         $data = $event->getData();
 
-        $userSessionData    = $this->sessionsService->getForUser($user->getId());
         $profilePicturePath = '/dummy-user.png';
         $isUpload = false;
         foreach (Finder::create()->files()->in(PathService::getProfileImageUploadDir()) as $file) {
@@ -48,10 +48,11 @@ class JwtCreatedListener implements EventSubscriberInterface
             break;
         }
 
+
         $newData = array_merge($data, [
             JwtAuthenticationService::JWT_KEY_EMAIL        => $user->getEmail(),
             JwtAuthenticationService::JWT_KEY_USERNAME     => $user->getUsername(),
-            JwtAuthenticationService::JWT_IS_SYSTEM_LOCKED => $userSessionData->isSystemLocked(),
+            JwtAuthenticationService::JWT_IS_SYSTEM_LOCKED => $this->isSystemLocked(),
             self::JWT_KEY_USER_ID                      => $user->getId(),
             self::JWT_KEY_NICKNAME                     => $user->getNickname(),
             self::JWT_KEY_PROFILE_PIC_PATH             => PathService::getPublicPath($profilePicturePath, $isUpload),
@@ -68,5 +69,27 @@ class JwtCreatedListener implements EventSubscriberInterface
         return [
             Events::JWT_CREATED => "onJwtCreated",
         ];
+    }
+
+    /**
+     * Returns the system lock state:
+     * - if it's toggle lock request then it reads the state that has been set,
+     * - for other requests previous lock state will be reused,
+     *
+     * @return bool
+     * @throws JWTDecodeFailureException
+     */
+    private function isSystemLocked(): bool
+    {
+        if (RequestSessionStorage::$IS_TOGGLE_LOCK_CALL) {
+            return RequestSessionStorage::$IS_SYSTEM_LOCKED;
+        }
+
+        $jwtToken = $this->jwtAuthenticationService->extractJwtFromRequest();
+        if (empty($jwtToken)) {
+            return true;
+        }
+
+        return $this->lockedResourceController->isSystemLocked();
     }
 }
