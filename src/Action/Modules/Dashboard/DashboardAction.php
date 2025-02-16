@@ -2,11 +2,13 @@
 
 namespace App\Action\Modules\Dashboard;
 
-use App\Controller\Modules\Goals\GoalsListController;
-use App\Controller\Modules\Goals\GoalsPaymentsController;
 use App\Controller\Modules\Issues\MyIssuesController;
+use App\Controller\Modules\ModulesController;
 use App\Controller\Modules\Todo\MyTodoController;
+use App\Entity\Modules\Goals\MyGoalsPayments;
+use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Schedules\MySchedule;
+use App\Entity\Modules\Todo\MyTodo;
 use App\Response\Base\BaseResponse;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,9 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardAction extends AbstractController {
 
     public function __construct(
-        private readonly GoalsPaymentsController $goalsPaymentsController,
         private readonly MyTodoController        $todoController,
-        private readonly GoalsListController     $goalsListController,
         private readonly MyIssuesController      $myIssuesController,
         private readonly EntityManagerInterface  $em
     ) {
@@ -46,15 +46,15 @@ class DashboardAction extends AbstractController {
             'schedules'    => [],
         ];
 
-        $allPayments = $this->goalsPaymentsController->getAllNotDeleted();
+        $allPayments = $this->em->getRepository(MyGoalsPayments::class)->getGoalsPaymentsForDashboard();
         foreach ($allPayments as $payment) {
             $entriesData['goalPayments'][] = $payment->asFrontendData();
         }
 
-        $goals                       = $this->goalsListController->getGoals();
+        $goals                       = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
         $entriesData['goalProgress'] = $this->todoController->buildFrontDataArray($goals);
 
-        $allOngoingIssues      = $this->myIssuesController->findAllNotDeletedAndNotResolved();
+        $allOngoingIssues      = $this->em->getRepository(MyIssue::class)->getPendingIssuesForDashboard();
         $entriesData['issues'] = $this->myIssuesController->getIssuesData($allOngoingIssues);
 
 
