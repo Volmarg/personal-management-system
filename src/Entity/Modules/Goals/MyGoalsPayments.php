@@ -161,4 +161,19 @@ class MyGoalsPayments implements SoftDeletableEntityInterface, EntityInterface
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function asFrontendData(): array
+    {
+        return [
+            "id"              => $this->getId(),
+            "name"            => $this->getName() ?? '',
+            "start"           => $this->getCollectionStartDate()->format("Y-m-d"),
+            "end"             => $this->getDeadline()->format("Y-m-d"),
+            "goal"            => $this->getMoneyGoal() ?? 0,
+            "collected"       => $this->getMoneyCollected() ?? 0,
+            "showOnDashboard" => $this->getDisplayOnDashboard() ?? false,
+        ];
+    }
 }

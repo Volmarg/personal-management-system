@@ -44,33 +44,7 @@ class ManageCalendarsAction extends AbstractController
                     continue;
                 }
 
-                $schedules[] = [
-                    'id'             => $schedule->getId(),
-                    'title'          => $schedule->getTitle(),
-                    'body'           => $schedule->getBody(),
-                    'location'       => $schedule->getLocation(),
-                    'isAllDay'       => $schedule->getAllDay() ?? false,
-                    'start'          => $schedule->getStart()?->format('Y-m-d H:i:s'),
-                    'end'            => $schedule->getEnd()?->format('Y-m-d H:i:s'),
-                    'goingDuration'  => 0,
-                    'comingDuration' => 0,
-                    'color'          => $schedule->getCalendar()->getColor(),
-                    'isVisible'      => true,
-                    'bgColor'        => "#{$schedule->getCalendar()->getBackgroundColor()}",
-                    'dragBgColor'    => "#{$schedule->getCalendar()->getDragBackgroundColor()}",
-                    'borderColor'    => "#{$schedule->getCalendar()->getBorderColor()}",
-                    'calendarId'     => $schedule->getCalendar()->getId(),
-                    'category'       => ($schedule->getAllDay() ? 'allday' : 'time'),
-                    'dueDateClass'   => '',
-                    'customStyle'    => '',
-                    'isPending'      => false,
-                    'isFocused'      => false,
-                    'isReadOnly'     => false,
-                    'isPrivate'      => false,
-                    'attendees'      => '',
-                    'state'          => '',
-                    'reminders'      => $schedule->getRemindersDatesWithIds(),
-                ];
+                $schedules[] = $schedule->asFrontendData();
             }
 
             $entriesData[] = [

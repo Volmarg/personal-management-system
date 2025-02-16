@@ -2,106 +2,71 @@
 
 namespace App\Action\Modules\Dashboard;
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\DTO\Settings\SettingsDashboardDTO;
-use Exception;
+use App\Controller\Modules\Goals\GoalsListController;
+use App\Controller\Modules\Goals\GoalsPaymentsController;
+use App\Controller\Modules\Issues\MyIssuesController;
+use App\Controller\Modules\Todo\MyTodoController;
+use App\Entity\Modules\Schedules\MySchedule;
+use App\Response\Base\BaseResponse;
+use Doctrine\DBAL\Driver\Exception;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route("/module/dashboard", name: "module.dashboard.")]
 class DashboardAction extends AbstractController {
 
-    const INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE = 10;
-    const INCOMING_SCHEDULES_WIDGET_MAX_PAGES    = 5;
-
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly GoalsPaymentsController $goalsPaymentsController,
+        private readonly MyTodoController        $todoController,
+        private readonly GoalsListController     $goalsListController,
+        private readonly MyIssuesController      $myIssuesController,
+        private readonly EntityManagerInterface  $em
+    ) {
     }
 
     /**
-     * @Route("/dashboard", name="dashboard")
-     * @param Request $request
-     * @return Response
+     * Performance on this function is poor, but it should suffice, if needed,
+     * fetch only entries visible for dashboard (keep in mind system lock)
+     *
+     * @return JsonResponse
+     *
      * @throws Exception
      */
-    public function display(Request $request): Response
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
     {
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent  = $this->renderTemplate( true)->getContent();
-
-        $ajaxResponse = new AjaxResponse("",$templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getDashboardPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @return Response
-     * @throws Exception
-     */
-    protected function renderTemplate($ajaxRender = false): Response
-    {
-        $dashboardSettings               = $this->app->settings->settingsLoader->getSettingsForDashboard();
-        $dashboardWidgetsVisibilityDtos  = null;
-
-        if( !empty($dashboardSettings) ){
-            $dashboardSettingsJson            = $dashboardSettings->getValue();
-            $dashboardSettingsDto             = SettingsDashboardDTO::fromJson($dashboardSettingsJson);
-            $dashboardWidgetsVisibilityDtos   = $dashboardSettingsDto->getWidgetSettings()->getWidgetsVisibility();
-        }
-
-        $maxResultsForIncomingSchedulesWidget = self::INCOMING_SCHEDULES_WIDGET_MAX_PAGES * self::INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE;
-
-        $schedules     = $this->controllers->getDashboardController()->getIncomingSchedulesInformation($maxResultsForIncomingSchedulesWidget);
-        $allTodo       = $this->controllers->getDashboardController()->getGoalsTodoForWidget();
-        $goalsPayments = $this->controllers->getDashboardController()->getGoalsPayments();
-
-        $pendingIssues   = $this->controllers->getDashboardController()->getPendingIssues();
-        $issuesCardsDtos = $this->controllers->getMyIssuesController()->getIssuesData($pendingIssues);
-
-        $schedulesForPages = array_chunk($schedules, self::INCOMING_SCHEDULES_WIDGET_MAX_PER_PAGE);
-
-        $data = [
-            'dashboard_widgets_visibility_dtos' => $dashboardWidgetsVisibilityDtos,
-            'schedules_for_pages'               => $schedulesForPages,
-            'all_todo'                          => $allTodo,
-            'goals_payments'                    => $goalsPayments,
-            'issues_cards_dtos'                 => $issuesCardsDtos,
-            'ajax_render'                       => $ajaxRender,
-            'page_title'                        => $this->getDashboardPageTitle(),
+        // todo: fill the data only if widget is set to visible (in config)
+        $entriesData = [
+            'goalPayments' => [],
+            'goalProgress' => [],
+            'issues'       => [],
+            'schedules'    => [],
         ];
 
-        return $this->render("modules/my-dashboard/dashboard.html.twig", $data);
-    }
+        $allPayments = $this->goalsPaymentsController->getAllNotDeleted();
+        foreach ($allPayments as $payment) {
+            $entriesData['goalPayments'][] = $payment->asFrontendData();
+        }
 
-    /**
-     * Will return dashboard page title
-     *
-     * @return string
-     */
-    private function getDashboardPageTitle(): string
-    {
-        return $this->app->translator->translate('dashboardModule.title');
+        $goals                       = $this->goalsListController->getGoals();
+        $entriesData['goalProgress'] = $this->todoController->buildFrontDataArray($goals);
+
+        $allOngoingIssues      = $this->myIssuesController->findAllNotDeletedAndNotResolved();
+        $entriesData['issues'] = $this->myIssuesController->getIssuesData($allOngoingIssues);
+
+
+        $schedules = $this->em->getRepository(MySchedule::class)->findForDashboard();
+        foreach ($schedules as $schedule) {
+            $entriesData['schedules'][] = $schedule->asFrontendData();
+        }
+
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
     }
 
 }

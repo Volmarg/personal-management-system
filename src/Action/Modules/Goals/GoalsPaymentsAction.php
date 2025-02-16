@@ -51,15 +51,7 @@ class GoalsPaymentsAction extends AbstractController {
         $allPayments = $this->goalsPaymentsController->getAllNotDeleted();
         $entriesData = [];
         foreach ($allPayments as $payment) {
-            $entriesData[] = [
-                "id"              => $payment->getId(),
-                "name"            => $payment->getName() ?? '',
-                "start"           => $payment->getCollectionStartDate()->format("Y-m-d"),
-                "end"             => $payment->getDeadline()->format("Y-m-d"),
-                "goal"            => $payment->getMoneyGoal() ?? 0,
-                "collected"       => $payment->getMoneyCollected() ?? 0,
-                "showOnDashboard" => $payment->getDisplayOnDashboard() ?? false,
-            ];
+            $entriesData[] = $payment->asFrontendData();
         }
 
         $response = BaseResponse::buildOkResponse();

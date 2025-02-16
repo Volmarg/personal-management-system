@@ -171,5 +171,18 @@ class MyScheduleRepository extends ServiceEntityRepository {
         return $results;
     }
 
+    /**
+     * @return Array<MySchedule>
+     */
+    public function findForDashboard(): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select("s")
+            ->from(MySchedule::class, "s")
+            ->where("s.deleted = 0")
+            ->orderBy("s.start", "DESC");
+
+        return $qb->getQuery()->getResult();
+    }
 
 }
