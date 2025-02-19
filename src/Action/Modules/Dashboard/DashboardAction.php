@@ -9,7 +9,9 @@ use App\Entity\Modules\Goals\MyGoalsPayments;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Todo\MyTodo;
+use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
+use App\Services\Settings\SettingsLoader;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +25,8 @@ class DashboardAction extends AbstractController {
     public function __construct(
         private readonly MyTodoController        $todoController,
         private readonly MyIssuesController      $myIssuesController,
-        private readonly EntityManagerInterface  $em
+        private readonly EntityManagerInterface  $em,
+        private readonly SettingsLoader          $settingsLoader
     ) {
     }
 
@@ -38,29 +41,35 @@ class DashboardAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        // todo: fill the data only if widget is set to visible (in config)
         $entriesData = [
-            'goalPayments' => [],
-            'goalProgress' => [],
-            'issues'       => [],
-            'schedules'    => [],
+            Setting::DASHBOARD_WIDGET_GOAL_PROGRESS => [],
+            Setting::DASHBOARD_WIDGET_GOAL_PAYMENTS => [],
+            Setting::DASHBOARD_WIDGET_ISSUES        => [],
+            Setting::DASHBOARD_WIDGET_SCHEDULES     => [],
         ];
 
-        $allPayments = $this->em->getRepository(MyGoalsPayments::class)->getGoalsPaymentsForDashboard();
-        foreach ($allPayments as $payment) {
-            $entriesData['goalPayments'][] = $payment->asFrontendData();
+        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_GOAL_PAYMENTS)) {
+            $allPayments = $this->em->getRepository(MyGoalsPayments::class)->getGoalsPaymentsForDashboard();
+            foreach ($allPayments as $payment) {
+                $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PAYMENTS][] = $payment->asFrontendData();
+            }
         }
 
-        $goals                       = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
-        $entriesData['goalProgress'] = $this->todoController->buildFrontDataArray($goals);
+        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_GOAL_PROGRESS)) {
+            $goals = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
+            $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PROGRESS] = $this->todoController->buildFrontDataArray($goals);
+        }
 
-        $allOngoingIssues      = $this->em->getRepository(MyIssue::class)->getPendingIssuesForDashboard();
-        $entriesData['issues'] = $this->myIssuesController->getIssuesData($allOngoingIssues);
+        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_ISSUES)) {
+            $allOngoingIssues = $this->em->getRepository(MyIssue::class)->getPendingIssuesForDashboard();
+            $entriesData[Setting::DASHBOARD_WIDGET_ISSUES] = $this->myIssuesController->getIssuesData($allOngoingIssues);
+        }
 
-
-        $schedules = $this->em->getRepository(MySchedule::class)->findForDashboard();
-        foreach ($schedules as $schedule) {
-            $entriesData['schedules'][] = $schedule->asFrontendData();
+        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_SCHEDULES)) {
+            $schedules = $this->em->getRepository(MySchedule::class)->findForDashboard();
+            foreach ($schedules as $schedule) {
+                $entriesData[Setting::DASHBOARD_WIDGET_SCHEDULES][] = $schedule->asFrontendData();
+            }
         }
 
         $response = BaseResponse::buildOkResponse();
