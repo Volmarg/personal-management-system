@@ -4,6 +4,7 @@ namespace App\Services\Files;
 
 use App\Controller\Core\Env;
 use App\Enum\File\UploadedFileSourceEnum;
+use App\Enum\StorageModuleEnum;
 use LogicException;
 
 /**
@@ -29,7 +30,7 @@ class PathService
      */
     public static function getVideoModuleUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getUploadDir()) . Env::getVideoUploadDir();
+        return self::setTrailingDirSeparator(Env::getPublicRootDir()) . Env::getVideoUploadDir();
     }
 
     /**
@@ -37,7 +38,7 @@ class PathService
      */
     public static function getImageModuleUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getUploadDir()) . Env::getImagesUploadDir();
+        return self::setTrailingDirSeparator(Env::getPublicRootDir()) . Env::getImagesUploadDir();
     }
 
     /**
@@ -45,7 +46,7 @@ class PathService
      */
     public static function getFileModuleUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getUploadDir()) . Env::getFilesUploadDir();
+        return self::setTrailingDirSeparator(Env::getPublicRootDir()) . Env::getFilesUploadDir();
     }
 
     /**
@@ -99,5 +100,22 @@ class PathService
         if (str_contains($filePath, "..") || str_contains($filePath, "../")) {
             throw new LogicException("Unsafe file path detected, got path: {$filePath}");
         }
+    }
+
+    /**
+     * Returns base upload dir for storage module
+     *
+     * @param StorageModuleEnum $module
+     *
+     * @return string
+     */
+    public static function getStorageModuleBaseDir(StorageModuleEnum $module): string
+    {
+        return match ($module->value) {
+            StorageModuleEnum::FILES->value => self::getFileModuleUploadDir(),
+            StorageModuleEnum::IMAGES->value => self::getImageModuleUploadDir(),
+            StorageModuleEnum::VIDEOS->value => self::getVideoModuleUploadDir(),
+            default => throw new LogicException("Unsupported storage module: {$module->value}"),
+        };
     }
 }

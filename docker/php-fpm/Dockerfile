@@ -13,8 +13,7 @@ RUN apt-get install -y \
 RUN apt-get update -y && apt-get install -y libpng-dev
 
 RUN apt-get update && \
-    apt-get install -y \
-        zlib1g-dev
+    apt-get install zlib1g-dev tree -y
 
 RUN docker-php-ext-install gd
 

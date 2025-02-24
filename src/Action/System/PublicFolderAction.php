@@ -30,12 +30,12 @@ class PublicFolderAction extends AbstractController
     public function getFromFolder(string $path, Request $request): Response
     {
         if ($request->query->has('force-full-size')) {
-            return $this->buildResponse(pathinfo($path, PATHINFO_FILENAME), $path);
+            return $this->buildResponse($path);
         }
 
         // todo: configure apache settings so that no file from /public can be called besides index.php / favicon etc. (protect files from download)
         // todo: check if miniature exist then return it, else get full size
-        return $this->buildResponse(pathinfo($path, PATHINFO_FILENAME), $path);
+        return $this->buildResponse($path);
     }
 
     /**
@@ -45,17 +45,17 @@ class PublicFolderAction extends AbstractController
      * @return Response
      * @throws Exception
      */
-    private function buildResponse(string $fileName, string $fullFilePathWithName): Response
+    private function buildResponse(string $filePath): Response
     {
-        $fileContent = file_get_contents($fullFilePathWithName);
+        $fileContent = file_get_contents($filePath);
         if (is_bool($fileContent)) {
-            throw new Exception("Could not open the file: {$fullFilePathWithName}");
+            throw new Exception("Could not open the file: {$filePath}");
         }
 
         $response    = new Response($fileContent);
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $fileName
+            pathinfo($filePath, PATHINFO_FILENAME) . "." . pathinfo($filePath, PATHINFO_EXTENSION),
         );
 
         $response->headers->set('Content-Disposition', $disposition);
