@@ -3,8 +3,10 @@
 namespace App\Services\Module\Storage;
 
 use App\Controller\Core\Env;
+use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Entity\FilesTags;
+use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
@@ -27,7 +29,8 @@ class StorageService
         private readonly EntityManagerInterface   $em,
         private readonly Logger                   $logger,
         private readonly LockedResourceController $lockedResourceController,
-        private readonly TranslatorInterface      $translator
+        private readonly TranslatorInterface      $translator,
+        private readonly EntityManagerInterface   $entityManager
     ) {
     }
 
@@ -124,6 +127,21 @@ class StorageService
     }
 
     /**
+     * @param StorageModuleEnum $enum
+     *
+     * @return string
+     */
+    public static function enumToModuleName(StorageModuleEnum $enum): string
+    {
+        return match ($enum->value) {
+            StorageModuleEnum::VIDEOS->value => ModulesController::MODULE_NAME_VIDEO,
+            StorageModuleEnum::IMAGES->value => ModulesController::MODULE_NAME_IMAGES,
+            StorageModuleEnum::FILES->value => ModulesController::MODULE_NAME_FILES,
+            default => throw new \LogicException("Unsupported module {$enum->value}")
+        };
+    }
+
+    /**
      * Recursively walks over the directory tree
      *
      * @param array             $nodes
@@ -161,13 +179,17 @@ class StorageService
             $basename = basename($nodeData['name']);
             $files    = $this->getDirNodeFiles($nodeData['contents'] ?? [], $humanPath);
 
+            // skipping module match here, it's not really needed for path based entry
+            $data = $this->entityManager->getRepository(ModuleData::class)->findOneBy(['recordIdentifier' => $path]);
+
             $normalisedNode[] = [
-                'dirname'    => $basename,
-                'path'       => $path,
-                'serverPath' => $nodeData['name'],
-                'files'      => $files,
-                'children'   => $children,
-                'isLocked'   => $isLocked,
+                'dirname'     => $basename,
+                'description' => $data?->getDescription() ?? '',
+                'path'        => $path,
+                'serverPath'  => $nodeData['name'],
+                'files'       => $files,
+                'children'    => $children,
+                'isLocked'    => $isLocked,
             ];
         }
 
@@ -220,7 +242,7 @@ class StorageService
      *
      * @return BaseResponse
      */
-    public function handleMovingDir(string $oldDirPath, string $newDirPath): BaseResponse
+    private function handleMovingDir(string $oldDirPath, string $newDirPath): BaseResponse
     {
         if (str_contains($newDirPath, $oldDirPath)) {
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.storage.moveFileOrDir.parentIntoDirNotAllowed'));

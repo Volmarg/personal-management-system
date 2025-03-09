@@ -5,6 +5,7 @@ namespace App\Action\Modules\Storage;
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
+use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
@@ -13,6 +14,7 @@ use App\Services\Files\PathService;
 use App\Services\Module\Storage\StorageService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,6 +37,7 @@ class StorageFolderAction extends AbstractController
         private readonly TranslatorInterface      $translator,
         private readonly Logger                   $logger,
         private readonly LockedResourceController $lockedResourceController,
+        private readonly EntityManagerInterface   $entityManager,
     ) {
     }
 
@@ -179,6 +182,37 @@ class StorageFolderAction extends AbstractController
         }
 
         return BaseResponse::buildToggleLockResponse($isLocked, $msg)->toJsonResponse();
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     *
+     * @throws Exception
+     */
+    #[Route("/folder-meta-data", name: "folder_meta_data", methods: [Request::METHOD_POST])]
+    public function updateFolderData(Request $request): JsonResponse
+    {
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $moduleName  = ArrayHandler::get($dataArray, 'moduleName');
+        $dirPath     = ArrayHandler::get($dataArray, 'dirPath');
+        $description = ArrayHandler::get($dataArray, 'description');
+
+        $entity = $this->entityManager->getRepository(ModuleData::class)->findOneBy(['recordIdentifier' => $dirPath]);
+        $entity ??= new ModuleData();
+
+        $moduleEnum = StorageModuleEnum::tryFrom($moduleName);
+
+        $entity->setDescription($description);
+        $entity->setRecordType(ModuleData::RECORD_TYPE_DIRECTORY);
+        $entity->setRecordIdentifier($dirPath);
+        $entity->setModule(StorageService::enumToModuleName($moduleEnum));
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
 }
