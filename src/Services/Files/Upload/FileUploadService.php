@@ -2,11 +2,13 @@
 
 namespace App\Services\Files\Upload;
 
-use App\Enum\File\UploadedFileSourceEnum;
+use App\Entity\FilesTags;
 use App\Exception\File\UploadValidationException;
 use App\Services\Core\Logger;
 use App\Services\Files\PathService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use LogicException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -23,11 +25,13 @@ readonly class FileUploadService
      * @param Logger                 $logger
      * @param FileUploadValidator    $fileUploadValidator
      * @param FileUploadConfigurator $fileUploadConfigurator
+     * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        private Logger                 $logger,
-        private FileUploadValidator    $fileUploadValidator,
-        private FileUploadConfigurator $fileUploadConfigurator,
+        private Logger                          $logger,
+        private FileUploadValidator             $fileUploadValidator,
+        private FileUploadConfigurator          $fileUploadConfigurator,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -38,26 +42,31 @@ readonly class FileUploadService
      * @param string       $uploadConfigId
      * @param string       $fileName
      * @param float        $frontendFileSizeBytes
+     * @param string|null  $uploadDir
      *
      * @return string
      *
      * @throws UploadValidationException
-     * @throws Exception
      */
-    public function handleUpload(UploadedFile $tmpFile, string $uploadConfigId, string $fileName, float $frontendFileSizeBytes): string
+    public function handleUpload(UploadedFile $tmpFile, string $uploadConfigId, string $fileName, float $frontendFileSizeBytes, ?string $uploadDir): string
     {
         try {
             $uploadConfiguration = $this->fileUploadConfigurator->getConfiguration($uploadConfigId);
-            $fileSourceEnum      = UploadedFileSourceEnum::tryFrom($uploadConfiguration->getSource());
+            if (is_null($uploadConfiguration->getUploadDir()) && empty($uploadDir)) {
+                throw new LogicException("Upload config expects dynamic uploadDir, yet the dir was not delivered");
+            }
+
+            if (is_null($uploadConfiguration->getUploadDir())) {
+                $uploadConfiguration->setUploadDir($uploadDir);
+                PathService::validatePathSafety($uploadDir);
+            }
 
             $this->fileUploadValidator->init($tmpFile, $frontendFileSizeBytes);
             $this->fileUploadValidator->preUploadValidation($tmpFile, $uploadConfiguration);
 
-            $uploadDirPath = $this->buildUploadDirectoryPath($fileSourceEnum);
+            $this->createUploadDirectory($uploadConfiguration->getUploadDir());
 
-            $this->createUploadDirectory($uploadDirPath);
-
-            $targetPath = $this->decideTargetPath($uploadDirPath, $fileName);
+            $targetPath = $this->decideTargetPath($uploadConfiguration->getUploadDir(), $fileName);
             $this->moveFromTemp($tmpFile->getPathname(), $targetPath);
 
             $this->fileUploadValidator->postMoveValidation($targetPath);
@@ -118,18 +127,21 @@ readonly class FileUploadService
     }
 
     /**
-     * Builds the path to the folder in which file will be saved to
-     *
-     * @param UploadedFileSourceEnum $fileSourceEnum
-     *
-     * @return string
+     * @param string $filePath
+     * @param array  $tags
      */
-    private function buildUploadDirectoryPath(UploadedFileSourceEnum $fileSourceEnum): string
+    public function tagFile(string $filePath, array $tags): void
     {
-        return match ($fileSourceEnum->value) {
-            UploadedFileSourceEnum::PROFILE_IMAGE->value => PathService::getProfileImageUploadDir(),
-            default => PathService::getUploadDir(),
-        };
+        if (empty($tags)) {
+            return;
+        }
+
+        $tagsEntity = new FilesTags();
+        $tagsEntity->setFullFilePath($filePath);
+        $tagsEntity->setTags(json_encode($tags));
+
+        $this->entityManager->persist($tagsEntity);
+        $this->entityManager->flush();
     }
 
     /**

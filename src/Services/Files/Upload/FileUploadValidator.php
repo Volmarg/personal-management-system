@@ -47,14 +47,14 @@ class FileUploadValidator
      */
     public function preUploadValidation(UploadedFile $uploadedFile, UploadConfigurationDTO $uploadConfiguration): void
     {
-        if (!$this->handledFileSizeMb > $uploadConfiguration->getMaxFileSizeMb()) {
+        if ($uploadConfiguration->getMaxFileSizeMb() && !$this->handledFileSizeMb > $uploadConfiguration->getMaxFileSizeMb()) {
             $maxSizeMb  = $uploadConfiguration->getMaxFileSizeMb();
 
             $this->handleInvalidFile($uploadedFile);
             throw new UploadValidationException("Invalid file size. Max is: {$maxSizeMb} got: {$this->handledFileSizeMb}");
         }
 
-        if (!in_array($uploadedFile->getExtension(), $uploadConfiguration->getAllowedExtensions())) {
+        if (!empty($uploadConfiguration->getAllowedExtensions()) && !in_array($uploadedFile->getExtension(), $uploadConfiguration->getAllowedExtensions())) {
             $this->handleInvalidFile($uploadedFile);
 
             $fileExtension     = $uploadedFile->getExtension();
@@ -67,7 +67,7 @@ class FileUploadValidator
             throw new UploadValidationException($message);
         }
 
-        if (!in_array($uploadedFile->getMimeType(), $uploadConfiguration->getAllowedMimeTypes())) {
+        if (!empty($uploadConfiguration->getAllowedMimeTypes()) && !in_array($uploadedFile->getMimeType(), $uploadConfiguration->getAllowedMimeTypes())) {
             $this->handleInvalidFile($uploadedFile);
 
             $fileMimeType     = $uploadedFile->getMimeType();

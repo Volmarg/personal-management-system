@@ -54,13 +54,14 @@ class UploadedFileAction extends AbstractController
     public function upload(Request $request): JsonResponse
     {
         $dataArray       = RequestService::tryFromJsonBody($request);
+        $extraData       = ArrayHandler::get($dataArray, 'extraData', true, []);
         $encodedContent  = ArrayHandler::get($dataArray, 'fileContent');
         $fileName        = ArrayHandler::get($dataArray, 'fileName');
         $fileSizeBytes   = ArrayHandler::get($dataArray, 'fileSize');
         $uploadConfigId  = ArrayHandler::get($dataArray, 'uploadConfigId');
         $userDefinedName = ArrayHandler::get($dataArray, 'userDefinedName', true);
         $tags            = ArrayHandler::get($dataArray, 'tags', true, []);
-        // todo: extend with tags needed later in storage
+        $uploadDir       = $extraData['uploadDir'] ?? null;
 
         $decodedFileContent = base64_decode($encodedContent);
 
@@ -76,7 +77,8 @@ class UploadedFileAction extends AbstractController
             }
 
             $uploadedTmpFile = $this->temporaryFileHandlerService->saveFile($decodedFileContent, $fileName);
-            $filePath = $this->fileUploadService->handleUpload($uploadedTmpFile, $uploadConfigId, $usedFileName, $fileSizeBytes);
+            $filePath = $this->fileUploadService->handleUpload($uploadedTmpFile, $uploadConfigId, $usedFileName, $fileSizeBytes, $uploadDir);
+            $this->fileUploadService->tagFile($filePath, $tags);
 
             $response->setPublicPath($filePath);
             $response->setLocalFileName($usedFileName);
@@ -120,21 +122,6 @@ class UploadedFileAction extends AbstractController
         $response->setConfiguration($configurationDto);
 
         return $response->toJsonResponse();
-    }
-
-    /**
-     * Will update the give file data
-     *
-     * @param string  $filePath
-     * @param Request $request
-     *
-     * @return JsonResponse
-     */
-    #[Route("/upload/update/{filePath}", name: "upload.update", methods: [Request::METHOD_POST, Request::METHOD_OPTIONS])]
-    public function update(string $filePath, Request $request): JsonResponse
-    {
-        //todo: update the file now. tags etc.
-        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**

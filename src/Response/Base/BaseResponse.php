@@ -329,10 +329,10 @@ class BaseResponse
      *
      * @var string $message
      */
-    public static function buildToggleLockResponse(bool $isLocked, string $message = self::MESSAGE_OK): static
+    public static function buildToggleLockResponse(bool $isLocked, string $message = self::MESSAGE_OK, int $code = Response::HTTP_OK): static
     {
         $response = new static();
-        $response->setCode(Response::HTTP_OK);
+        $response->setCode($code);
         $response->setSuccess(true);
         $response->setMessage($message);
         $response->addData(self::KEY_DATA_IS_LOCKED, $isLocked);

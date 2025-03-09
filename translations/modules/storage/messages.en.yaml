@@ -1,0 +1,35 @@
+module:
+  storage:
+    moveFileOrDir:
+      parentIntoDirNotAllowed: "Cannot move parent dir into it's child"
+      folderWithThisNameAlreadyExist: "Folder with this name already exist under target path"
+      unknownError: "Unknown error"
+      oldPathEqualsNewPath: "Old path is the same as new path - this is not allowed"
+      failedCopySomeFiles: "Could not move some of the files - unknown error. Files:"
+      filesHaveBeenMoved: "Files have been moved"
+      folderHaveBeenMoved: "Folder have been moved"
+      filesListEmpty: "Files list is empty"
+    common:
+      fileNameExistInFolder: "File with this name already exist in this folder."
+      fileDoesNotExist: "This file does not exist"
+      fileUpdateDirPathIsNotFolder: "Expected directory path is not a folder"
+      folderNotWritable: "This folder is not writable"
+      unknownError: "Unknown error"
+      fileHasBeenUpdated: "File has been updated"
+    remove:
+      couldNotRemoveSomeFiles: "Some files could not be removed"
+      filesHaveBeenRemoved: "Files have been removed"
+    newFolder:
+      dirExists: "Directory with this name already exists"
+      dirNotWritable: "This directory is not writable: "
+      errorCreatingDir: "Could not create new folder - something went wrong"
+      dirNameIsEmpty: "Directory name cannot be empty"
+      parentDirPathEmpty: "Parent directory path cannot be empty"
+    rename:
+      currFileNameIsEmpty: "File current name cannot be empty"
+      newFileNameIsEmpty: "File new name cannot be empty"
+      dirPathIsEmpty: "Directory path cannot be empty"
+    lock:
+      isLocked: "Folder has been locked."
+      isUnlocked: "Folder has been unlocked."
+      parentDirIsLocked: "Parent directory ({{path}}) is locked, therefore current folder remains locked too."

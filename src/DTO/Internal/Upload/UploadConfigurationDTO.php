@@ -6,19 +6,27 @@ namespace App\DTO\Internal\Upload;
  * Upload configuration defines how the upload work on front and what kind of validations will be performed
  * both on front and back
  */
-readonly class UploadConfigurationDTO
+class UploadConfigurationDTO
 {
     public function __construct(
-        private string $identifier,
-        private float  $maxFileSizeMb,
-        private bool   $multiUpload,
-        private bool   $allowNaming,
-        private string $source,
-        private string $uploadDir,
-        private bool   $allowTagging,
-        private array  $allowedExtensions = [],
-        private array  $allowedMimeTypes = [],
+        private readonly string $identifier,
+        private readonly ?float $maxFileSizeMb,
+        private readonly bool   $multiUpload,
+        private readonly bool   $allowNaming,
+        private readonly string $source,
+        private ?string         $uploadDir,
+        private readonly bool   $allowTagging,
+        private readonly array  $allowedExtensions = [],
+        private readonly array  $allowedMimeTypes = [],
     ) {
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getMaxFileSizeMb(): ?float
+    {
+        return $this->maxFileSizeMb;
     }
 
     /**
@@ -27,14 +35,6 @@ readonly class UploadConfigurationDTO
     public function getIdentifier(): string
     {
         return $this->identifier;
-    }
-
-    /**
-     * @return float
-     */
-    public function getMaxFileSizeMb(): float
-    {
-        return $this->maxFileSizeMb;
     }
 
     /**
@@ -78,11 +78,21 @@ readonly class UploadConfigurationDTO
     }
 
     /**
-     * @return string
+     * @return null|string
      */
-    public function getUploadDir(): string
+    public function getUploadDir(): ?string
     {
         return $this->uploadDir;
+    }
+
+    /**
+     * @param string|null $uploadDir
+     *
+     * @return void
+     */
+    public function setUploadDir(?string $uploadDir): void
+    {
+        $this->uploadDir = $uploadDir;
     }
 
     /**
