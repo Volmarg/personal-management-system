@@ -45,7 +45,7 @@ class StorageService
      * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
-    public function getTreeFrontendData(StorageModuleEnum $module): array
+    public function getTreeData(StorageModuleEnum $module, array &$filesData = []): array
     {
         $basePath    = PathService::getStorageModuleBaseDir($module);
         $scannedPath = PathService::setTrailingDirSeparator($this->kernel->getProjectDir()) . $basePath;
@@ -53,7 +53,7 @@ class StorageService
         $json    = $this->shellTreeService->getDirJsonTree($scannedPath);
         $mainArr = json_decode($json, true);
 
-        return $this->traverseContent($mainArr, $module);
+        return $this->traverseContent($mainArr, $module, $filesData);
     }
 
     /**
@@ -153,7 +153,7 @@ class StorageService
      * @throws \Doctrine\DBAL\Exception
      * @throws JWTDecodeFailureException
      */
-    private function traverseContent(array $nodes, StorageModuleEnum $module): array
+    private function traverseContent(array $nodes, StorageModuleEnum $module, &$filesData): array
     {
         $normalisedNode = [];
         foreach ($nodes as $nodeData) {
@@ -173,11 +173,15 @@ class StorageService
 
             $children = [];
             if (array_key_exists('contents', $nodeData)) {
-                $children = $this->traverseContent($nodeData['contents'] ?? [], $module);
+                $children = $this->traverseContent($nodeData['contents'] ?? [], $module, $filesData);
             }
 
             $basename = basename($nodeData['name']);
             $files    = $this->getDirNodeFiles($nodeData['contents'] ?? [], $humanPath);
+            $filesData = [
+                ...$filesData,
+                ...$files,
+            ];
 
             // skipping module match here, it's not really needed for path based entry
             $data = $this->entityManager->getRepository(ModuleData::class)->findOneBy(['recordIdentifier' => $path]);
@@ -226,6 +230,7 @@ class StorageService
             }
 
             $files[]  = [
+                'dir'  => Env::getUploadDir() . $dirPathHuman,
                 'name' => $fileName,
                 'ext'  => $fileExt,
                 'size' => $nodeData['size'],

@@ -59,7 +59,7 @@ class StorageFolderAction extends AbstractController
     public function getModuleAll(string $module): JsonResponse
     {
         $moduleEnum = StorageModuleEnum::tryFrom($module);
-        $entriesData = $this->storageService->getTreeFrontendData($moduleEnum);
+        $entriesData = $this->storageService->getTreeData($moduleEnum);
 
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($entriesData);
@@ -84,7 +84,7 @@ class StorageFolderAction extends AbstractController
     {
         $entriesData = [];
         foreach (StorageModuleEnum::cases() as $enum) {
-            $entriesData[$enum->value] = $this->storageService->getTreeFrontendData($enum);
+            $entriesData[$enum->value] = $this->storageService->getTreeData($enum);
         }
 
         $response = BaseResponse::buildOkResponse();

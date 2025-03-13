@@ -70,11 +70,19 @@ class UrlMatcherService
     public function getClassAndMethodForCalledUrl(string $url): ?string
     {
         try{
-            $dataArray = $this->urlMatcher->match($url);
+            $normalizedUrl = $url;
+            // if url contains query params then matcher just crashes
+            if (str_contains($url, "?")) {
+                $parts = explode("?", $url);
+                $normalizedUrl = $parts[0];
+            }
+
+            $dataArray = $this->urlMatcher->match($normalizedUrl);
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e, [
                 "No class with method was found for url", [
                     "url" => $url,
+                    'normalizedUrl' => $normalizedUrl,
                 ]
             ]);
             return null;
