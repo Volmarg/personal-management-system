@@ -116,7 +116,15 @@ class StorageService
 
                 $failedFiles[] = $fileName;
             }
+
+            $tags = $this->entityManager->getRepository(FilesTags::class)->getFileTagsEntityByFileFullPath($oldFilePath);
+            if ($tags) {
+                $tags->setFullFilePath($newFilePath);
+                $this->entityManager->persist($tags);
+            }
         }
+
+        $this->entityManager->flush();
 
         if (!empty($failedFiles)) {
             $msg = $this->translator->trans('module.storage.moveFileOrDir.failedCopySomeFiles') . json_encode($failedFiles);
@@ -266,6 +274,8 @@ class StorageService
                 'possibleError' => error_get_last(),
             ]);
         }
+
+        $this->entityManager->getRepository(FilesTags::class)->updateFilePathByFolderPathChange($oldDirPath, $newDirPath);
 
         return BaseResponse::buildOkResponse($this->translator->trans('module.storage.moveFileOrDir.folderHaveBeenMoved'));
     }
