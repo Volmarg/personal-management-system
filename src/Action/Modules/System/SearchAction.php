@@ -4,10 +4,12 @@ namespace App\Action\Modules\System;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
+use App\Entity\FilesTags;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\Storage\StorageService;
+use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
@@ -62,14 +64,28 @@ class SearchAction extends AbstractController {
      */
     public function searchInStorage(string $query, array $entriesData): array
     {
+        $queryParts     = explode(" ", $query);
+        $cartesianQuery = [];
+        ArrayHandler::cartesianProduct(input: $queryParts, result: $cartesianQuery, depth: 2, stringBetween: " ");
+
+        $queryTagMatchSet = array_merge($queryParts, $cartesianQuery);
         foreach (StorageModuleEnum::cases() as $enum) {
             $matchingFiles = [];
+            $files         = [];
 
-            $files = [];
             $this->storageService->getTreeData($enum, $files);
             foreach ($files as $fileData) {
                 $fileName = $fileData['name'] . (!empty($fileData['ext']) ? '.' . $fileData['ext'] : '');
-                if (!str_contains($fileName, $query)) {
+
+                $fullPath  = $fileData['dir'] . DIRECTORY_SEPARATOR . $fileName;
+                $tagEntity = $this->entityManager->getRepository(FilesTags::class)->getFileTagsEntityByFileFullPath($fullPath);
+                $hasTag    = false;
+
+                if (!is_null($tagEntity)) {
+                    $hasTag = $tagEntity->isAnyTagMatching($queryTagMatchSet);
+                }
+
+                if (!str_contains($fileName, $query) && !$hasTag) {
                     continue;
                 }
 
