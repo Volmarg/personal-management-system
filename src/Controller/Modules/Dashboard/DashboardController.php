@@ -25,15 +25,6 @@ class DashboardController extends AbstractController {
     }
 
     /**
-     * @param int|null $limit
-     * @return IncomingScheduleDTO[]
-     * @throws Exception
-     */
-    public function getIncomingSchedulesInformation(?int $limit = null) {
-        return  $this->app->repositories->myScheduleRepository->getIncomingSchedulesInformationInDays(self::SCHEDULES_DEFAULT_DAYS_INTERVAL, $limit);
-    }
-
-    /**
      * @return MyTodo[]
      */
     public function getGoalsTodoForWidget(){

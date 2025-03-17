@@ -7,3 +7,8 @@ module:
             noRemovingDefault: "Default currency cannot be removed"
             nameAlreadyInUse: "Currency with this name already exists"
             noDefaultCurrency: "Cannot save, since there would be no default currency - provide one"
+    notification:
+      type:
+        schedule:
+          msg:
+            inDays: "in {{days}} day/s"
