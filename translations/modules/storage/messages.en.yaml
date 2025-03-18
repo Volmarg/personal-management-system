@@ -25,6 +25,7 @@ module:
       errorCreatingDir: "Could not create new folder - something went wrong"
       dirNameIsEmpty: "Directory name cannot be empty"
       parentDirPathEmpty: "Parent directory path cannot be empty"
+      created: "New folder has been created"
     rename:
       currFileNameIsEmpty: "File current name cannot be empty"
       newFileNameIsEmpty: "File new name cannot be empty"

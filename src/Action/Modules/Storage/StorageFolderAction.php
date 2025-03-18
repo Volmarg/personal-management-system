@@ -144,7 +144,8 @@ class StorageFolderAction extends AbstractController
             return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         }
 
-        $response = BaseResponse::buildOkResponse();
+        $msg = $this->translator->trans('module.storage.newFolder.created');
+        $response = BaseResponse::buildOkResponse($msg);
 
         return $response->toJsonResponse();
     }
