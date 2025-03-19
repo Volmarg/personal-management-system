@@ -16,16 +16,18 @@ module:
       folderNotWritable: "This folder is not writable"
       unknownError: "Unknown error"
       fileHasBeenUpdated: "File has been updated"
+      dirExists: "Directory with this name already exists"
+      dirNotWritable: "This directory is not writable: "
+      dirNameIsEmpty: "Directory name cannot be empty"
+      existingDirPath: "Existing dir path cannot be empty"
+      error: "Error - something went wrong"
     remove:
       couldNotRemoveSomeFiles: "Some files could not be removed"
       filesHaveBeenRemoved: "Files have been removed"
     newFolder:
-      dirExists: "Directory with this name already exists"
-      dirNotWritable: "This directory is not writable: "
-      errorCreatingDir: "Could not create new folder - something went wrong"
-      dirNameIsEmpty: "Directory name cannot be empty"
-      parentDirPathEmpty: "Parent directory path cannot be empty"
-      created: "New folder has been created"
+      success: "New folder has been created"
+    renameFolder:
+      success: "Folder has been renamed"
     rename:
       currFileNameIsEmpty: "File current name cannot be empty"
       newFileNameIsEmpty: "File new name cannot be empty"

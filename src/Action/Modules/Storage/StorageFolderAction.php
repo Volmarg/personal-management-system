@@ -11,6 +11,7 @@ use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
 use App\Services\Core\Logger;
 use App\Services\Files\PathService;
+use App\Services\Module\Storage\StorageFolderService;
 use App\Services\Module\Storage\StorageService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -38,6 +39,7 @@ class StorageFolderAction extends AbstractController
         private readonly Logger                   $logger,
         private readonly LockedResourceController $lockedResourceController,
         private readonly EntityManagerInterface   $entityManager,
+        private readonly StorageFolderService     $storageFolderService
     ) {
     }
 
@@ -104,47 +106,32 @@ class StorageFolderAction extends AbstractController
     #[Route("/create", name: "create", methods: [Request::METHOD_POST])]
     public function createFolder(Request $request): JsonResponse
     {
-        $dataArray  = RequestService::tryFromJsonBody($request);
-        $parentDir  = ArrayHandler::get($dataArray, 'parentDir');
-        $newDirName = ArrayHandler::get($dataArray, 'newDirName');
+        $dataArray     = RequestService::tryFromJsonBody($request);
+        $parentDirPath = ArrayHandler::get($dataArray, 'parentDir');
+        $newDirName    = ArrayHandler::get($dataArray, 'newDirName');
 
-        $this->storageService->ensureStorageManipulation($parentDir);
+        $this->storageService->ensureStorageManipulation($parentDirPath);
         PathService::validatePathSafety($newDirName);
-        PathService::validatePathSafety($parentDir);
+        PathService::validatePathSafety($parentDirPath);
 
-        $newDirPath = $parentDir . DIRECTORY_SEPARATOR . $newDirName;
-        if (empty($newDirName)) {
-            $msg = $this->translator->trans('module.storage.newFolder.dirNameIsEmpty');
-            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
-        }
-
-        if (empty($parentDir)) {
-            $msg = $this->translator->trans('module.storage.newFolder.parentDirPathEmpty');
-            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
-        }
-
-        if (file_exists($newDirPath) && is_dir($newDirPath)) {
-            $msg = $this->translator->trans('module.storage.newFolder.dirExists');
-            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
-        }
-
-        if (!is_writable($parentDir)) {
-            $msg = $this->translator->trans('module.storage.newFolder.dirNotWritable') . " {$parentDir}";
-            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        $newDirPath = $parentDirPath . DIRECTORY_SEPARATOR . $newDirName;
+        $response = $this->storageFolderService->validateCreateAndRename($parentDirPath, $newDirName, $newDirPath);
+        if (!is_null($response)) {
+            return $response->toJsonResponse();
         }
 
         if (!mkdir($newDirPath)) {
-            $msg = $this->translator->trans('module.storage.newFolder.errorCreatingDir');
+            $msg = $this->translator->trans('module.storage.common.error');
             $this->logger->getLogger()->critical($msg, [
                 'info'          => "rename function failed",
-                'parentDir'     => $parentDir,
+                'parentDir'     => $parentDirPath,
                 'newDirPath'    => $newDirPath,
                 'possibleError' => error_get_last(),
             ]);
             return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         }
 
-        $msg = $this->translator->trans('module.storage.newFolder.created');
+        $msg = $this->translator->trans('module.storage.newFolder.success');
         $response = BaseResponse::buildOkResponse($msg);
 
         return $response->toJsonResponse();
@@ -214,6 +201,61 @@ class StorageFolderAction extends AbstractController
         $this->entityManager->flush();
 
         return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * Will rename existing dir inside storage module structure
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route("/rename", name: "rename", methods: [Request::METHOD_POST])]
+    public function renameFolder(Request $request): JsonResponse
+    {
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $currDirPath = ArrayHandler::get($dataArray, 'currDirPath');
+        $dirNewName  = ArrayHandler::get($dataArray, 'newDirName');
+
+        $this->storageService->ensureStorageManipulation($currDirPath);
+        PathService::validatePathSafety($dirNewName);
+        PathService::validatePathSafety($currDirPath);
+
+        $newDirPath = dirname($currDirPath) . DIRECTORY_SEPARATOR . $dirNewName;
+        $response = $this->storageFolderService->validateCreateAndRename($currDirPath, $dirNewName, $newDirPath);
+        if (!is_null($response)) {
+            return $response->toJsonResponse();
+        }
+
+        if (!rename($currDirPath, $newDirPath)) {
+            $msg = $this->translator->trans('module.storage.common.error');
+            $this->logger->getLogger()->critical($msg, [
+                'info'          => "rename function failed",
+                'parentDir'     => $currDirPath,
+                'newDirPath'    => $newDirPath,
+                'possibleError' => error_get_last(),
+            ]);
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        $repo = $this->entityManager->getRepository(ModuleData::class);
+        $moduleData = $repo->getOneByRecordTypeModuleAndRecordIdentifier(
+            ModuleData::RECORD_TYPE_DIRECTORY,
+            ModulesController::MODULE_NAME_FILES,
+            $currDirPath
+        );
+
+        if (!is_null($moduleData)) {
+            $moduleData->setRecordIdentifier($newDirPath);
+            $this->entityManager->persist($moduleData);
+            $this->entityManager->flush();
+        }
+
+        $msg = $this->translator->trans('module.storage.renameFolder.success');
+        $response = BaseResponse::buildOkResponse($msg);
+
+        return $response->toJsonResponse();
     }
 
 }
