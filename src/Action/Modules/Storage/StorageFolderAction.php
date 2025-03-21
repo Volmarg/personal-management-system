@@ -258,4 +258,34 @@ class StorageFolderAction extends AbstractController
         return $response->toJsonResponse();
     }
 
+    /**
+     * @throws Exception
+     */
+    #[Route("/move-or-copy", name: "move_or_copy", methods: [Request::METHOD_POST])]
+    public function moveFiles(Request $request): JsonResponse
+    {
+        $dataArray        = RequestService::tryFromJsonBody($request);
+        $currDirPath      = ArrayHandler::get($dataArray, 'currDirPath');
+        $newDirParentPath = ArrayHandler::get($dataArray, 'newDirParentPath');
+        $move             = ArrayHandler::get($dataArray, 'move');
+        $targetModuleName = ArrayHandler::get($dataArray, 'targetModuleName');
+
+        if (!file_exists($currDirPath)) {
+            $msg = $this->translator->trans('module.storage.common.folderNotExist') . $currDirPath;
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        if (!file_exists($newDirParentPath)) {
+            $msg = $this->translator->trans('module.storage.common.folderNotExist') . $newDirParentPath;
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        $this->storageService->ensureStorageManipulation($currDirPath);
+        $this->storageService->ensureStorageManipulation($newDirParentPath);
+
+        $response = $this->storageFolderService->moveOrCopyFolder($currDirPath, $newDirParentPath, $move, $targetModuleName);
+
+        return $response->toJsonResponse();
+    }
+
 }

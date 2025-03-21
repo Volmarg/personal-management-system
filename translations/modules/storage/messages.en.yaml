@@ -8,6 +8,10 @@ module:
       failedCopySomeFiles: "Could not move some of the files - unknown error. Files:"
       filesHaveBeenMoved: "Files have been moved"
       folderHaveBeenMoved: "Folder have been moved"
+      folderCouldNotBeMovedReverted: "Unknown error. Could not move folder - changes were reverted"
+      folderMovedDatabaseChangesFailed: "Folder moving failed, database changes were reverted but folder cannot be moved back"
+      filesHaveBeenCopied: "Files have been copied"
+      filesHaveBeenCopiedButExisted: "Files have been copied, but some already existed, thus current date and time was added to the names."
       filesListEmpty: "Files list is empty"
     common:
       fileNameExistInFolder: "File with this name already exist in this folder."
@@ -21,6 +25,8 @@ module:
       dirNameIsEmpty: "Directory name cannot be empty"
       existingDirPath: "Existing dir path cannot be empty"
       error: "Error - something went wrong"
+      errorReverted: "Error - something went wrong. Changes were reverted."
+      folderNotExist: "This folder does not exist: "
     remove:
       couldNotRemoveSomeFiles: "Some files could not be removed"
       filesHaveBeenRemoved: "Files have been removed"
@@ -28,6 +34,8 @@ module:
       success: "New folder has been created"
     renameFolder:
       success: "Folder has been renamed"
+    moveOrCopyFolder:
+      cannotMoveBaseDir: "Moving storage base dir is not allowed!"
     rename:
       currFileNameIsEmpty: "File current name cannot be empty"
       newFileNameIsEmpty: "File new name cannot be empty"

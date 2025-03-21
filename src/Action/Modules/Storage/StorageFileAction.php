@@ -118,10 +118,10 @@ class StorageFileAction extends AbstractController
     #[Route("/move", name: "move", methods: [Request::METHOD_POST])]
     public function moveFiles(Request $request): JsonResponse
     {
-        $dataArray  = RequestService::tryFromJsonBody($request);
+        $dataArray   = RequestService::tryFromJsonBody($request);
         $currDirPath = ArrayHandler::get($dataArray, 'currDirPath');
-        $newDirPath = ArrayHandler::get($dataArray, 'newDirPath');
-        $filesNames = ArrayHandler::get($dataArray, 'fileNames');
+        $newDirPath  = ArrayHandler::get($dataArray, 'newDirPath');
+        $filesNames  = ArrayHandler::get($dataArray, 'fileNames');
 
         $this->storageService->ensureStorageManipulation($currDirPath);
         $this->storageService->ensureStorageManipulation($newDirPath);
@@ -131,7 +131,7 @@ class StorageFileAction extends AbstractController
             return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         }
 
-        $response = $this->storageService->moveOrCopyFiles($currDirPath, $newDirPath, $filesNames);
+        $response = $this->storageService->moveFiles($currDirPath, $newDirPath, $filesNames);
 
         return $response->toJsonResponse();
     }

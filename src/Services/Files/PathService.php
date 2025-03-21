@@ -118,4 +118,16 @@ class PathService
             default => throw new LogicException("Unsupported storage module: {$module->value}"),
         };
     }
+
+    /**
+     * @return array
+     */
+    public static function getAllStorageBaseDirs(): array
+    {
+        return [
+            Env::getFilesUploadDir(),
+            Env::getVideoUploadDir(),
+            Env::getImagesUploadDir(),
+        ];
+    }
 }

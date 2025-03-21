@@ -79,19 +79,14 @@ class StorageService
      * @param string $oldDirPath
      * @param string $newDirPath
      * @param array  $filesNames
-     * @param bool   $moveDir
      *
      * @return BaseResponse
      * @throws Exception
      */
-    public function moveOrCopyFiles(string $oldDirPath, string $newDirPath, array $filesNames = [], bool $moveDir = false): BaseResponse
+    public function moveFiles(string $oldDirPath, string $newDirPath, array $filesNames = []): BaseResponse
     {
         if ($oldDirPath === $newDirPath) {
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.storage.moveFileOrDir.oldPathEqualsNewPath'));
-        }
-
-        if ($moveDir) {
-            return $this->handleMovingDir($oldDirPath, $newDirPath);
         }
 
         $failedFiles = [];
@@ -247,37 +242,6 @@ class StorageService
         }
 
         return $files;
-    }
-
-    /**
-     * @param string $oldDirPath
-     * @param string $newDirPath
-     *
-     * @return BaseResponse
-     */
-    private function handleMovingDir(string $oldDirPath, string $newDirPath): BaseResponse
-    {
-        if (str_contains($newDirPath, $oldDirPath)) {
-            return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.storage.moveFileOrDir.parentIntoDirNotAllowed'));
-        }
-
-        if (file_exists($newDirPath)) {
-            return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.storage.moveFileOrDir.folderWithThisNameAlreadyExist'));
-        }
-
-        if (!rename($oldDirPath, $newDirPath)) {
-            $msg = $this->translator->trans('module.storage.moveFileOrDir.unknownError');
-            $this->logger->getLogger()->critical($msg, [
-                'info'          => "rename function failed",
-                'oldDirPath'    => $oldDirPath,
-                'newDirPath'    => $newDirPath,
-                'possibleError' => error_get_last(),
-            ]);
-        }
-
-        $this->entityManager->getRepository(FilesTags::class)->updateFilePathByFolderPathChange($oldDirPath, $newDirPath);
-
-        return BaseResponse::buildOkResponse($this->translator->trans('module.storage.moveFileOrDir.folderHaveBeenMoved'));
     }
 
 }

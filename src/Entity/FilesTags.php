@@ -43,6 +43,14 @@ class FilesTags implements SoftDeletableEntityInterface, EntityInterface
         return $this->id;
     }
 
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
+    }
+
     public function isDeleted(): ?bool
     {
         return $this->deleted;
