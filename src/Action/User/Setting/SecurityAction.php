@@ -2,6 +2,7 @@
 
 namespace App\Action\User\Setting;
 
+use App\Controller\Core\Env;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\Security\JwtAuthenticationService;
@@ -38,6 +39,10 @@ class SecurityAction extends AbstractController
     #[Route("/user/security/password/change", name: "user.security.password.change", methods: [Request::METHOD_OPTIONS, Request::METHOD_POST])]
     public function changePassword(Request $request): JsonResponse
     {
+        if (Env::isDemo()) {
+            return BaseResponse::buildBadRequestErrorResponse("You are not allowed to do that!")->toJsonResponse();
+        }
+
         $dataArray         = RequestService::tryFromJsonBody($request);
         $password          = ArrayHandler::get($dataArray, 'password');
         $passwordConfirmed = ArrayHandler::get($dataArray, 'passwordConfirmed');
@@ -68,6 +73,10 @@ class SecurityAction extends AbstractController
     #[Route("/user/security/lock-password/change", name: "user.security.lock_password.change", methods: [Request::METHOD_OPTIONS, Request::METHOD_POST])]
     public function changeLockPassword(Request $request): JsonResponse
     {
+        if (Env::isDemo()) {
+            return BaseResponse::buildBadRequestErrorResponse("You are not allowed to do that!")->toJsonResponse();
+        }
+
         $dataArray         = RequestService::tryFromJsonBody($request);
         $password          = ArrayHandler::get($dataArray, 'password');
         $passwordConfirmed = ArrayHandler::get($dataArray, 'passwordConfirmed');

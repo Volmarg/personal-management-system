@@ -342,13 +342,17 @@ class BaseResponse
 
     /**
      * Will build 404 response
+     *
+     * @var string $message
+     *
+     * @return static
      */
-    public static function buildNotFoundResponse(): static
+    public static function buildNotFoundResponse(string $message = self::MESSAGE_NOT_FOUND): static
     {
         $response = new static();
         $response->setCode(Response::HTTP_NOT_FOUND);
         $response->setSuccess(false);
-        $response->setMessage(self::MESSAGE_NOT_FOUND);
+        $response->setMessage($message);
 
         return $response;
     }

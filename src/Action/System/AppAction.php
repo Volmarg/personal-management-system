@@ -247,7 +247,8 @@ class AppAction extends AbstractController
     {
         $userRepo = $this->em->getRepository(User::class);
         if (!is_null($userRepo->findOneActive())) {
-            return BaseResponse::buildNotFoundResponse()->toJsonResponse();
+            $msg = $this->translator->trans('security.user.register.msg.activeUserExists');
+            return BaseResponse::buildNotFoundResponse($msg)->toJsonResponse();
         }
 
         return BaseResponse::buildOkResponse()->toJsonResponse();

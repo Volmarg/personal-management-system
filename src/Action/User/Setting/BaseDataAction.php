@@ -2,6 +2,7 @@
 
 namespace App\Action\User\Setting;
 
+use App\Controller\Core\Env;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
 use App\Services\RequestService;
@@ -112,6 +113,10 @@ class BaseDataAction extends AbstractController
     #[Route("/user/base-data/email/change/{emailAddress}", name: "user.base_data.email.change", methods: [Request::METHOD_OPTIONS, Request::METHOD_GET])]
     public function changeEmail(string $emailAddress): JsonResponse
     {
+        if (Env::isDemo()) {
+            return BaseResponse::buildBadRequestErrorResponse("You are not allowed to do that!")->toJsonResponse();
+        }
+
         if (empty($emailAddress)) {
             $message = $this->translator->trans('user.settings.email.msg.emailEmpty');
             return BaseResponse::buildBadRequestErrorResponse($message)->toJsonResponse();
