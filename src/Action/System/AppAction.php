@@ -13,7 +13,6 @@ use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Security\PasswordHashingService;
-use App\Services\Session\SessionsService;
 use App\Services\Storage\RequestSessionStorage;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Services\Validation\DtoValidatorService;
@@ -64,7 +63,6 @@ class AppAction extends AbstractController
         Controllers                               $controllers,
         DtoValidatorService                       $dtoValidator,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
-        private readonly SessionsService          $sessionsService,
         private readonly EntityManagerInterface   $em,
         private readonly PasswordHashingService   $passwordHashingService,
         private readonly TranslatorInterface      $translator,
@@ -235,8 +233,6 @@ class AppAction extends AbstractController
     #[JwtAuthenticationDisabledAttribute]
     public function login(): JsonResponse
     {
-        $user = $this->jwtAuthenticationService->getUserFromRequest();
-        $this->sessionsService->clearForUser($user->getId());
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
