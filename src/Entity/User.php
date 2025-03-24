@@ -201,6 +201,10 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     public function getRoles(): array
     {
+        if (in_array('ROLE_SUPER_ADMIN', $this->roles) && !in_array(self::ROLE_USER, $this->roles)) {
+            $this->roles[] = self::ROLE_USER;
+        }
+
         if (Env::isDev()) {
             $this->roles[] = self::ROLE_DEVELOPER;
         }
