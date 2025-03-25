@@ -28,7 +28,6 @@
         "doctrine/doctrine-migrations-bundle": "^2",
         "gumlet/php-image-resize": "^2.0",
         "lexik/jwt-authentication-bundle": "v2.16.0",
-        "phpunit/phpunit": "^8.5",
         "ramsey/uuid": "^3.8",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
@@ -53,8 +52,6 @@
         "symfony/translation": "v5.4",
         "symfony/validator": "v5.4",
         "symfony/var-dumper": "^5.0",
-        "symfony/web-profiler-bundle": "v5.4",
-        "symfony/webpack-encore-bundle": "^1.4",
         "symfony/yaml": "v5.4",
         "tinymce/tinymce": "^5.0",
         "twig/extensions": "^1.5",
@@ -70,7 +67,10 @@
         "symfony/browser-kit": "v5.4",
         "symfony/css-selector": "^5.0",
         "symfony/maker-bundle": "^1.0",
-        "symfony/phpunit-bridge": "^5.0"
+        "symfony/phpunit-bridge": "^5.0",
+        "symfony/web-profiler-bundle": "v5.4",
+        "symfony/webpack-encore-bundle": "^1.4",
+        "phpunit/phpunit": "^8.5"
     },
     "config": {
         "preferred-install": {
