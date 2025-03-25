@@ -18,4 +18,4 @@ RUN     yes | apt-get install nano \
 ## 1025 = incoming tcp smtp
 EXPOSE 8025 1025
 
-RUN wget https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh && sh ./install.sh;
+RUN wget https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh && chmod +x ./install.sh && sh ./install.sh;
