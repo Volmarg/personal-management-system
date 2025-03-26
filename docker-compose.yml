@@ -10,10 +10,10 @@ services:
       - MYSQL_DATABASE=pms
       - MYSQL_ROOT_PASSWORD=password
     volumes:
-      - ./data:/var/lib/mysql
+      - database:/var/lib/mysql
 
   pms-nginx:
-    image: nginx:alpine
+    image: yobasystems/alpine-nginx:stable
     container_name: pms-nginx
     hostname: pms-nginx
     working_dir: /application
@@ -21,7 +21,7 @@ services:
     tty: true
     volumes:
       - .:/application
-      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "8002:80"
 
@@ -68,3 +68,4 @@ services:
 
 volumes:
   pms-mailpit-db:
+  database:

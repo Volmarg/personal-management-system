@@ -22,6 +22,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && mv composer /usr/local/bin/composer
 
+COPY fpm-pool.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN pecl install apcu
