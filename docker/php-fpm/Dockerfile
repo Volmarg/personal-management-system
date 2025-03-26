@@ -13,7 +13,7 @@ RUN apt-get install -y \
 RUN apt-get update -y && apt-get install -y libpng-dev
 
 RUN apt-get update && \
-    apt-get install zlib1g-dev tree -y
+    apt-get install zlib1g-dev tree mariadb-client -y
 
 RUN docker-php-ext-install gd
 
