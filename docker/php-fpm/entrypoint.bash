@@ -126,6 +126,12 @@ $BIN_CONSOLE_PATH doctrine:migrations:migrate --no-interaction;
 logDebug "Set up var dir rights"
 chown www-data:www-data var/* -R
 
+logDebug "Clearing opcache"
+cachetool.phar opcache:reset;
+
+logDebug "Clearing apcu cache"
+cachetool.phar apcu:cache:clear
+
 createDirs
 setEncryptionKey
 generateJwtKeyPair
