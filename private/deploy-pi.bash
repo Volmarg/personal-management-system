@@ -23,3 +23,6 @@ ssh "$IP" "sudo chmod 775 $DIR -R"
 ssh "$IP" "docker exec $CONTAINER_NAME composer dump-autoload"
 ssh "$IP" "docker exec $CONTAINER_NAME bin/console cache:clear"
 ssh "$IP" "docker exec $CONTAINER_NAME bin/console cache:warmup"
+
+ssh "$IP" "docker exec $CONTAINER_NAME cachetool.phar opcache:reset"
+ssh "$IP" "docker exec $CONTAINER_NAME cachetool.phar apcu:cache:clear"

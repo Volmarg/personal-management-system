@@ -3,7 +3,7 @@ FROM php:8.3-fpm
 RUN apt-get update && apt-get install -y zlib1g-dev libicu-dev g++
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
-RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql opcache
 
 RUN apt-get install -y \
         libzip-dev \
@@ -28,6 +28,8 @@ COPY php.ini /usr/local/etc/php/conf.d/php.ini
 RUN pecl install apcu
 
 RUN pear config-set php_ini /application/docker/php-fpm/php.ini
+
+RUN curl -sLO https://github.com/gordalina/cachetool/releases/latest/download/cachetool.phar --create-dirs -O --output-dir /usr/bin && chmod +x /usr/bin/cachetool.phar
 
 CMD ["php-fpm"]
 
