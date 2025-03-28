@@ -100,12 +100,13 @@ class FilesTags implements SoftDeletableEntityInterface, EntityInterface
             return false;
         }
 
+        $tags = array_map(fn(string $tag) => strtolower($tag), $tags);
         foreach ($checkedValues as $value) {
             if (!is_string($value)) {
                 throw new LogicException("At least one of the array elements is not a string");
             }
 
-            if (in_array($value, $tags)) {
+            if (in_array(strtolower($value), $tags)) {
                 return true;
             }
         }

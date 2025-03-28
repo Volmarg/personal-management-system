@@ -85,7 +85,7 @@ class SearchAction extends AbstractController {
                     $hasTag = $tagEntity->isAnyTagMatching($queryTagMatchSet);
                 }
 
-                if (!str_contains($fileName, $query) && !$hasTag) {
+                if (!str_contains(strtolower($fileName), strtolower($query)) && !$hasTag) {
                     continue;
                 }
 
