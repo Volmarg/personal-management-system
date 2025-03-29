@@ -8,6 +8,7 @@ use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
 use App\Controller\Modules\Payments\MyPaymentsBillsController;
 use App\Entity\Modules\Payments\MyPaymentsBills;
+use App\Entity\Modules\Payments\MyPaymentsBillsItems as BillItem;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -53,7 +54,10 @@ class BillsAction extends AbstractController {
         $entriesData = [];
         foreach ($bills as $bill) {
             $elements = [];
-            foreach ($bill->getItem() as $item) {
+
+            $items = $bill->getItem()->getValues();
+            usort($items, fn(BillItem $curr,BillItem $next) => $curr->getDate()->getTimestamp() < $next->getDate()->getTimestamp());
+            foreach ($items as $item) {
                 if ($item->isDeleted()) {
                     continue;
                 }

@@ -27,7 +27,7 @@ class MyPaymentsIncomeRepository extends ServiceEntityRepository {
      */
     public function getAllNotDeleted(): array
     {
-        return $this->findBy([AbstractRepository::FIELD_DELETED => 0]);
+        return $this->findBy([AbstractRepository::FIELD_DELETED => 0], ["date" => "DESC"]);
     }
 
     /**
@@ -48,7 +48,9 @@ class MyPaymentsIncomeRepository extends ServiceEntityRepository {
             WHERE 1
             AND `deleted` = 0
             
-            GROUP BY DATE_FORMAT(`date`, "%Y-%m");        
+            GROUP BY DATE_FORMAT(`date`, "%Y-%m")
+
+            ORDER BY `date` DESC
         ';
 
         $results = $this->_em->getConnection()->fetchAllAssociative($sql);

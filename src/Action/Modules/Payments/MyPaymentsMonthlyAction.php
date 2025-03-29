@@ -48,7 +48,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allPayments = $this->em->getRepository(MyPaymentsMonthly::class)->findBy(['deleted' => 0]);
+        $allPayments = $this->em->getRepository(MyPaymentsMonthly::class)->findBy(['deleted' => 0], ['date' => "DESC"]);
         $entriesData = [];
         foreach ($allPayments as $payment) {
             $entriesData[] = [

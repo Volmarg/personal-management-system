@@ -47,7 +47,7 @@ class MyPaymentsOwedAction extends AbstractController
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $entries = $this->em->getRepository(MyPaymentsOwed::class)->findBy(['deleted' => false]);
+        $entries = $this->em->getRepository(MyPaymentsOwed::class)->findBy(['deleted' => false], ["date" => "DESC"]);
 
         $entriesData = [];
         foreach ($entries as $owedEntry) {
