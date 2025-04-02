@@ -258,7 +258,8 @@ class StorageFolderAction extends AbstractController
 
         $this->entityManager->commit();
 
-        return BaseResponse::buildOkResponse()->toJsonResponse();
+        $msg = $this->translator->trans('module.storage.remove.folderHasBeenRemoved');
+        return BaseResponse::buildOkResponse($msg)->toJsonResponse();
     }
 
     /**
