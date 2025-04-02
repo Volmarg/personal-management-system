@@ -5,6 +5,7 @@ namespace App\Action\Modules\Storage;
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
+use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
@@ -18,6 +19,7 @@ use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -199,6 +201,62 @@ class StorageFolderAction extends AbstractController
 
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     *
+     * @throws Exception
+     */
+    #[Route("/remove", name: "remove", methods: [Request::METHOD_POST])]
+    public function remove(Request $request): JsonResponse
+    {
+        $dataArray = RequestService::tryFromJsonBody($request);
+        $dirPath   = ArrayHandler::get($dataArray, 'dirPath');
+        if (in_array($dirPath, PathService::getAllStorageBaseDirs())) {
+            $msg = $this->translator->trans('module.storage.remove.cannotRemoveStorageBaseDir');
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        PathService::validatePathSafety($dirPath);
+
+        try {
+            $this->entityManager->beginTransaction();
+
+            $lock = $this->entityManager->getRepository(LockedResource::class)->findByDirectoryLocation($dirPath);
+            $data = $this->entityManager->getRepository(ModuleData::class)->findOneBy(['recordIdentifier' => $dirPath]);
+            $tags = $this->entityManager->getRepository(FilesTags::class)->findByDirPath($dirPath);
+
+            if (!empty($lock)) {
+                $this->entityManager->remove($lock);
+            }
+
+            if (!empty($data)) {
+                $this->entityManager->remove($data);
+            }
+
+            foreach ($tags as $tag) {
+                $this->entityManager->remove($tag);
+            }
+
+            $this->entityManager->flush();
+        } catch (Exception $e) {
+            $this->entityManager->rollback();
+            $msg = $this->translator->trans('module.storage.common.error');
+            $this->logger->getLogger()->critical($msg, [
+                "info"  => "Could not remove related entities",
+                "trace" => $e->getTraceAsString(),
+                "msg"   => $e->getMessage(),
+            ]);
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        (new Filesystem())->remove($dirPath);
+
+        $this->entityManager->commit();
 
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }

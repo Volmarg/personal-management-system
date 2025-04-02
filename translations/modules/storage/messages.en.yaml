@@ -30,6 +30,7 @@ module:
     remove:
       couldNotRemoveSomeFiles: "Some files could not be removed"
       filesHaveBeenRemoved: "Files have been removed"
+      cannotRemoveStorageBaseDir: "Removing storage base dir is not allowed!"
     newFolder:
       success: "New folder has been created"
     renameFolder:

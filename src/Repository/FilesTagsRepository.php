@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\FilesTags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -62,5 +63,37 @@ class FilesTagsRepository extends ServiceEntityRepository
         $connection->executeQuery($sql, $bindedValues);
     }
 
+    /**
+     * First fetching all data by LIKE %, to reduce amount of fetched entries,
+     * then looping over entities to get the entries that start with dir path.
+     *
+     * @param string $dirPath
+     *
+     * @return FilesTags[]
+     */
+    public function findByDirPath(string $dirPath): array
+    {
 
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select("ft")
+           ->from(FilesTags::class, 'ft')
+           ->where(
+               $qb->expr()->like("ft.fullFilePath", ":dirPath")
+           )->setParameter("dirPath", "%" . $dirPath . "%");
+
+        /** @var FilesTags[] $entries */
+        $entries = $qb->getQuery()->getResult();
+        if (empty($entries)) {
+            return [];
+        }
+
+        $filtered = [];
+        foreach ($entries as $entry) {
+            if (str_starts_with($entry->getFullFilePath(), $dirPath)) {
+                $filtered[] = $entry;
+            }
+        }
+
+        return $filtered;
+    }
 }
