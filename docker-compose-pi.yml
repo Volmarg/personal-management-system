@@ -1,0 +1,76 @@
+version: "3.1"
+services:
+  pms-database-mariadb:
+    image: linuxserver/mariadb:arm32v7-10.6.13
+    container_name: pms-database-mariadb
+    hostname: pms-database-mariadb
+    restart: always
+    tty: true
+    environment:
+      - MYSQL_DATABASE=pms
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - database:/config
+
+  pms-nginx:
+    image: yobasystems/alpine-nginx:armhf-stable
+    container_name: pms-nginx
+    hostname: pms-nginx
+    working_dir: /application
+    restart: always
+    tty: true
+    volumes:
+      - .:/application
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8002:80"
+
+  pms-php-fpm:
+    build: ./docker/php-fpm
+    container_name: pms-php-fpm
+    hostname: pms-php-fpm
+    # Executing original entrypoint, else php won't work, then executing my entrypoint and finally run the php-fpm thus also keep container alive
+    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && ./docker/php-fpm/entrypoint.bash && php-fpm"
+    working_dir: /application
+    restart: always
+    tty: true
+    depends_on:
+      - pms-database-mariadb
+      - pms-nginx
+    volumes:
+      - .:/application
+      - /backup/pms:/backup/pms
+    # this is needed to let the docker access the HOST data, for example MYSQL
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  pms-adminer:
+    container_name: pms-adminer
+    hostname: pms-adminer
+    image: arm32v7/adminer:5.0.6-standalone
+    restart: always
+    tty: true
+    ports:
+      - 8081:8080
+
+# Info: not working atm. can't find a way to make it run
+#  pms-mailpit:
+#    container_name: pms-mailpit
+#    hostname: pms-mailpit
+#    restart: always
+#    tty: true
+#    command: >
+#      mailpit
+#        --smtp-auth-allow-insecure
+#        --db-file=/mailpit/mail.db
+#
+#    build: ./docker/mailpit
+#    ports:
+#      - "8091:8025"
+#
+#    volumes:
+#      - pms-mailpit-db:/mailpit/mail.db
+
+volumes:
+#  pms-mailpit-db:
+  database:
