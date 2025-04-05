@@ -53,24 +53,18 @@ services:
     ports:
       - 8081:8080
 
-# Info: not working atm. can't find a way to make it run
-#  pms-mailpit:
-#    container_name: pms-mailpit
-#    hostname: pms-mailpit
-#    restart: always
-#    tty: true
-#    command: >
-#      mailpit
-#        --smtp-auth-allow-insecure
-#        --db-file=/mailpit/mail.db
-#
-#    build: ./docker/mailpit
-#    ports:
-#      - "8091:8025"
-#
-#    volumes:
-#      - pms-mailpit-db:/mailpit/mail.db
+  pms-mail:
+    container_name: pms-mail
+    hostname: pms-mail
+    restart: always
+    tty: true
+    command: mailcrab
+    environment:
+      HTTP_HOST: 0.0.0.0
+    build: ./docker/mailcrab
+    ports:
+      - "8089:1080" # http
+      - "1025:1025" # smtp
 
 volumes:
-#  pms-mailpit-db:
   database:

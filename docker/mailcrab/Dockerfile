@@ -13,7 +13,9 @@ RUN     yes | apt-get install nano \
 
 # Need to expose internal container port to allow mapping it to some port that will be accesible outside of container
 ## 8025 = gui
-## 1025 = incoming tcp smtp
+## 1025 = incoming smtp
 EXPOSE 8025 1025
 
-RUN wget https://raw.githubusercontent.com/axllent/mailpit/develop/install.sh && chmod +x ./install.sh && sh ./install.sh;
+RUN    wget https://github.com/tweedegolf/mailcrab/releases/download/v1.5.0/mailcrab-linux-armv7-gnu-v1.5.0 \
+    && chmod +x ./mailcrab-linux-armv7-gnu-v1.5.0  \
+    && mv mailcrab-linux-armv7-gnu-v1.5.0 /usr/bin/mailcrab;

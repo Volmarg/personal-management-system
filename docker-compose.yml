@@ -49,9 +49,9 @@ services:
     ports:
       - 8081:8080
 
-  pms-mailpit:
-    container_name: pms-mailpit
-    hostname: pms-mailpit
+  pms-mail:
+    container_name: pms-mail
+    hostname: pms-mail
     restart: always
     tty: true
     command: >
