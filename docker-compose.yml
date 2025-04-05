@@ -29,8 +29,10 @@ services:
     build: ./docker/php-fpm
     container_name: pms-php-fpm
     hostname: pms-php-fpm
-    # Executing original entrypoint, else php won't work, then executing my entrypoint and finally run the php-fpm thus also keep container alive
-    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && ./docker/php-fpm/entrypoint.bash && php-fpm"
+    # Executing original entrypoint, else php won't work,
+    # then starting php-fpm, else my entrypoint won't work,
+    # then executing my entrypoint and finally running nano to keep container alive,
+    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && php-fpm -D && ./docker/php-fpm/entrypoint.bash && nano /tmp/keep"
     working_dir: /application
     restart: always
     tty: true
