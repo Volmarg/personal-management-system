@@ -24,6 +24,9 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 
 COPY fpm-pool.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 COPY php.ini /usr/local/etc/php/conf.d/php.ini
+COPY crontab/pms /etc/cron.d/pms
+
+RUN chown root:root /etc/cron.d/pms && chmod 644 /etc/cron.d/pms
 
 RUN pecl install apcu
 
@@ -35,4 +38,4 @@ CMD ["php-fpm"]
 
 EXPOSE 9000
 
-RUN apt-get install -y nano less;
+RUN apt-get install -y nano less cron;

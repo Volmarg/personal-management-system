@@ -96,6 +96,8 @@ function generateJwtKeyPair() {
   $BIN_CONSOLE_PATH lexik:jwt:generate-keypair --skip-if-exists;
 }
 
+service cron start;
+
 # Break execution if any step crashes
 set -e;
 
