@@ -38,7 +38,6 @@ services:
     tty: true
     depends_on:
       - pms-database-mariadb
-      - pms-nginx
     volumes:
       - .:/application
       - /backup/pms:/backup/pms

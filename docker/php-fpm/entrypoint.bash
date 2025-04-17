@@ -24,8 +24,9 @@ function trim() {
 function getEnvValue() {
   # cat - get .env content
   # grep - get line with given key
+  # head -1 - to get only first matching result (issue with multiple vars sharing same name part)
   # sed - get only the content after =
-  MATCH=$(cat .env | grep -iP "${1}[ ]?=[ ]?(.*)" | sed s/.*=//);
+  MATCH=$(cat .env | grep -iP "${1}[ ]?=[ ]?(.*)" | head -1 | sed s/.*=//);
   echo $(trim "$MATCH");
 }
 
@@ -40,19 +41,19 @@ function createDirs() {
   MINIATURES_UPLOAD_DIR=$(getEnvValue "MINIATURES_UPLOAD_DIR");
   PUBLIC_ROOT_DIR=$(getEnvValue "PUBLIC_ROOT_DIR");
 
-  mkdir -p "$UPLOAD_DIR";
-  mkdir -p "$IMAGES_UPLOAD_DIR";
-  mkdir -p "$FILES_UPLOAD_DIR";
-  mkdir -p "$VIDEOS_UPLOAD_DIR";
-  mkdir -p "$MINIATURES_UPLOAD_DIR";
   mkdir -p "$PUBLIC_ROOT_DIR";
+  mkdir -p "$PUBLIC_ROOT_DIR/$UPLOAD_DIR/PROFILE_IMAGE";
+  mkdir -p "$PUBLIC_ROOT_DIR/$IMAGES_UPLOAD_DIR";
+  mkdir -p "$PUBLIC_ROOT_DIR/$FILES_UPLOAD_DIR";
+  mkdir -p "$PUBLIC_ROOT_DIR/$VIDEOS_UPLOAD_DIR";
+  mkdir -p "$PUBLIC_ROOT_DIR/$MINIATURES_UPLOAD_DIR";
 
-  chown www-data:www-data "$UPLOAD_DIR" -R;
-  chown www-data:www-data "$IMAGES_UPLOAD_DIR" -R;
-  chown www-data:www-data "$FILES_UPLOAD_DIR" -R;
-  chown www-data:www-data "$VIDEOS_UPLOAD_DIR" -R;
-  chown www-data:www-data "$MINIATURES_UPLOAD_DIR" -R;
   chown www-data:www-data "$PUBLIC_ROOT_DIR" -R;
+  chown www-data:www-data "$PUBLIC_ROOT_DIR/$UPLOAD_DIR/PROFILE_IMAGE" -R;
+  chown www-data:www-data "$PUBLIC_ROOT_DIR/$IMAGES_UPLOAD_DIR" -R;
+  chown www-data:www-data "$PUBLIC_ROOT_DIR/$FILES_UPLOAD_DIR" -R;
+  chown www-data:www-data "$PUBLIC_ROOT_DIR/$VIDEOS_UPLOAD_DIR" -R;
+  chown www-data:www-data "$PUBLIC_ROOT_DIR/$MINIATURES_UPLOAD_DIR" -R;
 }
 
 # Generates new encryption key and returns it

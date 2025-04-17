@@ -28,7 +28,9 @@ COPY crontab/pms /etc/cron.d/pms
 
 RUN chown root:root /etc/cron.d/pms && chmod 644 /etc/cron.d/pms
 
-RUN pecl install apcu
+RUN    apt-get update \
+    && apt-get -y install gcc g++ make autoconf libc-dev pkg-config \
+    && yes '' | pecl install apcu
 
 RUN pear config-set php_ini /application/docker/php-fpm/php.ini
 
