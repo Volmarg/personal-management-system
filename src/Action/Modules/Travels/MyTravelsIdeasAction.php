@@ -110,7 +110,7 @@ class MyTravelsIdeasAction extends AbstractController {
         $location  = ArrayHandler::get($dataArray, 'location');
         $country   = ArrayHandler::get($dataArray, 'country');
         $imageUrl  = ArrayHandler::get($dataArray, 'imageUrl');
-        $mapUrl    = ArrayHandler::get($dataArray, 'mapUrl');
+        $mapUrl    = ArrayHandler::get($dataArray, 'mapUrl', true, '');
         $category  = ArrayHandler::get($dataArray, 'category');
 
         $idea->setLocation($location);
