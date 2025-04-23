@@ -105,7 +105,7 @@ class GroupAction extends AbstractController
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $name      = ArrayHandler::get($dataArray, 'name');
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $color     = ArrayHandler::get($dataArray, 'color', true, 'BFDBFE');
 
         $entity = $this->em->getRepository(MyContactGroup::class)->getOneByName($name);

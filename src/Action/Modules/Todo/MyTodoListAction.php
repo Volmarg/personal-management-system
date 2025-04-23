@@ -123,7 +123,7 @@ class MyTodoListAction extends AbstractController {
         $dataArray       = RequestService::tryFromJsonBody($request);
         $moduleId        = ArrayHandler::get($dataArray, 'moduleId', true);
         $recordId        = ArrayHandler::get($dataArray, 'recordId', true);
-        $name            = ArrayHandler::get($dataArray, 'name');
+        $name            = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $description     = ArrayHandler::get($dataArray, 'description');
         $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
 

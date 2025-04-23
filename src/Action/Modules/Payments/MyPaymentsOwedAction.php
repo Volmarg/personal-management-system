@@ -110,11 +110,11 @@ class MyPaymentsOwedAction extends AbstractController
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $target      = ArrayHandler::get($dataArray, 'target');
-        $information = ArrayHandler::get($dataArray, 'information');
-        $dateString  = ArrayHandler::get($dataArray, 'date');
-        $amount      = ArrayHandler::get($dataArray, 'amount');
-        $currency    = ArrayHandler::get($dataArray, 'currency');
+        $target      = ArrayHandler::get($dataArray, 'target', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $amount      = ArrayHandler::get($dataArray, 'amount', allowEmpty: false);
+        $currency    = ArrayHandler::get($dataArray, 'currency', allowEmpty: false);
         $owedByMe    = ArrayHandler::get($dataArray, 'owedByMe');
 
         $owedEntry->setDate(new DateTime($dateString));

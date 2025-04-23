@@ -110,10 +110,10 @@ class MyPaymentsIncomeAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $dateString  = ArrayHandler::get($dataArray, 'date');
-        $amount      = ArrayHandler::get($dataArray, 'amount');
-        $information = ArrayHandler::get($dataArray, 'information');
-        $currency    = ArrayHandler::get($dataArray, 'currency');
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $amount      = ArrayHandler::get($dataArray, 'amount', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
+        $currency    = ArrayHandler::get($dataArray, 'currency', allowEmpty: false);
 
         $income->setDate(new DateTime($dateString));
         $income->setInformation($information);

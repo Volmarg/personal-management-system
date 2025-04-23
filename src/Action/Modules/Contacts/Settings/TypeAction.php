@@ -112,8 +112,8 @@ class TypeAction extends AbstractController
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $name      = ArrayHandler::get($dataArray, 'name');
-        $imagePath = ArrayHandler::get($dataArray, 'imagePath');
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $imagePath = ArrayHandler::get($dataArray, 'imagePath', allowEmpty: false);
 
         // only allow saving already existing entity with unchanged name
         $existingEntity = $this->typeController->getOneByName($name);

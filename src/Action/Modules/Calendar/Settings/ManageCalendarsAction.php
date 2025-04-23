@@ -116,8 +116,8 @@ class ManageCalendarsAction extends AbstractController
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $name      = ArrayHandler::get($dataArray, 'name');
-        $color     = ArrayHandler::get($dataArray, 'color');
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $color     = ArrayHandler::get($dataArray, 'color', allowEmpty: false);
 
         $entity = $this->em->getRepository(MyScheduleCalendar::class)->findOneBy(['name' => $name]);
         // only allow saving already existing entity with unchanged name

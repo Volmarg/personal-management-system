@@ -107,11 +107,11 @@ class MyTravelsIdeasAction extends AbstractController {
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $location  = ArrayHandler::get($dataArray, 'location');
-        $country   = ArrayHandler::get($dataArray, 'country');
-        $imageUrl  = ArrayHandler::get($dataArray, 'imageUrl');
+        $location  = ArrayHandler::get($dataArray, 'location', allowEmpty: false);
+        $country   = ArrayHandler::get($dataArray, 'country', allowEmpty: false);
+        $imageUrl  = ArrayHandler::get($dataArray, 'imageUrl', allowEmpty: false);
         $mapUrl    = ArrayHandler::get($dataArray, 'mapUrl', true, '');
-        $category  = ArrayHandler::get($dataArray, 'category');
+        $category  = ArrayHandler::get($dataArray, 'category', allowEmpty: false);
 
         $idea->setLocation($location);
         $idea->setCountry($country);

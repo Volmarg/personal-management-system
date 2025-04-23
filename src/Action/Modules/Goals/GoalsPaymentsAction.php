@@ -102,12 +102,12 @@ class GoalsPaymentsAction extends AbstractController {
         }
 
         $dataArray       = RequestService::tryFromJsonBody($request);
-        $name            = ArrayHandler::get($dataArray, 'name');
-        $goal            = ArrayHandler::get($dataArray, 'goal');
-        $collected       = ArrayHandler::get($dataArray, 'collected');
-        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
-        $startString     = ArrayHandler::get($dataArray, 'start');
-        $endString       = ArrayHandler::get($dataArray, 'end');
+        $name            = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $goal            = ArrayHandler::get($dataArray, 'goal', allowEmpty: false);
+        $collected       = ArrayHandler::get($dataArray, 'collected', allowEmpty: false);
+        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard', allowEmpty: false);
+        $startString     = ArrayHandler::get($dataArray, 'start', allowEmpty: false);
+        $endString       = ArrayHandler::get($dataArray, 'end', allowEmpty: false);
 
         $start = new DateTime($startString);
         $end   = new DateTime($endString);

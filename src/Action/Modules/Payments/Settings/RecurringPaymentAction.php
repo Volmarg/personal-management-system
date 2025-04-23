@@ -106,10 +106,10 @@ class RecurringPaymentAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $dayOfMonth  = ArrayHandler::get($dataArray, 'dayOfMonth');
-        $typeId      = ArrayHandler::get($dataArray, 'typeId');
-        $description = ArrayHandler::get($dataArray, 'description');
-        $amount      = ArrayHandler::get($dataArray, 'amount');
+        $dayOfMonth  = ArrayHandler::get($dataArray, 'dayOfMonth', allowEmpty: false);
+        $typeId      = ArrayHandler::get($dataArray, 'typeId', allowEmpty: false);
+        $description = ArrayHandler::get($dataArray, 'description', allowEmpty: false);
+        $amount      = ArrayHandler::get($dataArray, 'amount', allowEmpty: false);
 
         $type = $this->em->getRepository(MyPaymentsSettings::class)->findOneById($typeId);
         if (is_null($type)) {

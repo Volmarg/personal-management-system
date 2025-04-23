@@ -104,9 +104,9 @@ class MyJobHolidaysPoolAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $year        = ArrayHandler::get($dataArray, 'year');
-        $days        = ArrayHandler::get($dataArray, 'days');
-        $companyName = ArrayHandler::get($dataArray, 'companyName');
+        $year        = ArrayHandler::get($dataArray, 'year', allowEmpty: false);
+        $days        = ArrayHandler::get($dataArray, 'days', allowEmpty: false);
+        $companyName = ArrayHandler::get($dataArray, 'companyName', allowEmpty: false);
 
         $holidayPool->setYear($year);
         $holidayPool->setDaysInPool($days);

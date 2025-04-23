@@ -100,7 +100,7 @@ class PaymentTypeAction extends AbstractController {
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $name      = ArrayHandler::get($dataArray, 'name');
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
         $setting->setValue($name);
 

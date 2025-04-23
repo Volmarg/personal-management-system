@@ -109,8 +109,8 @@ class StorageFolderAction extends AbstractController
     public function createFolder(Request $request): JsonResponse
     {
         $dataArray     = RequestService::tryFromJsonBody($request);
-        $parentDirPath = ArrayHandler::get($dataArray, 'parentDir');
-        $newDirName    = ArrayHandler::get($dataArray, 'newDirName');
+        $parentDirPath = ArrayHandler::get($dataArray, 'parentDir', allowEmpty: false);
+        $newDirName    = ArrayHandler::get($dataArray, 'newDirName', allowEmpty: false);
 
         $this->storageService->ensureStorageManipulation($parentDirPath);
         PathService::validatePathSafety($newDirName);

@@ -91,10 +91,10 @@ class SchedulesAction extends AbstractController
         $category   = ArrayHandler::get($dataArray, 'category');
         $end        = ArrayHandler::get($dataArray, 'end');
         $start      = ArrayHandler::get($dataArray, 'start');
-        $title      = ArrayHandler::get($dataArray, 'title');
+        $title      = ArrayHandler::get($dataArray, 'title', allowEmpty: false);
         $location   = ArrayHandler::get($dataArray, 'location');
         $isAllDay   = ArrayHandler::get($dataArray, 'isAllDay');
-        $calendarId = ArrayHandler::get($dataArray, 'calendarId');
+        $calendarId = ArrayHandler::get($dataArray, 'calendarId', allowEmpty: false);
         $reminders  = ArrayHandler::get($dataArray, 'reminders', true, ''); // can happen if all reminders are removed in front or none is being sent
 
         $calendar = $this->em->find(MyScheduleCalendar::class, $calendarId);

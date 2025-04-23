@@ -39,9 +39,9 @@ class StorageFileAction extends AbstractController
     public function update(Request $request): JsonResponse
     {
         $dataArray    = RequestService::tryFromJsonBody($request);
-        $currFileName = ArrayHandler::get($dataArray, 'currFileName');
-        $newFileName  = ArrayHandler::get($dataArray, 'newFileName');
-        $dirPath      = ArrayHandler::get($dataArray, 'dirPath');
+        $currFileName = ArrayHandler::get($dataArray, 'currFileName', allowEmpty: false);
+        $newFileName  = ArrayHandler::get($dataArray, 'newFileName', allowEmpty: false);
+        $dirPath      = ArrayHandler::get($dataArray, 'dirPath', allowEmpty: false);
         $tags         = ArrayHandler::get($dataArray, 'tags');
 
         $oldPath = $dirPath . DIRECTORY_SEPARATOR . $currFileName;
@@ -119,9 +119,9 @@ class StorageFileAction extends AbstractController
     public function moveFiles(Request $request): JsonResponse
     {
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $currDirPath = ArrayHandler::get($dataArray, 'currDirPath');
-        $newDirPath  = ArrayHandler::get($dataArray, 'newDirPath');
-        $filesNames  = ArrayHandler::get($dataArray, 'fileNames');
+        $currDirPath = ArrayHandler::get($dataArray, 'currDirPath', allowEmpty: false);
+        $newDirPath  = ArrayHandler::get($dataArray, 'newDirPath', allowEmpty: false);
+        $filesNames  = ArrayHandler::get($dataArray, 'fileNames', allowEmpty: false);
 
         $this->storageService->ensureStorageManipulation($currDirPath);
         $this->storageService->ensureStorageManipulation($newDirPath);

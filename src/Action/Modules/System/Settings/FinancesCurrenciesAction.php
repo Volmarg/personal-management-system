@@ -119,10 +119,10 @@ class FinancesCurrenciesAction extends AbstractController {
     {
         $dataArray  = RequestService::tryFromJsonBody($request);
         $isDefault  = ArrayHandler::get($dataArray, 'isDefault');
-        $multiplier = ArrayHandler::get($dataArray, 'multiplier');
-        $name       = ArrayHandler::get($dataArray, 'name');
+        $multiplier = ArrayHandler::get($dataArray, 'multiplier', allowEmpty: false);
+        $name       = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $oldName    = ArrayHandler::get($dataArray, 'oldName');
-        $symbol     = ArrayHandler::get($dataArray, 'symbol');
+        $symbol     = ArrayHandler::get($dataArray, 'symbol', allowEmpty: false);
 
         $requestDto = new SettingsCurrencyDTO();
         $requestDto->setName($name);

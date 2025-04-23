@@ -111,9 +111,9 @@ class AchievementAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $name        = ArrayHandler::get($dataArray, 'name');
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $description = ArrayHandler::get($dataArray, 'description');
-        $type        = ArrayHandler::get($dataArray, 'type');
+        $type        = ArrayHandler::get($dataArray, 'type', allowEmpty: false);
 
         $achievement->setName($name);
         $achievement->setDescription($description);

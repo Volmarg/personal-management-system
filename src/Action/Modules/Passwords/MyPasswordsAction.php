@@ -109,11 +109,11 @@ class MyPasswordsAction extends AbstractController {
         }
 
         $dataArray      = RequestService::tryFromJsonBody($request);
-        $login          = ArrayHandler::get($dataArray, 'login');
+        $login          = ArrayHandler::get($dataArray, 'login', allowEmpty: false);
         $url            = ArrayHandler::get($dataArray, 'url');
-        $description    = ArrayHandler::get($dataArray, 'description');
-        $groupId        = ArrayHandler::get($dataArray, 'groupId');
-        $passwordString = ArrayHandler::get($dataArray, 'password');
+        $description    = ArrayHandler::get($dataArray, 'description', allowEmpty: false);
+        $groupId        = ArrayHandler::get($dataArray, 'groupId', allowEmpty: false);
+        $passwordString = ArrayHandler::get($dataArray, 'password', allowEmpty: false);
 
         $groupEntity = $this->em->find(MyPasswordsGroups::class, $groupId);
         if (is_null($groupEntity)) {

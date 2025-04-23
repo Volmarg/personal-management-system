@@ -115,9 +115,9 @@ class ContactsAction extends AbstractController
 
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $name        = ArrayHandler::get($dataArray, 'name');
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $description = ArrayHandler::get($dataArray, 'description');
-        $groupId     = ArrayHandler::get($dataArray, 'groupId');
+        $groupId     = ArrayHandler::get($dataArray, 'groupId', allowEmpty: false);
         $imagePath   = ArrayHandler::get($dataArray, 'imagePath');
 
         $group = $this->em->find(MyContactGroup::class, $groupId);

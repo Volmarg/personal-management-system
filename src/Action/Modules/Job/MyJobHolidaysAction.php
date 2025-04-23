@@ -106,9 +106,9 @@ class MyJobHolidaysAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $year        = ArrayHandler::get($dataArray, 'year');
-        $days        = ArrayHandler::get($dataArray, 'daysSpent');
-        $information = ArrayHandler::get($dataArray, 'information');
+        $year        = ArrayHandler::get($dataArray, 'year', allowEmpty: false);
+        $days        = ArrayHandler::get($dataArray, 'daysSpent', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
 
         $holidayEntry->setYear($year);
         $holidayEntry->setDaysSpent($days);

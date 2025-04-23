@@ -132,7 +132,7 @@ class MyNotesCategoriesAction extends AbstractController {
 
         $dataArray = RequestService::tryFromJsonBody($request);
         $parentId  = ArrayHandler::get($dataArray, 'parentId', true);
-        $name      = ArrayHandler::get($dataArray, 'name');
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
         // duped child names not allowed
         $childNameExists = $this->categoriesController->hasCategoryChildWithThisName($name, $parentId);

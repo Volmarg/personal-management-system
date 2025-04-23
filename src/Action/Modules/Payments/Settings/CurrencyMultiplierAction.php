@@ -60,7 +60,7 @@ class CurrencyMultiplierAction extends AbstractController {
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $value     = ArrayHandler::get($dataArray, 'currencyMultiplier');
+        $value     = ArrayHandler::get($dataArray, 'currencyMultiplier', allowEmpty: false);
 
         $setting->setValue($value);
         $setting->setDeleted(false);

@@ -50,7 +50,7 @@ class BaseDataAction extends AbstractController
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $username  = ArrayHandler::get($dataArray, 'username');
+        $username  = ArrayHandler::get($dataArray, 'username', allowEmpty: false);
 
         $user = $this->jwtAuthenticationService->getUserFromRequest();
         $user->setUsername($username);

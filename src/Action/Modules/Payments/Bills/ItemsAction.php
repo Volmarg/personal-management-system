@@ -83,10 +83,10 @@ class ItemsAction extends AbstractController {
         }
 
         $dataArray  = RequestService::tryFromJsonBody($request);
-        $dateString = ArrayHandler::get($dataArray, 'date');
-        $amount     = ArrayHandler::get($dataArray, 'amount');
-        $billId     = ArrayHandler::get($dataArray, 'billId');
-        $name       = ArrayHandler::get($dataArray, 'name');
+        $dateString = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $amount     = ArrayHandler::get($dataArray, 'amount', allowEmpty: false);
+        $billId     = ArrayHandler::get($dataArray, 'billId', allowEmpty: false);
+        $name       = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
         $bill = $this->em->find(MyPaymentsBills::class, $billId);
         if (is_null($bill)) {

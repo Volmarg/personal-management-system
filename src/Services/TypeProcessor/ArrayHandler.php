@@ -2,8 +2,7 @@
 
 namespace App\Services\TypeProcessor;
 
-use Exception;
-use Generator;
+use App\Exception\MissingDataException;
 use LogicException;
 
 /**
@@ -33,21 +32,35 @@ class ArrayHandler
 
     /**
      * Returns value under given key in source array.
-     * Throws exception, ff target key does not exist in the source.
+     * Throws exception, ff target key does not exist in the source, or if
+     * the value is empty.
      *
-     * @throws Exception
+     * @throws MissingDataException
      */
-    public static function get(array $source, string $key, bool $allowDefault = false, mixed $default = null): mixed
+    public static function get(
+        array  $source,
+        string $key,
+        bool   $allowDefault = false,
+        mixed  $default = null,
+        bool   $allowEmpty = true
+    ): mixed
     {
         if (!array_key_exists($key, $source)) {
             if ($allowDefault) {
                 return $default;
             }
 
-            throw new Exception("Key {$key} not found in the array");
+            throw new MissingDataException("Key `{$key}` is missing");
         }
 
-        return $source[$key];
+        $value = $source[$key];
+        if (!$allowEmpty && empty($value)) {
+            $normalisedKey = str_replace("Id", "", $key); // for keys such as TypeId etc.
+            $normalisedKey = TextHandler::toHumanFriendly($normalisedKey);
+            throw new MissingDataException('"' . ucfirst($normalisedKey) . '"' . " field is empty");
+        }
+
+        return $value;
     }
 
     /**

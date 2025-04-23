@@ -109,10 +109,10 @@ class MyPaymentsMonthlyAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $dateString  = ArrayHandler::get($dataArray, 'date');
-        $description = ArrayHandler::get($dataArray, 'description');
-        $money       = ArrayHandler::get($dataArray, 'money');
-        $typeId      = ArrayHandler::get($dataArray, 'typeId');
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $description = ArrayHandler::get($dataArray, 'description', allowEmpty: false);
+        $money       = ArrayHandler::get($dataArray, 'money', allowEmpty: false);
+        $typeId      = ArrayHandler::get($dataArray, 'typeId', allowEmpty: false);
 
         $type = $this->em->getRepository(MyPaymentsSettings::class)->findPaymentType($typeId);
         if (!$type) {

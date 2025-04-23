@@ -113,12 +113,12 @@ class MyPaymentsProductsAction extends AbstractController {
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $name        = ArrayHandler::get($dataArray, 'name');
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $market      = ArrayHandler::get($dataArray, 'market');
         $products    = ArrayHandler::get($dataArray, 'products');
-        $information = ArrayHandler::get($dataArray, 'information');
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
         $rejected    = ArrayHandler::get($dataArray, 'rejected');
-        $price       = ArrayHandler::get($dataArray, 'price');
+        $price       = ArrayHandler::get($dataArray, 'price', allowEmpty: false);
 
         $product->setName($name);
         $product->setMarket($market);

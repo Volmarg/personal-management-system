@@ -102,8 +102,8 @@ class MyIssuesAction extends AbstractController
         }
 
         $dataArray      = RequestService::tryFromJsonBody($request);
-        $name           = ArrayHandler::get($dataArray, 'name');
-        $information    = ArrayHandler::get($dataArray, 'information');
+        $name           = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $information    = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
         $isForDashboard = ArrayHandler::get($dataArray, 'isForDashboard');
 
         $issue->setName($name);

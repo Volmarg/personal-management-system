@@ -105,7 +105,7 @@ class MyPasswordsGroupsAction extends AbstractController {
         }
 
         $dataArray = RequestService::tryFromJsonBody($request);
-        $name      = ArrayHandler::get($dataArray, 'name');
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
         if (!is_null($this->passwordsGroupsController->findOneByName($name))) {
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.passwords.groups.createdUpdate.nameExist'));

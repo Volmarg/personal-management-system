@@ -112,11 +112,11 @@ class MyJobAfterhoursAction extends AbstractController
         }
 
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $type        = ArrayHandler::get($dataArray, 'type');
-        $minutes     = ArrayHandler::get($dataArray, 'minutes');
+        $type        = ArrayHandler::get($dataArray, 'type', allowEmpty: false);
+        $minutes     = ArrayHandler::get($dataArray, 'minutes', allowEmpty: false);
         $goal        = ArrayHandler::get($dataArray, 'goal', true);
-        $description = ArrayHandler::get($dataArray, 'description');
-        $dateString  = ArrayHandler::get($dataArray, 'date');
+        $description = ArrayHandler::get($dataArray, 'description', allowEmpty: false);
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
 
         $afterhour->setType($type);
         $afterhour->setMinutes($minutes);

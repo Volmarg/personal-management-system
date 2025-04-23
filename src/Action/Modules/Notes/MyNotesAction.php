@@ -164,8 +164,8 @@ class MyNotesAction extends AbstractController {
         }
 
         $dataArray  = RequestService::tryFromJsonBody($request);
-        $title      = ArrayHandler::get($dataArray, 'title');
-        $body       = ArrayHandler::get($dataArray, 'body');
+        $title      = ArrayHandler::get($dataArray, 'title', allowEmpty: false);
+        $body       = ArrayHandler::get($dataArray, 'body', allowEmpty: false);
         $categoryId = ArrayHandler::get($dataArray, 'category');
 
         $category = $this->em->find(MyNotesCategories::class, $categoryId);

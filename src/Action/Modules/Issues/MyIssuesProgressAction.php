@@ -35,8 +35,8 @@ class MyIssuesProgressAction extends AbstractController
     public function new(MyIssue $issue, Request $request): JsonResponse
     {
         $dataArray   = RequestService::tryFromJsonBody($request);
-        $dateString  = ArrayHandler::get($dataArray, 'date');
-        $information = ArrayHandler::get($dataArray, 'information');
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
 
         $date = new DateTime($dateString);
 

@@ -129,11 +129,11 @@ class BillsAction extends AbstractController {
         }
 
         $dataArray       = RequestService::tryFromJsonBody($request);
-        $startDateString = ArrayHandler::get($dataArray, 'startDate');
-        $endDateString   = ArrayHandler::get($dataArray, 'endDate');
-        $name            = ArrayHandler::get($dataArray, 'name');
-        $information     = ArrayHandler::get($dataArray, 'information');
-        $plannedAmount   = ArrayHandler::get($dataArray, 'plannedAmount');
+        $startDateString = ArrayHandler::get($dataArray, 'startDate', allowEmpty: false);
+        $endDateString   = ArrayHandler::get($dataArray, 'endDate', allowEmpty: false);
+        $name            = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $information     = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
+        $plannedAmount   = ArrayHandler::get($dataArray, 'plannedAmount', allowEmpty: false);
 
         $bill->setStartDate(new DateTime($startDateString));
         $bill->setEndDate(new DateTime($endDateString));

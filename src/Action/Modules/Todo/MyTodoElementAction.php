@@ -91,7 +91,7 @@ class MyTodoElementAction extends AbstractController {
 
         $dataArray   = RequestService::tryFromJsonBody($request);
         $isCompleted = ArrayHandler::get($dataArray, 'isCompleted', true, false);
-        $name        = ArrayHandler::get($dataArray, 'name');
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
         $element->setName($name);
         $element->setMyTodo($todo);

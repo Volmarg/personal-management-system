@@ -44,9 +44,9 @@ class ContactTypesAction extends AbstractController
     public function new(Request $request): JsonResponse
     {
         $dataArray = RequestService::tryFromJsonBody($request);
-        $value     = ArrayHandler::get($dataArray, 'value');
-        $typeId    = ArrayHandler::get($dataArray, 'typeId');
-        $contactId = ArrayHandler::get($dataArray, 'contactId');
+        $value     = ArrayHandler::get($dataArray, 'value', allowEmpty: false);
+        $typeId    = ArrayHandler::get($dataArray, 'typeId', allowEmpty: false);
+        $contactId = ArrayHandler::get($dataArray, 'contactId', allowEmpty: false);
 
         $contact    = $this->findContact($contactId);
         $typeEntity = $this->findType($typeId);

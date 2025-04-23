@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Exception;
 
+use App\Exception\MissingDataException;
 use App\Response\Base\BaseResponse;
 use App\Services\Core\Logger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -42,10 +43,7 @@ class ExceptionListener implements EventSubscriberInterface
     {
         $exception = $event->getThrowable();
 
-        if (
-                $exception instanceof NotFoundHttpException
-            // ||  $exception instanceof PublicFolderAccessDeniedException todo at some point
-        ) {
+        if ($exception instanceof NotFoundHttpException || ($exception instanceof MissingDataException && $exception->isFront())) {
             $msg      = trim(preg_replace("#[\n ]{1,}#", " ", $exception->getMessage()));
             $response = BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         } else {
