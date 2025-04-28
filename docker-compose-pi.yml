@@ -41,6 +41,7 @@ services:
     volumes:
       - .:/application
       - /backup/pms:/backup/pms
+      - ./docker/php-fpm/crontab/pms-pi:/etc/cron.d/pms-pi
     # this is needed to let the docker access the HOST data, for example MYSQL
     extra_hosts:
       - "host.docker.internal:host-gateway"
