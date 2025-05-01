@@ -72,7 +72,7 @@
 
 <h2>How to install/documentation</h2>
 
-Check the official documentation: todo
+Check the official documentation: [here](https://volmarg.github.io/docs/getting-started/installation.html)
 
 <h2>Future development plans</h2>
 
@@ -94,8 +94,8 @@ Check the official documentation: todo
 
 <h2>Tech / frameworks / solutions</h2>
 
-Check the official documentation: todo
+Check the official documentation: [here](https://volmarg.github.io/docs/technical/tech-stack.html)
 
 <h2>Contribution / special thanks</h2>
 
-Go here:  todo
+Go here:  [here](https://volmarg.github.io/docs/other/contributors.html)
