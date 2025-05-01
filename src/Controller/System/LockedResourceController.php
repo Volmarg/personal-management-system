@@ -5,12 +5,13 @@ namespace App\Controller\System;
 use App\Controller\Core\Application;
 use App\Controller\Page\SettingsLockModuleController;
 use App\Entity\System\LockedResource;
-use App\Entity\User;
-use App\Services\Session\UserRolesSessionService;
+use App\Services\Security\JwtAuthenticationService;
 use Doctrine\DBAL\Statement;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class LockedResourceController extends AbstractController {
@@ -25,7 +26,12 @@ class LockedResourceController extends AbstractController {
      */
     private SettingsLockModuleController $settingsLockModuleController;
 
-    public function __construct(Application $app, SettingsLockModuleController $settingsLockModuleController) {
+    public function __construct(
+        Application                               $app,
+        SettingsLockModuleController              $settingsLockModuleController,
+        private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly EntityManagerInterface   $em
+    ) {
         $this->app                          = $app;
         $this->settingsLockModuleController = $settingsLockModuleController;
     }
@@ -87,11 +93,43 @@ class LockedResourceController extends AbstractController {
     }
 
     /**
+     * @description either create or remove the lock
+     *
+     * @param string $record
+     * @param string $type
+     * @param string $target
+     *
      * @return bool
+     */
+    public function toggleLock(string $record, string $type, string $target): bool
+    {
+        $entity = $this->em->getRepository(LockedResource::class)->findOneEntity($record, $type, $target);
+        if (!empty($entity)) {
+            $this->em->remove($entity);
+            $this->em->flush();
+
+            return false;
+        }
+
+        $lockedResource = new LockedResource();
+        $lockedResource->setRecord($record);
+        $lockedResource->setType($type);
+        $lockedResource->setTarget($target);
+
+        $this->em->persist($lockedResource);
+        $this->em->flush();
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     *
+     * @throws JWTDecodeFailureException
      */
     public function isSystemLocked(): bool
     {
-        return !UserRolesSessionService::hasRole(User::ROLE_PERMISSION_SEE_LOCKED_RESOURCES);
+        return $this->jwtAuthenticationService->isSystemLocked();
     }
 
     /**
@@ -116,7 +154,7 @@ class LockedResourceController extends AbstractController {
             ||  ( $isModuleLocked   && $isSystemLocked )
         ){
             if($showFlashMessage){
-                $message = $this->app->translator->translate("responses.lockResource.youAreNotAllowedToSeeThisResource");
+                $message = $this->app->translator->translate("security.lockResource.youAreNotAllowedToSeeThisResource");
                 $this->app->addDangerFlash($message);
             }
             return false;

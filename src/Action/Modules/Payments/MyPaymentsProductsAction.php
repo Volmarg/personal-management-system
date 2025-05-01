@@ -5,183 +5,132 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Payments\MyPaymentsProductsController;
+use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class MyPaymentsProductsAction
- * @package App\Action\Modules\Payments
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
- * )
- */
+#[Route("/module/payment/product-prices", name: "module.product-prices.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
 class MyPaymentsProductsAction extends AbstractController {
 
-    const PRICE_COLUMN_NAME = 'price';
+    public function __construct(
+        private readonly EntityManagerInterface       $em,
+        private readonly MyPaymentsProductsController $paymentsProductsController,
+        private readonly MyPaymentsSettingsController $paymentsSettingsController
+    ) {
 
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
     }
 
     /**
-     * @Route("/my-payments-products", name="my-payments-products")
      * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function display(Request $request): Response
-    {
-        $this->addFormDataToDB($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getProductsPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-payments-products/remove/", name="my-payments-products-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function remove(Request $request): Response
-    {
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_PAYMENTS_PRODUCTS_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
-
-        $message = $response->getContent();
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @Route("my-payments-products/update/",name="my-payments-products-update")
-     * @param Request $request
+     *
      * @return JsonResponse
-     *
-     * @throws MappingException
-     */
-    public function updateDataInDB(Request $request): JsonResponse
-    {
-        $parameters = $request->request->all();
-        $entityId   = trim($parameters['id']);
-
-        $entity     = $this->controllers->getMyPaymentsProductsController()->findOneById($entityId);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * Todo: check later why is this done this strange way....
-     * @param $columnNames
-     * @return array
-     *
      * @throws Exception
      */
-    private function reorderPriceColumn($columnNames): array
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        $priceKey = array_search(static::PRICE_COLUMN_NAME, $columnNames);
-
-        if (!in_array(static::PRICE_COLUMN_NAME, $columnNames)) {
-            $message = $this->app->translator->translate('exceptions.MyPaymentsProductsController.keyPriceNotFoundInProductsColumnsArray');
-            throw new Exception($message);
-        }
-
-        unset($columnNames[$priceKey]);
-        $columnNames[] = static::PRICE_COLUMN_NAME;
-
-        return $columnNames;
+        return $this->createOrUpdate($request)->toJsonResponse();
     }
 
     /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $entriesData = [];
+        $products    = $this->paymentsProductsController->getAllNotDeleted();
+        $multiplier  = $this->paymentsSettingsController->fetchCurrencyMultiplier();
+        foreach ($products as $product) {
+            $entriesData[] = [
+                'id'                => $product->getId(),
+                'name'              => $product->getName(),
+                'market'            => $product->getMarket(),
+                'products'          => $product->getProducts(),
+                'information'       => $product->getInformation(),
+                'rejected'          => $product->getRejected() ?? false,
+                'price'             => $product->getPrice(),
+                'homeCurrencyPrice' => (!$product->getPrice() || !$multiplier ? null : round($product->getPrice() * $multiplier, 2)),
+            ];
+        }
+
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * @param MyPaymentsProduct $product
+     * @param Request           $request
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
-        $form             = $this->app->forms->paymentsProductsForm();
-        $productsFormView = $form->createView();
-
-        $columnNames = $this->getDoctrine()->getManager()->getClassMetadata(MyPaymentsProduct::class)->getColumnNames();
-        $columnNames = $this->reorderPriceColumn($columnNames);
-        Repositories::removeHelperColumnsFromView($columnNames);
-
-        $productsAllData    = $this->controllers->getMyPaymentsProductsController()->getAllNotDeleted();
-        $currencyMultiplier = $this->controllers->getMyPaymentsSettingsController()->fetchCurrencyMultiplier();
-
-        $templateData = [
-            'column_names'                   => $columnNames,
-            'products_all_data'              => $productsAllData,
-            'products_form_view'             => $productsFormView,
-            'currency_multiplier'            => $currencyMultiplier,
-            'ajax_render'                    => $ajaxRender,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'page_title'                     => $this->getProductsPageTitle(),
-        ];
-
-        return $this->render('modules/my-payments/products.html.twig', $templateData);
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyPaymentsProduct $product, Request $request): JsonResponse
+    {
+        return $this->createOrUpdate($request, $product)->toJsonResponse();
     }
 
     /**
-     * @param $request
+     * @param MyPaymentsProduct $product
+     *
+     * @return JsonResponse
      */
-    private function addFormDataToDB($request) {
-        $productsForm = $this->app->forms->paymentsProductsForm();
-        $productsForm->handleRequest($request);
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyPaymentsProduct $product): JsonResponse
+    {
+        $product->setDeleted(true);
+        $this->em->persist($product);
+        $this->em->flush();
 
-        if ($productsForm->isSubmitted() && $productsForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($productsForm->getData());
-            $em->flush();
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request                $request
+     * @param MyPaymentsProduct|null $product
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyPaymentsProduct $product = null): BaseResponse
+    {
+        if (!$product) {
+            $product = new MyPaymentsProduct();
         }
 
-    }
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $market      = ArrayHandler::get($dataArray, 'market');
+        $products    = ArrayHandler::get($dataArray, 'products');
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
+        $rejected    = ArrayHandler::get($dataArray, 'rejected');
+        $price       = ArrayHandler::get($dataArray, 'price', allowEmpty: false);
 
-    /**
-     * Will return products page title
-     *
-     * @return string
-     */
-    public function getProductsPageTitle(): string
-    {
-        return $this->app->translator->translate('payments.title');
+        $product->setName($name);
+        $product->setMarket($market);
+        $product->setProducts($products);
+        $product->setInformation($information);
+        $product->setRejected($rejected);
+        $product->setPrice($price);
+
+        $this->em->persist($product);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
     }
 
 }

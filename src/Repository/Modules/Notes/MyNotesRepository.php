@@ -78,4 +78,22 @@ class MyNotesRepository extends ServiceEntityRepository {
         return $entities;
     }
 
+    /**
+     * @param string $title
+     *
+     * @return array
+     */
+    public function findByTitle(string $title): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select("n")
+            ->from(MyNotes::class, "n")
+            ->where(
+                $qb->expr()->like("n.Title", ":title")
+            )
+            ->setParameter("title" ,"%{$title}%");
+
+        return $qb->getQuery()->getResult();
+    }
+
 }

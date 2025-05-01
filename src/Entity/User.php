@@ -7,27 +7,36 @@
 
 namespace App\Entity;
 
+use App\Controller\Core\Env;
 use App\Entity\Interfaces\EntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use App\Repository\UserRepository;
+
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"username", "email"}, message="There is already an account with this username and email")
  */
-class User implements UserInterface, EntityInterface {
+class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface {
 
     const PASSWORD_FIELD   = 'password';
     const USERNAME_FIELD   = "username";
     const EMAIL_FIELD      = "email";
-    const ROLE_SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 
-    const ROLE_PERMISSION_SEE_LOCKED_RESOURCES = "ROLE_PERMISSION_SEE_LOCKED_RESOURCES";
+    const ROLE_USER      = "ROLE_USER";
+    const ROLE_DEVELOPER = "ROLE_DEVELOPER";
 
     const DEMO_LOGIN    = "admin";
     const DEMO_PASSWORD = "admin";
+
+    /**
+     * @var bool $getRoleGuaranteeRoleUser
+     */
+    private bool $getRoleGuaranteeRoleUser = true;
 
     /**
      * @ORM\Id
@@ -45,12 +54,12 @@ class User implements UserInterface, EntityInterface {
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected ?string $avatar;
+    protected ?string $avatar = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    protected ?string $nickname;
+    protected ?string $nickname = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -60,7 +69,7 @@ class User implements UserInterface, EntityInterface {
     /**
      * @ORM\Column(type="serialized_json")
      */
-    private array $roles = [];
+    private array $roles = [self::ROLE_USER];
 
     /**
      * @var string $email
@@ -90,7 +99,7 @@ class User implements UserInterface, EntityInterface {
      * @var bool $enabled
      * @ORM\Column(type="boolean")
      */
-    private $enabled = 1;
+    private $enabled = true;
 
     /**
      * @var string|null $salt
@@ -192,8 +201,15 @@ class User implements UserInterface, EntityInterface {
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        return array_unique($roles);
+        if (in_array('ROLE_SUPER_ADMIN', $this->roles) && !in_array(self::ROLE_USER, $this->roles)) {
+            $this->roles[] = self::ROLE_USER;
+        }
+
+        if (Env::isDev()) {
+            $this->roles[] = self::ROLE_DEVELOPER;
+        }
+
+        return array_unique($this->roles);
     }
 
     public function setRoles(array $roles): self
@@ -355,6 +371,30 @@ class User implements UserInterface, EntityInterface {
     public function setSalt(?string $salt): void
     {
         $this->salt = $salt;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGetRoleGuaranteeRoleUser(): bool
+    {
+        return $this->getRoleGuaranteeRoleUser;
+    }
+
+    /**
+     * @param bool $getRoleGuaranteeRoleUser
+     */
+    public function setGetRoleGuaranteeRoleUser(bool $getRoleGuaranteeRoleUser): void
+    {
+        $this->getRoleGuaranteeRoleUser = $getRoleGuaranteeRoleUser;
     }
 
 }

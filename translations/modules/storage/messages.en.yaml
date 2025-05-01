@@ -1,0 +1,48 @@
+module:
+  storage:
+    moveFileOrDir:
+      parentIntoDirNotAllowed: "Cannot move parent dir into it's child"
+      folderWithThisNameAlreadyExist: "Folder with this name already exist under target path"
+      unknownError: "Unknown error"
+      oldPathEqualsNewPath: "Old path is the same as new path - this is not allowed"
+      failedCopySomeFiles: "Could not move some of the files - unknown error. Files:"
+      filesHaveBeenMoved: "Files have been moved"
+      folderHaveBeenMoved: "Folder have been moved"
+      folderCouldNotBeMovedReverted: "Unknown error. Could not move folder - changes were reverted"
+      folderMovedDatabaseChangesFailed: "Folder moving failed, database changes were reverted but folder cannot be moved back"
+      filesHaveBeenCopied: "Files have been copied"
+      filesHaveBeenCopiedButExisted: "Files have been copied, but some already existed, thus current date and time was added to the names."
+      filesListEmpty: "Files list is empty"
+    common:
+      fileNameExistInFolder: "File with this name already exist in this folder."
+      fileDoesNotExist: "This file does not exist"
+      fileUpdateDirPathIsNotFolder: "Expected directory path is not a folder"
+      folderNotWritable: "This folder is not writable"
+      unknownError: "Unknown error"
+      fileHasBeenUpdated: "File has been updated"
+      dirExists: "Directory with this name already exists"
+      dirNotWritable: "This directory is not writable: "
+      dirNameIsEmpty: "Directory name cannot be empty"
+      existingDirPath: "Existing dir path cannot be empty"
+      error: "Error - something went wrong"
+      errorReverted: "Error - something went wrong. Changes were reverted."
+      folderNotExist: "This folder does not exist: "
+    remove:
+      couldNotRemoveSomeFiles: "Some files could not be removed"
+      filesHaveBeenRemoved: "Files have been removed"
+      cannotRemoveStorageBaseDir: "Removing storage base dir is not allowed!"
+      folderHasBeenRemoved: "Folder has been removed"
+    newFolder:
+      success: "New folder has been created"
+    renameFolder:
+      success: "Folder has been renamed"
+    moveOrCopyFolder:
+      cannotMoveBaseDir: "Moving storage base dir is not allowed!"
+    rename:
+      currFileNameIsEmpty: "File current name cannot be empty"
+      newFileNameIsEmpty: "File new name cannot be empty"
+      dirPathIsEmpty: "Directory path cannot be empty"
+    lock:
+      isLocked: "Folder has been locked."
+      isUnlocked: "Folder has been unlocked."
+      parentDirIsLocked: "Parent directory ({{path}}) is locked, therefore current folder remains locked too."

@@ -2,148 +2,121 @@
 
 namespace App\Action\Modules\Shopping;
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
+use App\Annotation\System\ModuleAnnotation;
+use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MyShoppingPlansAction extends AbstractController {
+#[Route("/module/shopping/plans", name: "module.shopping.plans.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_SHOPPING])]
+class MyShoppingPlansAction extends AbstractController
+{
 
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+    ) {
     }
 
     /**
-     * @Route("/my-shopping/plans", name="my-shopping-plans")
      * @param Request $request
-     * @return Response
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function display(Request $request): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        $shoppingPlanForm = $this->app->forms->myShoppingPlanForm();
-        $this->addFormDataToDB($shoppingPlanForm, $request);
+        return $this->createOrUpdate($request)->toJsonResponse();
+    }
 
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
+    /**
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        /** @var MyShoppingPlans[] $allPlans */
+        $allPlans = $this->em->getRepository(MyShoppingPlans::class)->findBy(['deleted' => 0]);
+
+        $entriesData = [];
+        foreach ($allPlans as $plan) {
+            $entriesData[] = [
+                'id'          => $plan->getId(),
+                'information' => $plan->getInformation(),
+                'example'     => $plan->getExample(),
+                'name'        => $plan->getName(),
+            ];
         }
 
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getShoppingPlansPageTitle());
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
 
-        return $ajaxResponse->buildJsonResponse();
+        return $response->toJsonResponse();
     }
 
     /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     */
-    protected function renderTemplate($ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-        $form          = $this->app->forms->myShoppingPlanForm();
-        $plansFormView = $form->createView();
-        $columnsNames  = $this->getDoctrine()->getManager()->getClassMetadata(MyShoppingPlans::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columnsNames);
-
-        $allPlans = $this->app->repositories->myShoppingPlansRepository->findBy(['deleted' => 0]);
-
-        return $this->render('modules/my-shopping/plans.html.twig', [
-            'plans_form_view'                => $plansFormView,
-            'columns_names'                  => $columnsNames,
-            'all_plans'                      => $allPlans,
-            'ajax_render'                    => $ajaxRender,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'page_title'                     => $this->getShoppingPlansPageTitle(),
-        ]);
-    }
-
-    /**
-     * @param $plansForm
-     * @param Request $request
-     */
-    protected function addFormDataToDB($plansForm, Request $request): void {
-        $plansForm->handleRequest($request);
-
-        if ($plansForm->isSubmitted() && $plansForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($plansForm->getData());
-            $em->flush();
-        }
-    }
-
-    /**
-     * @Route("/my-shopping/plans/update/",name="my-shopping-plans-update")
-     * @param Request $request
-     * @return JsonResponse|Response
+     * @param MyShoppingPlans $shoppingPlan
+     * @param Request         $request
      *
-     * @throws MappingException
-     */
-    public function update(Request $request) {
-        $parameters = $request->request->all();
-        $entityId   = trim($parameters['id']);
-
-        $entity     = $this->controllers->getMyShoppingPlansController()->findOneById($entityId);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-shopping/plans/remove/",name="my-shopping-plans-remove")
-     * @param Request $request
-     * @return Response
+     * @return JsonResponse
      * @throws Exception
      */
-    public function remove(Request $request): Response
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyShoppingPlans $shoppingPlan, Request $request): JsonResponse
     {
-        $id = $request->request->get('id');
-
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_SHOPPING_PLANS_REPOSITORY_NAME,
-            $id
-        );
-
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+        return $this->createOrUpdate($request, $shoppingPlan)->toJsonResponse();
     }
 
     /**
-     * Will return shopping plans page title
+     * @param MyShoppingPlans $shoppingPlan
      *
-     * @return string
+     * @return JsonResponse
      */
-    private function getShoppingPlansPageTitle(): string
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyShoppingPlans $shoppingPlan): JsonResponse
     {
-        return $this->app->translator->translate('shopping.title');
+        $shoppingPlan->setDeleted(true);
+        $this->em->persist($shoppingPlan);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request              $request
+     * @param MyShoppingPlans|null $shoppingPlan
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyShoppingPlans $shoppingPlan = null): BaseResponse
+    {
+        $isNew = is_null($shoppingPlan);
+        if ($isNew) {
+            $shoppingPlan = new MyShoppingPlans();
+        }
+
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
+        $example     = ArrayHandler::get($dataArray, 'example');
+
+        $shoppingPlan->setName($name);
+        $shoppingPlan->setInformation($information);
+        $shoppingPlan->setExample($example);
+
+        $this->em->persist($shoppingPlan);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
     }
 
 }

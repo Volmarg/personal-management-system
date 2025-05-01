@@ -4,6 +4,7 @@ namespace App\Repository\Modules\Contacts;
 
 use App\Entity\Modules\Contacts\MyContact;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -45,7 +46,7 @@ class MyContactRepository extends ServiceEntityRepository
             $id                         = $myContact->getId();
             $name                       = $myContact->getName();
             $group                      = $myContact->getGroup();
-            $contacts                   = $myContact->getContacts();
+            $contacts                   = $myContact->getContactTypesDto();
             $description                = $myContact->getDescription();
             $imagePath                  = $myContact->getImagePath();
             $nameBackgroundColor        = $myContact->getNameBackgroundColor();
@@ -81,6 +82,25 @@ class MyContactRepository extends ServiceEntityRepository
      */
     public function findOneById(int $id):?MyContact {
         return $this->findOneBy(['id' => $id]);
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return MyContact|null
+     *
+     * @throws NonUniqueResultException
+     */
+    public function findByUuid(string $uuid): ?MyContact
+    {
+        $qb = $this->_em->createQueryBuilder();
+
+        $qb->select("c")
+            ->from(MyContact::class, "c")
+            ->where("c.contacts LIKE :uuidLike")
+            ->setParameter("uuidLike", "%{$uuid}%");
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     /**

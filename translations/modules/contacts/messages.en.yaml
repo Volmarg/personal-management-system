@@ -1,0 +1,9 @@
+module:
+  contacts:
+    settings:
+      group:
+        save:
+          nameExist: "Group with this name already exists"
+      type:
+        save:
+          nameExist: "Type with this name already exists"

@@ -220,6 +220,6 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
      */
     public function getAllNotDeleted(): array
     {
-        return $this->findBy(['deleted' => 0]);
+        return $this->findBy(['deleted' => 0], ["year" => "DESC"]);
     }
 }

@@ -4,7 +4,9 @@ namespace App\Services\Routing;
 
 use App\Action\System\AppAction;
 use App\Controller\Core\Application;
+use App\Services\Core\Logger;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
@@ -30,6 +32,8 @@ class UrlMatcherService
 
     const ROUTE_PARAM_ENCODED_SUBDIRECTORY_PATH = "encodedSubdirectoryPath";
 
+    const URL_MATCHER_RESULT_ROUTE = "_route";
+
     /**
      * @var Application $app
      */
@@ -45,7 +49,12 @@ class UrlMatcherService
      */
     private UrlGeneratorInterface $urlGenerator;
 
-    public function __construct(UrlMatcherInterface $urlMatcher, Application $app, UrlGeneratorInterface $urlGenerator)
+    public function __construct(
+        UrlMatcherInterface $urlMatcher,
+        Application $app,
+        UrlGeneratorInterface $urlGenerator,
+        private readonly Logger $logger
+    )
     {
         $this->app          = $app;
         $this->urlGenerator = $urlGenerator;
@@ -61,11 +70,19 @@ class UrlMatcherService
     public function getClassAndMethodForCalledUrl(string $url): ?string
     {
         try{
-            $dataArray = $this->urlMatcher->match($url);
+            $normalizedUrl = $url;
+            // if url contains query params then matcher just crashes
+            if (str_contains($url, "?")) {
+                $parts = explode("?", $url);
+                $normalizedUrl = $parts[0];
+            }
+
+            $dataArray = $this->urlMatcher->match($normalizedUrl);
         }catch(Exception $e){
             $this->app->logExceptionWasThrown($e, [
                 "No class with method was found for url", [
                     "url" => $url,
+                    'normalizedUrl' => $normalizedUrl,
                 ]
             ]);
             return null;
@@ -162,6 +179,47 @@ class UrlMatcherService
         }
 
         return false;
+    }
+
+    /**
+     * Will return matching route for called uri
+     *
+     * @param string $uri
+     * @return string|null
+     */
+    public function getRouteForCalledUri(string $uri): ?string
+    {
+        try{
+            $uriWithoutQueryParams = preg_replace("#\?.*#", "", $uri);
+
+            $dataArray = $this->urlMatcher->match($uriWithoutQueryParams);
+            $route     = $dataArray[self::URL_MATCHER_RESULT_ROUTE];
+        } catch (Exception $exc) {
+            /**
+             * This is added because browsers are doing {@see Request::METHOD_OPTIONS} calls by default,
+             * and there is special handling of such requests in this project. Everything works fine but the OPTIONS calls
+             * are running in here and are generating a bunch of useless warns.
+             */
+            $request = Request::createFromGlobals();
+            if ($request->getMethod() !== Request::METHOD_OPTIONS) {
+                $this->logger->getLogger()->warning("No route found for called uri", [
+                    "uri"       => $uri,
+                    "request"   => [
+                        "method" => $request->getMethod(),
+                    ],
+                    'exception' => [
+                        "message" => $exc->getMessage(),
+                        "trace"   => explode("\n", $exc->getTraceAsString()),
+                        "class"   => $exc::class,
+                    ],
+
+                ]);
+            }
+
+            return null;
+        }
+
+        return $route;
     }
 
 }

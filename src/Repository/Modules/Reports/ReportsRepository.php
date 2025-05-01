@@ -152,8 +152,9 @@ class ReportsRepository{
 
         $sql = "
             SELECT 
-            ROUND(SUM(mpm.money), 2) AS amountForType,
-            mps.value                AS type
+            ROUND(SUM(mpm.money), 2)            AS amount,
+            mps.value                      AS type,
+            DATE_FORMAT(mpm.date, '%Y-%m') AS `date`
             
             FROM my_payment_monthly mpm
             
@@ -164,7 +165,8 @@ class ReportsRepository{
             WHERE 1
             AND mpm.deleted = 0
             
-            GROUP BY mpm.type_id
+            GROUP BY mpm.type_id, DATE_FORMAT(mpm.date, '%Y-%m')
+            ORDER BY DATE_FORMAT(mpm.date, '%Y-%m') DESC
         ";
 
         $stmt    = $connection->executeQuery($sql);
@@ -229,21 +231,15 @@ class ReportsRepository{
     }
 
     /**
-     * @param bool $isOwedByMe
-     * @return array
+     * @return MyPaymentsOwed[]
      */
-    public function fetchHistoricalMoneyOwedBy(bool $isOwedByMe = false): array
+    public function fetchHistoricalOwedMoney(): array
     {
         $queryBuilder = $this->em->createQueryBuilder();
         $queryBuilder->select('mpo')
             ->from(MyPaymentsOwed::class, 'mpo')
-            ->where('mpo.deleted = 1');
-
-            if( $isOwedByMe ){
-                $queryBuilder->andWhere('mpo.owedByMe = 1');
-            }else{
-                $queryBuilder->andWhere('mpo.owedByMe = 0');
-            }
+            ->where('mpo.deleted = 1')
+            ->orderBy("mpo.date", "DESC");
 
         $query   = $queryBuilder->getQuery();
         $results = $query->execute();

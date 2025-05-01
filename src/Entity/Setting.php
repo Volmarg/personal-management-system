@@ -10,6 +10,18 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Setting implements EntityInterface
 {
+    public const string DASHBOARD_WIDGET_GOAL_PROGRESS = "goalProgress";
+    public const string DASHBOARD_WIDGET_GOAL_PAYMENTS = "goalPayments";
+    public const string DASHBOARD_WIDGET_ISSUES        = "issues";
+    public const string DASHBOARD_WIDGET_SCHEDULES     = "schedules";
+
+    public const array ALL_DASHBOARD_WIDGETS = [
+        self::DASHBOARD_WIDGET_GOAL_PROGRESS,
+        self::DASHBOARD_WIDGET_GOAL_PAYMENTS,
+        self::DASHBOARD_WIDGET_ISSUES,
+        self::DASHBOARD_WIDGET_SCHEDULES,
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

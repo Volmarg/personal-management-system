@@ -44,3 +44,6 @@ personal-management-system-dev_old*
 #Password hasher secret key
 config/services.yaml
 /data/
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/
+###< lexik/jwt-authentication-bundle ###

@@ -43,11 +43,16 @@ class MyPaymentsSettingsController extends AbstractController {
     }
 
     /**
-     * @return string|null
+     * @return float|null
      */
-    public function fetchCurrencyMultiplier(): ?string
+    public function fetchCurrencyMultiplier(): ?float
     {
-        return $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
+        $multiplier = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
+        if (is_null($multiplier)) {
+            return null;
+        }
+
+        return (float)$multiplier;
     }
 
     /**

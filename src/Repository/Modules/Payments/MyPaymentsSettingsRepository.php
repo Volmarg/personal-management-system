@@ -27,10 +27,27 @@ class MyPaymentsSettingsRepository extends ServiceEntityRepository {
         return $this->findBy(['name' => 'currency_multiplier']);
     }
 
-    public function getAllPaymentsTypes() {
+    /**
+     * @return MyPaymentsSettings[]
+     */
+    public function getAllPaymentsTypes(): array {
         return $this->findBy([
             'name'    => 'type',
             'deleted' => 0
+        ]);
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return MyPaymentsSettings|null
+     */
+    public function findPaymentType(int $id): ?MyPaymentsSettings
+    {
+        return $this->findOneBy([
+            'id'      => $id,
+            'name'    => 'type',
+            'deleted' => 0,
         ]);
     }
 

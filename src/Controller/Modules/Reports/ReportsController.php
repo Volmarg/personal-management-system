@@ -2,6 +2,7 @@
 namespace App\Controller\Modules\Reports;
 
 use App\Controller\Core\Application;
+use App\Entity\Modules\Payments\MyPaymentsOwed;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -48,12 +49,11 @@ class ReportsController extends AbstractController
     }
 
     /**
-     * @param bool $isOwedByMe
-     * @return array
+     * @return MyPaymentsOwed[]
      */
-    public function fetchHistoricalMoneyOwedBy(bool $isOwedByMe = false): array
+    public function fetchHistoricalOwedMoney(): array
     {
-        return $this->app->repositories->reportsRepository->fetchHistoricalMoneyOwedBy($isOwedByMe);
+        return $this->app->repositories->reportsRepository->fetchHistoricalOwedMoney();
     }
 
 }

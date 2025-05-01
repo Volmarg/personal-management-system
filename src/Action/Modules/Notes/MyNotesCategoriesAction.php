@@ -2,189 +2,171 @@
 
 namespace App\Action\Modules\Notes;
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use App\Entity\Modules\Notes\MyNotes;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Entity\Modules\Notes\MyNotesCategories;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\System\ModuleAnnotation;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class MyNotesCategoriesAction
- * @package App\Action\Modules\Notes
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_NOTES
- * )
- */
+#[Route("/module/my-notes-categories", name: "module.my_notes_categories.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_NOTES])]
 class MyNotesCategoriesAction extends AbstractController {
 
-    const PARAMETER_ID = "id";
+    // added this just to make the left side menu look somewhat decent
+    private const MAX_NESTING_LEVEL = 4;
 
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
-    }
-
-    /**
-     * @Route("/my-notes/settings", name="my-notes-settings")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     * 
-     */
-    public function display(Request $request): Response
-    {
-        $jsonResponse = $this->submitForm($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $message          = $jsonResponse->getContent();
-        $code             = $jsonResponse->getStatusCode();
-        $templateContent  = $this->renderTemplate(true)->getContent();
-
-        $ajaxResponse     = new AjaxResponse($message, $templateContent);
-        $ajaxResponse->setCode($code);
-        $ajaxResponse->setPageTitle($this->getNotesSettingsPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-notes/settings/remove/", name="my-notes-settings-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     * 
-     */
-    public function remove(Request $request): Response
-    {
-
-        $id = $request->request->get(self::PARAMETER_ID);
-
-        $response = $this->app->repositories->deleteById(Repositories::MY_NOTES_CATEGORIES_REPOSITORY_NAME, $id);
-        $message  = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @Route("/my-notes/settings/update/",name="my-notes-settings-update")
-     * @param Request $request
-     * @return Response
-     * @throws MappingException
-     * @throws Exception
-     */
-    public function update(Request $request): Response
-    {
-        $parameters = $request->request->all();
-        $id         = trim($parameters[self::PARAMETER_ID]);
-
-        $entity     = $this->controllers->getMyNotesCategoriesController()->findOneById($id);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        $message    = $response->getContent();
-        $code       = $response->getStatusCode();
-
-        return AjaxResponse::buildJsonResponseForAjaxCall($code, $message);
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-
-        $form        = $this->app->forms->noteCategoryForm();
-        $columnNames = $this->getDoctrine()->getManager()->getClassMetadata(MyNotes::class)->getColumnNames();
-        Repositories::removeHelperColumnsFromView($columnNames);
-
-        $categories          = $this->controllers->getMyNotesCategoriesController()->findAllNotDeleted();
-        $parentsChildrenDtos = $this->controllers->getMyNotesCategoriesController()->buildParentsChildrenCategoriesHierarchy();
-
-        return $this->render('modules/my-notes/settings.html.twig',
-            [
-                'ajax_render'                    => $ajaxRender,
-                'categories'                     => $categories,
-                'parents_children_dtos'          => $parentsChildrenDtos,
-                'column_names'                   => $columnNames,
-                'form'                           => $form->createView(),
-                'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-                'page_title'                     => $this->getNotesSettingsPageTitle(),
-            ]
-        );
+    public function __construct(
+        private readonly MyNotesCategoriesController $categoriesController,
+        private readonly EntityManagerInterface      $em,
+        private readonly TranslatorInterface         $translator
+    ) {
     }
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
-     * 
+     * @throws Exception
      */
-    private function submitForm(Request $request) {
-        $form = $this->app->forms->noteCategoryForm();
-        $form->handleRequest($request);
-        /**
-         * @var MyNotesCategories $formData
-         */
-        $formData = $form->getData();
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
+    {
+        return $this->createOrUpdate($request)->toJsonResponse();
+    }
 
-        if( $formData instanceof MyNotesCategories ){
-            $parentId = $formData->getParentId();
-            $name     = $formData->getName();
+    /**
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $entriesData = [];
+        $categories = $this->categoriesController->findAllNotDeleted();
+        foreach ($categories as $category) {
+            $parentCategory = null;
+            if (is_numeric($category->getParentId())) {
+                $parentCategory = $this->em->find(MyNotesCategories::class, (int)$category->getParentId());
+            }
 
-            $categoryHasChildWithThisName = $this->controllers->getMyNotesCategoriesController()->hasCategoryChildWithThisName($name, $parentId);
-            if ($categoryHasChildWithThisName) {
-                $message = $this->app->translator->translate('notes.category.error.categoryWithThisNameAlreadyExistsInThisParent');
-                return new JsonResponse($message, Response::HTTP_CONFLICT);
+            $entriesData[] = [
+                'id'              => $category->getId(),
+                'name'            => $category->getName(),
+                'parentId'        => $parentCategory?->getId(),
+                'parentName'      => $parentCategory?->getName() ?? '',
+                'isParentDeleted' => $parentCategory?->isDeleted() ?? false,
+            ];
+        }
+
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * @param MyNotesCategories $category
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "get", methods: [Request::METHOD_GET])]
+    public function getOne(MyNotesCategories $category): JsonResponse
+    {
+        $response = BaseResponse::buildOkResponse();
+        $response->setSingleRecordData([
+            'id'   => $category->getId(),
+            'name' => $category->getName(),
+        ]);
+
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * @param MyNotesCategories $category
+     * @param Request           $request
+     *
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyNotesCategories $category, Request $request): JsonResponse
+    {
+        return $this->createOrUpdate($request, $category)->toJsonResponse();
+    }
+
+    /**
+     * @param MyNotesCategories $category
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyNotesCategories $category): JsonResponse
+    {
+        $category->setDeleted(true);
+        $this->em->persist($category);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request                $request
+     * @param MyNotesCategories|null $category
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyNotesCategories $category = null): BaseResponse
+    {
+        if (!$category) {
+            $category = new MyNotesCategories();
+        }
+
+        $dataArray = RequestService::tryFromJsonBody($request);
+        $parentId  = ArrayHandler::get($dataArray, 'parentId', true);
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+
+        // duped child names not allowed
+        $childNameExists = $this->categoriesController->hasCategoryChildWithThisName($name, $parentId);
+        if ($childNameExists) {
+            $msg = $this->translator->trans('module.notes.categories.createdUpdate.childNameExist');
+            return BaseResponse::buildBadRequestErrorResponse($msg);
+        }
+
+        // parentId == categoryId is not allowed
+        if ($parentId && $parentId === $category->getId()) {
+            $msg = $this->translator->trans('module.notes.categories.createdUpdate.categoryIdEqualParentId');
+            return BaseResponse::buildBadRequestErrorResponse($msg);
+        }
+
+        $nesting = ($parentId ? 1 : 0);
+        $usedParentId = $parentId;
+        while ($usedParentId && $parentCategory = $this->em->find(MyNotesCategories::class, $usedParentId)) {
+            $usedParentId = $parentCategory->getParentId();
+            $nesting++;
+
+            if ($nesting > self::MAX_NESTING_LEVEL) {
+                $msg = $this->translator->trans('module.notes.categories.createdUpdate.maxNestingLevel', ["{{max}}" => self::MAX_NESTING_LEVEL]);
+                return BaseResponse::buildBadRequestErrorResponse($msg);
             }
         }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->app->em->persist($formData);
-            $this->app->em->flush();
+        $category->setName($name);
+        $category->setParentId($parentId);
+        $category->setColor(''); // info: setting only for backward compatibility
 
-            $formSubmittedMessage = $this->app->translator->translate('messages.ajax.success.recordHasBeenCreated');
-            return new JsonResponse($formSubmittedMessage,Response::HTTP_OK);
-        }
+        $this->em->persist($category);
+        $this->em->flush();
 
-        return new JsonResponse("",Response::HTTP_OK);
-    }
-
-    /**
-     * Will return notes settings page title
-     *
-     * @return string
-     */
-    private function getNotesSettingsPageTitle(): string
-    {
-        return $this->app->translator->translate('notes.settings.title');
+        return BaseResponse::buildOkResponse();
     }
 
 }

@@ -5,12 +5,20 @@ imports:
 
 parameters:
     locale: 'en'
-    session_data.lifetime.system_lock: '%env(APP_SYSTEM_LOCK_SESSION_LIFETIME)%'
-    session_data.lifetime.user_login: '%env(APP_USER_LOGIN_SESSION_LIFETIME)%'
     security.restricted_ips: '%env(APP_IPS_ACCESS_RESTRICTION)%'
     system.from_email: 'no-reply@personal-management-system.localhost'
 
     project.name: "Personal Management System"
+
+    upload.tmp.dir: '/tmp/pms-upload'
+
+    # in seconds
+    # whenever this has to be changed, don't forget about adjusting frontend logic
+    # as the fronted is silently updating the jwt token when user clicks on page to keep the user logged in.
+    # The frontend code checks with each click on page if the jwt token has expired and if so - user is logged out
+    # With this, the token is refreshed every "X" seconds so that user won't be logged out while just handling front
+    # based page which don't have any ajax calls etc.
+    jwt_token_lifetime: 3600
 
 # Resolving deprecation for moving from 4.4x to 5.x
 sensio_framework_extra:
@@ -59,8 +67,8 @@ services:
     App\Services\ConfigLoaders\ConfigLoaderSession:
         public: true
         arguments:
-          $systemLockLifetime: '%session_data.lifetime.system_lock%'
-          $userLoginLifetime: '%session_data.lifetime.user_login%'
+          $systemLockLifetime: '111111' # info -temp only - will be removed due to front separtaion
+          $userLoginLifetime: '11111111' # info -temp only - will be removed due to front separtaion
 
     App\Services\ConfigLoaders\ConfigLoaderSecurity:
         calls:

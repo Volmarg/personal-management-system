@@ -5,6 +5,7 @@ namespace App\Services\Settings;
 use App\Controller\Core\Repositories;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
+use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
 use Exception;
 
@@ -39,6 +40,32 @@ class SettingsLoader {
     public function getSettingsForDashboard(): ?Setting {
         $setting = $this->repositories->settingRepository->getSettingByName(self::SETTING_NAME_DASHBOARD);
         return $setting;
+    }
+
+    /**
+     * Check if given dashboard widget is enabled or not
+     *
+     * @param string $widgetName
+     *
+     * @return bool
+     *
+     * @throws Exception
+     */
+    public function isDashboardWidgetVisible(string $widgetName): bool
+    {
+        $settings = $this->getSettingsForDashboard();
+        if (empty($settings)) {
+            return true;
+        }
+
+        $dashboardSettings = SettingsDashboardDTO::fromJson($settings->getValue());
+        foreach ($dashboardSettings->getWidgetSettings()->getWidgetsVisibility() as $widgetInfo) {
+            if ($widgetName === $widgetInfo->getName()) {
+                return $widgetInfo->isVisible();
+            }
+        }
+
+        return true;
     }
 
     /**

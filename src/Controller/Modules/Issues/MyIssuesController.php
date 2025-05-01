@@ -4,16 +4,12 @@ namespace App\Controller\Modules\Issues;
 
 use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Page\SettingsLockModuleController;
 use App\Controller\System\LockedResourceController;
-use App\DTO\Modules\Issues\IssueCardDTO;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\LockedResource;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -29,24 +25,28 @@ class MyIssuesController extends AbstractController {
      */
     private LockedResourceController $lockedResourceController;
 
-    public function __construct(Application $app, LockedResourceController $lockedResourceController) {
+    public function __construct(
+        Application              $app,
+        LockedResourceController $lockedResourceController,
+    ) {
         $this->lockedResourceController = $lockedResourceController;
         $this->app                      = $app;
     }
 
     /**
      * @param MyIssue[] $issues
-     * @param bool $includeDeleted
-     * @return IssueCardDTO[]
+     *
+     * @return array
      * @throws Exception
      * @throws \Doctrine\DBAL\Driver\Exception
      */
-    public function buildIssuesCardsDtosFromIssues(array $issues, bool $includeDeleted = false): array
+    public function getIssuesData(array $issues): array
     {
-        $issuesCardsDtos    = [];
-        $latestProgressDate = null;
-
-        foreach( $issues as $issue ){
+        $allIssuesData = [];
+        foreach ($issues as $issue) {
+            $contacts = [];
+            $progress = [];
+            $todo     = [];
 
             /**
              * @var MyIssueContact[]  $issueContacts
@@ -55,68 +55,65 @@ class MyIssuesController extends AbstractController {
             $issueContacts   = $issue->getIssueContact()->getValues();
             $issueProgresses = $issue->getIssueProgress()->getValues();
 
-            $issueContactsGroupedByIcon = [];
-            $waitingTodo                = [];
-
-            if(
-                    !empty($issue->getTodo())
-                &&  ($issue->getTodo() instanceof MyTodo)
-                &&  !empty($issue->getTodo()->getMyTodoElement())
+            if (
+                    ($issue->getTodo() instanceof MyTodo)
                 &&  $this->lockedResourceController->isAllowedToSeeResource($issue->getTodo()->getId(), LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_TODO, false)
             ){
-                foreach($issue->getTodo()->getMyTodoElement() as $todoElement){
-                    if( !$todoElement->getCompleted() ){
-                        $waitingTodo[] = $todoElement->getName();
-                    }
+                $todoElements = [];
+                foreach ($issue->getTodo()->getMyTodoElement() as $todoElement) {
+                    $todoElements[] = [
+                        'id'     => $todoElement->getId(),
+                        'name'   => $todoElement->getName(),
+                        'isDone' => $todoElement->getCompleted(),
+                    ];
                 }
+
+                $todo = [
+                    'id'              => $issue->getTodo()->getId(),
+                    'name'            => $issue->getTodo()->getName(),
+                    'description'     => $issue->getTodo()->getDescription(),
+                    'showOnDashboard' => $issue->getTodo()->getDisplayOnDashboard(),
+                    'elements'        => $todoElements,
+                ];
             }
 
-            $isLatestContactDateUsed = false;
-            $latestContactDate       = null;
-            foreach($issueContacts as $issueContact){
-
-                if(
-                        !$includeDeleted
-                    &&  $issueContact->isDeleted()
-                )
-                {
+            foreach ($issueContacts as $contact) {
+                if ($contact->isDeleted()) {
                     continue;
                 }
 
-                if( !$isLatestContactDateUsed ){
-                    $latestContactDate = $issueContact->getDate();
-                }
-                $isLatestContactDateUsed = true;
-
-                $icon = $issueContact->getIcon();
-                if( !array_key_exists($icon, $issueContactsGroupedByIcon) ){
-                    $issueContactsGroupedByIcon[$icon] = [$issueContact];
-                }else{
-                    $issueContactsGroupedByIcon[$icon][] = $issueContact;
-                }
+                $contacts[] = [
+                    'id'          => $contact->getId(),
+                    'description' => $contact->getInformation(),
+                    'date'        => $contact->getDate()?->format('Y-m-d H:i:s'),
+                ];
             }
 
-            if( !empty($issueProgresses) ){
-                $latestProgress     = $issueProgresses[0];
-                $latestProgressDate = $latestProgress->getDate();
+            foreach ($issueProgresses as $oneProgress) {
+                if ($oneProgress->isDeleted()) {
+                    continue;
+                }
+
+                $progress[] = [
+                    'id'          => $oneProgress->getId(),
+                    'description' => $oneProgress->getInformation(),
+                    'date'        => $oneProgress->getDate()?->format('Y-m-d H:i:s'),
+                ];
             }
 
-            $issueContactsCount   = count($issueContacts);
-            $issueProgressesCount = count($issueProgresses);
-
-            $issueCardDto = new IssueCardDTO();
-            $issueCardDto->setIssue($issue);
-            $issueCardDto->setIssueContactsCount($issueContactsCount);
-            $issueCardDto->setIssueProgressCount($issueProgressesCount);
-            $issueCardDto->setIssueContactsByIcon($issueContactsGroupedByIcon);
-            $issueCardDto->setIssueLastContact($latestContactDate);
-            $issueCardDto->setIssueLastProgress($latestProgressDate);
-            $issueCardDto->setWaitingTodo($waitingTodo);
-
-            $issuesCardsDtos[] = $issueCardDto;
+            $allIssuesData[] = [
+                'id'             => $issue->getId(),
+                'name'           => $issue->getName(),
+                'description'    => $issue->getInformation(),
+                'hasRelatedTodo' => !empty($todo),
+                'isForDashboard' => $issue->isShowOnDashboard(),
+                'todo'           => $todo,
+                'contacts'       => $contacts,
+                'progress'       => $progress,
+            ];
         }
 
-        return $issuesCardsDtos;
+        return $allIssuesData;
     }
 
     /**
@@ -136,36 +133,6 @@ class MyIssuesController extends AbstractController {
     public function findAllNotDeletedAndNotResolved(int $orderByFieldEntityId = null): array
     {
         return $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($orderByFieldEntityId);
-    }
-
-    /**
-     * @param MyIssue $issue
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function saveIssue(MyIssue $issue)
-    {
-        $this->app->repositories->myIssueRepository->saveIssue($issue);
-    }
-
-    /**
-     * @param MyIssueProgress $myIssueProgress
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function saveIssueProgress(MyIssueProgress $myIssueProgress): void
-    {
-        $this->app->repositories->myIssueRepository->saveIssueProgress($myIssueProgress);
-    }
-
-    /**
-     * @param MyIssueContact $myIssueContact
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function saveIssueContact(MyIssueContact $myIssueContact): void
-    {
-        $this->app->repositories->myIssueRepository->saveIssueContact($myIssueContact);
     }
 
 }

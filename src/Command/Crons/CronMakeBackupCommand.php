@@ -138,7 +138,7 @@ class CronMakeBackupCommand extends Command
                 $this->backupFiles($io, $argumentBackupFilesFilename);
 
                 if( !$this->archivizer->isArchivedSuccessfully() ){
-                    $io->warning("Finished creating files backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
+                    $io->error("Finished creating files backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
                 }
             }
 
@@ -146,7 +146,7 @@ class CronMakeBackupCommand extends Command
                 $io->note("Now making database backup");
                 $this->backupDatabase($io, $argumentBackupDatabaseFilename);
                 if( !$this->archivizer->isArchivedSuccessfully() ){
-                    $io->warning("Finished creating sql backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
+                    $io->error("Finished creating sql backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
                 }
             }
 
@@ -167,7 +167,7 @@ class CronMakeBackupCommand extends Command
         $exportMessage = $this->databaseExporter->getExportMessage();
 
         if( !$this->databaseExporter->isExportedSuccessfully() ){
-            $io->warning($exportMessage);
+            $io->error($exportMessage);
             return;
         }
 
@@ -184,7 +184,7 @@ class CronMakeBackupCommand extends Command
             $io->success($message);
             unlink($sqlBackupPath);
         }else{
-            $io->warning($message);
+            $io->error($message);
         }
 
     }
@@ -210,7 +210,7 @@ class CronMakeBackupCommand extends Command
         if( $this->archivizer->isArchivedSuccessfully() ){
             $io->success($message);
         }else{
-            $io->warning($message);
+            $io->error($message);
         }
     }
 }

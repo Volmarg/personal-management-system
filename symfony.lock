@@ -89,9 +89,6 @@
     "doctrine/persistence": {
         "version": "v1.0.0"
     },
-    "doctrine/reflection": {
-        "version": "v1.0.0"
-    },
     "doctrine/sql-formatter": {
         "version": "1.1.1"
     },
@@ -133,6 +130,18 @@
     },
     "laminas/laminas-zendframework-bridge": {
         "version": "1.1.1"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.11",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.5",
+            "ref": "e9481b233a11ef7e15fe055a2b21fd3ac1aa2bb7"
+        },
+        "files": [
+            "config/packages/lexik_jwt_authentication.yaml"
+        ]
     },
     "lukasoppermann/http-status": {
         "version": "3.1.0"
@@ -301,9 +310,6 @@
     "specshaper/encrypt-bundle": {
         "version": "v1.1.0"
     },
-    "swiftmailer/swiftmailer": {
-        "version": "v6.0.2"
-    },
     "symfony/asset": {
         "version": "v4.0.3"
     },
@@ -397,15 +403,6 @@
             "ref": "137a14eeb6b3f5370e7147af8aff6518504f50c7"
         }
     },
-    "symfony/google-mailer": {
-        "version": "4.4",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.4",
-            "ref": "f8fd4ddb9b477510f8f4bce2b9c054ab428c0120"
-        }
-    },
     "symfony/http-client": {
         "version": "v4.3.2"
     },
@@ -418,16 +415,13 @@
     "symfony/http-kernel": {
         "version": "v4.0.3"
     },
-    "symfony/intl": {
-        "version": "v5.1.7"
-    },
     "symfony/mailer": {
-        "version": "4.3",
+        "version": "5.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "4.3",
-            "ref": "15658c2a0176cda2e7dba66276a2030b52bd81b2"
+            "ref": "df66ee1f226c46f01e85c29c2f7acce0596ba35a"
         },
         "files": [
             "config/packages/mailer.yaml"
@@ -554,15 +548,6 @@
     },
     "symfony/string": {
         "version": "v5.1.7"
-    },
-    "symfony/swiftmailer-bundle": {
-        "version": "2.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "2.5",
-            "ref": "3db029c03e452b4a23f7fc45cec7c922c2247eb8"
-        }
     },
     "symfony/templating": {
         "version": "v4.0.3"

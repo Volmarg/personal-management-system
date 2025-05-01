@@ -1,0 +1,9 @@
+module:
+  calendar:
+    schedules:
+      save:
+        noMatchingCalendarFound: "No calendar found - maybe already deleted?"
+    settings:
+      manageCalendars:
+        createdUpdate:
+          nameExist: "Calendar with this name already exists"

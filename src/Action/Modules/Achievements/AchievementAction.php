@@ -2,173 +2,125 @@
 
 namespace App\Action\Modules\Achievements;
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
+use App\Controller\Modules\Achievements\AchievementController;
+use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Achievements\Achievement;
-use App\Form\Modules\Achievements\AchievementType;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\System\ModuleAnnotation;
 
-/**
- * Class AchievementAction
- * @package App\Action\Modules\Achievements
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_ACHIEVEMENTS
- * )
- */
+#[Route("/module/achievements", name: "module.achievements.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_ACHIEVEMENTS])]
 class AchievementAction extends AbstractController {
 
-    const PARAMETER_ID = "id";
-
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    /**
-     * @var array $enumTypes
-     */
-    private array $enumTypes;
-
-    /**
-     * AchievementAction constructor.
-     * @param Application $app
-     * @param Controllers $controllers
-     */
-    public function __construct(Application $app, Controllers $controllers) {
-        $enumType        = [Achievement::ENUM_SIMPLE, Achievement::ENUM_MEDIUM, Achievement::ENUM_HARD, Achievement::ENUM_HARDCORE];
-        $this->enumTypes = array_combine(
-            array_map('ucfirst', array_values($enumType)),
-            $enumType
-        );
-
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly AchievementController  $achievementController
+    )
+    {
     }
 
     /**
-     * @Route("/achievement", name="achievement")
      * @param Request $request
-     * @return Response
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function display(Request $request): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        $this->addFormDataToDB($request, $this->enumTypes);
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderAchievementPageTemplate();
+        $this->createOrUpdate($request);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $allAchievements = $this->achievementController->getAllNotDeleted();
+        $entriesData     = [
+            Achievement::ENUM_HARDCORE => [],
+            Achievement::ENUM_HARD     => [],
+            Achievement::ENUM_MEDIUM   => [],
+            Achievement::ENUM_SIMPLE   => [],
+        ];
+
+        foreach ($allAchievements as $achievement) {
+            $entriesData[$achievement->getType()][] = [
+                'id'          => $achievement->getId(),
+                'name'        => $achievement->getName(),
+                'description' => $achievement->getDescription(),
+                'type'        => $achievement->getType(),
+            ];
         }
 
-        $templateContent = $this->renderAchievementPageTemplate(true)->getContent();
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
 
-        $ajaxResponse = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setPageTitle($this->getAchievementsPageTitle());
-        $ajaxResponse->setCode(Response::HTTP_OK);
-
-        return $ajaxResponse->buildJsonResponse();
+        return $response->toJsonResponse();
     }
 
     /**
-     * @Route("/achievement/update/",name="achievement-update")
-     * @param Request $request
-     * @return Response
+     * @param Achievement $achievement
+     * @param Request     $request
      *
-     * #todo: check if this works correct in case of edit and update
-     * @throws MappingException
-     */
-    public function update(Request $request): Response
-    {
-        $parameters = $request->request->all();
-        $id         = trim($parameters[self::PARAMETER_ID]);
-
-        $entity     = $this->controllers->getAchievementController()->getOneById($id);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/achievement/remove/", name="achievement-remove")
-     * @param Request $request
-     * @return Response
+     * @return JsonResponse
      * @throws Exception
      */
-    public function remove(Request $request): Response {
-
-        $id = $request->request->get(self::PARAMETER_ID);
-
-        $response = $this->app->repositories->deleteById(Repositories::ACHIEVEMENT_REPOSITORY_NAME, $id);
-        $message  = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderAchievementPageTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     */
-    private function renderAchievementPageTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(Achievement $achievement, Request $request): JsonResponse
     {
-        $achievementForm     = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $this->enumTypes]);
-        $achievementFormView = $achievementForm->createView();
-
-        $columnsNames    = $this->getDoctrine()->getManager()->getClassMetadata(Achievement::class)->getColumnNames();
-        $allAchievements = $this->controllers->getAchievementController()->getAllNotDeleted();
-
-        return $this->render('modules/my-achievements/index.html.twig', [
-            'ajax_render'       => $ajaxRender,
-            'achievement_form'  => $achievementFormView,
-            'columns_names'     => $columnsNames,
-            'all_achievements'  => $allAchievements,
-            'achievement_types' => $this->enumTypes,
-            'page_title'        => $this->getAchievementsPageTitle(),
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-        ]);
+        $this->createOrUpdate($request, $achievement);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**
-     * @param Request $request
-     * @param array $enumTypes
-     */
-    private function addFormDataToDB(Request $request, array $enumTypes)
-    {
-        $achievementForm = $this->app->forms->achievementForm([AchievementType::KEY_OPTION_ENUM_TYPES => $enumTypes]);
-        $achievementForm->handleRequest($request);
-
-        if ($achievementForm->isSubmitted() && $achievementForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($achievementForm->getData());
-            $em->flush();
-        }
-    }
-
-    /**
-     * Will return achievements page title
+     * @param Achievement $achievement
      *
-     * @return string
+     * @return JsonResponse
      */
-    private function getAchievementsPageTitle(): string
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(Achievement $achievement): JsonResponse
     {
-        return $this->app->translator->translate('achievements.title');
+        $achievement->setDeleted(true);
+        $this->em->persist($achievement);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request          $request
+     * @param Achievement|null $achievement
+     *
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?Achievement $achievement = null): void
+    {
+        if (!$achievement) {
+            $achievement = new Achievement();
+        }
+
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $name        = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $description = ArrayHandler::get($dataArray, 'description');
+        $type        = ArrayHandler::get($dataArray, 'type', allowEmpty: false);
+
+        $achievement->setName($name);
+        $achievement->setDescription($description);
+        $achievement->setType($type);
+
+        $this->em->persist($achievement);
+        $this->em->flush();
     }
 
 }

@@ -1,0 +1,10 @@
+file:
+  msg:
+    fileRemoved: "File has been removed"
+    couldNotRemove: "Could not remove the file"
+    fileDoesNotExist: "This file does not exist"
+    unsafePathCancelled: "Action has been cancelled - unsafe upload detected!"
+  upload:
+    msg:
+      uploadSuccess: "File has been uploaded"
+      uploadError: "Could not upload the file - something went wrong"

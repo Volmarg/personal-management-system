@@ -5,6 +5,7 @@ namespace App\Repository\Modules\Issues;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
+use App\Entity\Modules\Todo\MyTodo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -24,6 +25,35 @@ class MyIssueRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, MyIssue::class);
+    }
+
+    /**
+     * @param bool  $includeDeleted
+     * @param array $includedIds
+     *
+     * @return array
+     */
+    public function findAllAssignable(bool $includeDeleted = false, array $includedIds = []): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select("mi")
+            ->from(MyIssue::class, "mi")
+            ->where("1=1");
+
+        if (!$includeDeleted) {
+            $qb->andWhere("mi.deleted = 0");
+        }
+
+        if (!empty($includedIds)) {
+            $qb->andWhere($qb->expr()->orX(
+                'mi.todo IS NULL',
+                'mi.id IN (:includedIds)'
+            ))->setParameter('includedIds', $includedIds);
+        } else {
+            $qb->andWhere('mi.todo IS NULL');
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     /**

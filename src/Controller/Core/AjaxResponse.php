@@ -4,7 +4,6 @@ namespace App\Controller\Core;
 
 use App\Form\Interfaces\ValidableFormInterface;
 use App\Services\Core\Translator;
-use App\Services\Session\AjaxCallsSessionService;
 use App\VO\Validators\ValidationResultVO;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +16,6 @@ class AjaxResponse extends AbstractController {
     const KEY_CODE                  = "code";
     const KEY_MESSAGE               = "message";
     const KEY_TEMPLATE              = "template";
-    const KEY_PASSWORD              = "password";
     const KEY_RELOAD_PAGE           = "reload_page";
     const KEY_RELOAD_MESSAGE        = "reload_message";
     const KEY_SUCCESS               = "success";
@@ -144,13 +142,6 @@ class AjaxResponse extends AbstractController {
      */
     public function getPassword(): ?string {
         return $this->password;
-    }
-
-    /**
-     * @param string|null $password
-     */
-    public function setPassword(?string $password): void {
-        $this->password = $password;
     }
 
     /**
@@ -342,18 +333,6 @@ class AjaxResponse extends AbstractController {
             $responseData[self::KEY_TEMPLATE] = $template;
         }
 
-        if( !empty($password) ){
-            $responseData[self::KEY_PASSWORD] = $password;
-        }
-
-        if( !$reloadPage ){
-            $reloadPage = self::getPageReloadStateFromSession();
-        }
-
-        if( $reloadPage ){
-            $reloadMessage = self::getPageReloadMessageFromSession();
-        }
-
         $responseData[self::KEY_RELOAD_PAGE]           = $reloadPage;
         $responseData[self::KEY_RELOAD_MESSAGE]        = $reloadMessage;
         $responseData[self::KEY_SUCCESS]               = $success;
@@ -395,7 +374,6 @@ class AjaxResponse extends AbstractController {
             self::KEY_CODE                  => $this->getCode(),
             self::KEY_MESSAGE               => $this->getMessage(),
             self::KEY_TEMPLATE              => $this->getTemplate(),
-            self::KEY_PASSWORD              => $this->getPassword(),
             self::KEY_RELOAD_PAGE           => $this->isReloadPage(),
             self::KEY_RELOAD_MESSAGE        => $this->getReloadMessage(),
             self::KEY_SUCCESS               => $this->isSuccess(),
@@ -450,35 +428,4 @@ class AjaxResponse extends AbstractController {
         return $ajaxResponse;
     }
 
-    /**
-     * Checking if maybe somewhere in whole lifetime some event, kernel etc. emitted this data to session,
-     *  as it's impossible to pass such data directly to controller/service from some places of the project
-     * @return bool
-     * @throws Exception
-     */
-    private static function getPageReloadStateFromSession(): bool
-    {
-        if( !AjaxCallsSessionService::hasPageReloadAfterAjaxCall() ){
-            return false;
-        }
-
-        $reloadPage = AjaxCallsSessionService::getPageReloadAfterAjaxCall();
-        return $reloadPage;
-    }
-
-    /**
-     * Checking if maybe somewhere in whole lifetime some event, kernel etc. emitted this data to session,
-     *  as it's impossible to pass such data directly to controller/service from some places of the project
-     * @return string
-     * @throws Exception
-     */
-    private static function getPageReloadMessageFromSession():string
-    {
-        if( !AjaxCallsSessionService::hasPageReloadMessageAfterAjaxCall() ){
-            return "";
-        }
-
-        $message = AjaxCallsSessionService::getPageReloadMessageAfterAjaxCall();
-        return $message;
-    }
 }

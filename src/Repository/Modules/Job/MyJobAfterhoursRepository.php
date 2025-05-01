@@ -106,7 +106,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         $entities = $this->findBy([
             MyJobAfterhours::FIELD_NAME_DELETED => 0,
             MyJobAfterhours::FIELD_NAME_TYPE    => $types
-        ]);
+        ], ["Date" => "DESC"]);
 
         return $entities;
     }

@@ -1,0 +1,5 @@
+PATH=/usr/local/bin
+BIN_CONSOLE_PATH=/application/bin/console
+
+# hourly
+0 */1 * * * www-data php "$BIN_CONSOLE_PATH" cron:set-recurring-payments

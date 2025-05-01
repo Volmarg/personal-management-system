@@ -69,7 +69,7 @@ class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
     /**
      * @return mixed
      */
-    public function getDate() {
+    public function getDate(): \DateTime {
         return $this->Date;
     }
 

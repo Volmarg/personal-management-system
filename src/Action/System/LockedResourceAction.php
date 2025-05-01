@@ -80,12 +80,12 @@ class LockedResourceAction extends AbstractController {
                 $lockedResource->setTarget($target);
 
                 $this->controllers->getLockedResourceController()->add($lockedResource);
-                $message = $this->app->translator->translate("messages.lock.resourceHasBeenLocked");
+                $message = $this->app->translator->translate("security.lockResource.resourceHasBeenLocked");
             }
 
         } catch(Exception $e){
             $code    = 500;
-            $message = $this->app->translator->translate("messages.lock.couldNotLockResource");
+            $message = $this->app->translator->translate("security.lockResource.couldNotLockResource");
             $this->app->logger->critical($message, [
                 "exceptionMessage" => $e->getMessage(),
                 "exceptionCode"    => $e->getCode(),

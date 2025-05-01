@@ -40,6 +40,8 @@ class ModulesController extends AbstractController {
     const MODULE_NAME_TRAVELS                   = "My Travels";
     const MODULE_NAME_ISSUES                    = "My Issues";
     const MENU_NODE_MODULE_NAME_REPORTS         = "My Reports";
+    public const MODULE_NAME_SYSTEM = "System";
+    public const MODULE_NAME_STORAGE = "Storage";
 
     const MODULE_ENTITY_NOTES_CATEGORY          = "My Notes Categories"; //todo: rename this const + twig (subentity) or menu node
 

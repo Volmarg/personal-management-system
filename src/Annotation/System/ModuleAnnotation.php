@@ -2,22 +2,16 @@
 
 namespace App\Annotation\System;
 
-use Doctrine\Common\Annotations\Annotation\Attribute;
+use Attribute;
 
 /**
- * @Annotation
- * @Target({"CLASS"})
- * @Attributes({
- *      @Attribute("name", type="string"),
- *      @Attribute("relatedModules", type="array"),
- * })
- *
  * This annotation handles checking if given method should be called, by ensuring that it's not relating to locked
  * resource
  *
  * This is especially helpful to control access to the action methods / classes
- *
+ * @Annotation
  */
+#[Attribute(Attribute::TARGET_CLASS)]
 class ModuleAnnotation
 {
     const ATTRIBUTE_KEY_NAME            = "name";

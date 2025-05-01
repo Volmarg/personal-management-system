@@ -5,201 +5,129 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use App\Form\Modules\Payments\MyPaymentsMonthlyType;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Payments\MyPaymentsMonthlyController;
+use App\Entity\Modules\Payments\MyPaymentsMonthly;
+use App\Entity\Modules\Payments\MyPaymentsSettings;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class MyPaymentsMonthlyAction
- * @package App\Action\Modules\Payments
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
- * )
- */
+#[Route("/module/payment/monthly", name: "module.payment.monthly.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
 class MyPaymentsMonthlyAction extends AbstractController {
 
-    const KEY_CURRENT_ACTIVE_YEAR = "currentActiveYear";
-
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->controllers = $controllers;
-        $this->app         = $app;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+    ) {
     }
 
+
     /**
-     * @Route("/my-payments-monthly/{year}", name="my-payments-monthly")
      * @param Request $request
-     * @param string|null $year
-     * @return Response
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function display(Request $request, ?string $year = null): Response
-    {
-        $this->addFormDataToDB($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate($year);
-        }
-
-        $templateContent = $this->renderTemplate($year, true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getPaymentsMonthlyPageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @param string|null $year
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
-     */
-    protected function renderTemplate(?string $year = null, bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-        $form            = $this->getForm();
-        $monthlyFormView = $form->createView();
-
-        $years           = $this->controllers->getMyPaymentsSettingsController()->getYears();
-
-        $allPayments           = [];
-        $datesGroups           = [];
-        $paymentsByTypeAndDate = [];
-        $paymentsTypes         = [];
-
-        $usedYear = $year;
-        if( !empty($years) ){
-            if( is_null($year) ){
-                $latestYearIndex = array_key_first($years);
-                $usedYear        = $years[$latestYearIndex];
-            }
-
-            $allPayments           = $this->controllers->getMyPaymentsMonthlyController()->getAllNotDeletedForYear($usedYear);
-            $datesGroups           = $this->controllers->getMyPaymentsMonthlyController()->fetchAllDateGroupsForYear($usedYear);
-            $paymentsByTypeAndDate = $this->controllers->getMyPaymentsMonthlyController()->getPaymentsByTypesForYear($usedYear);
-            $paymentsTypes         = $this->controllers->getMyPaymentsSettingsController()->getAllPaymentsTypes();
-        }
-
-        return $this->render('modules/my-payments/monthly.html.twig', [
-            'form'                           => $monthlyFormView,
-            'all_payments'                   => $allPayments,
-            'dates_groups'                   => $datesGroups,
-            'ajax_render'                    => $ajaxRender,
-            'payments_by_type_and_date'      => $paymentsByTypeAndDate,
-            'payments_types'                 => $paymentsTypes,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'years'                          => $years,
-            'active_year'                    => $usedYear,
-            'page_title'                     => $this->getPaymentsMonthlyPageTitle(),
-        ]);
-    }
-
-    /**
-     * @param $request
-     */
-    protected function addFormDataToDB($request) {
-        $paymentsForm = $this->getForm();
-        $paymentsForm->handleRequest($request);
-
-        if ($paymentsForm->isSubmitted() && $paymentsForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($paymentsForm->getData());
-            $em->flush();
-        }
-
-    }
-
-    /**
-     * @Route("/my-payments-monthly/remove/", name="my-payments-monthly-remove")
-     * @param Request $request
-     * @return Response
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function remove(Request $request): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_PAYMENTS_MONTHLY_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
-
-        $message           = $response->getContent();
-        $currentActiveYear = $request->request->get(self::KEY_CURRENT_ACTIVE_YEAR);
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate($currentActiveYear, true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+        return $this->createOrUpdate($request)->toJsonResponse();
     }
 
     /**
-     * @Route("my-payments-monthly/update/" ,name="my-payments-monthly-update")
-     * @param Request $request
      * @return JsonResponse
-     * @throws MappingException
      */
-    public function update(Request $request): JsonResponse
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
     {
-        $parameters = $request->request->all();
-        $entityId   = trim($parameters['id']);
+        $allPayments = $this->em->getRepository(MyPaymentsMonthly::class)->findBy(['deleted' => 0], ['date' => "DESC"]);
+        $entriesData = [];
+        foreach ($allPayments as $payment) {
+            $entriesData[] = [
+                'id'          => $payment->getId(),
+                'date'        => $payment->getDate()->format('Y-m-d'),
+                'money'       => $payment->getMoney() ?? 0,
+                'description' => $payment->getDescription() ?? '',
+                'typeName'    => $payment->getType()?->getValue() ?? '',
+                'typeId'      => $payment->getType()?->getId(),
+            ];
+        }
 
-        $entity     = $this->controllers->getMyPaymentsMonthlyController()->findOneById($entityId);
-        $response   = $this->app->repositories->update($parameters, $entity);
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
 
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+        return $response->toJsonResponse();
     }
 
     /**
-     * @return FormInterface
-     */
-    private function getForm(): FormInterface
-    {
-        return $this->createForm(MyPaymentsMonthlyType::class);
-    }
-
-    /**
-     * Will return payments monthly page title
+     * @param MyPaymentsMonthly $payment
+     * @param Request           $request
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function getPaymentsMonthlyPageTitle(): string
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyPaymentsMonthly $payment, Request $request): JsonResponse
     {
-        return $this->app->translator->translate('payments.monthlyPayments.title');
+        return $this->createOrUpdate($request, $payment)->toJsonResponse();
     }
 
     /**
-     * Will return payments charts page title
+     * @param MyPaymentsMonthly $payment
      *
-     * @return string
+     * @return JsonResponse
      */
-    private function getPaymentsChartsPageTitle(): string
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyPaymentsMonthly $payment): JsonResponse
     {
-        return $this->app->translator->translate('reports.paymentsCharts.title');
+        $payment->setDeleted(true);
+        $this->em->persist($payment);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request                $request
+     * @param MyPaymentsMonthly|null $payment
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyPaymentsMonthly $payment = null): BaseResponse
+    {
+        if (!$payment) {
+            $payment = new MyPaymentsMonthly();
+        }
+
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $description = ArrayHandler::get($dataArray, 'description', allowEmpty: false);
+        $money       = ArrayHandler::get($dataArray, 'money', allowEmpty: false);
+        $typeId      = ArrayHandler::get($dataArray, 'typeId', allowEmpty: false);
+
+        $type = $this->em->getRepository(MyPaymentsSettings::class)->findPaymentType($typeId);
+        if (!$type) {
+            throw new Exception("No payment type setting found for id: {$type}");
+        }
+
+        $payment->setDate(new DateTime($dateString));
+        $payment->setDescription($description);
+        $payment->setMoney((int)$money);
+        $payment->setType($type);
+
+        $this->em->persist($payment);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
     }
 
 }

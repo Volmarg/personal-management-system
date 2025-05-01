@@ -1,0 +1,7 @@
+module:
+  notes:
+    categories:
+      createdUpdate:
+        childNameExist: "Subcategory with this name already exists"
+        categoryIdEqualParentId: "Category cannot be its own parent."
+        maxNestingLevel: "Max nesting level is {{max}}"

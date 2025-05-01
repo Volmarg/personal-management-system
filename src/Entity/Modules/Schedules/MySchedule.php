@@ -205,14 +205,10 @@ class MySchedule implements SoftDeletableEntityInterface, EntityInterface
     }
 
     /**
-     * @return MyScheduleReminder[]
+     * @return ArrayCollection|PersistentCollection
      */
-    public function getMyScheduleReminders(): array
+    public function getMyScheduleReminders(): ArrayCollection|PersistentCollection
     {
-        if( $this->myScheduleReminders instanceof PersistentCollection ){
-            return $this->myScheduleReminders->getValues();
-        }
-
         return $this->myScheduleReminders;
     }
 
@@ -276,4 +272,39 @@ class MySchedule implements SoftDeletableEntityInterface, EntityInterface
         return $datesWithIds;
     }
 
+    /**
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function asFrontendData(): array
+    {
+        return [
+            'id'             => $this->getId(),
+            'title'          => $this->getTitle(),
+            'body'           => $this->getBody(),
+            'location'       => $this->getLocation(),
+            'isAllDay'       => $this->getAllDay() ?? false,
+            'start'          => $this->getStart()?->format('Y-m-d H:i:s'),
+            'end'            => $this->getEnd()?->format('Y-m-d H:i:s'),
+            'goingDuration'  => 0,
+            'comingDuration' => 0,
+            'color'          => $this->getCalendar()->getColor(),
+            'isVisible'      => true,
+            'bgColor'        => "#{$this->getCalendar()->getBackgroundColor()}",
+            'dragBgColor'    => "#{$this->getCalendar()->getDragBackgroundColor()}",
+            'borderColor'    => "#{$this->getCalendar()->getBorderColor()}",
+            'calendarId'     => $this->getCalendar()->getId(),
+            'category'       => ($this->getAllDay() ? 'allday' : 'time'),
+            'dueDateClass'   => '',
+            'customStyle'    => '',
+            'isPending'      => false,
+            'isFocused'      => false,
+            'isReadOnly'     => false,
+            'isPrivate'      => false,
+            'attendees'      => '',
+            'state'          => '',
+            'reminders'      => $this->getRemindersDatesWithIds(),
+        ];
+    }
 }

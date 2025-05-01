@@ -5,87 +5,121 @@ namespace App\Action\Modules\Goals;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
+use App\Controller\Modules\Goals\GoalsPaymentsController;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\Goals\MyGoalsPayments;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Response\Base\BaseResponse;
 
-/**
- * Class GoalsPaymentsAction
- * @package App\Action\Modules\Goals
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_GOALS
- * )
- */
+#[Route("/module/my-goals-payments", name: "module.my_goals_payments.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_GOALS])]
 class GoalsPaymentsAction extends AbstractController {
 
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers)
-    {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly GoalsPaymentsController $goalsPaymentsController,
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     /**
-     * @Route("admin/goals/payments/list", name="goals_payments_list")
      * @param Request $request
-     * @return Response
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function display(Request $request): Response
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
+        $this->createOrUpdate($request);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
 
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
+    /**
+     * @return JsonResponse
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $allPayments = $this->goalsPaymentsController->getAllNotDeleted();
+        $entriesData = [];
+        foreach ($allPayments as $payment) {
+            $entriesData[] = $payment->asFrontendData();
         }
 
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getPaymentsPageTitle());
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
 
-        return $ajaxResponse->buildJsonResponse();
+        return $response->toJsonResponse();
     }
 
     /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false) {
-
-        $allPayments = $this->controllers->getGoalsPaymentsController()->getAllNotDeleted();
-
-        $data = [
-            'all_payments'                   => $allPayments,
-            'ajax_render'                    => $ajaxRender,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'page_title'                     => $this->getPaymentsPageTitle(),
-        ];
-
-        return $this->render('modules/my-goals/payments.html.twig', $data);
-    }
-
-    /**
-     * Will return payments page title
+     * @param MyGoalsPayments $payment
+     * @param Request         $request
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function getPaymentsPageTitle(): string
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyGoalsPayments $payment, Request $request): JsonResponse
     {
-        return $this->app->translator->translate('goals.payments.title');
+        $this->createOrUpdate($request, $payment);
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param MyGoalsPayments $payment
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyGoalsPayments $payment): JsonResponse
+    {
+        $payment->setDeleted(true);
+        $this->em->persist($payment);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request              $request
+     * @param MyGoalsPayments|null $payment
+     *
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyGoalsPayments $payment = null): void
+    {
+        if (!$payment) {
+            $payment = new MyGoalsPayments();
+        }
+
+        $dataArray       = RequestService::tryFromJsonBody($request);
+        $name            = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+        $goal            = ArrayHandler::get($dataArray, 'goal', allowEmpty: false);
+        $collected       = ArrayHandler::get($dataArray, 'collected', allowEmpty: false);
+        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard', allowEmpty: false);
+        $startString     = ArrayHandler::get($dataArray, 'start', allowEmpty: false);
+        $endString       = ArrayHandler::get($dataArray, 'end', allowEmpty: false);
+
+        $start = new DateTime($startString);
+        $end   = new DateTime($endString);
+
+        $payment->setName($name);
+        $payment->setMoneyGoal($goal);
+        $payment->setMoneyCollected($collected);
+        $payment->setCollectionStartDate($start);
+        $payment->setDeadline($end);
+        $payment->setDisplayOnDashboard($showOnDashboard);
+
+        $this->em->persist($payment);
+        $this->em->flush();
     }
 }

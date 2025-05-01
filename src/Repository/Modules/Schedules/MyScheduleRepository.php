@@ -82,12 +82,12 @@ class MyScheduleRepository extends ServiceEntityRepository {
     /**
      * Will return incoming schedules information array
      *
-     * @param int $days
-     * @param int|null $limit
+     * @param int $maxDaysOld
+     *
      * @return IncomingScheduleDTO[]
      * @throws Exception
      */
-    public function getIncomingSchedulesInformationInDays(int $days, ?int $limit = null): array
+    public function getIncomingSchedulesInformationInDays(int $maxDaysOld): array
     {
         $connection = $this->getEntityManager()->getConnection();
 
@@ -106,22 +106,20 @@ class MyScheduleRepository extends ServiceEntityRepository {
             ON mchc.id = sch.calendar_id
             
             WHERE 
-            sch.start < NOW() + INTERVAL :days DAY -- include past
+            DATEDIFF(sch.start ,NOW()) >= :maxDaysOld
             AND sch.deleted  = 0
             AND mchc.deleted = 0
+            
+            ORDER BY DATEDIFF(sch.start ,NOW()) DESC
         ";
 
         $bindedValues = [
-            'days' => $days,
+            'maxDaysOld' => -$maxDaysOld,
         ];
 
         $parametersTypes = [
             Types::INTEGER,
         ];
-
-        if( !is_null($limit) ){
-            $sql .= " LIMIT {$limit}"; // limit cannot be simply parametrized, won't work also with params types
-        }
 
         $statement = $connection->executeQuery($sql, $bindedValues, $parametersTypes);
         $results   = $statement->fetchAll(PDO::FETCH_CLASS, IncomingScheduleDTO::class);
@@ -171,5 +169,18 @@ class MyScheduleRepository extends ServiceEntityRepository {
         return $results;
     }
 
+    /**
+     * @return Array<MySchedule>
+     */
+    public function findForDashboard(): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select("s")
+            ->from(MySchedule::class, "s")
+            ->where("s.deleted = 0")
+            ->orderBy("s.start", "DESC");
+
+        return $qb->getQuery()->getResult();
+    }
 
 }

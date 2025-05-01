@@ -2,87 +2,96 @@
 
 namespace App\Action\Modules\Issues;
 
-use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
+use App\Entity\Modules\Issues\MyIssue;
+use App\Entity\Modules\Issues\MyIssueProgress;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class MyIssuesProgressAction
- * @package App\Action\Modules\Issues
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_ISSUES
- * )
- */
+#[Route("/module/my-issues/progress", name: "module.my_issues.progress.")]
 class MyIssuesProgressAction extends AbstractController
 {
+    public function __construct(
+        private readonly EntityManagerInterface $em
+    ) {
 
-    const PARAMETER_ID = "id";
-
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    /**
-     * @var MyIssuesAction $myIssuesAction
-     */
-    private MyIssuesAction $myIssuesAction;
-
-    public function __construct(Application $app, Controllers $controllers, MyIssuesAction $myIssuesAction) {
-        $this->app            = $app;
-        $this->controllers    = $controllers;
-        $this->myIssuesAction = $myIssuesAction;
     }
 
     /**
-     * @Route("/my-issues-progress/update", name="my_issues_progress_update")
+     * @param MyIssue $issue
      * @param Request $request
-     * @return Response
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function update(Request $request): Response
+    #[Route("/{id}", name: "new", methods: [Request::METHOD_POST])]
+    public function new(MyIssue $issue, Request $request): JsonResponse
     {
-        $parameters = $request->request->all();
-        $id         = $parameters[self::PARAMETER_ID];
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
 
-        $entity     = $this->controllers->getMyIssueProgressController()->findOneById($id);
-        $response   = $this->app->repositories->update($parameters, $entity);
+        $date = new DateTime($dateString);
 
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
+        $progress = new MyIssueProgress();
+        $progress->setInformation($information);
+        $progress->setDate($date);
+
+        $issue->addIssueProgress($progress);
+        $progress->setIssue($issue);
+
+        $this->em->persist($issue);
+        $this->em->persist($progress);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
     /**
-     * @Route("/my-issues-progress/remove", name="my_issues_progress_remove")
-     * @param Request $request
-     * @return Response
-     * 
+     * @param MyIssueProgress $issueProgress
+     * @param Request         $request
+     *
+     * @return JsonResponse
      * @throws Exception
      */
-    public function remove(Request $request): Response
+    #[Route("/{id}", name: "update", requirements: ['id' => '\d+'], methods: [Request::METHOD_PATCH])]
+    public function update(MyIssueProgress $issueProgress, Request $request): JsonResponse
     {
-        $id       = $request->request->get(self::PARAMETER_ID);
-        $response = $this->app->repositories->deleteById(Repositories::MY_ISSUES_PROGRESS_REPOSITORY, $id);
-        $message  = $response->getContent();
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $dateString  = ArrayHandler::get($dataArray, 'date');
+        $information = ArrayHandler::get($dataArray, 'information');
 
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->myIssuesAction->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
+        $date = new DateTime($dateString);
 
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
+        $issueProgress->setInformation($information);
+        $issueProgress->setDate($date);
+
+        $this->em->persist($issueProgress);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param MyIssueProgress $issueProgress
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", requirements: ['id' => '\d+'], methods: [Request::METHOD_DELETE])]
+    public function remove(MyIssueProgress $issueProgress): JsonResponse
+    {
+        $issueProgress->setDeleted(true);
+        $this->em->persist($issueProgress);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
 }

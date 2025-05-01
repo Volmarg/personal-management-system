@@ -1,35 +1,72 @@
 version: "3.1"
 services:
-  mariadb:
-    image: mariadb
-    container_name: mariadb
+  pms-database-mariadb:
+    image: mariadb:11.5.2
+    container_name: pms-database-mariadb
+    hostname: pms-database-mariadb
     restart: always
-    environment: 
+    tty: true
+    environment:
       - MYSQL_DATABASE=pms
       - MYSQL_ROOT_PASSWORD=password
-    volumes: 
-      - ./data:/var/lib/mysql
-
-  nginx:
-    image: nginx:alpine
-    container_name: nginx
-    working_dir: /application
     volumes:
-      - .:/application
-      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
-    ports:
-      - "8001:80"
+      - database:/var/lib/mysql
 
-  php-fpm:
-    build: ./docker/php-fpm
-    container_name: php-fpm
+  pms-nginx:
+    image: yobasystems/alpine-nginx:stable
+    container_name: pms-nginx
+    hostname: pms-nginx
     working_dir: /application
-    volumes:
-      - .:/application
-
-  adminer:
-    container_name: adminer
-    image: adminer
     restart: always
+    tty: true
+    volumes:
+      - .:/application
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8002:80"
+
+  pms-php-fpm:
+    build: ./docker/php-fpm
+    container_name: pms-php-fpm
+    hostname: pms-php-fpm
+    # Executing original entrypoint, else php won't work,
+    # then starting php-fpm, else my entrypoint won't work,
+    # then executing my entrypoint and finally running nano to keep container alive,
+    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && php-fpm -D && ./docker/php-fpm/entrypoint.bash && nano /tmp/keep"
+    working_dir: /application
+    restart: always
+    tty: true
+    depends_on:
+      - pms-database-mariadb
+    volumes:
+      - .:/application
+
+  pms-adminer:
+    container_name: pms-adminer
+    hostname: pms-adminer
+    image: adminer:4.8.0
+    restart: always
+    tty: true
     ports:
       - 8081:8080
+
+  pms-mail:
+    container_name: pms-mail
+    hostname: pms-mail
+    restart: always
+    tty: true
+    command: >
+      mailpit 
+        --smtp-auth-allow-insecure 
+        --db-file=/mailpit/mail.db
+
+    build: ./docker/mailpit
+    ports:
+      - "8082:8025"
+
+    volumes:
+      - pms-mailpit-db:/mailpit/mail.db
+
+volumes:
+  pms-mailpit-db:
+  database:

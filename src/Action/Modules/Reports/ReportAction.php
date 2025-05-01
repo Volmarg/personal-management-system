@@ -187,8 +187,8 @@ class ReportAction extends AbstractController {
      * @return Response
      */
     private function renderTemplateHistoricalMoneyOwed(bool $ajaxRender): Response {
-        $historicalMoneyOwedByMe     = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(true);
-        $historicalMoneyOwedByOthers = $this->controllers->getReportsControllers()->fetchHistoricalMoneyOwedBy(false);
+        $historicalMoneyOwedByMe     = $this->controllers->getReportsControllers()->fetchHistoricalOwedMoney(true);
+        $historicalMoneyOwedByOthers = $this->controllers->getReportsControllers()->fetchHistoricalOwedMoney(false);
 
         $templateData = [
             'ajax_render'                     => $ajaxRender,

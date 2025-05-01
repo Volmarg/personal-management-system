@@ -2,68 +2,62 @@
     "name": "volmarg/personal-management-system",
     "authors": [{
         "name": "Dariusz Włodarczyk",
-        "email": "dwlodarczyk12@gmail.com",
-        "role": "Developer"
+        "homepage": "https://www.linkedin.com/in/volmarg/",
+        "email": "personal.management.system.inbox@gmail.com",
+        "role": "Owner && Developer"
     }],
     "description": "Personal Management System - Your central point for managing personal data",
     "license": "MIT",
     "keywords": [
-        "symfony",
-        "template",
-        "bootstrap",
-        "responsive",
-        "admin",
-        "user",
-        "ui"
+        "Personal Management System",
+        "Management System",
+        "Data management",
+        "Private data",
+        "Privacy"
     ],
     "type": "project",
     "require": {
-        "php": "^7.4.0",
+        "php": "^8.3.0",
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "beberlei/doctrineextensions": "^1.2",
+        "beberlei/doctrineextensions": "v1.3.0",
         "composer/package-versions-deprecated": "^1.11",
         "cweagans/composer-patches": "^1.6",
-        "doctrine/annotations": "^1.10",
-        "doctrine/common": "^2",
+        "doctrine/annotations": "v1.14.4",
         "doctrine/doctrine-bundle": "^2",
         "doctrine/doctrine-migrations-bundle": "^2",
-        "doctrine/orm": "^2",
         "gumlet/php-image-resize": "^2.0",
-        "phpunit/phpunit": "^8.5",
+        "lexik/jwt-authentication-bundle": "v2.16.0",
         "ramsey/uuid": "^3.8",
         "sensio/framework-extra-bundle": "^5.1",
         "sensiolabs/security-checker": "^6.0",
         "slowprog/composer-copy-file": "^0.3.2",
         "specshaper/encrypt-bundle": "dev-master",
-        "symfony/asset": "^5.0",
-        "symfony/console": "^5.0",
-        "symfony/debug-bundle": "^5.0",
-        "symfony/dotenv": "^5.0",
+        "symfony/asset": "v5.4",
+        "symfony/config": "v5.4",
+        "symfony/console": "v5.4",
+        "symfony/debug-bundle": "v5.4",
+        "symfony/dotenv": "v5.4",
         "symfony/flex": "^1.0",
-        "symfony/form": "^5.0",
-        "symfony/framework-bundle": "^5.0",
-        "symfony/google-mailer": "^5.3",
-        "symfony/http-foundation": "^5.0",
+        "symfony/form": "v5.4",
+        "symfony/framework-bundle": "v5.4",
+        "symfony/http-foundation": "v5.4",
+        "symfony/mailer": "v5.4",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/routing": "^5.0",
-        "symfony/security-bundle": "^5.0",
-        "symfony/serializer": "^5.0",
+        "symfony/routing": "v5.4",
+        "symfony/security-bundle": "v5.4",
+        "symfony/serializer": "v5.4",
         "symfony/stopwatch": "^5.0",
-        "symfony/swiftmailer-bundle": "^3.5",
-        "symfony/templating": "^5.0",
-        "symfony/translation": "^5.0",
-        "symfony/twig-bundle": "^5.0",
-        "symfony/validator": "^5.0",
+        "symfony/templating": "v5.4",
+        "symfony/translation": "v5.4",
+        "symfony/validator": "v5.4",
         "symfony/var-dumper": "^5.0",
-        "symfony/web-profiler-bundle": "^5.0",
-        "symfony/webpack-encore-bundle": "^1.4",
-        "symfony/yaml": "^5.0",
+        "symfony/yaml": "v5.4",
         "tinymce/tinymce": "^5.0",
         "twig/extensions": "^1.5",
-        "volmarg/notifier-proxy-logger-bridge": "^1.0",
-        "volmarg/personal-management-system-io-bridge": "^1.0"
+        "volmarg/notifier-proxy-logger-bridge": "v1.1.*",
+        "volmarg/personal-management-system-io-bridge": "v1.1.0"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.2",
@@ -71,10 +65,13 @@
         "fzaninotto/faker": "^1.8",
         "mbezhanov/faker-provider-collection": "^1.2",
         "phpstan/phpstan": "^0.12.32",
-        "symfony/browser-kit": "^5.0",
+        "symfony/browser-kit": "v5.4",
         "symfony/css-selector": "^5.0",
         "symfony/maker-bundle": "^1.0",
-        "symfony/phpunit-bridge": "^5.0"
+        "symfony/phpunit-bridge": "^5.0",
+        "symfony/web-profiler-bundle": "v5.4",
+        "symfony/webpack-encore-bundle": "^1.4",
+        "phpunit/phpunit": "^8.5"
     },
     "config": {
         "preferred-install": {
@@ -88,13 +85,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "Installer\\": "installer/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "App\\Tests\\": "tests/"
+            "App\\": "src/"
         }
     },
     "replace": {
@@ -104,26 +95,12 @@
         "symfony/polyfill-php56": "*"
     },
     "scripts": {
-        "after-install-script": [
-          "echo -e '\\033[1;33m\n\nTesting if after-install-script can be called\n\\033[0m'; if test -f .env; then echo -e '\\033[1;33m\n\nRunning after-install-script\n\\033[0m'; bin/console cache:clear && bin/console cache:warmup && bin/console security:check; else echo -e '\\033[1;33m\n\n.env file does not exist\n\\033[0m'; fi"
-        ],
         "post-install-cmd": [
             "SlowProg\\CopyFile\\ScriptHandler::copy"
         ],
         "post-update-cmd": [
             "SlowProg\\CopyFile\\ScriptHandler::copy"
-        ],
-        "pms-installer": "php -r \"include_once 'installer//AutoInstaller.php'; use Installer\\AutoInstaller; AutoInstaller::run();\" < /dev/tty",
-        "pms-installer-docker": "php -r \"include_once 'installer//AutoInstaller.php'; use Installer\\AutoInstaller; AutoInstaller::runDocker();\" < /dev/tty",
-        "pms-frontend-validate-circular-reference": "./node_modules/.bin/madge ./src/assets/scripts --webpack-config ./webpack.config.js --ts-config ./tsconfig.json  --circular --extensions ts,js",
-        "pms-frontend-generate-production-css-js-assets": "./node_modules/.bin/encore production",
-        "pms-rebuild-backend": "php7.4 bin/console assets:build-translation-messages-yaml; chmod 777 translations -R; sudo -u www-data php7.4 bin/console cache:clear; sudo -u www-data php7.4 bin/console cache:warmup;"
-    },
-    "scripts-descriptions": {
-        "pms-installer": "Script for easier project installation",
-        "pms-frontend-validate-circular-reference": "Checks if there are some circular references in javascript scripts",
-        "pms-frontend-generate-production-css-js-assets": "Generates bundle js/css files for production - can take up to 3 min to compile",
-        "pms-rebuild-backend": "Handles rebuilding the assets, caching etc. for backend"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"

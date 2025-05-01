@@ -1,0 +1,72 @@
+version: "3.1"
+services:
+  pms-database-mariadb:
+    image: linuxserver/mariadb:arm32v7-10.6.13
+    container_name: pms-database-mariadb
+    hostname: pms-database-mariadb
+    restart: always
+    tty: true
+    environment:
+      - MYSQL_DATABASE=pms
+      - MYSQL_ROOT_PASSWORD=password
+    volumes:
+      - database:/config
+
+  pms-nginx:
+    image: yobasystems/alpine-nginx:armhf-stable
+    container_name: pms-nginx
+    hostname: pms-nginx
+    working_dir: /application
+    restart: always
+    tty: true
+    volumes:
+      - .:/application
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "8002:80"
+
+  pms-php-fpm:
+    build: ./docker/php-fpm
+    container_name: pms-php-fpm
+    hostname: pms-php-fpm
+    # Executing original entrypoint, else php won't work,
+    # then starting php-fpm, else my entrypoint won't work,
+    # then executing my entrypoint and finally running nano to keep container alive,
+    entrypoint: sh -c "/usr/local/bin/docker-php-entrypoint && php-fpm -D && ./docker/php-fpm/entrypoint.bash && nano /tmp/keep"
+    working_dir: /application
+    restart: always
+    tty: true
+    depends_on:
+      - pms-database-mariadb
+    volumes:
+      - .:/application
+      - /backup/pms:/backup/pms
+      - ./docker/php-fpm/crontab/pms-pi:/etc/cron.d/pms-pi
+    # this is needed to let the docker access the HOST data, for example MYSQL
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  pms-adminer:
+    container_name: pms-adminer
+    hostname: pms-adminer
+    image: arm32v7/adminer:5.0.6-standalone
+    restart: always
+    tty: true
+    ports:
+      - 8081:8080
+
+  pms-mail:
+    container_name: pms-mail
+    hostname: pms-mail
+    restart: always
+    tty: true
+    command: mailcrab
+    environment:
+      HTTP_HOST: 0.0.0.0
+    build: ./docker/mailcrab
+    ports:
+      - "8089:1080" # http
+      - "1025:1025" # smtp
+
+volumes:
+  database:

@@ -659,7 +659,7 @@ class DialogsAction extends AbstractController
                 return $jsonResponse;
             }
 
-            $issueCardDto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+            $issueCardDto = $this->controllers->getMyIssuesController()->getIssuesData([$issue]);
 
             $templateData = [
                 'issueCardDto' => reset($issueCardDto),
@@ -719,7 +719,7 @@ class DialogsAction extends AbstractController
                 return $jsonResponse;
             }
 
-            $issueCardDto = $this->controllers->getMyIssuesController()->buildIssuesCardsDtosFromIssues([$issue]);
+            $issueCardDto = $this->controllers->getMyIssuesController()->getIssuesData([$issue]);
             $progressForm = $this->app->forms->issueProgressForm([MyIssueProgressType::OPTION_ENTITY_ID => $entityId])->createView();
             $contactForm  = $this->app->forms->issueContactForm([MyIssueContactType::OPTION_ENTITY_ID   => $entityId])->createView();
 

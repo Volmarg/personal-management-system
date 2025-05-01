@@ -66,12 +66,20 @@ class MyContact implements SoftDeletableEntityInterface, EntityInterface
      * @return ContactsTypesDTO
      * @throws \Exception
      */
-    public function getContacts() {
+    public function getContactTypesDto() {
 
         $json = $this->contacts;
         $dto = ContactsTypesDTO::fromJson($json);
 
         return $dto;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContacts(): string
+    {
+        return $this->contacts;
     }
 
     /**

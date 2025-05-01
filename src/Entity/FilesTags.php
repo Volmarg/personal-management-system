@@ -7,6 +7,7 @@ use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Index;
+use LogicException;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FilesTagsRepository")
@@ -40,6 +41,14 @@ class FilesTags implements SoftDeletableEntityInterface, EntityInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 
     public function isDeleted(): ?bool
@@ -76,5 +85,32 @@ class FilesTags implements SoftDeletableEntityInterface, EntityInterface
         $this->tags = $tags;
 
         return $this;
+    }
+
+    /**
+     * @param array $checkedValues
+     *
+     * @return bool
+     */
+    public function isAnyTagMatching(array $checkedValues): bool
+    {
+        $tagsString = $this->getTags() ?? "[]";
+        $tags       = json_decode($tagsString);
+        if (empty($tags)) {
+            return false;
+        }
+
+        $tags = array_map(fn(string $tag) => strtolower($tag), $tags);
+        foreach ($checkedValues as $value) {
+            if (!is_string($value)) {
+                throw new LogicException("At least one of the array elements is not a string");
+            }
+
+            if (in_array(strtolower($value), $tags)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

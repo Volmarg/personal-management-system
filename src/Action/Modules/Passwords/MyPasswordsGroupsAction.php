@@ -2,163 +2,121 @@
 
 namespace App\Action\Modules\Passwords;
 
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Controller\Modules\ModulesController;
+use App\Controller\Modules\Passwords\MyPasswordsGroupsController;
+use App\Entity\Modules\Passwords\MyPasswordsGroups;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Annotation\System\ModuleAnnotation;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class MyPasswordsGroupsAction
- * @package App\Action\Modules\Passwords
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PASSWORDS
- * )
- */
+#[Route("/module/passwords/settings/group", name: "module.passwords.list.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PASSWORDS])]
 class MyPasswordsGroupsAction extends AbstractController {
 
-    /**
-     * @var Application
-     */
-    private Application $app;
-
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers) {
-        $this->app         = $app;
-        $this->controllers = $controllers;
+    public function __construct(
+        private readonly EntityManagerInterface      $em,
+        private readonly MyPasswordsGroupsController $passwordsGroupsController,
+        private readonly TranslatorInterface         $translator
+    ) {
     }
 
     /**
-     * @Route("/my-passwords-settings", name="my-passwords-settings")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function display(Request $request): Response
-    {
-        $passwordGroupForm = $this->app->forms->passwordGroupForm();
-        $this->submitForm($passwordGroupForm , $request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setPageTitle($this->getPasswordsSettingsPageTitle());
-        $ajaxResponse->setCode(Response::HTTP_OK);
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-passwords-groups/remove", name="my-passwords-groups-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function remove(Request $request): Response
-    {
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_PASSWORDS_GROUPS_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
-
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @Route("/my-passwords-groups/update",name="my-passwords-groups-update")
-     * @param Request $request
-     * @return Response
-     * @throws MappingException
-     */
-    public function update(Request $request): Response
-    {
-        $parameters = $request->request->all();
-        $entityId   = $parameters['id'];
-
-        $entity     = $this->controllers->getMyPasswordsGroupsController()->findOneById($entityId);
-        $response   = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-        $passwordGroupForm = $this->app->forms->passwordGroupForm();
-        $groups            = $this->controllers->getMyPasswordsGroupsController()->findAllNotDeleted();
-
-        return $this->render('modules/my-passwords/settings.html.twig', [
-            'ajax_render'                    => $ajaxRender,
-            'groups'                         => $groups,
-            'groups_form'                    => $passwordGroupForm->createView(),
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'page_title'                     => $this->getPasswordsSettingsPageTitle(),
-        ]);
-    }
-
-    /**
-     * @param FormInterface $form
-     * @param Request $request
      * @return JsonResponse
-     * 
      */
-    private function submitForm(FormInterface $form, Request $request): JsonResponse
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
     {
-        $form->handleRequest($request);
-        $formData = $form->getData();
+        $groups = $this->passwordsGroupsController->findAllNotDeleted();
 
-        if (
-                !is_null($formData)
-            &&  !is_null($this->controllers->getMyPasswordsGroupsController()->findOneByName($formData->getName()))
-        ) {
-            $recordWithThisNameExist = $this->app->translator->translate('db.recordWithThisNameExist');
-            return new JsonResponse($recordWithThisNameExist, 409);
+        $entriesData = [];
+        foreach ($groups as $group) {
+            $entriesData[] = [
+                'id'   => $group->getId(),
+                'name' => $group->getName(),
+            ];
         }
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->app->em->persist($formData);
-            $this->app->em->flush();
-        }
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
 
-        $formSubmittedMessage = $this->app->translator->translate('forms.general.success');
-        return new JsonResponse($formSubmittedMessage, 200);
+        return $response->toJsonResponse();
     }
 
     /**
-     * Will return passwords settings page title
+     * @param Request $request
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function getPasswordsSettingsPageTitle(): string
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        return $this->app->translator->translate('passwords.settings.title');
+        return $this->createOrUpdate($request)->toJsonResponse();
+    }
+
+    /**
+     * @param MyPasswordsGroups $group
+     * @param Request           $request
+     *
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyPasswordsGroups $group, Request $request): JsonResponse
+    {
+        return $this->createOrUpdate($request, $group)->toJsonResponse();
+    }
+
+    /**
+     * @param MyPasswordsGroups $group
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyPasswordsGroups $group): JsonResponse
+    {
+        $group->setDeleted(true);
+        $this->em->persist($group);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request                $request
+     * @param MyPasswordsGroups|null $group
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyPasswordsGroups $group = null): BaseResponse
+    {
+        $isNew = is_null($group);
+        if ($isNew) {
+            $group = new MyPasswordsGroups();
+        }
+
+        $dataArray = RequestService::tryFromJsonBody($request);
+        $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
+
+        if (!is_null($this->passwordsGroupsController->findOneByName($name))) {
+            return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.passwords.groups.createdUpdate.nameExist'));
+        }
+
+        $group->setName($name);
+
+        $this->em->persist($group);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
     }
 
 }

@@ -1,0 +1,6 @@
+lexik_jwt_authentication:
+    secret_key:       '%kernel.project_dir%/config/jwt/%kernel.environment%/private.pem' # required for token creation
+    public_key:       '%kernel.project_dir%/config/jwt/%kernel.environment%/public.pem'  # required for token verification
+    pass_phrase:      '%env(APP_SECRET)%'     # required for token creation, usage of an environment variable is recommended
+    token_ttl:        '%jwt_token_lifetime%'  # lifetime of token - meaning timeout to logout as well
+    user_identity_field: "email"              # Must be compatible with security.yaml `security.providers.app_user_provider.entity.property`

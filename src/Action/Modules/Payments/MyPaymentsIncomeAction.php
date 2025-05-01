@@ -5,152 +5,125 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\AjaxResponse;
-use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
-use App\Controller\Core\Repositories;
-use Doctrine\ORM\Mapping\MappingException;
+use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\Payments\MyPaymentsIncome;
+use App\Response\Base\BaseResponse;
+use App\Services\RequestService;
+use App\Services\TypeProcessor\ArrayHandler;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class MyPaymentsIncomeAction
- * @package App\Action\Modules\Payments
- * @ModuleAnnotation(
- *     name=App\Controller\Modules\ModulesController::MODULE_NAME_PAYMENTS
- * )
+ * Code ensures that currency name is unique upon saving
  */
+#[Route("/module/payment/income", name: "module.payment.income.")]
+#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
 class MyPaymentsIncomeAction extends AbstractController {
 
-    /**
-     * @var Application $app
-     */
-    private Application $app;
 
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, Controllers $controllers)
-    {
-        $this->app         = $app;
-        $this->controllers = $controllers;
-    }
-
-    /**
-     * @Route("/my-payments-income", name="my-payments-income")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function display(Request $request): Response
-    {
-        $this->add($request);
-
-        if (!$request->isXmlHttpRequest()) {
-            return $this->renderTemplate();
-        }
-
-        $templateContent = $this->renderTemplate(true)->getContent();
-        $ajaxResponse    = new AjaxResponse("", $templateContent);
-        $ajaxResponse->setCode(Response::HTTP_OK);
-        $ajaxResponse->setPageTitle($this->getPaymentsIncomePageTitle());
-
-        return $ajaxResponse->buildJsonResponse();
-    }
-
-    /**
-     * @Route("/my-payments-income/remove/", name="my-payments-income-remove")
-     * @param Request $request
-     * @return Response
-     * @throws Exception
-     */
-    public function remove(Request $request): Response
-    {
-
-        $response = $this->app->repositories->deleteById(
-            Repositories::MY_PAYMENTS_INCOME_REPOSITORY_NAME,
-            $request->request->get('id')
-        );
-
-        $message = $response->getContent();
-
-        if ($response->getStatusCode() == 200) {
-            $renderedTemplate = $this->renderTemplate(true, true);
-            $templateContent  = $renderedTemplate->getContent();
-
-            return AjaxResponse::buildJsonResponseForAjaxCall(200, $message, $templateContent);
-        }
-        return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-    }
-
-    /**
-     * @Route("my-payments-income/update/" ,name="my-payments-income-update")
-     * @param Request $request
-     * @return JsonResponse
-     * @throws MappingException
-     */
-    public function update(Request $request): JsonResponse
-    {
-        $parameters    = $request->request->all();
-        $entityId      = trim($parameters['id']);
-
-        $entity         = $this->controllers->getMyPaymentsIncomeController()->findOneById($entityId);
-        $response       = $this->app->repositories->update($parameters, $entity);
-
-        return AjaxResponse::initializeFromResponse($response)->buildJsonResponse();
-    }
-
-    /**
-     * @param bool $ajaxRender
-     * @param bool $skipRewritingTwigVarsToJs
-     * @return Response
-     * @throws Exception
-     */
-    private function renderTemplate(bool $ajaxRender = false, bool $skipRewritingTwigVarsToJs = false): Response
-    {
-
-        $form           = $this->app->forms->moneyIncomeForm();
-        $currenciesDtos = $this->app->settings->settingsLoader->getCurrenciesDtosForSettingsFinances();
-
-        return $this->render('modules/my-payments/income.html.twig', [
-            "records"                        => $this->controllers->getMyPaymentsIncomeController()->getAllNotDeleted(),
-            'ajax_render'                    => $ajaxRender,
-            'form'                           => $form->createView(),
-            'currencies_dtos'                => $currenciesDtos,
-            'skip_rewriting_twig_vars_to_js' => $skipRewritingTwigVarsToJs,
-            'page_title'                     => $this->getPaymentsIncomePageTitle(),
-        ]);
+    public function __construct(
+        private readonly EntityManagerInterface $em
+    ) {
     }
 
     /**
      * @param Request $request
-     */
-    private function add(Request $request) {
-        $form = $this->app->forms->moneyIncomeForm();
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $formData = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($formData);
-            $em->flush();
-        }
-
-    }
-
-    /**
-     * Will return payments income page title
      *
-     * @return string
+     * @return JsonResponse
+     * @throws Exception
      */
-    private function getPaymentsIncomePageTitle(): string
+    #[Route("", name: "new", methods: [Request::METHOD_POST])]
+    public function new(Request $request): JsonResponse
     {
-        return $this->app->translator->translate('payments.incomes.title');
+        return $this->createOrUpdate($request)->toJsonResponse();
     }
+
+    /**
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
+    {
+        $icnomes     = $this->em->getRepository(MyPaymentsIncome::class)->getAllNotDeleted();
+        $entriesData = [];
+        foreach ($icnomes as $income) {
+            $entriesData[] = [
+                'id'          => $income->getId(),
+                'date'        => $income->getDate()?->format('Y-m-d'),
+                'amount'      => $income->getAmount(),
+                'information' => $income->getInformation(),
+                'currency'    => $income->getCurrency(),
+            ];
+        }
+
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($entriesData);
+
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * @param MyPaymentsIncome $income
+     * @param Request          $request
+     *
+     * @return JsonResponse
+     * @throws Exception
+     */
+    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    public function update(MyPaymentsIncome $income, Request $request): JsonResponse
+    {
+        return $this->createOrUpdate($request, $income)->toJsonResponse();
+    }
+
+    /**
+     * @param MyPaymentsIncome $income
+     *
+     * @return JsonResponse
+     */
+    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    public function remove(MyPaymentsIncome $income): JsonResponse
+    {
+        $income->setDeleted(true);
+        $this->em->persist($income);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * @param Request               $request
+     * @param MyPaymentsIncome|null $income
+     *
+     * @return BaseResponse
+     * @throws Exception
+     */
+    private function createOrUpdate(Request $request, ?MyPaymentsIncome $income = null): BaseResponse
+    {
+        if (!$income) {
+            $income = new MyPaymentsIncome();
+        }
+
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
+        $amount      = ArrayHandler::get($dataArray, 'amount', allowEmpty: false);
+        $information = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
+        $currency    = ArrayHandler::get($dataArray, 'currency', allowEmpty: false);
+
+        $income->setDate(new DateTime($dateString));
+        $income->setInformation($information);
+        $income->setAmount((int)$amount);
+        $income->setCurrency($currency);
+
+        $this->em->persist($income);
+        $this->em->flush();
+
+        return BaseResponse::buildOkResponse();
+    }
+
 }
