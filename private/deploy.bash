@@ -45,6 +45,3 @@ ssh "$USED_HOST" "docker exec $CONTAINER_NAME bin/console cache:warmup"
 
 ssh "$USED_HOST" "docker exec $CONTAINER_NAME cachetool.phar opcache:reset"
 ssh "$USED_HOST" "docker exec $CONTAINER_NAME cachetool.phar apcu:cache:clear"
-
-ssh "$USED_HOST" "docker exec $CONTAINER_NAME chmod 644 /etc/cron.d -R"
-ssh "$USED_HOST" "docker exec $CONTAINER_NAME chown root:root /etc/cron.d -R"

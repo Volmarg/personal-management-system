@@ -138,3 +138,6 @@ cachetool.phar apcu:cache:clear
 createDirs
 setEncryptionKey
 generateJwtKeyPair
+
+chmod 644 /etc/cron.d -R;
+chown root:root /etc/cron.d -R;
