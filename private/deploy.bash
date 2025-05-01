@@ -23,7 +23,6 @@ if [[ -z "$USED_HOST" || -z "$DIR" ]]; then
 fi;
 
 rsync -h -v -r -P -t \
---exclude data \
 --exclude .git \
 --exclude .idea \
 --exclude config/packages/config/encryption.yaml \
