@@ -15,7 +15,7 @@ echo '[start]';
 # Clear upload folder and add files back
 ## images
 ### Clear images dir
-execInContainer "rm -r /$APP_DIR/public/upload/images/*";
+execInContainer "rm -rf /$APP_DIR/public/upload/images/*";
 echo 'Removing old images';
 
 ### Copy demo data images for upload module (images)
@@ -24,7 +24,7 @@ echo 'Copy images for MyImages';
 
 ## files
 ### Clear files dir
-execInContainer "rm -r /$APP_DIR/public/upload/files/*";
+execInContainer "rm -rf /$APP_DIR/public/upload/files/*";
 echo 'Remove files from myfiles';
 
 ### Copy back files for demo data
@@ -33,7 +33,7 @@ echo 'Copy data for MyFiles';
 
 ## videos
 ### clear videos dir
-execInContainer "rm -r /$APP_DIR/public/upload/videos/*";
+execInContainer "rm -rf /$APP_DIR/public/upload/videos/*";
 echo 'Remove videos from myfiles';
 
 ### Copy back video  for demo data
