@@ -1,23 +1,20 @@
 <p align="center">
-<img src="https://github.com/Volmarg/personal-management-system/blob/main/public/logo-small.png?raw=true" width="100px"/>
+<img src="github/logo.svg" width="100px"/>
 </p>
 
-<h1 align="center"> Personal Management System</h1>
-<p align="center"><i>Your central point for managing personal data <br> (if current modules allow to do that).</i></p>
-
-<div align="center">
-<i>Check out my other tools</i><br>
-<a href="http://voltigo.pl/"><img src="https://img.shields.io/badge/Voltigo-0078D7?style=for-the-badge&logoColor=white"></a>
-</div>
+<h1 align="center"> Personal Management System<br/>Backend</h1>
+<p align="center"><i>Your central point for managing personal data.</i></p>
+<p align="center"><i>This is only backend - read below!.</i></p>
 
 <h3>Documentation / Demo</h3>
 <hr>
 
 <ul>
+<li><b>Frontend</b> - available <a href="https://github.com/Volmarg/personal-management-system-front"><b>here</b></a></li>
 <li><b>Documentation</b> - available <a href="https://volmarg.github.io"><b>here</b></a></li>
 <li><b>Demo</b> - click <a href="http://personal-management-system.pl/"><b>here </b></a>
 <ul>
-<li><b>Login:</b> admin</li>
+<li><b>Login:</b> admin@admin.admin</li>
 <li><b>Password/LockPassword:</b> admin</li>
 </ul>
 </li>
@@ -43,11 +40,9 @@
 <h3>Preview</h3>
 <hr>	
 
-<img src="https://volmarg.github.io/img/project-example-dashboard.jpg">
-
-<img src="https://volmarg.github.io/img/project-example-charts.jpg">
-
-<img src="https://volmarg.github.io/img/project-example-contacts.jpg">
+<img src="github/dashboard.png">
+<img src="github/contacts.png">
+<img src="github/calendar.png">
 
 <h3>Available options and modules</h3>
 <hr>
@@ -77,16 +72,7 @@
 
 <h2>How to install/documentation</h2>
 
-<h3> Linux installer </h3>
-
-<p>
-<b> In both cases it's explicitly required to install composer dependencies at first! </b>
-</p>
-
-<ul>
-    <li><b>For standard installation call:</b> <pre>composer pms-installer</pre></li>
-    <li><b>For installation from within docker usage call:</b> <pre>composer pms-installer-docker</pre></li>
-</ul>
+Check the official documentation: todo
 
 <h2>Future development plans</h2>
 
@@ -103,66 +89,13 @@
 </p>
 
 <p align="justify">
-    As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need. So after reaching my goal I could handle some support requests if anyone will be interested.
+    As I'm working on it there will be some fixes, and new modules in future when I reach the point when I got all I need.
 </p>
 
-<h3>Browsers Support</h3>
-<ul>
-	<li>Chrome</li>
-</ul>
+<h2>Tech / frameworks / solutions</h2>
 
-<p>
-	I mean for real. Just <b>Chrome</b>. I know about bug with copying password in Firefox for example. But I just do everything in Chrome so I'm not really planning to check that on other browsers. And before You ask why I only support chrome - I don't do it because of "chrome is the best" or anything like that, I just use that browser for 98% of time and that's just it.
-</p>
+Check the official documentation: todo
 
-<hr>
+<h2>Contribution / special thanks</h2>
 
-<h2>Tech</h2>
-<p style="text-align:justify;">
-    Personal Management System is a web application which can be ran either in Windows and Linux enviroment. Everything is by default tested on Ubuntu 20.x.
-</p>
-
-<h3>Used languages/frameworks/solutions</h3>
-
-<ul>
-<li>Php 7.4.x</li>
-<li>JS</li>
-<li>JQ</li>
-<li>TypeScript (as from v1.3)</li>
-<li>Symfony 5.x</li>
-<li>MySQL</li>
-<li>Css</li>
-<li>Scss</li>
-<li>Node 10.22.1</li>
-<li>Bootstrap</li>
-<li>Webpack</li>
-<li><small>And maybe some others which I just don't remember</small></li>
-</ul>
-
-<h3>Used packages</h3>
-<ul>
-<li><a href="https://github.com/krzysiekpiasecki/Symfonator">Symfonator</a> <small>(Ui)</small></li>
-<li><a href="https://github.com/mogilvie/EncryptBundle">EncryptBundle</a> <small>(Core for passwords module)</small></li>
-<li><a href="https://github.com/furcan/IconPicker">Icon Picker</a> <small>(Icon picker for Notes module)</small></li>
-<li><a href="https://github.com/makeusabrew/bootbox">Bootbox</a> (<small>Additional safety confirmations for CRUD</small>)
-</li>
-<li><a href="https://github.com/mbezhanov/faker-provider-collection">Faker Provider Collection</a> <small>(<a href="https://github.com/fzaninotto/faker">Faker</a> extension)</small></li>
-<li><a href="https://github.com/EastDesire/jscolor">JsColor</a> (<small>Color pickers for Notes module</small>)</li>
-<li>... bootstrap, TinyMce, DataTables and many others</li>
-<li>... I don't even know some of them which come prebuild in Symfonator</li>
-</ul>
-
-<h2>Special thanks to</h2>
-<ul>
-	<li><a href="https://github.com/mogilvie">Mark Ogilvie</a> - for fixing EncryptBundle bugs for Symfony 4</li>
-	<li><a href="https://github.com/furcan">Furcan</a> - for adding my idea of contenteditable support for Icon Picker</li>
-	<li><a href="https://github.com/petervanderwalt">Petervanderwalt</a> - for adding fontawesome <b>js</b> version support for <a href="https://github.com/furcan/IconPicker">IconPicker</a></li>	
-	<li><a href="https://github.com/SimonHaas">SimonHaas</a> - for providing <b>docker</b> configuration</li>	
-	<li><a href="https://github.com/MohamedElashri">MohamedElashri</a> - for testing <b>docker</b> configuration</li>	
-	<li><a href="https://github.com/rwaight">Rob Waight</a> - for providing changes and documentation for running <b>docker</b> on windows</li>	
-</ul>
-
-<h3>Contact</h3>
-<hr>
-
-- <p align="left"><b>Mail</b> - <a href="mailto:personal.management.system.pms@gmail.com"><i>personal.management.system.pms@gmail.com</i></a></p>
+Go here:  todo
