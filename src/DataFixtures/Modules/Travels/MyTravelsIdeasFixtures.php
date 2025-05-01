@@ -11,12 +11,12 @@ use Faker\Factory;
 
 class MyTravelsIdeasFixtures extends Fixture
 {
+    private const FAKE_IMAGE_PROVIDER = 'https://picsum.photos/700/300'; // the numbers are "width X height"
+
     /**
      * Factory $faker
      */
     private $faker;
-
-    const IMAGES_PATH_IN_PUBLIC_DIR = '/assets/images/modules/travels/';
 
     public function __construct() {
         $this->faker    = Factory::create('en');
@@ -32,17 +32,15 @@ class MyTravelsIdeasFixtures extends Fixture
 
         for($x = 0; $x <= 150; $x++){
 
-
             $country    = $this->faker->country;
             $city       = $this->faker->city;
             $category   = Utils::arrayGetRandom($categories);
-            $image      = Utils::arrayGetRandom(Travels::IMAGES_IN_PUBLIC_DIR);
             $map        = Utils::arrayGetRandom(Travels::MAPS);
 
             $travelIdea = new MyTravelsIdeas();
             $travelIdea->setCategory($category);
             $travelIdea->setMap($map);
-            $travelIdea->setImage(static::IMAGES_PATH_IN_PUBLIC_DIR.$image);
+            $travelIdea->setImage(self::FAKE_IMAGE_PROVIDER . "?hash=$x");
             $travelIdea->setLocation($city);
             $travelIdea->setCountry($country);
 
