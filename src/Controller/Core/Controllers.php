@@ -6,7 +6,6 @@ namespace App\Controller\Core;
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FilesUploadSettingsController;
 use App\Controller\Files\FileUploadController;
-use App\Controller\Modules\Achievements\AchievementController;
 use App\Controller\Modules\Contacts\MyContactGroupController;
 use App\Controller\Modules\Contacts\MyContactsController;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
@@ -63,11 +62,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
  * @package App\Controller\Utils
  */
 class Controllers extends AbstractController {
-
-    /**
-     * @var AchievementController|null $achievementController
-     */
-    private $achievementController = null;
 
     /**
      * @var ReportsController $reportsControllers
@@ -350,13 +344,6 @@ class Controllers extends AbstractController {
      */
     public function getMyContactSettingsController(): MyContactsSettingsController {
         return $this->myContactSettingsController;
-    }
-
-    /**
-     * @return AchievementController|null
-     */
-    public function getAchievementController(): ?AchievementController {
-        return $this->achievementController;
     }
 
     /**
@@ -719,7 +706,6 @@ class Controllers extends AbstractController {
     }
 
     public function __construct(
-        AchievementController         $achievementController,
         ReportsController             $reportsController,
         MyNotesController             $myNotesController,
         MyNotesCategoriesController   $myNotesCategoriesController,
@@ -773,7 +759,6 @@ class Controllers extends AbstractController {
         MyScheduleRemindersController        $myScheduleReminderController,
         FileUploadController                 $fileUploadController
     ) {
-        $this->achievementController        = $achievementController;
         $this->reportsControllers           = $reportsController;
         $this->myNotesController            = $myNotesController;
         $this->myNotesCategoriesController  = $myNotesCategoriesController;

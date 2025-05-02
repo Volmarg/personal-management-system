@@ -2,9 +2,9 @@
 
 namespace App\Action\Modules\Achievements;
 
-use App\Controller\Modules\Achievements\AchievementController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Achievements\Achievement;
+use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -22,7 +22,7 @@ class AchievementAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly AchievementController  $achievementController
+        private readonly AchievementRepository $achievementRepository
     )
     {
     }
@@ -46,7 +46,7 @@ class AchievementAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allAchievements = $this->achievementController->getAllNotDeleted();
+        $allAchievements = $this->achievementRepository->getAllNotDeleted();
         $entriesData     = [
             Achievement::ENUM_HARDCORE => [],
             Achievement::ENUM_HARD     => [],
