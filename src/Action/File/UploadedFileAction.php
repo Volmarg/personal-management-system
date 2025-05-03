@@ -2,6 +2,7 @@
 
 namespace App\Action\File;
 
+use App\Controller\Core\Env;
 use App\Services\Core\Logger;
 use App\Services\Files\PathService;
 use App\Services\Files\Upload\TemporaryFileHandlerService;
@@ -84,6 +85,11 @@ class UploadedFileAction extends AbstractController
             $response->setLocalFileName($usedFileName);
             $response->setUploadId($uploadConfigId);
             $response->setMessage($this->translator->trans('file.upload.msg.uploadSuccess'));
+
+            if (Env::isDemo()) {
+                $response->setMessage("Demo: file has been uploaded but for security reasons it has been removed.");
+                unlink($filePath);
+            }
         } catch (UploadValidationException) {
             $status  = UploadStatusEnum::ERROR;
             $isError = true;
