@@ -10,7 +10,6 @@ use App\Controller\Modules\Contacts\MyContactGroupController;
 use App\Controller\Modules\Contacts\MyContactsController;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
 use App\Controller\Modules\Contacts\MyContactTypeController;
-use App\Controller\Modules\Dashboard\DashboardController;
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Goals\GoalsListController;
 use App\Controller\Modules\Goals\GoalsPaymentsController;
@@ -232,11 +231,6 @@ class Controllers extends AbstractController {
      * @var MyContactGroupController $myContactGroupController
      */
     private MyContactGroupController $myContactGroupController;
-
-    /**
-     * @var DashboardController $dashboardController
-     */
-    private DashboardController $dashboardController;
 
     /**
      * @var GoalsPaymentsController $goalsPaymentsController
@@ -562,14 +556,6 @@ class Controllers extends AbstractController {
     }
 
     /**
-     * @return DashboardController
-     */
-    public function getDashboardController(): DashboardController
-    {
-        return $this->dashboardController;
-    }
-
-    /**
      * @return GoalsPaymentsController
      */
     public function getGoalsPaymentsController(): GoalsPaymentsController
@@ -740,7 +726,6 @@ class Controllers extends AbstractController {
         FilesSearchController         $filesSearchController,
         MyContactTypeController       $myContactTypeController,
         MyContactGroupController      $myContactGroupController,
-        DashboardController           $dashboardController,
         GoalsPaymentsController       $goalsPaymentsController,
         MyIssueContactController      $myIssueContactController,
         MyIssueProgressController     $myIssueProgressController,
@@ -793,7 +778,6 @@ class Controllers extends AbstractController {
         $this->filesSearchController        = $filesSearchController;
         $this->myContactTypeController      = $myContactTypeController;
         $this->myContactGroupController     = $myContactGroupController;
-        $this->dashboardController          = $dashboardController;
         $this->goalsPaymentsController      = $goalsPaymentsController;
         $this->myIssueContactController     = $myIssueContactController;
         $this->myIssueProgressController    = $myIssueProgressController;
