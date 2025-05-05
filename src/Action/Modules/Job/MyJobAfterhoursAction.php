@@ -3,7 +3,6 @@
 namespace App\Action\Modules\Job;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\Job\MyJobAfterhoursController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Response\Base\BaseResponse;
@@ -23,8 +22,7 @@ class MyJobAfterhoursAction extends AbstractController
 {
 
     public function __construct(
-        private readonly MyJobAfterhoursController $jobAfterhoursController,
-        private readonly EntityManagerInterface    $em,
+        private readonly EntityManagerInterface $em,
     ) {
     }
 
@@ -46,7 +44,7 @@ class MyJobAfterhoursAction extends AbstractController
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $afterhours = $this->jobAfterhoursController->findAllNotDeletedByType([
+        $afterhours = $this->em->getRepository(MyJobAfterhours::class)->findAllNotDeletedByType([
             MyJobAfterhours::TYPE_SPENT,
             MyJobAfterhours::TYPE_MADE
         ]);

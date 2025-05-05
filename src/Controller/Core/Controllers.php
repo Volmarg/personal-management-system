@@ -16,7 +16,6 @@ use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Modules\Issues\MyIssueContactController;
 use App\Controller\Modules\Issues\MyIssueProgressController;
 use App\Controller\Modules\Issues\MyIssuesController;
-use App\Controller\Modules\Job\MyJobAfterhoursController;
 use App\Controller\Modules\Job\MyJobHolidaysController;
 use App\Controller\Modules\Job\MyJobHolidaysPoolController;
 use App\Controller\Modules\Job\MyJobSettingsController;
@@ -105,11 +104,6 @@ class Controllers extends AbstractController {
      * @var FilesTagsController $filesTagsController
      */
     private $filesTagsController;
-
-    /**
-     * @var MyJobAfterhoursController $myJobAfterhoursController
-     */
-    private $myJobAfterhoursController;
 
     /**
      * @var MyJobSettingsController $myJobSettingsController
@@ -374,13 +368,6 @@ class Controllers extends AbstractController {
      */
     public function getFilesTagsController(): FilesTagsController {
         return $this->filesTagsController;
-    }
-
-    /**
-     * @return MyJobAfterhoursController
-     */
-    public function getMyJobAfterhoursController(): MyJobAfterhoursController {
-        return $this->myJobAfterhoursController;
     }
 
     /**
@@ -687,7 +674,6 @@ class Controllers extends AbstractController {
         MyImagesController            $myImagesController,
         MyFilesController             $myFilesController,
         FilesTagsController           $filesTagsController,
-        MyJobAfterhoursController     $myJobAfterhoursController,
         MyJobSettingsController       $myJobSettingsController,
         MyPasswordsController         $myPasswordsController,
         MySchedulesController         $mySchedulesController,
@@ -738,7 +724,6 @@ class Controllers extends AbstractController {
         $this->myImagesController           = $myImagesController;
         $this->myFilesController            = $myFilesController;
         $this->filesTagsController          = $filesTagsController;
-        $this->myJobAfterhoursController    = $myJobAfterhoursController;
         $this->myJobSettingsController      = $myJobSettingsController;
         $this->myPasswordsController        = $myPasswordsController;
         $this->mySchedulesController        = $mySchedulesController;
