@@ -16,7 +16,6 @@ use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Modules\Issues\MyIssueContactController;
 use App\Controller\Modules\Issues\MyIssueProgressController;
 use App\Controller\Modules\Issues\MyIssuesController;
-use App\Controller\Modules\Job\MyJobHolidaysController;
 use App\Controller\Modules\Job\MyJobHolidaysPoolController;
 use App\Controller\Modules\Job\MyJobSettingsController;
 use App\Controller\Modules\ModuleDataController;
@@ -234,11 +233,6 @@ class Controllers extends AbstractController {
      * @var MyIssueProgressController $myIssueProgressController
      */
     private MyIssueProgressController $myIssueProgressController;
-
-    /**
-     * @var MyJobHolidaysController $myJobHolidaysController
-     */
-    private MyJobHolidaysController $myJobHolidaysController;
 
     /**
      * @var MyPasswordsGroupsController $myPasswordsGroupsController
@@ -553,14 +547,6 @@ class Controllers extends AbstractController {
     }
 
     /**
-     * @return MyJobHolidaysController
-     */
-    public function getMyJobHolidaysController(): MyJobHolidaysController
-    {
-        return $this->myJobHolidaysController;
-    }
-
-    /**
      * @return MyPasswordsGroupsController
      */
     public function getMyPasswordsGroupsController(): MyPasswordsGroupsController
@@ -700,7 +686,6 @@ class Controllers extends AbstractController {
         GoalsPaymentsController       $goalsPaymentsController,
         MyIssueContactController      $myIssueContactController,
         MyIssueProgressController     $myIssueProgressController,
-        MyJobHolidaysController       $myJobHolidaysController,
         MyPasswordsGroupsController   $myPasswordsGroupsController,
         MyShoppingPlansController     $myShoppingPlansController,
         MyPaymentsIncomeController    $myPaymentsIncomeController,
@@ -750,7 +735,6 @@ class Controllers extends AbstractController {
         $this->goalsPaymentsController      = $goalsPaymentsController;
         $this->myIssueContactController     = $myIssueContactController;
         $this->myIssueProgressController    = $myIssueProgressController;
-        $this->myJobHolidaysController      = $myJobHolidaysController;
         $this->myPasswordsGroupsController  = $myPasswordsGroupsController;
         $this->myShoppingPlansController    = $myShoppingPlansController;
         $this->myPaymentsIncomeController   = $myPaymentsIncomeController;
