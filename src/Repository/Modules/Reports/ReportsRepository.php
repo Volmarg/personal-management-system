@@ -166,7 +166,7 @@ class ReportsRepository{
             AND mpm.deleted = 0
             
             GROUP BY mpm.type_id, DATE_FORMAT(mpm.date, '%Y-%m')
-            ORDER BY DATE_FORMAT(mpm.date, '%Y-%m') DESC
+            ORDER BY DATE_FORMAT(mpm.date, '%Y-%m') ASC
         ";
 
         $stmt    = $connection->executeQuery($sql);
