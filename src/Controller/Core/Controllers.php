@@ -34,7 +34,6 @@ use App\Controller\Modules\Payments\MyRecurringPaymentsMonthlyController;
 use App\Controller\Modules\Reports\ReportsController;
 use App\Controller\Modules\Schedules\MyScheduleRemindersController;
 use App\Controller\Modules\Schedules\MySchedulesController;
-use App\Controller\Modules\Shopping\MyShoppingPlansController;
 use App\Controller\Modules\Todo\MyTodoController;
 use App\Controller\Modules\Todo\MyTodoElementController;
 use App\Controller\Modules\Travels\MyTravelsIdeasController;
@@ -237,11 +236,6 @@ class Controllers extends AbstractController {
      * @var MyPasswordsGroupsController $myPasswordsGroupsController
      */
     private MyPasswordsGroupsController $myPasswordsGroupsController;
-
-    /**
-     * @var MyShoppingPlansController $myShoppingPlansController
-     */
-    private MyShoppingPlansController $myShoppingPlansController;
 
     /**
      * @var MyPaymentsIncomeController $myPaymentsIncomeController
@@ -549,14 +543,6 @@ class Controllers extends AbstractController {
     }
 
     /**
-     * @return MyShoppingPlansController
-     */
-    public function getMyShoppingPlansController(): MyShoppingPlansController
-    {
-        return $this->myShoppingPlansController;
-    }
-
-    /**
      * @return MyPaymentsIncomeController
      */
     public function getMyPaymentsIncomeController(): MyPaymentsIncomeController
@@ -673,7 +659,6 @@ class Controllers extends AbstractController {
         MyIssueContactController      $myIssueContactController,
         MyIssueProgressController     $myIssueProgressController,
         MyPasswordsGroupsController   $myPasswordsGroupsController,
-        MyShoppingPlansController     $myShoppingPlansController,
         MyPaymentsIncomeController    $myPaymentsIncomeController,
         MyPaymentsProductsController  $myPaymentsProductsController,
         MyPaymentsOwedController      $myPaymentsOwedController,
@@ -720,7 +705,6 @@ class Controllers extends AbstractController {
         $this->myIssueContactController     = $myIssueContactController;
         $this->myIssueProgressController    = $myIssueProgressController;
         $this->myPasswordsGroupsController  = $myPasswordsGroupsController;
-        $this->myShoppingPlansController    = $myShoppingPlansController;
         $this->myPaymentsIncomeController   = $myPaymentsIncomeController;
         $this->myPaymentsProductsController = $myPaymentsProductsController;
         $this->myPaymentsOwedController     = $myPaymentsOwedController;
