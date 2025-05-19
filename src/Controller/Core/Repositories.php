@@ -22,7 +22,6 @@ use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
-use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
@@ -30,10 +29,8 @@ use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Issues\MyIssueContactRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Issues\MyIssueRepository;
-use App\Repository\Modules\Job\MyJobAfterhoursRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
-use App\Repository\Modules\Job\MyJobSettingsRepository;
 use App\Repository\Modules\ModuleDataRepository;
 use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
@@ -61,83 +58,37 @@ use App\Repository\System\ModuleRepository;
 use App\Repository\UserRepository;
 use App\Services\Exceptions\ExceptionRepository;
 use App\Services\Core\Translator;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\MappingException;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use TypeError;
 
 class Repositories extends AbstractController {
 
-    const ACHIEVEMENT_REPOSITORY_NAME                   = 'AchievementRepository';
-    const MY_NOTES_REPOSITORY_NAME                      = 'MyNotesRepository';
-    const MY_NOTES_CATEGORIES_REPOSITORY_NAME           = 'MyNotesCategoriesRepository';
-    const MY_JOB_AFTERHOURS_REPOSITORY_NAME             = 'MyJobAfterhoursRepository';
-    const MY_PAYMENTS_MONTHLY_REPOSITORY_NAME           = 'MyPaymentsMonthlyRepository';
-    const MY_PAYMENTS_PRODUCTS_REPOSITORY_NAME          = 'MyPaymentsProductRepository';
-    const MY_PAYMENTS_SETTINGS_REPOSITORY_NAME          = 'MyPaymentsSettingsRepository';
-    const MY_SHOPPING_PLANS_REPOSITORY_NAME             = 'MyShoppingPlansRepository';
-    const MY_TRAVELS_IDEAS_REPOSITORY_NAME              = 'MyTravelsIdeasRepository';
-    const INTEGRATIONS_RESOURCES_REPOSITORY_NAME        = 'IntegrationResourceRepository';
-    const MY_PASSWORDS_REPOSITORY_NAME                  = 'MyPasswordsRepository';
-    const MY_PASSWORDS_GROUPS_REPOSITORY_NAME           = 'MyPasswordsGroupsRepository';
-    const USER_REPOSITORY                               = 'UserRepository';
-    const MY_GOALS_PAYMENTS_REPOSITORY_NAME             = 'MyGoalsPaymentsRepository';
-    const MY_JOB_HOLIDAYS_REPOSITORY_NAME               = 'MyJobHolidaysRepository';
-    const MY_JOB_HOLIDAYS_POOL_REPOSITORY_NAME          = 'MyJobHolidaysPoolRepository';
-    const MY_JOB_SETTINGS_REPOSITORY_NAME               = 'MyJobSettingsRepository';
-    const MY_PAYMENTS_OWED_REPOSITORY_NAME              = 'MyPaymentsOwedRepository';
-    const MY_PAYMENTS_INCOME_REPOSITORY_NAME            = 'MyPaymentsIncomeRepository';
-    const MY_PAYMENTS_BILLS_REPOSITORY_NAME             = 'MyPaymentsBillsRepository';
-    const MY_PAYMENTS_BILLS_ITEMS_REPOSITORY_NAME       = 'MyPaymentsBillsItemsRepository';
-    const FILE_TAGS_REPOSITORY                          = 'FilesTagsRepository';
-    const REPORTS_REPOSITORY                            = 'ReportsRepository';
-    const MY_RECURRING_PAYMENT_MONTHLY_REPOSITORY_NAME  = 'MyRecurringPaymentMonthlyRepository';
-    const SETTING_REPOSITORY                            = 'SettingRepository';
-    const MY_SCHEDULE_REPOSITORY                        = "MyScheduleRepository";
-    const MY_SCHEDULE_CALENDAR_REPOSITORY               = "MyScheduleCalendarRepository";
     const MY_CONTACT_REPOSITORY                         = "MyContactRepository";
-    const MY_CONTACT_TYPE_REPOSITORY                    = "MyContactTypeRepository";
-    const MY_CONTACT_GROUP_REPOSITORY                   = "MyContactGroupRepository";
-    const MY_ISSUES_REPOSITORY                          = "MyIssueRepository";
-    const MY_ISSUES_CONTACT_REPOSITORY                  = "MyIssueContactRepository";
-    const MY_ISSUES_PROGRESS_REPOSITORY                 = "MyIssueProgressRepository";
-    const MY_TODO_REPOSITORY                            = "MyTodoRepository";
-    const MY_TODO_ELEMENT_REPOSITORY                    = "MyTodoElementRepository";
-    const MODULE_DATA_REPOSITORY                        = "ModuleDataRepository";
-    const MY_SCHEDULE_REMINDERS_CONTROLLER              = "MyScheduleRemindersController";
 
     const PASSWORD_FIELD        = 'password';
     const PARENT_ID_FIELD       = 'parent_id';
     const NAME_FIELD            = 'name';
     const FIELD_TYPE_ENTITY     = 'entity';
 
-    const KEY_MESSAGE           = "message";
-    const KEY_REPOSITORY        = "repository";
     const KEY_ID                = "id";
-
-    const KEY_SERIALIZED_FORM_DATA = "serializedFormData";
 
     const KEY_ENTITY_DATA_IS_NULL = "isNull";
     const KEY_ENTITY_DATA_TYPE    = "type";
     const ENTITY_DATA_TYPE_ENTITY = "entity";
 
     const KEY_CLASS_META_RELATED_ENTITY_FIELD_NAME          = "fieldName";
-    const KEY_CLASS_META_RELATED_ENTITY_FIELD_TARGET_ENTITY = "targetEntity";
-    const KEY_CLASS_META_RELATED_ENTITY_MAPPED_BY           = "mappedBy";
 
     const ENTITY_PROPERTY_DELETED = "deleted";
-    const ENTITY_PROXY_KEY        = "Proxies";
 
     const ENTITY_GET_DELETED_METHOD_NAME = "getDeleted";
     const ENTITY_IS_DELETED_METHOD_NAME  = "isDeleted";
 
-    const DOCTRINE_FIELD_MAPPING_TYPE_BOOLEAN  = "boolean";
     const DOCTRINE_FIELD_MAPPING_TYPE_DATETIME = "datetime";
 
     /**
@@ -154,16 +105,6 @@ class Repositories extends AbstractController {
      * @var MyNotesRepository $myNotesRepository
      */
     public $myNotesRepository;
-
-    /**
-     * @var AchievementRepository
-     */
-    public $achievementRepository;
-
-    /**
-     * @var MyJobAfterhoursRepository
-     */
-    public $myJobAfterhoursRepository;
 
     /**
      * @var MyPaymentsMonthlyRepository
@@ -224,11 +165,6 @@ class Repositories extends AbstractController {
      * @var MyJobHolidaysPoolRepository
      */
     public $myJobHolidaysPoolRepository;
-
-    /**
-     * @var MyJobSettingsRepository
-     */
-    public $myJobSettingsRepository;
 
     /**
      * @var MyPaymentsOwedRepository
@@ -357,8 +293,6 @@ class Repositories extends AbstractController {
 
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
-        AchievementRepository               $myAchievementsRepository,
-        MyJobAfterhoursRepository           $myJobAfterhoursRepository,
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
         MyPaymentsProductRepository         $myPaymentsProductRepository,
         MyShoppingPlansRepository           $myShoppingPlansRepository,
@@ -371,7 +305,6 @@ class Repositories extends AbstractController {
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
         MyJobHolidaysRepository             $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
-        MyJobSettingsRepository             $myJobSettingsRepository,
         MyPaymentsOwedRepository            $myPaymentsOwedRepository,
         FilesTagsRepository                 $filesTagsRepository,
         FilesSearchRepository               $filesSearchRepository,
@@ -401,8 +334,6 @@ class Repositories extends AbstractController {
         LoggerInterface                     $logger
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
-        $this->achievementRepository                = $myAchievementsRepository;
-        $this->myJobAfterhoursRepository            = $myJobAfterhoursRepository;
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
         $this->myPaymentsProductRepository          = $myPaymentsProductRepository;
         $this->myShoppingPlansRepository            = $myShoppingPlansRepository;
@@ -415,7 +346,6 @@ class Repositories extends AbstractController {
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
         $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
-        $this->myJobSettingsRepository              = $myJobSettingsRepository;
         $this->myPaymentsOwedRepository             = $myPaymentsOwedRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->filesSearchRepository                = $filesSearchRepository;
@@ -443,91 +373,6 @@ class Repositories extends AbstractController {
         $this->myScheduleCalendarRepository         = $myScheduleCalendarRepository;
         $this->myScheduleReminderRepository         = $myScheduleReminderRepository;
         $this->logger                               = $logger;
-    }
-
-    /**
-     *  This is general method for all common record soft delete called from front
-     *  Also request is present only when calling via ajax, that's why in some places AjaxResponse is being sent back
-     * @param string $repositoryName
-     * @param $id
-     * @param array $findByParams
-     * @param Request|null $request
-     * @return Response
-     *
-     * @throws Exception
-     */
-    public function deleteById(string $repositoryName, $id, array $findByParams = [], ?Request $request = null ): Response {
-        try {
-
-            $id = $this->trimAndCheckId($id);
-            $this->logger->info("Now handling removal for: ", [
-                self::KEY_REPOSITORY => $repositoryName,
-                self::KEY_ID         => $id,
-            ]);
-
-            /**
-             * @var ServiceEntityRepository $repository
-             */
-            $repository = $this->{lcfirst($repositoryName)};
-            $record     = $repository->find($id);
-
-            // first attempt to remove the related entities, only then check if there is still some relation left
-            $record = $this->handleRecordActiveRelatedEntities($record);
-            if ( $this->hasRecordActiveRelatedEntities($record, $repository) ) {
-                $message = $this->translator->translate('exceptions.repositories.recordHasChildrenCannotRemove');
-                $this->logger->warning($message);
-
-                if( !empty($request) ){
-                    return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-                }
-
-                return new Response($message, 500);
-            }
-
-            #Info: Reattach the entity - doctrine based issue
-            $this->entityManager->clear();
-            $record = $repository->find($id);
-
-            if( !($record instanceof SoftDeletableEntityInterface) ){
-                $message = $this->translator->translate("exceptions.general.thisEntityIsNotSoftDeletable");
-                $this->logger->warning($message);
-
-                if( !empty($request)){
-                    return new Response($message, 500);
-                }
-
-                return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-            }
-
-            $record->setDeleted(1);
-            $record = $this->changeRecordDataBeforeSoftDelete($repositoryName, $record);
-
-            $em = $this->getDoctrine()->getManager();
-
-            $em->persist($record);
-            $em->flush();
-
-            $message = $this->translator->translate('responses.repositories.recordDeletedSuccessfully');
-
-            if( !empty($request) ){
-                return AjaxResponse::buildJsonResponseForAjaxCall(200, $message);
-            }
-
-            $this->logger->info($message);
-
-            return new Response($message, 200);
-        } catch (Exception | ExceptionRepository $er) {
-            $message = $this->translator->translate('responses.repositories.couldNotDeleteRecord');
-            $this->logger->warning($message, [
-                self::KEY_MESSAGE => $er->getMessage(),
-            ]);
-
-            if( !empty($request) ){
-                return AjaxResponse::buildJsonResponseForAjaxCall(500, $message);
-            }
-
-            return new Response($message, 500);
-        }
     }
 
     /**
