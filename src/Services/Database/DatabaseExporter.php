@@ -315,7 +315,14 @@ class DatabaseExporter {
      * @param string $databaseDumpCommand
      */
     private function performDumpCommand(string $databaseDumpCommand): void {
-        exec($databaseDumpCommand);
+        $execResult = exec($databaseDumpCommand, $output, $exitCode);
+        if (0 !== $exitCode) {
+            $this->app->logger->critical("DB export failed", [
+                'output'     => $output,
+                'exitCode'   => $exitCode,
+                'execResult' => $execResult,
+            ]);
+        }
     }
 
     /**
