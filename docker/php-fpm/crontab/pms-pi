@@ -1,8 +1,15 @@
-PATH=/usr/local/bin
-BIN_CONSOLE_PATH=/application/bin/console
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+APP_PATH=/application
+LOG_DIR=/var/log/pms
 
-# At 01:00 on every 3rd day-of-week.
-0 1 * * */3 www-data php "$BIN_CONSOLE_PATH" cron:make-config-backup "/backup/pms" config
+# Everyday at 01:00
+## config backup
+0 1 * * * www-data cd "$APP_PATH" && php bin/console cron:make-config-backup "/backup/pms" config >> "$LOG_DIR"/pms-cron-make-config-backup.log
+
+# Everyday at 01:15
+## db backup only
+15 1 * * * www-data cd "$APP_PATH" && php bin/console cron:make-backup "/backup/pms" database files --skip-files >> "$LOG_DIR"/pms-cron-make-db-backup.log
 
 # At 02:00 on every 3rd day-of-week.
-0 2 * * */3 www-data php "$BIN_CONSOLE_PATH" cron:make-backup "/backup/pms" database files
+## files backup only
+0 2 * * */3 www-data cd "$APP_PATH" && php bin/console cron:make-backup "/backup/pms" database files --skip-database >> "$LOG_DIR"/pms-cron-make-files-backup.log
