@@ -43,7 +43,6 @@ use App\Controller\Page\SettingsDashboardController;
 use App\Controller\Page\SettingsFinancesController;
 use App\Controller\Page\SettingsValidationController;
 use App\Controller\Page\SettingsViewController;
-use App\Controller\System\FilesSearchController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\System\ModuleController;
 use App\Controller\System\SecurityController;
@@ -206,11 +205,6 @@ class Controllers extends AbstractController {
      * @var MyVideoController $myVideoController
      */
     private MyVideoController $myVideoController;
-
-    /**
-     * @var FilesSearchController $filesSearchController
-     */
-    private FilesSearchController $filesSearchController;
 
     /**
      * @var MyContactTypeController $myContactTypeController
@@ -495,14 +489,6 @@ class Controllers extends AbstractController {
     }
 
     /**
-     * @return FilesSearchController
-     */
-    public function getFilesSearchController(): FilesSearchController
-    {
-        return $this->filesSearchController;
-    }
-
-    /**
      * @return MyContactTypeController
      */
     public function getMyContactTypeController(): MyContactTypeController
@@ -653,7 +639,6 @@ class Controllers extends AbstractController {
         GoalsListController           $goalsListController,
         UserController                $userController,
         MyVideoController             $myVideoController,
-        FilesSearchController         $filesSearchController,
         MyContactTypeController       $myContactTypeController,
         GoalsPaymentsController       $goalsPaymentsController,
         MyIssueContactController      $myIssueContactController,
@@ -699,7 +684,6 @@ class Controllers extends AbstractController {
         $this->goalsListController          = $goalsListController;
         $this->userController               = $userController;
         $this->myVideoController            = $myVideoController;
-        $this->filesSearchController        = $filesSearchController;
         $this->myContactTypeController      = $myContactTypeController;
         $this->goalsPaymentsController      = $goalsPaymentsController;
         $this->myIssueContactController     = $myIssueContactController;

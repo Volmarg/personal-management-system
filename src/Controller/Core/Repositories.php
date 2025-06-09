@@ -11,7 +11,6 @@ namespace App\Controller\Core;
 
 use App\Services\Validation\EntityValidatorService;
 use App\Entity\Interfaces\EntityInterface;
-use App\Repository\FilesSearchRepository;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
@@ -131,11 +130,6 @@ class Repositories extends AbstractController {
      * @var FilesTagsRepository
      */
     public $filesTagsRepository;
-
-    /**
-     * @var FilesSearchRepository $filesSearchRepository
-     */
-    public $filesSearchRepository;
 
     /**
      * @var MyPaymentsBillsRepository $myPaymentsBillsRepository
@@ -258,7 +252,6 @@ class Repositories extends AbstractController {
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
         MyPaymentsOwedRepository            $myPaymentsOwedRepository,
         FilesTagsRepository                 $filesTagsRepository,
-        FilesSearchRepository               $filesSearchRepository,
         MyPaymentsBillsRepository           $myPaymentsBillsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         ReportsRepository                   $reportsRepository,
@@ -297,7 +290,6 @@ class Repositories extends AbstractController {
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
         $this->myPaymentsOwedRepository             = $myPaymentsOwedRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
-        $this->filesSearchRepository                = $filesSearchRepository;
         $this->myPaymentsBillsRepository            = $myPaymentsBillsRepository;
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->reportsRepository                    = $reportsRepository;
