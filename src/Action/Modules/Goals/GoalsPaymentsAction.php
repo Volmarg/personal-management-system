@@ -105,7 +105,7 @@ class GoalsPaymentsAction extends AbstractController {
         $name            = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $goal            = ArrayHandler::get($dataArray, 'goal', allowEmpty: false);
         $collected       = ArrayHandler::get($dataArray, 'collected', allowEmpty: false);
-        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard', allowEmpty: false);
+        $showOnDashboard = ArrayHandler::get($dataArray, 'isForDashboard', allowEmpty: true);
         $startString     = ArrayHandler::get($dataArray, 'start', allowEmpty: false);
         $endString       = ArrayHandler::get($dataArray, 'end', allowEmpty: false);
 
