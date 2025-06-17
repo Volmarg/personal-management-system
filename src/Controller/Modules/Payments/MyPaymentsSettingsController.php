@@ -23,26 +23,6 @@ class MyPaymentsSettingsController extends AbstractController {
     }
 
     /**
-     * All this methods below were made the... wrong way. This should be changed at one point... somewhere... in future
-     * @param Request $request
-     */
-    public function insertOrUpdateRecord(Request $request) {
-        $currencyMultiplierForm = $this->app->forms->currencyMultiplierForm();
-        $currencyMultiplierForm->handleRequest($request);
-
-        if ($currencyMultiplierForm->isSubmitted() && $currencyMultiplierForm->isValid()) {
-            $formData           = $currencyMultiplierForm->getData();
-            $currencyMultiplier = $this->app->repositories->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
-
-            if ($currencyMultiplier) {
-                $this->updateCurrencyMultiplierRecord($formData);
-                return;
-            }
-            $this->createRecord($formData);
-        }
-    }
-
-    /**
      * @return float|null
      */
     public function fetchCurrencyMultiplier(): ?float
