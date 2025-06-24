@@ -22,11 +22,6 @@ class Application extends AbstractController {
     public $repositories;
 
     /**
-     * @var Forms
-     */
-    public $forms;
-
-    /**
      * @var EntityManagerInterface
      */
     public $em;
@@ -68,7 +63,6 @@ class Application extends AbstractController {
 
     public function __construct(
         Repositories            $repositories,
-        Forms                   $forms,
         EntityManagerInterface  $em,
         LoggerInterface         $logger,
         Settings                $settings,
@@ -81,7 +75,6 @@ class Application extends AbstractController {
         $this->repositories  = $repositories;
         $this->settings      = $settings;
         $this->logger        = $logger;
-        $this->forms         = $forms;
         $this->em            = $em;
         $this->translator    = new Translator($translator);
         $this->configLoaders = $configLoaders;
