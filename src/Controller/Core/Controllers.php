@@ -10,7 +10,6 @@ use App\Controller\Modules\Notes\MyNotesController;
 use App\Controller\Modules\Passwords\MyPasswordsController;
 use App\Controller\Modules\Passwords\MyPasswordsGroupsController;
 use App\Controller\Modules\Schedules\MyScheduleRemindersController;
-use App\Controller\UserController;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -41,11 +40,6 @@ class Controllers extends AbstractController {
      * @var MyIssuesController $myIssuesController
      */
     private $myIssuesController;
-
-    /**
-     * @var UserController $userController
-     */
-    private UserController $userController;
 
     /**
      * @var MyPasswordsGroupsController $myPasswordsGroupsController
@@ -115,7 +109,6 @@ class Controllers extends AbstractController {
         MyNotesCategoriesController   $myNotesCategoriesController,
         MyPasswordsController         $myPasswordsController,
         MyIssuesController            $myIssuesController,
-        UserController                $userController,
         MyPasswordsGroupsController   $myPasswordsGroupsController,
         ModuleDataController          $moduleDataController,
         MyScheduleRemindersController        $myScheduleReminderController,
@@ -124,7 +117,6 @@ class Controllers extends AbstractController {
         $this->myNotesCategoriesController  = $myNotesCategoriesController;
         $this->myPasswordsController        = $myPasswordsController;
         $this->myIssuesController           = $myIssuesController;
-        $this->userController               = $userController;
         $this->myPasswordsGroupsController  = $myPasswordsGroupsController;
         $this->moduleDataController         = $moduleDataController;
         $this->myScheduleReminderController         = $myScheduleReminderController;

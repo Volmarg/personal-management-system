@@ -4,8 +4,6 @@
 namespace App\Controller\System;
 
 
-use App\Controller\Core\Env;
-use App\Controller\UserController;
 use App\DTO\System\SecurityDTO;
 use App\Entity\User;
 use Exception;
@@ -21,19 +19,12 @@ class SecurityController {
     private $encoderFactory;
 
     /**
-     * @var UserController $userController
-     */
-    private UserController $userController;
-
-    /**
      * SecurityController constructor.
      * @param EncoderFactoryInterface $encoderFactory
-     * @param UserController $userController
      */
-    public function __construct(EncoderFactoryInterface $encoderFactory, UserController $userController)
+    public function __construct(EncoderFactoryInterface $encoderFactory)
     {
         $this->encoderFactory  = $encoderFactory;
-        $this->userController = $userController;
     }
 
     /**
@@ -80,37 +71,6 @@ class SecurityController {
         $encoder         = $this->encoderFactory->getEncoder($user);
         $isPasswordValid = $encoder->isPasswordValid($userPassword, $usedPassword, $saltForUsedPassword);
         return $isPasswordValid;
-    }
-
-    /**
-     * Returns the information if it's allowed to register user in system
-     *
-     * WARNING!
-     *
-     * This is the main method which control permission to register showing/hiding registration.
-     * The `personal` in the project stands for ONE USER for ONE PROJECT INSTANCE
-     *
-     * If Your really for some reason want to have more users then set `return true` in this method
-     * However the project was never tested with more than one user so You potentially risk loosing some data
-     * This should never happen because all the entries are saved globally without user tracking but You just
-     * need to be aware of it
-     *
-     * @return bool
-     */
-    public function canRegisterUser(): bool
-    {
-        if( Env::isDemo() ){
-            return false;
-        }
-
-        $allRegisteredUsers = $this->userController->getAllUsers();
-        $countOfUsers       = count($allRegisteredUsers);
-
-        if( $countOfUsers > 0 ){
-            return false;
-        }
-
-        return true;
     }
 
 }
