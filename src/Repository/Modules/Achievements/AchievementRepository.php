@@ -3,7 +3,6 @@
 namespace App\Repository\Modules\Achievements;
 
 use App\Entity\Modules\Achievements\Achievement;
-use App\Repository\AbstractRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -25,7 +24,7 @@ class AchievementRepository extends ServiceEntityRepository {
      */
     public function getAllNotDeleted(): array
     {
-        return $this->findBy([AbstractRepository::FIELD_DELETED => 0]);
+        return $this->findBy(['deleted' => 0]);
     }
 
     /**

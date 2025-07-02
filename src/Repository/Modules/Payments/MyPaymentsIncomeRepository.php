@@ -3,7 +3,6 @@
 namespace App\Repository\Modules\Payments;
 
 use App\Entity\Modules\Payments\MyPaymentsIncome;
-use App\Repository\AbstractRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
@@ -27,7 +26,7 @@ class MyPaymentsIncomeRepository extends ServiceEntityRepository {
      */
     public function getAllNotDeleted(): array
     {
-        return $this->findBy([AbstractRepository::FIELD_DELETED => 0], ["date" => "DESC"]);
+        return $this->findBy(['deleted' => 0], ["date" => "DESC"]);
     }
 
     /**
