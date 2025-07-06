@@ -3,7 +3,7 @@
 namespace App\Action\Modules\Issues;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\Controllers;
+use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Response\Base\BaseResponse;
@@ -14,7 +14,6 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-issues", name: "module.my_issues.")]
@@ -23,8 +22,8 @@ class MyIssuesAction extends AbstractController
 {
 
     public function __construct(
-        private readonly Controllers $controllers,
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $em,
+        private readonly MyIssuesController $issuesController
     ) {
     }
 
@@ -49,8 +48,8 @@ class MyIssuesAction extends AbstractController
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allOngoingIssues = $this->controllers->getMyIssuesController()->findAllNotDeletedAndNotResolved();
-        $issuesData       = $this->controllers->getMyIssuesController()->getIssuesData($allOngoingIssues);
+        $allOngoingIssues = $this->issuesController->findAllNotDeletedAndNotResolved();
+        $issuesData       = $this->issuesController->getIssuesData($allOngoingIssues);
 
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($issuesData);

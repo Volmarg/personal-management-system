@@ -3,7 +3,7 @@
 namespace App\Command\Crons;
 
 use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
+use App\Controller\Modules\Schedules\MyScheduleRemindersController;
 use App\DTO\Modules\Schedules\IncomingScheduleDTO;
 use App\Response\BaseResponse;
 use App\Services\External\NotifierProxyLoggerService;
@@ -43,17 +43,15 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
      */
     private NotifierProxyLoggerService $notifierProxyLoggerService;
 
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, NotifierProxyLoggerService $notifierProxyLoggerService, Controllers $controllers)
+    public function __construct(
+        Application $app,
+        NotifierProxyLoggerService $notifierProxyLoggerService,
+        private readonly MyScheduleRemindersController $scheduleRemindersController
+    )
     {
         parent::__construct(self::$defaultName);
 
         $this->app                        = $app;
-        $this->controllers                = $controllers;
         $this->notifierProxyLoggerService = $notifierProxyLoggerService;
     }
 
@@ -105,9 +103,9 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
                     $response = $this->handleTransferForChannel($incomingScheduleDTO);
 
                     if($response->isSuccess()){
-                        $reminder = $this->controllers->getMyScheduleReminderController()->findOneById($incomingScheduleDTO->getReminderId());
+                        $reminder = $this->scheduleRemindersController->findOneById($incomingScheduleDTO->getReminderId());
                         $reminder->setProcessed(true);
-                        $this->controllers->getMyScheduleReminderController()->saveReminder($reminder);
+                        $this->scheduleRemindersController->saveReminder($reminder);
                     }
                 }
             }

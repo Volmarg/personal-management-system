@@ -3,7 +3,10 @@
 namespace App\Command\Crons;
 
 use App\Controller\Core\Application;
-use App\Controller\Core\Controllers;
+use App\Controller\Modules\Notes\MyNotesCategoriesController;
+use App\Controller\Modules\Notes\MyNotesController;
+use App\Controller\Modules\Passwords\MyPasswordsController;
+use App\Controller\Modules\Passwords\MyPasswordsGroupsController;
 use App\Services\External\PmsIoService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -25,18 +28,19 @@ class CronTransferDataToPmsIoCommand extends Command
      */
     private PmsIoService $pmsIoService;
 
-    /**
-     * @var Controllers $controllers
-     */
-    private Controllers $controllers;
-
-    public function __construct(Application $app, PmsIoService $pmsIoService, Controllers $controllers)
+    public function __construct(
+        Application                                  $app,
+        PmsIoService                                 $pmsIoService,
+        private readonly MyNotesCategoriesController $notesCategoriesController,
+        private readonly MyNotesController           $notesController,
+        private readonly MyPasswordsGroupsController $passwordsGroupsController,
+        private readonly MyPasswordsController       $passwordsController,
+    )
     {
         parent::__construct(self::$defaultName);
 
         $this->app          = $app;
         $this->pmsIoService = $pmsIoService;
-        $this->controllers  = $controllers;
     }
 
 
@@ -86,8 +90,8 @@ class CronTransferDataToPmsIoCommand extends Command
      */
     private function insertPasswordsData(): bool
     {
-        $allNotDeletedPasswordsGroups = $this->controllers->getMyPasswordsGroupsController()->findAllNotDeleted();
-        $allNotDeletedPasswords       = $this->controllers->getMyPasswordsController()->findAllNotDeleted();
+        $allNotDeletedPasswordsGroups = $this->passwordsGroupsController->findAllNotDeleted();
+        $allNotDeletedPasswords       = $this->passwordsController->findAllNotDeleted();
 
         $insertPasswordsGroupsResponse = $this->pmsIoService->insertPasswordsGroups($allNotDeletedPasswordsGroups);
         if( !$insertPasswordsGroupsResponse->isSuccess() ){
@@ -117,8 +121,8 @@ class CronTransferDataToPmsIoCommand extends Command
      */
     private function insertNotesData(): bool
     {
-        $allNotDeletedNotesCategories = $this->controllers->getMyNotesCategoriesController()->findAllNotDeleted();
-        $allNotDeletedNotes           = $this->controllers->getMyNotesController()->findAllNotDeleted();
+        $allNotDeletedNotesCategories = $this->notesCategoriesController->findAllNotDeleted();
+        $allNotDeletedNotes           = $this->notesController->findAllNotDeleted();
 
         /**
          * The order here is important as the categories must for example exist before adding notes to them
