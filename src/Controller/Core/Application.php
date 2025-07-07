@@ -42,11 +42,6 @@ class Application extends AbstractController {
     public $customLoggers;
 
     /**
-     * @var Settings
-     */
-    public $settings;
-
-    /**
      * @deprecated should no longer be used, needs to be checked if there is some old service to be removed / replaced
      */
     public $translations;
@@ -65,7 +60,6 @@ class Application extends AbstractController {
         Repositories            $repositories,
         EntityManagerInterface  $em,
         LoggerInterface         $logger,
-        Settings                $settings,
         Logger                  $customLoggers,
         TranslatorInterface     $translator,
         ConfigLoaders           $configLoaders,
@@ -73,7 +67,6 @@ class Application extends AbstractController {
     ) {
         $this->customLoggers = $customLoggers;
         $this->repositories  = $repositories;
-        $this->settings      = $settings;
         $this->logger        = $logger;
         $this->em            = $em;
         $this->translator    = new Translator($translator);
