@@ -4,10 +4,10 @@ namespace App\Action\Modules\Calendar;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Schedules\MyScheduleRemindersController;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Schedules\MyScheduleReminder;
+use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -28,7 +28,7 @@ class SchedulesAction extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly TranslatorInterface $translator,
-        private readonly MyScheduleRemindersController $remindersController
+        private readonly MyScheduleReminderRepository $scheduleReminderRepository,
     ) {
     }
 
@@ -160,7 +160,7 @@ class SchedulesAction extends AbstractController
                 continue;
             }
 
-            $this->remindersController->removeReminder($existingScheduleReminder);
+            $this->scheduleReminderRepository->removeReminder($existingScheduleReminder);
         }
 
         foreach ($remindersDatesArray as $reminderDate) {

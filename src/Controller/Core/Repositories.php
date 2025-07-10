@@ -9,7 +9,6 @@
 namespace App\Controller\Core;
 
 
-use App\Services\Validation\EntityValidatorService;
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Contacts\MyContactGroupRepository;
@@ -231,10 +230,6 @@ class Repositories extends AbstractController {
      */
     public MyScheduleReminderRepository $myScheduleReminderRepository;
 
-    /**
-     * @var EntityValidatorService $entityValidator
-     */
-    private $entityValidator;
 
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
@@ -273,7 +268,6 @@ class Repositories extends AbstractController {
         MyScheduleCalendarRepository        $myScheduleCalendarRepository,
         MyScheduleReminderRepository        $myScheduleReminderRepository,
         EntityManagerInterface              $entityManager,
-        EntityValidatorService                     $entityValidator,
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
@@ -305,7 +299,6 @@ class Repositories extends AbstractController {
         $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->entityManager                        = $entityManager;
-        $this->entityValidator                      = $entityValidator;
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;
         $this->moduleRepository                     = $moduleRepository;
