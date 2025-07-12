@@ -34,7 +34,6 @@ use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
-use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Todo\MyTodoElementRepository;
@@ -219,12 +218,6 @@ class Repositories extends AbstractController {
      */
     public $moduleDataRepository;
 
-    /**
-     * @var MyScheduleReminderRepository $myScheduleReminderRepository
-     */
-    public MyScheduleReminderRepository $myScheduleReminderRepository;
-
-
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
@@ -259,7 +252,6 @@ class Repositories extends AbstractController {
         MyTodoElementRepository             $myTodoElementRepository,
         ModuleRepository                    $moduleRepository,
         ModuleDataRepository                $moduleDataRepository,
-        MyScheduleReminderRepository        $myScheduleReminderRepository,
         EntityManagerInterface              $entityManager,
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
@@ -296,7 +288,6 @@ class Repositories extends AbstractController {
         $this->myTodoElementRepository              = $myTodoElementRepository;
         $this->moduleRepository                     = $moduleRepository;
         $this->moduleDataRepository                 = $moduleDataRepository;
-        $this->myScheduleReminderRepository         = $myScheduleReminderRepository;
     }
 
     /**
