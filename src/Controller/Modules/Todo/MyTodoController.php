@@ -6,12 +6,9 @@ use App\Controller\Core\Application;
 use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
-use App\Controller\System\ModuleController;
-use App\DTO\EntityDataDto;
 use App\Entity\Interfaces\Relational\RelatesToMyTodoInterface;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\LockedResource;
-use App\Entity\System\Module;
 use App\Enum\RelatableModuleEnum;
 use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Repository\System\ModuleRepository;
@@ -31,11 +28,6 @@ class MyTodoController extends AbstractController {
     private $app;
 
     /**
-     * @var ModuleController $moduleController
-     */
-    private ModuleController $moduleController;
-
-    /**
      * @var MyIssuesController $issuesController
      */
     private MyIssuesController $issuesController;
@@ -47,7 +39,6 @@ class MyTodoController extends AbstractController {
 
     public function __construct(
         Application $app,
-        ModuleController $moduleController,
         MyIssuesController $issuesController,
         LockedResourceController $lockedResourceController,
         private readonly ModuleRepository $moduleRepository,
@@ -56,7 +47,6 @@ class MyTodoController extends AbstractController {
     {
         $this->app                      = $app;
         $this->issuesController         = $issuesController;
-        $this->moduleController         = $moduleController;
         $this->lockedResourceController = $lockedResourceController;
     }
 
@@ -213,43 +203,6 @@ class MyTodoController extends AbstractController {
     public function findOneById(int $id): ?MyTodo
     {
         return $this->app->repositories->myTodoRepository->findOneById($id);
-    }
-
-    /**
-     * Will return all entities which can relate with `todo` for given modules
-     * @return EntityDataDto[]
-     */
-    public function getAllRelatableEntitiesDataDtosForModulesNames(): array
-    {
-        $allModules                       = $this->moduleController->getAllActive();
-        $relatableEntitiesForModulesNames = [];
-
-        foreach( $allModules as $module ){
-            $moduleName = $module->getName();
-
-            switch( $moduleName ){
-                case ModulesController::MODULE_NAME_ISSUES:
-                {
-                    $allNotDeletedIssues = $this->issuesController->findAllNotDeletedAndNotResolved();
-
-                    foreach( $allNotDeletedIssues as $issueEntity ){
-                        $entityDataDto = new EntityDataDto();
-                        $entityDataDto->setId($issueEntity->getId());
-                        $entityDataDto->setName($issueEntity->getName());
-
-                        if( !empty($issueEntity->getTodo()) ){
-                            $entityDataDto->setActive(false);;
-                        }
-
-                        $relatableEntitiesForModulesNames[$moduleName][] = $entityDataDto;
-                    }
-                }
-                break;
-            }
-
-        }
-
-        return $relatableEntitiesForModulesNames;
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace App\Controller\Modules;
 
 use App\Controller\Core\Env;
-use App\Controller\System\ModuleController;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Issues\MyIssue;
@@ -17,8 +16,6 @@ use App\Services\Files\FilesHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * Todo: merge with @see ModuleController
- *
  * Class ModulesController
  * @package App\Controller\Modules
  */
