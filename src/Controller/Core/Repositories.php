@@ -17,7 +17,6 @@ use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Issues\MyIssueContactRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
-use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
 use App\Repository\Modules\ModuleDataRepository;
@@ -184,11 +183,6 @@ class Repositories extends AbstractController {
     public $lockedResourceRepository;
 
     /**
-     * @var MyIssueRepository $myIssueRepository
-     */
-    public $myIssueRepository;
-
-    /**
      * @var MyIssueContactRepository $myIssueContactRepository
      */
     public $myIssueContactRepository;
@@ -245,7 +239,6 @@ class Repositories extends AbstractController {
         MyContactRepository                 $myContactRepository,
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         LockedResourceRepository            $lockedResourceRepository,
-        MyIssueRepository                   $myIssueRepository,
         MyIssueContactRepository            $myIssueContactRepository,
         MyIssueProgressRepository           $myIssueProgressRepository,
         MyTodoRepository                    $myTodoRepository,
@@ -280,7 +273,6 @@ class Repositories extends AbstractController {
         $this->myContactRepository                  = $myContactRepository;
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
-        $this->myIssueRepository                    = $myIssueRepository;
         $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->entityManager                        = $entityManager;

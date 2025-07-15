@@ -2,7 +2,6 @@
 
 namespace App\Controller\Modules\Issues;
 
-use App\Controller\Core\Application;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Entity\Modules\Issues\MyIssue;
@@ -16,21 +15,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class MyIssuesController extends AbstractController {
 
     /**
-     * @var Application
-     */
-    private $app;
-
-    /**
      * @var LockedResourceController $lockedResourceController
      */
     private LockedResourceController $lockedResourceController;
 
     public function __construct(
-        Application              $app,
         LockedResourceController $lockedResourceController,
     ) {
         $this->lockedResourceController = $lockedResourceController;
-        $this->app                      = $app;
     }
 
     /**
@@ -114,25 +106,6 @@ class MyIssuesController extends AbstractController {
         }
 
         return $allIssuesData;
-    }
-
-    /**
-     * Returns one Entity or null for given id
-     * @param int $entityId
-     * @return MyIssue|null
-     */
-    public function findIssueById(int $entityId): ?MyIssue
-    {
-        return $this->app->repositories->myIssueRepository->findIssueById($entityId);
-    }
-
-    /**
-     * @param int|null $orderByFieldEntityId
-     * @return MyIssue[]
-     */
-    public function findAllNotDeletedAndNotResolved(int $orderByFieldEntityId = null): array
-    {
-        return $this->app->repositories->myIssueRepository->findAllNotDeletedAndNotResolved($orderByFieldEntityId);
     }
 
 }

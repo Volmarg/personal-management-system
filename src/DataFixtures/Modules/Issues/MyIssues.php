@@ -7,6 +7,7 @@ use App\DataFixtures\Providers\Modules\Issues;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
+use App\Repository\Modules\Issues\MyIssueRepository;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -26,7 +27,10 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      */
     private $app;
 
-    public function __construct(Application $app) {
+    public function __construct(
+        Application                        $app,
+        private readonly MyIssueRepository $myIssueRepository
+    ) {
         $this->faker = Factory::create('en');
         $this->app   = $app;
     }
@@ -71,7 +75,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
             $date        = $issueContactData[Issues::KEY_DATE];
             $icon        = $issueContactData[Issues::KEY_ICON];
 
-            $issue = $this->app->repositories->myIssueRepository->find($issueId);
+            $issue = $this->myIssueRepository->find($issueId);
 
             $issueContact = new MyIssueContact();
             $issueContact->setIssue($issue);
@@ -95,7 +99,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
             $information = $issueProgressData[Issues::KEY_INFORMATION];
             $date        = $issueProgressData[Issues::KEY_DATE];
 
-            $issue = $this->app->repositories->myIssueRepository->find($issueId);
+            $issue = $this->myIssueRepository->find($issueId);
 
             $issueProgress = new MyIssueProgress();
             $issueProgress->setIssue($issue);
