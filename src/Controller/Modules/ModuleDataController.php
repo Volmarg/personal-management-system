@@ -3,8 +3,8 @@
 
 namespace App\Controller\Modules;
 
-use App\Controller\Core\Application;
 use App\Entity\Modules\ModuleData;
+use App\Repository\Modules\ModuleDataRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
@@ -17,18 +17,8 @@ use Doctrine\ORM\ORMException;
 class ModuleDataController
 {
 
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
-     * ModuleDataController constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app)
+    public function __construct(private readonly ModuleDataRepository $moduleDataRepository)
     {
-        $this->app = $app;
     }
 
     /**
@@ -41,7 +31,7 @@ class ModuleDataController
      */
     public function getOneByRecordTypeModuleAndRecordIdentifier(string $recordType, string $module, string $recordIdentifier): ?ModuleData
     {
-        return $this->app->repositories->moduleDataRepository->getOneByRecordTypeModuleAndRecordIdentifier($recordType, $module, $recordIdentifier);
+        return $this->moduleDataRepository->getOneByRecordTypeModuleAndRecordIdentifier($recordType, $module, $recordIdentifier);
     }
 
     /**
@@ -52,7 +42,7 @@ class ModuleDataController
      */
     public function findOneById(int $id): ?ModuleData
     {
-        return $this->app->repositories->moduleDataRepository->findOneById($id);
+        return $this->moduleDataRepository->findOneById($id);
     }
 
     /**
@@ -66,6 +56,6 @@ class ModuleDataController
     public function updateRecordIdentifier(ModuleData $moduleData, string $newIdentifier): void
     {
         $moduleData->setRecordIdentifier($newIdentifier);
-        $this->app->repositories->moduleDataRepository->saveEntity($moduleData);;
+        $this->moduleDataRepository->saveEntity($moduleData);;
     }
 }

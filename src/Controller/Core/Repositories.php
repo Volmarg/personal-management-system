@@ -19,7 +19,6 @@ use App\Repository\Modules\Issues\MyIssueContactRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
-use App\Repository\Modules\ModuleDataRepository;
 use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
@@ -40,17 +39,10 @@ use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\SettingRepository;
 use App\Repository\System\LockedResourceRepository;
-use App\Repository\System\ModuleRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Repositories extends AbstractController {
-
-    /**
-     * @var EntityManagerInterface $entityManager
-     */
-    private $entityManager;
 
     /**
      * @var MyNotesRepository $myNotesRepository
@@ -202,16 +194,6 @@ class Repositories extends AbstractController {
      */
     public $myTodoElementRepository;
 
-    /**
-     * @var ModuleRepository $moduleRepository
-     */
-    public $moduleRepository;
-
-    /**
-     * @var ModuleDataRepository $moduleDataRepository
-     */
-    public $moduleDataRepository;
-
     public function __construct(
         MyNotesRepository                   $myNotesRepository,
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
@@ -243,9 +225,6 @@ class Repositories extends AbstractController {
         MyIssueProgressRepository           $myIssueProgressRepository,
         MyTodoRepository                    $myTodoRepository,
         MyTodoElementRepository             $myTodoElementRepository,
-        ModuleRepository                    $moduleRepository,
-        ModuleDataRepository                $moduleDataRepository,
-        EntityManagerInterface              $entityManager,
     ) {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
@@ -275,11 +254,8 @@ class Repositories extends AbstractController {
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
-        $this->entityManager                        = $entityManager;
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;
-        $this->moduleRepository                     = $moduleRepository;
-        $this->moduleDataRepository                 = $moduleDataRepository;
     }
 
     /**

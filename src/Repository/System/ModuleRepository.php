@@ -20,20 +20,6 @@ class ModuleRepository extends ServiceEntityRepository
     }
 
     /**
-     * Will return all active modules;
-     *
-     * @return Module[]
-     */
-    public function getAllActive(): array
-    {
-        $modules = $this->findBy([
-            Module::FIELD_ACTIVE => true
-        ]);
-
-        return $modules;
-    }
-
-    /**
      * Return single module entity by module name
      *
      * @param string $name
