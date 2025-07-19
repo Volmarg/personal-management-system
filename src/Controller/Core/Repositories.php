@@ -15,7 +15,6 @@ use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
-use App\Repository\Modules\Issues\MyIssueContactRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
@@ -175,11 +174,6 @@ class Repositories extends AbstractController {
     public $lockedResourceRepository;
 
     /**
-     * @var MyIssueContactRepository $myIssueContactRepository
-     */
-    public $myIssueContactRepository;
-
-    /**
      * @var MyIssueProgressRepository $myIssueProgressRepository
      */
     public $myIssueProgressRepository;
@@ -221,7 +215,6 @@ class Repositories extends AbstractController {
         MyContactRepository                 $myContactRepository,
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         LockedResourceRepository            $lockedResourceRepository,
-        MyIssueContactRepository            $myIssueContactRepository,
         MyIssueProgressRepository           $myIssueProgressRepository,
         MyTodoRepository                    $myTodoRepository,
         MyTodoElementRepository             $myTodoElementRepository,
@@ -252,7 +245,6 @@ class Repositories extends AbstractController {
         $this->myContactRepository                  = $myContactRepository;
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
-        $this->myIssueContactRepository             = $myIssueContactRepository;
         $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;
