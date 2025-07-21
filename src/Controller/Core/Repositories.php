@@ -23,7 +23,6 @@ use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
-use App\Repository\Modules\Payments\MyPaymentsBillsRepository;
 use App\Repository\Modules\Payments\MyPaymentsIncomeRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
@@ -119,11 +118,6 @@ class Repositories extends AbstractController {
     public $filesTagsRepository;
 
     /**
-     * @var MyPaymentsBillsRepository $myPaymentsBillsRepository
-     */
-    public $myPaymentsBillsRepository;
-
-    /**
      * @var MyPaymentsBillsItemsRepository $myPaymentsBillsItemsRepository
      */
     public $myPaymentsBillsItemsRepository;
@@ -204,7 +198,6 @@ class Repositories extends AbstractController {
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
         MyPaymentsOwedRepository            $myPaymentsOwedRepository,
         FilesTagsRepository                 $filesTagsRepository,
-        MyPaymentsBillsRepository           $myPaymentsBillsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         ReportsRepository                   $reportsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
@@ -234,7 +227,6 @@ class Repositories extends AbstractController {
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
         $this->myPaymentsOwedRepository             = $myPaymentsOwedRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
-        $this->myPaymentsBillsRepository            = $myPaymentsBillsRepository;
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->reportsRepository                    = $reportsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;

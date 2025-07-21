@@ -6,9 +6,9 @@ namespace App\Action\Modules\Payments\Bills;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Payments\MyPaymentsBillsController;
 use App\Entity\Modules\Payments\MyPaymentsBills;
 use App\Entity\Modules\Payments\MyPaymentsBillsItems as BillItem;
+use App\Repository\Modules\Payments\MyPaymentsBillsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -27,7 +27,7 @@ class BillsAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly MyPaymentsBillsController $billsController
+        private readonly MyPaymentsBillsRepository $billsRepository
     ) {
     }
 
@@ -50,7 +50,7 @@ class BillsAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $bills       = $this->billsController->getAllNotDeleted();
+        $bills       = $this->billsRepository->getAllNotDeleted();
         $entriesData = [];
         foreach ($bills as $bill) {
             $elements = [];
