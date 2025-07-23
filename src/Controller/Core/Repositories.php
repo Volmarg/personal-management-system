@@ -25,7 +25,6 @@ use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
 use App\Repository\Modules\Payments\MyPaymentsIncomeRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
-use App\Repository\Modules\Payments\MyPaymentsOwedRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
@@ -106,11 +105,6 @@ class Repositories extends AbstractController {
      * @var MyJobHolidaysPoolRepository
      */
     public $myJobHolidaysPoolRepository;
-
-    /**
-     * @var MyPaymentsOwedRepository
-     */
-    public $myPaymentsOwedRepository;
 
     /**
      * @var FilesTagsRepository
@@ -196,7 +190,6 @@ class Repositories extends AbstractController {
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
         MyJobHolidaysRepository             $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
-        MyPaymentsOwedRepository            $myPaymentsOwedRepository,
         FilesTagsRepository                 $filesTagsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         ReportsRepository                   $reportsRepository,
@@ -225,7 +218,6 @@ class Repositories extends AbstractController {
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
         $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
-        $this->myPaymentsOwedRepository             = $myPaymentsOwedRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->reportsRepository                    = $reportsRepository;
