@@ -5,6 +5,7 @@ namespace App\Command\Crons;
 use App\Controller\Core\Application;
 use App\DTO\Modules\Schedules\IncomingScheduleDTO;
 use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
+use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Response\BaseResponse;
 use App\Services\External\NotifierProxyLoggerService;
 use Exception;
@@ -47,6 +48,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         Application $app,
         NotifierProxyLoggerService $notifierProxyLoggerService,
         private readonly MyScheduleReminderRepository $scheduleReminderRepository,
+        private readonly MyScheduleRepository $myScheduleRepository
     )
     {
         parent::__construct(self::$defaultName);
@@ -91,7 +93,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         try{
             $this->app->logger->info("Started transferring the schedules to npl");
             {
-                $incomingSchedulesDTOS = $this->app->repositories->myScheduleRepository->getSchedulesWithRemindersInformation();
+                $incomingSchedulesDTOS = $this->myScheduleRepository->getSchedulesWithRemindersInformation();
 
                 if( empty($incomingSchedulesDTOS) ){
                     $this->app->logger->info("No schedules were found to transfer");

@@ -29,7 +29,6 @@ use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
-use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Todo\MyTodoElementRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
@@ -132,11 +131,6 @@ class Repositories extends AbstractController {
     public $settingRepository;
 
     /**
-     * @var MyScheduleRepository $myScheduleRepository
-     */
-    public $myScheduleRepository;
-
-    /**
      * @var MyContactRepository $myContactRepository
      */
     public $myContactRepository;
@@ -195,7 +189,6 @@ class Repositories extends AbstractController {
         ReportsRepository                   $reportsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
-        MyScheduleRepository                $myScheduleRepository,
         MyContactTypeRepository             $myContactTypeRepository,
         MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
@@ -223,7 +216,6 @@ class Repositories extends AbstractController {
         $this->reportsRepository                    = $reportsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
-        $this->myScheduleRepository                 = $myScheduleRepository;
         $this->myContactTypeRepository              = $myContactTypeRepository;
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;

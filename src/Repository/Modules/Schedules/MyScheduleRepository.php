@@ -7,9 +7,6 @@ use App\Entity\Modules\Schedules\MySchedule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 use PDO;
 
@@ -21,62 +18,8 @@ use PDO;
  */
 class MyScheduleRepository extends ServiceEntityRepository {
 
-    const KEY_NAME          = 'name';
-    const KEY_DATE          = 'date';
-    const KEY_ICON          = 'icon';
-    const KEY_INFORMATION   = 'information';
-    const KEY_SCHEDULE_TYPE = 'scheduleType';
-
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MySchedule::class);
-    }
-
-    /**
-     * Will save schedule or update the existing one
-     *
-     * @param MySchedule $schedule
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function saveSchedule(MySchedule $schedule): void
-    {
-        $this->_em->persist($schedule);
-        $this->_em->flush();
-    }
-
-    /**
-     * Will return all not deleted schedules
-     *
-     * @return MySchedule[]
-     */
-    public function getAllNotDeletedSchedules(): array
-    {
-        $queryBuilder = $this->_em->createQueryBuilder();
-
-        $queryBuilder->select("sch")
-            ->from(MySchedule::class, "sch")
-            ->where("sch.deleted = 0");
-
-        return $queryBuilder->getQuery()->execute();
-    }
-
-    /**
-     * Returns one entity for given id or null otherwise
-     *
-     * @param int $id
-     * @return MySchedule|null
-     * @throws NonUniqueResultException
-     */
-    public function findOneScheduleById(int $id): ?MySchedule
-    {
-        $queryBuilder = $this->_em->createQueryBuilder();
-        $queryBuilder->select("sch")
-            ->from(MySchedule::class, "sch")
-            ->where("sch.id = :id")
-            ->andWhere("sch.deleted = 0")
-            ->setParameter("id", $id);
-
-        return $queryBuilder->getQuery()->getOneOrNullResult();
     }
 
     /**
