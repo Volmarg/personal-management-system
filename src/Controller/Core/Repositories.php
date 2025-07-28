@@ -35,7 +35,6 @@ use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Repository\SettingRepository;
 use App\Repository\System\LockedResourceRepository;
-use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Repositories extends AbstractController {
@@ -84,11 +83,6 @@ class Repositories extends AbstractController {
      * @var MyPasswordsGroupsRepository
      */
     public $myPasswordsGroupsRepository;
-
-    /**
-     * @var UserRepository
-     */
-    public $userRepository;
 
     /**
      * @var MyGoalsPaymentsRepository
@@ -180,7 +174,6 @@ class Repositories extends AbstractController {
         MyNotesCategoriesRepository         $myNotesCategoriesRepository,
         MyPasswordsRepository               $myPasswordsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
-        UserRepository                      $userRepository,
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
         MyJobHolidaysRepository             $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
@@ -207,7 +200,6 @@ class Repositories extends AbstractController {
         $this->myNotesCategoriesRepository          = $myNotesCategoriesRepository;
         $this->myPasswordsRepository                = $myPasswordsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
-        $this->userRepository                       = $userRepository;
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
         $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
