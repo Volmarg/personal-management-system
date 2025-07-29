@@ -17,7 +17,6 @@ use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
-use App\Repository\Modules\Job\MyJobHolidaysRepository;
 use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
@@ -88,11 +87,6 @@ class Repositories extends AbstractController {
      * @var MyGoalsPaymentsRepository
      */
     public $myGoalsPaymentsRepository;
-
-    /**
-     * @var MyJobHolidaysRepository
-     */
-    public $myJobHolidaysRepository;
 
     /**
      * @var MyJobHolidaysPoolRepository
@@ -175,7 +169,6 @@ class Repositories extends AbstractController {
         MyPasswordsRepository               $myPasswordsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
-        MyJobHolidaysRepository             $myJobHolidaysRepository,
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
         FilesTagsRepository                 $filesTagsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
@@ -201,7 +194,6 @@ class Repositories extends AbstractController {
         $this->myPasswordsRepository                = $myPasswordsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
-        $this->myJobHolidaysRepository              = $myJobHolidaysRepository;
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
