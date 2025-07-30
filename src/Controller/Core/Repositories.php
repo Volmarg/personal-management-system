@@ -28,7 +28,6 @@ use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
-use App\Repository\Modules\Shopping\MyShoppingPlansRepository;
 use App\Repository\Modules\Todo\MyTodoElementRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
@@ -52,11 +51,6 @@ class Repositories extends AbstractController {
      * @var MyPaymentsProductRepository
      */
     public $myPaymentsProductRepository;
-
-    /**
-     * @var MyShoppingPlansRepository
-     */
-    public $myShoppingPlansRepository;
 
     /**
      * @var MyTravelsIdeasRepository
@@ -162,7 +156,6 @@ class Repositories extends AbstractController {
         MyNotesRepository                   $myNotesRepository,
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
         MyPaymentsProductRepository         $myPaymentsProductRepository,
-        MyShoppingPlansRepository           $myShoppingPlansRepository,
         MyTravelsIdeasRepository            $myTravelIdeasRepository,
         MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
         MyNotesCategoriesRepository         $myNotesCategoriesRepository,
@@ -187,7 +180,6 @@ class Repositories extends AbstractController {
         $this->myNotesRepository                    = $myNotesRepository;
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
         $this->myPaymentsProductRepository          = $myPaymentsProductRepository;
-        $this->myShoppingPlansRepository            = $myShoppingPlansRepository;
         $this->myTravelsIdeasRepository             = $myTravelIdeasRepository;
         $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
         $this->myNotesCategoriesRepository          = $myNotesCategoriesRepository;
