@@ -17,7 +17,6 @@ use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
-use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
@@ -36,11 +35,6 @@ use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Repositories extends AbstractController {
-
-    /**
-     * @var MyNotesRepository $myNotesRepository
-     */
-    public $myNotesRepository;
 
     /**
      * @var MyPaymentsMonthlyRepository
@@ -153,7 +147,6 @@ class Repositories extends AbstractController {
     public $myTodoElementRepository;
 
     public function __construct(
-        MyNotesRepository                   $myNotesRepository,
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
         MyPaymentsProductRepository         $myPaymentsProductRepository,
         MyTravelsIdeasRepository            $myTravelIdeasRepository,
@@ -177,7 +170,6 @@ class Repositories extends AbstractController {
         MyTodoRepository                    $myTodoRepository,
         MyTodoElementRepository             $myTodoElementRepository,
     ) {
-        $this->myNotesRepository                    = $myNotesRepository;
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
         $this->myPaymentsProductRepository          = $myPaymentsProductRepository;
         $this->myTravelsIdeasRepository             = $myTravelIdeasRepository;

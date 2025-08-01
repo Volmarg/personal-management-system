@@ -7,14 +7,12 @@ use App\Controller\System\LockedResourceController;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\System\LockedResource;
+use App\Repository\Modules\Notes\MyNotesRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Statement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyNotesController extends AbstractController {
-
-    const KEY_CATEGORY_ID   = 'category_id';
-    const KEY_CATEGORY_NAME = "category_name";
 
     /**
      * @var Application
@@ -26,7 +24,11 @@ class MyNotesController extends AbstractController {
      */
     private $lockedResourceController;
 
-    public function __construct(Application $app, LockedResourceController $lockedResourceController) {
+    public function __construct(
+        Application                        $app,
+        LockedResourceController           $lockedResourceController,
+        private readonly MyNotesRepository $myNotesRepository
+    ) {
         $this->app = $app;
         $this->lockedResourceController = $lockedResourceController;
     }
@@ -65,7 +67,7 @@ class MyNotesController extends AbstractController {
                 $haveCategoriesNotes = $this->app->repositories->myNotesCategoriesRepository->executeHaveCategoriesNotesStatement($haveCategoriesNotesStmt, $categoriesIds);
                 if( $haveCategoriesNotes ){
 
-                    $notes = $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
+                    $notes = $this->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
 
                     # 2. Check lock and make sure that there are some notes visible
                     foreach( $notes as $index => $note ){
@@ -100,22 +102,12 @@ class MyNotesController extends AbstractController {
     }
 
     /**
-     * Returns one note for given id or null if nothing was found
-     * @param int $id
-     * @return MyNotes|null
-     */
-    public function getOneById(int $id): ?MyNotes
-    {
-        return $this->app->repositories->myNotesRepository->getOneById($id);
-    }
-
-    /**
      * @param array $categoriesIds
      * @return MyNotes[]
      */
     public function getNotesByCategoriesIds(array $categoriesIds): array
     {
-        return $this->app->repositories->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
+        return $this->myNotesRepository->getNotesByCategoriesIds($categoriesIds);
     }
 
     /**
@@ -123,6 +115,6 @@ class MyNotesController extends AbstractController {
      */
     public function findAllNotDeleted(): array
     {
-        return $this->app->repositories->myNotesRepository->findAllNotDeleted();
+        return $this->myNotesRepository->findAllNotDeleted();
     }
 }
