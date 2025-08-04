@@ -26,7 +26,6 @@ use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
-use App\Repository\Modules\Reports\ReportsRepository;
 use App\Repository\Modules\Todo\MyTodoElementRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
@@ -92,11 +91,6 @@ class Repositories extends AbstractController {
     public $myPaymentsBillsItemsRepository;
 
     /**
-     * @var ReportsRepository $reportsRepository
-     */
-    public $reportsRepository;
-
-    /**
      * @var MyRecurringPaymentMonthlyRepository
      */
     public $myRecurringPaymentMonthlyRepository;
@@ -158,7 +152,6 @@ class Repositories extends AbstractController {
         MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
         FilesTagsRepository                 $filesTagsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
-        ReportsRepository                   $reportsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
         MyContactTypeRepository             $myContactTypeRepository,
@@ -181,7 +174,6 @@ class Repositories extends AbstractController {
         $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
-        $this->reportsRepository                    = $reportsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
         $this->myContactTypeRepository              = $myContactTypeRepository;

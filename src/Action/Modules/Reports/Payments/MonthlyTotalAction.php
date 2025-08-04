@@ -4,7 +4,7 @@ namespace App\Action\Modules\Reports\Payments;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Reports\ReportsController;
+use App\Repository\Modules\Reports\ReportsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Chart\LinearChartDataHandler;
 use DateTimeImmutable;
@@ -20,7 +20,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MonthlyTotalAction extends AbstractController {
 
     public function __construct(
-        private readonly ReportsController   $reportsController,
+        private readonly ReportsRepository   $reportsRepository,
         private readonly TranslatorInterface $translator
     ) {
     }
@@ -34,7 +34,7 @@ class MonthlyTotalAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $paymentsPerMonth = $this->reportsController->buildPaymentsSummariesForMonthsAndYears();
+        $paymentsPerMonth = $this->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
         $billsGroupName   = $this->translator->trans("module.reports.payments.byTypePerMonth.withBills");
         $noBillsGroupName = $this->translator->trans("module.reports.payments.byTypePerMonth.withoutBills");
 

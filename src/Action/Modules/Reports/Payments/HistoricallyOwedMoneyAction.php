@@ -4,7 +4,7 @@ namespace App\Action\Modules\Reports\Payments;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Reports\ReportsController;
+use App\Repository\Modules\Reports\ReportsRepository;
 use App\Response\Base\BaseResponse;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HistoricallyOwedMoneyAction extends AbstractController {
 
     public function __construct(
-        private readonly ReportsController $reportsController,
+        private readonly ReportsRepository $reportsRepository,
     ) {
     }
 
@@ -30,7 +30,7 @@ class HistoricallyOwedMoneyAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $historicalEntries = $this->reportsController->fetchHistoricalOwedMoney();
+        $historicalEntries = $this->reportsRepository->fetchHistoricalOwedMoney();
         $entriesData       = [];
 
         foreach ($historicalEntries as $owedMoney) {
