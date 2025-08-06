@@ -16,7 +16,6 @@ use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
-use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
@@ -74,11 +73,6 @@ class Repositories extends AbstractController {
      * @var MyGoalsPaymentsRepository
      */
     public $myGoalsPaymentsRepository;
-
-    /**
-     * @var MyJobHolidaysPoolRepository
-     */
-    public $myJobHolidaysPoolRepository;
 
     /**
      * @var FilesTagsRepository
@@ -149,7 +143,6 @@ class Repositories extends AbstractController {
         MyPasswordsRepository               $myPasswordsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
-        MyJobHolidaysPoolRepository         $myJobHolidaysPoolRepository,
         FilesTagsRepository                 $filesTagsRepository,
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
@@ -171,7 +164,6 @@ class Repositories extends AbstractController {
         $this->myPasswordsRepository                = $myPasswordsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
-        $this->myJobHolidaysPoolRepository          = $myJobHolidaysPoolRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
