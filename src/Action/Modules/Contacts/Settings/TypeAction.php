@@ -4,9 +4,9 @@ namespace App\Action\Modules\Contacts\Settings;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\Contacts\MyContactsSettingsController;
-use App\Controller\Modules\Contacts\MyContactTypeController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Contacts\MyContactType;
+use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\FilesHandler;
 use App\Services\RequestService;
@@ -27,7 +27,7 @@ class TypeAction extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly TranslatorInterface $translator,
-        private readonly MyContactTypeController $typeController,
+        private readonly MyContactTypeRepository $myContactTypeRepository,
         private readonly MyContactsSettingsController $settingsController
     ) {
     }
@@ -50,7 +50,7 @@ class TypeAction extends AbstractController
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $types = $this->typeController->getAllNotDeleted();
+        $types = $this->myContactTypeRepository->getAllNotDeleted();
 
         $entriesData = [];
         foreach ($types as $type) {
@@ -116,7 +116,7 @@ class TypeAction extends AbstractController
         $imagePath = ArrayHandler::get($dataArray, 'imagePath', allowEmpty: false);
 
         // only allow saving already existing entity with unchanged name
-        $existingEntity = $this->typeController->getOneByName($name);
+        $existingEntity = $this->myContactTypeRepository->getOneByName($name);
         if ((!is_null($existingEntity) && $isNew) || (!$isNew && $type->getName() !== $name && !is_null($existingEntity)) ) {
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.contacts.settings.type.save.nameExist'));
         }

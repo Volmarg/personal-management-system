@@ -13,7 +13,6 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
-use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
@@ -100,11 +99,6 @@ class Repositories extends AbstractController {
     public $myContactRepository;
 
     /**
-     * @var MyContactTypeRepository $myContactTypeRepository
-     */
-    public $myContactTypeRepository;
-
-    /**
      * @var MyContactGroupRepository $myContactGroupRepository
      */
     public $myContactGroupRepository;
@@ -147,7 +141,6 @@ class Repositories extends AbstractController {
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
-        MyContactTypeRepository             $myContactTypeRepository,
         MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
@@ -168,7 +161,6 @@ class Repositories extends AbstractController {
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
-        $this->myContactTypeRepository              = $myContactTypeRepository;
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
