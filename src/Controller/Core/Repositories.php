@@ -14,7 +14,6 @@ use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
-use App\Repository\Modules\Issues\MyIssueProgressRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
@@ -114,11 +113,6 @@ class Repositories extends AbstractController {
     public $lockedResourceRepository;
 
     /**
-     * @var MyIssueProgressRepository $myIssueProgressRepository
-     */
-    public $myIssueProgressRepository;
-
-    /**
      * @var MyTodoRepository $myTodoRepository
      */
     public $myTodoRepository;
@@ -145,7 +139,6 @@ class Repositories extends AbstractController {
         MyContactRepository                 $myContactRepository,
         MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         LockedResourceRepository            $lockedResourceRepository,
-        MyIssueProgressRepository           $myIssueProgressRepository,
         MyTodoRepository                    $myTodoRepository,
         MyTodoElementRepository             $myTodoElementRepository,
     ) {
@@ -165,7 +158,6 @@ class Repositories extends AbstractController {
         $this->myContactRepository                  = $myContactRepository;
         $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
-        $this->myIssueProgressRepository            = $myIssueProgressRepository;
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;
     }
