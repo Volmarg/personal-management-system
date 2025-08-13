@@ -5,8 +5,8 @@ namespace App\Command\Crons;
 use App\Controller\Core\Application;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
-use App\Controller\Modules\Passwords\MyPasswordsController;
 use App\Controller\Modules\Passwords\MyPasswordsGroupsController;
+use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Services\External\PmsIoService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -34,7 +34,7 @@ class CronTransferDataToPmsIoCommand extends Command
         private readonly MyNotesCategoriesController $notesCategoriesController,
         private readonly MyNotesController           $notesController,
         private readonly MyPasswordsGroupsController $passwordsGroupsController,
-        private readonly MyPasswordsController       $passwordsController,
+        private readonly MyPasswordsRepository $passwordsRepository,
     )
     {
         parent::__construct(self::$defaultName);
@@ -91,7 +91,7 @@ class CronTransferDataToPmsIoCommand extends Command
     private function insertPasswordsData(): bool
     {
         $allNotDeletedPasswordsGroups = $this->passwordsGroupsController->findAllNotDeleted();
-        $allNotDeletedPasswords       = $this->passwordsController->findAllNotDeleted();
+        $allNotDeletedPasswords       = $this->passwordsRepository->findAllNotDeleted();
 
         $insertPasswordsGroupsResponse = $this->pmsIoService->insertPasswordsGroups($allNotDeletedPasswordsGroups);
         if( !$insertPasswordsGroupsResponse->isSuccess() ){

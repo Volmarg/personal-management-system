@@ -3,9 +3,9 @@
 namespace App\Action\Modules\Passwords;
 
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Passwords\MyPasswordsController;
 use App\Entity\Modules\Passwords\MyPasswords;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
+use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -22,7 +22,7 @@ use App\Annotation\System\ModuleAnnotation;
 class MyPasswordsAction extends AbstractController {
 
     public function __construct(
-        private readonly MyPasswordsController  $passwordsController,
+        private readonly MyPasswordsRepository  $passwordsRepository,
         private readonly EntityManagerInterface $em
     ) {
     }
@@ -33,7 +33,7 @@ class MyPasswordsAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $passwords = $this->passwordsController->findAllNotDeleted();
+        $passwords = $this->passwordsRepository->findAllNotDeleted();
 
         $entriesData = [];
         foreach ($passwords as $password) {
