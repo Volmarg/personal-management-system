@@ -4,7 +4,7 @@ namespace App\Action\Modules\Reports;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Payments\MyPaymentsIncomeController;
+use App\Repository\Modules\Payments\MyPaymentsIncomeRepository;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Response\Base\BaseResponse;
 use Exception;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class SavingsAction extends AbstractController {
 
     public function __construct(
-        private readonly MyPaymentsIncomeController $paymentsIncomeController,
+        private readonly MyPaymentsIncomeRepository $paymentsIncomeRepository,
         private readonly ReportsRepository $reportsRepository
     ) {
     }
@@ -33,7 +33,7 @@ class SavingsAction extends AbstractController {
     public function getAll(): JsonResponse
     {
         $expensesPerMonth = $this->reportsRepository->buildPaymentsSummariesForMonthsAndYears();
-        $incomesPerMonth  = $this->paymentsIncomeController->getAllNotDeletedSummedByYearAndMonth();
+        $incomesPerMonth  = $this->paymentsIncomeRepository->getAllNotDeletedSummedByYearAndMonth();
         $entriesData      = [];
         foreach ($expensesPerMonth as $monthExpenses) {
             $date   = $monthExpenses['yearAndMonth'];

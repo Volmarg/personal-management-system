@@ -18,7 +18,6 @@ use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
-use App\Repository\Modules\Payments\MyPaymentsIncomeRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
@@ -103,11 +102,6 @@ class Repositories extends AbstractController {
     public $myContactGroupRepository;
 
     /**
-     * @var MyPaymentsIncomeRepository $myPaymentsIncomeRepository
-     */
-    public $myPaymentsIncomeRepository;
-
-    /**
      * @var LockedResourceRepository $lockedResourceRepository
      */
     public $lockedResourceRepository;
@@ -137,7 +131,6 @@ class Repositories extends AbstractController {
         SettingRepository                   $settingRepository,
         MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
-        MyPaymentsIncomeRepository          $myPaymentsIncomeRepository,
         LockedResourceRepository            $lockedResourceRepository,
         MyTodoRepository                    $myTodoRepository,
         MyTodoElementRepository             $myTodoElementRepository,
@@ -156,7 +149,6 @@ class Repositories extends AbstractController {
         $this->settingRepository                    = $settingRepository;
         $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
-        $this->myPaymentsIncomeRepository           = $myPaymentsIncomeRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myTodoRepository                     = $myTodoRepository;
         $this->myTodoElementRepository              = $myTodoElementRepository;

@@ -66,15 +66,4 @@ class MyPaymentsIncomeRepository extends ServiceEntityRepository {
         return $returnedResult;
     }
 
-    /**
-     * Will return one record or null if nothing was found
-     *
-     * @param int $id
-     * @return MyPaymentsIncome|null
-     */
-    public function findOneById(int $id): ?MyPaymentsIncome
-    {
-        return $this->find($id);
-    }
-
 }
