@@ -4,8 +4,8 @@ namespace App\Action\Modules\Travels;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Travels\MyTravelsIdeasController;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
+use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -22,7 +22,7 @@ class MyTravelsIdeasAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface   $em,
-        private readonly MyTravelsIdeasController $travelIdeasController
+        private readonly MyTravelsIdeasRepository $travelsIdeasRepository,
     ) {
     }
 
@@ -44,7 +44,7 @@ class MyTravelsIdeasAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allIdeas = $this->travelIdeasController->getAllNotDeleted();
+        $allIdeas = $this->travelsIdeasRepository->getAllNotDeleted();
 
         $entriesData = [];
         foreach ($allIdeas as $idea) {
