@@ -11,7 +11,6 @@ namespace App\Controller\Core;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
-use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
@@ -91,11 +90,6 @@ class Repositories extends AbstractController {
     public $myContactRepository;
 
     /**
-     * @var MyContactGroupRepository $myContactGroupRepository
-     */
-    public $myContactGroupRepository;
-
-    /**
      * @var LockedResourceRepository $lockedResourceRepository
      */
     public $lockedResourceRepository;
@@ -122,7 +116,6 @@ class Repositories extends AbstractController {
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
-        MyContactGroupRepository            $myContactGroupRepository,
         MyContactRepository                 $myContactRepository,
         LockedResourceRepository            $lockedResourceRepository,
         MyTodoRepository                    $myTodoRepository,
@@ -139,7 +132,6 @@ class Repositories extends AbstractController {
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
-        $this->myContactGroupRepository             = $myContactGroupRepository;
         $this->myContactRepository                  = $myContactRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myTodoRepository                     = $myTodoRepository;

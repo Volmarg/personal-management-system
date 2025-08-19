@@ -12,6 +12,7 @@ use App\DTO\Modules\Contacts\ContactTypeDTO;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Contacts\MyContactType;
+use App\Repository\Modules\Contacts\MyContactGroupRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -30,7 +31,10 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $app;
 
-    public function __construct(Application $app) {
+    public function __construct(
+        Application $app,
+        private readonly MyContactGroupRepository $contactGroupRepository
+    ) {
         $this->faker = Factory::create('en');
         $this->app   = $app;
     }
@@ -177,7 +181,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
 
     private function getGroup()
     {
-        $allGroups = $this->app->repositories->myContactGroupRepository->findAll();
+        $allGroups = $this->contactGroupRepository->findAll();
         $group      = Utils::arrayGetRandom($allGroups);
         return $group;
     }
