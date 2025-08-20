@@ -21,7 +21,6 @@ use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
-use App\Repository\Modules\Todo\MyTodoElementRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Repository\SettingRepository;
 use App\Repository\System\LockedResourceRepository;
@@ -99,11 +98,6 @@ class Repositories extends AbstractController {
      */
     public $myTodoRepository;
 
-    /**
-     * @var MyTodoElementRepository $myTodoElementRepository
-     */
-    public $myTodoElementRepository;
-
     public function __construct(
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
         MyPaymentsProductRepository         $myPaymentsProductRepository,
@@ -119,7 +113,6 @@ class Repositories extends AbstractController {
         MyContactRepository                 $myContactRepository,
         LockedResourceRepository            $lockedResourceRepository,
         MyTodoRepository                    $myTodoRepository,
-        MyTodoElementRepository             $myTodoElementRepository,
     ) {
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
         $this->myPaymentsProductRepository          = $myPaymentsProductRepository;
@@ -135,7 +128,6 @@ class Repositories extends AbstractController {
         $this->myContactRepository                  = $myContactRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myTodoRepository                     = $myTodoRepository;
-        $this->myTodoElementRepository              = $myTodoElementRepository;
     }
 
     /**
