@@ -28,15 +28,4 @@ class MyPaymentsProductRepository extends ServiceEntityRepository {
         return $this->findBy(['deleted' => 0]);
     }
 
-    /**
-     * Will return one record or null if nothing was found
-     *
-     * @param int $id
-     * @return MyPaymentsProduct|null
-     */
-    public function findOneById(int $id): ?MyPaymentsProduct
-    {
-        return $this->find($id);
-    }
-
 }

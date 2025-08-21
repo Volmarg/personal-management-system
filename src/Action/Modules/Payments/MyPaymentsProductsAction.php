@@ -6,9 +6,9 @@ namespace App\Action\Modules\Payments;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Payments\MyPaymentsProductsController;
 use App\Controller\Modules\Payments\MyPaymentsSettingsController;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
+use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -25,8 +25,8 @@ class MyPaymentsProductsAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface       $em,
-        private readonly MyPaymentsProductsController $paymentsProductsController,
-        private readonly MyPaymentsSettingsController $paymentsSettingsController
+        private readonly MyPaymentsSettingsController $paymentsSettingsController,
+        private readonly MyPaymentsProductRepository $paymentsProductRepository
     ) {
 
     }
@@ -50,7 +50,7 @@ class MyPaymentsProductsAction extends AbstractController {
     public function getAll(): JsonResponse
     {
         $entriesData = [];
-        $products    = $this->paymentsProductsController->getAllNotDeleted();
+        $products    = $this->paymentsProductRepository->getAllNotDeleted();
         $multiplier  = $this->paymentsSettingsController->fetchCurrencyMultiplier();
         foreach ($products as $product) {
             $entriesData[] = [
