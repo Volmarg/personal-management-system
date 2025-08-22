@@ -1,0 +1,7 @@
+module:
+  monthly_payments:
+    import:
+      message:
+       success: "Data has been imported"
+       fail: "Something went wrong while importing the data"
+       noImportData: "No import data has been provided"
