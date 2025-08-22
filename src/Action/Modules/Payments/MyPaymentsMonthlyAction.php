@@ -6,10 +6,10 @@ namespace App\Action\Modules\Payments;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Payments\MyPaymentsMonthlyController;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Response\Base\BaseResponse;
+use App\Services\Core\Logger;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use DateTime;
@@ -19,6 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/payment/monthly", name: "module.payment.monthly.")]
 #[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
@@ -26,6 +27,8 @@ class MyPaymentsMonthlyAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly Logger                 $logger,
+        private readonly TranslatorInterface    $translator
     ) {
     }
 
@@ -96,6 +99,42 @@ class MyPaymentsMonthlyAction extends AbstractController {
     }
 
     /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    #[Route("/import", name: "import", methods: [Request::METHOD_POST])]
+    public function import(Request $request): JsonResponse
+    {
+        $rowsData = $request->getContent();
+        $contentArray = json_decode($rowsData, true);
+        $dataArray = $contentArray['data'] ?? [];
+
+        if (empty($dataArray)) {
+            $msg = $this->translator->trans('module.monthly_payments.import.message.noImportData');
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        try {
+            $this->em->beginTransaction();
+            foreach ($dataArray as $row) {
+                $payment = new MyPaymentsMonthly();
+                $this->createOrUpdateFromDataArray($row, $payment);
+            }
+            $this->em->commit();
+        } catch (Exception $e) {
+            $this->em->rollback();
+            $this->logger->logException($e);
+
+            $msg = $this->translator->trans('module.monthly_payments.import.message.fail');
+            return BaseResponse::buildInternalServerErrorResponse($msg)->toJsonResponse();
+        }
+
+        $msg = $this->translator->trans('module.monthly_payments.import.message.success');
+        return BaseResponse::buildOkResponse($msg)->toJsonResponse();
+    }
+
+    /**
      * @param Request                $request
      * @param MyPaymentsMonthly|null $payment
      *
@@ -108,7 +147,21 @@ class MyPaymentsMonthlyAction extends AbstractController {
             $payment = new MyPaymentsMonthly();
         }
 
-        $dataArray   = RequestService::tryFromJsonBody($request);
+        $dataArray = RequestService::tryFromJsonBody($request);
+
+        return $this->createOrUpdateFromDataArray($dataArray, $payment);
+    }
+
+    /**
+     * @param array                  $dataArray
+     * @param MyPaymentsMonthly|null $payment
+     *
+     * @return BaseResponse
+     * @throws \App\Exception\MissingDataException
+     * @throws \DateMalformedStringException
+     */
+    public function createOrUpdateFromDataArray(array $dataArray, ?MyPaymentsMonthly $payment): BaseResponse
+    {
         $dateString  = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
         $description = ArrayHandler::get($dataArray, 'description', allowEmpty: false);
         $money       = ArrayHandler::get($dataArray, 'money', allowEmpty: false);
@@ -121,7 +174,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
 
         $payment->setDate(new DateTime($dateString));
         $payment->setDescription($description);
-        $payment->setMoney((float)$money);
+        $payment->setMoney((float)abs($money));
         $payment->setType($type);
 
         $this->em->persist($payment);

@@ -21,6 +21,7 @@ class FileUploadConfigurator
     private const IMAGE_STORAGE__ID = "12ds23hs8sh7s4645678f4sadg456789as1";
     private const VIDEOS_STORAGE_ID = "312s456d7gewse123rg7gh456g1s";
     private const FILES_STORAGE_ID  = "645dsf789shkdczs23431245jk687sd123";
+    private const MONTHLY_PAYMENTS_IMPORT_ID  = "b54c2e78d5dbcc4441f813da11783859e2588d8b";
 
     private const array SUPPORTED_IMAGE_EXTENSIONS = [
         "bm",
@@ -63,10 +64,11 @@ class FileUploadConfigurator
     public function getConfiguration(string $configurationId): UploadConfigurationDTO
     {
         $configuration =  match ($configurationId) {
-            self::PROFILE_PICTURE_UPLOAD  => $this->buildProfilePictureUploadConfig(),
-            self::IMAGE_STORAGE__ID       => $this->buildImageStorageConfig(),
-            self::VIDEOS_STORAGE_ID       => $this->buildVideosStorageConfig(),
-            self::FILES_STORAGE_ID        => $this->buildFilesStorageConfig(),
+            self::PROFILE_PICTURE_UPLOAD     => $this->buildProfilePictureUploadConfig(),
+            self::IMAGE_STORAGE__ID          => $this->buildImageStorageConfig(),
+            self::VIDEOS_STORAGE_ID          => $this->buildVideosStorageConfig(),
+            self::FILES_STORAGE_ID           => $this->buildFilesStorageConfig(),
+            self::MONTHLY_PAYMENTS_IMPORT_ID => $this->buildMonthlyPaymentsImportConfig(),
             default                       => throw new Exception("There is no configuration builder defined for identifier: {$configurationId}")
         };
 
@@ -122,6 +124,30 @@ class FileUploadConfigurator
             source: UploadedFileSourceEnum::STORAGE_VIDEO_MODULE->value,
             uploadDir: null,
             allowTagging: true
+        );
+    }
+
+    /**
+     * This config will NOT be used in backend-based upload
+     *
+     * @return UploadConfigurationDTO
+     */
+    private function buildMonthlyPaymentsImportConfig(): UploadConfigurationDTO
+    {
+        return new UploadConfigurationDTO(
+            identifier: self::MONTHLY_PAYMENTS_IMPORT_ID,
+            maxFileSizeMb: null,
+            multiUpload: false,
+            allowNaming: false,
+            source: '',
+            uploadDir: null,
+            allowTagging: true,
+            allowedExtensions: [
+                "xlsx",
+            ],
+            allowedMimeTypes: [
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ]
         );
     }
 
