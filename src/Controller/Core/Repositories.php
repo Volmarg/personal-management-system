@@ -11,14 +11,12 @@ namespace App\Controller\Core;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
-use App\Repository\Modules\Contacts\MyContactRepository;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
-use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
@@ -32,11 +30,6 @@ class Repositories extends AbstractController {
      * @var MyPaymentsMonthlyRepository
      */
     public $myPaymentsMonthlyRepository;
-
-    /**
-     * @var MyPaymentsProductRepository
-     */
-    public $myPaymentsProductRepository;
 
     /**
      * @var MyPaymentsSettingsRepository
@@ -84,11 +77,6 @@ class Repositories extends AbstractController {
     public $settingRepository;
 
     /**
-     * @var MyContactRepository $myContactRepository
-     */
-    public $myContactRepository;
-
-    /**
      * @var LockedResourceRepository $lockedResourceRepository
      */
     public $lockedResourceRepository;
@@ -100,7 +88,6 @@ class Repositories extends AbstractController {
 
     public function __construct(
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
-        MyPaymentsProductRepository         $myPaymentsProductRepository,
         MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
         MyNotesCategoriesRepository         $myNotesCategoriesRepository,
         MyPasswordsRepository               $myPasswordsRepository,
@@ -110,12 +97,10 @@ class Repositories extends AbstractController {
         MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
-        MyContactRepository                 $myContactRepository,
         LockedResourceRepository            $lockedResourceRepository,
         MyTodoRepository                    $myTodoRepository,
     ) {
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
-        $this->myPaymentsProductRepository          = $myPaymentsProductRepository;
         $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
         $this->myNotesCategoriesRepository          = $myNotesCategoriesRepository;
         $this->myPasswordsRepository                = $myPasswordsRepository;
@@ -125,7 +110,6 @@ class Repositories extends AbstractController {
         $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
-        $this->myContactRepository                  = $myContactRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myTodoRepository                     = $myTodoRepository;
     }
