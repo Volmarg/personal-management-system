@@ -19,24 +19,4 @@ class MyPaymentsBillsItemsRepository extends ServiceEntityRepository
         parent::__construct($registry, MyPaymentsBillsItems::class);
     }
 
-    /**
-     * @return MyPaymentsBillsItems[]
-     */
-    public function getAllNotDeleted(): array
-    {
-        $entities = $this->findBy([MyPaymentsBillsItems::FIELD_DELETED => 0], [MyPaymentsBillsItems::FIELD_ID => "DESC"]);
-        return $entities;
-    }
-
-    /**
-     * Will return one record or null if nothing was found
-     *
-     * @param int $id
-     * @return MyPaymentsBillsItems|null
-     */
-    public function findOneById(int $id): ?MyPaymentsBillsItems
-    {
-        return $this->find($id);
-    }
-
 }

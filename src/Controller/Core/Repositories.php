@@ -15,7 +15,6 @@ use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
-use App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
@@ -62,11 +61,6 @@ class Repositories extends AbstractController {
     public $filesTagsRepository;
 
     /**
-     * @var MyPaymentsBillsItemsRepository $myPaymentsBillsItemsRepository
-     */
-    public $myPaymentsBillsItemsRepository;
-
-    /**
      * @var MyRecurringPaymentMonthlyRepository
      */
     public $myRecurringPaymentMonthlyRepository;
@@ -94,7 +88,6 @@ class Repositories extends AbstractController {
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         MyGoalsPaymentsRepository           $myGoalsPaymentsRepository,
         FilesTagsRepository                 $filesTagsRepository,
-        MyPaymentsBillsItemsRepository      $myPaymentsBillsItemsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
         SettingRepository                   $settingRepository,
         LockedResourceRepository            $lockedResourceRepository,
@@ -107,7 +100,6 @@ class Repositories extends AbstractController {
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->myGoalsPaymentsRepository            = $myGoalsPaymentsRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
-        $this->myPaymentsBillsItemsRepository       = $myPaymentsBillsItemsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
         $this->settingRepository                    = $settingRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
