@@ -5,9 +5,9 @@ namespace App\Action\Modules\Goals;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\Goals\GoalsPaymentsController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Goals\MyGoalsPayments;
+use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use DateTime;
@@ -24,7 +24,7 @@ use App\Response\Base\BaseResponse;
 class GoalsPaymentsAction extends AbstractController {
 
     public function __construct(
-        private readonly GoalsPaymentsController $goalsPaymentsController,
+        private readonly MyGoalsPaymentsRepository $goalsPaymentsRepository,
         private readonly EntityManagerInterface $em
     ) {
     }
@@ -48,7 +48,7 @@ class GoalsPaymentsAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allPayments = $this->goalsPaymentsController->getAllNotDeleted();
+        $allPayments = $this->goalsPaymentsRepository->getAllNotDeleted();
         $entriesData = [];
         foreach ($allPayments as $payment) {
             $entriesData[] = $payment->asFrontendData();

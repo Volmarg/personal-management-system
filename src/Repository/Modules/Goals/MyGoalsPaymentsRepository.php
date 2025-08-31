@@ -41,33 +41,4 @@ class MyGoalsPaymentsRepository extends ServiceEntityRepository
         return $this->findBy(['deleted' => 0]);
     }
 
-    /**
-     * Will return single entity for given id, if none was found then null will be returned
-     *
-     * @param int $id
-     * @return MyGoalsPayments|null
-     */
-    public function findOneById(int $id): ?MyGoalsPayments
-    {
-        return $this->find($id);
-    }
-
-    /**
-     * Will return one entity for given name if such exist, otherwise null is returned
-     *
-     * @param string $name
-     * @return MyGoalsPayments|null
-     */
-    public function getOneByName(string $name): ?MyGoalsPayments
-    {
-        $allEntities = $this->findBy(['name' => $name]);
-        if( empty($allEntities) ){
-            return null;
-        }
-
-        $firstKey = array_key_first($allEntities);
-
-        return $allEntities[$firstKey];
-    }
-
 }
