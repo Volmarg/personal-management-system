@@ -2,17 +2,15 @@
 
 namespace App\Controller\Page;
 
-use App\Controller\Core\Repositories;
 use App\Controller\Modules\ModulesController;
 use App\DTO\Settings\Lock\SettingsModulesDTO;
 use App\DTO\Settings\Lock\Subsettings\SettingsModuleLockDTO;
+use App\Repository\SettingRepository;
 use App\Services\Settings\SettingsLoader;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SettingsLockModuleController extends AbstractController {
-
-    const TWIG_DASHBOARD_SETTINGS_TEMPLATE = 'page-elements/settings/components/lock/lock-module-settings.twig' ;
 
     const ALL_SUPPORTED_MODULES = [
         ModulesController::MODULE_NAME_ACHIEVEMENTS,
@@ -27,11 +25,6 @@ class SettingsLockModuleController extends AbstractController {
     ];
 
     /**
-     * @var Repositories $repositories
-     */
-    private Repositories $repositories;
-
-    /**
      * @var SettingsModuleLockDTO[] $settingsModuleLockDtos
      */
     private array $settingsModuleLockDtos;
@@ -42,7 +35,7 @@ class SettingsLockModuleController extends AbstractController {
      */
     public function initializeSettingsModuleLockDtos(): void
     {
-        $moduleSettings = $this->repositories->settingRepository->getSettingByName(SettingsLoader::SETTING_NAME_MODULES);
+        $moduleSettings = $this->settingRepository->getSettingByName(SettingsLoader::SETTING_NAME_MODULES);
         if( empty($moduleSettings) ){
             $this->settingsModuleLockDtos = [];
             return;
@@ -55,11 +48,11 @@ class SettingsLockModuleController extends AbstractController {
     }
 
     /**
-     * SettingsLockModuleController constructor.
-     * @param Repositories $repositories
+     * @param SettingRepository $settingRepository
      */
-    public function __construct(Repositories $repositories) {
-        $this->repositories = $repositories;
+    public function __construct(
+        private readonly SettingRepository $settingRepository
+    ) {
     }
 
     /**

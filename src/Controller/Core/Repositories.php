@@ -17,7 +17,6 @@ use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
-use App\Repository\SettingRepository;
 use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -54,11 +53,6 @@ class Repositories extends AbstractController {
     public $myRecurringPaymentMonthlyRepository;
 
     /**
-     * @var SettingRepository
-     */
-    public $settingRepository;
-
-    /**
      * @var LockedResourceRepository $lockedResourceRepository
      */
     public $lockedResourceRepository;
@@ -75,7 +69,6 @@ class Repositories extends AbstractController {
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         FilesTagsRepository                 $filesTagsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
-        SettingRepository                   $settingRepository,
         LockedResourceRepository            $lockedResourceRepository,
         MyTodoRepository                    $myTodoRepository,
     ) {
@@ -85,7 +78,6 @@ class Repositories extends AbstractController {
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
-        $this->settingRepository                    = $settingRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
         $this->myTodoRepository                     = $myTodoRepository;
     }
