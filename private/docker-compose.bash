@@ -2,7 +2,7 @@
 # Can be called like this ./private/docker-compose.bash -d 'up -d --force-recreate' -h 'pi'
 
 HOST_PI="192.168.0.38";
-HOST_DEMO='private-host';
+HOST_DEMO='private-host-hetzner';
 
 COMPOSE_FILE='';
 ARCHITECTURE='';
