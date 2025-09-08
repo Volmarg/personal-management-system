@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
-use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsIncome;
+use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -22,14 +22,10 @@ class MyPaymentsIncomeFixtures extends Fixture implements OrderedFixtureInterfac
      */
     private $faker;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
-    public function __construct(Application $app) {
+    public function __construct(
+        private readonly MyPaymentsMonthlyRepository $paymentsMonthlyRepository
+    ) {
         $this->faker = Factory::create('en');
-        $this->app   = $app;
     }
 
     /**
@@ -40,7 +36,7 @@ class MyPaymentsIncomeFixtures extends Fixture implements OrderedFixtureInterfac
     public function load(ObjectManager $manager)
     {
 
-        $uniqueDates = $this->app->repositories->myPaymentsMonthlyRepository->getUniqueDatesFromPayments();
+        $uniqueDates = $this->paymentsMonthlyRepository->getUniqueDatesFromPayments();
         foreach( $uniqueDates as $date ){
 
             $dateTime = new DateTime($date);

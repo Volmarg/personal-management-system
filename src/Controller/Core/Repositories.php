@@ -12,7 +12,6 @@ namespace App\Controller\Core;
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
-use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Repository\Modules\Todo\MyTodoRepository;
@@ -20,11 +19,6 @@ use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Repositories extends AbstractController {
-
-    /**
-     * @var MyPaymentsMonthlyRepository
-     */
-    public $myPaymentsMonthlyRepository;
 
     /**
      * @var MyPaymentsSettingsRepository
@@ -57,7 +51,6 @@ class Repositories extends AbstractController {
     public $myTodoRepository;
 
     public function __construct(
-        MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
         MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         FilesTagsRepository                 $filesTagsRepository,
@@ -65,7 +58,6 @@ class Repositories extends AbstractController {
         LockedResourceRepository            $lockedResourceRepository,
         MyTodoRepository                    $myTodoRepository,
     ) {
-        $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
         $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;

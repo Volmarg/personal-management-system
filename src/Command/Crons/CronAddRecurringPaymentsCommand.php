@@ -5,6 +5,7 @@ namespace App\Command\Crons;
 use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
+use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use DateTime;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -46,7 +47,11 @@ class CronAddRecurringPaymentsCommand extends Command
      */
     private $currYearMonth;
 
-    public function __construct(Application $app, string $name = null) {
+    public function __construct(
+        Application $app,
+        private readonly MyPaymentsMonthlyRepository $paymentsMonthlyRepository,
+        string $name = null
+    ) {
         parent::__construct($name);
         $this->app           = $app;
         $this->currYearMonth = (new DateTime())->format('Y-m');
@@ -106,7 +111,7 @@ class CronAddRecurringPaymentsCommand extends Command
 
             $usedDayOfMonth          = $this->getDayOfMonthForInsertion($recurringPayment);
             $hash                    = $this->calculateHashForAttemptedInsertion($recurringPayment, $usedDayOfMonth);
-            $recurringPaymentForHash = $this->app->repositories->myPaymentsMonthlyRepository->findByDateAndDescriptionHash($hash, $usedDayOfMonth);
+            $recurringPaymentForHash = $this->paymentsMonthlyRepository->findByDateAndDescriptionHash($hash, $usedDayOfMonth);
 
             $this->countOfAlreadyExistingPayments += count($recurringPaymentForHash);
 
