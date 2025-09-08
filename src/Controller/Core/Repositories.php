@@ -12,7 +12,6 @@ namespace App\Controller\Core;
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
-use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
@@ -31,11 +30,6 @@ class Repositories extends AbstractController {
      * @var MyPaymentsSettingsRepository
      */
     public $myPaymentsSettingsRepository;
-
-    /**
-     * @var MyPasswordsRepository
-     */
-    public $myPasswordsRepository;
 
     /**
      * @var MyPasswordsGroupsRepository
@@ -65,7 +59,6 @@ class Repositories extends AbstractController {
     public function __construct(
         MyPaymentsMonthlyRepository         $myPaymentsMonthlyRepository,
         MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
-        MyPasswordsRepository               $myPasswordsRepository,
         MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         FilesTagsRepository                 $filesTagsRepository,
         MyRecurringPaymentMonthlyRepository $myRecurringMonthlyPaymentRepository,
@@ -74,7 +67,6 @@ class Repositories extends AbstractController {
     ) {
         $this->myPaymentsMonthlyRepository          = $myPaymentsMonthlyRepository;
         $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
-        $this->myPasswordsRepository                = $myPasswordsRepository;
         $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->myRecurringPaymentMonthlyRepository  = $myRecurringMonthlyPaymentRepository;
