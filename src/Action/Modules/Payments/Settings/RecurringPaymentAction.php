@@ -2,9 +2,9 @@
 
 namespace App\Action\Modules\Payments\Settings;
 
-use App\Controller\Modules\Payments\MyRecurringPaymentsMonthlyController;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
+use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Response\Base\BaseResponse;
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
@@ -23,7 +23,7 @@ class RecurringPaymentAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface               $em,
-        private readonly MyRecurringPaymentsMonthlyController $recurringPaymentsMonthlyController,
+        private readonly MyRecurringPaymentMonthlyRepository $recurringPaymentMonthlyRepository
     ) {
     }
 
@@ -45,7 +45,7 @@ class RecurringPaymentAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allRecurringPayments = $this->recurringPaymentsMonthlyController->getAllNotDeleted();
+        $allRecurringPayments = $this->recurringPaymentMonthlyRepository->getAllNotDeleted();
         $entriesData = [];
         foreach ($allRecurringPayments as $recurringPayment) {
             $entriesData[] = [

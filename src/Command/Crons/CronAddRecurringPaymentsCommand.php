@@ -6,6 +6,7 @@ use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
+use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use DateTime;
 use Exception;
 use Symfony\Component\Console\Command\Command;
@@ -50,6 +51,7 @@ class CronAddRecurringPaymentsCommand extends Command
     public function __construct(
         Application $app,
         private readonly MyPaymentsMonthlyRepository $paymentsMonthlyRepository,
+        private readonly MyRecurringPaymentMonthlyRepository $recurringPaymentMonthlyRepository,
         string $name = null
     ) {
         parent::__construct($name);
@@ -104,7 +106,7 @@ class CronAddRecurringPaymentsCommand extends Command
      * @return array
      */
     private function getRecurringPaymentsAndFilterExistingRecords():array {
-        $recurringPayments          = $this->app->repositories->myRecurringPaymentMonthlyRepository->findBy(['deleted' => 0]);
+        $recurringPayments          = $this->recurringPaymentMonthlyRepository->findBy(['deleted' => 0]);
         $this->countOfPaymentsToAdd = count($recurringPayments);
 
         foreach($recurringPayments as $index => $recurringPayment){

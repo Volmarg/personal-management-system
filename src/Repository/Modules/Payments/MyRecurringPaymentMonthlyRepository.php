@@ -19,17 +19,6 @@ class MyRecurringPaymentMonthlyRepository extends ServiceEntityRepository {
     }
 
     /**
-     * Returns one entity for given id or null otherwise
-     *
-     * @param int $id
-     * @return MyRecurringPaymentMonthly|null
-     */
-    public function findOneById(int $id): ?MyRecurringPaymentMonthly
-    {
-        return $this->find($id);
-    }
-
-    /**
      * Will return all not deleted records
      *
      * @return MyRecurringPaymentMonthly[]
