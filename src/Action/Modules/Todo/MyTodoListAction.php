@@ -8,6 +8,7 @@ use App\Controller\Modules\Todo\MyTodoController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
+use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -24,7 +25,8 @@ class MyTodoListAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly MyTodoController       $todoController
+        private readonly MyTodoController       $todoController,
+        private readonly MyTodoRepository       $todoRepository
     ) {
     }
 
@@ -47,7 +49,7 @@ class MyTodoListAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $allTodo     = $this->todoController->getAll();
+        $allTodo     = $this->todoRepository->getAll();
         $entriesData = $this->todoController->buildFrontDataArray($allTodo);
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($entriesData);
