@@ -3,8 +3,8 @@
 namespace App\Action\Modules\Passwords;
 
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Passwords\MyPasswordsGroupsController;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
+use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -23,7 +23,7 @@ class MyPasswordsGroupsAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface      $em,
-        private readonly MyPasswordsGroupsController $passwordsGroupsController,
+        private readonly MyPasswordsGroupsRepository $passwordsGroupsRepository,
         private readonly TranslatorInterface         $translator
     ) {
     }
@@ -34,7 +34,7 @@ class MyPasswordsGroupsAction extends AbstractController {
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
     public function getAll(): JsonResponse
     {
-        $groups = $this->passwordsGroupsController->findAllNotDeleted();
+        $groups = $this->passwordsGroupsRepository->findAllNotDeleted();
 
         $entriesData = [];
         foreach ($groups as $group) {
@@ -107,7 +107,7 @@ class MyPasswordsGroupsAction extends AbstractController {
         $dataArray = RequestService::tryFromJsonBody($request);
         $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
-        if (!is_null($this->passwordsGroupsController->findOneByName($name))) {
+        if (!is_null($this->passwordsGroupsRepository->findOneByName($name))) {
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.passwords.groups.createdUpdate.nameExist'));
         }
 

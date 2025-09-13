@@ -11,7 +11,6 @@ namespace App\Controller\Core;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
-use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,11 +21,6 @@ class Repositories extends AbstractController {
      * @var MyPaymentsSettingsRepository
      */
     public $myPaymentsSettingsRepository;
-
-    /**
-     * @var MyPasswordsGroupsRepository
-     */
-    public $myPasswordsGroupsRepository;
 
     /**
      * @var FilesTagsRepository
@@ -40,12 +34,10 @@ class Repositories extends AbstractController {
 
     public function __construct(
         MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
-        MyPasswordsGroupsRepository         $myPasswordsGroupsRepository,
         FilesTagsRepository                 $filesTagsRepository,
         LockedResourceRepository            $lockedResourceRepository,
     ) {
         $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
-        $this->myPasswordsGroupsRepository          = $myPasswordsGroupsRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
     }

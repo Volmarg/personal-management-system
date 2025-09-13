@@ -5,7 +5,7 @@ namespace App\Command\Crons;
 use App\Controller\Core\Application;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
-use App\Controller\Modules\Passwords\MyPasswordsGroupsController;
+use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Services\External\PmsIoService;
 use Exception;
@@ -33,7 +33,7 @@ class CronTransferDataToPmsIoCommand extends Command
         PmsIoService                                 $pmsIoService,
         private readonly MyNotesCategoriesController $notesCategoriesController,
         private readonly MyNotesController           $notesController,
-        private readonly MyPasswordsGroupsController $passwordsGroupsController,
+        private readonly MyPasswordsGroupsRepository $passwordsGroupsRepository,
         private readonly MyPasswordsRepository $passwordsRepository,
     )
     {
@@ -90,7 +90,7 @@ class CronTransferDataToPmsIoCommand extends Command
      */
     private function insertPasswordsData(): bool
     {
-        $allNotDeletedPasswordsGroups = $this->passwordsGroupsController->findAllNotDeleted();
+        $allNotDeletedPasswordsGroups = $this->passwordsGroupsRepository->findAllNotDeleted();
         $allNotDeletedPasswords       = $this->passwordsRepository->findAllNotDeleted();
 
         $insertPasswordsGroupsResponse = $this->pmsIoService->insertPasswordsGroups($allNotDeletedPasswordsGroups);
