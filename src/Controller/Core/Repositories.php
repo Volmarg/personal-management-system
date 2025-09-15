@@ -11,16 +11,10 @@ namespace App\Controller\Core;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Repository\FilesTagsRepository;
-use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
 use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Repositories extends AbstractController {
-
-    /**
-     * @var MyPaymentsSettingsRepository
-     */
-    public $myPaymentsSettingsRepository;
 
     /**
      * @var FilesTagsRepository
@@ -33,11 +27,9 @@ class Repositories extends AbstractController {
     public $lockedResourceRepository;
 
     public function __construct(
-        MyPaymentsSettingsRepository        $myPaymentsSettingsRepository,
         FilesTagsRepository                 $filesTagsRepository,
         LockedResourceRepository            $lockedResourceRepository,
     ) {
-        $this->myPaymentsSettingsRepository         = $myPaymentsSettingsRepository;
         $this->filesTagsRepository                  = $filesTagsRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
     }
