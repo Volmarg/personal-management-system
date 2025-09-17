@@ -80,14 +80,4 @@ class FilesTagsController extends AbstractController {
         return $response;
     }
 
-    /**
-     * Will return tags entity for given file path if exists, or null if does not
-     *
-     * @param string $fileFullPath
-     * @return FilesTags|null
-     */
-    public function getFileTagsEntityByFileFullPath(string $fileFullPath): ?FilesTags
-    {
-        return $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
-    }
 }

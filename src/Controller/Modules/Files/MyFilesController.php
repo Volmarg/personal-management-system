@@ -3,9 +3,9 @@
 namespace App\Controller\Modules\Files;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Entity\FilesTags;
+use App\Repository\FilesTagsRepository;
 use App\Services\Files\FileTagger;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,16 +29,11 @@ class MyFilesController extends AbstractController
      */
     private $finder;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
-    public function __construct(Application $app) {
+    public function __construct(
+        private readonly FilesTagsRepository $filesTagsRepository
+    ) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
-
-        $this->app = $app;
     }
 
     /**
@@ -61,7 +56,7 @@ class MyFilesController extends AbstractController
         foreach ($this->finder as $index => $file) {
 
             $fileFullPath = $file->getPath() . '/' . $file->getFilename();
-            $fileTags     = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
+            $fileTags     = $this->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
             $tagsJson     = ( $fileTags instanceof FilesTags ? $fileTags->getTags() : "" );
 
             $allFiles[$index] = [

@@ -2,9 +2,9 @@
 
 namespace App\Controller\Modules\Video;
 
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Entity\FilesTags;
+use App\Repository\FilesTagsRepository;
 use App\Services\Files\FileTagger;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
@@ -21,11 +21,6 @@ class MyVideoController extends AbstractController {
     private $finder;
 
     /**
-     * @var Application $app
-     */
-    private $app;
-
-    /**
      * Will return the target directory in context of upload dir being root
      * @return string
      */
@@ -36,11 +31,11 @@ class MyVideoController extends AbstractController {
     }
 
 
-    public function __construct(Application $app) {
+    public function __construct(
+        private readonly FilesTagsRepository $filesTagsRepository,
+    ) {
         $this->finder = new Finder();
         $this->finder->depth('== 0');
-
-        $this->app = $app;
     }
 
     /**
@@ -57,7 +52,7 @@ class MyVideoController extends AbstractController {
         foreach ($this->finder as $image) {
 
             $fileFullPath = $image->getPath() . DIRECTORY_SEPARATOR . $image->getFilename();
-            $fileTags     = $this->app->repositories->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
+            $fileTags     = $this->filesTagsRepository->getFileTagsEntityByFileFullPath($fileFullPath);
             $tagsJson     = ( $fileTags instanceof FilesTags ? $fileTags->getTags() : "" );
 
             $allImages[] = [

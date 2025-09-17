@@ -10,16 +10,10 @@ namespace App\Controller\Core;
 
 
 use App\Entity\Interfaces\EntityInterface;
-use App\Repository\FilesTagsRepository;
 use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class Repositories extends AbstractController {
-
-    /**
-     * @var FilesTagsRepository
-     */
-    public $filesTagsRepository;
 
     /**
      * @var LockedResourceRepository $lockedResourceRepository
@@ -27,10 +21,8 @@ class Repositories extends AbstractController {
     public $lockedResourceRepository;
 
     public function __construct(
-        FilesTagsRepository                 $filesTagsRepository,
         LockedResourceRepository            $lockedResourceRepository,
     ) {
-        $this->filesTagsRepository                  = $filesTagsRepository;
         $this->lockedResourceRepository             = $lockedResourceRepository;
     }
 

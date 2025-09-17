@@ -4,6 +4,7 @@ namespace App\Services\Files;
 
 use App\Controller\Core\Application;
 use App\Entity\FilesTags;
+use App\Repository\FilesTagsRepository;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -33,7 +34,10 @@ class FileTagger {
      */
     private $app;
 
-    public function __construct(Application $app) {
+    public function __construct(
+        Application $app,
+        private readonly FilesTagsRepository $filesTagsRepository,
+    ) {
         $this->app = $app;
     }
 
@@ -61,7 +65,7 @@ class FileTagger {
         $fileFullPath = ( is_null($fileFullPath) ? $this->fullFilePath : $fileFullPath );
 
 
-        $allFilesWithTags = $this->app->repositories->filesTagsRepository->findBy([
+        $allFilesWithTags = $this->filesTagsRepository->findBy([
             'fullFilePath' => $fileFullPath
         ]);
 
@@ -237,7 +241,7 @@ class FileTagger {
      * @throws \Exception
      */
     public function updateFilePathByFolderPathChange(string $oldFolderPath, string $newFolderPath) {
-        $this->app->repositories->filesTagsRepository->updateFilePathByFolderPathChange($oldFolderPath, $newFolderPath);
+        $this->filesTagsRepository->updateFilePathByFolderPathChange($oldFolderPath, $newFolderPath);
     }
 
     /**
