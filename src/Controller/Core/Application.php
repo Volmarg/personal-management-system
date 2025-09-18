@@ -17,11 +17,6 @@ use Throwable;
 class Application extends AbstractController {
 
     /**
-     * @var Repositories
-     */
-    public $repositories;
-
-    /**
      * @var EntityManagerInterface
      */
     public $em;
@@ -57,7 +52,6 @@ class Application extends AbstractController {
     private TokenStorageInterface $tokenStorage;
 
     public function __construct(
-        Repositories            $repositories,
         EntityManagerInterface  $em,
         LoggerInterface         $logger,
         Logger                  $customLoggers,
@@ -66,7 +60,6 @@ class Application extends AbstractController {
         TokenStorageInterface   $tokenStorage
     ) {
         $this->customLoggers = $customLoggers;
-        $this->repositories  = $repositories;
         $this->logger        = $logger;
         $this->em            = $em;
         $this->translator    = new Translator($translator);
