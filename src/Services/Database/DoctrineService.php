@@ -6,12 +6,12 @@
  * Time: 21:02
  */
 
-namespace App\Controller\Core;
+namespace App\Services\Database;
 
 use App\Entity\Interfaces\EntityInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Repositories extends AbstractController
+class DoctrineService extends AbstractController
 {
 
     /**

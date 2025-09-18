@@ -2,16 +2,16 @@
 
 namespace App\Services\Validation;
 
-use App\Controller\Core\Repositories;
-use App\Services\Validation\Validators\AbstractValidator;
-use App\Services\Validation\Validators\Modules\Job\MyJobHolidaysValidator;
-use App\Services\Validation\Validators\Modules\Payments\MyRecurringPaymentsValidator;
 use App\Entity\Interfaces\ValidateEntityForCreateInterface;
 use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\Services\Core\Translator;
+use App\Services\Database\DoctrineService;
+use App\Services\Validation\Validators\AbstractValidator;
+use App\Services\Validation\Validators\Modules\Job\MyJobHolidaysValidator;
+use App\Services\Validation\Validators\Modules\Payments\MyRecurringPaymentsValidator;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -128,7 +128,7 @@ class EntityValidatorService extends AbstractController {
         }
 
         $objectClass = get_class($object);
-        if( !Repositories::isEntity($object) ){
+        if( !DoctrineService::isEntity($object) ){
             $message = $this->translator->translate('logs.validators.objectOfGivenClassIsNotEntity');
             $this->logger->critical($message . $objectClass);
 
