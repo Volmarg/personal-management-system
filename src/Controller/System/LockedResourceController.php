@@ -5,6 +5,7 @@ namespace App\Controller\System;
 use App\Controller\Core\Application;
 use App\Controller\Page\SettingsLockModuleController;
 use App\Entity\System\LockedResource;
+use App\Repository\System\LockedResourceRepository;
 use App\Services\Security\JwtAuthenticationService;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,7 @@ class LockedResourceController extends AbstractController {
         Application                               $app,
         SettingsLockModuleController              $settingsLockModuleController,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly LockedResourceRepository $lockedResourceRepository,
         private readonly EntityManagerInterface   $em
     ) {
         $this->app                          = $app;
@@ -48,12 +50,12 @@ class LockedResourceController extends AbstractController {
     public function isResourceLocked(string $record, string $type, string $target, Statement $stmt = null): bool
     {
         if( is_null($stmt) ){
-            $stmt = $this->app->repositories->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement($type);
+            $stmt = $this->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement($type);
         }
 
         switch($type){
             case LockedResource::TYPE_ENTITY:
-                $isLockedResource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
+                $isLockedResource = $this->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
                 return !empty($isLockedResource);
 
             // in case of directory we need to check every parent directory for lock
@@ -63,7 +65,7 @@ class LockedResourceController extends AbstractController {
                 $pattern = "#(.*)[\/]{1}(.*)#";
                 while( preg_match($pattern, $record, $matches) ){ # walk over the path and build parent path
 
-                    $lockedResource = $this->app->repositories->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
+                    $lockedResource = $this->lockedResourceRepository->executeIsLockForRecordTypeAndTargetStatement($stmt, $record, $type, $target);
                     if( !empty($lockedResource) ){
                         return true;
                     }
@@ -164,34 +166,13 @@ class LockedResourceController extends AbstractController {
     }
 
     /**
-     * @param string $oldPath
-     * @param string $newPath
-     */
-    public function updatePath(string $oldPath, string $newPath): void
-    {
-        $this->app->repositories->lockedResourceRepository->updatePath($oldPath, $newPath);
-    }
-
-    /**
-     * Gets the LockedResource for entity name and record id
-     * @param string $record
-     * @param string $type
-     * @param string $target
-     * @return LockedResource|null
-     */
-    public function findOneEntity(string $record, string $type, string $target):? LockedResource
-    {
-        return $this->app->repositories->lockedResourceRepository->findOneEntity($record, $type, $target);
-    }
-
-    /**
      * @param LockedResource $lockedResource
      * @throws ORMException
      * @throws OptimisticLockException
      */
     public function remove(LockedResource $lockedResource): void
     {
-        $this->app->repositories->lockedResourceRepository->remove($lockedResource);
+        $this->lockedResourceRepository->remove($lockedResource);
     }
 
     /**
@@ -201,7 +182,7 @@ class LockedResourceController extends AbstractController {
      */
     public function add(LockedResource $lockedResource): void
     {
-        $this->app->repositories->lockedResourceRepository->add($lockedResource);
+        $this->lockedResourceRepository->add($lockedResource);
     }
 
 }

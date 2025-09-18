@@ -5,6 +5,7 @@ namespace App\Services\Files;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
+use App\Repository\System\LockedResourceRepository;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
@@ -66,7 +67,14 @@ class FilesHandler {
     private $imageHandler;
 
 
-    public function __construct(Application $application, DirectoriesHandler $directoriesHandler, LoggerInterface $logger, FileTagger $fileTagger, ImageHandler $imageHandler) {
+    public function __construct(
+        Application        $application,
+        DirectoriesHandler $directoriesHandler,
+        LoggerInterface    $logger,
+        FileTagger         $fileTagger,
+        ImageHandler       $imageHandler,
+        private readonly LockedResourceRepository $lockedResourceRepository
+    ) {
         $this->application       = $application;
         $this->directoriesHandle = $directoriesHandler;
         $this->imageHandler      = $imageHandler;
@@ -451,7 +459,7 @@ class FilesHandler {
             unlink($currentFileLocation);
 
             $this->fileTagger->updateFilePath($currentFileLocation, $targetFileLocation);
-            $this->application->repositories->lockedResourceRepository->updatePath($currentFileLocation, $targetFileLocation);
+            $this->lockedResourceRepository->updatePath($currentFileLocation, $targetFileLocation);
             $this->imageHandler->moveMiniatureBasedOnMovingOriginalFile($currentFileLocation, $targetFileLocation);
 
             $message = $this->application->translator->translate('responses.files.fileHasBeenSuccesfullyMoved');

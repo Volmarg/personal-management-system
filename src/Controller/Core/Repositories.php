@@ -8,34 +8,20 @@
 
 namespace App\Controller\Core;
 
-
 use App\Entity\Interfaces\EntityInterface;
-use App\Repository\System\LockedResourceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Repositories extends AbstractController {
-
-    /**
-     * @var LockedResourceRepository $lockedResourceRepository
-     */
-    public $lockedResourceRepository;
-
-    public function __construct(
-        LockedResourceRepository            $lockedResourceRepository,
-    ) {
-        $this->lockedResourceRepository             = $lockedResourceRepository;
-    }
+class Repositories extends AbstractController
+{
 
     /**
      * @param $object
+     *
      * @return bool
      */
     public static function isEntity($object): bool
     {
-        if(
-                !is_object($object)
-            ||  !($object instanceof EntityInterface)
-        ){
+        if (!is_object($object) || !($object instanceof EntityInterface)) {
             return false;
         }
 

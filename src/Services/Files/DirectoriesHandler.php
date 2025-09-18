@@ -12,6 +12,7 @@ use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
+use App\Repository\System\LockedResourceRepository;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
 use Doctrine\DBAL\Exception;
@@ -73,7 +74,8 @@ class DirectoriesHandler {
         FileTagger               $fileTagger,
         FilesTagsController      $filesTagsController,
         LockedResourceController $lockedResourceController,
-        ModuleDataController     $moduleDataController
+        ModuleDataController     $moduleDataController,
+        private readonly LockedResourceRepository $lockedResourceRepository
     ) {
         self::$lockedResourceController = $lockedResourceController;
         $this->application              = $application;
@@ -465,7 +467,7 @@ class DirectoriesHandler {
 
             # Info: rename is using for handling file moving
             rename($currentFolderPath, $newFolderPath);
-            $this->application->repositories->lockedResourceRepository->updatePath($currentFolderPath, $newFolderPath);
+            $this->lockedResourceRepository->updatePath($currentFolderPath, $newFolderPath);
 
             $module     = ModulesController::getUploadModuleNameForFileFullPath($currentFolderPath);
             $moduleData = $this->moduleDataController->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentFolderPath);
