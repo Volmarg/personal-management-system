@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Modules\Issues;
 
-use App\Controller\Core\Application;
 use App\DataFixtures\Providers\Modules\Issues;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
@@ -11,6 +10,7 @@ use App\Repository\Modules\Issues\MyIssueRepository;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\DBAL\DBALException;
 use Faker\Factory;
@@ -22,17 +22,11 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
     public function __construct(
-        Application                        $app,
+        private readonly EntityManagerInterface $em,
         private readonly MyIssueRepository $myIssueRepository
     ) {
         $this->faker = Factory::create('en');
-        $this->app   = $app;
     }
 
     /**
@@ -116,7 +110,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      */
     private function resetIssuesIndex()
     {
-        $connection = $this->app->em->getConnection();
+        $connection = $this->em->getConnection();
 
         $sql = "
             ALTER TABLE my_issue AUTO_INCREMENT = 1

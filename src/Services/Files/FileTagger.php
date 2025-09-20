@@ -2,10 +2,11 @@
 
 namespace App\Services\Files;
 
-use App\Controller\Core\Application;
 use App\Entity\FilesTags;
 use App\Repository\FilesTagsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This class handles files tagging logic which is:
@@ -29,16 +30,11 @@ class FileTagger {
      */
     private $tags = [];
 
-    /**
-     * @var Application  $app
-     */
-    private $app;
-
     public function __construct(
-        Application $app,
+        private readonly TranslatorInterface $translator,
+        private readonly EntityManagerInterface $em,
         private readonly FilesTagsRepository $filesTagsRepository,
     ) {
-        $this->app = $app;
     }
 
     /**
@@ -71,7 +67,7 @@ class FileTagger {
 
         $countedFilesWithTags = count($allFilesWithTags);
         if( $countedFilesWithTags > 1 ){
-            $message = $this->app->translator->translate('exceptions.tagger.moreThanOneFileTagsRecordsFoundForPath') . $fileFullPath;
+            $message = $this->translator->trans('exceptions.tagger.moreThanOneFileTagsRecordsFoundForPath') . $fileFullPath;
             throw new \Exception($message);
         }
 
@@ -91,7 +87,7 @@ class FileTagger {
     public function updateTags(){
 
         if( !$this->isPrepared() ){
-            $message = $this->app->translator->translate('exceptions.tagger.allTagsHaveBeenRemoved');
+            $message = $this->translator->trans('exceptions.tagger.allTagsHaveBeenRemoved');
             throw new \Exception($message);
         }
 
@@ -107,16 +103,16 @@ class FileTagger {
                 $fileTags->setFullFilePath($this->fullFilePath);
                 $fileTags->setTags($tagsJson);
 
-                $this->app->em->persist($fileTags);
-                $this->app->em->flush();
+                $this->em->persist($fileTags);
+                $this->em->flush();
 
-                $message = $this->app->translator->translate('responses.tagger.tagsHaveBeenCreated');
+                $message = $this->translator->trans('responses.tagger.tagsHaveBeenCreated');
                 return new Response($message);
             }
 
             # no tags exist and not adding any
             if ( empty($fileWithTags) && empty($this->tags) ){
-                $message = $this->app->translator->translate('responses.tagger.noTagsToAdd');
+                $message = $this->translator->trans('responses.tagger.noTagsToAdd');
                 return new Response($message);
             }
 
@@ -134,10 +130,10 @@ class FileTagger {
                     &&  empty( reset($this->tags) )
                 )
                 ){
-                $this->app->em->remove($fileWithTags);
-                $this->app->em->flush();
+                $this->em->remove($fileWithTags);
+                $this->em->flush();
 
-                $message = $this->app->translator->translate('responses.tagger.allTagsHaveBeenRemoved');
+                $message = $this->translator->trans('responses.tagger.allTagsHaveBeenRemoved');
                 return new Response($message);
             }
 
@@ -150,7 +146,7 @@ class FileTagger {
             $areTagsRemoved = ( count($currentTagsArray) !== count($commonTags) );
 
             if ( empty($newTags) && !$areTagsRemoved ) {
-                $message = $this->app->translator->translate('responses.tagger.noTagsToAdd');
+                $message = $this->translator->trans('responses.tagger.noTagsToAdd');
                 return new Response($message);
             }
 
@@ -159,14 +155,14 @@ class FileTagger {
 
             $fileWithTags->setTags($tagsJson);
 
-            $this->app->em->persist($fileWithTags);
-            $this->app->em->flush();
+            $this->em->persist($fileWithTags);
+            $this->em->flush();
 
-            $message = $this->app->translator->translate('responses.tagger.tagsUpdated');
+            $message = $this->translator->trans('responses.tagger.tagsUpdated');
             return new Response($message);
 
         } catch (\Exception $e) {
-            $message = $this->app->translator->translate('exceptions.tagger.thereWasAnError');
+            $message = $this->translator->trans('exceptions.tagger.thereWasAnError');
             return new Response($message);
         }
 
@@ -180,13 +176,13 @@ class FileTagger {
 
         $fileWithTags = $this->getEntity();
         if( empty($fileWithTags) ){
-            $message = $this->app->translator->translate('responses.tagger.noTagsToRemove');
+            $message = $this->translator->trans('responses.tagger.noTagsToRemove');
             return new Response($message);
         }else{
-            $this->app->em->remove($fileWithTags);
-            $this->app->em->flush();
+            $this->em->remove($fileWithTags);
+            $this->em->flush();
 
-            $message = $this->app->translator->translate('responses.tagger.allTagsHaveBeenRemoved');
+            $message = $this->translator->trans('responses.tagger.allTagsHaveBeenRemoved');
             return new Response($message);
         }
 
@@ -231,8 +227,8 @@ class FileTagger {
 
         $fileTags->setFullFilePath($newFilePath);
 
-        $this->app->em->persist($fileTags);
-        $this->app->em->flush();
+        $this->em->persist($fileTags);
+        $this->em->flush();
     }
 
     /**

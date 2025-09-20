@@ -3,23 +3,13 @@ namespace App\Controller\Core;
 
 
 use App\Controller\Utils\Utils;
-use App\Services\Core\Logger;
 use App\Services\Core\Translator;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 class Application extends AbstractController {
-
-    /**
-     * @var EntityManagerInterface
-     */
-    public $em;
 
     /**
      * @var \App\Services\Core\Translator $translator
@@ -32,48 +22,18 @@ class Application extends AbstractController {
     public $logger;
 
     /**
-     * @var Logger $customLoggers
-     */
-    public $customLoggers;
-
-    /**
-     * @deprecated should no longer be used, needs to be checked if there is some old service to be removed / replaced
-     */
-    public $translations;
-
-    /**
      * @var ConfigLoaders $configLoaders
      */
     public $configLoaders;
 
-    /**
-     * @var TokenStorageInterface $tokenStorage
-     */
-    private TokenStorageInterface $tokenStorage;
-
     public function __construct(
-        EntityManagerInterface  $em,
         LoggerInterface         $logger,
-        Logger                  $customLoggers,
         TranslatorInterface     $translator,
         ConfigLoaders           $configLoaders,
-        TokenStorageInterface   $tokenStorage
     ) {
-        $this->customLoggers = $customLoggers;
         $this->logger        = $logger;
-        $this->em            = $em;
         $this->translator    = new Translator($translator);
         $this->configLoaders = $configLoaders;
-        $this->tokenStorage  = $tokenStorage;
-    }
-
-    /**
-     * Adds green box message on front
-     * @param $message
-     */
-    public function addSuccessFlash($message)
-    {
-        $this->addFlash(Utils::FLASH_TYPE_SUCCESS, $message);
     }
 
     /**
@@ -83,28 +43,6 @@ class Application extends AbstractController {
     public function addDangerFlash($message)
     {
         $this->addFlash(Utils::FLASH_TYPE_DANGER, $message);
-    }
-
-    /**
-     * @param string $camelString
-     * @return string
-     */
-    public static function camelCaseToSnakeCaseConverter(string $camelString)
-    {
-        $camelCaseToSnakeConverter = new CamelCaseToSnakeCaseNameConverter(null, true);
-        $snakeString               = $camelCaseToSnakeConverter->normalize($camelString);
-        return $snakeString;
-    }
-
-    /**
-     * @param string $snakeCase
-     * @return string
-     */
-    public static function snakeCaseToCamelCaseConverter(string $snakeCase)
-    {
-        $camelCaseToSnakeConverter = new CamelCaseToSnakeCaseNameConverter(null, true);
-        $camelString               = $camelCaseToSnakeConverter->denormalize($snakeCase);
-        return $camelString;
     }
 
     /**
@@ -124,44 +62,4 @@ class Application extends AbstractController {
         ]);
     }
 
-    /**
-     * Returns currently logged in user
-     * @return object|UserInterface|null
-     */
-    public function getCurrentlyLoggedInUser()
-    {
-        return $this->getUser();
-    }
-
-    /**
-     * Will force logout from system
-     */
-    public function logoutCurrentlyLoggedInUser()
-    {
-        $this->tokenStorage->setToken(null);
-    }
-
-    /**
-     * Begins a transaction
-     */
-    public function beginTransaction(): void
-    {
-        $this->em->beginTransaction();
-    }
-
-    /**
-     * Commits the transaction
-     */
-    public function commitTransaction(): void
-    {
-        $this->em->commit();
-    }
-
-    /**
-     * Rollback the transaction
-     */
-    public function rollbackTransaction(): void
-    {
-        $this->em->rollback();
-    }
 }

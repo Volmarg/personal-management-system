@@ -2,13 +2,14 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Core\Application;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\Repository\Modules\Payments\MyPaymentsMonthlyRepository;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,23 +40,18 @@ class CronAddRecurringPaymentsCommand extends Command
     private $countOfAddedPayments = 0;
 
     /**
-     * @var Application $app
-     */
-    private $app;
-
-    /**
      * @var string $currYearMonth
      */
     private $currYearMonth;
 
     public function __construct(
-        Application $app,
+        private readonly LoggerInterface $logger,
+        private readonly EntityManagerInterface $em,
         private readonly MyPaymentsMonthlyRepository $paymentsMonthlyRepository,
         private readonly MyRecurringPaymentMonthlyRepository $recurringPaymentMonthlyRepository,
         string $name = null
     ) {
         parent::__construct($name);
-        $this->app           = $app;
         $this->currYearMonth = (new DateTime())->format('Y-m');
     }
 
@@ -89,8 +85,8 @@ class CronAddRecurringPaymentsCommand extends Command
                 $this->report($io);
 
             }catch(Exception $e){
-                $this->app->logger->critical("There was an error while trying to add recurring payments.");
-                $this->app->logger->critical($e->getMessage());
+                $this->logger->critical("There was an error while trying to add recurring payments.");
+                $this->logger->critical($e->getMessage());
                 return Command::FAILURE;
             }
 
@@ -144,8 +140,8 @@ class CronAddRecurringPaymentsCommand extends Command
             $payment->setMoney($recurringPayment->getMoney());
             $payment->setType($recurringPayment->getType());
 
-            $this->app->em->persist($payment);
-            $this->app->em->flush();
+            $this->em->persist($payment);
+            $this->em->flush();
             $this->countOfAddedPayments++;
         }
 

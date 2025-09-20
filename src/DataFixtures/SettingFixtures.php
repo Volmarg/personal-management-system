@@ -2,13 +2,13 @@
 
 namespace App\DataFixtures;
 
-use App\Controller\Core\Application;
 use App\DataFixtures\Providers\SettingProvider;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\Services\Exceptions\ExceptionValueNotAllowed;
 use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\DBAL\DBALException;
 
@@ -25,17 +25,9 @@ class SettingFixtures extends Fixture
     const ROLES                 = 'ROLE_SUPER_ADMIN';
     const USERNAME              = 'admin';
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
-    /**
-     * SettingFixtures constructor.
-     * @param Application $app
-     */
-    public function __construct(Application $app) {
-        $this->app = $app;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+    ) {
     }
 
     /**
@@ -117,6 +109,6 @@ class SettingFixtures extends Fixture
                 VALUES(2, '{$settingType}', '{$json}')
             ";
 
-        $this->app->em->getConnection()->executeQuery($sql);
+        $this->em->getConnection()->executeQuery($sql);
     }
 }
