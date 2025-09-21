@@ -22,6 +22,10 @@ class Setting implements EntityInterface
         self::DASHBOARD_WIDGET_SCHEDULES,
     ];
 
+    public const array ALL_NOTIFICATION_CONFIGS = [
+        'webhook',
+    ];
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

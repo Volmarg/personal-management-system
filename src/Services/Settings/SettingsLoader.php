@@ -17,6 +17,7 @@ use Exception;
 class SettingsLoader {
 
     const SETTING_NAME_DASHBOARD = 'dashboard';
+    const SETTING_NAME_NOTIFICATIONS = 'notifications';
     const SETTING_NAME_MODULES   = 'modules';
     const SETTING_NAME_FINANCES  = 'finances';
 
@@ -35,6 +36,14 @@ class SettingsLoader {
     public function getSettingsForDashboard(): ?Setting {
         $setting = $this->settingRepository->getSettingByName(self::SETTING_NAME_DASHBOARD);
         return $setting;
+    }
+
+    /**
+     * @return Setting|null
+     */
+    public function getSettingsForNotifications(): ?Setting
+    {
+        return $this->settingRepository->getSettingByName(self::SETTING_NAME_NOTIFICATIONS);
     }
 
     /**

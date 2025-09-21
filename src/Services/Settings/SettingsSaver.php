@@ -5,12 +5,11 @@ namespace App\Services\Settings;
 
 use App\Controller\Page\SettingsDashboardController;
 use App\Controller\Page\SettingsFinancesController;
-use App\Controller\Page\SettingsLockModuleController;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\Finances\SettingsFinancesDTO;
-use App\DTO\Settings\Lock\SettingsModulesDTO;
-use App\DTO\Settings\Lock\Subsettings\SettingsModuleLockDTO;
+use App\DTO\Settings\Notifications\ConfigDTO;
+use App\DTO\Settings\SettingNotificationDTO;
 use App\DTO\Settings\SettingsDashboardDTO;
 use App\Entity\Setting;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,34 +42,6 @@ class SettingsSaver {
     ) {
         $this->em = $em;
         $this->settingsLoader = $settingsLoader;
-    }
-
-    /**
-     * @param SettingsDashboardDTO $dto
-     */
-    public function saveSettingsForDashboardFromDto(SettingsDashboardDTO $dto){
-        $json = $dto->toJson();
-
-        $setting = new Setting();
-        $setting->setName(SettingsLoader::SETTING_NAME_DASHBOARD);
-        $setting->setValue($json);
-
-        $this->em->persist($setting);
-        $this->em->flush();
-    }
-
-    /**
-     * @param SettingsFinancesDTO $dto
-     */
-    public function saveSettingsForFinancesFromDto(SettingsFinancesDTO $dto){
-        $json = $dto->toJson();
-
-        $setting = new Setting();
-        $setting->setName(SettingsLoader::SETTING_NAME_FINANCES);
-        $setting->setValue($json);
-
-        $this->em->persist($setting);
-        $this->em->flush();
     }
 
     /**
@@ -131,30 +102,31 @@ class SettingsSaver {
     }
 
     /**
-     * @param SettingsModuleLockDTO[] $arrayOfModulesLockDto
+     * @param ConfigDTO[] $configDtos
+     *
      * @throws Exception
      */
-    public function saveSettingsForModulesLock(array $arrayOfModulesLockDto): void {
+    public function saveNotificationsConfigSettings(array $configDtos): void
+    {
+        $settingEntity = $this->settingsLoader->getSettingsForNotifications();
+        if (!empty($settingEntity)) {
+            $settingJson            = $settingEntity->getValue();
+            $notificationSettingDto = SettingNotificationDTO::fromJson($settingJson);
 
-        $setting         = $this->settingsLoader->getSettingsForModules();
-        $areSettingsInDb = !empty($setting);
+            $notificationSettingDto->setConfig($configDtos);
+        } else {
+            $settingEntity          = new Setting();
+            $notificationSettingDto = new SettingNotificationDTO();
 
-        if( $areSettingsInDb ){
-            $settingJson = $setting->getValue();
-            $dto         = SettingsModulesDTO::fromJson($settingJson);
-
-            $dto->setModuleLockDtos($arrayOfModulesLockDto);
-        }else{
-            $setting = new Setting();
-            $dto     = SettingsLockModuleController::buildModulesSettingsDto($arrayOfModulesLockDto);
+            $notificationSettingDto->setConfig($configDtos);
         }
 
-        $modulesLockJson = $dto->toJson();
+        $financesSettingsJson = $notificationSettingDto->toJson();
 
-        $setting->setName(SettingsLoader::SETTING_NAME_MODULES);
-        $setting->setValue($modulesLockJson);
+        $settingEntity->setName(SettingsLoader::SETTING_NAME_NOTIFICATIONS);
+        $settingEntity->setValue($financesSettingsJson);
 
-        $this->em->persist($setting);
+        $this->em->persist($settingEntity);
         $this->em->flush();
     }
 
