@@ -3,7 +3,7 @@
 namespace App\Listeners\Request;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\Application;
+use App\Controller\Core\ConfigLoaders;
 use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
@@ -30,11 +30,6 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private LoggerInterface $securityLogger;
 
     /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
      * @var UrlMatcherService $urlMatcherService
      */
     private UrlMatcherService $urlMatcherService;
@@ -51,17 +46,17 @@ class OnKernelRequestListener implements EventSubscriberInterface {
 
     public function __construct(
         Logger                       $securityLogger,
-        Application                  $app,
         UrlMatcherService            $urlMatcherService,
         AnnotationReaderService      $annotationReaderService,
         LockedResourceController     $lockedResourceController,
-        private readonly LoggerInterface $requestLogger
+        private readonly LoggerInterface $requestLogger,
+        private readonly ConfigLoaders $configLoaders,
+        private readonly LoggerInterface $logger,
     ) {
         $this->lockedResourceController     = $lockedResourceController;
         $this->annotationReaderService      = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
         $this->securityLogger               = $securityLogger->getSecurityLogger();
-        $this->app                          = $app;
     }
 
     /**
@@ -120,7 +115,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function blockIp(RequestEvent $event): void
     {
-        $restrictedIps = $this->app->configLoaders->getConfigLoaderSecurity()->getRestrictedIps();
+        $restrictedIps = $this->configLoaders->getConfigLoaderSecurity()->getRestrictedIps();
         $request       = $event->getRequest();
         $ip            = $request->getClientIp();
 
@@ -166,7 +161,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $request     = $ev->getRequest();
         $classForUrl = $this->urlMatcherService->getClassForCalledUrl($request->getRequestUri());
         if (empty($classForUrl)) {
-            $this->app->logger->warning("No class was found for url: " . $request->getRequestUri());
+            $this->logger->warning("No class was found for url: " . $request->getRequestUri());
         }
 
         // can happen for web profiler / debug bar routes

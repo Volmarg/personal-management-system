@@ -21,19 +21,12 @@ class Application extends AbstractController {
      */
     public $logger;
 
-    /**
-     * @var ConfigLoaders $configLoaders
-     */
-    public $configLoaders;
-
     public function __construct(
         LoggerInterface         $logger,
         TranslatorInterface     $translator,
-        ConfigLoaders           $configLoaders,
     ) {
         $this->logger        = $logger;
         $this->translator    = new Translator($translator);
-        $this->configLoaders = $configLoaders;
     }
 
     /**

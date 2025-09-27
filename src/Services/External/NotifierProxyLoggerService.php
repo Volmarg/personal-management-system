@@ -3,6 +3,7 @@
 namespace App\Services\External;
 
 use App\Controller\Core\Application;
+use App\Controller\Core\ConfigLoaders;
 use App\Controller\Core\Env;
 use App\DTO\Discord\DiscordMessageDTO;
 use App\DTO\Mail\MailDTO;
@@ -42,7 +43,11 @@ class NotifierProxyLoggerService
      * @param NotifierProxyLoggerBridge $notifierProxyLoggerBridge
      * @param Application $app
      */
-    public function __construct(NotifierProxyLoggerBridge $notifierProxyLoggerBridge, Application $app)
+    public function __construct(
+        NotifierProxyLoggerBridge $notifierProxyLoggerBridge,
+        Application $app,
+        private readonly ConfigLoaders $configLoaders,
+    )
     {
         $this->app                       = $app;
         $this->notifierProxyLoggerBridge = $notifierProxyLoggerBridge;
@@ -93,7 +98,7 @@ class NotifierProxyLoggerService
 
             $mailDto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
             $mailDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
-            $mailDto->setFromEmail($this->app->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
+            $mailDto->setFromEmail($this->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
             $mailDto->setSubject(self::MESSAGE_TITLE_PREFIX_SCHEDULE . $incomingScheduleDTO->getTitle());
             $mailDto->setBody($incomingScheduleDTO->getBody());
 
