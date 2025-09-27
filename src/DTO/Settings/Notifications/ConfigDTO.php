@@ -9,6 +9,8 @@ use Exception;
 
 class ConfigDTO extends AbstractDTO implements dtoInterface
 {
+    public const NAME_DISCORD_WEBHOOK = "discordWebhook";
+
     public const KEY_NAME                = 'name';
     public const KEY_VALUE               = 'value';
     public const KEY_ACTIVE_FOR_REMINDER = 'activeForReminder';
