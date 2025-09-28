@@ -2,7 +2,6 @@
 
 namespace App\Controller\Modules\Todo;
 
-use App\Controller\Core\Application;
 use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\System\LockedResourceController;
 use App\Entity\Modules\Todo\MyTodo;
@@ -12,11 +11,6 @@ use App\Repository\System\ModuleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyTodoController extends AbstractController {
-
-    /**
-     * @var Application $app
-     */
-    private $app;
 
     /**
      * @var MyIssuesController $issuesController
@@ -29,14 +23,12 @@ class MyTodoController extends AbstractController {
     private LockedResourceController $lockedResourceController;
 
     public function __construct(
-        Application $app,
         MyIssuesController $issuesController,
         LockedResourceController $lockedResourceController,
         private readonly ModuleRepository $moduleRepository,
         private readonly MyIssueRepository $issueRepository,
     )
     {
-        $this->app                      = $app;
         $this->issuesController         = $issuesController;
         $this->lockedResourceController = $lockedResourceController;
     }

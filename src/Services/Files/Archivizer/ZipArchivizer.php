@@ -3,7 +3,6 @@
 namespace App\Services\Files\Archivizer;
 
 
-use App\Controller\Core\Application;
 use App\Services\Files\FilesHandler;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -24,11 +23,10 @@ class ZipArchivizer extends Archivizer
     }
 
     public function __construct(
-        Application $app,
         private readonly LoggerInterface $logger,
     )
     {
-        parent::__construct($app, $this->logger);
+        parent::__construct($this->logger);
 
 
         if ( !class_exists('ZipArchive') ){

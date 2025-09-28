@@ -5,7 +5,6 @@ namespace App\Controller\Files;
 
 use App\Controller\Modules\Files\MyFilesController;
 use App\Controller\Modules\Images\MyImagesController;
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
@@ -61,11 +60,6 @@ class FileUploadController extends AbstractController {
     private $filesHandler;
 
     /**
-     * @var Application $app
-     */
-    private $app;
-
-    /**
      * @var DirectoriesHandler $directoriesHandler
      */
     private $directoriesHandler;
@@ -75,8 +69,7 @@ class FileUploadController extends AbstractController {
      */
     private LockedResourceController $lockedResourceController;
 
-    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, Application $app, LockedResourceController $lockedResourceController) {
-        $this->app                      = $app;
+    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, LockedResourceController $lockedResourceController) {
         $this->filesHandler             = $filesHandler;
         $this->directoriesHandler       = $directoriesHandler;
         $this->lockedResourceController = $lockedResourceController;

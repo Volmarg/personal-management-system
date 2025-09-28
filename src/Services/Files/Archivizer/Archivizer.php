@@ -2,7 +2,6 @@
 
 namespace App\Services\Files\Archivizer;
 
-use App\Controller\Core\Application;
 use Psr\Log\LoggerInterface;
 
 abstract class Archivizer {
@@ -80,11 +79,6 @@ abstract class Archivizer {
      * @var string
      */
     protected $archiveFullPath = '';
-
-    /**
-     * @var Application $app
-     */
-    protected $app;
 
     /**
      * @var int $minimalArchiveSize
@@ -272,16 +266,13 @@ abstract class Archivizer {
     /**
      * DatabaseExporter constructor.
      *
-     * @param Application     $app
      * @param LoggerInterface $logger
      *
      * @throws \Exception
      */
     public function __construct(
-        Application $app,
         private readonly LoggerInterface $logger,
     ) {
-        $this->app = $app;
         $this->setFilePrefix(self::FILE_PREFIX_MODE_CURRENT_DATE_TIME);
     }
 

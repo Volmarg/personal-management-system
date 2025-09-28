@@ -3,7 +3,6 @@
 namespace App\Services\Files;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
 use App\Repository\System\LockedResourceRepository;
 use Exception;
@@ -43,11 +42,6 @@ class FilesHandler {
     const KEY_UPLOAD_DIR = "upload";
 
     /**
-     * @var Application $application
-     */
-    private $application;
-
-    /**
      * @var DirectoriesHandler $directoriesHandle
      */
     private $directoriesHandle;
@@ -64,7 +58,6 @@ class FilesHandler {
 
 
     public function __construct(
-        Application        $application,
         DirectoriesHandler $directoriesHandler,
         FileTagger         $fileTagger,
         ImageHandler       $imageHandler,
@@ -72,7 +65,6 @@ class FilesHandler {
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface $logger,
     ) {
-        $this->application       = $application;
         $this->directoriesHandle = $directoriesHandler;
         $this->imageHandler      = $imageHandler;
         $this->fileTagger        = $fileTagger;

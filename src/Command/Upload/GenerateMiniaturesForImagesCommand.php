@@ -2,7 +2,6 @@
 
 namespace App\Command\Upload;
 
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Services\Validation\FileValidatorService;
 use App\Services\Files\DirectoriesHandler;
@@ -29,11 +28,6 @@ class GenerateMiniaturesForImagesCommand extends Command
     protected static $defaultName = 'pms:upload:generate-miniatures-for-images';
 
     /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
      * @var SymfonyStyle $io
      */
     private SymfonyStyle $io;
@@ -54,7 +48,6 @@ class GenerateMiniaturesForImagesCommand extends Command
     private FileValidatorService $fileValidator;
 
     public function __construct(
-        Application $app,
         FilesHandler $filesHandler,
         ImageHandler $imageHandler,
         FileValidatorService $fileValidator,
@@ -63,7 +56,6 @@ class GenerateMiniaturesForImagesCommand extends Command
         parent::__construct(self::$defaultName);
         $this->filesHandler  = $filesHandler;
         $this->imageHandler  = $imageHandler;
-        $this->app           = $app;
         $this->fileValidator = $fileValidator;
     }
 

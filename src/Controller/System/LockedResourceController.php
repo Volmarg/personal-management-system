@@ -2,7 +2,6 @@
 
 namespace App\Controller\System;
 
-use App\Controller\Core\Application;
 use App\Controller\Page\SettingsLockModuleController;
 use App\Controller\Utils\Utils;
 use App\Entity\System\LockedResource;
@@ -20,24 +19,17 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LockedResourceController extends AbstractController {
 
     /**
-     * @var Application
-     */
-    private $app;
-
-    /**
      * @var SettingsLockModuleController $settingsLockModuleController
      */
     private SettingsLockModuleController $settingsLockModuleController;
 
     public function __construct(
-        Application                               $app,
         SettingsLockModuleController              $settingsLockModuleController,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
         private readonly LockedResourceRepository $lockedResourceRepository,
         private readonly EntityManagerInterface   $em,
         private readonly TranslatorInterface      $translator
     ) {
-        $this->app                          = $app;
         $this->settingsLockModuleController = $settingsLockModuleController;
     }
 

@@ -2,10 +2,8 @@
 
 namespace App\Services\Database;
 
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\DTO\DatabaseCredentialsDTO;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -70,11 +68,6 @@ class DatabaseExporter {
      * @var string $filePrefix
      */
     private $filePrefix = '';
-
-    /**
-     * @var Logger $app
-     */
-    private $app;
 
     /**
      * @return string
@@ -206,16 +199,13 @@ class DatabaseExporter {
     /**
      * DatabaseExporter constructor.
      *
-     * @param Application     $app
      * @param LoggerInterface $logger
      *
      * @throws \Exception
      */
     public function __construct(
-        Application $app,
         private readonly LoggerInterface $logger,
     ) {
-        $this->app = $app;
         $this->setDumpExtension();
         $this->setFilePrefix(self::FILE_PREFIX_MODE_CURRENT_DATE_TIME);
     }

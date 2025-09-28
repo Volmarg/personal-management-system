@@ -3,7 +3,6 @@
 
 namespace App\Controller\Files;
 
-use App\Controller\Core\Application;
 use App\Services\Files\DirectoriesHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,13 +22,7 @@ class FilesUploadSettingsController extends AbstractController {
      */
     private $directoriesHandler;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
-    public function __construct(DirectoriesHandler $directoriesHandler, Application $app) {
-        $this->app                = $app;
+    public function __construct(DirectoriesHandler $directoriesHandler) {
         $this->finder             = new Finder();
         $this->directoriesHandler = $directoriesHandler;
     }

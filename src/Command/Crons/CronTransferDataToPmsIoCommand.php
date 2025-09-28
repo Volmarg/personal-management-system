@@ -2,7 +2,6 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Core\Application;
 use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Controller\Modules\Notes\MyNotesController;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
@@ -23,17 +22,11 @@ class CronTransferDataToPmsIoCommand extends Command
     protected static $defaultName = 'cron:transfer-data-to-pms-io';
 
     /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
      * @var PmsIoService $pmsIoService
      */
     private PmsIoService $pmsIoService;
 
     public function __construct(
-        Application                                  $app,
         PmsIoService                                 $pmsIoService,
         private readonly MyNotesCategoriesController $notesCategoriesController,
         private readonly MyNotesController           $notesController,
@@ -44,7 +37,6 @@ class CronTransferDataToPmsIoCommand extends Command
     {
         parent::__construct(self::$defaultName);
 
-        $this->app          = $app;
         $this->pmsIoService = $pmsIoService;
     }
 

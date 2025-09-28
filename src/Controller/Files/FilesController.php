@@ -3,20 +3,10 @@
 
 namespace App\Controller\Files;
 
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FilesController extends AbstractController {
-
-    /**
-     * @var Application $app
-     */
-    private $app;
-
-    public function __construct(Application $app) {
-        $this->app = $app;
-    }
 
     /**
      * If the file_path has `upload` directory from front then it will be stripped

@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Modules\Schedule;
 
-use App\Controller\Core\Application;
 use App\DataFixtures\Providers\FontawesomeIconsProvider;
 use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Schedules\MySchedule;
@@ -36,14 +35,8 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
-    public function __construct(Application $app) {
+    public function __construct() {
         $this->faker = Factory::create('en');
-        $this->app   = $app;
     }
 
     /**

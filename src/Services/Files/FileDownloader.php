@@ -2,7 +2,6 @@
 
 namespace App\Services\Files;
 
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,20 +26,13 @@ class FileDownloader extends AbstractController {
      */
     private $logger;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
     public function __construct(
         LoggerInterface $logger,
-        Application $app,
         private readonly TranslatorInterface $translator
     ) {
         $this->targetDirectory = Env::getUploadDir();
         $this->finder          = new Finder();
         $this->logger          = $logger;
-        $this->app             = $app;
     }
 
     /**

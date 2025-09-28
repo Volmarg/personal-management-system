@@ -4,7 +4,6 @@ namespace App\Services\Files;
 
 use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModuleDataController;
 use App\Controller\Modules\ModulesController;
@@ -32,11 +31,6 @@ class DirectoriesHandler {
 
     const SUBDIRECTORY_KEY  = 'subdirectory';
     const KEY_BLOCK_REMOVAL = 'block_removal';
-
-    /**
-     * @var Application $application
-     */
-    private $application;
 
     /**
      * @var LoggerInterface $logger
@@ -70,7 +64,6 @@ class DirectoriesHandler {
     private ModuleDataController $moduleDataController;
 
     public function __construct(
-        Application              $application,
         LoggerInterface          $logger,
         FileTagger               $fileTagger,
         FilesTagsController      $filesTagsController,
@@ -80,7 +73,6 @@ class DirectoriesHandler {
         private readonly TranslatorInterface $translator,
     ) {
         self::$lockedResourceController = $lockedResourceController;
-        $this->application              = $application;
         $this->logger                   = $logger;
         $this->finder                   = new Finder();
         $this->fileTagger               = $fileTagger;

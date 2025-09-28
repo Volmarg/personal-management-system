@@ -4,8 +4,6 @@
 namespace App\Controller\Files;
 
 use App\Controller\Modules\Files\MyFilesController;
-use App\Controller\Core\Application;
-use App\Entity\FilesTags;
 use App\Services\Files\FileTagger;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,21 +15,14 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class FilesTagsController extends AbstractController {
 
     /**
-     * @var Application $app
-     */
-    private $app;
-
-    /**
      * @var FileTagger $fileTagger
      */
     private $fileTagger;
 
     public function __construct(
-        Application $app,
         FileTagger $fileTagger,
         private readonly TranslatorInterface $translator
     ) {
-        $this->app        = $app;
         $this->fileTagger = $fileTagger;
     }
 

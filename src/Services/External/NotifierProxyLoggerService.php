@@ -2,7 +2,6 @@
 
 namespace App\Services\External;
 
-use App\Controller\Core\Application;
 use App\Controller\Core\ConfigLoaders;
 use App\Controller\Core\Env;
 use App\DTO\Discord\DiscordMessageDTO;
@@ -36,26 +35,18 @@ class NotifierProxyLoggerService
     private NotifierProxyLoggerBridge $notifierProxyLoggerBridge;
 
     /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
      * NotifierProxyLoggerService constructor.
      *
      * @param NotifierProxyLoggerBridge $notifierProxyLoggerBridge
-     * @param Application               $app
      * @param ConfigLoaders             $configLoaders
      * @param LoggerInterface           $logger
      */
     public function __construct(
         NotifierProxyLoggerBridge $notifierProxyLoggerBridge,
-        Application $app,
         private readonly ConfigLoaders $configLoaders,
         private readonly LoggerInterface $logger,
     )
     {
-        $this->app                       = $app;
         $this->notifierProxyLoggerBridge = $notifierProxyLoggerBridge;
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Core\Application;
 use App\Services\Files\Archivizer\ZipArchivizer;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
@@ -59,19 +58,12 @@ class CronMakeConfigBackupCommand extends Command
      */
     private string $backupFileName;
 
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
     public function __construct(
         ZipArchivizer $archivizer,
-        Application $app,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct(self::$defaultName);
 
-        $this->app        = $app;
         $this->archivizer = $archivizer;
     }
 

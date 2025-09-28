@@ -2,7 +2,6 @@
 
 namespace App\Services\External;
 
-use App\Controller\Core\Application;
 use App\PmsIo\DTO\Notes\NoteCategoryDTO;
 use App\PmsIo\DTO\Notes\NoteDTO;
 use App\PmsIo\DTO\Passwords\PasswordDTO;
@@ -46,29 +45,21 @@ class PmsIoService
     private PmsIoBridge $pmsIoBridge;
 
     /**
-     * @var Application $app
-     */
-    private Application $app;
-
-    /**
      * @var EncryptorInterface $encryptor
      */
     private EncryptorInterface $encryptor;
 
     /**
      * @param PmsIoBridge        $pmsIoBridge
-     * @param Application        $app
      * @param EncryptorInterface $encryptor
      * @param LoggerInterface    $logger
      */
     public function __construct(
         PmsIoBridge $pmsIoBridge,
-        Application $app,
         EncryptorInterface $encryptor,
         private readonly LoggerInterface $logger,
     )
     {
-        $this->app         = $app;
         $this->encryptor   = $encryptor;
         $this->pmsIoBridge = $pmsIoBridge;
     }

@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Modules\Contacts;
 
-use App\Controller\Core\Application;
 use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Contact;
 use App\DataFixtures\Providers\Modules\ContactGroups;
@@ -26,17 +25,10 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
      */
     private $faker;
 
-    /**
-     * @var Application $app
-     */
-    private $app;
-
     public function __construct(
-        Application $app,
         private readonly MyContactGroupRepository $contactGroupRepository
     ) {
         $this->faker = Factory::create('en');
-        $this->app   = $app;
     }
 
     /**

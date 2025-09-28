@@ -3,7 +3,6 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Core\Application;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -25,17 +24,10 @@ class CronServerResourcesCheckCommand extends Command
      */
     private SymfonyStyle $io;
 
-    /**
-     * @var Application $app
-     */
-    private Application $app;
-
     public function __construct(
-        Application $app, 
         private readonly LoggerInterface $logger
     ) {
         parent::__construct(self::$defaultName);
-        $this->app = $app;
     }
 
     protected function configure()

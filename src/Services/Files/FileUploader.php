@@ -3,7 +3,6 @@
 namespace App\Services\Files;
 
 use App\Controller\Files\FilesTagsController;
-use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\Controller\Files\FileUploadController;
 use App\Services\Validation\FileValidatorService;
@@ -57,11 +56,6 @@ class FileUploader extends AbstractController {
     private $logger;
 
     /**
-     * @var Application $app
-     */
-    private $app;
-
-    /**
      * @var FilesTagsController $filesTagsController
      */
     private $filesTagsController;
@@ -78,7 +72,6 @@ class FileUploader extends AbstractController {
 
     public function __construct(
         LoggerInterface     $logger,
-        Application         $app,
         FilesTagsController $filesTagsController,
         ImageHandler        $imageHandler,
         FileValidatorService       $fileValidator,
@@ -89,7 +82,6 @@ class FileUploader extends AbstractController {
         $this->imageHandler        = $imageHandler;
         $this->finder              = new Finder();
         $this->logger              = $logger;
-        $this->app                 = $app;
     }
 
     /**
