@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FileDownloader extends AbstractController {
 
@@ -31,7 +32,11 @@ class FileDownloader extends AbstractController {
      */
     private $app;
 
-    public function __construct(LoggerInterface $logger, Application $app) {
+    public function __construct(
+        LoggerInterface $logger,
+        Application $app,
+        private readonly TranslatorInterface $translator
+    ) {
         $this->targetDirectory = Env::getUploadDir();
         $this->finder          = new Finder();
         $this->logger          = $logger;
@@ -45,18 +50,18 @@ class FileDownloader extends AbstractController {
      */
     public function download($fileFullPath) {
 
-        $message = $this->app->translator->translate('logs.download.startedDownloading');
+        $message = $this->translator->trans('logs.download.startedDownloading');
         $this->logger->info($message, [
             'file_location' => $fileFullPath
         ]);
 
         try{
             if( !file_exists($fileFullPath) ){
-                $message = $this->app->translator->translate('exceptions.download.theFileYouTryToDownloadDoesNotExist');
+                $message = $this->translator->trans('exceptions.download.theFileYouTryToDownloadDoesNotExist');
                 throw new \Exception($message . $fileFullPath);
             }
 
-            $logMessage = $this->app->translator->translate('logs.download.finishedDownloading');
+            $logMessage = $this->translator->trans('logs.download.finishedDownloading');
             $file = $this->file($fileFullPath);
             $this->logger->info($logMessage);
 
@@ -64,8 +69,8 @@ class FileDownloader extends AbstractController {
 
         }catch(\Exception $e){
 
-            $flashMessage = $this->app->translator->translate('flash.download.fileDoesNotExist');
-            $logMessage   = $this->app->translator->translate('logs.download.exceptionWasThrownWhileDownloadingFile');
+            $flashMessage = $this->translator->trans('flash.download.fileDoesNotExist');
+            $logMessage   = $this->translator->trans('logs.download.exceptionWasThrownWhileDownloadingFile');
 
             $this->addFlash('danger', $flashMessage);
             $this->logger->info($logMessage, [

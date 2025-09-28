@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FilesTagsController extends AbstractController {
 
@@ -25,7 +26,11 @@ class FilesTagsController extends AbstractController {
      */
     private $fileTagger;
 
-    public function __construct(Application $app, FileTagger $fileTagger) {
+    public function __construct(
+        Application $app,
+        FileTagger $fileTagger,
+        private readonly TranslatorInterface $translator
+    ) {
         $this->app        = $app;
         $this->fileTagger = $fileTagger;
     }
@@ -44,7 +49,7 @@ class FilesTagsController extends AbstractController {
             $this->fileTagger->prepare($arrayOfTags, $fileFullPath);
             $response = $this->fileTagger->updateTags();
         }catch(Exception $e){
-            $message  = $this->app->translator->translate('responses.tags.errorWhileTryingToUpdateTagsViaApi');
+            $message  = $this->translator->trans('responses.tags.errorWhileTryingToUpdateTagsViaApi');
             $response = new Response($message);
         }
 
@@ -59,7 +64,7 @@ class FilesTagsController extends AbstractController {
     public function apiRemoveTags(Request $request): Response {
 
         if (!$request->request->has(MyFilesController::KEY_FILE_FULL_PATH)){
-            $message = $this->app->translator->translate('exceptions.general.missingRequiredParameter') . MyFilesController::KEY_FILE_FULL_PATH;
+            $message = $this->translator->trans('exceptions.general.missingRequiredParameter') . MyFilesController::KEY_FILE_FULL_PATH;
             throw new Exception($message);
         }
 

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * This service is responsible for handling files in terms of internal usage, like moving/renaming/etc...
@@ -73,7 +74,8 @@ class FilesHandler {
         LoggerInterface    $logger,
         FileTagger         $fileTagger,
         ImageHandler       $imageHandler,
-        private readonly LockedResourceRepository $lockedResourceRepository
+        private readonly LockedResourceRepository $lockedResourceRepository,
+        private readonly TranslatorInterface $translator
     ) {
         $this->application       = $application;
         $this->directoriesHandle = $directoriesHandler;
@@ -122,7 +124,7 @@ class FilesHandler {
         $currentSubdirectoryName = basename($currentDirectoryPathInModuleUploadDir);
         $targetSubdirectoryName  = basename($targetDirectoryPathInModuleUploadDir);
 
-        $message = $this->application->translator->translate('logs.files.startedCopyingDataBetweenFoldersViaPost');
+        $message = $this->translator->trans('logs.files.startedCopyingDataBetweenFoldersViaPost');
 
         $this->logger->info($message, [
             'current_upload_type'          => $currentUploadType,
@@ -134,22 +136,22 @@ class FilesHandler {
         ]);
 
         if ( empty($currentUploadType) ) {
-            $message = $this->application->translator->translate('responses.files.currentUploadTypeIsMissingInRequest');
+            $message = $this->translator->trans('responses.files.currentUploadTypeIsMissingInRequest');
             return new Response($message, 500);
         }
 
         if ( empty($targetUploadType) ) {
-            $message = $this->application->translator->translate('responses.files.targetUploadTypeIsMissingInRequest');
+            $message = $this->translator->trans('responses.files.targetUploadTypeIsMissingInRequest');
             return new Response($message, 500);
         }
 
         if ( empty($currentDirectoryPathInModuleUploadDir) ) {
-            $message = $this->application->translator->translate('responses.files.currentSubdirectoryPathIsMissingInRequest');
+            $message = $this->translator->trans('responses.files.currentSubdirectoryPathIsMissingInRequest');
             return new Response($message, 500);
         }
 
         if ( empty($targetDirectoryPathInModuleUploadDir) ) {
-            $message = $this->application->translator->translate('responses.files.targetSubdirectoryPathIsMissingInRequest');
+            $message = $this->translator->trans('responses.files.targetSubdirectoryPathIsMissingInRequest');
             return new Response($message, 500);
         }
 
@@ -157,7 +159,7 @@ class FilesHandler {
                 ( $currentUploadType === $targetUploadType )
             &&  ( $currentSubdirectoryName === $targetSubdirectoryName )
         ){
-            $message = $this->application->translator->translate('responses.files.cannotCopyDataToTheSameFolderForGivenModule');
+            $message = $this->translator->trans('responses.files.cannotCopyDataToTheSameFolderForGivenModule');
             return new Response($message. 500);
         }
 
@@ -192,15 +194,15 @@ class FilesHandler {
         }
 
         if( !file_exists($currentSubdirectoryPath) ){
-            $logMessage        = $this->application->translator->translate('logs.files.currentSubdirectoryDoesNotExist');
-            $responseMessage   = $this->application->translator->translate('responses.files.currentSubdirectoryDoesNotExist');
+            $logMessage        = $this->translator->trans('logs.files.currentSubdirectoryDoesNotExist');
+            $responseMessage   = $this->translator->trans('responses.files.currentSubdirectoryDoesNotExist');
             $this->logger->info($logMessage);
             return new Response($responseMessage, 500);
         }
 
         if( !file_exists($targetSubdirectoryPath) ){
-            $logMessage        = $this->application->translator->translate('logs.files.targetSubdirectoryDoesNotExist');
-            $responseMessage   = $this->application->translator->translate('responses.files.targetSubdirectoryDoesNotExist');
+            $logMessage        = $this->translator->trans('logs.files.targetSubdirectoryDoesNotExist');
+            $responseMessage   = $this->translator->trans('responses.files.targetSubdirectoryDoesNotExist');
 
             $this->logger->info($logMessage);
             return new Response($responseMessage, 500);
@@ -209,17 +211,17 @@ class FilesHandler {
         try{
             Utils::copyFiles($currentSubdirectoryPath, $targetSubdirectoryPath, $this->fileTagger);
         }catch(Exception $e){
-            $message = $this->application->translator->translate('logs.files.exceptionWasThrownWhileMovingDataBetweenFolders');
+            $message = $this->translator->trans('logs.files.exceptionWasThrownWhileMovingDataBetweenFolders');
             $this->logger->info($message, [
                 'message' => $e->getMessage()
             ]);
 
-            $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileMovingDataBetweenFolders');
+            $message = $this->translator->trans('responses.files.thereWasAnErrorWhileMovingDataBetweenFolders');
             return new Response($message,500);
         }
 
-        $logMessage        = $this->application->translator->translate('logs.files.finishedCopyingData');
-        $responseMessage   = $this->application->translator->translate('responses.files.finishedCopyingData');
+        $logMessage        = $this->translator->trans('logs.files.finishedCopyingData');
+        $responseMessage   = $this->translator->trans('responses.files.finishedCopyingData');
 
         $this->logger->info($logMessage);
         return new Response($responseMessage, 200);
@@ -233,12 +235,12 @@ class FilesHandler {
     public function copyAndRemoveDataViaPost(Request $request) {
 
         if ( !$request->query->has(static::KEY_CURRENT_UPLOAD_MODULE_DIR) ) {
-            $message = $this->application->translator->translate('responses.files.currentUploadTypeIsMissingInRequest');
+            $message = $this->translator->trans('responses.files.currentUploadTypeIsMissingInRequest');
             return new Response($message);
         }
 
         if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR) ) {
-            $message = $this->application->translator->translate('responses.files.subdirectoryCurrentPathInModuleUploadDirIsMissingInRequest');
+            $message = $this->translator->trans('responses.files.subdirectoryCurrentPathInModuleUploadDirIsMissingInRequest');
             return new Response($message);
         }
 
@@ -249,11 +251,11 @@ class FilesHandler {
             $this->copyFolderDataToAnotherFolderByPostRequest($request);
             $this->directoriesHandle->removeFolder($currentUploadModuleDir, $currentDirectoryPathInUploadTypeDir);
         }catch(Exception $e){
-            $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileCopyingAndRemovingDataViaPost');
+            $message = $this->translator->trans('responses.files.thereWasAnErrorWhileCopyingAndRemovingDataViaPost');
             return new Response ($message);
         }
 
-        $message = $this->application->translator->translate('responses.files.dataHasBeenSuccesfulyCopiedAndRemoved');
+        $message = $this->translator->trans('responses.files.dataHasBeenSuccesfulyCopiedAndRemoved');
         return new Response($message);
     }
 
@@ -278,13 +280,13 @@ class FilesHandler {
             if( $response->getStatusCode() !== 200 ){
                 $responseMessage = $response->getContent();
             }else{
-                $responseMessage = $this->application->translator->translate('responses.files.finishedCopyingData');;
+                $responseMessage = $this->translator->trans('responses.files.finishedCopyingData');;
             }
 
 
         }catch(Exception $e){
-            $logMessage        = $this->application->translator->translate('logs.files.exceptionWasThrownWhileMovingDataBetweenFolders');
-            $responseMessage   = $this->application->translator->translate('responses.files.thereWasAnErrorWhileCopyingData');
+            $logMessage        = $this->translator->trans('logs.files.exceptionWasThrownWhileMovingDataBetweenFolders');
+            $responseMessage   = $this->translator->trans('responses.files.thereWasAnErrorWhileCopyingData');
 
             $this->logger->info($logMessage, [
                 'message' => $e->getMessage()
@@ -292,7 +294,7 @@ class FilesHandler {
             return new Response ($responseMessage, 500);
         }
 
-        $logMessage = $this->application->translator->translate('logs.files.finishedCopyingData');
+        $logMessage = $this->translator->trans('logs.files.finishedCopyingData');
 
 
         $this->logger->info($logMessage);
@@ -311,7 +313,7 @@ class FilesHandler {
                 !$request->request->has(static::KEY_FILE_FULL_PATH)
             &&  !$request->request->has(static::KEY_FILES_FULL_PATHS)
         ) {
-            $message = $this->application->translator->translate('responses.general.missingRequiredParameter');
+            $message = $this->translator->trans('responses.general.missingRequiredParameter');
             $message .= static::KEY_FILE_FULL_PATH . ', ' . static::KEY_FILE_FULL_PATH;
 
             throw new Exception($message);
@@ -343,20 +345,20 @@ class FilesHandler {
                     $this->fileTagger->prepare([], $filepath);
                     $this->fileTagger->updateTags();
 
-                    $message = $this->application->translator->translate('responses.files.fileSuccessfullyRemoved');
+                    $message = $this->translator->trans('responses.files.fileSuccessfullyRemoved');
 
                     return new Response($message, 200);
                 }else{
-                    $message = $this->application->translator->translate('responses.files.fileDoesNotExist');
+                    $message = $this->translator->trans('responses.files.fileDoesNotExist');
                     return new Response($message, 404);
                 }
             }else{
-                $message = $this->application->translator->translate('responses.files.fileSuccessfullyRemoved');
+                $message = $this->translator->trans('responses.files.fileSuccessfullyRemoved');
                 return new Response($message, 200);
             }
 
         }catch(Exception $e){
-            $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileRemovingFile');
+            $message = $this->translator->trans('responses.files.thereWasAnErrorWhileRemovingFile');
             return new Response($message, 500);
         }
 
@@ -371,12 +373,12 @@ class FilesHandler {
     public function renameFileViaRequest(Request $request, callable $callback = null): JsonResponse {
 
         if (!$request->request->has(static::KEY_FILE_FULL_PATH)) {
-            $message   = $this->application->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
+            $message   = $this->translator->trans('responses.general.missingRequiredParameter') . static::KEY_FILE_FULL_PATH;
             throw new Exception($message);
         }
 
         if (!$request->request->has(static::KEY_FILE_NEW_NAME)) {
-            $message   = $this->application->translator->translate('responses.general.missingRequiredParameter') . static::KEY_FILE_NEW_NAME;
+            $message   = $this->translator->trans('responses.general.missingRequiredParameter') . static::KEY_FILE_NEW_NAME;
             throw new Exception($message);
         }
 
@@ -405,13 +407,13 @@ class FilesHandler {
     public function renameFile(string $currRelativeFilepath, string $newRelativeFilePath): JsonResponse {
 
         if( $newRelativeFilePath === $currRelativeFilepath){
-            $message   = $this->application->translator->translate('responses.files.filenameRemainsTheSame');
+            $message   = $this->translator->trans('responses.files.filenameRemainsTheSame');
             return new JsonResponse($message, 200);
         }
 
         $newFilename = pathinfo($newRelativeFilePath, PATHINFO_FILENAME);
         if( empty($newFilename) ){
-            $message = $this->application->translator->translate('responses.files.filenameCannotBeEmpty');
+            $message = $this->translator->trans('responses.files.filenameCannotBeEmpty');
             return new JsonResponse($message, 500);
         }
 
@@ -421,10 +423,10 @@ class FilesHandler {
                 rename($currRelativeFilepath, $newRelativeFilePath);
                 $this->imageHandler->moveMiniatureBasedOnMovingOriginalFile($currRelativeFilepath, $newRelativeFilePath);
 
-                $message = $this->application->translator->translate('responses.files.fileSuccessfullyRename');
+                $message = $this->translator->trans('responses.files.fileSuccessfullyRename');
                 return new JsonResponse($message, 200);
             }else{
-                $message = $this->application->translator->translate('responses.files.fileWithThisNameAlreadyExist');
+                $message = $this->translator->trans('responses.files.fileWithThisNameAlreadyExist');
                 return new JsonResponse($message, 500);
             }
 
@@ -436,7 +438,7 @@ class FilesHandler {
                 "method"  => __FUNCTION__,
             ]);
 
-            $message = $this->application->translator->translate('responses.files.thereWasAnErrorWhileRenamingFile');
+            $message = $this->translator->trans('responses.files.thereWasAnErrorWhileRenamingFile');
             return new JsonResponse($message, 500);
         }
 
@@ -445,12 +447,12 @@ class FilesHandler {
     public function moveSingleFile(string $currentFileLocation, string $targetFileLocation) {
 
         if( !file_exists($currentFileLocation) ){
-            $message = $this->application->translator->translate('responses.files.fileYouTryingToMoveDoesNotExist');
+            $message = $this->translator->trans('responses.files.fileYouTryingToMoveDoesNotExist');
             return new JsonResponse($message, 500);
         }
 
         if( file_exists($targetFileLocation) ){
-            $message = $this->application->translator->translate('responses.files.fileWithThisNameAlreadyExistInTargetDirectory');
+            $message = $this->translator->trans('responses.files.fileWithThisNameAlreadyExistInTargetDirectory');
             return new JsonResponse($message, 500);
         }
 
@@ -462,11 +464,11 @@ class FilesHandler {
             $this->lockedResourceRepository->updatePath($currentFileLocation, $targetFileLocation);
             $this->imageHandler->moveMiniatureBasedOnMovingOriginalFile($currentFileLocation, $targetFileLocation);
 
-            $message = $this->application->translator->translate('responses.files.fileHasBeenSuccesfullyMoved');
+            $message = $this->translator->trans('responses.files.fileHasBeenSuccesfullyMoved');
             return new JsonResponse($message, 200);
         }catch(Exception $e){
-            $logMessage      = $this->application->translator->translate('logs.files.thereWasAnErrorWhileTryingToMoveSingleFile') . $e->getMessage();
-            $responseMessage = $this->application->translator->translate('responses.files.couldNotMoveTheFile');
+            $logMessage      = $this->translator->trans('logs.files.thereWasAnErrorWhileTryingToMoveSingleFile') . $e->getMessage();
+            $responseMessage = $this->translator->trans('responses.files.couldNotMoveTheFile');
 
             $this->logger->critical($logMessage);
             return new JsonResponse($responseMessage, 500);

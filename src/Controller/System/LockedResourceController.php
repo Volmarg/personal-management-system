@@ -14,6 +14,7 @@ use Doctrine\ORM\ORMException;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LockedResourceController extends AbstractController {
 
@@ -32,7 +33,8 @@ class LockedResourceController extends AbstractController {
         SettingsLockModuleController              $settingsLockModuleController,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
         private readonly LockedResourceRepository $lockedResourceRepository,
-        private readonly EntityManagerInterface   $em
+        private readonly EntityManagerInterface   $em,
+        private readonly TranslatorInterface      $translator
     ) {
         $this->app                          = $app;
         $this->settingsLockModuleController = $settingsLockModuleController;
@@ -156,7 +158,7 @@ class LockedResourceController extends AbstractController {
             ||  ( $isModuleLocked   && $isSystemLocked )
         ){
             if($showFlashMessage){
-                $message = $this->app->translator->translate("security.lockResource.youAreNotAllowedToSeeThisResource");
+                $message = $this->translator->trans("security.lockResource.youAreNotAllowedToSeeThisResource");
                 $this->app->addDangerFlash($message);
             }
             return false;

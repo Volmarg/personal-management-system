@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class FileUploader extends AbstractController {
 
@@ -80,7 +81,8 @@ class FileUploader extends AbstractController {
         Application         $app,
         FilesTagsController $filesTagsController,
         ImageHandler        $imageHandler,
-        FileValidatorService       $fileValidator
+        FileValidatorService       $fileValidator,
+        private readonly TranslatorInterface $translator
     ) {
         $this->filesTagsController = $filesTagsController;
         $this->fileValidator       = $fileValidator;
@@ -103,14 +105,14 @@ class FileUploader extends AbstractController {
      */
     public function upload(UploadedFile $file, Request $request, string $type, string $subdirectory = '', string $filename = '', string $extension = '', string $tags = '') {
 
-        $message = $this->app->translator->translate('logs.upload.startedUploadingToSubdirectory') . $subdirectory;
+        $message = $this->translator->trans('logs.upload.startedUploadingToSubdirectory') . $subdirectory;
         $this->logger->info($message);
 
         if( Env::isDemo() ){
             $isFileValid = $this->isFileValid($file, $request);
 
             if( !$isFileValid ){
-                $message = $this->app->translator->translate('responses.upload.invalidFileHasBeenSkipped') . $subdirectory;
+                $message = $this->translator->trans('responses.upload.invalidFileHasBeenSkipped') . $subdirectory;
                 return new Response($message, 500);
             }
         }
@@ -130,8 +132,8 @@ class FileUploader extends AbstractController {
                 $targetDirectory = Env::getVideoUploadDir();
                 break;
             default:
-                $logMessage = $this->app->translator->translate('logs.upload.triedToUploadForUnknownUploadType') . $type;
-                $excMessage = $this->app->translator->translate('exception.upload.thisUploadTypeIsNotAllowed') . $type;
+                $logMessage = $this->translator->trans('logs.upload.triedToUploadForUnknownUploadType') . $type;
+                $excMessage = $this->translator->trans('exception.upload.thisUploadTypeIsNotAllowed') . $type;
                 $this->logger->info($logMessage);
                 throw new \Exception($excMessage);
         }
@@ -169,15 +171,15 @@ class FileUploader extends AbstractController {
             }
 
         } catch (FileException $e) {
-            $message = $this->app->translator->translate('upload.errors.thereWasAnErrorWhileUploadingFiles');
+            $message = $this->translator->trans('upload.errors.thereWasAnErrorWhileUploadingFiles');
             $this->logger->info($message, [
                 'message' => $e->getMessage()
             ]);
             return new Response($message, 500);
         }
 
-        $logMessage       = $this->app->translator->translate('logs.upload.finishedUploading');
-        $responseMessage  = $this->app->translator->translate('responses.upload.finishedUploading');
+        $logMessage       = $this->translator->trans('logs.upload.finishedUploading');
+        $responseMessage  = $this->translator->trans('responses.upload.finishedUploading');
         $this->logger->info($logMessage);
         return new Response($responseMessage, 200);
     }
@@ -195,11 +197,11 @@ class FileUploader extends AbstractController {
 
         try{
             if($folderCount > 0){
-                $message = $this->app->translator->translate('exceptions.upload.foundMoreThanOneDirWithName') . $this->targetDirectory;
+                $message = $this->translator->trans('exceptions.upload.foundMoreThanOneDirWithName') . $this->targetDirectory;
                 throw new Exception($message);
             }
         }catch(\Exception $e){
-            $message = $this->app->translator->translate('upload.errors.thereWasAnErrorWhileUploadingFiles');
+            $message = $this->translator->trans('upload.errors.thereWasAnErrorWhileUploadingFiles');
             $this->logger->info($message, [
                 'message' => $e->getMessage()
             ]);

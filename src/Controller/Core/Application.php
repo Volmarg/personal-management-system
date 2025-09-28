@@ -3,18 +3,11 @@ namespace App\Controller\Core;
 
 
 use App\Controller\Utils\Utils;
-use App\Services\Core\Translator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Throwable;
 
 class Application extends AbstractController {
-
-    /**
-     * @var \App\Services\Core\Translator $translator
-     */
-    public $translator;
 
     /**
      * @var LoggerInterface $logger
@@ -23,10 +16,8 @@ class Application extends AbstractController {
 
     public function __construct(
         LoggerInterface         $logger,
-        TranslatorInterface     $translator,
     ) {
         $this->logger        = $logger;
-        $this->translator    = new Translator($translator);
     }
 
     /**
