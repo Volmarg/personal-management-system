@@ -53,11 +53,6 @@ class FilesHandler {
     private $directoriesHandle;
 
     /**
-     * @var LoggerInterface $logger
-     */
-    private $logger;
-
-    /**
      * @var FileTagger $fileTagger
      */
     private $fileTagger;
@@ -71,16 +66,15 @@ class FilesHandler {
     public function __construct(
         Application        $application,
         DirectoriesHandler $directoriesHandler,
-        LoggerInterface    $logger,
         FileTagger         $fileTagger,
         ImageHandler       $imageHandler,
         private readonly LockedResourceRepository $lockedResourceRepository,
-        private readonly TranslatorInterface $translator
+        private readonly TranslatorInterface $translator,
+        private readonly LoggerInterface $logger,
     ) {
         $this->application       = $application;
         $this->directoriesHandle = $directoriesHandler;
         $this->imageHandler      = $imageHandler;
-        $this->logger            = $logger;
         $this->fileTagger        = $fileTagger;
     }
 
@@ -431,7 +425,7 @@ class FilesHandler {
             }
 
         }catch(Exception $e){
-            $this->application->logger->critical("Exception was thrown while renaming file.", [
+            $this->logger->critical("Exception was thrown while renaming file.", [
                 "message" => $e->getMessage(),
                 "code"    => $e->getCode(),
                 "class"   => __CLASS__,

@@ -8,8 +8,10 @@ use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Response\BaseResponse;
 use App\Services\External\NotifierProxyLoggerService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -17,6 +19,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
 {
+    use ExceptionLoggerAwareTrait;
+
     protected static $defaultName = 'cron:transfer-schedules-to-notifier-proxy-logger';
 
     const OPTION_TRANSFER_CHANNEL = "transfer-channel";
@@ -48,7 +52,8 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         Application $app,
         NotifierProxyLoggerService $notifierProxyLoggerService,
         private readonly MyScheduleReminderRepository $scheduleReminderRepository,
-        private readonly MyScheduleRepository $myScheduleRepository
+        private readonly MyScheduleRepository $myScheduleRepository,
+        private readonly LoggerInterface $logger,
     )
     {
         parent::__construct(self::$defaultName);
@@ -91,17 +96,17 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try{
-            $this->app->logger->info("Started transferring the schedules to npl");
+            $this->logger->info("Started transferring the schedules to npl");
             {
                 $incomingSchedulesDTOS = $this->myScheduleRepository->getSchedulesWithRemindersInformation();
 
                 if( empty($incomingSchedulesDTOS) ){
-                    $this->app->logger->info("No schedules were found to transfer");
+                    $this->logger->info("No schedules were found to transfer");
                     return Command::SUCCESS;
                 }
 
                 foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
-                    $this->app->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}, with reminder of id {$incomingScheduleDTO->getReminderId()}");
+                    $this->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}, with reminder of id {$incomingScheduleDTO->getReminderId()}");
                     $response = $this->handleTransferForChannel($incomingScheduleDTO);
 
                     if($response->isSuccess()){
@@ -111,10 +116,10 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
                     }
                 }
             }
-            $this->app->logger->info("Finished transferring the schedules to npl");
+            $this->logger->info("Finished transferring the schedules to npl");
 
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             return Command::FAILURE;
         }
 
@@ -148,7 +153,7 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
                 throw new Exception("Unsupported channel {$this->channel}");
         }
 
-        $this->app->logger->info("Got response", [
+        $this->logger->info("Got response", [
             $response->toJson(),
         ]);
 

@@ -24,8 +24,10 @@ use App\PmsIo\Response\Passwords\InsertPasswordsGroupsResponse;
 use App\PmsIo\Response\Passwords\InsertPasswordsResponse;
 use App\PmsIo\Response\System\IsAllowedToInsertResponse;
 use App\PmsIo\Response\System\SetTransferDoneStateResponse;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
 
 /**
@@ -36,6 +38,7 @@ use SpecShaper\EncryptBundle\Encryptors\EncryptorInterface;
  */
 class PmsIoService
 {
+    use ExceptionLoggerAwareTrait;
 
     /**
      * @var PmsIoBridge $pmsIoBridge
@@ -53,11 +56,17 @@ class PmsIoService
     private EncryptorInterface $encryptor;
 
     /**
-     * @param PmsIoBridge $pmsIoBridge
-     * @param Application $app
+     * @param PmsIoBridge        $pmsIoBridge
+     * @param Application        $app
      * @param EncryptorInterface $encryptor
+     * @param LoggerInterface    $logger
      */
-    public function __construct(PmsIoBridge $pmsIoBridge, Application $app, EncryptorInterface $encryptor)
+    public function __construct(
+        PmsIoBridge $pmsIoBridge,
+        Application $app,
+        EncryptorInterface $encryptor,
+        private readonly LoggerInterface $logger,
+    )
     {
         $this->app         = $app;
         $this->encryptor   = $encryptor;
@@ -99,7 +108,7 @@ class PmsIoService
             $insertPasswordsRequest->setPasswordDtos($passwordsToInsert);
             $response = $this->pmsIoBridge->insertPasswords($insertPasswordsRequest);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 
@@ -133,7 +142,7 @@ class PmsIoService
             $insertPasswordsGroupsRequest->setPasswordsGroupsDtos($passwordsGroupsToInsert);
             $response = $this->pmsIoBridge->insertPasswordsGroups($insertPasswordsGroupsRequest);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 
@@ -170,7 +179,7 @@ class PmsIoService
             $insertNotesRequest->setNotesDtos($notesToInsert);
             $response = $this->pmsIoBridge->insertNotes($insertNotesRequest);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 
@@ -207,7 +216,7 @@ class PmsIoService
             $insertNotesRequest->setCategoriesDtos($notesCategoriesToInsert);
             $response = $this->pmsIoBridge->insertNotesCategories($insertNotesRequest);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 
@@ -227,7 +236,7 @@ class PmsIoService
             $request = new SetTransferDoneStateRequest();
             $response = $this->pmsIoBridge->setTransferDoneState($request);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 
@@ -247,7 +256,7 @@ class PmsIoService
             $request  = new IsAllowedToInsertRequest();
             $response = $this->pmsIoBridge->isAllowedToInsert($request);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 

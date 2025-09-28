@@ -3,6 +3,7 @@
 namespace App\Services\Routing;
 
 use App\Services\Core\Logger;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -15,6 +16,8 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
  */
 class UrlMatcherService
 {
+    use ExceptionLoggerAwareTrait;
+
     const URL_MATCHER_RESULT_CONTROLLER_WITH_METHOD = "_controller";
 
     const URL_MATCHER_RESULT_ROUTE = "_route";
@@ -50,7 +53,7 @@ class UrlMatcherService
 
             $dataArray = $this->urlMatcher->match($normalizedUrl);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e, [
+            $this->logException($e, [
                 "No class with method was found for url", [
                     "url" => $url,
                     'normalizedUrl' => $normalizedUrl,

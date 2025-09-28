@@ -10,6 +10,7 @@ use App\Services\Files\FilesHandler;
 use App\Services\Files\ImageHandler;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,8 +53,14 @@ class GenerateMiniaturesForImagesCommand extends Command
      */
     private FileValidatorService $fileValidator;
 
-    public function __construct(Application $app, FilesHandler $filesHandler, ImageHandler $imageHandler, FileValidatorService $fileValidator, string $name = null) {
-        parent::__construct($name);
+    public function __construct(
+        Application $app,
+        FilesHandler $filesHandler,
+        ImageHandler $imageHandler,
+        FileValidatorService $fileValidator,
+        private readonly LoggerInterface $logger,
+    ) {
+        parent::__construct(self::$defaultName);
         $this->filesHandler  = $filesHandler;
         $this->imageHandler  = $imageHandler;
         $this->app           = $app;
@@ -152,9 +159,9 @@ class GenerateMiniaturesForImagesCommand extends Command
                 }
 
             }catch(\Exception $e){
-                $this->app->logger->critical("There was an error.");
-                $this->app->logger->critical($e->getMessage());
-                $this->app->logger->critical($e->getTraceAsString());
+                $this->logger->critical("There was an error.");
+                $this->logger->critical($e->getMessage());
+                $this->logger->critical($e->getTraceAsString());
                 return 1;
             }
 

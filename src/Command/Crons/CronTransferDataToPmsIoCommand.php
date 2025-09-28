@@ -8,14 +8,18 @@ use App\Controller\Modules\Notes\MyNotesController;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Services\External\PmsIoService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CronTransferDataToPmsIoCommand extends Command
 {
+    use ExceptionLoggerAwareTrait;
+    
     protected static $defaultName = 'cron:transfer-data-to-pms-io';
 
     /**
@@ -35,6 +39,7 @@ class CronTransferDataToPmsIoCommand extends Command
         private readonly MyNotesController           $notesController,
         private readonly MyPasswordsGroupsRepository $passwordsGroupsRepository,
         private readonly MyPasswordsRepository $passwordsRepository,
+        private readonly LoggerInterface $logger,
     )
     {
         parent::__construct(self::$defaultName);
@@ -60,7 +65,7 @@ class CronTransferDataToPmsIoCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try{
-            $this->app->logger->info("Started transferring data to PMS-IO");
+            $this->logger->info("Started transferring data to PMS-IO");
             {
                 $isAllowedToInsertResponse = $this->pmsIoService->isAllowedToInsert();
                 if( !$isAllowedToInsertResponse->isSuccess() ){
@@ -71,10 +76,10 @@ class CronTransferDataToPmsIoCommand extends Command
                 $this->insertPasswordsData();
                 $this->pmsIoService->setTransferDoneState();
             }
-            $this->app->logger->info("Finished transferring data to PMS-IO");
+            $this->logger->info("Finished transferring data to PMS-IO");
 
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             return Command::FAILURE;
         }
 
@@ -95,7 +100,7 @@ class CronTransferDataToPmsIoCommand extends Command
 
         $insertPasswordsGroupsResponse = $this->pmsIoService->insertPasswordsGroups($allNotDeletedPasswordsGroups);
         if( !$insertPasswordsGroupsResponse->isSuccess() ){
-            $this->app->logger->critical("Could not insert password groups to PMS-IO", [
+            $this->logger->critical("Could not insert password groups to PMS-IO", [
                 "reason" => $insertPasswordsGroupsResponse->getMessage(),
             ]);
             return false;
@@ -103,7 +108,7 @@ class CronTransferDataToPmsIoCommand extends Command
 
         $insertPasswordsResponse = $this->pmsIoService->insertPasswords($allNotDeletedPasswords);
         if( !$insertPasswordsResponse->isSuccess() ){
-            $this->app->logger->critical("Could not insert password to PMS-IO", [
+            $this->logger->critical("Could not insert password to PMS-IO", [
                 "reason" => $insertPasswordsResponse->getMessage(),
             ]);
             return false;
@@ -129,7 +134,7 @@ class CronTransferDataToPmsIoCommand extends Command
          */
         $insertNotesCategoriesResponse = $this->pmsIoService->insertNotesCategories($allNotDeletedNotesCategories);
         if( !$insertNotesCategoriesResponse->isSuccess() ){
-            $this->app->logger->critical("Could not insert notes categories to PMS-IO", [
+            $this->logger->critical("Could not insert notes categories to PMS-IO", [
                 "reason" => $insertNotesCategoriesResponse->getMessage(),
             ]);
             return false;
@@ -137,7 +142,7 @@ class CronTransferDataToPmsIoCommand extends Command
 
         $insertNotesResponse = $this->pmsIoService->insertNotes($allNotDeletedNotes);
         if( !$insertNotesResponse->isSuccess() ){
-            $this->app->logger->critical("Could not insert notes to PMS-IO", [
+            $this->logger->critical("Could not insert notes to PMS-IO", [
                 "reason" => $insertNotesResponse->getMessage(),
             ]);
             return false;

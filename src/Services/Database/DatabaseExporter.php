@@ -6,6 +6,7 @@ use App\Controller\Core\Application;
 use App\Controller\Core\Env;
 use App\DTO\DatabaseCredentialsDTO;
 use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * This exporter relies on shell commands
@@ -204,10 +205,16 @@ class DatabaseExporter {
 
     /**
      * DatabaseExporter constructor.
-     * @param Application $app
+     *
+     * @param Application     $app
+     * @param LoggerInterface $logger
+     *
      * @throws \Exception
      */
-    public function __construct(Application $app) {
+    public function __construct(
+        Application $app,
+        private readonly LoggerInterface $logger,
+    ) {
         $this->app = $app;
         $this->setDumpExtension();
         $this->setFilePrefix(self::FILE_PREFIX_MODE_CURRENT_DATE_TIME);
@@ -236,8 +243,8 @@ class DatabaseExporter {
             $this->performDumpCommand($databaseDumpCommand);
             $this->checkDump();
         }catch(\Exception $e){
-            $this->app->logger->critical($e->getMessage());
-            $this->app->logger->critical(self::EXPORT_ERROR,[
+            $this->logger->critical($e->getMessage());
+            $this->logger->critical(self::EXPORT_ERROR,[
                 'date' => (new \DateTime())->format('Y-m-d H:i:s')
             ]);
             $this->setExportMessage(self::EXPORT_MESSAGE_GENERAL_ERROR);
@@ -317,7 +324,7 @@ class DatabaseExporter {
     private function performDumpCommand(string $databaseDumpCommand): void {
         $execResult = exec($databaseDumpCommand, $output, $exitCode);
         if (0 !== $exitCode) {
-            $this->app->logger->critical("DB export failed", [
+            $this->logger->critical("DB export failed", [
                 'output'     => $output,
                 'exitCode'   => $exitCode,
                 'execResult' => $execResult,

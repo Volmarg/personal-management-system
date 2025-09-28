@@ -4,6 +4,7 @@ namespace App\Controller\System;
 
 use App\Controller\Core\Application;
 use App\Controller\Page\SettingsLockModuleController;
+use App\Controller\Utils\Utils;
 use App\Entity\System\LockedResource;
 use App\Repository\System\LockedResourceRepository;
 use App\Services\Security\JwtAuthenticationService;
@@ -159,7 +160,7 @@ class LockedResourceController extends AbstractController {
         ){
             if($showFlashMessage){
                 $message = $this->translator->trans("security.lockResource.youAreNotAllowedToSeeThisResource");
-                $this->app->addDangerFlash($message);
+                $this->addFlash(Utils::FLASH_TYPE_DANGER, $message);
             }
             return false;
         }

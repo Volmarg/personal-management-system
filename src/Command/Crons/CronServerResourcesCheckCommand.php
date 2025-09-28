@@ -5,6 +5,7 @@ namespace App\Command\Crons;
 
 use App\Controller\Core\Application;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -29,8 +30,11 @@ class CronServerResourcesCheckCommand extends Command
      */
     private Application $app;
 
-    public function __construct(Application $app, string $name = null) {
-        parent::__construct($name);
+    public function __construct(
+        Application $app, 
+        private readonly LoggerInterface $logger
+    ) {
+        parent::__construct(self::$defaultName);
         $this->app = $app;
     }
 
@@ -68,7 +72,7 @@ class CronServerResourcesCheckCommand extends Command
                 $checkedPath    = $input->getArgument(self::ARGUMENT_CHECKED_PATH);
                 $this->checkServerDiscSpaceLeft($dangerLowSpace, $checkedPath);
             }catch(Exception | TypeError $e){
-                $this->app->logger->emergency("Exception was thrown while trying to check the server resources.", [
+                $this->logger->emergency("Exception was thrown while trying to check the server resources.", [
                     "exceptionMessage" => $e->getMessage(),
                 ]);
 
@@ -90,7 +94,7 @@ class CronServerResourcesCheckCommand extends Command
         $discFreeSpaceInMBytes = round($discFreeSpaceInBytes / 1024 / 1024);
 
         if( $discFreeSpaceInMBytes <= $dangerLowSpace ){
-            $this->app->logger->emergency("Low disc space!", [
+            $this->logger->emergency("Low disc space!", [
                 "discSpaceLeft" => $discFreeSpaceInMBytes,
                 "warningValue"  => $dangerLowSpace,
             ]);

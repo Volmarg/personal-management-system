@@ -6,6 +6,7 @@ namespace App\Services\Files\Archivizer;
 use App\Controller\Core\Application;
 use App\Services\Files\FilesHandler;
 use Exception;
+use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ZipArchive;
@@ -22,9 +23,12 @@ class ZipArchivizer extends Archivizer
         $this->archiveName = $archiveName . self::EXTENSION_ZIP;
     }
 
-    public function __construct(Application $app)
+    public function __construct(
+        Application $app,
+        private readonly LoggerInterface $logger,
+    )
     {
-        parent::__construct($app);
+        parent::__construct($app, $this->logger);
 
 
         if ( !class_exists('ZipArchive') ){
@@ -56,13 +60,13 @@ class ZipArchivizer extends Archivizer
         }
 
         if( ZipArchive::ER_OK !== $this->zip->status ){
-            $this->app->logger->critical("Zip archive has returned error status", [
+            $this->logger->critical("Zip archive has returned error status", [
                 $this->zip->status => self::getHumanReadableStatus($this->zip->status),
             ]);
         }
 
         if( 0 === $this->zip->numFiles ){
-            $this->app->logger->critical("No files have been archived");
+            $this->logger->critical("No files have been archived");
         }
 
         $this->zip->close();

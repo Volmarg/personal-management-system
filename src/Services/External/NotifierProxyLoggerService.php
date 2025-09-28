@@ -13,8 +13,10 @@ use App\Request\Discord\InsertDiscordMessageRequest;
 use App\Request\Mail\InsertMailRequest;
 use App\Response\Discord\InsertDiscordMessageResponse;
 use App\Response\Mail\InsertMailResponse;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Log\LoggerInterface;
 
 /**
  * Handles communication with NPL
@@ -24,6 +26,7 @@ use GuzzleHttp\Exception\GuzzleException;
  */
 class NotifierProxyLoggerService
 {
+    use ExceptionLoggerAwareTrait;
 
     const MESSAGE_TITLE_PREFIX_SCHEDULE = "[PMS Calendar schedule] ";
 
@@ -41,12 +44,15 @@ class NotifierProxyLoggerService
      * NotifierProxyLoggerService constructor.
      *
      * @param NotifierProxyLoggerBridge $notifierProxyLoggerBridge
-     * @param Application $app
+     * @param Application               $app
+     * @param ConfigLoaders             $configLoaders
+     * @param LoggerInterface           $logger
      */
     public function __construct(
         NotifierProxyLoggerBridge $notifierProxyLoggerBridge,
         Application $app,
         private readonly ConfigLoaders $configLoaders,
+        private readonly LoggerInterface $logger,
     )
     {
         $this->app                       = $app;
@@ -75,7 +81,7 @@ class NotifierProxyLoggerService
             $request->setDiscordMessageDto($discordMessageDto);
             $response = $this->notifierProxyLoggerBridge->insertDiscordMessage($request);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 
@@ -105,7 +111,7 @@ class NotifierProxyLoggerService
             $request->setMailDto($mailDto);
             $response = $this->notifierProxyLoggerBridge->insertMail($request);
         }catch(Exception $e){
-            $this->app->logExceptionWasThrown($e);
+            $this->logException($e);
             throw $e;
         }
 

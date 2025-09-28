@@ -4,7 +4,9 @@ namespace App\Command\Crons;
 
 use App\Controller\Core\Application;
 use App\Services\Files\Archivizer\ZipArchivizer;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,6 +23,8 @@ use TypeError;
  */
 class CronMakeConfigBackupCommand extends Command
 {
+    use ExceptionLoggerAwareTrait;
+
     const MINIMUM_ARCHIVE_SIZE_IN_BYTES= 6000; // bytes ~6 kilobytes
 
     const ARGUMENT_BACKUP_DIRECTORY      = 'backup-directory';
@@ -60,8 +64,12 @@ class CronMakeConfigBackupCommand extends Command
      */
     private Application $app;
 
-    public function __construct(ZipArchivizer $archivizer, Application $app, string $name = null) {
-        parent::__construct($name);
+    public function __construct(
+        ZipArchivizer $archivizer,
+        Application $app,
+        private readonly LoggerInterface $logger,
+    ) {
+        parent::__construct(self::$defaultName);
 
         $this->app        = $app;
         $this->archivizer = $archivizer;
@@ -126,7 +134,7 @@ class CronMakeConfigBackupCommand extends Command
             try{
                 $this->backupFiles();
             }catch(Exception | TypeError $e){
-                $this->app->logExceptionWasThrown($e, [
+                $this->logException($e, [
                     "info" => "Could not backup the config files",
                 ]);
                 return self::FAILURE;
