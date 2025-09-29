@@ -60,10 +60,6 @@ services:
         alias: App\Services\Core\Logger
         public: true
 
-    App\Services\Core\Translator:
-        calls:
-            - [setTranslator, ['@translator']]
-
     App\Services\ConfigLoaders\ConfigLoaderSession:
         public: true
         arguments:

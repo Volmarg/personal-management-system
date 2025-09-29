@@ -7,7 +7,6 @@ use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
-use App\Services\Core\Translator;
 use App\Services\Database\DoctrineService;
 use App\Services\Validation\Validators\AbstractValidator;
 use App\Services\Validation\Validators\Modules\Job\MyJobHolidaysValidator;
@@ -17,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Handles validations of entities
@@ -47,14 +47,11 @@ class EntityValidatorService extends AbstractController {
      */
     private $em;
 
-    /**
-     * @var Translator $translator
-     */
-    private $translator;
-
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger, Translator $translator) {
-
-        $this->translator = $translator;
+    public function __construct(
+        EntityManagerInterface $em, 
+        LoggerInterface $logger, 
+        private readonly TranslatorInterface $translator
+    ) {
         $this->logger     = $logger;
         $this->em         = $em;
     }
@@ -121,7 +118,7 @@ class EntityValidatorService extends AbstractController {
 
         if( !is_object($object) ){
             $varType = gettype($object);
-            $message = $this->translator->translate('logs.validators.providedVariableIsNotAnObject');
+            $message = $this->translator->trans('logs.validators.providedVariableIsNotAnObject');
             $this->logger->critical($message . $varType);
 
             throw new Exception($message);
@@ -129,14 +126,14 @@ class EntityValidatorService extends AbstractController {
 
         $objectClass = get_class($object);
         if( !DoctrineService::isEntity($object) ){
-            $message = $this->translator->translate('logs.validators.objectOfGivenClassIsNotEntity');
+            $message = $this->translator->trans('logs.validators.objectOfGivenClassIsNotEntity');
             $this->logger->critical($message . $objectClass);
 
             throw new Exception($message);
         }
 
         if( !array_key_exists($objectClass, self::MAP_ENTITY_TO_VALIDATOR) ){
-            $message = $this->translator->translate('logs.validators.thereIsNoValidationLogicForThisEntity');
+            $message = $this->translator->trans('logs.validators.thereIsNoValidationLogicForThisEntity');
 
             throw new Exception($message);
         }

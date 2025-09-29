@@ -7,16 +7,10 @@ use App\DTO\Settings\Finances\SettingsFinancesDTO;
 use App\DTO\Settings\SettingValidationDTO;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
-use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SettingsFinancesController extends AbstractController {
-
-    /**
-     * @var Translator $translator
-     */
-    private $translator;
 
     /**
      * @var SettingsSaver $settingsSaver
@@ -39,7 +33,6 @@ class SettingsFinancesController extends AbstractController {
     private $settingsValidationController;
 
     public function __construct(
-        Translator                   $translator,
         SettingsSaver                $settingsSaver,
         SettingsLoader               $settingsLoader,
         SettingsViewController       $settingsViewController,
@@ -49,7 +42,6 @@ class SettingsFinancesController extends AbstractController {
         $this->settingsViewController       = $settingsViewController;
         $this->settingsLoader               = $settingsLoader;
         $this->settingsSaver                = $settingsSaver;
-        $this->translator                   = $translator;
     }
 
     /**

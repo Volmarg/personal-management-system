@@ -11,7 +11,6 @@ use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Files\FilesHandler;
-use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -81,8 +80,6 @@ class FileUploadController extends AbstractController {
      * @throws Exception
      */
     public static function getTargetDirectoryForUploadModuleDir(string $uploadModuleDir){
-        $translator = new Translator();
-
         switch ($uploadModuleDir) {
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
                 $targetDirectory = Env::getFilesUploadDir();
@@ -94,8 +91,7 @@ class FileUploadController extends AbstractController {
                 $targetDirectory = Env::getVideoUploadDir();
                 break;
             default:
-                $message  = $translator->translate('responses.upload.uploadDirNotSupported');
-                throw new Exception($message);
+                throw new Exception("This upload module is not supported: {$uploadModuleDir}");
         }
 
         return $targetDirectory;

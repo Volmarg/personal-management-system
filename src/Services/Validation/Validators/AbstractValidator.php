@@ -4,13 +4,13 @@
 namespace App\Services\Validation\Validators;
 
 use App\Entity\Interfaces\ValidateEntityInterface;
-use App\Services\Core\Translator;
 use App\VO\Validators\ValidationResultVO;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class AbstractValidator
@@ -44,17 +44,14 @@ abstract class AbstractValidator {
     protected $validator;
 
     /**
-     * @var Translator $translator
-     */
-    protected $translator;
-
-    /**
      * @var array $constraintViolationsLists
      */
     protected $constraintViolationsLists = [];
 
-    public function __construct(EntityManagerInterface $em, Translator $translator) {
-        $this->translator = $translator;
+    public function __construct(
+        EntityManagerInterface $em,
+        protected readonly TranslatorInterface $translator
+    ) {
         $this->validator  = Validation::createValidator();
         $this->em         = $em;
     }

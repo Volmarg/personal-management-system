@@ -5,25 +5,22 @@ namespace App\Controller\Page;
 use App\DTO\Settings\Finances\SettingsCurrencyDTO;
 use App\DTO\Settings\SettingValidationDTO;
 use App\Services\Settings\SettingsLoader;
-use App\Services\Core\Translator;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SettingsValidationController extends AbstractController {
-
-    /**
-     * @var \App\Services\Core\Translator $translator
-     */
-    private $translator;
 
     /**
      * @var SettingsLoader $settingsLoader
      */
     private $settingsLoader;
 
-    public function __construct(Translator $translator, SettingsLoader $settingsLoader) {
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        SettingsLoader $settingsLoader
+    ) {
         $this->settingsLoader = $settingsLoader;
-        $this->translator     = $translator;
     }
 
     /**
@@ -34,7 +31,7 @@ class SettingsValidationController extends AbstractController {
      * @throws Exception
      */
     public function isValueByKeyUnique($dto): SettingValidationDTO {
-        $message = $this->translator->translate("messages.SettingValidationDTO.success");
+        $message = $this->translator->trans("messages.SettingValidationDTO.success");
 
         $settingValidationDto = new SettingValidationDTO();
         $settingValidationDto->setMessage($message);
@@ -56,7 +53,7 @@ class SettingsValidationController extends AbstractController {
 
                 break;
             default:
-                $message = $this->translator->translate("exceptions.dtoValidation.unsupportedSetting");
+                $message = $this->translator->trans("exceptions.dtoValidation.unsupportedSetting");
                 throw new Exception($message . $dtoClass);
         }
 
@@ -67,7 +64,7 @@ class SettingsValidationController extends AbstractController {
             $savedDtoValue = $savedDtoInSetting->{$methodName}();
 
             if( $newDtoValue === $savedDtoValue) {
-                $message = $this->translator->translate("messages.failure.SettingValidationDTO.duplicatedValue") . ": " . $validatedKey;
+                $message = $this->translator->trans("messages.failure.SettingValidationDTO.duplicatedValue") . ": " . $validatedKey;
 
                 $settingValidationDto->setMessage($message);
                 $settingValidationDto->setIsValid(false);

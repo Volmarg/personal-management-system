@@ -92,11 +92,11 @@ class MyJobHolidaysValidator extends AbstractValidator {
         $this->constraintViolationsLists[MyJobHolidays::FIELD_DAYS_SPENT] = $this->validator->validate($entityDaysSpent, [
             new Assert\GreaterThan([
                 "value"   => 0,
-                "message" => $this->translator->translate('validations.myJobHolidaysValidator.greaterThan', ["%value%" => 0])
+                "message" => $this->translator->trans('validations.myJobHolidaysValidator.greaterThan', ["%value%" => 0])
             ]),
             new Assert\LessThanOrEqual([
                 "value"   => $daysLeftForYear,
-                "message" => $this->translator->translate('validations.myJobHolidaysValidator.lessThanOrEqual', ["%daysLeft%" => $daysLeftForYear])
+                "message" => $this->translator->trans('validations.myJobHolidaysValidator.lessThanOrEqual', ["%daysLeft%" => $daysLeftForYear])
             ])
         ]);
     }
