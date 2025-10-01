@@ -4,7 +4,8 @@ namespace App\Listeners\Exception;
 
 use App\Exception\MissingDataException;
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
+use App\Traits\ExceptionLoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -18,6 +19,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ExceptionListener implements EventSubscriberInterface
 {
+    use ExceptionLoggerAwareTrait;
+
     /**
      * If an exception contains this string in the message then it won't be logged, will just be skipped,
      * some exceptions are just false positive, can be discarded, no need to get spammed by 404, etc.
@@ -26,11 +29,8 @@ class ExceptionListener implements EventSubscriberInterface
         "Full authentication is required to access this resource.", // user tries to do something without being logged-in
     ];
 
-    /**
-     * @param Logger $logger
-     */
     public function __construct(
-        private readonly Logger $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -50,7 +50,7 @@ class ExceptionListener implements EventSubscriberInterface
             $response = BaseResponse::buildInternalServerErrorResponse()->toJsonResponse();
 
             if (!in_array($exception->getMessage(), self::EXCLUDED_STRINGS)) {
-                $this->logger->logException($exception);
+                $this->logException($exception);
             }
         }
 

@@ -5,7 +5,7 @@ namespace App\Services\Security;
 use App\Entity\User;
 use App\Listeners\Bundles\LexitJwtAuthentication\JwtCreatedListener;
 use App\Repository\UserRepository;
-use App\Services\Core\Logger;
+use App\Traits\ExceptionLoggerAwareTrait;
 use DateTime;
 use Doctrine\DBAL\LockMode;
 use Exception;
@@ -19,6 +19,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Exception\MissingTokenException;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\UserNotFoundException;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\JWTUserToken;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Throwable;
@@ -26,6 +27,8 @@ use TypeError;
 
 class JwtAuthenticationService
 {
+    use ExceptionLoggerAwareTrait;
+
     /**
      * Must be in sync with:
      * - `lexik_jwt_authentication.user_identity_field`
@@ -59,12 +62,12 @@ class JwtAuthenticationService
     /**
      * @param UserRepository           $userRepository
      * @param JWTTokenManagerInterface $JWTTokenManager
-     * @param Logger                   $logger
+     * @param LoggerInterface          $logger
      */
     public function __construct(
         UserRepository           $userRepository,
         JWTTokenManagerInterface $JWTTokenManager,
-        private readonly Logger  $logger,
+        private readonly LoggerInterface $logger,
     )
     {
         $this->jwtManager     = $JWTTokenManager;
@@ -226,7 +229,7 @@ class JwtAuthenticationService
             $this->jwtManager->parse($rawToken);
             return true;
         } catch (Exception|TypeError $e) {
-            $this->logger->getLogger()->error("Could not parse the jwt token", [
+            $this->logger->error("Could not parse the jwt token", [
                 "exceptionMessage" => $e->getMessage(),
             ]);
 
@@ -363,7 +366,7 @@ class JwtAuthenticationService
 
             $refreshedJwtToken = $this->jwtManager->createFromPayload($user, []);
         } catch (Exception|TypeError $e) {
-            $this->logger->logException($e, [
+            $this->logException($e, [
                 "jwtToken" => $tokenRaw,
             ]);
             throw $e;

@@ -6,19 +6,22 @@ use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
 use App\Services\Files\PathService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StorageFolderService
 {
+    use ExceptionLoggerAwareTrait;
+
     public function __construct(
         private readonly TranslatorInterface    $translator,
-        private readonly Logger                 $logger,
+        private readonly LoggerInterface        $logger,
         private readonly EntityManagerInterface $entityManager
     ) {
     }
@@ -105,7 +108,7 @@ class StorageFolderService
     {
         if (!rename($oldDirPath, $newDirPath)) {
             $msg = $this->translator->trans('module.storage.moveFileOrDir.unknownError');
-            $this->logger->getLogger()->critical($msg, [
+            $this->logger->critical($msg, [
                 'info'          => "rename function failed",
                 'oldDirPath'    => $oldDirPath,
                 'newDirPath'    => $newDirPath,
@@ -137,13 +140,13 @@ class StorageFolderService
             $this->entityManager->commit();
         } catch (Exception $e) {
             $this->entityManager->rollback();
-            $this->logger->logException($e, [
+            $this->logException($e, [
                 'info' => "something went wrong during db updates"
             ]);
 
             if (!rename($newDirPath, $oldDirPath)) {
                 $msg = $this->translator->trans('module.storage.moveFileOrDir.unknownError');
-                $this->logger->getLogger()->critical($msg, [
+                $this->logger->critical($msg, [
                     'info'          => "could not move back folder, from {$newDirPath} to {$oldDirPath}",
                     'possibleError' => error_get_last(),
                 ]);
@@ -191,13 +194,13 @@ class StorageFolderService
                 continue;
             }
 
-            $this->logger->getLogger()->critical("Could not copy {$file->getPathname()} to {$newFilePath}", [
+            $this->logger->critical("Could not copy {$file->getPathname()} to {$newFilePath}", [
                 'possibleError' => error_get_last(),
             ]);
 
             foreach ($copiedFilePaths as $filePath) {
                 if (!unlink($filePath)) {
-                    $this->logger->getLogger()->critical("Could not remove copied file: {$filePath}", [
+                    $this->logger->critical("Could not remove copied file: {$filePath}", [
                         'possibleError' => error_get_last(),
                     ]);
                 }

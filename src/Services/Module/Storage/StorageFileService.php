@@ -3,8 +3,8 @@
 namespace App\Services\Module\Storage;
 
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StorageFileService
@@ -12,7 +12,7 @@ class StorageFileService
     public function __construct(
         private readonly StorageService      $storageService,
         private readonly TranslatorInterface $translator,
-        private readonly Logger              $logger
+        private readonly LoggerInterface     $logger,
     ) {
     }
 
@@ -86,7 +86,7 @@ class StorageFileService
             $isRemoved = unlink($filePath);
             if (!$isRemoved) {
                 $notRemovedFiles[] = $filePath;
-                $this->logger->getLogger()->critical("Could not remove file", [
+                $this->logger->critical("Could not remove file", [
                     'info'          => "unlink function failed",
                     'filePath'      => $filePath,
                     'possibleError' => error_get_last(),

@@ -9,7 +9,6 @@ use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
 use App\Response\Security\LockedResourceDeniedResponse;
 use App\Services\Annotation\AnnotationReaderService;
-use App\Services\Core\Logger;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Routing\UrlMatcherService;
 use Exception;
@@ -24,10 +23,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  *  - second the request data might end up in log so if something fails during insert it might be recovered this way
  */
 class OnKernelRequestListener implements EventSubscriberInterface {
-    /**
-     * @var LoggerInterface $securityLogger
-     */
-    private LoggerInterface $securityLogger;
 
     /**
      * @var UrlMatcherService $urlMatcherService
@@ -45,18 +40,17 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private LockedResourceController $lockedResourceController;
 
     public function __construct(
-        Logger                       $securityLogger,
         UrlMatcherService            $urlMatcherService,
         AnnotationReaderService      $annotationReaderService,
         LockedResourceController     $lockedResourceController,
         private readonly LoggerInterface $requestLogger,
         private readonly ConfigLoaders $configLoaders,
         private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $securityLogger,
     ) {
         $this->lockedResourceController     = $lockedResourceController;
         $this->annotationReaderService      = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
-        $this->securityLogger               = $securityLogger->getSecurityLogger();
     }
 
     /**

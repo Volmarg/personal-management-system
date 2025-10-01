@@ -2,9 +2,9 @@
 
 namespace App\Services\Routing;
 
-use App\Services\Core\Logger;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 
@@ -29,7 +29,7 @@ class UrlMatcherService
 
     public function __construct(
         UrlMatcherInterface $urlMatcher,
-        private readonly Logger $logger
+        private readonly LoggerInterface $logger,
     )
     {
         $this->urlMatcher   = $urlMatcher;
@@ -105,7 +105,7 @@ class UrlMatcherService
              */
             $request = Request::createFromGlobals();
             if ($request->getMethod() !== Request::METHOD_OPTIONS) {
-                $this->logger->getLogger()->warning("No route found for called uri", [
+                $this->logger->warning("No route found for called uri", [
                     "uri"       => $uri,
                     "request"   => [
                         "method" => $request->getMethod(),

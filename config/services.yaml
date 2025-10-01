@@ -51,15 +51,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    App\Services\Core\Logger:
-        arguments:
-            $securityLogger: "@monolog.logger.security"
-        public: true
-
-    services_core_logger:
-        alias: App\Services\Core\Logger
-        public: true
-
     App\Services\ConfigLoaders\ConfigLoaderSession:
         public: true
         arguments:

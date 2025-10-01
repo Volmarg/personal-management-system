@@ -3,7 +3,6 @@
 namespace App\Action\File;
 
 use App\Controller\Core\Env;
-use App\Services\Core\Logger;
 use App\Services\Files\PathService;
 use App\Services\Files\Upload\TemporaryFileHandlerService;
 use App\Services\RequestService;
@@ -16,7 +15,9 @@ use App\Response\UploadedFile\UploadConfigurationResponse;
 use App\Response\UploadedFile\UploadResponse;
 use App\Services\Files\Upload\FileUploadConfigurator;
 use App\Services\Files\Upload\FileUploadService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,10 +31,11 @@ use TypeError;
  */
 class UploadedFileAction extends AbstractController
 {
+    use ExceptionLoggerAwareTrait;
 
     public function __construct(
         private readonly FileUploadService           $fileUploadService,
-        private readonly Logger                      $loggerService,
+        private readonly LoggerInterface             $logger,
         private readonly FileUploadConfigurator      $fileUploadConfigurator,
         private readonly TranslatorInterface         $translator,
         private readonly TemporaryFileHandlerService $temporaryFileHandlerService
@@ -95,7 +97,7 @@ class UploadedFileAction extends AbstractController
             $isError = true;
         } catch (Exception|TypeError $e) {
             $status = UploadStatusEnum::ERROR;
-            $this->loggerService->logException($e);
+            $this->logException($e);
             $isError = true;
         }
 

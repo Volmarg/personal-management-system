@@ -10,13 +10,13 @@ use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
 use App\Services\Files\PathService;
 use App\Services\Shell\ShellTreeService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -27,7 +27,7 @@ class StorageService
         private readonly KernelInterface          $kernel,
         private readonly ShellTreeService         $shellTreeService,
         private readonly EntityManagerInterface   $em,
-        private readonly Logger                   $logger,
+        private readonly LoggerInterface          $logger,
         private readonly LockedResourceController $lockedResourceController,
         private readonly TranslatorInterface      $translator,
         private readonly EntityManagerInterface   $entityManager
@@ -104,7 +104,7 @@ class StorageService
 
             $isRenamed = rename($oldFilePath, $newFilePath);
             if (!$isRenamed) {
-                $this->logger->getLogger()->error("Could not copy file. It's going to be skipped.", [
+                $this->logger->error("Could not copy file. It's going to be skipped.", [
                     'oldFilePath' => $oldFilePath,
                     'newFilePath' => $newFilePath,
                 ]);

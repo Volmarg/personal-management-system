@@ -4,12 +4,12 @@ namespace App\Listeners\Response;
 
 use App\Response\Base\BaseResponse;
 use App\Security\UriAuthenticator;
-use App\Services\Core\Logger;
 use App\Services\ResponseService;
 use App\Services\Validation\ValidationService;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationFailureResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -37,7 +37,7 @@ class ResponseValidityListener implements EventSubscriberInterface
 
     public function __construct(
         private readonly ResponseService $responseService,
-        private readonly Logger $logger
+        private readonly LoggerInterface $logger,
     )
     {
     }
@@ -86,7 +86,7 @@ class ResponseValidityListener implements EventSubscriberInterface
         }
 
         if( !($response instanceof JsonResponse) ){
-            $this->logger->getLogger()->critical("Expected " . JsonResponse::class . " got: " . $response::class);
+            $this->logger->critical("Expected " . JsonResponse::class . " got: " . $response::class);
             $event->setResponse(BaseResponse::buildInternalServerErrorResponse()->toJsonResponse());
             $event->stopPropagation();
 
@@ -121,7 +121,7 @@ class ResponseValidityListener implements EventSubscriberInterface
     private function validateFailureJwtResponse(ResponseEvent $event, array $responseDataArray): void
     {
         if( !array_key_exists(BaseResponse::KEY_CODE, $responseDataArray) ){
-            $this->logger->getLogger()->critical("Key is missing in Jwt response", [
+            $this->logger->critical("Key is missing in Jwt response", [
                 "missingKey"        => BaseResponse::KEY_CODE,
                 "responseDataArray" => $responseDataArray,
             ]);
@@ -140,7 +140,7 @@ class ResponseValidityListener implements EventSubscriberInterface
     private function validateSuccessJwtResponse(ResponseEvent $event, array $responseDataArray): void
     {
         if( !array_key_exists(BaseResponse::KEY_TOKEN, $responseDataArray) ){
-            $this->logger->getLogger()->critical("Key is missing in Jwt response", [
+            $this->logger->critical("Key is missing in Jwt response", [
                 "missingKey"        => BaseResponse::KEY_TOKEN,
                 "responseDataArray" => $responseDataArray,
             ]);
@@ -166,7 +166,7 @@ class ResponseValidityListener implements EventSubscriberInterface
         $countOfRequiredKeys = count(BaseResponse::MINIMAL_FIELDS_FOR_VALID_BASE_API_RESPONSE);
 
         if ($countOfCommonKeys !== $countOfRequiredKeys) {
-            $this->logger->getLogger()->critical("Not all required keys are present in json", [
+            $this->logger->critical("Not all required keys are present in json", [
                 "requiredKeys"      => BaseResponse::MINIMAL_FIELDS_FOR_VALID_BASE_API_RESPONSE,
                 "commonKeys"        => $commonKeys,
                 "responseDataArray" => $responseDataArray,

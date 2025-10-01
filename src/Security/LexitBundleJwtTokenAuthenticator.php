@@ -5,8 +5,8 @@ namespace App\Security;
 use App\Attribute\JwtAuthenticationDisabledAttribute;
 use App\Response\Base\BaseResponse;
 use App\Services\Attribute\AttributeReaderService;
-use App\Services\Core\Logger;
 use App\Services\Security\JwtAuthenticationService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\ExpiredTokenException;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\InvalidTokenException;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
@@ -14,6 +14,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\PreAuthen
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Guard\JWTTokenAuthenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
+use Psr\Log\LoggerInterface;
 use ReflectionException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,6 +28,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
 {
+    use ExceptionLoggerAwareTrait;
 
     public function __construct(
         JWTTokenManagerInterface                $jwtManager,
@@ -34,7 +36,7 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
         TokenExtractorInterface                 $tokenExtractor,
         TokenStorageInterface                   $preAuthenticationTokenStorage,
         private readonly AttributeReaderService $attributeReaderService,
-        private readonly Logger                 $logger,
+        private readonly LoggerInterface        $logger,
         private readonly JwtAuthenticationService $jwtAuthenticationService
     ) {
         parent::__construct($jwtManager, $dispatcher, $tokenExtractor, $preAuthenticationTokenStorage);
@@ -77,7 +79,7 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
         } else {
 
             $apiResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            $this->logger->logException($authException);
+            $this->logException($authException);
         }
         return $apiResponse->toJsonResponse();
     }

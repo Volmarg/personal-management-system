@@ -6,13 +6,13 @@ use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
 use App\Entity\FilesTags;
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
 use App\Services\Module\Storage\StorageFileService;
 use App\Services\Module\Storage\StorageService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +26,7 @@ class StorageFileAction extends AbstractController
     public function __construct(
         private readonly StorageService         $storageService,
         private readonly StorageFileService     $storageFileService,
-        private readonly Logger                 $logger,
+        private readonly LoggerInterface        $logger,
         private readonly EntityManagerInterface $em,
         private readonly TranslatorInterface    $translator
     ) {
@@ -55,7 +55,7 @@ class StorageFileAction extends AbstractController
         $isRenamed = rename($oldPath, $newPath);
         if (!$isRenamed) {
             $msg = $this->translator->trans('module.storage.common.unknownError');
-            $this->logger->getLogger()->critical($msg, [
+            $this->logger->critical($msg, [
                 'info'          => "rename function failed",
                 'oldPath'       => $oldPath,
                 'newPath'       => $newPath,

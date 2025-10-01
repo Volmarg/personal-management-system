@@ -6,11 +6,12 @@ use App\Attribute\JwtAuthenticationDisabledAttribute;
 use App\Response\Base\BaseResponse;
 use App\Security\UriAuthenticator;
 use App\Services\Attribute\AttributeReaderService;
-use App\Services\Core\Logger;
 use App\Services\ResponseService;
 use App\Services\Routing\UrlMatcherService;
 use App\Services\Security\JwtAuthenticationService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use Psr\Log\LoggerInterface;
 use ReflectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,6 +29,8 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class JwtTokenResponseListener implements EventSubscriberInterface
 {
+    use ExceptionLoggerAwareTrait;
+
     const ROUTES_EXCLUDED_FROM_TOKEN_REFRESH = [
       // UserAction::ROUT_NAME_REMOVE_USER,
     ];
@@ -38,7 +41,7 @@ class JwtTokenResponseListener implements EventSubscriberInterface
         private readonly JwtAuthenticationService $jwtAuthenticationService,
         private readonly UrlMatcherService        $urlMatcherService,
         private readonly AttributeReaderService   $attributeReaderService,
-        private readonly Logger                   $logger
+        private readonly LoggerInterface          $logger
     ) {
     }
 
@@ -117,7 +120,7 @@ class JwtTokenResponseListener implements EventSubscriberInterface
 
                 $frontResponse->setCode(Response::HTTP_INTERNAL_SERVER_ERROR);
                 $frontResponse->setRedirectRoute("Exception was thrown");
-                $this->logger->logException($e);
+                $this->logException($e);
             }
 
             $frontResponse->setSuccess(false);

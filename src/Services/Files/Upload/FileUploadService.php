@@ -4,11 +4,12 @@ namespace App\Services\Files\Upload;
 
 use App\Entity\FilesTags;
 use App\Exception\File\UploadValidationException;
-use App\Services\Core\Logger;
 use App\Services\Files\PathService;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use LogicException;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -21,14 +22,16 @@ use TypeError;
  */
 readonly class FileUploadService
 {
+    use ExceptionLoggerAwareTrait;
+
     /**
-     * @param Logger                 $logger
+     * @param LoggerInterface        $logger
      * @param FileUploadValidator    $fileUploadValidator
      * @param FileUploadConfigurator $fileUploadConfigurator
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(
-        private Logger                          $logger,
+        private readonly LoggerInterface $logger,
         private FileUploadValidator             $fileUploadValidator,
         private FileUploadConfigurator          $fileUploadConfigurator,
         private readonly EntityManagerInterface $entityManager
@@ -75,7 +78,7 @@ readonly class FileUploadService
                 unlink($tmpFile->getPathname());
             }
 
-            $this->logger->logException($e);
+            $this->logException($e);
 
             throw $e;
         }
@@ -100,7 +103,7 @@ readonly class FileUploadService
         try {
             $isRemoved = @unlink($filePath);
             if (!$isRemoved) {
-                $this->logger->getLogger()->critical("Could not remove uploaded file for path: {$filePath}, reason: " . error_get_last());
+                $this->logger->critical("Could not remove uploaded file for path: {$filePath}, reason: " . error_get_last());
                 return false;
             }
         } catch (Exception|TypeError $e) {
@@ -111,14 +114,14 @@ readonly class FileUploadService
             if (isset($isRemoved) && isset($fileContent)) {
                 $isReverted = @file_put_contents($filePath, $fileContent);
                 if (!$isReverted) {
-                    $this->logger->getLogger()->critical("Tried to revert the removed file, but could not do that, something went wrong with reversing", [
+                    $this->logger->critical("Tried to revert the removed file, but could not do that, something went wrong with reversing", [
                         "possibleIssue" => error_get_last(),
                         "info"          => "Keep in mind that this error might be totally unrelated, unknown if file put content errors are caught by it"
                     ]);
                 }
             }
 
-            $this->logger->logException($e, $info);
+            $this->logException($e, $info);
 
             return false;
         }

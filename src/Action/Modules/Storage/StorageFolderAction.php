@@ -10,7 +10,6 @@ use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
 use App\Services\Files\PathService;
 use App\Services\Module\Storage\StorageFolderService;
 use App\Services\Module\Storage\StorageService;
@@ -18,6 +17,7 @@ use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,7 +38,7 @@ class StorageFolderAction extends AbstractController
     public function __construct(
         private readonly StorageService           $storageService,
         private readonly TranslatorInterface      $translator,
-        private readonly Logger                   $logger,
+        private readonly LoggerInterface          $logger,
         private readonly LockedResourceController $lockedResourceController,
         private readonly EntityManagerInterface   $entityManager,
         private readonly StorageFolderService     $storageFolderService
@@ -124,7 +124,7 @@ class StorageFolderAction extends AbstractController
 
         if (!mkdir($newDirPath)) {
             $msg = $this->translator->trans('module.storage.common.error');
-            $this->logger->getLogger()->critical($msg, [
+            $this->logger->critical($msg, [
                 'info'          => "rename function failed",
                 'parentDir'     => $parentDirPath,
                 'newDirPath'    => $newDirPath,
@@ -246,7 +246,7 @@ class StorageFolderAction extends AbstractController
         } catch (Exception $e) {
             $this->entityManager->rollback();
             $msg = $this->translator->trans('module.storage.common.error');
-            $this->logger->getLogger()->critical($msg, [
+            $this->logger->critical($msg, [
                 "info"  => "Could not remove related entities",
                 "trace" => $e->getTraceAsString(),
                 "msg"   => $e->getMessage(),
@@ -289,7 +289,7 @@ class StorageFolderAction extends AbstractController
 
         if (!rename($currDirPath, $newDirPath)) {
             $msg = $this->translator->trans('module.storage.common.error');
-            $this->logger->getLogger()->critical($msg, [
+            $this->logger->critical($msg, [
                 'info'          => "rename function failed",
                 'parentDir'     => $currDirPath,
                 'newDirPath'    => $newDirPath,

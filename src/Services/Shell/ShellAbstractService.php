@@ -2,8 +2,8 @@
 
 namespace App\Services\Shell;
 
-use App\Services\Core\Logger;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -14,11 +14,11 @@ use Symfony\Component\Process\Process;
 abstract class ShellAbstractService
 {
     /**
-     * @param Logger             $loggerService
+     * @param LoggerInterface    $logger
      * @param ContainerInterface $container
      */
     public function __construct(
-        private readonly Logger             $loggerService,
+        private readonly LoggerInterface $logger,
         private readonly ContainerInterface $container
     ) {
     }
@@ -88,7 +88,7 @@ abstract class ShellAbstractService
         $executablePath   = $executableFinder->find($executableName);
 
         if (is_null($executablePath)) {
-            $this->loggerService->getLogger()->critical("Searched executable is not present for shell: {$executableName}");
+            $this->logger->critical("Searched executable is not present for shell: {$executableName}");
             return false;
         }
 
@@ -115,7 +115,7 @@ abstract class ShellAbstractService
 
         if (!$process->isSuccessful()) {
             $loggedCommand = $calledCommand;
-            $this->loggerService->getLogger()->critical("Process was finished but WITH NO SUCCESS", [
+            $this->logger->critical("Process was finished but WITH NO SUCCESS", [
                 "calledCommand"      => $loggedCommand,
                 "commandOutput"      => $process->getOutput(),
                 "commandErrorOutput" => $process->getErrorOutput(),

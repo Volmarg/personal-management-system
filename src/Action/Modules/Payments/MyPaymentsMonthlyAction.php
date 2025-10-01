@@ -9,12 +9,13 @@ use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Response\Base\BaseResponse;
-use App\Services\Core\Logger;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
+use App\Traits\ExceptionLoggerAwareTrait;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,9 +26,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
 class MyPaymentsMonthlyAction extends AbstractController {
 
+    use ExceptionLoggerAwareTrait;
+
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly Logger                 $logger,
+        private readonly LoggerInterface        $logger,
         private readonly TranslatorInterface    $translator
     ) {
     }
@@ -124,7 +127,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
             $this->em->commit();
         } catch (Exception $e) {
             $this->em->rollback();
-            $this->logger->logException($e);
+            $this->logException($e);
 
             $msg = $this->translator->trans('module.monthly_payments.import.message.fail');
             return BaseResponse::buildInternalServerErrorResponse($msg)->toJsonResponse();
