@@ -51,12 +51,6 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-    App\Services\ConfigLoaders\ConfigLoaderSession:
-        public: true
-        arguments:
-          $systemLockLifetime: '111111' # info -temp only - will be removed due to front separtaion
-          $userLoginLifetime: '11111111' # info -temp only - will be removed due to front separtaion
-
     App\Services\ConfigLoaders\ConfigLoaderSecurity:
         calls:
             - setRestrictedIps: ['%security.restricted_ips%']

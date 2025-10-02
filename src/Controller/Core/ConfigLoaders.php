@@ -5,16 +5,10 @@ namespace App\Controller\Core;
 
 
 use App\Services\ConfigLoaders\ConfigLoaderSecurity;
-use App\Services\ConfigLoaders\ConfigLoaderSession;
 use App\Services\ConfigLoaders\ConfigLoaderSystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ConfigLoaders extends AbstractController {
-
-    /**
-     * @var ConfigLoaderSession $configLoaderSession
-     */
-    private ConfigLoaderSession $configLoaderSession;
 
     /**
      * @var ConfigLoaderSecurity $configLoaderSecurity
@@ -25,13 +19,6 @@ class ConfigLoaders extends AbstractController {
      * @var ConfigLoaderSystem $configLoaderSystem
      */
     private ConfigLoaderSystem $configLoaderSystem;
-
-    /**
-     * @return ConfigLoaderSession
-     */
-    public function getConfigLoaderSession(): ConfigLoaderSession {
-        return $this->configLoaderSession;
-    }
 
     /**
      * @return ConfigLoaderSecurity
@@ -50,12 +37,10 @@ class ConfigLoaders extends AbstractController {
     }
 
     public function __construct(
-        ConfigLoaderSession  $configLoaderSession,
         ConfigLoaderSecurity $configLoaderSecurity,
         ConfigLoaderSystem   $configLoaderSystem
     )
     {
-        $this->configLoaderSession  = $configLoaderSession;
         $this->configLoaderSecurity = $configLoaderSecurity;
         $this->configLoaderSystem   = $configLoaderSystem;
     }
