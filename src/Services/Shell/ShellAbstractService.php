@@ -4,7 +4,6 @@ namespace App\Services\Shell;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -14,12 +13,10 @@ use Symfony\Component\Process\Process;
 abstract class ShellAbstractService
 {
     /**
-     * @param LoggerInterface    $logger
-     * @param ContainerInterface $container
+     * @param LoggerInterface $logger
      */
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly ContainerInterface $container
     ) {
     }
 
@@ -53,9 +50,12 @@ abstract class ShellAbstractService
      * @param int               $timeout
      *
      * @return string
+     * @throws Exception
      */
     protected function buildCommand(array $partials = [], bool $addSpaceBarPerPartial = true, int $timeout = 0): string
     {
+        $this->isExecutableForServicePresent();
+
         $gluedCommand = "";
         if ($timeout > 0) {
             $gluedCommand .= "timeout {$timeout} ";

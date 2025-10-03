@@ -7,24 +7,13 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\Form\Util\StringUtil;
-use Symfony\Component\HttpFoundation\Response;
 
 class Utils extends AbstractController {
 
-    const FLASH_TYPE_SUCCESS = "success";
     const FLASH_TYPE_DANGER  = "danger";
 
     const TRUE_AS_STRING  = "true";
     const FALSE_AS_STRING = "false";
-
-    /**
-     * @param string $data
-     * @return string
-     */
-    public static function unbase64(string $data) {
-        return trim(htmlspecialchars_decode(base64_decode($data)));
-    }
 
     /**
      * @param string $dir
@@ -85,15 +74,6 @@ class Utils extends AbstractController {
     }
 
     /**
-     * @param Response $response
-     * @return string
-     */
-    public static function getFlashTypeForRequest(Response $response){
-        $flashType = ( $response->getStatusCode() === 200 ? self::FLASH_TYPE_SUCCESS : self::FLASH_TYPE_DANGER );
-        return $flashType;
-    }
-
-    /**
      * Get one random element from array
      * @param array $array
      * @return mixed
@@ -131,85 +111,6 @@ class Utils extends AbstractController {
     }
 
     /**
-     * This function will search for forms with names in @param array $keysToFilter
-     * This function should be used only when there are more than one forms in the request
-     *  otherwise it will filter unwanted data
-     * @param array $requestArrays
-     * @return array
-     * @see $keysToFilter and unset them in $request arrays
-     */
-    public static function filterRequestForms(array $keysToFilter, array $requestArrays):array {
-
-        foreach($keysToFilter as $key){
-
-            if( array_key_exists($key, $requestArrays) ){
-                unset($requestArrays[$key]);
-            }
-
-        }
-
-        return $requestArrays;
-    }
-
-    /**
-     * @param string $class
-     * @return string
-     */
-    public static function formClassToFormPrefix(string $class){
-        return StringUtil::fqcnToBlockPrefix($class) ?: '';
-    }
-
-    /**
-     * Will return the string formatted in the way that symfony does it for fields
-     *
-     * @param string $dataClass - the class used in `configureOptions` method of Form
-     * @param string $fieldName
-     * @return string
-     */
-    public static function fieldIdForSymfonyForm(string $dataClass, string $fieldName): string
-    {
-        return self::formClassToFormPrefix($dataClass) . '_' . $fieldName;
-    }
-
-    /**
-     * @return string
-     */
-    public static function randomHexColor() {
-        return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
-    }
-
-    /**
-     * @param array $array
-     * @return array
-     */
-    public static function arrayKeysMulti(array $array): array
-    {
-        $keys = array();
-
-        foreach ($array as $key => $value) {
-            $keys[] = $key;
-
-            if (is_array($value)) {
-                $keys = array_merge($keys, self::arrayKeysMulti($value));
-            }
-        }
-
-        return $keys;
-    }
-
-    /**
-     * @param array $array
-     * @return string
-     */
-    public static function escapedDoubleQuoteJsonEncode(array $array): string
-    {
-        $json            = \GuzzleHttp\json_encode($array);
-        $singleQuoteJson = str_replace('"','\"' , $json);
-
-        return $singleQuoteJson;
-    }
-
-    /**
      * @param string|bool $value
      * @return bool
      * @throws Exception
@@ -233,52 +134,6 @@ class Utils extends AbstractController {
             throw new \TypeError("Not allowed type: " . gettype($value) );
         }
 
-    }
-
-    /**
-     * Returns the class name without namespace
-     * @param string $classWithNamespace
-     * @return string
-     */
-    public static function getClassBasename(string $classWithNamespace): string
-    {
-        $classParts            = explode('\\', $classWithNamespace);
-        $classWithoutNamespace = end($classParts);
-        return $classWithoutNamespace;
-    }
-
-    /**
-     * Will round the given value to the nearest (LOWER/DOWN) value provided as second parameter, for example nearest 0.25
-     * 1.0, 1.25, 1.5, 1,75 ....
-     *
-     * @param float $actualValue
-     * @param float $roundToRepentanceOf
-     * @return float|int
-     */
-    public static function roundDownToAny(float $actualValue, float $roundToRepentanceOf) {
-        if( 0 === $actualValue ){
-            return 0;
-        }
-
-        return floor($actualValue/$roundToRepentanceOf) * $roundToRepentanceOf;
-    }
-
-    /**
-     * Will convert seconds to time based format
-     * Example: 20:35:15
-     *
-     * @param int $seconds
-     * @return string
-     */
-    public static function secondsToTimeFormat(int $seconds): string
-    {
-        $hours = floor($seconds / 3600);
-        $mins  = floor($seconds / 60 % 60);
-        $secs  = floor($seconds % 60);
-
-        $timeFormat = sprintf('%02d:%02d:%02d', $hours, $mins, $secs);
-
-        return $timeFormat;
     }
 
     /**
