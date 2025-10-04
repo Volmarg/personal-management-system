@@ -3,13 +3,13 @@
 
 namespace App\Services\Validation\Validators\Modules\Job;
 
-use App\Services\Validation\Validators\AbstractValidator;
+use App\DTO\ValidationResultDto;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
-use App\VO\Validators\ValidationResultVO;
+use App\Services\Validation\Validators\AbstractValidator;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\ORMException;
@@ -47,11 +47,13 @@ class MyJobHolidaysValidator extends AbstractValidator {
 
     /**
      * @inheritDoc
+     *
      * @param ValidateEntityInterface|MyJobHolidays $entity
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      * @throws Exception
      */
-    public function validate(ValidateEntityInterface $entity): ValidationResultVO {
+    public function validate(ValidateEntityInterface $entity): ValidationResultDto {
 
         $this->setSupportedClass(MyJobHolidays::class);
         parent::validate($entity);

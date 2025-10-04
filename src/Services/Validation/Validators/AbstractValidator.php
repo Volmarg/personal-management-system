@@ -3,8 +3,8 @@
 
 namespace App\Services\Validation\Validators;
 
+use App\DTO\ValidationResultDto;
 use App\Entity\Interfaces\ValidateEntityInterface;
-use App\VO\Validators\ValidationResultVO;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -96,11 +96,13 @@ abstract class AbstractValidator {
     /**
      * Validate given entity with set of rules
      *  must be extended by children
+     *
      * @param ValidateEntityInterface $entity
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      * @throws Exception
      */
-    public function validate(ValidateEntityInterface $entity): ValidationResultVO
+    public function validate(ValidateEntityInterface $entity): ValidationResultDto
     {
         $this->init();
 
@@ -110,17 +112,17 @@ abstract class AbstractValidator {
             throw new Exception('This entity is not supported for in this validator');
         }
 
-        $validationResult = new ValidationResultVO();
+        $validationResult = new ValidationResultDto();
         return $validationResult;
     }
 
     /**
      * Will check if there are any violations and will add fields/messages to the result
-     * @return ValidationResultVO
+     * @return ValidationResultDto
      */
-    protected function processValidationResult(): ValidationResultVO
+    protected function processValidationResult(): ValidationResultDto
     {
-        $validationResult = new ValidationResultVO();
+        $validationResult = new ValidationResultDto();
         $validationResult->setValidable(true);
 
         $violatedFieldsWithMessages = [];

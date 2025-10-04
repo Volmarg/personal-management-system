@@ -3,10 +3,10 @@
 
 namespace App\Services\Validation\Validators\Modules\Payments;
 
-use App\Services\Validation\Validators\AbstractValidator;
+use App\DTO\ValidationResultDto;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
-use App\VO\Validators\ValidationResultVO;
+use App\Services\Validation\Validators\AbstractValidator;
 use Exception;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -34,11 +34,13 @@ class MyRecurringPaymentsValidator extends AbstractValidator {
 
     /**
      * @inheritDoc
+     *
      * @param ValidateEntityInterface|MyRecurringPaymentMonthly $entity
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      * @throws Exception
      */
-    public function validate(ValidateEntityInterface $entity): ValidationResultVO {
+    public function validate(ValidateEntityInterface $entity): ValidationResultDto {
 
         $this->setSupportedClass(MyRecurringPaymentMonthly::class);
         parent::validate($entity);

@@ -2,7 +2,7 @@
 
 namespace App\Services\Validation;
 
-use App\VO\Validators\ValidationResultVO;
+use App\DTO\ValidationResultDto;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -35,9 +35,10 @@ class ConstraintValidationService
      * Validates the object and returns the array of violations
      *
      * @param object $object
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      */
-    public function validateAndReturnValidationResultDto(object $object): ValidationResultVO
+    public function validateAndReturnValidationResultDto(object $object): ValidationResultDto
     {
         $violations          = $this->validator->validate($object);
         $validationResultVo = $this->checkConstraintViolationsAndReturnValidationResultVo($violations);
@@ -49,11 +50,13 @@ class ConstraintValidationService
      * Will check violations array and creates the ValidationResultDTO
      *
      * @param ConstraintViolationList $violations
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      */
-    public function checkConstraintViolationsAndReturnValidationResultVo(ConstraintViolationList $violations): ValidationResultVO
+    public function checkConstraintViolationsAndReturnValidationResultVo(ConstraintViolationList $violations
+    ): ValidationResultDto
     {
-        $validationResultVo    = new ValidationResultVO();
+        $validationResultVo     = new ValidationResultDto();
         $violationsWithMessages = [];
 
         /**@var $constraintViolation ConstraintViolation*/

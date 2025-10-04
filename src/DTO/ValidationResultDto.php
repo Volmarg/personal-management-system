@@ -1,12 +1,10 @@
 <?php
-namespace App\VO\Validators;
+namespace App\DTO;
 
 /**
  * Used in entity/class validation process
- * Class ValidationResultVO
- * @package App\VO\Validators
  */
-class ValidationResultVO {
+class ValidationResultDto {
 
     /**
      * The result of validation
@@ -91,7 +89,7 @@ class ValidationResultVO {
     /**
      * @return string
      */
-    public function getAllFailedValidationMessagesAsSingleString(): string
+    public function concatFailedValidations(): string
     {
         $messages = "";
 
@@ -104,15 +102,4 @@ class ValidationResultVO {
         return $messages;
     }
 
-    /**
-     * Will yield valid validation result
-     * 
-     * @return ValidationResultVO
-     */
-    public static function buildValidResult(): ValidationResultVO
-    {
-        $validationResult = new ValidationResultVO();
-        $validationResult->setValid(true);
-        return $validationResult;
-    }
 }

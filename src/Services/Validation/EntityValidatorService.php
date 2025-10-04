@@ -2,6 +2,7 @@
 
 namespace App\Services\Validation;
 
+use App\DTO\ValidationResultDto;
 use App\Entity\Interfaces\ValidateEntityForCreateInterface;
 use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use App\Entity\Interfaces\ValidateEntityInterface;
@@ -11,7 +12,6 @@ use App\Services\Database\DoctrineService;
 use App\Services\Validation\Validators\AbstractValidator;
 use App\Services\Validation\Validators\Modules\Job\MyJobHolidaysValidator;
 use App\Services\Validation\Validators\Modules\Payments\MyRecurringPaymentsValidator;
-use App\VO\Validators\ValidationResultVO;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -58,16 +58,18 @@ class EntityValidatorService extends AbstractController {
 
     /**
      * Entities do not share common parent/interface so no such can be provided
+     *
      * @param $entity
      * @param string $action
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      * @throws Exception
      */
-    public function handleValidation($entity, string $action): ValidationResultVO
+    public function handleValidation($entity, string $action): ValidationResultDto
     {
         $isValidable = $this->isValidable($entity);
 
-        $validationResult = new ValidationResultVO();
+        $validationResult = new ValidationResultDto();
         $validationResult->setValidable(true);
 
         // entity is not validable so return results as valid, to omit further validation failure logic
@@ -157,12 +159,13 @@ class EntityValidatorService extends AbstractController {
 
     /**
      * @param ValidateEntityInterface $entity
-     * @return ValidationResultVO
+     *
+     * @return ValidationResultDto
      * @throws Exception
      */
-    private function validate(ValidateEntityInterface $entity): ValidationResultVO
+    private function validate(ValidateEntityInterface $entity): ValidationResultDto
     {
-        $validationResult = new ValidationResultVO();
+        $validationResult = new ValidationResultDto();
         $validationResult->setValidable(true);
 
         $validator = $this->loadValidator($entity);
