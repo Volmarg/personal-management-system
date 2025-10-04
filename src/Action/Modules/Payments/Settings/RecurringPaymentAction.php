@@ -10,6 +10,7 @@ use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
+use App\Services\Validation\EntityValidatorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,8 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class RecurringPaymentAction extends AbstractController {
 
     public function __construct(
-        private readonly EntityManagerInterface               $em,
-        private readonly MyRecurringPaymentMonthlyRepository $recurringPaymentMonthlyRepository
+        private readonly EntityManagerInterface              $em,
+        private readonly MyRecurringPaymentMonthlyRepository $recurringPaymentMonthlyRepository,
+        private readonly EntityValidatorService              $entityValidator,
     ) {
     }
 
@@ -101,7 +103,8 @@ class RecurringPaymentAction extends AbstractController {
      */
     private function createOrUpdate(Request $request, ?MyRecurringPaymentMonthly $payment = null): BaseResponse
     {
-        if (!$payment) {
+        $isNew = is_null($payment);
+        if ($isNew) {
             $payment = new MyRecurringPaymentMonthly();
         }
 
@@ -120,6 +123,13 @@ class RecurringPaymentAction extends AbstractController {
         $payment->setType($type);
         $payment->setDescription($description);
         $payment->setMoney($amount);
+
+        $action = $isNew ? EntityValidatorService::ACTION_CREATE : EntityValidatorService::ACTION_UPDATE;
+        $validationResult = $this->entityValidator->handleValidation($payment, $action);
+
+        if (!$validationResult->isValid()) {
+            return BaseResponse::buildBadRequestErrorResponse($validationResult->concatFailedValidations());
+        }
 
         $this->em->persist($payment);
         $this->em->flush();
