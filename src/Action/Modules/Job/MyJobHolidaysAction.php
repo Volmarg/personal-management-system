@@ -114,11 +114,11 @@ class MyJobHolidaysAction extends AbstractController {
         $holidayEntry->setDaysSpent($days);
         $holidayEntry->setInformation($information);
 
-        if ($isNew) {
-            $validationResult = $this->entityValidator->handleValidation($holidayEntry,EntityValidatorService::ACTION_CREATE);
-            if (!$validationResult->isValid()) {
-                return BaseResponse::buildBadRequestErrorResponse($validationResult->getAllFailedValidationMessagesAsSingleString());
-            }
+        $action = $isNew ? EntityValidatorService::ACTION_CREATE : EntityValidatorService::ACTION_UPDATE;
+        $validationResult = $this->entityValidator->handleValidation($holidayEntry, $action);
+
+        if (!$validationResult->isValid()) {
+            return BaseResponse::buildBadRequestErrorResponse($validationResult->concatFailedValidations());
         }
 
         $this->em->persist($holidayEntry);
