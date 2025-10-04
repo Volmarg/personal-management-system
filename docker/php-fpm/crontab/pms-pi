@@ -2,6 +2,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 APP_PATH=/application
 LOG_DIR=/var/log/pms
 
+# Everyday at 00:00
+0 0 * * * www-data cd "$APP_PATH" && php bin/console schedules:send-reminders >> "$LOG_DIR"/pms-schedule-send-reminders.log
+
 # Everyday at 01:00
 ## config backup
 0 1 * * * www-data cd "$APP_PATH" && php bin/console cron:make-config-backup "/backup/pms" config >> "$LOG_DIR"/pms-cron-make-config-backup.log
