@@ -10,7 +10,6 @@ use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
 use App\Services\Files\DirectoriesHandler;
-use App\Services\Files\FilesHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -54,11 +53,6 @@ class FileUploadController extends AbstractController {
     ];
 
     /**
-     * @var FilesHandler $filesHandler
-     */
-    private $filesHandler;
-
-    /**
      * @var DirectoriesHandler $directoriesHandler
      */
     private $directoriesHandler;
@@ -68,8 +62,7 @@ class FileUploadController extends AbstractController {
      */
     private LockedResourceController $lockedResourceController;
 
-    public function __construct(FilesHandler $filesHandler, DirectoriesHandler $directoriesHandler, LockedResourceController $lockedResourceController) {
-        $this->filesHandler             = $filesHandler;
+    public function __construct(DirectoriesHandler $directoriesHandler, LockedResourceController $lockedResourceController) {
         $this->directoriesHandler       = $directoriesHandler;
         $this->lockedResourceController = $lockedResourceController;
     }
