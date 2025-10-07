@@ -2,23 +2,18 @@
 
 namespace App\Services\Files;
 
-use App\Controller\Files\FilesTagsController;
 use App\Controller\Files\FileUploadController;
-use App\Controller\Core\Env;
 use App\Controller\Modules\ModuleDataController;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
-use App\Repository\System\LockedResourceRepository;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -28,9 +23,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @package App\Services
  */
 class DirectoriesHandler {
-
-    const SUBDIRECTORY_KEY  = 'subdirectory';
-    const KEY_BLOCK_REMOVAL = 'block_removal';
 
     /**
      * @var LoggerInterface $logger
@@ -48,11 +40,6 @@ class DirectoriesHandler {
     private $finder;
 
     /**
-     * @var FilesTagsController $filesTagsController
-     */
-    private $filesTagsController;
-
-    /**
      * Info: must remain static due to the static methods requiring this logic
      * @var LockedResourceController $lockedResourceController
      */
@@ -66,17 +53,14 @@ class DirectoriesHandler {
     public function __construct(
         LoggerInterface          $logger,
         FileTagger               $fileTagger,
-        FilesTagsController      $filesTagsController,
         LockedResourceController $lockedResourceController,
         ModuleDataController     $moduleDataController,
-        private readonly LockedResourceRepository $lockedResourceRepository,
         private readonly TranslatorInterface $translator,
     ) {
         self::$lockedResourceController = $lockedResourceController;
         $this->logger                   = $logger;
         $this->finder                   = new Finder();
         $this->fileTagger               = $fileTagger;
-        $this->filesTagsController      = $filesTagsController;
         $this->moduleDataController     = $moduleDataController;
     }
 
@@ -155,33 +139,6 @@ class DirectoriesHandler {
         $this->logger->info($logMessage);
         return new Response($responseMessage);
 
-    }
-
-    /**
-     * @Route("/upload/{upload_type}/rename-subdirectory", name="upload_rename_subdirectory", methods="POST")
-     * @param string $uploadType
-     * @param Request $request
-     * @return Response
-     * @throws \Exception
-     */
-    public function renameSubdirectoryByPostRequest(string $uploadType, Request $request) {
-
-        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME) ) {
-            $message = $this->translator->trans('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_NEW_NAME;
-            return new Response($message, 500);
-        }
-
-        if ( !$request->query->has(FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME) ) {
-            $message = $this->translator->trans('exceptions.general.missingRequiredParameter') . FileUploadController::KEY_SUBDIRECTORY_CURRENT_NAME;
-            return new Response($message, 500);
-        }
-
-        $currentDirectoryPathInModuleUploadDir = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR);
-        $subdirectoryNewName                   = $request->query->get(FileUploadController::KEY_SUBDIRECTORY_NEW_NAME);
-
-        $response = $this->renameSubdirectory($uploadType, $currentDirectoryPathInModuleUploadDir, $subdirectoryNewName);
-
-        return $response;
     }
 
     /**
@@ -397,126 +354,5 @@ class DirectoriesHandler {
         }
         return $data;
     }
-
-    /**
-     * @param string $currentFolderPath
-     * @param string $parentFolderPath
-     * @return Response
-     * @throws \Exception
-     */
-    public function moveDirectory(string $currentFolderPath, string $parentFolderPath): Response{
-
-        # this vars are used to move the folder
-        $currentFolderName = basename($currentFolderPath);
-        $newFolderPath     = $parentFolderPath . DIRECTORY_SEPARATOR . $currentFolderName;
-        $mainUploadDirs    = Env::getUploadDirs();
-
-        if( in_array($currentFolderPath, $mainUploadDirs) ){
-            $message = $this->translator->trans('responses.directories.cannotMoveModuleMainUploadDir');
-            return new Response($message, 500);
-        }
-
-        if( file_exists($newFolderPath) ){
-            $message = $this->translator->trans('responses.directories.directoryWithThisNameAlreadyExistInTargetFolder');
-            return new Response($message, 500);
-        }
-
-        if( !file_exists($currentFolderPath) ){
-            $message = $this->translator->trans('responses.directories.theDirectoryYouTryToMoveDoesNotExist');
-            return new Response($message, 500);
-        }
-
-        if( $currentFolderPath === $parentFolderPath ){
-            $message = $this->translator->trans('responses.directories.currentDirectoryPathIsTheSameAsNewPath');
-            return new Response($message, 500);
-        }
-
-        if( strstr($parentFolderPath, $currentFolderPath) ){
-            $message = $this->translator->trans('responses.directories.cannotMoveFolderInsideItsOwnSubfolder');
-            return new Response($message, 500);
-        }
-
-        $this->finder->files()->in($currentFolderPath);
-
-        try{
-
-             /**
-             * Update tagger path for each file that has tags
-             * @var File $file
-             */
-            foreach( $this->finder as $file ){
-
-                # this vars are only used to update tags
-                $currentFilePath = $file->getPathname();
-                $currentFileName = $file->getFilename();
-
-                $fileNewDirPath  = self::getFolderPathWithoutUploadDirForFolderPath($newFolderPath);
-                $moduleUploadDir = self::getUploadDirForFilePath($parentFolderPath);
-
-                $newFilePath = $moduleUploadDir . DIRECTORY_SEPARATOR . $fileNewDirPath . DIRECTORY_SEPARATOR . $currentFileName;
-
-                $this->fileTagger->updateFilePath($currentFilePath, $newFilePath);
-            }
-
-            # Info: rename is using for handling file moving
-            rename($currentFolderPath, $newFolderPath);
-            $this->lockedResourceRepository->updatePath($currentFolderPath, $newFolderPath);
-
-            $module     = ModulesController::getUploadModuleNameForFileFullPath($currentFolderPath);
-            $moduleData = $this->moduleDataController->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentFolderPath);
-
-            if( !is_null($moduleData) ){
-                $this->moduleDataController->updateRecordIdentifier($moduleData, $newFolderPath);
-            }
-        }catch(\Exception $e){
-            return new Response($e->getMessage(), $e->getCode());
-        }
-
-        $message = $this->translator->trans('responses.directories.directoryHasBeenSuccessfullyMoved');
-        return new Response($message, 200);
-    }
-
-    /**
-     * This function will strip upload dir for module from folder path if folder contains the upload dir
-     * it will not check if the upload dir is on the beginning so passing the absolute path will fail
-     * @param string $folderPath (relative)
-     * @return string
-     */
-    public static function getFolderPathWithoutUploadDirForFolderPath(string $folderPath): string{
-        $uploadDirs    = Env::getUploadDirs();
-        $modifiedPath  = $folderPath;
-
-        foreach($uploadDirs as $uploadDir){
-
-            if( strstr($folderPath, $uploadDir) ){
-                $modifiedPath = str_replace($uploadDir, "", $folderPath);
-            }
-
-        }
-
-        $strippedPath = $modifiedPath;
-        return FilesHandler::trimFirstAndLastSlash($strippedPath);
-    }
-
-    /**
-     * This function will return null or string if the upload dir is found in the file_path
-     * it will not check if the upload dir is on the beginning so passing the absolute path will fail
-     * @param string $filePath
-     * @return string | null
-     */
-    public static function getUploadDirForFilePath(string $filePath): ?string{
-        $uploadDirs = Env::getUploadDirs();
-
-        foreach($uploadDirs as $uploadDir){
-
-            if( strstr($filePath, $uploadDir) ){
-                return $uploadDir;
-            }
-
-        }
-
-        return null;
-    }
-
 
 }

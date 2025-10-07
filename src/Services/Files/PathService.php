@@ -52,14 +52,6 @@ class PathService
     /**
      * @return string
      */
-    public static function getUploadDir(): string
-    {
-        return Env::getUploadDir();
-    }
-
-    /**
-     * @return string
-     */
     public static function getProfileImageUploadDir(): string
     {
         return self::setTrailingDirSeparator(Env::getUploadDir()) . UploadedFileSourceEnum::PROFILE_IMAGE->value;

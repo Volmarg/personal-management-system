@@ -6,7 +6,6 @@ namespace App\Services\Files;
 
 use App\Controller\Core\Env;
 use App\Controller\Files\FilesController;
-use App\Controller\Utils\Utils;
 use Exception;
 use Gumlet\ImageResize;
 use Gumlet\ImageResizeException;
@@ -18,7 +17,6 @@ use Gumlet\ImageResizeException;
  */
 class ImageHandler {
 
-    const KEY_MINIATURE_PATH  = 'miniature_path';
     const SKIP_FOR_SIZE_BELOW = 25; //kbytes
     const MINIATURE_MAX_WIDTH = 200;
 
@@ -91,34 +89,6 @@ class ImageHandler {
         $image->save($targetFile);
 
         $this->lastStatus = self::STATUS_MINIATURE_WAS_CREATED;
-    }
-
-    /**
-     * Will move miniature to the target directory (if no such exist then it will be created
-     * Otherwise if miniature does not exist it will be directly created in target directory (also will be created if does not exist)
-     *
-     * Issue: empty folders remains (are not removed)
-     *
-     * @param string $currentFileLocation
-     * @param string $targetFileLocation
-     * @throws Exception
-     */
-    public function moveMiniatureBasedOnMovingOriginalFile(string $currentFileLocation, string $targetFileLocation): void
-    {
-        $targetMiniatureFileForCurrentLocation = $this->generateMiniatureAbsolutePathForOriginalPath($currentFileLocation);
-        $targetMiniatureFileForTargetLocation  = $this->generateMiniatureAbsolutePathForOriginalPath($targetFileLocation);
-        $targetMiniatureDirectory              = $this->generateMiniatureAbsoluteDirectoryPathForOriginalPath($targetFileLocation);
-
-        if( !file_exists($targetMiniatureDirectory) ){
-            mkdir($targetMiniatureDirectory, 0755, true);
-        }
-
-        if( file_exists($targetMiniatureFileForCurrentLocation) ){
-            Utils::copyFiles($targetMiniatureFileForCurrentLocation, $targetMiniatureFileForTargetLocation);
-            unlink($targetMiniatureFileForCurrentLocation);
-        }else{
-            $this->createMiniature($targetFileLocation);
-        }
     }
 
     /**
