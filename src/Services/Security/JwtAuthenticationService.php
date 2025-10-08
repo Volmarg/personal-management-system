@@ -147,36 +147,6 @@ class JwtAuthenticationService
     }
 
     /**
-     * Prepares special jwt token with given roles in, if You want to create normal token with all the roles user have
-     * then use {@see JwtAuthenticationService::buildTokenForUser()}.
-     *
-     * This kind of tokens might be handy when there is some need to generate token for certain actions only,
-     * where given token should be used precisely for given thing (like reset password), without letting user
-     * use the token on the page when logged-in, thus it's possible to strip out the base {@see User::ROLE_USER} etc.
-     *
-     * @param User  $user
-     * @param array $rolesAndRights
-     * @param bool  $includeBaseRole - {@see User::ROLE_USER}
-     *
-     * @return string
-     */
-    public function buildWithRolesForUser(User $user, array $rolesAndRights, bool $includeBaseRole = true): string
-    {
-        $originalRoles = $user->getRoles();
-        if (!$includeBaseRole) {
-            $user->setGetRoleGuaranteeRoleUser(false);
-        }
-
-        $user->setRoles($rolesAndRights);
-        $token = $this->buildTokenForUser($user, []);
-
-        // set the roles back else user gets updated and got wrong roles in DB
-        $user->setRoles($originalRoles);
-
-        return $token;
-    }
-
-    /**
      * Will build one time token for user
      *
      * @param User  $user
@@ -195,26 +165,6 @@ class JwtAuthenticationService
         $token = $this->jwtManager->createFromPayload($user, $extraPayload);
 
         return $token;
-    }
-
-    /**
-     * Check is user is granted any of given rights or roles
-     *
-     * @param array       $rolesAndRights
-     * @param string|null $jwtToken
-     *
-     * @return bool
-     */
-    public function isAnyGrantedToUser(array $rolesAndRights, ?string $jwtToken = null): bool {
-        if (!empty($jwtToken)) {
-            $user = $this->getUserForToken($jwtToken);
-        } else {
-            $user = $this->getUserFromRequest();
-        }
-
-        $matchingPrivileges = array_intersect($rolesAndRights, $user->getRoles());
-
-        return !empty($matchingPrivileges);
     }
 
     /**

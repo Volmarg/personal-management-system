@@ -75,14 +75,6 @@ class SettingsLoader {
     /**
      * @return Setting|null
      */
-    public function getSettingsForModules(): ?Setting {
-        $setting = $this->settingRepository->getSettingByName(self::SETTING_NAME_MODULES);
-        return $setting;
-    }
-
-    /**
-     * @return Setting|null
-     */
     public function getSettingsForFinances(): ?Setting {
         $setting = $this->settingRepository->getSettingByName(self::SETTING_NAME_FINANCES);
         return $setting;
