@@ -160,23 +160,4 @@ class LockedResourceRepository extends ServiceEntityRepository
         return $record;
     }
 
-    /**
-     * @param string $oldPath
-     * @param string $newPath
-     */
-    public function updatePath(string $oldPath, string $newPath): void
-    {
-        $qb = $this->_em->createQueryBuilder();
-
-        $qb->update(LockedResource::class, 'lr')
-            ->set('lr.record', ':new_path')
-            ->where('lr.record = :old_path')
-            ->setParameters([
-               'new_path' => $newPath,
-               'old_path' => $oldPath,
-            ]);
-
-        $query = $qb->getQuery();
-        $query->execute();
-    }
 }

@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,44 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class UserRepository extends ServiceEntityRepository {
 
-    const FIELD_EMAIL = "email";
-
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, User::class);
-    }
-
-    /**
-     * @param User $user
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function saveUser(User $user){
-        $this->_em->persist($user);
-        $this->_em->flush();
-    }
-
-    /**
-     * Will return all existing users
-     * @return User[]
-     */
-    public function getAllUsers(): array
-    {
-        return $this->findAll();
-    }
-
-    /**
-     * Will return one user for given username
-     * or if no user was found then null is being returned
-     * @param string $username
-     * @return User|null
-     */
-    public function findOneByName(string $username): ?User
-    {
-        $entity = $this->findOneBy([
-           User::USERNAME_FIELD => $username,
-        ]);
-
-        return $entity;
     }
 
     /**

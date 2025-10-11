@@ -22,54 +22,6 @@ class MyTravelsIdeasRepository extends ServiceEntityRepository {
     }
 
     /**
-     * @param bool $includeEmpty
-     * @return array
-     * @throws DBALException
-     */
-    public function getAllCategories(bool $includeEmpty = false) {
-        $categories = [];
-        $connection = $this->getEntityManager()->getConnection();
-
-        $deletedStatuses = [0];
-        if( $includeEmpty ){
-            $deletedStatuses[] = 1;
-        }
-
-        $sql = '
-            SELECT mc.category
-            FROM my_travel_idea mc
-
-            JOIN my_travel_idea mci
-            ON mci.id = mc.id
-
-            WHERE mc.category IS NOT NULL
-            AND mci.deleted IN (?)
-            GROUP BY mc.category
-        ';
-
-        $params = [
-            $deletedStatuses
-        ];
-
-        $types = [
-            Connection::PARAM_STR_ARRAY,
-        ];
-
-        $statement = $connection->executeQuery($sql, $params, $types);
-        $results   = $statement->fetchAll();
-
-        if (!empty($results)) {
-            foreach ($results as $result) {
-                foreach ($result as $key => $value) {
-                    $categories[$value] = $value;
-                }
-            }
-        }
-
-        return $categories;
-    }
-
-    /**
      * Will return one entity for id, if none is found then null is returned
      *
      * @param int $id

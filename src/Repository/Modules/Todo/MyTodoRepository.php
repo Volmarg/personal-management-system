@@ -2,13 +2,10 @@
 
 namespace App\Repository\Modules\Todo;
 
-use App\Controller\Modules\ModulesController;
-use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -125,50 +122,6 @@ class MyTodoRepository extends ServiceEntityRepository
         $result    = (int) $statement->fetchColumn();
 
         return (0 === $result);
-    }
-
-    /**
-     * Will return one module entity for given name or null if no matching module with this name was found
-     *
-     * @param string $moduleName
-     * @param int $entityId
-     * @return MyTodo|null
-     * @throws NonUniqueResultException
-     */
-    public function getTodoByModuleNameAndEntityId(string $moduleName, int $entityId): ?MyTodo
-    {
-        $queryBuilder = $this->_em->createQueryBuilder();
-
-        $queryBuilder->select("td")
-            ->from(MyTodo::class, "td")
-            ->join(Module::class, "m")
-            ->where("m.name = :moduleName")
-            ->setParameter("moduleName", $moduleName);
-
-        switch($moduleName)
-        {
-            case ModulesController::MODULE_NAME_ISSUES:
-                {
-                    $queryBuilder->join(MyIssue::class, 'iss', "WITH", "iss.todo = td.id")
-                        ->andWhere("iss.id = :entityId")
-                        ->setParameter("entityId", $entityId);
-                }
-            break;
-
-            case ModulesController::MODULE_NAME_GOALS:
-                {
-                    // todo
-                }
-            break;
-
-            default:
-                throw new \Exception("This module name is not supported: " . $moduleName);
-        }
-
-        $query  = $queryBuilder->getQuery();
-        $result = $query->getOneOrNullResult();
-
-        return $result;
     }
 
     /**
