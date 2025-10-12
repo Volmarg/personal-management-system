@@ -8,8 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class ReportsRepository{
 
-    const KEY_WITH_BILLS = 'withBills';
-
     /**
      * @var EntityManagerInterface $em
      */
@@ -167,61 +165,6 @@ class ReportsRepository{
             
             GROUP BY mpm.type_id, DATE_FORMAT(mpm.date, '%Y-%m')
             ORDER BY DATE_FORMAT(mpm.date, '%Y-%m') ASC
-        ";
-
-        $stmt    = $connection->executeQuery($sql);
-        $results = $stmt->fetchAll();
-
-        return $results;
-    }
-
-    /**
-     * @return array
-     * @throws DBALException
-     */
-    public function fetchPaymentsForTypesEachMonth(): array {
-
-        $connection = $this->em->getConnection();
-
-        $sql = "
-        -- issue: (2020-6 is domestic, 07 is not, 08 is again - chart will not render things after 07)
-        -- we must put 0 in this case when there are months in which no payment was made for give type
-        SELECT 
-        DISTINCT DATE_FORMAT(mpm_dates.date, '%Y-%m')            AS date,
-        mps.value                                                AS type,
-        IF( mpm_payments.amount IS NULL, 0, mpm_payments.amount) AS amount
-        
-        FROM my_payment_monthly mpm_dates
-
-        -- we need to join each date with every active type
-        CROSS JOIN my_payment_setting mps
-        ON name         = 'type'
-        AND mps.deleted = 0
-
-        -- cannot make proper sum of money due to cross join so must be a subselect
-        LEFT JOIN 
-        (
-            SELECT 
-            ROUND(SUM(mpm_payments.money))AS amount,
-            mpm_payments.type_id,
-            DATE_FORMAT(mpm_payments.date, '%Y-%m') AS date
-    
-            FROM my_payment_monthly mpm_dates
-    
-            JOIN my_payment_monthly mpm_payments
-            ON mpm_payments.id = mpm_dates.id
-    
-            GROUP BY mpm_payments.type_id,  DATE_FORMAT(mpm_dates.date, '%Y-%m')
-        
-        ) AS mpm_payments
-        ON mpm_payments.date = DATE_FORMAT(mpm_dates.date, '%Y-%m')
-        AND mpm_payments.type_id = mps.id   
-
-        WHERE 1
-        AND mpm_dates.deleted = 0
-        
-        GROUP BY mps.id, DATE_FORMAT(mpm_dates.date, '%Y-%m')
-        ORDER BY mpm_dates.date ASC
         ";
 
         $stmt    = $connection->executeQuery($sql);

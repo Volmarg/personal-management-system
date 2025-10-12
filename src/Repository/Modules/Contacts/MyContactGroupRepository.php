@@ -32,15 +32,4 @@ class MyContactGroupRepository extends ServiceEntityRepository {
         return $this->findOneBy( ["name" => $name] );
     }
 
-    /**
-     * Will return one entity for given id or null if nothing was found
-     *
-     * @param int $id
-     * @return MyContactGroup|null
-     */
-    public function getOneById(int $id): ?MyContactGroup
-    {
-        return $this->find($id);
-    }
-
 }

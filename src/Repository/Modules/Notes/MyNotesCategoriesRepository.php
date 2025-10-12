@@ -4,9 +4,6 @@ namespace App\Repository\Modules\Notes;
 
 use App\Entity\Modules\Notes\MyNotesCategories;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Statement;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**

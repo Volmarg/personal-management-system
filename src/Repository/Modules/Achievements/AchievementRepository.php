@@ -27,15 +27,4 @@ class AchievementRepository extends ServiceEntityRepository {
         return $this->findBy(['deleted' => 0]);
     }
 
-    /**
-     * Returns single entity found for given id or null if nothing was found
-     *
-     * @param int $id
-     * @return Achievement|null
-     */
-    public function getOneById(int $id): ?Achievement
-    {
-        return $this->find($id);
-    }
-
 }

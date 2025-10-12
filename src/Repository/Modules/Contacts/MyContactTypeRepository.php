@@ -4,7 +4,6 @@ namespace App\Repository\Modules\Contacts;
 
 use App\Entity\Modules\Contacts\MyContactType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,58 +37,6 @@ class MyContactTypeRepository extends ServiceEntityRepository {
         }
 
         return $results[0];
-    }
-
-    /**
-     * Returns image path for contactType by it's id
-     * @param string $id
-     * @return false|mixed
-     * @throws DBALException
-     */
-    public function getImagePathForById(string $id){
-
-        $connection = $this->_em->getConnection();
-
-        $sql = "
-            SELECT image_path
-            FROM my_contact_type
-            WHERE id = :id
-        ";
-
-        $params = [
-          "id" => $id
-        ];
-
-        $stmt   = $connection->executeQuery($sql, $params);
-        $result = $stmt->fetchColumn();
-
-        return $result;
-    }
-
-    /**
-     * Returns type name for contactType by it's id
-     * @param string $id
-     * @return false|mixed
-     * @throws DBALException
-     */
-    public function getTypeNameById(string $id){
-
-        $connection = $this->_em->getConnection();
-
-        $sql = "
-            SELECT name
-            FROM my_contact_type
-            WHERE id = :id
-        ";
-
-        $params = [
-            "id" => $id
-        ];
-
-        $stmt   = $connection->executeQuery($sql, $params);
-        $result = $stmt->fetchColumn();
-
-        return $result;
     }
 
     /**

@@ -5,7 +5,6 @@ namespace App\Repository\Modules\Notes;
 use App\Entity\Modules\Notes\MyNotes;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -36,35 +35,6 @@ class MyNotesRepository extends ServiceEntityRepository {
         ]);
 
         return $results;
-    }
-
-    /**
-     * @param int $categoryId
-     * @return false|mixed
-     * @throws DBALException
-     */
-    public function countNotesInCategoryByCategoryId(int $categoryId) {
-
-        $sql = "SELECT COUNT(*) FROM my_note WHERE category_id = :category_id AND deleted = 0";
-
-        $params = [
-            'category_id' => $categoryId,
-        ];
-
-        $statement = $this->connection->executeQuery($sql, $params);
-        $results = $statement->fetchColumn();
-
-        return $results;
-    }
-
-    /**
-     * Returns one note for given id or null if nothing was found
-     * @param int $id
-     * @return MyNotes|null
-     */
-    public function getOneById(int $id): ?MyNotes
-    {
-        return $this->find($id);
     }
 
     /**
