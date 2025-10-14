@@ -111,12 +111,12 @@ class MyIssueRepository extends ServiceEntityRepository
     private function filterQueryBuilderResultByNotDeletedAndNotResolved(QueryBuilder $queryBuilder, string $tableAlias, bool $isAnd = true): QueryBuilder
     {
         if($isAnd){
-            $queryBuilder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
+            $queryBuilder->andWhere("{$tableAlias}." . "deleted"  . " = 0");
         }else{
-            $queryBuilder->where("{$tableAlias}." . MyIssue::FIELD_NAME_DELETED  . " = 0");
+            $queryBuilder->where("{$tableAlias}." . "deleted"  . " = 0");
         }
 
-        $queryBuilder->andWhere("{$tableAlias}." . MyIssue::FIELD_NAME_RESOLVED . " = 0");
+        $queryBuilder->andWhere("{$tableAlias}." . "resolved" . " = 0");
         return $queryBuilder;
     }
 

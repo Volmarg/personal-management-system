@@ -12,8 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyPaymentsBillsItems implements SoftDeletableEntityInterface, EntityInterface
 {
-    const FIELD_DELETED = "deleted";
-    const FIELD_ID      = "id";
 
     /**
      * @ORM\Id()

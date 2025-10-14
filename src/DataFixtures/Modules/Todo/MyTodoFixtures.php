@@ -37,7 +37,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoGoals(ObjectManager $manager): void
     {
-        $goalsModule = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_GOALS]);
+        $goalsModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesController::MODULE_NAME_GOALS]);
 
         foreach(Todo::ALL_TODO_GOALS as $index => $todoWithElements) {
 
@@ -84,13 +84,13 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addIssueTodo(ObjectManager $manager): void
     {
-        $issueModule = $manager->getRepository(Module::class)->findOneBy([Module::FIELD_NAME => ModulesController::MODULE_NAME_ISSUES]);
+        $issueModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesController::MODULE_NAME_ISSUES]);
 
         foreach(Todo::ALL_TODO_ISSUE as $issueId => $todoWithElements) {
 
             foreach($todoWithElements as $todoName => $elements) {
 
-                $issue = $manager->getRepository(MyIssue::class)->findOneBy([MyIssue::FIELD_NAME_ID => $issueId]);
+                $issue = $manager->getRepository(MyIssue::class)->findOneBy(["id" => $issueId]);
 
                 $displayOnDashboard = $this->faker->boolean;
 

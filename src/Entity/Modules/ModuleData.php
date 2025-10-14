@@ -36,14 +36,8 @@ use Doctrine\ORM\Mapping\Index;
  */
 class ModuleData implements EntityInterface
 {
-    const FIELD_NAME_ID                = "id";
-    const FIELD_NAME_RECORD_TYPE       = "recordType";
-    const FIELD_NAME_MODULE            = "module";
-    const FIELD_NAME_RECORD_IDENTIFIER = "recordIdentifier";
 
     const RECORD_TYPE_DIRECTORY = "directory";
-    const RECORD_TYPE_MODULE    = "module";
-    const RECORD_TYPE_ENTITY    = "entity";
 
     /**
      * @ORM\Id

@@ -12,9 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyTodoElement implements SoftDeletableEntityInterface, EntityInterface
 {
-    const FIELD_NAME = "name";
-    const FIELD_TODO = "myTodo";
-
     /**
      * @var int $id
      * @ORM\Id()

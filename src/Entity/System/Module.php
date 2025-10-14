@@ -13,9 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Module implements EntityInterface
 {
 
-    const FIELD_NAME   = "name";
-    const FIELD_ACTIVE = "active";
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

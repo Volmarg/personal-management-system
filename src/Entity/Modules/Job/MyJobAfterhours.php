@@ -17,14 +17,6 @@ class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
 
     public const TYPE_MADE  = 'made';
 
-    public const FIELD_NAME_DELETED = "deleted";
-    public const FIELD_NAME_TYPE    = "Type";
-
-    const ALL_TYPES = [
-      self::TYPE_SPENT,
-      self::TYPE_MADE,
-    ];
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

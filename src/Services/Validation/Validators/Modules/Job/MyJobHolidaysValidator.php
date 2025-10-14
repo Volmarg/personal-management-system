@@ -91,7 +91,7 @@ class MyJobHolidaysValidator extends AbstractValidator {
             $entityDaysSpent   = $entityDaysSpentAfterUpdate;
         }
 
-        $this->constraintViolationsLists[MyJobHolidays::FIELD_DAYS_SPENT] = $this->validator->validate($entityDaysSpent, [
+        $this->constraintViolationsLists["daysSpent"] = $this->validator->validate($entityDaysSpent, [
             new Assert\GreaterThan([
                 "value"   => 0,
                 "message" => $this->translator->trans('validations.myJobHolidaysValidator.greaterThan', ["%value%" => 0])

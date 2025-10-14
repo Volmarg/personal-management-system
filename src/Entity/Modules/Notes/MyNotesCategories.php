@@ -24,9 +24,6 @@ use Doctrine\ORM\Mapping\Index;
 class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface
 {
 
-    const KEY_DELETED = "deleted";
-    const KEY_NAME    = "name";
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

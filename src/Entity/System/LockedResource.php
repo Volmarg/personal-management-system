@@ -30,7 +30,6 @@ class LockedResource implements EntityInterface
 {
     const TYPE_ENTITY    = "entity";
     const TYPE_DIRECTORY = "directory";
-    const TYPE_URL       = "url";
     const TYPE_MODULE    = "module";
 
     /**

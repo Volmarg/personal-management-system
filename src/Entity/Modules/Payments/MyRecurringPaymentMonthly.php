@@ -15,7 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityInterface, ValidateEntityInterface, ValidateEntityForUpdateInterface, ValidateEntityForCreateInterface
 {
-    const FIELD_DAYS_OF_MONTH = "dayOfMonth";
     const MIN_DAY_OF_MONTH    = 1;
     const MAX_DAY_OF_MONTH    = 31;
 

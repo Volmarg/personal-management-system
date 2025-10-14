@@ -32,9 +32,9 @@ class ModuleDataRepository extends ServiceEntityRepository
     public function getOneByRecordTypeModuleAndRecordIdentifier(string $recordType, string $module, string $recordIdentifier): ?ModuleData
     {
         $results = $this->findBy([
-           ModuleData::FIELD_NAME_MODULE            => $module,
-           ModuleData::FIELD_NAME_RECORD_IDENTIFIER => $recordIdentifier,
-           ModuleData::FIELD_NAME_RECORD_TYPE       => $recordType,
+            "module"           => $module,
+            "recordIdentifier" => $recordIdentifier,
+            "recordType"       => $recordType,
         ]);
 
         if( empty($results) ){

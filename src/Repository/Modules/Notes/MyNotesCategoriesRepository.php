@@ -22,7 +22,7 @@ class MyNotesCategoriesRepository extends ServiceEntityRepository {
      */
     public function findAllNotDeleted(): array
     {
-        $entities = $this->findBy([MyNotesCategories::KEY_DELETED => 0]);
+        $entities = $this->findBy(["deleted" => 0]);
         return $entities;
     }
 

@@ -14,11 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyJobHolidays implements SoftDeletableEntityInterface, ValidateEntityForUpdateInterface, ValidateEntityForCreateInterface, EntityInterface
 {
-    const FIELD_ID          = "id";
-    const FIELD_DAYS_SPENT  = "daysSpent";
-    const FIELD_INFORMATION = "information";
-    const FIELD_YEAR        = "year";
-    const FIELD_DELETED     = "deleted";
 
     /**
      * @ORM\Id()

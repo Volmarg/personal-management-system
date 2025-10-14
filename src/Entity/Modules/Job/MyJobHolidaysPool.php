@@ -11,8 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MyJobHolidaysPool implements EntityInterface{
 
-    const FIELD_DAYS_IN_POOL = "days_in_pool";
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

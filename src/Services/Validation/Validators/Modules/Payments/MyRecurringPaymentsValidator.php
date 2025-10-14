@@ -56,7 +56,7 @@ class MyRecurringPaymentsValidator extends AbstractValidator {
      */
     private function validateDateOfMonth($entity): void
     {
-        $this->constraintViolationsLists[MyRecurringPaymentMonthly::FIELD_DAYS_OF_MONTH] = $this->validator->validate($entity->getDayOfMonth(), [
+        $this->constraintViolationsLists["dayOfMonth"] = $this->validator->validate($entity->getDayOfMonth(), [
             new Assert\GreaterThanOrEqual([
                 "value"   => MyRecurringPaymentMonthly::MIN_DAY_OF_MONTH,
                 "message" => $this->translator->trans('validations.myRecurringPaymentsValidator.dayOfMonth.greaterThanOrEqual', ["%value%" => MyRecurringPaymentMonthly::MIN_DAY_OF_MONTH])

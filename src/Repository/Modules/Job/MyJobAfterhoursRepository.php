@@ -45,8 +45,8 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
     public function findAllNotDeletedByType(array $types): array
     {
         $entities = $this->findBy([
-            MyJobAfterhours::FIELD_NAME_DELETED => 0,
-            MyJobAfterhours::FIELD_NAME_TYPE    => $types
+            "deleted" => 0,
+            "Type"    => $types
         ], ["Date" => "DESC"]);
 
         return $entities;
