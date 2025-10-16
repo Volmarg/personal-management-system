@@ -3,35 +3,33 @@
 namespace App\DTO\Modules\Contacts;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
+use App\DTO\DtoInterface;
 
-class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
-
-    const KEY_CONTACT_TYPE_DTOS = 'contact_type_dtos';
+class ContactsTypesDto extends AbstractDTO implements DtoInterface {
 
     /**
-     * @var ContactTypeDTO[]
+     * @var ContactTypeDto[]
      */
     private $contactTypeDtos = [];
 
     /**
-     * @return ContactTypeDTO[]
+     * @return ContactTypeDto[]
      */
     public function getContactTypeDtos(): array {
         return $this->contactTypeDtos;
     }
 
     /**
-     * @param ContactTypeDTO[] $contactTypeDtos
+     * @param ContactTypeDto[] $contactTypeDtos
      */
     public function setContactTypeDtos(array $contactTypeDtos): void {
         $this->contactTypeDtos = $contactTypeDtos;
     }
 
     /**
-     * @param ContactTypeDTO $contactTypeDto
+     * @param ContactTypeDto $contactTypeDto
      */
-    public function addContactType(ContactTypeDTO $contactTypeDto){
+    public function addContactType(ContactTypeDto $contactTypeDto){
         $this->contactTypeDtos[] = $contactTypeDto;
     }
 
@@ -60,19 +58,20 @@ class ContactsTypesDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param string $json
-     * @return ContactsTypesDTO
+     *
+     * @return ContactsTypesDto
      * @throws \Exception
      */
-    public static function fromJson(string $json):ContactsTypesDTO {
+    public static function fromJson(string $json): ContactsTypesDto {
         if (empty($json)) {
-            return new ContactsTypesDTO();
+            return new ContactsTypesDto();
         }
 
         $arrayOfContactsTypes = json_decode($json, true);
-        $contactsTypesDtos    = new ContactsTypesDTO();
+        $contactsTypesDtos    = new ContactsTypesDto();
 
         foreach( $arrayOfContactsTypes as $contactType ){
-            $contactTypeDto = ContactTypeDTO::fromArray($contactType);
+            $contactTypeDto = ContactTypeDto::fromArray($contactType);
             $contactsTypesDtos->addContactType($contactTypeDto);
         }
 

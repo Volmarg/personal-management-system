@@ -2,9 +2,9 @@
 
 namespace App\Services\Settings;
 
-use App\DTO\Settings\Finances\SettingsCurrencyDTO;
-use App\DTO\Settings\Finances\SettingsFinancesDTO;
-use App\DTO\Settings\SettingsDashboardDTO;
+use App\DTO\Settings\Finances\SettingsCurrencyDto;
+use App\DTO\Settings\Finances\SettingsFinancesDto;
+use App\DTO\Settings\SettingsDashboardDto;
 use App\Entity\Setting;
 use App\Repository\SettingRepository;
 use Exception;
@@ -62,7 +62,7 @@ class SettingsLoader {
             return true;
         }
 
-        $dashboardSettings = SettingsDashboardDTO::fromJson($settings->getValue());
+        $dashboardSettings = SettingsDashboardDto::fromJson($settings->getValue());
         foreach ($dashboardSettings->getWidgetSettings()->getWidgetsVisibility() as $widgetInfo) {
             if ($widgetName === $widgetInfo->getName()) {
                 return $widgetInfo->isVisible();
@@ -81,7 +81,7 @@ class SettingsLoader {
     }
 
     /**
-     * @return SettingsCurrencyDTO[]
+     * @return SettingsCurrencyDto[]
      * @throws Exception
      */
     public function getCurrenciesDtosForSettingsFinances(): array {
@@ -90,7 +90,7 @@ class SettingsLoader {
 
         if( !empty($setting) ) {
             $settingsFinancesJson   = $setting->getValue();
-            $settingsFinancesDto    = SettingsFinancesDTO::fromJson($settingsFinancesJson);
+            $settingsFinancesDto    = SettingsFinancesDto::fromJson($settingsFinancesJson);
             $currenciesSettingDtos  = $settingsFinancesDto->getSettingsCurrencyDtos();
         }
 

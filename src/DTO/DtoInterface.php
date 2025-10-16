@@ -4,7 +4,7 @@
 namespace App\DTO;
 
 
-interface dtoInterface {
+interface DtoInterface {
 
     public function toJson();
 

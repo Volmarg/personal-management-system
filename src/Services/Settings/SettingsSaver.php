@@ -5,12 +5,12 @@ namespace App\Services\Settings;
 
 use App\Controller\Page\SettingsDashboardController;
 use App\Controller\Page\SettingsFinancesController;
-use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
-use App\DTO\Settings\Finances\SettingsCurrencyDTO;
-use App\DTO\Settings\Finances\SettingsFinancesDTO;
-use App\DTO\Settings\Notifications\ConfigDTO;
-use App\DTO\Settings\SettingNotificationDTO;
-use App\DTO\Settings\SettingsDashboardDTO;
+use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
+use App\DTO\Settings\Finances\SettingsCurrencyDto;
+use App\DTO\Settings\Finances\SettingsFinancesDto;
+use App\DTO\Settings\Notifications\ConfigDto;
+use App\DTO\Settings\SettingNotificationDto;
+use App\DTO\Settings\SettingsDashboardDto;
 use App\Entity\Setting;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -45,7 +45,8 @@ class SettingsSaver {
     }
 
     /**
-     * @param SettingsWidgetVisibilityDTO[] $arrayOfWidgetsVisibilityDto
+     * @param SettingsWidgetVisibilityDto[] $arrayOfWidgetsVisibilityDto
+     *
      * @throws Exception
      */
     public function saveSettingsForDashboardWidgetsVisibility(array $arrayOfWidgetsVisibilityDto): void {
@@ -56,7 +57,7 @@ class SettingsSaver {
 
         if( $areSettingsInDb ){
             $settingJson = $setting->getValue();
-            $dto         = SettingsDashboardDTO::fromJson($settingJson);
+            $dto         = SettingsDashboardDto::fromJson($settingJson);
 
             $dto->getWidgetSettings()->setWidgetVisibility($arrayOfWidgetsVisibilityDto);
         }else{
@@ -74,7 +75,8 @@ class SettingsSaver {
     }
 
     /**
-     * @param SettingsCurrencyDTO[] $currenciesSettingsDtos
+     * @param SettingsCurrencyDto[] $currenciesSettingsDtos
+     *
      * @throws Exception
      */
     public function saveFinancesSettingsForCurrenciesSettings(array $currenciesSettingsDtos): void {
@@ -84,7 +86,7 @@ class SettingsSaver {
         $areSettingsInDb = !empty($setting);
         if( $areSettingsInDb ){
             $settingJson = $setting->getValue();
-            $dto         = SettingsFinancesDTO::fromJson($settingJson);
+            $dto         = SettingsFinancesDto::fromJson($settingJson);
 
             $dto->setSettingsCurrencyDtos($currenciesSettingsDtos);
         }else{
@@ -102,7 +104,7 @@ class SettingsSaver {
     }
 
     /**
-     * @param ConfigDTO[] $configDtos
+     * @param ConfigDto[] $configDtos
      *
      * @throws Exception
      */
@@ -111,12 +113,12 @@ class SettingsSaver {
         $settingEntity = $this->settingsLoader->getSettingsForNotifications();
         if (!empty($settingEntity)) {
             $settingJson            = $settingEntity->getValue();
-            $notificationSettingDto = SettingNotificationDTO::fromJson($settingJson);
+            $notificationSettingDto = SettingNotificationDto::fromJson($settingJson);
 
             $notificationSettingDto->setConfig($configDtos);
         } else {
             $settingEntity          = new Setting();
-            $notificationSettingDto = new SettingNotificationDTO();
+            $notificationSettingDto = new SettingNotificationDto();
 
             $notificationSettingDto->setConfig($configDtos);
         }

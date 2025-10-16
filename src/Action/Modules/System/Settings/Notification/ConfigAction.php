@@ -4,8 +4,8 @@ namespace App\Action\Modules\System\Settings\Notification;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\DTO\Settings\Notifications\ConfigDTO;
-use App\DTO\Settings\SettingNotificationDTO;
+use App\DTO\Settings\Notifications\ConfigDto;
+use App\DTO\Settings\SettingNotificationDto;
 use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
@@ -45,12 +45,12 @@ class ConfigAction extends AbstractController {
         }
 
         $entriesData = [];
-        $dto         = SettingNotificationDTO::fromJson($setting->getValue());
+        $dto         = SettingNotificationDto::fromJson($setting->getValue());
         foreach ($dto->getConfig() as $configDto) {
             $entriesData[] = [
-                ConfigDTO::KEY_NAME                => $configDto->getName(),
-                ConfigDTO::KEY_VALUE               => $configDto->getValue(),
-                ConfigDTO::KEY_ACTIVE_FOR_REMINDER => $configDto->isActiveForReminder(),
+                ConfigDto::KEY_NAME                => $configDto->getName(),
+                ConfigDto::KEY_VALUE               => $configDto->getValue(),
+                ConfigDto::KEY_ACTIVE_FOR_REMINDER => $configDto->isActiveForReminder(),
             ];
         }
 
@@ -74,10 +74,10 @@ class ConfigAction extends AbstractController {
 
         $dtos = [];
         foreach ($configs as $configData) {
-            $configDto = new ConfigDTO();
-            $configDto->setName($configData[ConfigDTO::KEY_NAME]);
-            $configDto->setValue($configData[ConfigDTO::KEY_VALUE]);
-            $configDto->setActiveForReminder($configData[ConfigDTO::KEY_ACTIVE_FOR_REMINDER]);
+            $configDto = new ConfigDto();
+            $configDto->setName($configData[ConfigDto::KEY_NAME]);
+            $configDto->setValue($configData[ConfigDto::KEY_VALUE]);
+            $configDto->setActiveForReminder($configData[ConfigDto::KEY_ACTIVE_FOR_REMINDER]);
 
             $dtos[] = $configDto;
         }
@@ -94,9 +94,9 @@ class ConfigAction extends AbstractController {
     {
         $entriesData = array_map(
             fn($configName) => [
-                ConfigDTO::KEY_NAME                => $configName,
-                ConfigDTO::KEY_ACTIVE_FOR_REMINDER => false,
-                ConfigDTO::KEY_VALUE               => '',
+                ConfigDto::KEY_NAME                => $configName,
+                ConfigDto::KEY_ACTIVE_FOR_REMINDER => false,
+                ConfigDto::KEY_VALUE               => '',
             ],
             Setting::ALL_NOTIFICATION_CONFIGS
         );

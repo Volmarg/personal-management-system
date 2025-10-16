@@ -3,36 +3,37 @@
 namespace App\DTO\Settings;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
-use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
+use App\DTO\DtoInterface;
+use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDto;
 
-class SettingsDashboardDTO extends AbstractDTO implements dtoInterface{
+class SettingsDashboardDto extends AbstractDTO implements DtoInterface{
 
     const KEY_WIDGETS_SETTINGS = 'widgets_settings';
 
     /**
-     * @var SettingsWidgetSettingsDTO
+     * @var SettingsWidgetSettingsDto
      */
     private $widgetSettings = [];
 
     /**
-     * @return SettingsWidgetSettingsDTO
+     * @return SettingsWidgetSettingsDto
      */
-    public function getWidgetSettings(): SettingsWidgetSettingsDTO {
+    public function getWidgetSettings(): SettingsWidgetSettingsDto {
         return $this->widgetSettings;
     }
 
     /**
-     * @param SettingsWidgetSettingsDTO $widgetSettingsDto
+     * @param SettingsWidgetSettingsDto $widgetSettingsDto
      */
-    public function setWidgetSettings(SettingsWidgetSettingsDTO $widgetSettingsDto): void {
+    public function setWidgetSettings(SettingsWidgetSettingsDto $widgetSettingsDto): void {
         $this->widgetSettings = $widgetSettingsDto;
     }
 
 
     /**
      * @param string $settingsDashboardJson
-     * @return SettingsDashboardDTO
+     *
+     * @return SettingsDashboardDto
      * @throws \Exception
      */
     public static function fromJson(string $settingsDashboardJson): self{
@@ -41,7 +42,7 @@ class SettingsDashboardDTO extends AbstractDTO implements dtoInterface{
 
         $settingsDashboardDto = new self();
         $settingsDashboardDto->setWidgetSettings(
-            SettingsWidgetSettingsDTO::fromJson($widgetsSettingsJson)
+            SettingsWidgetSettingsDto::fromJson($widgetsSettingsJson)
         );
 
         return $settingsDashboardDto;

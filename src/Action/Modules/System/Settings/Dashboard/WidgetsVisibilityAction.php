@@ -4,8 +4,8 @@ namespace App\Action\Modules\System\Settings\Dashboard;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
-use App\DTO\Settings\SettingsDashboardDTO;
+use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
+use App\DTO\Settings\SettingsDashboardDto;
 use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
@@ -40,7 +40,7 @@ class WidgetsVisibilityAction extends AbstractController {
             return $this->getAllDefaultStateResponse();
         }
 
-        $settingDto = SettingsDashboardDTO::fromJson($setting->getValue());
+        $settingDto = SettingsDashboardDto::fromJson($setting->getValue());
 
         if (empty($settingDto->getWidgetSettings()->getWidgetsVisibility())) {
             return $this->getAllDefaultStateResponse();
@@ -81,7 +81,7 @@ class WidgetsVisibilityAction extends AbstractController {
 
         $dtos = [];
         foreach ($widgets as $widget) {
-            $dto = new SettingsWidgetVisibilityDTO();
+            $dto = new SettingsWidgetVisibilityDto();
             $dto->setName($widget['name']);
             $dto->setIsVisible($widget['enabled']);
 

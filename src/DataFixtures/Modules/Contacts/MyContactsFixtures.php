@@ -6,8 +6,8 @@ use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Contact;
 use App\DataFixtures\Providers\Modules\ContactGroups;
 use App\DataFixtures\Providers\Modules\ContactTypes;
-use App\DTO\Modules\Contacts\ContactsTypesDTO;
-use App\DTO\Modules\Contacts\ContactTypeDTO;
+use App\DTO\Modules\Contacts\ContactsTypesDto;
+use App\DTO\Modules\Contacts\ContactTypeDto;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Contacts\MyContactType;
@@ -93,7 +93,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
             $contactTypeLocationName  = ContactTypes::CONTACT_TYPE_LOCATION[ContactTypes::KEY_NAME];
             $contactTypeLocationImage = ContactTypes::CONTACT_TYPE_LOCATION[ContactTypes::KEY_IMAGE_PATH];
 
-            $contactTypeLocation = new ContactTypeDTO();
+            $contactTypeLocation = new ContactTypeDto();
             $contactTypeLocation->setUuid(Uuid::uuid1());
             $contactTypeLocation->setName($contactTypeLocationName);
             $contactTypeLocation->setIconPath($contactTypeLocationImage);
@@ -105,7 +105,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
             $contactTypeEmailName    = ContactTypes::CONTACT_TYPE_EMAIL[ContactTypes::KEY_NAME];
             $contactTypeEmailImage   = ContactTypes::CONTACT_TYPE_EMAIL[ContactTypes::KEY_IMAGE_PATH];
 
-            $contactTypeEmail = new ContactTypeDTO();
+            $contactTypeEmail = new ContactTypeDto();
             $contactTypeEmail->setUuid(Uuid::uuid1());
             $contactTypeEmail->setName($contactTypeEmailName);
             $contactTypeEmail->setIconPath($contactTypeEmailImage);
@@ -116,7 +116,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
             $contactTypeMobileName   = ContactTypes::CONTACT_TYPE_MOBILE[ContactTypes::KEY_NAME];
             $contactTypeMobileImage  = ContactTypes::CONTACT_TYPE_MOBILE[ContactTypes::KEY_IMAGE_PATH];
 
-            $contactTypeMobile = new ContactTypeDTO();
+            $contactTypeMobile = new ContactTypeDto();
             $contactTypeMobile->setUuid(Uuid::uuid1());
             $contactTypeMobile->setName($contactTypeMobileName);
             $contactTypeMobile->setIconPath($contactTypeMobileImage);
@@ -127,7 +127,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
             $additionalContactTypeImage = $additionalContactTypeData[ContactTypes::KEY_IMAGE_PATH];
             $additionalContactTypeNick  = $this->faker->userName;
 
-            $contactTypeAdditional = new ContactTypeDTO();
+            $contactTypeAdditional = new ContactTypeDto();
             $contactTypeAdditional->setUuid(Uuid::uuid1());
             $contactTypeAdditional->setName($additionalContactTypeName);
             $contactTypeAdditional->setIconPath($additionalContactTypeImage);
@@ -140,7 +140,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
                 $contactTypeAdditional,
             ];
 
-            $contactsTypesDtos = new ContactsTypesDTO();
+            $contactsTypesDtos = new ContactsTypesDto();
             $contactsTypesDtos->setContactTypeDtos($contactTypeDtos);
             $contactsTypesJson = $contactsTypesDtos->toJson();
 

@@ -3,31 +3,32 @@
 namespace App\DTO\Settings\Finances;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
+use App\DTO\DtoInterface;
 use Exception;
 
-class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
+class SettingsFinancesDto extends AbstractDTO implements DtoInterface {
 
     const KEY_SETTINGS_CURRENCIES = "settingsCurrencies";
 
     /**
-     * @var SettingsCurrencyDTO[]
+     * @var SettingsCurrencyDto[]
      */
     private $settingsCurrencyDto = [];
 
     /**
-     * @return SettingsCurrencyDTO[]
+     * @return SettingsCurrencyDto[]
      */
     public function getSettingsCurrencyDtos(): array {
         return $this->settingsCurrencyDto;
     }
 
     /**
-     * @param SettingsCurrencyDTO[] $settingsCurrencyDto
+     * @param SettingsCurrencyDto[] $settingsCurrencyDto
+     *
      * @throws Exception
      */
     public function setSettingsCurrencyDtos(array $settingsCurrencyDto): void {
-        $hasDto = reset($settingsCurrencyDto) instanceof SettingsCurrencyDTO;
+        $hasDto = reset($settingsCurrencyDto) instanceof SettingsCurrencyDto;
 
         if( !$hasDto ){
             throw new \Exception("There are no SettingsCurrencyDTO in array ");
@@ -37,15 +38,16 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
     }
 
     /**
-     * @param SettingsCurrencyDTO $settingsCurrencyDto
+     * @param SettingsCurrencyDto $settingsCurrencyDto
      */
-    public function addSettingsCurrencyDto(SettingsCurrencyDTO $settingsCurrencyDto): void {
+    public function addSettingsCurrencyDto(SettingsCurrencyDto $settingsCurrencyDto): void {
         $this->settingsCurrencyDto[] = $settingsCurrencyDto;
     }
 
     /**
      * @param string $json
-     * @return SettingsFinancesDTO
+     *
+     * @return SettingsFinancesDto
      * @throws Exception
      */
     public static function fromJson(string $json): self{
@@ -58,7 +60,7 @@ class SettingsFinancesDTO extends AbstractDTO implements dtoInterface {
         foreach($currencySettingArrays as $currencySettingArray) {
 
             $currencySettingJson = \GuzzleHttp\json_encode($currencySettingArray);
-            $currencySettingDto = SettingsCurrencyDTO::fromJson($currencySettingJson);
+            $currencySettingDto  = SettingsCurrencyDto::fromJson($currencySettingJson);
             $settingsFinancesDto->addSettingsCurrencyDto($currencySettingDto);
 
         }

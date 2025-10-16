@@ -3,29 +3,29 @@
 namespace App\DTO\Settings\Dashboard;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
-use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
+use App\DTO\DtoInterface;
+use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
 
-class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
+class SettingsWidgetSettingsDto extends AbstractDTO implements DtoInterface{
 
     const KEY_WIDGETS_VISIBILITY = 'widgets_visibility';
 
     /**
-     * @var SettingsWidgetVisibilityDTO[]
+     * @var SettingsWidgetVisibilityDto[]
      */
     private $widgetsVisibility = [];
 
     /**
-     * @return SettingsWidgetVisibilityDTO[]
+     * @return SettingsWidgetVisibilityDto[]
      */
     public function getWidgetsVisibility(): array {
         return $this->widgetsVisibility;
     }
 
     /**
-     * @param SettingsWidgetVisibilityDTO $widgetVisibility
+     * @param SettingsWidgetVisibilityDto $widgetVisibility
      */
-    public function addWidgetVisibility(SettingsWidgetVisibilityDTO $widgetVisibility): void {
+    public function addWidgetVisibility(SettingsWidgetVisibilityDto $widgetVisibility): void {
         array_push($this->widgetsVisibility, $widgetVisibility);
     }
 
@@ -35,7 +35,7 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
      */
     public function setWidgetVisibility(array $widgetsVisibilityDtos){
 
-        $hasDto = reset($widgetsVisibilityDtos) instanceof SettingsWidgetVisibilityDTO;
+        $hasDto = reset($widgetsVisibilityDtos) instanceof SettingsWidgetVisibilityDto;
 
         if( !$hasDto ){
             throw new \Exception("There are no SettingsWidgetVisibilityDTO in array ");
@@ -46,7 +46,8 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
 
     /**
      * @param string $widgetsSettingsJson
-     * @return SettingsWidgetSettingsDTO
+     *
+     * @return SettingsWidgetSettingsDto
      * @throws \Exception
      */
     public static function fromJson(string $widgetsSettingsJson): self{
@@ -58,8 +59,8 @@ class SettingsWidgetSettingsDTO extends AbstractDTO implements dtoInterface{
 
         foreach($widgetVisibilityArrays as $widgetVisibilityArray){
 
-            $widgetVisibilityJson = \GuzzleHttp\json_encode($widgetVisibilityArray);
-            $settingsWidgetVisibilityDto = SettingsWidgetVisibilityDTO::fromJson($widgetVisibilityJson);
+            $widgetVisibilityJson        = \GuzzleHttp\json_encode($widgetVisibilityArray);
+            $settingsWidgetVisibilityDto = SettingsWidgetVisibilityDto::fromJson($widgetVisibilityJson);
             $settingsWidgetsSettingsDto->addWidgetVisibility($settingsWidgetVisibilityDto);
 
         }

@@ -2,7 +2,7 @@
 
 namespace App\Controller\Page;
 
-use App\DTO\Settings\Finances\SettingsCurrencyDTO;
+use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\DTO\Settings\SettingValidationDTO;
 use App\Services\Settings\SettingsLoader;
 use Exception;
@@ -40,9 +40,9 @@ class SettingsValidationController extends AbstractController {
         $dtoClass = get_class($dto);
 
         switch( $dtoClass ){
-            case SettingsCurrencyDTO::class:
+            case SettingsCurrencyDto::class:
                 $setting      = $this->settingsLoader->getSettingsForFinances();
-                $validatedKey = SettingsCurrencyDTO::KEY_NAME;
+                $validatedKey = SettingsCurrencyDto::KEY_NAME;
 
                 if( empty($setting) ){
                     return $settingValidationDto;

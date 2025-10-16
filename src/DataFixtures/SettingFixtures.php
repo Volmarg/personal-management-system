@@ -3,8 +3,8 @@
 namespace App\DataFixtures;
 
 use App\DataFixtures\Providers\SettingProvider;
-use App\DTO\Settings\Finances\SettingsCurrencyDTO;
-use App\DTO\Settings\Finances\SettingsFinancesDTO;
+use App\DTO\Settings\Finances\SettingsCurrencyDto;
+use App\DTO\Settings\Finances\SettingsFinancesDto;
 use App\Services\Exceptions\ExceptionValueNotAllowed;
 use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -48,7 +48,7 @@ class SettingFixtures extends Fixture
             $cashCurrencyDto,
         ];
 
-        $financesSettingsDto = new SettingsFinancesDTO();
+        $financesSettingsDto = new SettingsFinancesDto();
         $financesSettingsDto->setSettingsCurrencyDtos($currencies);
 
         $this->insertCurrenciesIntoDb($financesSettingsDto);
@@ -57,8 +57,8 @@ class SettingFixtures extends Fixture
     /**
      * @throws ExceptionValueNotAllowed
      */
-    private function getPlnCurrency(): SettingsCurrencyDTO {
-        $settingsCurrencyDto = new SettingsCurrencyDTO();
+    private function getPlnCurrency(): SettingsCurrencyDto {
+        $settingsCurrencyDto = new SettingsCurrencyDto();
         $settingsCurrencyDto->setName(SettingProvider::KEY_CURRENCY_NAME_PLN);
         $settingsCurrencyDto->setIsDefault(1);
         $settingsCurrencyDto->setMultiplier(1);
@@ -70,8 +70,8 @@ class SettingFixtures extends Fixture
     /**
      * @throws ExceptionValueNotAllowed
      */
-    private function getEurCurrency(): SettingsCurrencyDTO {
-        $settingsCurrencyDto = new SettingsCurrencyDTO();
+    private function getEurCurrency(): SettingsCurrencyDto {
+        $settingsCurrencyDto = new SettingsCurrencyDto();
         $settingsCurrencyDto->setName(SettingProvider::KEY_CURRENCY_NAME_EUR);
         $settingsCurrencyDto->setIsDefault(false);
         $settingsCurrencyDto->setMultiplier(4.3);
@@ -83,8 +83,8 @@ class SettingFixtures extends Fixture
     /**
      * @throws ExceptionValueNotAllowed
      */
-    private function getCashCurrency(): SettingsCurrencyDTO {
-        $settingsCurrencyDto = new SettingsCurrencyDTO();
+    private function getCashCurrency(): SettingsCurrencyDto {
+        $settingsCurrencyDto = new SettingsCurrencyDto();
         $settingsCurrencyDto->setName(SettingProvider::KEY_CURRENCY_NAME_CASH);
         $settingsCurrencyDto->setIsDefault(false);
         $settingsCurrencyDto->setMultiplier(1.01);
@@ -96,10 +96,12 @@ class SettingFixtures extends Fixture
     /**
      * This function will insert data into db as RAW text - this is required to prevent escaping slashes
      * Info: this sql is here as it's the only - special use case - not adding it to repository as it's a fixture part
-     * @param SettingsFinancesDTO $financesSettingsDto
+     *
+     * @param SettingsFinancesDto $financesSettingsDto
+     *
      * @throws DBALException
      */
-    private function insertCurrenciesIntoDb(SettingsFinancesDTO $financesSettingsDto){
+    private function insertCurrenciesIntoDb(SettingsFinancesDto $financesSettingsDto){
 
         $settingType = SettingsLoader::SETTING_NAME_FINANCES;
         $json        = $financesSettingsDto->toJson();

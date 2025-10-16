@@ -2,8 +2,8 @@
 
 namespace App\Controller\Page;
 
-use App\DTO\Settings\Finances\SettingsCurrencyDTO;
-use App\DTO\Settings\Finances\SettingsFinancesDTO;
+use App\DTO\Settings\Finances\SettingsCurrencyDto;
+use App\DTO\Settings\Finances\SettingsFinancesDto;
 use App\DTO\Settings\SettingValidationDTO;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
@@ -46,17 +46,18 @@ class SettingsFinancesController extends AbstractController {
 
     /**
      * @param array|null $currenciesSettingDtos
-     * @return SettingsFinancesDTO
+     *
+     * @return SettingsFinancesDto
      * @throws Exception
      */
     public static function buildFinancesSettingsDtoFromCurrenciesSettingsDtos(array $currenciesSettingDtos = null){
 
         if( empty($currenciesSettingDtos) ){
             $currenciesSettingDtos   = [];
-            $currenciesSettingDtos[] = new SettingsCurrencyDTO();
+            $currenciesSettingDtos[] = new SettingsCurrencyDto();
         }
 
-        $financesSettingsDto = new SettingsFinancesDTO();
+        $financesSettingsDto = new SettingsFinancesDto();
         $financesSettingsDto->setSettingsCurrencyDtos($currenciesSettingDtos);
 
         return $financesSettingsDto;
@@ -64,12 +65,14 @@ class SettingsFinancesController extends AbstractController {
 
     /**
      * This function enforce the update of all the currencies when default currency is changed
-     * @param SettingsCurrencyDTO[]  $currenciesSettingsDtos
-     * @param SettingsCurrencyDTO    $newDefaultSettingCurrencyDto
-     * @param string                 $arrayIndexOfUpdatedSetting
-     * @return SettingsCurrencyDTO[]
+     *
+     * @param SettingsCurrencyDto[] $currenciesSettingsDtos
+     * @param SettingsCurrencyDto   $newDefaultSettingCurrencyDto
+     * @param string                $arrayIndexOfUpdatedSetting
+     *
+     * @return SettingsCurrencyDto[]
      */
-    public function handleDefaultCurrencyChange(array $currenciesSettingsDtos, SettingsCurrencyDTO $newDefaultSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
+    public function handleDefaultCurrencyChange(array $currenciesSettingsDtos, SettingsCurrencyDto $newDefaultSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
 
         foreach($currenciesSettingsDtos as &$currency_setting_dto ){
             $currency_setting_dto->setIsDefault(false);
@@ -82,22 +85,24 @@ class SettingsFinancesController extends AbstractController {
 
     /**
      * This function enforce the update of all the currencies when default currency is changed
-     * @param SettingsCurrencyDTO[]  $currenciesSettingsDtos
-     * @param SettingsCurrencyDTO    $newSettingCurrencyDto
+     *
+     * @param SettingsCurrencyDto[]  $currenciesSettingsDtos
+     * @param SettingsCurrencyDto    $newSettingCurrencyDto
      * @param string                 $arrayIndexOfUpdatedSetting
-     * @return SettingsCurrencyDTO[]
+     *
+     * @return SettingsCurrencyDto[]
      */
-    public function handleCurrencyUpdate(array $currenciesSettingsDtos, SettingsCurrencyDTO $newSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
+    public function handleCurrencyUpdate(array $currenciesSettingsDtos, SettingsCurrencyDto $newSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
         $currenciesSettingsDtos[$arrayIndexOfUpdatedSetting] = $newSettingCurrencyDto;
         return $currenciesSettingsDtos;
     }
 
     /**
-     * @param SettingsCurrencyDTO $settingsCurrencyDto
+     * @param SettingsCurrencyDto $settingsCurrencyDto
      * @return SettingValidationDTO
      * @throws Exception
      */
-    public function addCurrencyToFinancesCurrencySettings(SettingsCurrencyDTO $settingsCurrencyDto): SettingValidationDTO {
+    public function addCurrencyToFinancesCurrencySettings(SettingsCurrencyDto $settingsCurrencyDto): SettingValidationDTO {
 
         $settingValidationDto = $this->settingsValidationController->isValueByKeyUnique($settingsCurrencyDto);
 

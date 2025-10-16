@@ -3,11 +3,11 @@
 namespace App\DTO\Settings\Finances;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
+use App\DTO\DtoInterface;
 use App\Services\Exceptions\ExceptionValueNotAllowed;
 use Exception;
 
-class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
+class SettingsCurrencyDto extends AbstractDTO implements DtoInterface {
 
     const KEY_NAME       = 'name';
     const KEY_SYMBOL     = 'symbol';
@@ -110,7 +110,8 @@ class SettingsCurrencyDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param string $json
-     * @return SettingsCurrencyDTO
+     *
+     * @return SettingsCurrencyDto
      * @throws Exception
      */
     public static function fromJson(string $json): self {

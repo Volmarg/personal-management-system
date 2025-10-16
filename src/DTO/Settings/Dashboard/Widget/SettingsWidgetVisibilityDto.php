@@ -3,9 +3,9 @@
 namespace App\DTO\Settings\Dashboard\Widget;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
+use App\DTO\DtoInterface;
 
-class SettingsWidgetVisibilityDTO extends AbstractDTO implements dtoInterface{
+class SettingsWidgetVisibilityDto extends AbstractDTO implements DtoInterface{
 
     const KEY_NAME       = 'name';
     const KEY_IS_VISIBLE = 'is_visible';
@@ -50,7 +50,8 @@ class SettingsWidgetVisibilityDTO extends AbstractDTO implements dtoInterface{
 
     /**
      * @param string $widgetVisibilityJson
-     * @return SettingsWidgetVisibilityDTO
+     *
+     * @return SettingsWidgetVisibilityDto
      * @throws \Exception
      */
     public static function fromJson(string $widgetVisibilityJson): self{

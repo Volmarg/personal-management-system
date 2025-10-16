@@ -2,7 +2,7 @@
 
 namespace App\Controller\Page;
 
-use App\DTO\Settings\Finances\SettingsFinancesDTO;
+use App\DTO\Settings\Finances\SettingsFinancesDto;
 use App\Entity\Setting;
 use App\Services\Settings\SettingsLoader;
 use Exception;
@@ -14,10 +14,11 @@ class SettingsController extends AbstractController {
 
     /**
      * @param Setting|null $setting
-     * @return SettingsFinancesDTO|null
+     *
+     * @return SettingsFinancesDto|null
      * @throws Exception
      */
-    public static function buildFinancesSettingsDtoFromSetting(?Setting $setting): ?SettingsFinancesDTO {
+    public static function buildFinancesSettingsDtoFromSetting(?Setting $setting): ?SettingsFinancesDto {
 
         if( empty($setting) ){
             return null;
@@ -30,7 +31,7 @@ class SettingsController extends AbstractController {
         }
 
         $settingsFinancesJson = $setting->getValue();
-        $settingsFinancesDto  = SettingsFinancesDTO::fromJson($settingsFinancesJson);
+        $settingsFinancesDto  = SettingsFinancesDto::fromJson($settingsFinancesJson);
 
         return $settingsFinancesDto;
     }

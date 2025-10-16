@@ -3,9 +3,9 @@
 namespace App\DTO\Modules\Contacts;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
+use App\DTO\DtoInterface;
 
-class ContactTypeDTO extends AbstractDTO implements dtoInterface {
+class ContactTypeDto extends AbstractDTO implements DtoInterface {
 
     const KEY_NAME      = 'name';
     const KEY_ICON_PATH = 'icon_path';
@@ -109,17 +109,18 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param array $array
-     * @return ContactTypeDTO
+     *
+     * @return ContactTypeDto
      * @throws \Exception
      */
-    public static function fromArray(array $array): ContactTypeDTO {
+    public static function fromArray(array $array): ContactTypeDto {
 
         $name     = static::checkAndGetKey($array, self::KEY_NAME);
         $iconPath = static::checkAndGetKey($array, self::KEY_ICON_PATH);
         $details  = static::checkAndGetKey($array, self::KEY_DETAILS);
         $uuid     = static::checkAndGetKey($array, self::KEY_UUID);
 
-        $contactTypeDto = new ContactTypeDTO();
+        $contactTypeDto = new ContactTypeDto();
         $contactTypeDto->setName($name);
         $contactTypeDto->setIconPath($iconPath);
         $contactTypeDto->setDetails($details);
@@ -130,9 +131,10 @@ class ContactTypeDTO extends AbstractDTO implements dtoInterface {
 
     /**
      * @param string $json
-     * @return ContactTypeDTO
+     *
+     * @return ContactTypeDto
      */
-    public static function fromJson(string $json):ContactTypeDTO {
+    public static function fromJson(string $json):ContactTypeDto {
         $array          = json_decode($json, true);
         $contactTypeDto = self::fromJson($array);
         return $contactTypeDto;

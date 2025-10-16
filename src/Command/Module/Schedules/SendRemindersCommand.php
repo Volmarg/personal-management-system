@@ -3,8 +3,8 @@
 namespace App\Command\Module\Schedules;
 
 use App\DTO\NotificationDto;
-use App\DTO\Settings\Notifications\ConfigDTO;
-use App\DTO\Settings\SettingNotificationDTO;
+use App\DTO\Settings\Notifications\ConfigDto;
+use App\DTO\Settings\SettingNotificationDto;
 use App\Entity\Modules\Schedules\MyScheduleReminder;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use App\Services\External\DiscordService;
@@ -71,7 +71,7 @@ class SendRemindersCommand extends Command
         try {
             $io                 = new SymfonyStyle($input, $output);
             $setting            = $this->settingsLoader->getSettingsForNotifications();
-            $notificationConfig = SettingNotificationDTO::fromJson($setting->getValue());
+            $notificationConfig = SettingNotificationDto::fromJson($setting->getValue());
 
             if (empty($notificationConfig->getConfig())) {
                 $io->info("No notification configs were found");
@@ -117,7 +117,7 @@ class SendRemindersCommand extends Command
             }
 
             switch ($config->getName()) {
-                case ConfigDTO::NAME_DISCORD_WEBHOOK:
+                case ConfigDto::NAME_DISCORD_WEBHOOK:
                     $notificationDto->setUrl($config->getValue());
                     $this->discordService->sendWebhookMessage($notificationDto);
                 break;

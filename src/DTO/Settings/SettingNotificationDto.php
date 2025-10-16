@@ -3,17 +3,17 @@
 namespace App\DTO\Settings;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
-use App\DTO\Settings\Notifications\ConfigDTO;
+use App\DTO\DtoInterface;
+use App\DTO\Settings\Notifications\ConfigDto;
 use Exception;
 
-class SettingNotificationDTO extends AbstractDTO implements dtoInterface
+class SettingNotificationDto extends AbstractDTO implements DtoInterface
 {
 
     const KEY_CONFIG = 'config';
 
     /**
-     * @var ConfigDTO[]
+     * @var ConfigDto[]
      */
     private array $config = [];
 
@@ -30,7 +30,7 @@ class SettingNotificationDTO extends AbstractDTO implements dtoInterface
     /**
      * @param string $configArray
      *
-     * @return SettingNotificationDTO
+     * @return SettingNotificationDto
      * @throws Exception
      */
     public static function fromJson(string $configArray): self
@@ -41,7 +41,7 @@ class SettingNotificationDTO extends AbstractDTO implements dtoInterface
 
         $configs = [];
         foreach ($configArrays as $configArray) {
-            $configs[] = ConfigDTO::fromJson(json_encode($configArray));
+            $configs[] = ConfigDto::fromJson(json_encode($configArray));
         }
 
         $settingsDashboardDto = new self();
@@ -55,7 +55,7 @@ class SettingNotificationDTO extends AbstractDTO implements dtoInterface
      */
     public function toJson(): string
     {
-        $configsArray = array_map(fn(ConfigDTO $config) => $config->toArray(), $this->getConfig());
+        $configsArray = array_map(fn(ConfigDto $config) => $config->toArray(), $this->getConfig());
         return json_encode([
             self::KEY_CONFIG => $configsArray,
         ]);

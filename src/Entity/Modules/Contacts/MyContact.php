@@ -2,7 +2,7 @@
 
 namespace App\Entity\Modules\Contacts;
 
-use App\DTO\Modules\Contacts\ContactsTypesDTO;
+use App\DTO\Modules\Contacts\ContactsTypesDto;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -63,13 +63,13 @@ class MyContact implements SoftDeletableEntityInterface, EntityInterface
     /**
      * todo: check what happens if there are no contacts for this entry
      * Contacts in DB are stored as JSON bo we need dto to work with the data
-     * @return ContactsTypesDTO
+     * @return ContactsTypesDto
      * @throws \Exception
      */
     public function getContactTypesDto() {
 
         $json = $this->contacts;
-        $dto = ContactsTypesDTO::fromJson($json);
+        $dto = ContactsTypesDto::fromJson($json);
 
         return $dto;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Controller\Modules\Contacts;
 
-use App\DTO\Modules\Contacts\ContactsTypesDTO;
+use App\DTO\Modules\Contacts\ContactsTypesDto;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Repository\Modules\Contacts\MyContactRepository;
 use Exception;
@@ -42,7 +42,7 @@ class MyContactsSettingsController extends AbstractController {
                 }
             }
 
-            $contactsTypesDto = new ContactsTypesDTO();
+            $contactsTypesDto = new ContactsTypesDto();
             $contactsTypesDto->setContactTypeDtos($contactsTypesDtos);
 
             $json = $contactsTypesDto->toJson();

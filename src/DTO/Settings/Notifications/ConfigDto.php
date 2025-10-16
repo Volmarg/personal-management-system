@@ -3,11 +3,11 @@
 namespace App\DTO\Settings\Notifications;
 
 use App\DTO\AbstractDTO;
-use App\DTO\dtoInterface;
+use App\DTO\DtoInterface;
 use App\Services\Exceptions\ExceptionValueNotAllowed;
 use Exception;
 
-class ConfigDTO extends AbstractDTO implements dtoInterface
+class ConfigDto extends AbstractDTO implements DtoInterface
 {
     public const NAME_DISCORD_WEBHOOK = "discordWebhook";
 
@@ -56,7 +56,7 @@ class ConfigDTO extends AbstractDTO implements dtoInterface
     /**
      * @param string $json
      *
-     * @return ConfigDTO
+     * @return ConfigDto
      * @throws Exception
      */
     public static function fromJson(string $json): self

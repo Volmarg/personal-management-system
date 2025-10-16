@@ -5,7 +5,7 @@ namespace App\Action\Modules\System\Settings;
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
 use App\Controller\Page\SettingsFinancesController;
-use App\DTO\Settings\Finances\SettingsCurrencyDTO;
+use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\Settings\SettingsLoader;
@@ -124,7 +124,7 @@ class FinancesCurrenciesAction extends AbstractController {
         $oldName    = ArrayHandler::get($dataArray, 'oldName');
         $symbol     = ArrayHandler::get($dataArray, 'symbol', allowEmpty: false);
 
-        $requestDto = new SettingsCurrencyDTO();
+        $requestDto = new SettingsCurrencyDto();
         $requestDto->setName($name);
         $requestDto->setSymbol($symbol);
         $requestDto->setMultiplier($multiplier);
@@ -135,7 +135,7 @@ class FinancesCurrenciesAction extends AbstractController {
             return $this->updateExisting($dbDtos, $oldName, $requestDto);
         }
 
-        $matches = array_filter($dbDtos, fn(SettingsCurrencyDTO $setting) => $setting->getName() == $requestDto->getName());
+        $matches = array_filter($dbDtos, fn(SettingsCurrencyDto $setting) => $setting->getName() == $requestDto->getName());
         if (!empty($matches)) {
             $msg = $this->trans->trans('module.system.settings.finances.currencies.msg.nameAlreadyInUse');
             return BaseResponse::buildBadRequestErrorResponse($msg);
@@ -149,12 +149,12 @@ class FinancesCurrenciesAction extends AbstractController {
      *
      * @param array               $dbDtos
      * @param string              $oldName
-     * @param SettingsCurrencyDTO $requestDto
+     * @param SettingsCurrencyDto $requestDto
      *
      * @return BaseResponse
      * @throws Exception
      */
-    public function updateExisting(array $dbDtos, string $oldName, SettingsCurrencyDTO $requestDto): BaseResponse
+    public function updateExisting(array $dbDtos, string $oldName, SettingsCurrencyDto $requestDto): BaseResponse
     {
         $unsetIndex = null;
         foreach ($dbDtos as $index => $dbSingleSetting) {
@@ -173,7 +173,7 @@ class FinancesCurrenciesAction extends AbstractController {
         }
 
         $dbDtos   = $this->financesController->handleCurrencyUpdate($dbDtos, $requestDto, $unsetIndex);
-        $defaults = array_filter($dbDtos, fn(SettingsCurrencyDTO $setting) => $setting->isDefault());
+        $defaults = array_filter($dbDtos, fn(SettingsCurrencyDto $setting) => $setting->isDefault());
         if (!$defaults) {
             $msg = $this->trans->trans('module.system.settings.finances.currencies.msg.noDefaultCurrency');
             return BaseResponse::buildBadRequestErrorResponse($msg);
@@ -187,12 +187,12 @@ class FinancesCurrenciesAction extends AbstractController {
     /**
      * @param mixed               $isDefault
      * @param array               $dbDtos
-     * @param SettingsCurrencyDTO $requestDto
+     * @param SettingsCurrencyDto $requestDto
      *
      * @return BaseResponse
      * @throws Exception
      */
-    public function addNew(mixed $isDefault, array $dbDtos, SettingsCurrencyDTO $requestDto): BaseResponse
+    public function addNew(mixed $isDefault, array $dbDtos, SettingsCurrencyDto $requestDto): BaseResponse
     {
         // handle checking if default value already exist and if so then unset all and set new
         if ($isDefault) {

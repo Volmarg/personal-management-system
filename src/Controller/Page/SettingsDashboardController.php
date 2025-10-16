@@ -2,9 +2,9 @@
 
 namespace App\Controller\Page;
 
-use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDTO;
-use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDTO;
-use App\DTO\Settings\SettingsDashboardDTO;
+use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDto;
+use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
+use App\DTO\Settings\SettingsDashboardDto;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -12,22 +12,23 @@ class SettingsDashboardController extends AbstractController {
 
     /**
      * This function will build dashboard settings dto based on supplied data, if some is missing then default values will be used
+     *
      * @param array|null $arrayOfWidgetsVisibilityDto
      *
-     * @return SettingsDashboardDTO
+     * @return SettingsDashboardDto
      * @throws Exception
      */
-    public static function buildDashboardSettingsDto(?array $arrayOfWidgetsVisibilityDto = null): SettingsDashboardDTO{
+    public static function buildDashboardSettingsDto(?array $arrayOfWidgetsVisibilityDto = null): SettingsDashboardDto{
 
         if( empty($arrayOfWidgetsVisibilityDto) ){
             $arrayOfWidgetsVisibilityDto   = [];
-            $arrayOfWidgetsVisibilityDto[] = new SettingsWidgetVisibilityDTO();
+            $arrayOfWidgetsVisibilityDto[] = new SettingsWidgetVisibilityDto();
         }
 
-        $dashboardWidgetsSettingsDto = new SettingsWidgetSettingsDTO();
+        $dashboardWidgetsSettingsDto = new SettingsWidgetSettingsDto();
         $dashboardWidgetsSettingsDto->setWidgetVisibility($arrayOfWidgetsVisibilityDto);
 
-        $dashboardSettingsDto = new SettingsDashboardDTO();
+        $dashboardSettingsDto = new SettingsDashboardDto();
         $dashboardSettingsDto->setWidgetSettings($dashboardWidgetsSettingsDto);
 
         return $dashboardSettingsDto;

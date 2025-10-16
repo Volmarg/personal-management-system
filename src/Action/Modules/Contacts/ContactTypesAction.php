@@ -4,7 +4,7 @@ namespace App\Action\Modules\Contacts;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\DTO\Modules\Contacts\ContactTypeDTO;
+use App\DTO\Modules\Contacts\ContactTypeDto;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Response\Base\BaseResponse;
@@ -53,10 +53,10 @@ class ContactTypesAction extends AbstractController
 
         $typesArr = json_decode($contact->getContacts(), true);
         $typesArr[] = [
-            ContactTypeDTO::KEY_NAME      => $typeEntity->getName(),
-            ContactTypeDTO::KEY_ICON_PATH => $typeEntity->getImagePath(),
-            ContactTypeDTO::KEY_DETAILS   => $value,
-            ContactTypeDTO::KEY_UUID      => Uuid::uuid4(),
+            ContactTypeDto::KEY_NAME      => $typeEntity->getName(),
+            ContactTypeDto::KEY_ICON_PATH => $typeEntity->getImagePath(),
+            ContactTypeDto::KEY_DETAILS   => $value,
+            ContactTypeDto::KEY_UUID      => Uuid::uuid4(),
         ];
 
         $contact->setContacts(json_encode($typesArr));
@@ -87,9 +87,9 @@ class ContactTypesAction extends AbstractController
         $typesArr = json_decode($contact->getContacts(), true);
         foreach ($typesArr as &$type) {
             if ($type['uuid'] === $uuid) {
-                $type[ContactTypeDTO::KEY_DETAILS]   = $value;
-                $type[ContactTypeDTO::KEY_NAME]      = $typeEntity->getName();
-                $type[ContactTypeDTO::KEY_ICON_PATH] = $typeEntity->getImagePath();
+                $type[ContactTypeDto::KEY_DETAILS]   = $value;
+                $type[ContactTypeDto::KEY_NAME]      = $typeEntity->getName();
+                $type[ContactTypeDto::KEY_ICON_PATH] = $typeEntity->getImagePath();
                 break;
             }
         }
