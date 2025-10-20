@@ -10,8 +10,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class SettingsController extends AbstractController {
 
-    const KEY_BEFORE_UPDATE_STATE = "before_update_state";
-
     /**
      * @param Setting|null $setting
      *

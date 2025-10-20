@@ -23,11 +23,6 @@ class SettingsFinancesController extends AbstractController {
     private $settingsLoader;
 
     /**
-     * @var SettingsViewController $settingsViewController
-     */
-    private $settingsViewController;
-
-    /**
      * @var SettingsValidationController $settingsValidationController
      */
     private $settingsValidationController;
@@ -35,11 +30,9 @@ class SettingsFinancesController extends AbstractController {
     public function __construct(
         SettingsSaver                $settingsSaver,
         SettingsLoader               $settingsLoader,
-        SettingsViewController       $settingsViewController,
         SettingsValidationController $settingsValidationController
     ) {
         $this->settingsValidationController = $settingsValidationController;
-        $this->settingsViewController       = $settingsViewController;
         $this->settingsLoader               = $settingsLoader;
         $this->settingsSaver                = $settingsSaver;
     }

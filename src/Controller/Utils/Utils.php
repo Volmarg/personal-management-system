@@ -2,11 +2,8 @@
 
 namespace App\Controller\Utils;
 
-use App\Services\Files\FileTagger;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class Utils extends AbstractController {
 
@@ -25,52 +22,6 @@ class Utils extends AbstractController {
             (is_dir("$dir/$file")) ? static::removeFolderRecursively("$dir/$file") : unlink("$dir/$file");
         }
         return rmdir($dir);
-    }
-
-    /**
-     * Todo: move to files handling service/controller
-     *
-     * @param string $source
-     * @param string $destination
-     * @param FileTagger|null $fileTagger
-     * @throws Exception
-     */
-    public static function copyFiles(string $source, string $destination, ?FileTagger $fileTagger = null) {
-        $finder = new Finder();
-        $finder->depth('==0');
-
-        if (is_dir($source)) {
-
-            $finder->files()->in($source);
-
-            /**
-             * @var $file SplFileInfo
-             */
-            foreach( $finder->files() as $file ){
-                $filepath                 = $file->getPathname();
-                $fileExtension            = $file->getExtension();
-                $filenameWithoutExtension = $file->getFilenameWithoutExtension();
-
-                $filePathInDestinationFolder = "{$destination}/{$filenameWithoutExtension}.{$fileExtension}";
-
-                if( file_exists($filePathInDestinationFolder) ){
-                    $currDateTime     = new \DateTime();
-                    $filenameDateTime = $currDateTime->format('Y_m_d_h_i_s');
-
-                    $filePathInDestinationFolder = "{$destination}/{$filenameWithoutExtension}.{$filenameDateTime}.{$fileExtension}";
-                }
-
-                copy($filepath, $filePathInDestinationFolder);
-
-                if( !is_null($fileTagger) ){
-                    $fileTagger->copyTagsFromPathToNewPath($filepath, $filePathInDestinationFolder);
-                }
-            }
-
-        }else{
-            copy($source, $destination);
-        }
-
     }
 
     /**
