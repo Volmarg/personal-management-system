@@ -11,16 +11,6 @@ class Env extends AbstractController {
 
     const APP_DEFAULT_NPL_RECEIVER_EMAILS = "APP_DEFAULT_NPL_RECEIVER_EMAILS";
 
-    public static function getUploadDirs() {
-        $dirs = [
-          self::getImagesUploadDir(),
-          self::getFilesUploadDir(),
-          self::getVideoUploadDir(),
-        ];
-
-        return $dirs;
-    }
-
     public static function getUploadDir() {
         return $_ENV['UPLOAD_DIR'];
     }
@@ -103,18 +93,6 @@ class Env extends AbstractController {
             $isDemo = false;
         }
         return $isDemo;
-    }
-
-    /**
-     * @return bool
-     */
-    public static function isMaintenance(): bool {
-        try {
-            $isMaintenance = Utils::getBoolRepresentationOfBoolString($_ENV['APP_MAINTENANCE']);
-        } catch (\Exception $e) {
-            $isMaintenance = false;
-        }
-        return $isMaintenance;
     }
 
     /**

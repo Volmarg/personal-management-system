@@ -11,25 +11,10 @@ use Symfony\Component\Finder\Finder;
 
 class MyVideoController extends AbstractController {
 
-    const KEY_FILE_NAME           = 'file_name';
-    const KEY_FILE_FULL_PATH      = 'file_full_path';
-    const MODULE_NAME             = 'My Video';
-
     /**
      * @var Finder $finder
      */
     private $finder;
-
-    /**
-     * Will return the target directory in context of upload dir being root
-     * @return string
-     */
-    public static function getTargetUploadDir()
-    {
-        $dir = basename(Env::getVideoUploadDir());
-        return $dir;
-    }
-
 
     public function __construct(
         private readonly FilesTagsRepository $filesTagsRepository,
@@ -56,21 +41,13 @@ class MyVideoController extends AbstractController {
             $tagsJson     = ( $fileTags instanceof FilesTags ? $fileTags->getTags() : "" );
 
             $allImages[] = [
-                static::KEY_FILE_FULL_PATH => $image->getPathname(),
-                static::KEY_FILE_NAME      => $image->getFilename(),
+                'file_full_path' => $image->getPathname(),
+                'file_name'      => $image->getFilename(),
                 FileTagger::KEY_TAGS       => $tagsJson
             ];
         }
 
         return $allImages;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMainFolderVideos(): array {
-        $allVideoPaths = $this->getVideosInCategory('');
-        return $allVideoPaths;
     }
 
 }

@@ -2,8 +2,6 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Modules\Files\MyFilesController;
-use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModulesController;
 use App\Services\Database\DatabaseExporter;
@@ -197,8 +195,8 @@ class CronMakeBackupCommand extends Command
     private function backupFiles(SymfonyStyle $io, string $backupFilesFilename){
 
         $uploadDirsForModules = [
-          MyImagesController::MODULE_NAME       => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
-          MyFilesController::MODULE_NAME        => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
+          ModulesController::MODULE_NAME_IMAGES => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
+          ModulesController::MODULE_NAME_FILES  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
           ModulesController::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getVideoUploadDir(),
         ];
 

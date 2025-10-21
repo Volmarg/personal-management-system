@@ -3,12 +3,9 @@
 
 namespace App\Controller\Files;
 
-use App\Controller\Modules\Files\MyFilesController;
-use App\Controller\Modules\Images\MyImagesController;
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModulesController;
 use App\Controller\System\LockedResourceController;
-use App\Entity\System\LockedResource;
 use App\Services\Files\DirectoriesHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,36 +16,13 @@ class FileUploadController extends AbstractController {
     const MODULE_UPLOAD_DIR_FOR_VIDEO   = 'videos';
     const MODULE_UPLOAD_DIR_FOR_FILES   = 'files';
 
-    const KEY_SUBDIRECTORY_NEW_NAME       = 'subdirectory_new_name';
-    const KEY_SUBDIRECTORY_CURRENT_NAME   = 'subdirectory_current_name';
-
-    const KEY_SUBDIRECTORY_CURRENT_PATH_IN_MODULE_UPLOAD_DIR   = 'subdirectory_current_path_in_module_upload_dir';
-    const KEY_SUBDIRECTORY_TARGET_PATH_IN_MODULE_UPLOAD_DIR    = 'subdirectory_target_path_in_module_upload_dir';
-
-    const KEY_SUBDIRECTORY_NAME         = 'subdirectory_name';
-
-    const KEY_UPLOAD_MODULE_DIR         = 'upload_module_dir';
-
-    const KEY_MAIN_FOLDER               = 'Main folder';
-
-    const KEY_TAG           = 'tag';
-    const KEY_FILENAME      = 'fileName';
-    const KEY_EXTENSION     = 'fileExtension';
-    const KEY_UPLOAD_TABLE  = 'upload_table';
-
     // info: might cause issue upon creating subdirectory named `upload`
     const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH         = "[\/]?upload\/(?<" . self::REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME . ">[a-zA-z]+)\/";
     const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME = "DIR_NAME";
 
-    const MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES = [
-        MyImagesController::MODULE_NAME       => self::MODULE_UPLOAD_DIR_FOR_IMAGES,
-        MyFilesController::MODULE_NAME        => self::MODULE_UPLOAD_DIR_FOR_FILES,
-        ModulesController::MODULE_NAME_VIDEO  => self::MODULE_UPLOAD_DIR_FOR_VIDEO,
-    ];
-
     const MODULE_UPLOAD_DIR_TO_MODULE_NAME = [
        self::MODULE_UPLOAD_DIR_FOR_IMAGES => ModulesController::MODULE_NAME_IMAGES,
-       self::MODULE_UPLOAD_DIR_FOR_FILES  => MyFilesController::MODULE_NAME,
+       self::MODULE_UPLOAD_DIR_FOR_FILES  => ModulesController::MODULE_NAME_FILES,
        self::MODULE_UPLOAD_DIR_FOR_VIDEO  => ModulesController::MODULE_NAME_VIDEO,
     ];
 
@@ -129,25 +103,6 @@ class FileUploadController extends AbstractController {
         $moduleName = FileUploadController::MODULE_UPLOAD_DIR_TO_MODULE_NAME[$uploadModuleDir];
 
         return $moduleName;
-    }
-
-    /**
-     * Will return upload dirs ony for unlocked modules
-     *
-     * @return array
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function getUploadModulesDirsForNonLockedModule(): array
-    {
-        $uploadDirsForModulesNames = [];
-        foreach(self::MODULES_UPLOAD_DIRS_FOR_MODULES_NAMES as $moduleName => $uploadDir){
-            if( $this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName, false) ){
-                $uploadDirsForModulesNames[$moduleName] = $uploadDir;
-            }
-        }
-
-        return $uploadDirsForModulesNames;
     }
 
 }

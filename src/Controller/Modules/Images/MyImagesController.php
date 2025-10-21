@@ -11,11 +11,6 @@ use Symfony\Component\Finder\Finder;
 
 class MyImagesController extends AbstractController {
 
-    const KEY_FILE_NAME           = 'file_name';
-    const KEY_FILE_FULL_PATH      = 'file_full_path';
-    const MODULE_NAME             = 'My Images';
-    const TARGET_UPLOAD_DIR       = 'images';
-
     /**
      * @var Finder $finder
      */
@@ -46,8 +41,8 @@ class MyImagesController extends AbstractController {
             $tagsJson     = ( $fileTags instanceof FilesTags ? $fileTags->getTags() : "" );
 
             $allImages[] = [
-                static::KEY_FILE_FULL_PATH => $image->getPathname(),
-                static::KEY_FILE_NAME      => $image->getFilename(),
+                'file_full_path' => $image->getPathname(),
+                'file_name'      => $image->getFilename(),
                 FileTagger::KEY_TAGS       => $tagsJson
             ];
         }
