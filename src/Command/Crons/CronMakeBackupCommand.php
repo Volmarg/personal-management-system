@@ -34,11 +34,6 @@ class CronMakeBackupCommand extends Command
 
     const PUBLIC_DIR_ROOT               = DOT . DIRECTORY_SEPARATOR . 'public';
 
-    const ALL_BACKUPS_TYPES = [
-        self::BACKUP_TYPE_FILES,
-        self::BACKUP_TYPE_SQL,
-    ];
-
     protected static $defaultName = 'cron:make-backup';
 
     /**

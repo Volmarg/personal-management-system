@@ -27,11 +27,6 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     const TRANSFER_CHANNEL_MAIL    = "mail";
     const TRANSFER_CHANNEL_DISCORD = "discord";
 
-    const ALL_TRANSFER_CHANNELS = [
-        self::TRANSFER_CHANNEL_MAIL,
-        self::TRANSFER_CHANNEL_DISCORD,
-    ];
-
     /**
      * @var string $channel
      */
