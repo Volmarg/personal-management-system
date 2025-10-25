@@ -17,8 +17,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PublicFolderAction extends AbstractController
 {
-    public function __construct(
-    ){}
 
     /**
      * Handles downloading file in the secure manners, meaning that downloaded data is controlled with who got actually

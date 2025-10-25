@@ -15,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/contacts", name: "module.contacts.")]
 #[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_CONTACTS])]
@@ -23,8 +22,7 @@ class ContactsAction extends AbstractController
 {
 
     public function __construct(
-        private readonly EntityManagerInterface $em,
-        private readonly TranslatorInterface $translator
+        private readonly EntityManagerInterface $em
     ) {
     }
 

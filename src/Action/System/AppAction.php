@@ -24,7 +24,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class AppAction extends AbstractController
 {
-    const KEY_SYSTEM_LOCK_PASSWORD    = 'systemLockPassword';
 
     public function __construct(
         private readonly JwtAuthenticationService $jwtAuthenticationService,

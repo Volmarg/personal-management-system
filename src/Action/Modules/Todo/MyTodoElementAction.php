@@ -4,7 +4,6 @@ namespace App\Action\Modules\Todo;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Todo\MyTodoController;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Modules\Todo\MyTodoElement;
 use App\Repository\Modules\Todo\MyTodoRepository;
@@ -25,7 +24,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class MyTodoElementAction extends AbstractController {
 
     public function __construct(
-        private readonly MyTodoController       $todoController,
         private readonly MyTodoRepository       $todoRepository,
         private readonly EntityManagerInterface $em
     ) {
