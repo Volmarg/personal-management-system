@@ -19,7 +19,7 @@ execInContainer "rm -rf /$APP_DIR/public/upload/images/*";
 echo 'Removing old images';
 
 ### Copy demo data images for upload module (images)
-execInContainer "cp -r /$APP_DIR/src/assets/static/demoData/modules/Images/* /$APP_DIR/public/upload/images";
+execInContainer "cp -r /$APP_DIR/assets/static/demoData/modules/Images/* /$APP_DIR/public/upload/images";
 echo 'Copy images for MyImages';
 
 ## files
@@ -28,7 +28,7 @@ execInContainer "rm -rf /$APP_DIR/public/upload/files/*";
 echo 'Remove files from myfiles';
 
 ### Copy back files for demo data
-execInContainer "cp -r /$APP_DIR/src/assets/static/demoData/modules/Files/* /$APP_DIR/public/upload/files";
+execInContainer "cp -r /$APP_DIR/assets/static/demoData/modules/Files/* /$APP_DIR/public/upload/files";
 echo 'Copy data for MyFiles';
 
 ## videos
@@ -37,7 +37,7 @@ execInContainer "rm -rf /$APP_DIR/public/upload/videos/*";
 echo 'Remove videos from myfiles';
 
 ### Copy back video  for demo data
-execInContainer "cp -r /$APP_DIR/src/assets/static/demoData/modules/Video/* /$APP_DIR/public/upload/videos/";
+execInContainer "cp -r /$APP_DIR/assets/static/demoData/modules/Video/* /$APP_DIR/public/upload/videos/";
 echo 'Copy data for MyVideo';
 
 echo 'Setting permissions';
