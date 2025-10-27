@@ -2,11 +2,11 @@
 
 namespace App\Listeners\Bundles\LexitJwtAuthentication;
 
-use App\Controller\System\LockedResourceController;
 use App\Entity\User;
 use App\Services\Files\PathService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Storage\RequestSessionStorage;
+use App\Services\System\LockedResourceService;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
@@ -26,7 +26,7 @@ class JwtCreatedListener implements EventSubscriberInterface
 
     public function __construct(
         private readonly JwtAuthenticationService $jwtAuthenticationService,
-        private readonly LockedResourceController $lockedResourceController
+        private readonly LockedResourceService $lockedResourceService
     ){}
 
     /**
@@ -90,6 +90,6 @@ class JwtCreatedListener implements EventSubscriberInterface
             return true;
         }
 
-        return $this->lockedResourceController->isSystemLocked();
+        return $this->lockedResourceService->isSystemLocked();
     }
 }

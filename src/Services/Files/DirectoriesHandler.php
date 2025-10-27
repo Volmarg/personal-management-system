@@ -5,10 +5,10 @@ namespace App\Services\Files;
 use App\Controller\Files\FileUploadController;
 use App\Controller\Modules\ModuleDataController;
 use App\Controller\Modules\ModulesController;
-use App\Controller\System\LockedResourceController;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
+use App\Services\System\LockedResourceService;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
 use Doctrine\DBAL\Exception;
@@ -41,9 +41,9 @@ class DirectoriesHandler {
 
     /**
      * Info: must remain static due to the static methods requiring this logic
-     * @var LockedResourceController $lockedResourceController
+     * @var LockedResourceService $lockedResourceService
      */
-    private static LockedResourceController $lockedResourceController;
+    private static LockedResourceService $lockedResourceService;
 
     /**
      * @var ModuleDataController $moduleDataController
@@ -51,14 +51,14 @@ class DirectoriesHandler {
     private ModuleDataController $moduleDataController;
 
     public function __construct(
-        LoggerInterface          $logger,
-        FileTagger               $fileTagger,
-        LockedResourceController $lockedResourceController,
-        ModuleDataController     $moduleDataController,
+        LoggerInterface                      $logger,
+        FileTagger                           $fileTagger,
+        LockedResourceService                $lockedResourceService,
+        ModuleDataController                 $moduleDataController,
         private readonly TranslatorInterface $translator,
     ) {
-        self::$lockedResourceController = $lockedResourceController;
-        $this->logger                   = $logger;
+        self::$lockedResourceService = $lockedResourceService;
+        $this->logger                = $logger;
         $this->finder                   = new Finder();
         $this->fileTagger               = $fileTagger;
         $this->moduleDataController     = $moduleDataController;
@@ -335,7 +335,7 @@ class DirectoriesHandler {
 
                 if(
                         !$includeLocked
-                    &&  !self::$lockedResourceController->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $moduleName, false)
+                    &&  !self::$lockedResourceService->isAllowedToSeeResource($pathname, LockedResource::TYPE_DIRECTORY, $moduleName, false)
                 ) {
                     continue; // skip that folder
                 }

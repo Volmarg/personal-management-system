@@ -3,26 +3,26 @@
 namespace App\Controller\Modules\Issues;
 
 use App\Controller\Modules\ModulesController;
-use App\Controller\System\LockedResourceController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\LockedResource;
+use App\Services\System\LockedResourceService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyIssuesController extends AbstractController {
 
     /**
-     * @var LockedResourceController $lockedResourceController
+     * @var LockedResourceService $lockedResourceService
      */
-    private LockedResourceController $lockedResourceController;
+    private LockedResourceService $lockedResourceService;
 
     public function __construct(
-        LockedResourceController $lockedResourceController,
+        LockedResourceService $lockedResourceService,
     ) {
-        $this->lockedResourceController = $lockedResourceController;
+        $this->lockedResourceService = $lockedResourceService;
     }
 
     /**
@@ -49,7 +49,7 @@ class MyIssuesController extends AbstractController {
 
             if (
                     ($issue->getTodo() instanceof MyTodo)
-                &&  $this->lockedResourceController->isAllowedToSeeResource($issue->getTodo()->getId(), LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_TODO, false)
+                &&  $this->lockedResourceService->isAllowedToSeeResource($issue->getTodo()->getId(), LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_TODO, false)
             ){
                 $todoElements = [];
                 foreach ($issue->getTodo()->getMyTodoElement() as $todoElement) {

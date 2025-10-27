@@ -1,13 +1,13 @@
 <?php
 
 
-namespace App\Controller\System;
+namespace App\Services\System;
 
 
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
-class SecurityController {
+class SecurityService {
 
     /**
      * @var EncoderFactoryInterface $encoderFactory

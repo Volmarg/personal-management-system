@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\System;
+namespace App\Services\System;
 
 use App\Controller\Page\SettingsLockModuleController;
 use App\Controller\Utils\Utils;
@@ -16,7 +16,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class LockedResourceController extends AbstractController {
+class LockedResourceService extends AbstractController {
 
     /**
      * @var SettingsLockModuleController $settingsLockModuleController
@@ -78,7 +78,7 @@ class LockedResourceController extends AbstractController {
             case LockedResource::TYPE_MODULE:
                 /**
                  * Module lock is handled via @see SettingsLockModuleController, but this check was added due to usage of
-                 * @see LockedResourceController::isAllowedToSeeResource()
+                 * @see LockedResourceService::isAllowedToSeeResource()
                  */
                 return false;
 

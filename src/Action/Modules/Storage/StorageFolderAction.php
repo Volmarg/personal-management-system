@@ -4,7 +4,6 @@ namespace App\Action\Modules\Storage;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\System\LockedResourceController;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
@@ -14,6 +13,7 @@ use App\Services\Files\PathService;
 use App\Services\Module\Storage\StorageFolderService;
 use App\Services\Module\Storage\StorageService;
 use App\Services\RequestService;
+use App\Services\System\LockedResourceService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -36,12 +36,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class StorageFolderAction extends AbstractController
 {
     public function __construct(
-        private readonly StorageService           $storageService,
-        private readonly TranslatorInterface      $translator,
-        private readonly LoggerInterface          $logger,
-        private readonly LockedResourceController $lockedResourceController,
-        private readonly EntityManagerInterface   $entityManager,
-        private readonly StorageFolderService     $storageFolderService
+        private readonly StorageService         $storageService,
+        private readonly TranslatorInterface    $translator,
+        private readonly LoggerInterface        $logger,
+        private readonly LockedResourceService  $lockedResourceService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StorageFolderService   $storageFolderService
     ) {
     }
 
@@ -158,14 +158,14 @@ class StorageFolderAction extends AbstractController
         $checkedPath = "";
         foreach ($dirParts as $dirPart) {
             $checkedPath .= (!empty($checkedPath) ? DIRECTORY_SEPARATOR : "") . $dirPart;
-            $isLocked = $this->lockedResourceController->isResourceLocked($checkedPath, LockedResource::TYPE_DIRECTORY, $moduleName);
+            $isLocked = $this->lockedResourceService->isResourceLocked($checkedPath, LockedResource::TYPE_DIRECTORY, $moduleName);
             if ($isLocked && $checkedPath !== $dir) {
                 $msg = $this->translator->trans('module.storage.lock.parentDirIsLocked', ['{{path}}' => $checkedPath]);
                 return BaseResponse::buildToggleLockResponse(true, $msg, Response::HTTP_BAD_REQUEST)->toJsonResponse();
             }
         }
 
-        $isLocked = $this->lockedResourceController->toggleLock($dir, LockedResource::TYPE_DIRECTORY, $moduleName);
+        $isLocked = $this->lockedResourceService->toggleLock($dir, LockedResource::TYPE_DIRECTORY, $moduleName);
         $msg = $this->translator->trans('module.storage.lock.isLocked');
         if (!$isLocked) {
             $msg = $this->translator->trans('module.storage.lock.isUnlocked');

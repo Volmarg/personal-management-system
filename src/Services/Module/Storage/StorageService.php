@@ -4,7 +4,6 @@ namespace App\Services\Module\Storage;
 
 use App\Controller\Core\Env;
 use App\Controller\Modules\ModulesController;
-use App\Controller\System\LockedResourceController;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
@@ -12,6 +11,7 @@ use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
 use App\Services\Shell\ShellTreeService;
+use App\Services\System\LockedResourceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -24,13 +24,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class StorageService
 {
     public function __construct(
-        private readonly KernelInterface          $kernel,
-        private readonly ShellTreeService         $shellTreeService,
-        private readonly EntityManagerInterface   $em,
-        private readonly LoggerInterface          $logger,
-        private readonly LockedResourceController $lockedResourceController,
-        private readonly TranslatorInterface      $translator,
-        private readonly EntityManagerInterface   $entityManager
+        private readonly KernelInterface        $kernel,
+        private readonly ShellTreeService       $shellTreeService,
+        private readonly EntityManagerInterface $em,
+        private readonly LoggerInterface        $logger,
+        private readonly LockedResourceService  $lockedResourceService,
+        private readonly TranslatorInterface    $translator,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -168,8 +168,8 @@ class StorageService
             $humanPath = preg_replace("#.*" . Env::getUploadDir() . "#", "", $nodeData['name']);
             $path      = Env::getUploadDir() . $humanPath;
 
-            $isLocked = $this->lockedResourceController->isResourceLocked($path, LockedResource::TYPE_DIRECTORY, $module->value);
-            $isSystemLocked = $this->lockedResourceController->isSystemLocked();
+            $isLocked = $this->lockedResourceService->isResourceLocked($path, LockedResource::TYPE_DIRECTORY, $module->value);
+            $isSystemLocked = $this->lockedResourceService->isSystemLocked();
             if ($isLocked && $isSystemLocked) {
                 continue;
             }

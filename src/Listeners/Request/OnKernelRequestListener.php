@@ -4,13 +4,13 @@ namespace App\Listeners\Request;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Core\ConfigLoaders;
-use App\Controller\System\LockedResourceController;
 use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
 use App\Response\Security\LockedResourceDeniedResponse;
 use App\Services\Annotation\AnnotationReaderService;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Routing\UrlMatcherService;
+use App\Services\System\LockedResourceService;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -35,21 +35,21 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private AnnotationReaderService $annotationReaderService;
 
     /**
-     * @var LockedResourceController $lockedResourceController
+     * @var LockedResourceService $lockedResourceService
      */
-    private LockedResourceController $lockedResourceController;
+    private LockedResourceService $lockedResourceService;
 
     public function __construct(
-        UrlMatcherService            $urlMatcherService,
-        AnnotationReaderService      $annotationReaderService,
-        LockedResourceController     $lockedResourceController,
+        UrlMatcherService                $urlMatcherService,
+        AnnotationReaderService          $annotationReaderService,
+        LockedResourceService            $lockedResourceService,
         private readonly LoggerInterface $requestLogger,
-        private readonly ConfigLoaders $configLoaders,
+        private readonly ConfigLoaders   $configLoaders,
         private readonly LoggerInterface $logger,
         private readonly LoggerInterface $securityLogger,
     ) {
-        $this->lockedResourceController     = $lockedResourceController;
-        $this->annotationReaderService      = $annotationReaderService;
+        $this->lockedResourceService   = $lockedResourceService;
+        $this->annotationReaderService = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
     }
 
@@ -170,7 +170,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         }
 
         // check if module itself is locked
-        if( !$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $annotation->getName()) ){
+        if( !$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $annotation->getName()) ){
             $this->handleNotAllowedToSeeResource($ev);
             return;
         }
@@ -179,7 +179,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $countOfLockedRelatedModules = 0;
         $countOfRelatedModules       = count($annotation->getRelatedModules());
         foreach($annotation->getRelatedModules() as $relatedModule){
-            if (!$this->lockedResourceController->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, false)){
+            if (!$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, false)){
                 $countOfLockedRelatedModules++;
             }
         }

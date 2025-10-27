@@ -5,14 +5,14 @@ namespace App\Action\System;
 
 
 use App\Attribute\JwtAuthenticationDisabledAttribute;
-use App\Controller\System\SecurityController;
+use App\Entity\User;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Security\PasswordHashingService;
 use App\Services\Storage\RequestSessionStorage;
+use App\Services\System\SecurityService;
 use App\Services\TypeProcessor\ArrayHandler;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,12 +39,13 @@ class AppAction extends AbstractController
      * - set system in lock state where locked resources are hidden,
      *
      * @Route("/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
-     * @param Request $request
-     * @param SecurityController $securityController
+     * @param Request         $request
+     * @param SecurityService $securityService
+     *
      * @return JsonResponse
      * @throws Exception
      */
-    public function toggleResourcesLock(Request $request, SecurityController $securityController): Response
+    public function toggleResourcesLock(Request $request, SecurityService $securityService): Response
     {
         RequestSessionStorage::$IS_TOGGLE_LOCK_CALL = true;
 
@@ -59,7 +60,7 @@ class AppAction extends AbstractController
         }
 
         $userPassword    = $user->getLockPassword();
-        $isPasswordValid = $securityController->isPasswordValid($user, $userPassword, $password);
+        $isPasswordValid = $securityService->isPasswordValid($user, $userPassword, $password);
         if (!$isPasswordValid) {
             $message = $this->translator->trans('security.lockResource.invalidPassword');
             return BaseResponse::buildBadRequestErrorResponse($message)->toJsonResponse();
