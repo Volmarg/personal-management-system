@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Modules\Todo;
+namespace App\Services\Module\Todo;
 
 use App\Entity\Modules\Todo\MyTodo;
 use App\Enum\RelatableModuleEnum;
@@ -8,7 +8,7 @@ use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Repository\System\ModuleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MyTodoController extends AbstractController {
+class MyTodoService extends AbstractController {
 
     public function __construct(
         private readonly ModuleRepository  $moduleRepository,

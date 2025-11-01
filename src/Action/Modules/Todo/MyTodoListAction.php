@@ -4,12 +4,12 @@ namespace App\Action\Modules\Todo;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Todo\MyTodoController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Todo\MyTodoService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +25,7 @@ class MyTodoListAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly MyTodoController       $todoController,
+        private readonly MyTodoService          $todoService,
         private readonly MyTodoRepository       $todoRepository
     ) {
     }
@@ -50,7 +50,7 @@ class MyTodoListAction extends AbstractController {
     public function getAll(): JsonResponse
     {
         $allTodo     = $this->todoRepository->getAll();
-        $entriesData = $this->todoController->buildFrontDataArray($allTodo);
+        $entriesData = $this->todoService->buildFrontDataArray($allTodo);
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($entriesData);
 
@@ -98,7 +98,7 @@ class MyTodoListAction extends AbstractController {
         $dataArray   = RequestService::tryFromJsonBody($request);
         $includedIds = ArrayHandler::checkAndGetKey($dataArray, 'includedIds', []);
 
-        $entries = $this->todoController->getPossibleRelationEntries($includedIds);
+        $entries = $this->todoService->getPossibleRelationEntries($includedIds);
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($entries);
 

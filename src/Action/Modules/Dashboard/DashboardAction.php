@@ -2,15 +2,15 @@
 
 namespace App\Action\Modules\Dashboard;
 
-use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Todo\MyTodoController;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Issues\MyIssuesService;
+use App\Services\Module\Todo\MyTodoService;
 use App\Services\Settings\SettingsLoader;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,10 +23,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class DashboardAction extends AbstractController {
 
     public function __construct(
-        private readonly MyTodoController        $todoController,
-        private readonly MyIssuesController      $myIssuesController,
-        private readonly EntityManagerInterface  $em,
-        private readonly SettingsLoader          $settingsLoader
+        private readonly MyTodoService          $todoService,
+        private readonly MyIssuesService        $myIssuesService,
+        private readonly EntityManagerInterface $em,
+        private readonly SettingsLoader         $settingsLoader
     ) {
     }
 
@@ -57,12 +57,12 @@ class DashboardAction extends AbstractController {
 
         if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_GOAL_PROGRESS)) {
             $goals = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
-            $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PROGRESS] = $this->todoController->buildFrontDataArray($goals);
+            $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PROGRESS] = $this->todoService->buildFrontDataArray($goals);
         }
 
         if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_ISSUES)) {
             $allOngoingIssues = $this->em->getRepository(MyIssue::class)->getPendingIssuesForDashboard();
-            $entriesData[Setting::DASHBOARD_WIDGET_ISSUES] = $this->myIssuesController->getIssuesData($allOngoingIssues);
+            $entriesData[Setting::DASHBOARD_WIDGET_ISSUES] = $this->myIssuesService->getIssuesData($allOngoingIssues);
         }
 
         if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_SCHEDULES)) {

@@ -3,11 +3,11 @@
 namespace App\Action\Modules\Issues;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\Issues\MyIssuesController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Issues\MyIssuesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,8 +24,8 @@ class MyIssuesAction extends AbstractController
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly MyIssuesController $issuesController,
-        private readonly MyIssueRepository $myIssueRepository,
+        private readonly MyIssuesService        $issuesService,
+        private readonly MyIssueRepository      $myIssueRepository,
     ) {
     }
 
@@ -51,7 +51,7 @@ class MyIssuesAction extends AbstractController
     public function getAll(): JsonResponse
     {
         $allOngoingIssues = $this->myIssueRepository->findAllNotDeletedAndNotResolved();
-        $issuesData       = $this->issuesController->getIssuesData($allOngoingIssues);
+        $issuesData       = $this->issuesService->getIssuesData($allOngoingIssues);
 
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($issuesData);

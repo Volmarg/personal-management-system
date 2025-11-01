@@ -2,11 +2,11 @@
 
 namespace App\Action\Modules\Payments\Settings;
 
-use App\Controller\Modules\Payments\MyPaymentsSettingsController;
-use App\Entity\Modules\Payments\MyPaymentsSettings;
-use App\Response\Base\BaseResponse;
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
+use App\Entity\Modules\Payments\MyPaymentsSettings;
+use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
+use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +22,7 @@ class CurrencyMultiplierAction extends AbstractController {
 
     public function __construct(
         private readonly EntityManagerInterface       $em,
-        private readonly MyPaymentsSettingsController $paymentsSettingsController
+        private readonly MyPaymentsSettingsRepository $myPaymentsSettingsRepository
     ) {
     }
 
@@ -32,7 +32,7 @@ class CurrencyMultiplierAction extends AbstractController {
     #[Route("", name: "get", methods: [Request::METHOD_GET])]
     public function getOne(): JsonResponse
     {
-        $multiplier = $this->paymentsSettingsController->fetchCurrencyMultiplier();
+        $multiplier = $this->myPaymentsSettingsRepository->fetchCurrencyMultiplier();
         $response   = BaseResponse::buildOkResponse();
         $response->setSingleRecordData([
             'value' => $multiplier ?? 1,

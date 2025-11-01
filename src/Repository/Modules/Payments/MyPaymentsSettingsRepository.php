@@ -17,9 +17,9 @@ class MyPaymentsSettingsRepository extends ServiceEntityRepository {
         parent::__construct($registry, MyPaymentsSettings::class);
     }
 
-    public function fetchCurrencyMultiplier() {
+    public function fetchCurrencyMultiplier(): ?float {
         $result = $this->findBy(['name' => 'currency_multiplier']);
-        return (empty($result) ? null : $result[0]->getValue());
+        return (empty($result) ? null : (float)$result[0]->getValue());
     }
 
     /**

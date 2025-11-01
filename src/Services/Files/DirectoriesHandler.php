@@ -3,11 +3,11 @@
 namespace App\Services\Files;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Modules\ModuleDataController;
 use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
+use App\Repository\Modules\ModuleDataRepository;
 use App\Services\System\LockedResourceService;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
@@ -45,23 +45,17 @@ class DirectoriesHandler {
      */
     private static LockedResourceService $lockedResourceService;
 
-    /**
-     * @var ModuleDataController $moduleDataController
-     */
-    private ModuleDataController $moduleDataController;
-
     public function __construct(
-        LoggerInterface                      $logger,
-        FileTagger                           $fileTagger,
-        LockedResourceService                $lockedResourceService,
-        ModuleDataController                 $moduleDataController,
-        private readonly TranslatorInterface $translator,
+        LoggerInterface                       $logger,
+        FileTagger                            $fileTagger,
+        LockedResourceService                 $lockedResourceService,
+        private readonly TranslatorInterface  $translator,
+        private readonly ModuleDataRepository $moduleDataRepository,
     ) {
         self::$lockedResourceService = $lockedResourceService;
         $this->logger                = $logger;
         $this->finder                   = new Finder();
         $this->fileTagger               = $fileTagger;
-        $this->moduleDataController     = $moduleDataController;
     }
 
     /**
@@ -234,10 +228,11 @@ class DirectoriesHandler {
             $this->fileTagger->updateFilePathByFolderPathChange($currentDirectoryPath, $newDirectoryPath);
 
             $module     = ModulesController::getUploadModuleNameForFileFullPath($currentDirectoryPath);
-            $moduleData = $this->moduleDataController->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentDirectoryPath);
+            $moduleData = $this->moduleDataRepository->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentDirectoryPath);
 
             if( !is_null($moduleData) ){
-                $this->moduleDataController->updateRecordIdentifier($moduleData, $newDirectoryPath);
+                $moduleData->setRecordIdentifier($newDirectoryPath);
+                $this->moduleDataRepository->saveEntity($moduleData);
             }
 
         }catch(\Exception $e){

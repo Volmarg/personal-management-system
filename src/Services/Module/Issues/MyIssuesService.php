@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Modules\Issues;
+namespace App\Services\Module\Issues;
 
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
@@ -12,7 +12,7 @@ use App\Services\System\LockedResourceService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MyIssuesController extends AbstractController {
+class MyIssuesService extends AbstractController {
 
     /**
      * @var LockedResourceService $lockedResourceService
