@@ -4,10 +4,10 @@ namespace App\Action\Modules\Notes;
 
 use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Notes\MyNotesController;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\System\LockedResource;
+use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
 use App\Services\System\LockedResourceService;
@@ -26,7 +26,7 @@ class MyNotesAction extends AbstractController {
     public function __construct(
         private readonly LockedResourceService  $lockedResourceService,
         private readonly EntityManagerInterface $em,
-        private readonly MyNotesController      $myNotesController,
+        private readonly MyNotesRepository      $notesRepository,
     ) {
     }
 
@@ -55,7 +55,7 @@ class MyNotesAction extends AbstractController {
     public function getAll(MyNotesCategories $category): JsonResponse
     {
         $entriesData = [];
-        $notes = $this->myNotesController->getNotesByCategoriesIds([$category->getId()]);
+        $notes = $this->notesRepository->getNotesByCategoriesIds([$category->getId()]);
         foreach ($notes as $note) {
             $canSee = $this->lockedResourceService->isAllowedToSeeResource(
                 $note->getId(),

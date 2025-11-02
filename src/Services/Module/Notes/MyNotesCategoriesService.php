@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Controller\Modules\Notes;
+namespace App\Services\Module\Notes;
 
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Repository\Modules\Notes\MyNotesCategoriesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MyNotesCategoriesController extends AbstractController {
+class MyNotesCategoriesService extends AbstractController {
 
     public function __construct(
         private readonly MyNotesCategoriesRepository $notesCategoriesRepository

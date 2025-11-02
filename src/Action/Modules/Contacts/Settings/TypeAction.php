@@ -3,12 +3,12 @@
 namespace App\Action\Modules\Contacts\Settings;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\Contacts\MyContactsSettingsController;
 use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\FilesHandler;
+use App\Services\Module\Contacts\MyContactsSettingsService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,7 +28,7 @@ class TypeAction extends AbstractController
         private readonly EntityManagerInterface $em,
         private readonly TranslatorInterface $translator,
         private readonly MyContactTypeRepository $myContactTypeRepository,
-        private readonly MyContactsSettingsController $settingsController
+        private readonly MyContactsSettingsService $settingsService
     ) {
     }
 
@@ -139,7 +139,7 @@ class TypeAction extends AbstractController
         $this->em->beginTransaction();
         $this->em->persist($type);
         try {
-            $this->settingsController->updateContactsForUpdatedType($typeBeforeUpdate, $type);
+            $this->settingsService->updateContactsForUpdatedType($typeBeforeUpdate, $type);
         } catch (Exception $e) {
             $this->em->rollback();
             throw $e;

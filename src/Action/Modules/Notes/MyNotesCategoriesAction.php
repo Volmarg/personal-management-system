@@ -2,10 +2,11 @@
 
 namespace App\Action\Modules\Notes;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Controller\Modules\ModulesController;
-use App\Controller\Modules\Notes\MyNotesCategoriesController;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Notes\MyNotesCategoriesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Annotation\System\ModuleAnnotation;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/my-notes-categories", name: "module.my_notes_categories.")]
@@ -25,9 +25,9 @@ class MyNotesCategoriesAction extends AbstractController {
     private const MAX_NESTING_LEVEL = 4;
 
     public function __construct(
-        private readonly MyNotesCategoriesController $categoriesController,
-        private readonly EntityManagerInterface      $em,
-        private readonly TranslatorInterface         $translator
+        private readonly MyNotesCategoriesService $notesCategoriesService,
+        private readonly EntityManagerInterface   $em,
+        private readonly TranslatorInterface      $translator
     ) {
     }
 
@@ -50,7 +50,7 @@ class MyNotesCategoriesAction extends AbstractController {
     public function getAll(): JsonResponse
     {
         $entriesData = [];
-        $categories = $this->categoriesController->findAllNotDeleted();
+        $categories = $this->notesCategoriesService->findAllNotDeleted();
         foreach ($categories as $category) {
             $parentCategory = null;
             if (is_numeric($category->getParentId())) {
@@ -135,7 +135,7 @@ class MyNotesCategoriesAction extends AbstractController {
         $name      = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
 
         // duped child names not allowed
-        $childNameExists = $this->categoriesController->hasCategoryChildWithThisName($name, $parentId);
+        $childNameExists = $this->notesCategoriesService->hasCategoryChildWithThisName($name, $parentId);
         if ($childNameExists) {
             $msg = $this->translator->trans('module.notes.categories.createdUpdate.childNameExist');
             return BaseResponse::buildBadRequestErrorResponse($msg);

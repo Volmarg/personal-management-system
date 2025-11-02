@@ -2,11 +2,11 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Modules\Notes\MyNotesCategoriesController;
-use App\Controller\Modules\Notes\MyNotesController;
+use App\Repository\Modules\Notes\MyNotesRepository;
 use App\Repository\Modules\Passwords\MyPasswordsGroupsRepository;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
 use App\Services\External\PmsIoService;
+use App\Services\Module\Notes\MyNotesCategoriesService;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -28,11 +28,11 @@ class CronTransferDataToPmsIoCommand extends Command
 
     public function __construct(
         PmsIoService                                 $pmsIoService,
-        private readonly MyNotesCategoriesController $notesCategoriesController,
-        private readonly MyNotesController           $notesController,
+        private readonly MyNotesCategoriesService    $notesCategoriesService,
         private readonly MyPasswordsGroupsRepository $passwordsGroupsRepository,
-        private readonly MyPasswordsRepository $passwordsRepository,
-        private readonly LoggerInterface $logger,
+        private readonly MyPasswordsRepository       $passwordsRepository,
+        private readonly LoggerInterface             $logger,
+        private readonly MyNotesRepository           $notesRepository,
     )
     {
         parent::__construct(self::$defaultName);
@@ -118,8 +118,8 @@ class CronTransferDataToPmsIoCommand extends Command
      */
     private function insertNotesData(): bool
     {
-        $allNotDeletedNotesCategories = $this->notesCategoriesController->findAllNotDeleted();
-        $allNotDeletedNotes           = $this->notesController->findAllNotDeleted();
+        $allNotDeletedNotesCategories = $this->notesCategoriesService->findAllNotDeleted();
+        $allNotDeletedNotes           = $this->notesRepository->findAllNotDeleted();
 
         /**
          * The order here is important as the categories must for example exist before adding notes to them

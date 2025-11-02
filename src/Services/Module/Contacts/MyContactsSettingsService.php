@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Modules\Contacts;
+namespace App\Services\Module\Contacts;
 
 use App\DTO\Modules\Contacts\ContactsTypesDto;
 use App\Entity\Modules\Contacts\MyContactType;
@@ -8,7 +8,7 @@ use App\Repository\Modules\Contacts\MyContactRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class MyContactsSettingsController extends AbstractController {
+class MyContactsSettingsService extends AbstractController {
 
     public function __construct(
         private readonly MyContactRepository $contactRepository
