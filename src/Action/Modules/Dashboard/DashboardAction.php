@@ -2,7 +2,6 @@
 
 namespace App\Action\Modules\Dashboard;
 
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Schedules\MySchedule;
@@ -10,6 +9,7 @@ use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\Issues\MyIssuesService;
+use App\Services\Module\ModulesService;
 use App\Services\Module\Todo\MyTodoService;
 use App\Services\Settings\SettingsLoader;
 use Doctrine\DBAL\Driver\Exception;
@@ -56,7 +56,7 @@ class DashboardAction extends AbstractController {
         }
 
         if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_GOAL_PROGRESS)) {
-            $goals = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesController::MODULE_NAME_GOALS, true);
+            $goals = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesService::MODULE_NAME_GOALS, true);
             $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PROGRESS] = $this->todoService->buildFrontDataArray($goals);
         }
 

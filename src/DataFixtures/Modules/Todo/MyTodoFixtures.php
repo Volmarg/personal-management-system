@@ -1,11 +1,11 @@
 <?php
 namespace App\DataFixtures\Modules\Todo;
 
-use App\Controller\Modules\ModulesController;
 use App\DataFixtures\Providers\Modules\Todo;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
+use App\Services\Module\ModulesService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -37,7 +37,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoGoals(ObjectManager $manager): void
     {
-        $goalsModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesController::MODULE_NAME_GOALS]);
+        $goalsModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesService::MODULE_NAME_GOALS]);
 
         foreach(Todo::ALL_TODO_GOALS as $index => $todoWithElements) {
 
@@ -84,7 +84,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addIssueTodo(ObjectManager $manager): void
     {
-        $issueModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesController::MODULE_NAME_ISSUES]);
+        $issueModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesService::MODULE_NAME_ISSUES]);
 
         foreach(Todo::ALL_TODO_ISSUE as $issueId => $todoWithElements) {
 

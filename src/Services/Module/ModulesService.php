@@ -1,16 +1,12 @@
 <?php
 
-namespace App\Controller\Modules;
+namespace App\Services\Module;
 
 use App\Controller\Core\Env;
 use App\Services\Files\FilesHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * Class ModulesController
- * @package App\Controller\Modules
- */
-class ModulesController extends AbstractController {
+class ModulesService extends AbstractController {
 
     const MODULE_NAME_ACHIEVEMENTS              = "Achievements";
     const MODULE_NAME_MY_SCHEDULES              = "My Schedules"; //todo: rename this const + twig

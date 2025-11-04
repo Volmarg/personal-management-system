@@ -3,10 +3,10 @@
 namespace App\Action\Modules\Reports\Payments;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Chart\LinearChartDataHandler;
+use App\Services\Module\ModulesService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/reports/payments/total-per-type", name: "module.reports.payments.total-per-type")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MENU_NODE_MODULE_NAME_REPORTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
 class MonthlyPerTypeAction extends AbstractController {
 
     public function __construct(

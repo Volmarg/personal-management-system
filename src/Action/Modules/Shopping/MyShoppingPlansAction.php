@@ -3,9 +3,9 @@
 namespace App\Action\Modules\Shopping;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Shopping\MyShoppingPlans;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/shopping/plans", name: "module.shopping.plans.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_SHOPPING])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SHOPPING])]
 class MyShoppingPlansAction extends AbstractController
 {
 

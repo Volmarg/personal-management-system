@@ -2,12 +2,12 @@
 
 namespace App\Services\Module\Issues;
 
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Issues\MyIssueContact;
 use App\Entity\Modules\Issues\MyIssueProgress;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\LockedResource;
+use App\Services\Module\ModulesService;
 use App\Services\System\LockedResourceService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,7 +49,7 @@ class MyIssuesService extends AbstractController {
 
             if (
                     ($issue->getTodo() instanceof MyTodo)
-                &&  $this->lockedResourceService->isAllowedToSeeResource($issue->getTodo()->getId(), LockedResource::TYPE_ENTITY, ModulesController::MODULE_NAME_TODO, false)
+                &&  $this->lockedResourceService->isAllowedToSeeResource($issue->getTodo()->getId(), LockedResource::TYPE_ENTITY, ModulesService::MODULE_NAME_TODO, false)
             ){
                 $todoElements = [];
                 foreach ($issue->getTodo()->getMyTodoElement() as $todoElement) {

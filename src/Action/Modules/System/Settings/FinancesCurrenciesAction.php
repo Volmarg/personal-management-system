@@ -3,10 +3,10 @@
 namespace App\Action\Modules\System\Settings;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Controller\Page\SettingsFinancesController;
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/system/settings/finances/currencies", name: "module.system.settings.finances.currencies.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_SYSTEM])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class FinancesCurrenciesAction extends AbstractController {
 
     public function __construct(

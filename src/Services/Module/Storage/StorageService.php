@@ -3,13 +3,13 @@
 namespace App\Services\Module\Storage;
 
 use App\Controller\Core\Env;
-use App\Controller\Modules\ModulesController;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
+use App\Services\Module\ModulesService;
 use App\Services\Shell\ShellTreeService;
 use App\Services\System\LockedResourceService;
 use DateTime;
@@ -137,9 +137,9 @@ class StorageService
     public static function enumToModuleName(StorageModuleEnum $enum): string
     {
         return match ($enum->value) {
-            StorageModuleEnum::VIDEOS->value => ModulesController::MODULE_NAME_VIDEO,
-            StorageModuleEnum::IMAGES->value => ModulesController::MODULE_NAME_IMAGES,
-            StorageModuleEnum::FILES->value => ModulesController::MODULE_NAME_FILES,
+            StorageModuleEnum::VIDEOS->value => ModulesService::MODULE_NAME_VIDEO,
+            StorageModuleEnum::IMAGES->value => ModulesService::MODULE_NAME_IMAGES,
+            StorageModuleEnum::FILES->value => ModulesService::MODULE_NAME_FILES,
             default => throw new \LogicException("Unsupported module {$enum->value}")
         };
     }

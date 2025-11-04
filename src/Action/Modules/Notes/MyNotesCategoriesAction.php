@@ -3,9 +3,9 @@
 namespace App\Action\Modules\Notes;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\Module\Notes\MyNotesCategoriesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -18,7 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/my-notes-categories", name: "module.my_notes_categories.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_NOTES])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_NOTES])]
 class MyNotesCategoriesAction extends AbstractController {
 
     // added this just to make the left side menu look somewhat decent

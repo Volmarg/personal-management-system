@@ -2,12 +2,12 @@
 
 namespace App\Action\Modules\Payments\Settings;
 
+use App\Annotation\System\ModuleAnnotation;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
 use App\Response\Base\BaseResponse;
-use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Services\Validation\EntityValidatorService;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/payment/setting/recurring-payment", name: "module.payment.monthly.setting.recurring_payment")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class RecurringPaymentAction extends AbstractController {
 
     public function __construct(

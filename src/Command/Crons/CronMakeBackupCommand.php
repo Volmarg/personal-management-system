@@ -3,14 +3,14 @@
 namespace App\Command\Crons;
 
 use App\Controller\Core\Env;
-use App\Controller\Modules\ModulesController;
 use App\Services\Database\DatabaseExporter;
 use App\Services\Files\Archivizer\ZipArchivizer;
+use App\Services\Module\ModulesService;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -190,9 +190,9 @@ class CronMakeBackupCommand extends Command
     private function backupFiles(SymfonyStyle $io, string $backupFilesFilename){
 
         $uploadDirsForModules = [
-          ModulesController::MODULE_NAME_IMAGES => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
-          ModulesController::MODULE_NAME_FILES  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
-          ModulesController::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getVideoUploadDir(),
+            ModulesService::MODULE_NAME_IMAGES => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
+            ModulesService::MODULE_NAME_FILES  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
+            ModulesService::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getVideoUploadDir(),
         ];
 
         $this->archivizer->setArchiveName($backupFilesFilename);

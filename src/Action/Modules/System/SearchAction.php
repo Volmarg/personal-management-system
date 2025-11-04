@@ -3,11 +3,11 @@
 namespace App\Action\Modules\System;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\FilesTags;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\Module\Storage\StorageService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\DBAL\Driver\Exception;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/system/search", name: "module.system.search.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_SYSTEM])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class SearchAction extends AbstractController {
 
     public function __construct(

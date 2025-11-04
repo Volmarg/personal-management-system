@@ -3,10 +3,10 @@
 namespace App\Action\Modules\Contacts;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/contacts", name: "module.contacts.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_CONTACTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
 class ContactsAction extends AbstractController
 {
 

@@ -3,10 +3,10 @@
 namespace App\Action\Modules\Travels;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use App\Repository\Modules\Travels\MyTravelsIdeasRepository;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/travels/ideas", name: "module.travels.ideas.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_TRAVELS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_TRAVELS])]
 class MyTravelsIdeasAction extends AbstractController {
 
     public function __construct(

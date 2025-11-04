@@ -5,9 +5,9 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Payments\MyPaymentsOwed;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use DateTime;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/payment/owed", name: "module.payment.owed.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class MyPaymentsOwedAction extends AbstractController
 {
 

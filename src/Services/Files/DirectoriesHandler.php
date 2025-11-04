@@ -3,11 +3,11 @@
 namespace App\Services\Files;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Modules\ModulesController;
 use App\Controller\Utils\Utils;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Repository\Modules\ModuleDataRepository;
+use App\Services\Module\ModulesService;
 use App\Services\System\LockedResourceService;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
@@ -227,7 +227,7 @@ class DirectoriesHandler {
             rename($currentDirectoryPath, $newDirectoryPath);
             $this->fileTagger->updateFilePathByFolderPathChange($currentDirectoryPath, $newDirectoryPath);
 
-            $module     = ModulesController::getUploadModuleNameForFileFullPath($currentDirectoryPath);
+            $module     = ModulesService::getUploadModuleNameForFileFullPath($currentDirectoryPath);
             $moduleData = $this->moduleDataRepository->getOneByRecordTypeModuleAndRecordIdentifier(ModuleData::RECORD_TYPE_DIRECTORY, $module, $currentDirectoryPath);
 
             if( !is_null($moduleData) ){

@@ -5,9 +5,9 @@ namespace App\Action\Modules\Job;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/job/settings/holidays/pool", name: "module.job.holidays.pool.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_JOB])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_JOB])]
 class MyJobHolidaysPoolAction extends AbstractController {
 
     public function __construct(

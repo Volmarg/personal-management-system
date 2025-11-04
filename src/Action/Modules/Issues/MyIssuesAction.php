@@ -3,11 +3,11 @@
 namespace App\Action\Modules\Issues;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\Issues\MyIssuesService;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-issues", name: "module.my_issues.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_ISSUES])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_ISSUES])]
 class MyIssuesAction extends AbstractController
 {
 

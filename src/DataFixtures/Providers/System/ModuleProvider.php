@@ -2,14 +2,14 @@
 
 namespace App\DataFixtures\Providers\System;
 
-use App\Controller\Modules\ModulesController;
+use App\Services\Module\ModulesService;
 
 class ModuleProvider
 {
 
     const ALL_SUPPORTED_MODULES_NAMES = [
-        ModulesController::MODULE_NAME_ISSUES,
-        ModulesController::MODULE_NAME_GOALS,
+        ModulesService::MODULE_NAME_ISSUES,
+        ModulesService::MODULE_NAME_GOALS,
     ];
 
 }

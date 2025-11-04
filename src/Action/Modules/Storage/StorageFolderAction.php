@@ -3,13 +3,13 @@
 namespace App\Action\Modules\Storage;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
+use App\Services\Module\ModulesService;
 use App\Services\Module\Storage\StorageFolderService;
 use App\Services\Module\Storage\StorageService;
 use App\Services\RequestService;
@@ -32,7 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - direct files manipulation goes to {@see StorageFileAction}
  */
 #[Route("/module/storage/folder", name: "module.storage.folder.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_STORAGE])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
 class StorageFolderAction extends AbstractController
 {
     public function __construct(
@@ -301,7 +301,7 @@ class StorageFolderAction extends AbstractController
         $repo = $this->entityManager->getRepository(ModuleData::class);
         $moduleData = $repo->getOneByRecordTypeModuleAndRecordIdentifier(
             ModuleData::RECORD_TYPE_DIRECTORY,
-            ModulesController::MODULE_NAME_FILES,
+            ModulesService::MODULE_NAME_FILES,
             $currDirPath
         );
 

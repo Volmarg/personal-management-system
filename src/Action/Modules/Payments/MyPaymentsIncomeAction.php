@@ -5,9 +5,9 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Payments\MyPaymentsIncome;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use DateTime;
@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Code ensures that currency name is unique upon saving
  */
 #[Route("/module/payment/income", name: "module.payment.income.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class MyPaymentsIncomeAction extends AbstractController {
 
 

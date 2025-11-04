@@ -3,9 +3,9 @@
 namespace App\Action\Modules\System;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\TypeProcessor\TextHandler;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/system/notification", name: "module.system.notification.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_SYSTEM])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class NotificationAction extends AbstractController {
 
     private const int TEXT_MAX_LEN = 40;

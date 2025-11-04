@@ -3,12 +3,12 @@
 namespace App\Action\Modules\Todo;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\Module\Todo\MyTodoService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-todo", name: "module.my_todo.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_TODO])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_TODO])]
 class MyTodoListAction extends AbstractController {
 
     public function __construct(

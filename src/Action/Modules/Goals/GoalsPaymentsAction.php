@@ -5,9 +5,10 @@ namespace App\Action\Modules\Goals;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
+use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use DateTime;
@@ -17,10 +18,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Response\Base\BaseResponse;
 
 #[Route("/module/my-goals-payments", name: "module.my_goals_payments.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_GOALS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_GOALS])]
 class GoalsPaymentsAction extends AbstractController {
 
     public function __construct(

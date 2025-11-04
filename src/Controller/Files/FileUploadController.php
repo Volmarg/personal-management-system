@@ -4,8 +4,8 @@
 namespace App\Controller\Files;
 
 use App\Controller\Core\Env;
-use App\Controller\Modules\ModulesController;
 use App\Services\Files\DirectoriesHandler;
+use App\Services\Module\ModulesService;
 use App\Services\System\LockedResourceService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +21,9 @@ class FileUploadController extends AbstractController {
     const REGEX_MATCH_UPLOAD_MODULE_DIR_FOR_FILE_PATH_DIRNAME = "DIR_NAME";
 
     const MODULE_UPLOAD_DIR_TO_MODULE_NAME = [
-       self::MODULE_UPLOAD_DIR_FOR_IMAGES => ModulesController::MODULE_NAME_IMAGES,
-       self::MODULE_UPLOAD_DIR_FOR_FILES  => ModulesController::MODULE_NAME_FILES,
-       self::MODULE_UPLOAD_DIR_FOR_VIDEO  => ModulesController::MODULE_NAME_VIDEO,
+        self::MODULE_UPLOAD_DIR_FOR_IMAGES => ModulesService::MODULE_NAME_IMAGES,
+        self::MODULE_UPLOAD_DIR_FOR_FILES  => ModulesService::MODULE_NAME_FILES,
+        self::MODULE_UPLOAD_DIR_FOR_VIDEO  => ModulesService::MODULE_NAME_VIDEO,
     ];
 
     /**

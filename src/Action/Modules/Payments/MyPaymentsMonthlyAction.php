@@ -5,10 +5,10 @@ namespace App\Action\Modules\Payments;
 
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Traits\ExceptionLoggerAwareTrait;
@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/payment/monthly", name: "module.payment.monthly.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_PAYMENTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class MyPaymentsMonthlyAction extends AbstractController {
 
     use ExceptionLoggerAwareTrait;

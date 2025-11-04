@@ -3,9 +3,9 @@
 namespace App\Action\Modules\Contacts\Settings;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/contacts/group", name: "module.contacts.group.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_CONTACTS])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
 class GroupAction extends AbstractController
 {
 

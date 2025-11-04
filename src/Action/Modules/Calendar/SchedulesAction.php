@@ -3,12 +3,12 @@
 namespace App\Action\Modules\Calendar;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Modules\ModulesController;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Schedules\MyScheduleCalendar;
 use App\Entity\Modules\Schedules\MyScheduleReminder;
 use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use DateTime;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/calendar/schedule", name: "module.calendar.schedule.")]
-#[ModuleAnnotation(values: ["name" => ModulesController::MODULE_NAME_MY_SCHEDULES])]
+#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_MY_SCHEDULES])]
 class SchedulesAction extends AbstractController
 {
 
