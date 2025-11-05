@@ -5,7 +5,6 @@ namespace App\Services\Files;
 
 
 use App\Controller\Core\Env;
-use App\Controller\Files\FilesController;
 use Exception;
 use Gumlet\ImageResize;
 use Gumlet\ImageResizeException;
@@ -122,7 +121,7 @@ class ImageHandler {
     private function generateMiniatureAbsoluteDirectoryPathForOriginalPath(string $filePath): string
     {
         $cwd             = getcwd();
-        $imagePath       = FilesController::stripUploadDirectoryFromFilePathFront(pathinfo($filePath, PATHINFO_DIRNAME));
+        $imagePath       = PathService::stripUploadDirectoryFromFilePathFront(pathinfo($filePath, PATHINFO_DIRNAME));
         $targetDirectory = $cwd . DIRECTORY_SEPARATOR . Env::getMiniaturesUploadDir() . DIRECTORY_SEPARATOR . $imagePath;
 
         return $targetDirectory;
