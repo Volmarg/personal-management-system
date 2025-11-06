@@ -3,8 +3,6 @@
 namespace App\Services\Settings;
 
 
-use App\Controller\Page\SettingsDashboardController;
-use App\Controller\Page\SettingsFinancesController;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\DTO\Settings\Finances\SettingsFinancesDto;
@@ -62,7 +60,7 @@ class SettingsSaver {
             $dto->getWidgetSettings()->setWidgetVisibility($arrayOfWidgetsVisibilityDto);
         }else{
             $setting = new Setting();
-            $dto     = SettingsDashboardController::buildDashboardSettingsDto($arrayOfWidgetsVisibilityDto);
+            $dto     = SettingsDashboardService::buildDashboardSettingsDto($arrayOfWidgetsVisibilityDto);
         }
 
         $dashboardSettingsJson = $dto->toJson();
@@ -91,7 +89,7 @@ class SettingsSaver {
             $dto->setSettingsCurrencyDtos($currenciesSettingsDtos);
         }else{
             $setting = new Setting();
-            $dto     = SettingsFinancesController::buildFinancesSettingsDtoFromCurrenciesSettingsDtos($currenciesSettingsDtos);
+            $dto     = SettingsFinancesService::buildFinancesSettingsDtoFromCurrenciesSettingsDtos($currenciesSettingsDtos);
         }
 
         $financesSettingsJson = $dto->toJson();

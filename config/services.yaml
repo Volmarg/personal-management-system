@@ -83,7 +83,7 @@ services:
         arguments:
             $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'
 
-    App\Controller\Page\SettingsLockModuleController:
+    App\Services\Settings\SettingsLockModuleService:
         calls:
             - initializeSettingsModuleLockDtos: []
 

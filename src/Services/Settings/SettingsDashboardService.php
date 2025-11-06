@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Page;
+namespace App\Services\Settings;
 
 use App\DTO\Settings\Dashboard\SettingsWidgetSettingsDto;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
@@ -8,7 +8,7 @@ use App\DTO\Settings\SettingsDashboardDto;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SettingsDashboardController extends AbstractController {
+class SettingsDashboardService extends AbstractController {
 
     /**
      * This function will build dashboard settings dto based on supplied data, if some is missing then default values will be used

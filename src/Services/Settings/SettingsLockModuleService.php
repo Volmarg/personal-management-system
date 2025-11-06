@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Controller\Page;
+namespace App\Services\Settings;
 
 use App\DTO\Settings\Lock\SettingsModulesDTO;
 use App\DTO\Settings\Lock\Subsettings\SettingsModuleLockDTO;
 use App\Repository\SettingRepository;
-use App\Services\Settings\SettingsLoader;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SettingsLockModuleController extends AbstractController {
+class SettingsLockModuleService extends AbstractController {
 
     /**
      * @var SettingsModuleLockDTO[] $settingsModuleLockDtos

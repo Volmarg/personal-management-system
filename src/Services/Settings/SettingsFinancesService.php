@@ -1,16 +1,14 @@
 <?php
 
-namespace App\Controller\Page;
+namespace App\Services\Settings;
 
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\DTO\Settings\Finances\SettingsFinancesDto;
 use App\DTO\Settings\SettingValidationDTO;
-use App\Services\Settings\SettingsLoader;
-use App\Services\Settings\SettingsSaver;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SettingsFinancesController extends AbstractController {
+class SettingsFinancesService extends AbstractController {
 
     /**
      * @var SettingsSaver $settingsSaver
@@ -23,17 +21,17 @@ class SettingsFinancesController extends AbstractController {
     private $settingsLoader;
 
     /**
-     * @var SettingsValidationController $settingsValidationController
+     * @var SettingsValidationService $settingsValidationService
      */
-    private $settingsValidationController;
+    private $settingsValidationService;
 
     public function __construct(
         SettingsSaver                $settingsSaver,
         SettingsLoader               $settingsLoader,
-        SettingsValidationController $settingsValidationController
+        SettingsValidationService $settingsValidationService
     ) {
-        $this->settingsValidationController = $settingsValidationController;
-        $this->settingsLoader               = $settingsLoader;
+        $this->settingsValidationService = $settingsValidationService;
+        $this->settingsLoader            = $settingsLoader;
         $this->settingsSaver                = $settingsSaver;
     }
 
@@ -97,7 +95,7 @@ class SettingsFinancesController extends AbstractController {
      */
     public function addCurrencyToFinancesCurrencySettings(SettingsCurrencyDto $settingsCurrencyDto): SettingValidationDTO {
 
-        $settingValidationDto = $this->settingsValidationController->isValueByKeyUnique($settingsCurrencyDto);
+        $settingValidationDto = $this->settingsValidationService->isValueByKeyUnique($settingsCurrencyDto);
 
         if( !$settingValidationDto->isValid() ){
             return $settingValidationDto;

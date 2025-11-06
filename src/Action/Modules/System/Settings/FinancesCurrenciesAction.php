@@ -3,11 +3,11 @@
 namespace App\Action\Modules\System\Settings;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Page\SettingsFinancesController;
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
+use App\Services\Settings\SettingsFinancesService;
 use App\Services\Settings\SettingsLoader;
 use App\Services\Settings\SettingsSaver;
 use App\Services\TypeProcessor\ArrayHandler;
@@ -26,7 +26,7 @@ class FinancesCurrenciesAction extends AbstractController {
         private readonly SettingsSaver              $settingsSaverService,
         private readonly SettingsLoader             $settingsLoaderService,
         private readonly TranslatorInterface        $trans,
-        private readonly SettingsFinancesController $financesController
+        private readonly SettingsFinancesService $settingsFinancesService
     ) {
     }
 
@@ -169,10 +169,10 @@ class FinancesCurrenciesAction extends AbstractController {
         }
 
         if ($requestDto->isDefault()) {
-            $dbDtos = $this->financesController->handleDefaultCurrencyChange($dbDtos, $requestDto, $unsetIndex);
+            $dbDtos = $this->settingsFinancesService->handleDefaultCurrencyChange($dbDtos, $requestDto, $unsetIndex);
         }
 
-        $dbDtos   = $this->financesController->handleCurrencyUpdate($dbDtos, $requestDto, $unsetIndex);
+        $dbDtos   = $this->settingsFinancesService->handleCurrencyUpdate($dbDtos, $requestDto, $unsetIndex);
         $defaults = array_filter($dbDtos, fn(SettingsCurrencyDto $setting) => $setting->isDefault());
         if (!$defaults) {
             $msg = $this->trans->trans('module.system.settings.finances.currencies.msg.noDefaultCurrency');
@@ -204,7 +204,7 @@ class FinancesCurrenciesAction extends AbstractController {
             $this->settingsSaverService->saveFinancesSettingsForCurrenciesSettings($dbDtos);
         } else {
             // just add new record
-            $validationResult = $this->financesController->addCurrencyToFinancesCurrencySettings($requestDto);
+            $validationResult = $this->settingsFinancesService->addCurrencyToFinancesCurrencySettings($requestDto);
             if (!$validationResult->isValid()) {
                 return BaseResponse::buildBadRequestErrorResponse($validationResult->getMessage());
             }

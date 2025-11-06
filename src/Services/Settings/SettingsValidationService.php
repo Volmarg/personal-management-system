@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Controller\Page;
+namespace App\Services\Settings;
 
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\DTO\Settings\SettingValidationDTO;
-use App\Services\Settings\SettingsLoader;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class SettingsValidationController extends AbstractController {
+class SettingsValidationService extends AbstractController {
 
     /**
      * @var SettingsLoader $settingsLoader
@@ -48,7 +47,7 @@ class SettingsValidationController extends AbstractController {
                     return $settingValidationDto;
                 }
 
-                $settingsFinancesDto = SettingsController::buildFinancesSettingsDtoFromSetting($setting);
+                $settingsFinancesDto = SettingsService::buildFinancesSettingsDtoFromSetting($setting);
                 $savedDtosInSetting  = $settingsFinancesDto->getSettingsCurrencyDtos();
 
                 break;

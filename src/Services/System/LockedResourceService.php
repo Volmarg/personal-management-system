@@ -2,11 +2,11 @@
 
 namespace App\Services\System;
 
-use App\Controller\Page\SettingsLockModuleController;
 use App\Controller\Utils\Utils;
 use App\Entity\System\LockedResource;
 use App\Repository\System\LockedResourceRepository;
 use App\Services\Security\JwtAuthenticationService;
+use App\Services\Settings\SettingsLockModuleService;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
@@ -19,12 +19,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class LockedResourceService extends AbstractController {
 
     /**
-     * @var SettingsLockModuleController $settingsLockModuleController
+     * @var SettingsLockModuleService $settingsLockModuleController
      */
-    private SettingsLockModuleController $settingsLockModuleController;
+    private SettingsLockModuleService $settingsLockModuleController;
 
     public function __construct(
-        SettingsLockModuleController              $settingsLockModuleController,
+        SettingsLockModuleService                 $settingsLockModuleController,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
         private readonly LockedResourceRepository $lockedResourceRepository,
         private readonly EntityManagerInterface   $em,
@@ -77,7 +77,7 @@ class LockedResourceService extends AbstractController {
 
             case LockedResource::TYPE_MODULE:
                 /**
-                 * Module lock is handled via @see SettingsLockModuleController, but this check was added due to usage of
+                 * Module lock is handled via @see SettingsLockModuleService, but this check was added due to usage of
                  * @see LockedResourceService::isAllowedToSeeResource()
                  */
                 return false;

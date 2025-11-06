@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Controller\Page;
+namespace App\Services\Settings;
 
 use App\DTO\Settings\Finances\SettingsFinancesDto;
 use App\Entity\Setting;
-use App\Services\Settings\SettingsLoader;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class SettingsController extends AbstractController {
+class SettingsService extends AbstractController {
 
     /**
      * @param Setting|null $setting
