@@ -2,9 +2,9 @@
 
 namespace App\Services\Files;
 
-use App\Controller\Core\Env;
 use App\Enum\File\UploadedFileSourceEnum;
 use App\Enum\StorageModuleEnum;
+use App\Services\System\EnvReader;
 use LogicException;
 
 /**
@@ -30,7 +30,7 @@ class PathService
      */
     public static function getVideoModuleUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getPublicRootDir()) . Env::getVideoUploadDir();
+        return self::setTrailingDirSeparator(EnvReader::getPublicRootDir()) . EnvReader::getVideoUploadDir();
     }
 
     /**
@@ -38,7 +38,7 @@ class PathService
      */
     public static function getImageModuleUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getPublicRootDir()) . Env::getImagesUploadDir();
+        return self::setTrailingDirSeparator(EnvReader::getPublicRootDir()) . EnvReader::getImagesUploadDir();
     }
 
     /**
@@ -46,7 +46,7 @@ class PathService
      */
     public static function getFileModuleUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getPublicRootDir()) . Env::getFilesUploadDir();
+        return self::setTrailingDirSeparator(EnvReader::getPublicRootDir()) . EnvReader::getFilesUploadDir();
     }
 
     /**
@@ -54,7 +54,7 @@ class PathService
      */
     public static function getProfileImageUploadDir(): string
     {
-        return self::setTrailingDirSeparator(Env::getUploadDir()) . UploadedFileSourceEnum::PROFILE_IMAGE->value;
+        return self::setTrailingDirSeparator(EnvReader::getUploadDir()) . UploadedFileSourceEnum::PROFILE_IMAGE->value;
     }
 
     /**
@@ -69,13 +69,13 @@ class PathService
     {
         self::validatePathSafety($filePath);
         if ($isUpload) {
-            preg_match("#" . self::setTrailingDirSeparator(Env::getUploadDir()) . "(.*)#", $filePath, $matches);
+            preg_match("#" . self::setTrailingDirSeparator(EnvReader::getUploadDir()) . "(.*)#", $filePath, $matches);
             $matchingPath = $matches[1] ?? null;
             if (empty($matchingPath)) {
                 throw new LogicException("This file cannot be used for public access. Got file path: {$filePath}");
             }
 
-            return self::setTrailingDirSeparator(Env::getUploadDir()) . $matchingPath;
+            return self::setTrailingDirSeparator(EnvReader::getUploadDir()) . $matchingPath;
         }
 
         return $filePath;
@@ -117,9 +117,9 @@ class PathService
     public static function getAllStorageBaseDirs(): array
     {
         return [
-            Env::getFilesUploadDir(),
-            Env::getVideoUploadDir(),
-            Env::getImagesUploadDir(),
+            EnvReader::getFilesUploadDir(),
+            EnvReader::getVideoUploadDir(),
+            EnvReader::getImagesUploadDir(),
         ];
     }
 
@@ -132,10 +132,10 @@ class PathService
      */
     public static function stripUploadDirectoryFromFilePathFront(string $filePath): string
     {
-        $match = "#^" . Env::getUploadDir() . "/#";
+        $match = "#^" . EnvReader::getUploadDir() . "/#";
 
         if( preg_match($match, $filePath) ){
-            $filePath = preg_replace("#" . Env::getUploadDir() . "/#", "", $filePath , 1);
+            $filePath = preg_replace("#" . EnvReader::getUploadDir() . "/#", "", $filePath , 1);
         }
 
         return $filePath;

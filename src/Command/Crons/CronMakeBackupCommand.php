@@ -2,10 +2,10 @@
 
 namespace App\Command\Crons;
 
-use App\Controller\Core\Env;
 use App\Services\Database\DatabaseExporter;
 use App\Services\Files\Archivizer\ZipArchivizer;
 use App\Services\Module\ModulesService;
+use App\Services\System\EnvReader;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -190,9 +190,9 @@ class CronMakeBackupCommand extends Command
     private function backupFiles(SymfonyStyle $io, string $backupFilesFilename){
 
         $uploadDirsForModules = [
-            ModulesService::MODULE_NAME_IMAGES => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getImagesUploadDir(),
-            ModulesService::MODULE_NAME_FILES  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getFilesUploadDir(),
-            ModulesService::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . Env::getVideoUploadDir(),
+            ModulesService::MODULE_NAME_IMAGES => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . EnvReader::getImagesUploadDir(),
+            ModulesService::MODULE_NAME_FILES  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . EnvReader::getFilesUploadDir(),
+            ModulesService::MODULE_NAME_VIDEO  => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . EnvReader::getVideoUploadDir(),
         ];
 
         $this->archivizer->setArchiveName($backupFilesFilename);

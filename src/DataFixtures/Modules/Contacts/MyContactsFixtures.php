@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Modules\Contacts;
 
-use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Contact;
 use App\DataFixtures\Providers\Modules\ContactGroups;
 use App\DataFixtures\Providers\Modules\ContactTypes;
@@ -12,6 +11,7 @@ use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Repository\Modules\Contacts\MyContactGroupRepository;
+use App\Services\Utils;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;

@@ -3,7 +3,6 @@
 namespace App\Services\External;
 
 use App\Controller\Core\ConfigLoaders;
-use App\Controller\Core\Env;
 use App\DTO\Discord\DiscordMessageDTO;
 use App\DTO\Mail\MailDTO;
 use App\DTO\Modules\Schedules\IncomingScheduleDTO;
@@ -12,6 +11,7 @@ use App\Request\Discord\InsertDiscordMessageRequest;
 use App\Request\Mail\InsertMailRequest;
 use App\Response\Discord\InsertDiscordMessageResponse;
 use App\Response\Mail\InsertMailResponse;
+use App\Services\System\EnvReader;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
@@ -93,7 +93,7 @@ class NotifierProxyLoggerService
             $mailDto = new MailDTO();
             $request = new InsertMailRequest();
 
-            $mailDto->setToEmails(Env::getNotifierProxyLoggerDefaultReceiversEmails());
+            $mailDto->setToEmails(EnvReader::getNotifierProxyLoggerDefaultReceiversEmails());
             $mailDto->setSource(NotifierProxyLoggerBridge::SOURCE_PMS);
             $mailDto->setFromEmail($this->configLoaders->getConfigLoaderSystem()->getSystemFromEmail());
             $mailDto->setSubject(self::MESSAGE_TITLE_PREFIX_SCHEDULE . $incomingScheduleDTO->getTitle());

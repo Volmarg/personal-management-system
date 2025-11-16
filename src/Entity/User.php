@@ -7,14 +7,13 @@
 
 namespace App\Entity;
 
-use App\Controller\Core\Env;
 use App\Entity\Interfaces\EntityInterface;
+use App\Services\System\EnvReader;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Repository\UserRepository;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -205,7 +204,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
             $this->roles[] = self::ROLE_USER;
         }
 
-        if (Env::isDev()) {
+        if (EnvReader::isDev()) {
             $this->roles[] = self::ROLE_DEVELOPER;
         }
 

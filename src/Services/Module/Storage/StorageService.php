@@ -2,7 +2,6 @@
 
 namespace App\Services\Module\Storage;
 
-use App\Controller\Core\Env;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
@@ -11,6 +10,7 @@ use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
 use App\Services\Module\ModulesService;
 use App\Services\Shell\ShellTreeService;
+use App\Services\System\EnvReader;
 use App\Services\System\LockedResourceService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -67,8 +67,8 @@ class StorageService
     public function ensureStorageManipulation(string $path): void
     {
         PathService::validatePathSafety($path);
-        if (!str_contains($path, Env::getUploadDir())) {
-            $msg = "Trying to manipulate files outside of " . Env::getUploadDir() . " directory - this is not allowed. Path: {$path}";
+        if (!str_contains($path, EnvReader::getUploadDir())) {
+            $msg = "Trying to manipulate files outside of " . EnvReader::getUploadDir() . " directory - this is not allowed. Path: {$path}";
             throw new Exception($msg);
         }
     }
@@ -165,8 +165,8 @@ class StorageService
                 continue;
             }
 
-            $humanPath = preg_replace("#.*" . Env::getUploadDir() . "#", "", $nodeData['name']);
-            $path      = Env::getUploadDir() . $humanPath;
+            $humanPath = preg_replace("#.*" . EnvReader::getUploadDir() . "#", "", $nodeData['name']);
+            $path      = EnvReader::getUploadDir() . $humanPath;
 
             $isLocked = $this->lockedResourceService->isResourceLocked($path, LockedResource::TYPE_DIRECTORY, $module->value);
             $isSystemLocked = $this->lockedResourceService->isSystemLocked();
@@ -220,7 +220,7 @@ class StorageService
                 continue;
             }
 
-            $filePath = Env::getUploadDir() . $dirPathHuman . DIRECTORY_SEPARATOR . basename($nodeData['name']);
+            $filePath = EnvReader::getUploadDir() . $dirPathHuman . DIRECTORY_SEPARATOR . basename($nodeData['name']);
             $fileTags = $this->em->getRepository(FilesTags::class)->getFileTagsEntityByFileFullPath($filePath);
 
             $basename = basename($nodeData['name']);
@@ -233,7 +233,7 @@ class StorageService
             }
 
             $files[]  = [
-                'dir'  => Env::getUploadDir() . $dirPathHuman,
+                'dir'  => EnvReader::getUploadDir() . $dirPathHuman,
                 'name' => $fileName,
                 'ext'  => $fileExt,
                 'size' => $nodeData['size'],

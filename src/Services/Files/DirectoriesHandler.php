@@ -3,12 +3,12 @@
 namespace App\Services\Files;
 
 use App\Controller\Files\FileUploadController;
-use App\Controller\Utils\Utils;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Repository\Modules\ModuleDataRepository;
 use App\Services\Module\ModulesService;
 use App\Services\System\LockedResourceService;
+use App\Services\Utils;
 use DirectoryIterator;
 use Doctrine\DBAL\Driver\Exception as DbalException;
 use Doctrine\DBAL\Exception;

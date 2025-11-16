@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures\Modules\Job;
 
-use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\JobAfterhours;
 use App\Entity\Modules\Job\MyJobAfterhours;
+use App\Services\Utils;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;

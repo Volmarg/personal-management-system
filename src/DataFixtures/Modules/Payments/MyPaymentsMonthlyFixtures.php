@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
-use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Business\Shops;
 use App\DataFixtures\Providers\Modules\PaymentsMonthly;
 use App\DataFixtures\Providers\Modules\PaymentsSettings;
@@ -11,6 +10,7 @@ use App\DataFixtures\Providers\Products\Food;
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
+use App\Services\Utils;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;

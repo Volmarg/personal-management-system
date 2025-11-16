@@ -2,7 +2,7 @@
 
 namespace App\Services\ConfigLoaders;
 
-use App\Controller\Utils\Utils;
+use App\Services\Utils;
 use Exception;
 
 class ConfigLoaderSecurity extends AbstractConfigLoader {

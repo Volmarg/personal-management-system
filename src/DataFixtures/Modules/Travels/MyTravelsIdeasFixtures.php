@@ -2,9 +2,9 @@
 
 namespace App\DataFixtures\Modules\Travels;
 
-use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Modules\Travels;
 use App\Entity\Modules\Travels\MyTravelsIdeas;
+use App\Services\Utils;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;

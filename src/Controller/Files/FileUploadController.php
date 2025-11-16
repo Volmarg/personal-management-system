@@ -3,9 +3,9 @@
 
 namespace App\Controller\Files;
 
-use App\Controller\Core\Env;
 use App\Services\Files\DirectoriesHandler;
 use App\Services\Module\ModulesService;
+use App\Services\System\EnvReader;
 use App\Services\System\LockedResourceService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,13 +49,13 @@ class FileUploadController extends AbstractController {
     public static function getTargetDirectoryForUploadModuleDir(string $uploadModuleDir){
         switch ($uploadModuleDir) {
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_FILES:
-                $targetDirectory = Env::getFilesUploadDir();
+                $targetDirectory = EnvReader::getFilesUploadDir();
                 break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_IMAGES:
-                $targetDirectory = Env::getImagesUploadDir();
+                $targetDirectory = EnvReader::getImagesUploadDir();
                 break;
             case FileUploadController::MODULE_UPLOAD_DIR_FOR_VIDEO:
-                $targetDirectory = Env::getVideoUploadDir();
+                $targetDirectory = EnvReader::getVideoUploadDir();
                 break;
             default:
                 throw new Exception("This upload module is not supported: {$uploadModuleDir}");

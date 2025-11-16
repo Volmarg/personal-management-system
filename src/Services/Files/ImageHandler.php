@@ -4,11 +4,10 @@
 namespace App\Services\Files;
 
 
-use App\Controller\Core\Env;
+use App\Services\System\EnvReader;
 use Exception;
 use Gumlet\ImageResize;
 use Gumlet\ImageResizeException;
-
 
 /**
  * Class ImageHandler
@@ -122,7 +121,7 @@ class ImageHandler {
     {
         $cwd             = getcwd();
         $imagePath       = PathService::stripUploadDirectoryFromFilePathFront(pathinfo($filePath, PATHINFO_DIRNAME));
-        $targetDirectory = $cwd . DIRECTORY_SEPARATOR . Env::getMiniaturesUploadDir() . DIRECTORY_SEPARATOR . $imagePath;
+        $targetDirectory = $cwd . DIRECTORY_SEPARATOR . EnvReader::getMiniaturesUploadDir() . DIRECTORY_SEPARATOR . $imagePath;
 
         return $targetDirectory;
     }

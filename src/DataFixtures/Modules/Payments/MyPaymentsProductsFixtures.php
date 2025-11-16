@@ -2,11 +2,11 @@
 
 namespace App\DataFixtures\Modules\Payments;
 
-use App\Controller\Utils\Utils;
 use App\DataFixtures\Providers\Business\Shops;
 use App\DataFixtures\Providers\Products\Domestic;
 use App\DataFixtures\Providers\Products\Food;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
+use App\Services\Utils;
 use Bezhanov\Faker\ProviderCollectionHelper;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;

@@ -2,11 +2,11 @@
 
 namespace App\Services\System;
 
-use App\Controller\Utils\Utils;
 use App\Entity\System\LockedResource;
 use App\Repository\System\LockedResourceRepository;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Settings\SettingsLockModuleService;
+use App\Services\Utils;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;

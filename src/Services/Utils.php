@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Utils;
+namespace App\Services;
 
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -110,7 +110,7 @@ class Utils extends AbstractController {
                 &&  empty($realArray)
             )
         ){
-            throw new Exception("Incorrect syntax of array of restricted ips");
+            throw new Exception("Incorrect syntax of array");
         }
 
         return $realArray;

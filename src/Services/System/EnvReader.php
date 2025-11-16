@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller\Core;
+namespace App\Services\System;
 
-use App\Controller\Utils\Utils;
 use App\DTO\DatabaseCredentialsDTO;
-use \Exception;
+use App\Services\Utils;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-class Env extends AbstractController {
+class EnvReader extends AbstractController {
 
     const APP_DEFAULT_NPL_RECEIVER_EMAILS = "APP_DEFAULT_NPL_RECEIVER_EMAILS";
 

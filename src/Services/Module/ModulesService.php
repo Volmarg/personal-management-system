@@ -2,8 +2,8 @@
 
 namespace App\Services\Module;
 
-use App\Controller\Core\Env;
 use App\Services\Files\FilesHandler;
+use App\Services\System\EnvReader;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ModulesService extends AbstractController {
@@ -39,17 +39,17 @@ class ModulesService extends AbstractController {
 
         switch(true)
         {
-            case preg_match("#^" . Env::getImagesUploadDir() . "#", $trimmedFileFullPath):
+            case preg_match("#^" . EnvReader::getImagesUploadDir() . "#", $trimmedFileFullPath):
             {
                 return self::MODULE_NAME_IMAGES;
             }
 
-            case preg_match("#^" . Env::getFilesUploadDir() . "#", $trimmedFileFullPath):
+            case preg_match("#^" . EnvReader::getFilesUploadDir() . "#", $trimmedFileFullPath):
             {
                 return self::MODULE_NAME_FILES;
             }
 
-            case preg_match("#^" . Env::getVideoUploadDir() . "#", $trimmedFileFullPath):
+            case preg_match("#^" . EnvReader::getVideoUploadDir() . "#", $trimmedFileFullPath):
             {
                 return self::MODULE_NAME_VIDEO;
             }

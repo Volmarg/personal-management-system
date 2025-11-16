@@ -2,8 +2,8 @@
 
 namespace App\Services\Database;
 
-use App\Controller\Core\Env;
 use App\DTO\DatabaseCredentialsDTO;
+use App\Services\System\EnvReader;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -225,7 +225,7 @@ class DatabaseExporter {
         }
 
         try{
-            $dto = Env::getDatabaseCredentials();
+            $dto = EnvReader::getDatabaseCredentials();
             $this->prepareBackupDirectory();
 
             $databaseDumpCommand = $this->buildShellMysqlDumpCommand($dto);
