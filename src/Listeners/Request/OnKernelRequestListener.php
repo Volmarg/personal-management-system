@@ -3,11 +3,11 @@
 namespace App\Listeners\Request;
 
 use App\Annotation\System\ModuleAnnotation;
-use App\Controller\Core\ConfigLoaders;
 use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
 use App\Response\Security\LockedResourceDeniedResponse;
 use App\Services\Annotation\AnnotationReaderService;
+use App\Services\ConfigLoaders\ConfigLoaderSecurity;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Routing\UrlMatcherService;
 use App\Services\System\LockedResourceService;
@@ -43,8 +43,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         UrlMatcherService                $urlMatcherService,
         AnnotationReaderService          $annotationReaderService,
         LockedResourceService            $lockedResourceService,
+        private readonly ConfigLoaderSecurity $configLoaderSecurity,
         private readonly LoggerInterface $requestLogger,
-        private readonly ConfigLoaders   $configLoaders,
         private readonly LoggerInterface $logger,
         private readonly LoggerInterface $securityLogger,
     ) {
@@ -109,7 +109,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function blockIp(RequestEvent $event): void
     {
-        $restrictedIps = $this->configLoaders->getConfigLoaderSecurity()->getRestrictedIps();
+        $restrictedIps = $this->configLoaderSecurity->getRestrictedIps();
         $request       = $event->getRequest();
         $ip            = $request->getClientIp();
 
