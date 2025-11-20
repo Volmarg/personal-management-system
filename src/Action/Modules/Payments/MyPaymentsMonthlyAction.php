@@ -176,7 +176,7 @@ class MyPaymentsMonthlyAction extends AbstractController {
         }
 
         $payment->setDate(new DateTime($dateString));
-        $payment->setDescription($description);
+        $payment->setDescription(trim($description));
         $payment->setMoney((float)abs($money));
         $payment->setType($type);
 
