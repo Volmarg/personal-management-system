@@ -6,8 +6,10 @@ namespace App\Services\Attribute;
 
 use App\Services\Routing\UrlMatcherService;
 use Laminas\Code\Reflection\MethodReflection;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionException;
 
 /**
@@ -59,6 +61,27 @@ class AttributeReaderService
         $arrayOfAttributes = $methodReflection->getAttributes();
 
         return $arrayOfAttributes;
+    }
+
+    /**
+     * Return class attribute of given name, returns null if no such attribute was found.
+     *
+     * @param string $classFqn
+     * @param string $attributeFqn
+     *
+     * @return ReflectionAttribute|null
+     * @throws ReflectionException
+     */
+    public function getClassAttribute(string $classFqn, string $attributeFqn): ?ReflectionAttribute
+    {
+        $reflectionClass  = new ReflectionClass($classFqn);
+        $attributes = $reflectionClass->getAttributes($attributeFqn);
+
+        if (count($attributes) > 1) {
+            throw new LogicException("Currently, this method does not support reading multiple attributes of the same type.");
+        }
+
+        return $attributes[0] ?? null;
     }
 
     /**

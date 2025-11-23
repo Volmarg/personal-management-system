@@ -6,7 +6,7 @@ use App\Annotation\System\ModuleAnnotation;
 use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
 use App\Response\Security\LockedResourceDeniedResponse;
-use App\Services\Annotation\AnnotationReaderService;
+use App\Services\Attribute\AttributeReaderService;
 use App\Services\ConfigLoaders\ConfigLoaderSecurity;
 use App\Services\Exceptions\SecurityException;
 use App\Services\Routing\UrlMatcherService;
@@ -30,26 +30,20 @@ class OnKernelRequestListener implements EventSubscriberInterface {
     private UrlMatcherService $urlMatcherService;
 
     /**
-     * @var AnnotationReaderService $annotationReaderService
-     */
-    private AnnotationReaderService $annotationReaderService;
-
-    /**
      * @var LockedResourceService $lockedResourceService
      */
     private LockedResourceService $lockedResourceService;
 
     public function __construct(
-        UrlMatcherService                $urlMatcherService,
-        AnnotationReaderService          $annotationReaderService,
-        LockedResourceService            $lockedResourceService,
-        private readonly ConfigLoaderSecurity $configLoaderSecurity,
-        private readonly LoggerInterface $requestLogger,
-        private readonly LoggerInterface $logger,
-        private readonly LoggerInterface $securityLogger,
+        UrlMatcherService                       $urlMatcherService,
+        LockedResourceService                   $lockedResourceService,
+        private readonly ConfigLoaderSecurity   $configLoaderSecurity,
+        private readonly LoggerInterface        $requestLogger,
+        private readonly LoggerInterface        $logger,
+        private readonly LoggerInterface        $securityLogger,
+        private readonly AttributeReaderService $attributeReaderService,
     ) {
         $this->lockedResourceService   = $lockedResourceService;
-        $this->annotationReaderService = $annotationReaderService;
         $this->urlMatcherService            = $urlMatcherService;
     }
 
@@ -163,29 +157,42 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             return;
         }
 
-        /** @var ?ModuleAnnotation $annotation */
-        $annotation = $this->annotationReaderService->getClassAnnotation($classForUrl, ModuleAnnotation::class);
-        if (empty($annotation)) {
+        $attribute = $this->attributeReaderService->getClassAttribute($classForUrl, ModuleAnnotation::class);
+        if (empty($attribute)) {
             return;
         }
 
         // check if module itself is locked
-        if( !$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $annotation->getName()) ){
+        $attributeArgs = $attribute->getArguments();
+        $values = $attributeArgs['values'] ?? [];
+        if (empty($values)) {
+            $this->logger->critical("Key `values` does not exist for: " . ModuleAnnotation::class);
+            return;
+        }
+
+        $moduleName = $values[ModuleAnnotation::ATTRIBUTE_KEY_NAME] ?? null;
+        $relatedModules = $values[ModuleAnnotation::ATTRIBUTE_KEY_RELATED_MODULES] ?? [];
+
+        if (empty($moduleName)) {
+            throw new Exception(ModuleAnnotation::ATTRIBUTE_KEY_NAME . " was not set for: " . ModuleAnnotation::class);
+        }
+
+        if( !$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName) ){
             $this->handleNotAllowedToSeeResource($ev);
             return;
         }
 
         // check if all related modules are locked - if yes then the module/logic itself is not accessible
         $countOfLockedRelatedModules = 0;
-        $countOfRelatedModules       = count($annotation->getRelatedModules());
-        foreach($annotation->getRelatedModules() as $relatedModule){
+        $countOfRelatedModules       = count($relatedModules);
+        foreach($relatedModules as $relatedModule){
             if (!$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $relatedModule, false)){
                 $countOfLockedRelatedModules++;
             }
         }
 
         if(
-                !empty($annotation->getRelatedModules())
+                !empty($relatedModules)
             &&  $countOfLockedRelatedModules == $countOfRelatedModules
         ){
             $this->handleNotAllowedToSeeResource($ev);
