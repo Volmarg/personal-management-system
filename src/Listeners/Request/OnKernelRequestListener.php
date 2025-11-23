@@ -2,7 +2,7 @@
 
 namespace App\Listeners\Request;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\System\LockedResource;
 use App\Response\Base\BaseResponse;
 use App\Response\Security\LockedResourceDeniedResponse;
@@ -157,7 +157,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             return;
         }
 
-        $attribute = $this->attributeReaderService->getClassAttribute($classForUrl, ModuleAnnotation::class);
+        $attribute = $this->attributeReaderService->getClassAttribute($classForUrl, ModuleAttribute::class);
         if (empty($attribute)) {
             return;
         }
@@ -166,15 +166,15 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $attributeArgs = $attribute->getArguments();
         $values = $attributeArgs['values'] ?? [];
         if (empty($values)) {
-            $this->logger->critical("Key `values` does not exist for: " . ModuleAnnotation::class);
+            $this->logger->critical("Key `values` does not exist for: " . ModuleAttribute::class);
             return;
         }
 
-        $moduleName = $values[ModuleAnnotation::ATTRIBUTE_KEY_NAME] ?? null;
-        $relatedModules = $values[ModuleAnnotation::ATTRIBUTE_KEY_RELATED_MODULES] ?? [];
+        $moduleName = $values[ModuleAttribute::ATTRIBUTE_KEY_NAME] ?? null;
+        $relatedModules = $values[ModuleAttribute::ATTRIBUTE_KEY_RELATED_MODULES] ?? [];
 
         if (empty($moduleName)) {
-            throw new Exception(ModuleAnnotation::ATTRIBUTE_KEY_NAME . " was not set for: " . ModuleAnnotation::class);
+            throw new Exception(ModuleAttribute::ATTRIBUTE_KEY_NAME . " was not set for: " . ModuleAttribute::class);
         }
 
         if( !$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName) ){

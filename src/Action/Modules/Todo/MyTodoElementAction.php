@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Todo;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Modules\Todo\MyTodoElement;
 use App\Repository\Modules\Todo\MyTodoRepository;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-todo-element", name: "module.my_todo.element.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_TODO])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_TODO])]
 class MyTodoElementAction extends AbstractController {
 
     public function __construct(

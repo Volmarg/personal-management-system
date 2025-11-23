@@ -4,7 +4,7 @@
 namespace App\Action\Modules\Payments;
 
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Payments\MyPaymentsIncome;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Code ensures that currency name is unique upon saving
  */
 #[Route("/module/payment/income", name: "module.payment.income.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class MyPaymentsIncomeAction extends AbstractController {
 
 

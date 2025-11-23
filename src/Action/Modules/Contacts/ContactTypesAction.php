@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Contacts;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\DTO\Modules\Contacts\ContactTypeDto;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactType;
@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * This is not handling the types itself but the types on contacts.
  */
 #[Route("/module/contact/types", name: "module.contact.types")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
 class ContactTypesAction extends AbstractController
 {
 

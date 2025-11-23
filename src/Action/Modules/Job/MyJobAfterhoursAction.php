@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Job;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Job\MyJobAfterhours;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/job/afterhours", name: "module.job.afterhours.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_JOB])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_JOB])]
 class MyJobAfterhoursAction extends AbstractController
 {
 

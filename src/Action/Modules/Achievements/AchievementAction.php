@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Achievements;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Achievements\Achievement;
 use App\Repository\Modules\Achievements\AchievementRepository;
 use App\Response\Base\BaseResponse;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/achievements", name: "module.achievements.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_ACHIEVEMENTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_ACHIEVEMENTS])]
 class AchievementAction extends AbstractController {
 
     public function __construct(

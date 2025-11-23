@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Reports\Payments;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/reports/money-owed/historical", name: "module.reports.money_owed.historical")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
 class HistoricallyOwedMoneyAction extends AbstractController {
 
     public function __construct(

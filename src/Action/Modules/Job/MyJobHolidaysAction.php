@@ -4,7 +4,7 @@
 namespace App\Action\Modules\Job;
 
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Job\MyJobHolidays;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/job/holidays/days-spent", name: "module.job.holidays.days_spent.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_JOB])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_JOB])]
 class MyJobHolidaysAction extends AbstractController {
 
     public function __construct(

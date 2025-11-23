@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Notes;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Entity\Modules\Notes\MyNotesCategories;
 use App\Entity\System\LockedResource;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-notes", name: "module.my_notes.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_NOTES])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_NOTES])]
 class MyNotesAction extends AbstractController {
 
     public function __construct(

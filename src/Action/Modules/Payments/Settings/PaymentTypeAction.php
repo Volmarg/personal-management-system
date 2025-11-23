@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Payments\Settings;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/payment/setting/payment-type", name: "module.payment.monthly.setting.payment_type")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class PaymentTypeAction extends AbstractController {
 
     public function __construct(

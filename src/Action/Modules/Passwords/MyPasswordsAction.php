@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Passwords;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Passwords\MyPasswords;
 use App\Entity\Modules\Passwords\MyPasswordsGroups;
 use App\Repository\Modules\Passwords\MyPasswordsRepository;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/passwords", name: "module.passwords.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PASSWORDS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_PASSWORDS])]
 class MyPasswordsAction extends AbstractController {
 
     public function __construct(

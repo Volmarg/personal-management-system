@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Storage;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
@@ -32,7 +32,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - direct files manipulation goes to {@see StorageFileAction}
  */
 #[Route("/module/storage/folder", name: "module.storage.folder.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
 class StorageFolderAction extends AbstractController
 {
     public function __construct(

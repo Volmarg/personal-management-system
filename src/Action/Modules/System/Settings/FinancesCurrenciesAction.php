@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\System\Settings;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/system/settings/finances/currencies", name: "module.system.settings.finances.currencies.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class FinancesCurrenciesAction extends AbstractController {
 
     public function __construct(

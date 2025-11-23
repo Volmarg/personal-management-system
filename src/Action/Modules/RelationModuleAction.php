@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\System\Module;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/relation", name: "module.relation.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_ISSUES])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_ISSUES])]
 class RelationModuleAction extends AbstractController
 {
 

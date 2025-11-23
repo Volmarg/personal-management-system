@@ -4,7 +4,7 @@
 namespace App\Action\Modules\Payments;
 
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Payments\MyPaymentsProduct;
 use App\Repository\Modules\Payments\MyPaymentsProductRepository;
 use App\Repository\Modules\Payments\MyPaymentsSettingsRepository;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/payment/product-prices", name: "module.product-prices.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class MyPaymentsProductsAction extends AbstractController {
 
     public function __construct(

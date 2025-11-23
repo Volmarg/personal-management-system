@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\System\Settings\Notification;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\DTO\Settings\Notifications\ConfigDto;
 use App\DTO\Settings\SettingNotificationDto;
 use App\Entity\Setting;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/system/settings/notifications/config", name: "module.system.settings.notifications.config.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class ConfigAction extends AbstractController {
 
     /**

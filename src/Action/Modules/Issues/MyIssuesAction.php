@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Issues;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Issues\MyIssue;
 use App\Repository\Modules\Issues\MyIssueRepository;
 use App\Response\Base\BaseResponse;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-issues", name: "module.my_issues.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_ISSUES])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_ISSUES])]
 class MyIssuesAction extends AbstractController
 {
 

@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Payments\Settings;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Payments\MyPaymentsSettings;
 use App\Entity\Modules\Payments\MyRecurringPaymentMonthly;
 use App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/payment/setting/recurring-payment", name: "module.payment.monthly.setting.recurring_payment")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class RecurringPaymentAction extends AbstractController {
 
     public function __construct(

@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Contacts\Settings;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Contacts\MyContactType;
 use App\Repository\Modules\Contacts\MyContactTypeRepository;
 use App\Response\Base\BaseResponse;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/contacts/type", name: "module.contacts.type.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
 class TypeAction extends AbstractController
 {
 

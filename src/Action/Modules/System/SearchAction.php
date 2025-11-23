@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\System;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Entity\Modules\Notes\MyNotes;
 use App\Enum\StorageModuleEnum;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/system/search", name: "module.system.search.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class SearchAction extends AbstractController {
 
     public function __construct(

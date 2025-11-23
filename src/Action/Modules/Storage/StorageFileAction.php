@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Storage;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/storage/file", name: "module.storage.file.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
 class StorageFileAction extends AbstractController
 {
     public function __construct(

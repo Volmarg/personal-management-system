@@ -4,7 +4,7 @@
 namespace App\Action\Modules\Goals;
 
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Goals\MyGoalsPayments;
 use App\Repository\Modules\Goals\MyGoalsPaymentsRepository;
 use App\Response\Base\BaseResponse;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-goals-payments", name: "module.my_goals_payments.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_GOALS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_GOALS])]
 class GoalsPaymentsAction extends AbstractController {
 
     public function __construct(

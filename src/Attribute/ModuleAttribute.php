@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Annotation\System;
+namespace App\Attribute;
 
 use Attribute;
 
@@ -9,10 +9,9 @@ use Attribute;
  * resource
  *
  * This is especially helpful to control access to the action methods / classes
- * @Annotation
  */
 #[Attribute(Attribute::TARGET_CLASS)]
-class ModuleAnnotation
+class ModuleAttribute
 {
     const ATTRIBUTE_KEY_NAME            = "name";
     const ATTRIBUTE_KEY_RELATED_MODULES = "relatedModules";

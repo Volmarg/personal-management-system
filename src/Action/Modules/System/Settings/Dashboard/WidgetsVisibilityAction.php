@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\System\Settings\Dashboard;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
 use App\DTO\Settings\SettingsDashboardDto;
 use App\Entity\Setting;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/system/settings/dashboard/widgets/visibility", name: "module.system.settings.dashboard.widgets.visibility.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class WidgetsVisibilityAction extends AbstractController {
 
     public function __construct(

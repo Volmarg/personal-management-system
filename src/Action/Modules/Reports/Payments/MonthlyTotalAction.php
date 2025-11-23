@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Reports\Payments;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Repository\Modules\Reports\ReportsRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Chart\LinearChartDataHandler;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/reports/payments/total-per-month", name: "module.reports.payments.total-per-month")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
 class MonthlyTotalAction extends AbstractController {
 
     public function __construct(

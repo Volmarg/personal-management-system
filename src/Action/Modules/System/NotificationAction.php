@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\System;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Schedules\MySchedule;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/system/notification", name: "module.system.notification.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_SYSTEM])]
 class NotificationAction extends AbstractController {
 
     private const int TEXT_MAX_LEN = 40;

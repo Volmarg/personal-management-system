@@ -4,7 +4,7 @@
 namespace App\Action\Modules\Payments\Bills;
 
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Payments\MyPaymentsBills;
 use App\Entity\Modules\Payments\MyPaymentsBillsItems;
 use App\Response\Base\BaseResponse;
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/payment/bills/items", name: "module.payment.bills.items.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_PAYMENTS])]
 class ItemsAction extends AbstractController {
 
 

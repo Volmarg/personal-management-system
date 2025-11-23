@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Goals;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Repository\Modules\Todo\MyTodoRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/my-goals", name: "module.my_goals.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_GOALS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_GOALS])]
 class GoalsListAction extends AbstractController
 {
 

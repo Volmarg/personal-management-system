@@ -2,7 +2,7 @@
 
 namespace App\Action\Modules\Contacts;
 
-use App\Annotation\System\ModuleAnnotation;
+use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Contacts\MyContact;
 use App\Entity\Modules\Contacts\MyContactGroup;
 use App\Response\Base\BaseResponse;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/contacts", name: "module.contacts.")]
-#[ModuleAnnotation(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_CONTACTS])]
 class ContactsAction extends AbstractController
 {
 
