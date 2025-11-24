@@ -1,48 +1,4 @@
 logs:
-  upload:
-    startedUploadingToSubdirectory: "Started uploading files to subdirectory: "
-    triedToUploadForUnknownUploadType: "Performed upload action for not supported upload type: "
-    finishedUploading: 'Finished uploading data.'
-  directories:
-    removedFolderDoesNotExist: "Removed folder does not exist."
-    folderRemovalHasBeenBlockedThereAreFilesInside: 'Folder removal has been blocked - there are still files in tree.'
-    couldNotRemoveFolder: 'Could not remove folder: '
-    finishedRemovingFolder: 'Finished removing folder.'
-    startedRemovingFolder: 'Started removing folder'
-    startedRenamingFolder: "Started renaming folder"
-    finishedRenamingFolder: "Finished renaming folder"
-    startedCreatingSubdirectory: 'Started creating subdirectory.'
-    finishedCreatingSubdirectory: 'Finished creating subdirectory.'
-    subdirectoryNameWillNotChange: 'Subdirectory name will not change - renaming aborted.'
-    subdirectoryNewNameIsEmptyString: 'Subdirectory new name is an empty string - renaming aborted.'
-    subdirectoryCurrentNameIsEmptyString: 'Subdirectory current name is an empty string - renaming aborted.'
-    missingUploadModuleType: 'Upload type has not been provided - renaming aborted.'
-    thereWasAnErrorWhileRenamingFolder: 'Exception was thrown while renaming folder.'
-    renamedTargetDirectoryDoesNotExist: "Target directory for which user tried to change name does not exist"
-    subdirectoryWithThisNameDoesNotExist: "Subdirectory with this name does not exist!"
-    renamingSubdirectoryWithThisNameAlreadyExist: 'Subdirectory with this name already exists.'
-    thereWasAnErrorWhileCreatingFolder: 'Exception was thrown while creating folder.'
-    createFoldedThisNameAlreadyExist: 'Subdirectory with this name already exists.'
-  files:
-    thereWasAnErrorWhileTryingToMoveSingleFile: "There was an error while trying to move single file: "
-    startedCopyingDataBetweenFoldersViaPost: 'Started copying data between folders via Post Request.'
-    currentSubdirectoryDoesNotExist: 'Current subdirectory does not exist.'
-    targetSubdirectoryDoesNotExist: 'Target subdirectory does not exist.'
-    exceptionWasThrownWhileMovingDataBetweenFolders: 'Exception was thrown while moving data between folders'
-    finishedCopyingData: 'Finished copying data.'
-  download:
-    startedDownloading: "Started downloading data."
-    finishedDownloading: 'Finished downloading data.'
-    exceptionWasThrownWhileDownloadingFile: 'Exception was thrown while downloading file.'
-  security:
-    visitedPageWithUnallowedIp: "Visited page with unallowed ip"
-    visitedPageWithUnallowedMethod: "Visited page with unallowed method"
-  notes:
-    parentChildHierarchyCategoryHasChildrenButItIsMissingInCategoriesDepths: "Parent child hierarchy - category has children but it is missing in categories depths"
-  sessions:
-    removingRolesFromSession: "Removing roles from session"
-    noSessionDataWasFoundForGivenKey: "No session data was found for given key"
-    sessionsDataForGivenKeyHasExpired: "Session data for given key has expired"
   validators:
     providedVariableIsNotAnObject: "Provided variable is not an object: "
     objectOfGivenClassIsNotEntity: "Object of given class is not entity: "

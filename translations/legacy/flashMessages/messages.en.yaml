@@ -1,5 +1,0 @@
-flash:
-  download:
-    fileDoesNotExist:  'Requested file does not exist!'
-  filesController:
-    folderDoesNotExist: "Folder does not exist: "
