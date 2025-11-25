@@ -1,7 +1,0 @@
-responses:
-  tagger:
-    allTagsHaveBeenRemoved: "All tags have been removed."
-    noTagsToAdd: "There were no new tags to add"
-    tagsHaveBeenCreated: "Tags have been created successfully."
-    noTagsToRemove: "There were no tags to remove"
-    tagsUpdated: "Tags have been updated successfully"

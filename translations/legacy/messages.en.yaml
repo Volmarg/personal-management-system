@@ -1,6 +1,0 @@
-messages:
-  SettingValidationDTO:
-    success: "Validation has been passed"
-    failure:
-      duplicatedValue: "Duplicated value has been found for given key: "
-      exceptionWaThrown: "Exception was thrown with message"

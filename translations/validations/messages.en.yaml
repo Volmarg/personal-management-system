@@ -1,4 +1,3 @@
-# todo: move to validators once the deprecation will be removed
 validations:
   myJobHolidaysValidator:
     greaterThan: "Amount of days to spend must be bigger than %value%"
@@ -7,3 +6,10 @@ validations:
     dayOfMonth:
       greaterThanOrEqual: "Given day of month must be bigger or equal than %value%"
       lessThanOrEqual: "Provided day of month must be lesser or equal than %value%"
+
+messages:
+  SettingValidationDTO:
+    success: "Validation has been passed"
+    failure:
+      duplicatedValue: "Duplicated value has been found for given key: "
+      exceptionWaThrown: "Exception was thrown with message"
