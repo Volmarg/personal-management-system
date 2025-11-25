@@ -1,7 +1,0 @@
-exceptions:
-  tagger:
-    taggerNotPreapared: "File tagger has not been prepared - did You call 'prepare()' method?"
-    moreThanOneFileTagsRecordsFoundForPath: "More than one FileTags records were found for given path: "
-    thereWasAnError: "There was an error while updating the tags."
-  dtoValidation:
-    unsupportedSetting: "Unsupported settings: "

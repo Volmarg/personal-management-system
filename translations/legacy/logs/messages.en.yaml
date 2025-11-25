@@ -1,6 +1,0 @@
-logs:
-  validators:
-    providedVariableIsNotAnObject: "Provided variable is not an object: "
-    objectOfGivenClassIsNotEntity: "Object of given class is not entity: "
-    thereIsNoValidationLogicForThisEntity: "There is no validation logic for this entity: "
-    undefinedActionOrInterfaceForEntityValidationIsMissing: "Undefined action or interface for entity validation is missing"

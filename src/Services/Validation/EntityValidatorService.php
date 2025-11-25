@@ -99,7 +99,7 @@ class EntityValidatorService extends AbstractController {
             break;
 
             default:
-            $this->logger->critical("logs.validators.undefinedActionOrInterfaceForEntityValidationIsMissing");
+            $this->logger->critical("Undefined action or interface for entity validation is missing");
         }
 
         return $validationResult;
@@ -120,7 +120,7 @@ class EntityValidatorService extends AbstractController {
 
         if( !is_object($object) ){
             $varType = gettype($object);
-            $message = $this->translator->trans('logs.validators.providedVariableIsNotAnObject');
+            $message = "Provided variable is not an object: ";
             $this->logger->critical($message . $varType);
 
             throw new Exception($message);
@@ -128,16 +128,14 @@ class EntityValidatorService extends AbstractController {
 
         $objectClass = get_class($object);
         if( !DoctrineService::isEntity($object) ){
-            $message = $this->translator->trans('logs.validators.objectOfGivenClassIsNotEntity');
+            $message = "The Object of a given class is not an entity: ";
             $this->logger->critical($message . $objectClass);
 
             throw new Exception($message);
         }
 
         if( !array_key_exists($objectClass, self::MAP_ENTITY_TO_VALIDATOR) ){
-            $message = $this->translator->trans('logs.validators.thereIsNoValidationLogicForThisEntity');
-
-            throw new Exception($message);
+            throw new Exception("There is no validation logic for this entity: ");
         }
 
         return true;

@@ -52,8 +52,7 @@ class SettingsValidationService extends AbstractController {
 
                 break;
             default:
-                $message = $this->translator->trans("exceptions.dtoValidation.unsupportedSetting");
-                throw new Exception($message . $dtoClass);
+                throw new Exception("Unsupported settings: " . $dtoClass);
         }
 
         $methodName   = "get" . $validatedKey;
