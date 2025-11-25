@@ -63,7 +63,7 @@ class SettingsValidationService extends AbstractController {
             $savedDtoValue = $savedDtoInSetting->{$methodName}();
 
             if( $newDtoValue === $savedDtoValue) {
-                $message = $this->translator->trans("messages.failure.SettingValidationDTO.duplicatedValue") . ": " . $validatedKey;
+                $message = $this->translator->trans("messages.SettingValidationDTO.failure.duplicatedValue") . ": " . $validatedKey;
 
                 $settingValidationDto->setMessage($message);
                 $settingValidationDto->setIsValid(false);
