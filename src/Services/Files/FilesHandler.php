@@ -2,8 +2,6 @@
 
 namespace App\Services\Files;
 
-use Symfony\Component\Finder\Finder;
-
 /**
  * This service is responsible for handling files in terms of internal usage, like moving/renaming/etc...
  * Class FilesHandler
@@ -11,30 +9,6 @@ use Symfony\Component\Finder\Finder;
  */
 class FilesHandler
 {
-
-    /**
-     * Will list all files in given directories
-     *
-     * @param array $directories
-     *
-     * @return array
-     */
-    public function listAllFilesInDirectories(array $directories): array
-    {
-        $filesPathsList = [];
-
-        foreach ($directories as $directory) {
-            $finder = new Finder();
-            $finder->depth(0);
-            $finder->files()->in($directory);
-
-            foreach ($finder as $file) {
-                $filesPathsList[$directory][] = $file->getFilename();
-            }
-        }
-
-        return $filesPathsList;
-    }
 
     /**
      * Removes first and last slash from $dirPath
@@ -59,20 +33,6 @@ class FilesHandler
         }
 
         return $trimmedDirPath;
-    }
-
-    /**
-     * @param string $dirPath
-     *
-     * @return int
-     */
-    public static function countFilesInTree(string $dirPath)
-    {
-        $finder = new Finder();
-        $finder->files()->in($dirPath);
-        $filesCountInTree = count($finder);
-
-        return $filesCountInTree;
     }
 
     /**

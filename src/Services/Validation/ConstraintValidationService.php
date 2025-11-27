@@ -5,7 +5,6 @@ namespace App\Services\Validation;
 use App\DTO\ValidationResultDto;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Standard validator which can be used to validate if object constraints/assertions are correct
@@ -18,34 +17,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ConstraintValidationService
 {
-
-    /**
-     * @var ValidatorInterface $validator
-     */
-    private ValidatorInterface $validator;
-
-    public function __construct(ValidatorInterface $validator)
-    {
-        $this->validator = $validator;
-    }
-
-    // todo: Use ValidationResultVO instead - remove that dto
-
-    /**
-     * Validates the object and returns the array of violations
-     *
-     * @param object $object
-     *
-     * @return ValidationResultDto
-     */
-    public function validateAndReturnValidationResultDto(object $object): ValidationResultDto
-    {
-        $violations          = $this->validator->validate($object);
-        $validationResultVo = $this->checkConstraintViolationsAndReturnValidationResultVo($violations);
-
-        return $validationResultVo;
-    }
-
     /**
      * Will check violations array and creates the ValidationResultDTO
      *

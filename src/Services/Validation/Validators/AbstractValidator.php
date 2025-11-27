@@ -19,16 +19,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 abstract class AbstractValidator {
 
     /**
-     * @var bool $updateValidation
-     */
-    private $updateValidation = false;
-
-    /**
-     * @var bool $createValidation
-     */
-    private $createValidation = false;
-
-    /**
      * @var string $supportedClass
      */
     protected $supportedClass = "";
@@ -54,20 +44,6 @@ abstract class AbstractValidator {
     ) {
         $this->validator  = Validation::createValidator();
         $this->em         = $em;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isUpdateValidation(): bool {
-        return $this->updateValidation;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCreateValidation(): bool {
-        return $this->createValidation;
     }
 
     /**

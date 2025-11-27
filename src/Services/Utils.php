@@ -13,18 +13,6 @@ class Utils extends AbstractController {
     const FALSE_AS_STRING = "false";
 
     /**
-     * @param string $dir
-     * @return bool
-     */
-    public static function removeFolderRecursively(string $dir) {
-        $files = array_diff(scandir($dir), array('.','..'));
-        foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? static::removeFolderRecursively("$dir/$file") : unlink("$dir/$file");
-        }
-        return rmdir($dir);
-    }
-
-    /**
      * Get one random element from array
      * @param array $array
      * @return mixed
