@@ -26,6 +26,19 @@ class SettingsModuleLockDTO extends AbstractDTO
      */
     private bool $locked;
 
+    public function __construct(
+        ?string $name = null,
+        ?bool   $locked = null,
+    ) {
+        if (!is_null($locked)) {
+            $this->locked = $locked;
+        }
+
+        if(!is_null($name)){
+            $this->name = $name;
+        }
+    }
+
     /**
      * @return string
      */

@@ -24,6 +24,27 @@ class ModulesService extends AbstractController {
     const MODULE_NAME_TRAVELS                   = "My Travels";
     const MODULE_NAME_ISSUES                    = "My Issues";
     const MENU_NODE_MODULE_NAME_REPORTS         = "My Reports";
+
+    // this also defines listing order, keep in mind that front uses these strings for mapping `name backend => name frontend`
+    public const ALL_MODULES = [
+        self::MODULE_NAME_GOALS,
+        self::MODULE_NAME_TODO,
+        self::MODULE_NAME_NOTES,
+        self::MODULE_NAME_CONTACTS,
+        self::MODULE_NAME_PASSWORDS,
+        self::MODULE_NAME_ACHIEVEMENTS,
+        self::MODULE_NAME_MY_SCHEDULES,
+        self::MODULE_NAME_ISSUES,
+        self::MODULE_NAME_TRAVELS,
+        self::MODULE_NAME_PAYMENTS,
+        self::MODULE_NAME_SHOPPING,
+        self::MODULE_NAME_JOB,
+        self::MENU_NODE_MODULE_NAME_REPORTS,
+        self::MODULE_NAME_FILES,
+        self::MODULE_NAME_IMAGES,
+        self::MODULE_NAME_VIDEO,
+    ];
+
     public const MODULE_NAME_SYSTEM = "System";
     public const MODULE_NAME_STORAGE = "Storage";
 

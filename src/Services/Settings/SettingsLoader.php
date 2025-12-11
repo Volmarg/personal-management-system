@@ -47,6 +47,14 @@ class SettingsLoader {
     }
 
     /**
+     * @return Setting|null
+     */
+    public function getModulesSettings(): ?Setting
+    {
+        return $this->settingRepository->getSettingByName(self::SETTING_NAME_MODULES);
+    }
+
+    /**
      * Check if given dashboard widget is enabled or not
      *
      * @param string $widgetName

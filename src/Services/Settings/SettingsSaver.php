@@ -6,6 +6,7 @@ namespace App\Services\Settings;
 use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
 use App\DTO\Settings\Finances\SettingsCurrencyDto;
 use App\DTO\Settings\Finances\SettingsFinancesDto;
+use App\DTO\Settings\Lock\SettingsModulesDTO;
 use App\DTO\Settings\Notifications\ConfigDto;
 use App\DTO\Settings\SettingNotificationDto;
 use App\DTO\Settings\SettingsDashboardDto;
@@ -125,6 +126,31 @@ class SettingsSaver {
 
         $settingEntity->setName(SettingsLoader::SETTING_NAME_NOTIFICATIONS);
         $settingEntity->setValue($financesSettingsJson);
+
+        $this->em->persist($settingEntity);
+        $this->em->flush();
+    }
+
+    /**
+     * @param ConfigDto[] $moduleLockDtos
+     *
+     * @throws Exception
+     */
+    public function saveModulesLockSettings(array $moduleLockDtos): void
+    {
+        $settingEntity = $this->settingsLoader->getModulesSettings();
+        if (!empty($settingEntity)) {
+            $settingJson = $settingEntity->getValue();
+            $moduleSettings = SettingsModulesDTO::fromJson($settingJson);
+        } else {
+            $settingEntity  = new Setting();
+            $moduleSettings = new SettingsModulesDTO();
+        }
+
+        $moduleSettings->setModuleLockDtos($moduleLockDtos);
+
+        $settingEntity->setName(SettingsLoader::SETTING_NAME_MODULES);
+        $settingEntity->setValue($moduleSettings->toJson());
 
         $this->em->persist($settingEntity);
         $this->em->flush();
