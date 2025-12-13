@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/reports/savings", name: "module.reports.savings.")]
-#[ModuleAttribute(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_REPORTS])]
 class SavingsAction extends AbstractController {
 
     public function __construct(

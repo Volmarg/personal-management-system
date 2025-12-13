@@ -22,8 +22,8 @@ class ModulesService extends AbstractController {
     const MODULE_NAME_PAYMENTS                  = "My Payments";
     const MODULE_NAME_SHOPPING                  = "My Shopping";
     const MODULE_NAME_TRAVELS                   = "My Travels";
-    const MODULE_NAME_ISSUES                    = "My Issues";
-    const MENU_NODE_MODULE_NAME_REPORTS         = "My Reports";
+    const MODULE_NAME_ISSUES  = "My Issues";
+    const MODULE_NAME_REPORTS = "My Reports";
 
     // this also defines listing order, keep in mind that front uses these strings for mapping `name backend => name frontend`
     public const ALL_MODULES = [
@@ -39,7 +39,7 @@ class ModulesService extends AbstractController {
         self::MODULE_NAME_PAYMENTS,
         self::MODULE_NAME_SHOPPING,
         self::MODULE_NAME_JOB,
-        self::MENU_NODE_MODULE_NAME_REPORTS,
+        self::MODULE_NAME_REPORTS,
         self::MODULE_NAME_FILES,
         self::MODULE_NAME_IMAGES,
         self::MODULE_NAME_VIDEO,

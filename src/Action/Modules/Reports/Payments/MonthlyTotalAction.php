@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/reports/payments/total-per-month", name: "module.reports.payments.total-per-month")]
-#[ModuleAttribute(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_REPORTS])]
 class MonthlyTotalAction extends AbstractController {
 
     public function __construct(

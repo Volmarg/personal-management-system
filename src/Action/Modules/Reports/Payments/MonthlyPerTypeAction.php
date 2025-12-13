@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route("/module/reports/payments/total-per-type", name: "module.reports.payments.total-per-type")]
-#[ModuleAttribute(values: ["name" => ModulesService::MENU_NODE_MODULE_NAME_REPORTS])]
+#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_REPORTS])]
 class MonthlyPerTypeAction extends AbstractController {
 
     public function __construct(
