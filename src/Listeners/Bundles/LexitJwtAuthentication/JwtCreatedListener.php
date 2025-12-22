@@ -5,6 +5,7 @@ namespace App\Listeners\Bundles\LexitJwtAuthentication;
 use App\Entity\User;
 use App\Services\Files\PathService;
 use App\Services\Security\JwtAuthenticationService;
+use App\Services\Security\JwtUserRightsHandler;
 use App\Services\Storage\RequestSessionStorage;
 use App\Services\System\LockedResourceService;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
@@ -23,10 +24,12 @@ class JwtCreatedListener implements EventSubscriberInterface
     public const JWT_KEY_USER_ID = "userId";
     private const JWT_KEY_NICKNAME = "nickname";
     private const JWT_KEY_PROFILE_PIC_PATH = "profilePicturePath";
+    private const JWT_KEY_USER_RIGHTS = "userRights";
 
     public function __construct(
         private readonly JwtAuthenticationService $jwtAuthenticationService,
-        private readonly LockedResourceService $lockedResourceService
+        private readonly LockedResourceService $lockedResourceService,
+        private readonly JwtUserRightsHandler $jwtUserRightsHandler,
     ){}
 
     /**
@@ -56,6 +59,7 @@ class JwtCreatedListener implements EventSubscriberInterface
             self::JWT_KEY_USER_ID                      => $user->getId(),
             self::JWT_KEY_NICKNAME                     => $user->getNickname(),
             self::JWT_KEY_PROFILE_PIC_PATH             => PathService::getPublicPath($profilePicturePath, $isUpload),
+            self::JWT_KEY_USER_RIGHTS                  => $this->jwtUserRightsHandler->getUserRights(),
         ]);
 
         $event->setData($newData);

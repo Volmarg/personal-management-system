@@ -9,7 +9,6 @@ security:
         userWithEmailExists: "User with this E-Mail address already exists"
   lockResource:
     invalidPassword: "Invalid password"
-    youAreNotAllowedToSeeThisResource: "You are not allowed to see this resource"
     wholeSystemWasLocked: "Whole system was locked"
     wholeSystemHasBeenUnlocked: "Whole system has been unlocked"
     resourceHasBeenLocked: "Resource has been locked"
