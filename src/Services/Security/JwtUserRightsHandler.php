@@ -56,6 +56,7 @@ class JwtUserRightsHandler
     private function getModuleRights(): array
     {
         $granted = [];
+        $this->settingsLockModuleService->refreshSettingsModuleLockDtos();
         $lockSettings = $this->settingsLockModuleService->getSettingsModuleLockDtos();
         foreach ($lockSettings as $lockSetting) {
             if ($lockSetting->isLocked() && $this->lockedResourceService->isSystemLocked()) {

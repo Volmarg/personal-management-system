@@ -16,16 +16,27 @@ class SettingsLockModuleService extends AbstractController {
      */
     private array $settingsModuleLockDtos;
 
+    /**
+     * @param SettingRepository $settingRepository
+     *
+     * @throws Exception
+     */
+    public function __construct(
+        private readonly SettingRepository $settingRepository
+    ) {
+        // keep in mind that this is called only once per request, so state must be refreshed if necessary
+        $this->refreshSettingsModuleLockDtos();
+    }
+
     public function getSettingsModuleLockDtos(): array
     {
         return $this->settingsModuleLockDtos;
     }
 
     /**
-     * Info: this method is called in `services.yaml` so that it will be set just once instead of calling DB over and over again
      * @throws Exception
      */
-    public function initializeSettingsModuleLockDtos(): void
+    public function refreshSettingsModuleLockDtos(): void
     {
         $allModules = array_combine(ModulesService::ALL_MODULES, ModulesService::ALL_MODULES);
         $allModulesMap = array_map(function(string $moduleName){
@@ -56,14 +67,6 @@ class SettingsLockModuleService extends AbstractController {
         }
 
         $this->settingsModuleLockDtos = $this->sortLocks($this->settingsModuleLockDtos);
-    }
-
-    /**
-     * @param SettingRepository $settingRepository
-     */
-    public function __construct(
-        private readonly SettingRepository $settingRepository
-    ) {
     }
 
     /**
