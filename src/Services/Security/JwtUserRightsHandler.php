@@ -35,6 +35,7 @@ class JwtUserRightsHandler
             ModulesService::MODULE_NAME_FILES        => UserModuleRightEnum::CAN_ACCESS_FILES_MODULE->name,
             ModulesService::MODULE_NAME_IMAGES       => UserModuleRightEnum::CAN_ACCESS_IMAGES_MODULE->name,
             ModulesService::MODULE_NAME_VIDEO        => UserModuleRightEnum::CAN_ACCESS_VIDEOS_MODULE->name,
+            ModulesService::MODULE_NAME_STORAGE      => UserModuleRightEnum::CAN_ACCESS_STORAGE_MODULE->name,
         ];
     }
 
@@ -59,7 +60,7 @@ class JwtUserRightsHandler
         $this->settingsLockModuleService->refreshSettingsModuleLockDtos();
         $lockSettings = $this->settingsLockModuleService->getSettingsModuleLockDtos();
         foreach ($lockSettings as $lockSetting) {
-            if ($lockSetting->isLocked() && $this->lockedResourceService->isSystemLocked()) {
+            if ($lockSetting->isLocked()) {
                 continue;
             }
 

@@ -43,6 +43,7 @@ class ModulesService extends AbstractController {
         self::MODULE_NAME_FILES,
         self::MODULE_NAME_IMAGES,
         self::MODULE_NAME_VIDEO,
+        self::MODULE_NAME_STORAGE,
     ];
 
     public const MODULE_NAME_SYSTEM = "System";
