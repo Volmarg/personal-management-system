@@ -9,6 +9,7 @@ use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\Settings\SettingsLockModuleService;
 use App\Services\Settings\SettingsSaver;
+use App\Services\System\LockedResourceService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,10 +24,12 @@ class ModulesLockAction extends AbstractController {
     /**
      * @param SettingsSaver             $settingsSaverService
      * @param SettingsLockModuleService $settingsLockModuleService
+     * @param LockedResourceService     $lockedResourceService
      */
     public function __construct(
         private readonly SettingsSaver  $settingsSaverService,
-        private readonly SettingsLockModuleService $settingsLockModuleService
+        private readonly SettingsLockModuleService $settingsLockModuleService,
+        private readonly LockedResourceService $lockedResourceService
     ) {
     }
 
@@ -62,6 +65,10 @@ class ModulesLockAction extends AbstractController {
     #[Route("", name: "update", methods: [Request::METHOD_PATCH])]
     public function update(Request $request): JsonResponse
     {
+        if ($this->lockedResourceService->isSystemLocked()) {
+            return BaseResponse::buildAccessDeniedResponse()->toJsonResponse();
+        }
+
         $dataArray   = RequestService::tryFromJsonBody($request);
         $moduleLocks = ArrayHandler::get($dataArray, 'moduleLocks');
 
