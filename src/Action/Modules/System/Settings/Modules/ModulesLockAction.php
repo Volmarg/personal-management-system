@@ -9,6 +9,7 @@ use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\Settings\SettingsLockModuleService;
 use App\Services\Settings\SettingsSaver;
+use App\Services\System\EnvReader;
 use App\Services\System\LockedResourceService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Exception;
@@ -65,6 +66,10 @@ class ModulesLockAction extends AbstractController {
     #[Route("", name: "update", methods: [Request::METHOD_PATCH])]
     public function update(Request $request): JsonResponse
     {
+        if (EnvReader::isDemo()) {
+            return BaseResponse::buildDemoDisabledLogicResponse()->toJsonResponse();
+        }
+
         if ($this->lockedResourceService->isSystemLocked()) {
             return BaseResponse::buildAccessDeniedResponse()->toJsonResponse();
         }

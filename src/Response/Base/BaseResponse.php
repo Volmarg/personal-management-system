@@ -273,6 +273,22 @@ class BaseResponse
     }
 
     /**
+     * Will build response for a case when someone tries using functionality disabled on demo
+     *
+     * @param string $message
+     * @return static
+     */
+    public static function buildDemoDisabledLogicResponse(string $message = "This functionality is disabled on demo!"): static
+    {
+        $response = new static();
+        $response->setCode(Response::HTTP_BAD_REQUEST);
+        $response->setSuccess(false);
+        $response->setMessage($message);
+
+        return $response;
+    }
+
+    /**
      * Will build response which indicates that service is currently in maintenance
      *
      * @param string $message
