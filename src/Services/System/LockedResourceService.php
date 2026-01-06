@@ -76,12 +76,7 @@ class LockedResourceService extends AbstractController {
                 return false;
 
             case LockedResource::TYPE_MODULE:
-                /**
-                 * Module lock is handled via @see SettingsLockModuleService, but this check was added due to usage of
-                 * @see LockedResourceService::isAllowedToSeeResource()
-                 */
-                return false;
-
+                return $this->isAllowedToAccessModule($target);
 
             default:
                 throw new Exception("This locked resource type is not supported");
@@ -154,6 +149,24 @@ class LockedResourceService extends AbstractController {
         }
 
         return true;
+    }
+
+    /**
+     * @param string $moduleName
+     *
+     * @return bool
+     * @throws JWTDecodeFailureException
+     */
+    public function isAllowedToAccessModule(string $moduleName): bool
+    {
+        $isSystemLocked = $this->isSystemLocked();
+        $isModuleLocked = $this->settingsLockModuleController->isModuleLocked($moduleName);
+
+        if (!$isSystemLocked) {
+            return true;
+        }
+
+        return !$isModuleLocked;
     }
 
     /**

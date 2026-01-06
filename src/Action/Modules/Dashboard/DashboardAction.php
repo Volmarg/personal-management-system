@@ -8,10 +8,11 @@ use App\Entity\Modules\Schedules\MySchedule;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Dashboard\DashboardService;
 use App\Services\Module\Issues\MyIssuesService;
 use App\Services\Module\ModulesService;
 use App\Services\Module\Todo\MyTodoService;
-use App\Services\Settings\SettingsLoader;
+use App\Services\System\LockedResourceService;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,8 @@ class DashboardAction extends AbstractController {
         private readonly MyTodoService          $todoService,
         private readonly MyIssuesService        $myIssuesService,
         private readonly EntityManagerInterface $em,
-        private readonly SettingsLoader         $settingsLoader
+        private readonly LockedResourceService  $lockedResourceService,
+        private readonly DashboardService       $dashboardService,
     ) {
     }
 
@@ -48,24 +50,24 @@ class DashboardAction extends AbstractController {
             Setting::DASHBOARD_WIDGET_SCHEDULES     => [],
         ];
 
-        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_GOAL_PAYMENTS)) {
+        if ($this->dashboardService->canFetchData(Setting::DASHBOARD_WIDGET_GOAL_PAYMENTS)) {
             $allPayments = $this->em->getRepository(MyGoalsPayments::class)->getGoalsPaymentsForDashboard();
             foreach ($allPayments as $payment) {
                 $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PAYMENTS][] = $payment->asFrontendData();
             }
         }
 
-        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_GOAL_PROGRESS)) {
+        if ($this->dashboardService->canFetchData(Setting::DASHBOARD_WIDGET_GOAL_PROGRESS)) {
             $goals = $this->em->getRepository(MyTodo::class)->getEntitiesForModuleName(ModulesService::MODULE_NAME_GOALS, true);
             $entriesData[Setting::DASHBOARD_WIDGET_GOAL_PROGRESS] = $this->todoService->buildFrontDataArray($goals);
         }
 
-        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_ISSUES)) {
+        if ($this->dashboardService->canFetchData(Setting::DASHBOARD_WIDGET_ISSUES)) {
             $allOngoingIssues = $this->em->getRepository(MyIssue::class)->getPendingIssuesForDashboard();
             $entriesData[Setting::DASHBOARD_WIDGET_ISSUES] = $this->myIssuesService->getIssuesData($allOngoingIssues);
         }
 
-        if ($this->settingsLoader->isDashboardWidgetVisible(Setting::DASHBOARD_WIDGET_SCHEDULES)) {
+        if ($this->dashboardService->canFetchData(Setting::DASHBOARD_WIDGET_SCHEDULES)) {
             $schedules = $this->em->getRepository(MySchedule::class)->findForDashboard();
             foreach ($schedules as $schedule) {
                 $entriesData[Setting::DASHBOARD_WIDGET_SCHEDULES][] = $schedule->asFrontendData();
