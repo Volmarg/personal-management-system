@@ -32,12 +32,23 @@ class DashboardService
      */
     public function canFetchData(string $widgetName): bool
     {
+        $module = self::getModuleForWidgetName($widgetName);
+        return $this->settingsLoader->isDashboardWidgetVisible($widgetName)
+               && $this->lockedResourceService->isAllowedToAccessModule($module);
+    }
+
+    /**
+     * @param string $widgetName
+     *
+     * @return string
+     */
+    public static function getModuleForWidgetName(string $widgetName): string
+    {
         $module = self::WIDGET_TO_MODULE_NAME[$widgetName] ?? null;
         if (is_null($module)) {
             throw new LogicException("Module name wasn't found for widget name {$widgetName}");
         }
 
-        return $this->settingsLoader->isDashboardWidgetVisible($widgetName)
-               && $this->lockedResourceService->isAllowedToAccessModule($module);
+        return $module;
     }
 }

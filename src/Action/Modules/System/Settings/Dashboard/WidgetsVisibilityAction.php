@@ -7,9 +7,11 @@ use App\DTO\Settings\Dashboard\Widget\SettingsWidgetVisibilityDto;
 use App\DTO\Settings\SettingsDashboardDto;
 use App\Entity\Setting;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Dashboard\DashboardService;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\Settings\SettingsLoader;
+use App\Services\Settings\SettingsLockModuleService;
 use App\Services\Settings\SettingsSaver;
 use App\Services\TypeProcessor\ArrayHandler;
 use Exception;
@@ -23,8 +25,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class WidgetsVisibilityAction extends AbstractController {
 
     public function __construct(
-        private readonly SettingsSaver  $settingsSaverService,
-        private readonly SettingsLoader $settingsLoaderService,
+        private readonly SettingsSaver             $settingsSaverService,
+        private readonly SettingsLoader            $settingsLoaderService,
+        private readonly SettingsLockModuleService $settingsLockModuleService
     ) {
     }
 
@@ -55,9 +58,11 @@ class WidgetsVisibilityAction extends AbstractController {
                 }
             }
 
+            $associatedModule = DashboardService::getModuleForWidgetName($widgetName);
             $entriesData[] = [
-                'name'    => $widgetName,
-                'enabled' => $enabled,
+                'name'           => $widgetName,
+                'enabled'        => $enabled,
+                'isModuleLocked' => $this->settingsLockModuleService->isModuleLocked($associatedModule),
             ];
         }
 
