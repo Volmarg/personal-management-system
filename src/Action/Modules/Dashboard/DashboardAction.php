@@ -12,6 +12,7 @@ use App\Services\Module\Dashboard\DashboardService;
 use App\Services\Module\Issues\MyIssuesService;
 use App\Services\Module\ModulesService;
 use App\Services\Module\Todo\MyTodoService;
+use App\Services\Settings\SettingsLockModuleService;
 use App\Services\System\LockedResourceService;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -29,6 +30,7 @@ class DashboardAction extends AbstractController {
         private readonly EntityManagerInterface $em,
         private readonly LockedResourceService  $lockedResourceService,
         private readonly DashboardService       $dashboardService,
+        private readonly SettingsLockModuleService $settingsLockModuleService
     ) {
     }
 
@@ -72,6 +74,11 @@ class DashboardAction extends AbstractController {
             foreach ($schedules as $schedule) {
                 $entriesData[Setting::DASHBOARD_WIDGET_SCHEDULES][] = $schedule->asFrontendData();
             }
+        }
+
+        foreach ($entriesData as $widgetName => $widgetData) {
+            $associatedModule = DashboardService::getModuleForWidgetName($widgetName);
+            $entriesData[Setting::DASHBOARD_WIDGETS_LOCK_STATE][$widgetName] = $this->settingsLockModuleService->isModuleLocked($associatedModule);
         }
 
         $response = BaseResponse::buildOkResponse();

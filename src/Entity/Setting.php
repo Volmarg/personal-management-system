@@ -14,6 +14,7 @@ class Setting implements EntityInterface
     public const string DASHBOARD_WIDGET_GOAL_PAYMENTS = "goalPayments";
     public const string DASHBOARD_WIDGET_ISSUES        = "issues";
     public const string DASHBOARD_WIDGET_SCHEDULES     = "schedules";
+    public const string DASHBOARD_WIDGETS_LOCK_STATE = "lockState";
 
     public const array ALL_DASHBOARD_WIDGETS = [
         self::DASHBOARD_WIDGET_GOAL_PROGRESS,
