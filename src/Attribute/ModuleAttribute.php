@@ -10,7 +10,7 @@ use Attribute;
  *
  * This is especially helpful to control access to the action methods / classes
  */
-#[Attribute(Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_CLASS|Attribute::TARGET_METHOD|Attribute::IS_REPEATABLE)]
 class ModuleAttribute
 {
     const ATTRIBUTE_KEY_NAME            = "name";

@@ -44,23 +44,8 @@ class AttributeReaderService
      */
     public function hasUriAttribute(string $calledUri, string $attributeClass): bool
     {
-        $attribute = $this->getAttributeByClass($calledUri, $attributeClass);
+        $attribute = $this->getUriAttribute($calledUri, $attributeClass);
         return !empty($attribute);
-    }
-
-    /**
-     * Will return array of attributes for given class::method string
-     *
-     * @param string $classWithMethodForUri
-     * @return ReflectionAttribute[]
-     * @throws ReflectionException
-     */
-    private function getAttributesForRoute(string $classWithMethodForUri): array
-    {
-        $methodReflection  = new MethodReflection($classWithMethodForUri);
-        $arrayOfAttributes = $methodReflection->getAttributes();
-
-        return $arrayOfAttributes;
     }
 
     /**
@@ -89,26 +74,25 @@ class AttributeReaderService
      *
      * @param string $calledUri
      * @param string $attributeClass
-     * @return ReflectionAttribute|null
+     * @return ReflectionAttribute[]
      * @throws ReflectionException
      */
-    private function getAttributeByClass(string $calledUri, string $attributeClass): ?ReflectionAttribute
+    public function getUriAttribute(string $calledUri, string $attributeClass): array
     {
         $uriWithoutQueryParams = preg_replace("#\?.*#", "", $calledUri);
         $classWithMethodForUri = $this->urlMatcherService->getClassAndMethodForCalledUrl($uriWithoutQueryParams);
-        if( empty($classWithMethodForUri) ){
-            $this->logger->warning("Url matcher returned null for uri ({$calledUri}), so no attribute can be looked for");
-            return null;
-        }
 
-        $attributes = $this->getAttributesForRoute($classWithMethodForUri);
-        foreach($attributes as $reflectionAttribute){
-            if( $attributeClass === $reflectionAttribute->getName() ){
-                return $reflectionAttribute;
+        $methodReflection = new MethodReflection($classWithMethodForUri);
+        $attributes       = $methodReflection->getAttributes();
+
+        $matchingAttrs = [];
+        foreach ($attributes as $reflectionAttribute) {
+            if ($attributeClass === $reflectionAttribute->getName()) {
+                $matchingAttrs[] = $reflectionAttribute;
             }
         }
 
-        return null;
+        return $matchingAttrs;
     }
 
 }

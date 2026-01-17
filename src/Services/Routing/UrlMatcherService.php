@@ -4,6 +4,7 @@ namespace App\Services\Routing;
 
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -39,7 +40,9 @@ class UrlMatcherService
      * Will return `class::method` for given url or null if nothing was found
      *
      * @param string $url
+     *
      * @return string|null
+     * @throws Exception
      */
     public function getClassAndMethodForCalledUrl(string $url): ?string
     {
@@ -62,7 +65,13 @@ class UrlMatcherService
             return null;
         }
 
-        return $dataArray[self::URL_MATCHER_RESULT_CONTROLLER_WITH_METHOD];
+        $classAndMethod = $dataArray[self::URL_MATCHER_RESULT_CONTROLLER_WITH_METHOD];
+        $parts = explode("::", $classAndMethod);
+        if (2 !== count($parts)) {
+            throw new LogicException("Got string `{$classAndMethod}` for url `{$url}`: failed extracting `class::method` from it");
+        }
+
+        return $classAndMethod;
     }
 
     /**

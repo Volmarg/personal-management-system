@@ -92,7 +92,8 @@ class MyTodoListAction extends AbstractController {
      * @return JsonResponse
      * @throws Exception
      */
-    #[Route("/relation-entries", name: "relation    _entries", methods: [Request::METHOD_POST])]
+    #[Route("/relation-entries", name: "relation_entries", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_GOALS])]
     public function getPossibleRelationEntries(Request $request): JsonResponse
     {
         $dataArray   = RequestService::tryFromJsonBody($request);

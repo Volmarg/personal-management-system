@@ -12,7 +12,9 @@ use App\Services\Exceptions\SecurityException;
 use App\Services\Routing\UrlMatcherService;
 use App\Services\System\LockedResourceService;
 use Exception;
+use LogicException;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -146,18 +148,22 @@ class OnKernelRequestListener implements EventSubscriberInterface {
      */
     private function handleResourceLockAnnotation(RequestEvent $ev)
     {
-        $request     = $ev->getRequest();
-        $classForUrl = $this->urlMatcherService->getClassForCalledUrl($request->getRequestUri());
-        if (empty($classForUrl)) {
+        $request = $ev->getRequest();
+
+        $classAndMethod      = $this->urlMatcherService->getClassAndMethodForCalledUrl($request->getRequestUri());
+        $classAndMethodParts = explode("::", $classAndMethod);
+        $className           = $classAndMethodParts[0];
+
+        if (empty($className)) {
             $this->logger->warning("No class was found for url: " . $request->getRequestUri());
         }
 
         // can happen for web profiler / debug bar routes
-        if (!class_exists($classForUrl)) {
+        if (!class_exists($className)) {
             return;
         }
 
-        $attribute = $this->attributeReaderService->getClassAttribute($classForUrl, ModuleAttribute::class);
+        $attribute = $this->attributeReaderService->getClassAttribute($className, ModuleAttribute::class);
         if (empty($attribute)) {
             return;
         }
@@ -177,7 +183,13 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             throw new Exception(ModuleAttribute::ATTRIBUTE_KEY_NAME . " was not set for: " . ModuleAttribute::class);
         }
 
-        if( !$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName) ){
+        $canAccessModule = $this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_ENTITY, $moduleName);
+        $canAccessMethod = false;
+        if ($this->attributeReaderService->hasUriAttribute($request->getRequestUri(), ModuleAttribute::class)) {
+            $canAccessMethod = !$this->isCalledMethodLocked($request->getRequestUri());
+        }
+
+        if (!$canAccessModule && !$canAccessMethod) {
             $this->handleNotAllowedToSeeResource($ev);
             return;
         }
@@ -191,12 +203,8 @@ class OnKernelRequestListener implements EventSubscriberInterface {
             }
         }
 
-        if(
-                !empty($relatedModules)
-            &&  $countOfLockedRelatedModules == $countOfRelatedModules
-        ){
+        if (!empty($relatedModules) && $countOfLockedRelatedModules == $countOfRelatedModules) {
             $this->handleNotAllowedToSeeResource($ev);
-            return;
         }
     }
 
@@ -211,4 +219,30 @@ class OnKernelRequestListener implements EventSubscriberInterface {
         $ev->stopPropagation();
     }
 
+    /**
+     * @param string $calledUri
+     *
+     * @return bool
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     * @throws ReflectionException
+     */
+    private function isCalledMethodLocked(string $calledUri): bool
+    {
+        $attributes = $this->attributeReaderService->getUriAttribute($calledUri, ModuleAttribute::class);
+        foreach ($attributes as $attribute) {
+            $args       = $attribute->getArguments();
+            $values     = $args['values'] ?? [];
+            $moduleName = $values[ModuleAttribute::ATTRIBUTE_KEY_NAME] ?? null;
+            if (empty($moduleName)) {
+                throw new LogicException("`{$calledUri}`: module name was not set for: " . ModuleAttribute::class);
+            }
+
+            if (!$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_MODULE, $moduleName)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
