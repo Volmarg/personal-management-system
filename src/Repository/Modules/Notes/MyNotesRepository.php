@@ -59,7 +59,8 @@ class MyNotesRepository extends ServiceEntityRepository {
         $qb->select("n")
             ->from(MyNotes::class, "n")
             ->where(
-                $qb->expr()->like("n.Title", ":title")
+                $qb->expr()->like("n.Title", ":title"),
+                $qb->expr()->neq("n.deleted", 1),
             )
             ->setParameter("title" ,"%{$title}%");
 
