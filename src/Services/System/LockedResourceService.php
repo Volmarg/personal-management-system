@@ -76,7 +76,7 @@ class LockedResourceService extends AbstractController {
                 return false;
 
             case LockedResource::TYPE_MODULE:
-                return $this->isAllowedToAccessModule($target);
+                return !$this->isAllowedToAccessModule($target);
 
             default:
                 throw new Exception("This locked resource type is not supported");

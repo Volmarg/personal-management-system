@@ -238,7 +238,7 @@ class OnKernelRequestListener implements EventSubscriberInterface {
                 throw new LogicException("`{$calledUri}`: module name was not set for: " . ModuleAttribute::class);
             }
 
-            if (!$this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_MODULE, $moduleName)) {
+            if ($this->lockedResourceService->isAllowedToSeeResource("", LockedResource::TYPE_MODULE, $moduleName)) {
                 return false;
             }
         }

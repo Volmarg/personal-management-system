@@ -5,10 +5,12 @@ namespace App\Action\Modules\System;
 use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Entity\Modules\Notes\MyNotes;
+use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
 use App\Services\Module\Storage\StorageService;
+use App\Services\System\LockedResourceService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\DBAL\Driver\Exception;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,7 +26,8 @@ class SearchAction extends AbstractController {
 
     public function __construct(
         private readonly StorageService $storageService,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LockedResourceService $lockedResourceService
     ) {
     }
 
@@ -109,9 +112,15 @@ class SearchAction extends AbstractController {
      * @param array  $entriesData
      *
      * @return array
+     * @throws Exception
+     * @throws \Doctrine\DBAL\Exception
      */
     private function searchInNotes(string $query, array $entriesData): array
     {
+        if ($this->lockedResourceService->isResourceLocked('', LockedResource::TYPE_MODULE, ModulesService::MODULE_NAME_NOTES)) {
+            return [];
+        }
+
         $notes = $this->entityManager->getRepository(MyNotes::class)->findByTitle($query);
 
         $notesData = [];
