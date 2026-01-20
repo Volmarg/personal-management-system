@@ -55,7 +55,7 @@ class ModulesService extends AbstractController {
      * @param string $fileFullPath
      * @return string|null
      */
-    public static function getUploadModuleNameForFileFullPath(string $fileFullPath): ?string
+    public static function getUploadModuleNameByFilePath(string $fileFullPath): ?string
     {
         $trimmedFileFullPath = FilesHandler::trimFirstAndLastSlash($fileFullPath);
 

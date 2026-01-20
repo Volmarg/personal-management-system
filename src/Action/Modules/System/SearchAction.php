@@ -92,6 +92,11 @@ class SearchAction extends AbstractController {
                     continue;
                 }
 
+                $moduleName = ModulesService::getUploadModuleNameByFilePath($fileData['dir']);
+                if ($this->lockedResourceService->isResourceLocked('', LockedResource::TYPE_MODULE, $moduleName)) {
+                    continue;
+                }
+
                 $matchingFiles[] = [
                     'name'        => $fileName,
                     'identifiers' => [
