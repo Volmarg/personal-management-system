@@ -32,7 +32,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * - direct files manipulation goes to {@see StorageFileAction}
  */
 #[Route("/module/storage/folder", name: "module.storage.folder.")]
-#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
 class StorageFolderAction extends AbstractController
 {
     public function __construct(
@@ -60,6 +59,10 @@ class StorageFolderAction extends AbstractController
      * @throws \Doctrine\DBAL\Driver\Exception
      */
     #[Route("/all/{module}", name: "get_module_all", methods: [Request::METHOD_GET])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function getModuleAll(string $module): JsonResponse
     {
         $moduleEnum = StorageModuleEnum::tryFrom($module);
@@ -84,6 +87,10 @@ class StorageFolderAction extends AbstractController
      * @throws \Doctrine\DBAL\Exception
      */
     #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function getAll(): JsonResponse
     {
         $entriesData = [];
@@ -106,6 +113,10 @@ class StorageFolderAction extends AbstractController
      * @throws Exception
      */
     #[Route("/create", name: "create", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function createFolder(Request $request): JsonResponse
     {
         $dataArray     = RequestService::tryFromJsonBody($request);
@@ -148,6 +159,10 @@ class StorageFolderAction extends AbstractController
      * @throws \Doctrine\DBAL\Driver\Exception
      */
     #[Route("/toggle-lock", name: "toggleLock", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function toggleLock(Request $request): JsonResponse
     {
         $dataArray  = RequestService::tryFromJsonBody($request);
@@ -182,6 +197,10 @@ class StorageFolderAction extends AbstractController
      * @throws Exception
      */
     #[Route("/folder-meta-data", name: "folder_meta_data", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function updateFolderData(Request $request): JsonResponse
     {
         $dataArray   = RequestService::tryFromJsonBody($request);
@@ -212,6 +231,10 @@ class StorageFolderAction extends AbstractController
      * @throws Exception
      */
     #[Route("/remove", name: "remove", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function remove(Request $request): JsonResponse
     {
         $dataArray = RequestService::tryFromJsonBody($request);
@@ -271,6 +294,7 @@ class StorageFolderAction extends AbstractController
      * @throws Exception
      */
     #[Route("/rename", name: "rename", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
     public function renameFolder(Request $request): JsonResponse
     {
         $dataArray   = RequestService::tryFromJsonBody($request);
@@ -321,6 +345,7 @@ class StorageFolderAction extends AbstractController
      * @throws Exception
      */
     #[Route("/move-or-copy", name: "move_or_copy", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
     public function moveFiles(Request $request): JsonResponse
     {
         $dataArray        = RequestService::tryFromJsonBody($request);

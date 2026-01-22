@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/storage/file", name: "module.storage.file.")]
-#[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_STORAGE])]
 class StorageFileAction extends AbstractController
 {
     public function __construct(
@@ -36,6 +35,9 @@ class StorageFileAction extends AbstractController
      * @throws Exception
      */
     #[Route("/update", name: "rename", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function update(Request $request): JsonResponse
     {
         $dataArray    = RequestService::tryFromJsonBody($request);
@@ -89,6 +91,9 @@ class StorageFileAction extends AbstractController
      * @throws Exception
      */
     #[Route("/remove", name: "remove", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function removeFile(Request $request): JsonResponse
     {
         $dataArray = RequestService::tryFromJsonBody($request);
@@ -116,6 +121,9 @@ class StorageFileAction extends AbstractController
      * @throws Exception
      */
     #[Route("/move", name: "move", methods: [Request::METHOD_POST])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_VIDEO])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_FILES])]
+    #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_IMAGES])]
     public function moveFiles(Request $request): JsonResponse
     {
         $dataArray   = RequestService::tryFromJsonBody($request);
