@@ -73,6 +73,42 @@ class JwtUserRightsHandler
             $granted[] = $right;
         }
 
+        return $this->stripRights($granted);
+    }
+
+    /**
+     * Conditionally removes granted rights
+     *
+     * @param array $granted
+     *
+     * @return array
+     */
+    private function stripRights(array $granted): array
+    {
+        return $this->stripStorageModuleRight($granted);
+    }
+
+    /**
+     * Tbf this is a bit fishy, because backend checks directly lock state, so while front won't have the right to access
+     * the module, backend still will. This should not cause any problems because the right is stripped only when
+     * no storage-based module access is granted anyway, so there is no data to be manipulated.
+     *
+     * @param array $granted
+     *
+     * @return array
+     */
+    private function stripStorageModuleRight(array $granted): array
+    {
+        if (
+                in_array(UserModuleRightEnum::CAN_ACCESS_STORAGE_MODULE->name, $granted)
+            && !in_array(UserModuleRightEnum::CAN_ACCESS_FILES_MODULE->name, $granted)
+            && !in_array(UserModuleRightEnum::CAN_ACCESS_VIDEOS_MODULE->name, $granted)
+            && !in_array(UserModuleRightEnum::CAN_ACCESS_IMAGES_MODULE->name, $granted)
+        ) {
+            $index = array_search(UserModuleRightEnum::CAN_ACCESS_STORAGE_MODULE->name, $granted);
+            unset($granted[$index]);
+        }
+
         return $granted;
     }
 }
