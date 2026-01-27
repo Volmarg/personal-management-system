@@ -95,6 +95,11 @@ class StorageFolderAction extends AbstractController
     {
         $entriesData = [];
         foreach (StorageModuleEnum::cases() as $enum) {
+            $moduleName = StorageService::enumToModuleName($enum);
+            if ($this->lockedResourceService->isResourceLocked('', LockedResource::TYPE_MODULE, $moduleName)) {
+                continue;
+            }
+
             $entriesData[$enum->value] = $this->storageService->getTreeData($enum);
         }
 
