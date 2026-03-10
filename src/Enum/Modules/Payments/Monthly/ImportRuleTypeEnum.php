@@ -6,4 +6,5 @@ enum ImportRuleTypeEnum: string
 {
     case REGEX = 'regex';
     case EXACT = 'exact';
+    case PARTIAL = 'partial';
 }
