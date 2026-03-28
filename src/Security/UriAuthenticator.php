@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Services\Routing\UrlService;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -12,9 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UriAuthenticator
 {
-    const EXCLUDE_PROFILER_REGEX = "^/_profiler";
-    const EXCLUDE_WDT_REGEX      = "^/_wdt";
-    const EXCLUDE_FRAGMENT_REGEX = "^/_fragment";
     const EXCLUDE_DOWNLOAD_REGEX = "^/download";
 
     /**
@@ -25,9 +23,6 @@ class UriAuthenticator
      * Besides, this array is used for other checks like for example csrf token validation
      */
     const EXCLUDED_URI_REGEXES = [
-        self:: EXCLUDE_FRAGMENT_REGEX,
-        self:: EXCLUDE_PROFILER_REGEX,
-        self:: EXCLUDE_WDT_REGEX,
         self:: EXCLUDE_DOWNLOAD_REGEX,
     ];
 
@@ -37,10 +32,15 @@ class UriAuthenticator
      *
      * @return bool
      */
-    public static function isUriExcludedFromAuthenticationByRegex(): bool
+    public static function isUriExcludedFromAuth(): bool
     {
+        $regexes = [
+            ...self:: EXCLUDED_URI_REGEXES,
+            ...UrlService::EXCLUDED_DEV_AND_SYSTEM_URI_REGEXES,
+        ];
+
         $request = Request::createFromGlobals();
-        foreach(self::EXCLUDED_URI_REGEXES as $regex){
+        foreach($regexes as $regex){
             if( preg_match("#" . $regex . "#", $request->getRequestUri()) ){
                 return true;
             }

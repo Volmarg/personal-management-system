@@ -7,6 +7,7 @@ use App\Entity\System\LockedResource;
 use App\Response\Security\LockedResourceDeniedResponse;
 use App\Services\Attribute\AttributeReaderService;
 use App\Services\Routing\UrlMatcherService;
+use App\Services\Routing\UrlService;
 use App\Services\System\LockedResourceService;
 use Exception;
 use LogicException;
@@ -38,6 +39,10 @@ class KernelRequestResourceLock
      */
     public function onKernelRequest(RequestEvent $ev): void
     {
+        if (UrlService::isExcludedDevOrSystemUri()) {
+            return;
+        }
+
         $className = $this->getClassNameForCalledUri($ev->getRequest());
         $attribute = $this->attributeReaderService->getClassAttribute($className, ModuleAttribute::class);
         if (empty($attribute)) {

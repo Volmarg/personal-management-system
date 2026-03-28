@@ -50,8 +50,8 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
     public function supports(Request $request): bool
     {
        if(
-                UriAuthenticator::isUriExcludedFromAuthenticationByRegex() // must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
-           ||   $this->attributeReaderService->hasUriAttribute($request->getRequestUri(), JwtAuthenticationDisabledAttribute::class)
+           UriAuthenticator::isUriExcludedFromAuth()// must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
+           || $this->attributeReaderService->hasUriAttribute($request->getRequestUri(), JwtAuthenticationDisabledAttribute::class)
        ){
             return false;
         }

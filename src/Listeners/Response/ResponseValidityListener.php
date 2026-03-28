@@ -50,7 +50,7 @@ class ResponseValidityListener implements EventSubscriberInterface
      */
     public function onResponse(ResponseEvent $event): void
     {
-        if( UriAuthenticator::isUriExcludedFromAuthenticationByRegex() ){
+        if( UriAuthenticator::isUriExcludedFromAuth() ){
             return;
         }
 
