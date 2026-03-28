@@ -2,6 +2,7 @@
 
 namespace App\Action\System;
 
+use App\Services\Files\PathService;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,8 @@ class PublicFolderAction extends AbstractController
      */
     private function buildResponse(string $filePath): Response
     {
+        PathService::validatePathSafety($filePath);
+
         $fileContent = file_get_contents($filePath);
         if (is_bool($fileContent)) {
             throw new Exception("Could not open the file: {$filePath}");
