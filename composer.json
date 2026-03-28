@@ -65,13 +65,13 @@
         "fzaninotto/faker": "^1.8",
         "mbezhanov/faker-provider-collection": "^1.2",
         "phpstan/phpstan": "^0.12.32",
+        "phpunit/phpunit": "^8.5",
         "symfony/browser-kit": "v5.4",
         "symfony/css-selector": "^5.0",
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^5.0",
-        "symfony/web-profiler-bundle": "v5.4",
-        "symfony/webpack-encore-bundle": "^1.4",
-        "phpunit/phpunit": "^8.5"
+        "symfony/web-profiler-bundle": "^v6.1.0",
+        "symfony/webpack-encore-bundle": "^1.4"
     },
     "config": {
         "preferred-install": {
