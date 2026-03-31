@@ -4,3 +4,7 @@ lexik_jwt_authentication:
     pass_phrase:      '%env(APP_SECRET)%'     # required for token creation, usage of an environment variable is recommended
     token_ttl:        '%jwt_token_lifetime%'  # lifetime of token - meaning timeout to logout as well
     user_identity_field: "email"              # Must be compatible with security.yaml `security.providers.app_user_provider.entity.property`
+    token_extractors:
+        query_parameter:
+            enabled: true
+            name:    token
