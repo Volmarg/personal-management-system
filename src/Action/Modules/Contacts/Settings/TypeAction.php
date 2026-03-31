@@ -121,9 +121,12 @@ class TypeAction extends AbstractController
             return BaseResponse::buildBadRequestErrorResponse($this->translator->trans('module.contacts.settings.type.save.nameExist'));
         }
 
-        $normalisedImagePath = FilesHandler::addTrailingSlashIfMissing($imagePath, true);
+        if (!filter_var($imagePath, FILTER_VALIDATE_URL)) {
+            $imagePath = FilesHandler::addTrailingSlashIfMissing($imagePath, true);
+        }
+
         if ($isNew) {
-            $type->setImagePath($normalisedImagePath);
+            $type->setImagePath($imagePath);
             $type->setName($name);
 
             $this->em->persist($type);
@@ -133,7 +136,7 @@ class TypeAction extends AbstractController
 
         $typeBeforeUpdate = clone $type;
 
-        $type->setImagePath($normalisedImagePath);
+        $type->setImagePath($imagePath);
         $type->setName($name);
 
         $this->em->beginTransaction();
