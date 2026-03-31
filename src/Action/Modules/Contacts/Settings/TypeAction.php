@@ -144,6 +144,7 @@ class TypeAction extends AbstractController
             $this->em->rollback();
             throw $e;
         }
+        $this->em->flush();
         $this->em->commit();
 
         return BaseResponse::buildOkResponse();
