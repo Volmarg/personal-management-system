@@ -4,7 +4,6 @@
 namespace App\Action\System;
 
 
-use App\Attribute\JwtAuthenticationDisabledAttribute;
 use App\Entity\User;
 use App\Response\Base\BaseResponse;
 use App\Services\RequestService;
@@ -82,7 +81,6 @@ class AppAction extends AbstractController
      * @throws Exception
      */
     #[Route("/register-user", name: 'register_user', methods: [Request::METHOD_POST, Request::METHOD_OPTIONS])]
-    #[JwtAuthenticationDisabledAttribute]
     public function registerUser(Request $request): JsonResponse
     {
         $dataArray             = RequestService::tryFromJsonBody($request);
@@ -140,7 +138,6 @@ class AppAction extends AbstractController
      *
      * @return JsonResponse
      */
-    #[JwtAuthenticationDisabledAttribute]
     public function login(): JsonResponse
     {
         return BaseResponse::buildOkResponse()->toJsonResponse();
@@ -152,7 +149,6 @@ class AppAction extends AbstractController
      * @return JsonResponse
      */
     #[Route("/can-register", name: 'can_register_check', methods: [Request::METHOD_GET, Request::METHOD_OPTIONS])]
-    #[JwtAuthenticationDisabledAttribute]
     public function hasAnyActiveUser(): JsonResponse
     {
         $userRepo = $this->em->getRepository(User::class);

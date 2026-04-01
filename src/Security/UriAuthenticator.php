@@ -13,19 +13,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class UriAuthenticator
 {
-    const EXCLUDE_DOWNLOAD_REGEX = "^/download";
-
-    /**
-     * By default {@see JwtAuthenticationDisabledAttribute} should be added on top of route based method
-     * to disable the jwt check, however it's not always possible so this solution (regex patter) should
-     * be used in such cases.
-     *
-     * Besides, this array is used for other checks like for example csrf token validation
-     */
-    const EXCLUDED_URI_REGEXES = [
-        self:: EXCLUDE_DOWNLOAD_REGEX,
-    ];
-
     /**
      * Will check if currently called uri is excluded from jwt authentication logic
      * {@see LexitBundleJwtTokenAuthenticator::EXCLUDED_URI_REGEXES}
@@ -35,7 +22,6 @@ class UriAuthenticator
     public static function isUriExcludedFromAuth(): bool
     {
         $regexes = [
-            ...self:: EXCLUDED_URI_REGEXES,
             ...UrlService::EXCLUDED_DEV_AND_SYSTEM_URI_REGEXES,
         ];
 
@@ -47,5 +33,4 @@ class UriAuthenticator
         }
         return false;
     }
-
 }

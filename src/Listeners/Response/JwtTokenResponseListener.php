@@ -2,8 +2,8 @@
 
 namespace App\Listeners\Response;
 
-use App\Attribute\JwtAuthenticationDisabledAttribute;
 use App\Response\Base\BaseResponse;
+use App\Security\LexitBundleJwtTokenAuthenticator;
 use App\Security\UriAuthenticator;
 use App\Services\Attribute\AttributeReaderService;
 use App\Services\ResponseService;
@@ -70,8 +70,8 @@ class JwtTokenResponseListener implements EventSubscriberInterface
         }
 
         if (
-            UriAuthenticator::isUriExcludedFromAuth()// must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
-            || $this->attributeReaderService->hasUriAttribute($request->getRequestUri(), JwtAuthenticationDisabledAttribute::class)
+            UriAuthenticator::isUriExcludedFromAuth() // must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
+            || LexitBundleJwtTokenAuthenticator::$isJwtAuthSkipped
         ) {
             return;
         }

@@ -2,7 +2,6 @@
 
 namespace App\Security;
 
-use App\Attribute\JwtAuthenticationDisabledAttribute;
 use App\Response\Base\BaseResponse;
 use App\Services\Attribute\AttributeReaderService;
 use App\Services\Security\JwtAuthenticationService;
@@ -15,11 +14,11 @@ use Lexik\Bundle\JWTAuthenticationBundle\Security\Guard\JWTTokenAuthenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
 use Psr\Log\LoggerInterface;
-use ReflectionException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -29,6 +28,8 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
 {
     use ExceptionLoggerAwareTrait;
+
+    public static bool $isJwtAuthSkipped = true;
 
     public function __construct(
         JWTTokenManagerInterface                $jwtManager,
@@ -45,21 +46,13 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
     /**
      * @param Request $request
      * @return bool
-     * @throws ReflectionException
      */
     public function supports(Request $request): bool
     {
-       if(
-           UriAuthenticator::isUriExcludedFromAuth()// must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
-           || $this->attributeReaderService->hasUriAttribute($request->getRequestUri(), JwtAuthenticationDisabledAttribute::class)
-       ){
+        if (UriAuthenticator::isUriExcludedFromAuth()) {
             return false;
         }
 
-        /**
-         * Returns false if authentication header is missing, thus if any route must be tested then either use request test tool,
-         * or add the {@see JwtAuthenticationDisabledAttribute} on the target route
-         */
         return parent::supports($request);
     }
 
@@ -82,6 +75,17 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
             $this->logException($authException);
         }
         return $apiResponse->toJsonResponse();
+    }
+
+    /**
+     * @param Request        $request
+     * @param TokenInterface $token
+     * @param                $providerKey
+     */
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): void
+    {
+        parent::onAuthenticationSuccess($request, $token, $providerKey);
+        self::$isJwtAuthSkipped = true;
     }
 
     /**

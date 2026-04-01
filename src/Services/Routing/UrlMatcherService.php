@@ -75,25 +75,6 @@ class UrlMatcherService
     }
 
     /**
-     * Will return `class` separated from `class::method` for given url or null if nothing was found
-     *
-     * @param string $url
-     * @return string|null
-     */
-    public function getClassForCalledUrl(string $url): ?string
-    {
-        $classAndMethod = $this->getClassAndMethodForCalledUrl($url);
-        if( empty($classAndMethod) ){
-            return null;
-        }
-
-        $explodedClassAndMethod = explode("::", $classAndMethod);
-        $class                  = $explodedClassAndMethod[0];
-
-        return $class;
-    }
-
-    /**
      * Will return matching route for called uri
      *
      * @param string $uri
