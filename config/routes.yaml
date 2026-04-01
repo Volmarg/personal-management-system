@@ -1,3 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+when@dev:
+  dev_debug:
+    path: /dev/debug
+    controller: App\Action\DevAction::debug
