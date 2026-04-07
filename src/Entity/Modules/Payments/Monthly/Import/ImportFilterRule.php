@@ -35,6 +35,12 @@ class ImportFilterRule implements EntityInterface
      */
     private string $type;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\Monthly\Import\ImportProfile", inversedBy="filterRules")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private ?ImportProfile $importProfile;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +81,16 @@ class ImportFilterRule implements EntityInterface
     {
         ImportRuleTypeEnum::from($type);
         $this->type = $type;
+    }
+
+    public function getImportProfile(): ?ImportProfile
+    {
+        return $this->importProfile;
+    }
+
+    public function setImportProfile(?ImportProfile $importProfile): void
+    {
+        $this->importProfile = $importProfile;
     }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Entity\Modules\Payments\Monthly\Import;
 
 use App\Entity\Interfaces\EntityInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -42,6 +43,16 @@ class ImportProfile implements EntityInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private ?string $currencyField = null;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Payments\Monthly\Import\ImportFilterRule", mappedBy="importProfile")
+     */
+    private $filterRules;
+
+    public function __construct()
+    {
+        $this->filterRules = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -101,6 +112,16 @@ class ImportProfile implements EntityInterface
     public function setCurrencyField(?string $currencyField): void
     {
         $this->currencyField = $currencyField;
+    }
+
+    public function getFilterRules(): ArrayCollection
+    {
+        return $this->filterRules;
+    }
+
+    public function setFilterRules(ArrayCollection $filterRules): void
+    {
+        $this->filterRules = $filterRules;
     }
 
 }

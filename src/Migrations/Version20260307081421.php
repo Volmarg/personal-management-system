@@ -28,6 +28,19 @@ final class Version20260307081421 extends AbstractMigration
                 PRIMARY KEY(id)
             ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB'
         );
+
+        $this->addSql("
+            ALTER TABLE my_payment_monthly_import_filter_rule
+            ADD COLUMN import_profile_id INT DEFAULT NULL
+        ");
+
+        $this->addSql('
+            ALTER TABLE my_payment_monthly_import_filter_rule 
+            ADD CONSTRAINT FK_20260307081421_profile
+            FOREIGN KEY (import_profile_id)
+            REFERENCES my_payment_monthly_import_profile (id)
+        ');
+
     }
 
     public function down(Schema $schema) : void
