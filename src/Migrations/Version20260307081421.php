@@ -20,7 +20,7 @@ final class Version20260307081421 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         $this->addSql('
-            CREATE TABLE my_payment_monthly_import_filter_rule (
+            CREATE TABLE IF NOT EXISTS my_payment_monthly_import_filter_rule (
                 id INT AUTO_INCREMENT NOT NULL, 
                 field_name VARCHAR(255) NOT NULL, 
                 rule VARCHAR(255) NOT NULL, 
@@ -31,13 +31,13 @@ final class Version20260307081421 extends AbstractMigration
 
         $this->addSql("
             ALTER TABLE my_payment_monthly_import_filter_rule
-            ADD COLUMN import_profile_id INT DEFAULT NULL
+            ADD COLUMN IF NOT EXISTS import_profile_id INT DEFAULT NULL
         ");
 
         $this->addSql('
             ALTER TABLE my_payment_monthly_import_filter_rule 
-            ADD CONSTRAINT FK_20260307081421_profile
-            FOREIGN KEY (import_profile_id)
+            ADD CONSTRAINT FK_202603_profile
+            FOREIGN KEY IF NOT EXISTS (import_profile_id)
             REFERENCES my_payment_monthly_import_profile (id)
         ');
 

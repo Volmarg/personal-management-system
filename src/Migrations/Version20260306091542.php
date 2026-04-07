@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260314091542 extends AbstractMigration
+final class Version20260306091542 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,7 @@ final class Version20260314091542 extends AbstractMigration
     public function up(Schema $schema): void
     {
         $this->addSql('
-            CREATE TABLE my_payment_monthly_import_profile (
+            CREATE TABLE IF NOT EXISTS my_payment_monthly_import_profile (
                 id INT AUTO_INCREMENT NOT NULL,
                 name VARCHAR(255) NOT NULL,
                 date_field VARCHAR(255) DEFAULT NULL,
