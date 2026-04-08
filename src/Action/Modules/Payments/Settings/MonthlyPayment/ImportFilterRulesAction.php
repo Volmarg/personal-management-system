@@ -46,10 +46,11 @@ class ImportFilterRulesAction extends AbstractController {
         $entriesData = [];
         foreach ($rules as $rule) {
             $entriesData[] = [
-                'id'        => $rule->getId(),
-                'fieldName' => $rule->getFieldName(),
-                'rule'      => $rule->getRule(),
-                'type'      => $rule->getType(),
+                'id'          => $rule->getId(),
+                'fieldName'   => $rule->getFieldName(),
+                'rule'        => $rule->getRule(),
+                'type'        => $rule->getType(),
+                'description' => $rule->getDescription(),
             ];
         }
 
@@ -97,14 +98,16 @@ class ImportFilterRulesAction extends AbstractController {
     {
         $filterRule ??= new ImportFilterRule();
 
-        $dataArray = RequestService::tryFromJsonBody($request);
-        $fieldName = ArrayHandler::get($dataArray, 'fieldName', allowEmpty: false);
-        $rule      = ArrayHandler::get($dataArray, 'rule', allowEmpty: false);
-        $type      = ArrayHandler::get($dataArray, 'type', allowEmpty: false);
+        $dataArray   = RequestService::tryFromJsonBody($request);
+        $fieldName   = ArrayHandler::get($dataArray, 'fieldName', allowEmpty: false);
+        $rule        = ArrayHandler::get($dataArray, 'rule', allowEmpty: false);
+        $type        = ArrayHandler::get($dataArray, 'type', allowEmpty: false);
+        $description = ArrayHandler::get($dataArray, 'description');
 
         $filterRule->setRule($rule);
         $filterRule->setType($type);
         $filterRule->setFieldName($fieldName);
+        $filterRule->setDescription($description);
 
         $this->em->persist($filterRule);
         $this->em->flush();

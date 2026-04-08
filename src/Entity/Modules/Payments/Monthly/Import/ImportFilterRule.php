@@ -36,6 +36,11 @@ class ImportFilterRule implements EntityInterface
     private string $type;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $description = null;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\Monthly\Import\ImportProfile", inversedBy="filterRules")
      * @ORM\JoinColumn(nullable=true)
      */
@@ -91,6 +96,16 @@ class ImportFilterRule implements EntityInterface
     public function setImportProfile(?ImportProfile $importProfile): void
     {
         $this->importProfile = $importProfile;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
 }
