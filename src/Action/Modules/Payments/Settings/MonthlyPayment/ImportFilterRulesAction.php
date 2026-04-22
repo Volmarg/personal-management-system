@@ -4,6 +4,7 @@ namespace App\Action\Modules\Payments\Settings\MonthlyPayment;
 
 use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Payments\Monthly\Import\ImportFilterRule;
+use App\Entity\Modules\Payments\Monthly\Import\ImportProfile;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
@@ -51,6 +52,10 @@ class ImportFilterRulesAction extends AbstractController {
                 'rule'        => $rule->getRule(),
                 'type'        => $rule->getType(),
                 'description' => $rule->getDescription(),
+                'profile'     => [
+                    'id'   => $rule->getImportProfile()?->getId(),
+                    'name' => $rule->getImportProfile()?->getName(),
+                ],
             ];
         }
 
@@ -103,11 +108,15 @@ class ImportFilterRulesAction extends AbstractController {
         $rule        = ArrayHandler::get($dataArray, 'rule', allowEmpty: false);
         $type        = ArrayHandler::get($dataArray, 'type', allowEmpty: false);
         $description = ArrayHandler::get($dataArray, 'description');
+        $profileId   = ArrayHandler::get($dataArray, 'profileId');
+
+        $profile = is_null($profileId) ? null : $this->em->find(ImportProfile::class, $profileId);
 
         $filterRule->setRule($rule);
         $filterRule->setType($type);
         $filterRule->setFieldName($fieldName);
         $filterRule->setDescription($description);
+        $filterRule->setImportProfile($profile);
 
         $this->em->persist($filterRule);
         $this->em->flush();
