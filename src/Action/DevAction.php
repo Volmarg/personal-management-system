@@ -14,7 +14,7 @@ class DevAction extends AbstractController
 
     public function debug(): JsonResponse
     {
-        return BaseResponse::buildOkResponse()->toJsonResponse();
+        return BaseResponse::buildOkResponse("See " . __CLASS__ . "::" . __FUNCTION__)->toJsonResponse();
     }
 
 }
