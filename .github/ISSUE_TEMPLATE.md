@@ -1,6 +1,6 @@
 ---
 name: Generic template
-about: All purpose template
+about: All-purpose template
 title: ''
 labels: ''
 assignees: ''
@@ -28,8 +28,8 @@ If you really must have access to the project externally then it's up to you to 
 - always write the steps necessary for recreating the issue,
 - provide screenshots if possible,
 - security issues are in most case going to be ignored because I'm just tired an annoyed of weird reports that make no sense,
-- feel free to drop a pull request 
+- feel free to drop a pull request
 
 ## And most important
 
-I'm only spendig on the project like 30-60min per day - sometimes lesson, or no time at all for few days - so I'm not always going to answer right away etc.
+I'm only spending on the project like 30-60min per day - sometimes lesson, or no time at all for few days - so I'm not always going to answer right away etc.
