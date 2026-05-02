@@ -10,8 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("/security", name: "security")]
+#[Route("", name: "security")]
 class SecurityAction extends AbstractController {
+
+    public const string REFRESH_URI = "/security/jwt/refresh";
 
     /**
      * Handles jwt token refresh. The content of this method is actually correct, because the jwt
@@ -21,7 +23,7 @@ class SecurityAction extends AbstractController {
      *
      * @return JsonResponse
      */
-    #[Route("/jwt/refresh", name: "jwt.refresh")]
+    #[Route(self::REFRESH_URI, name: "jwt.refresh")]
     public function refreshJwtToken(): JsonResponse
     {
         return BaseResponse::buildOkResponse()->toJsonResponse();

@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Response;
 
+use App\Action\System\SecurityAction;
 use App\Response\Base\BaseResponse;
 use App\Security\LexitBundleJwtTokenAuthenticator;
 use App\Security\UriAuthenticator;
@@ -70,8 +71,11 @@ class JwtTokenResponseListener implements EventSubscriberInterface
         }
 
         if (
-            UriAuthenticator::isUriExcludedFromAuth() // must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
-            || LexitBundleJwtTokenAuthenticator::$isJwtAuthSkipped
+                (
+                        UriAuthenticator::isUriExcludedFromAuth() // must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
+                    ||  LexitBundleJwtTokenAuthenticator::$isJwtAuthSkipped
+                )
+            &&  $request->getRequestUri() !== SecurityAction::REFRESH_URI
         ) {
             return;
         }
