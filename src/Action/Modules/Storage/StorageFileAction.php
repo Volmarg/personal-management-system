@@ -5,6 +5,7 @@ namespace App\Action\Modules\Storage;
 use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Response\Base\BaseResponse;
+use App\Response\PaginatedResponse;
 use App\Services\Module\ModulesService;
 use App\Services\Module\Storage\StorageFileService;
 use App\Services\Module\Storage\StorageService;
@@ -140,6 +141,31 @@ class StorageFileAction extends AbstractController
         }
 
         $response = $this->storageService->moveFiles($currDirPath, $newDirPath, $filesNames);
+
+        return $response->toJsonResponse();
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws \Doctrine\DBAL\Exception
+     */
+    #[Route("/filter", name: "filter", methods: [Request::METHOD_GET])]
+    public function filterFiles(Request $request): JsonResponse
+    {
+        $pageNumber  = $request->get("pageNumber", 1);
+        $perPage     = $request->get("perPage", 10);
+
+        $filesData = $this->storageFileService->getFilteredFiles($request);
+        $filesForPage = array_slice($filesData, ($pageNumber - 1) * $perPage, $perPage);
+
+        $response = PaginatedResponse::buildOkResponse();
+        $response->setAllRecordsData($filesForPage);
+        $response->setMaxPageNumber(ceil(count($filesData) / $perPage));
+        $response->setTotalResults(count($filesData));
+        $response->setCurrentPageNumber($pageNumber);
 
         return $response->toJsonResponse();
     }

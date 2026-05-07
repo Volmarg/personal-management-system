@@ -176,11 +176,11 @@ class StorageService
 
             $children = [];
             if (array_key_exists('contents', $nodeData)) {
-                $children = $this->traverseContent($nodeData['contents'] ?? [], $module, $filesData);
+                [$children, $filesData] = $this->traverseContent($nodeData['contents'] ?? [], $module, $filesData);
             }
 
             $basename = basename($nodeData['name']);
-            $files    = $this->getDirNodeFiles($nodeData['contents'] ?? [], $humanPath);
+            $files    = $this->getDirNodeFiles($nodeData['contents'] ?? [], $humanPath, $module);
             $filesData = [
                 ...$filesData,
                 ...$files,
@@ -200,7 +200,7 @@ class StorageService
             ];
         }
 
-        return $normalisedNode;
+        return [$normalisedNode, $filesData ?? []];
     }
 
     /**
@@ -211,7 +211,7 @@ class StorageService
      *
      * @return array
      */
-    private function getDirNodeFiles(array $nodes, string $dirPathHuman): array
+    private function getDirNodeFiles(array $nodes, string $dirPathHuman, StorageModuleEnum $storageModule): array
     {
         $files = [];
         foreach ($nodes as $nodeData) {
@@ -233,11 +233,12 @@ class StorageService
             }
 
             $files[]  = [
-                'dir'  => EnvReader::getUploadDir() . $dirPathHuman,
-                'name' => $fileName,
-                'ext'  => $fileExt,
-                'size' => $nodeData['size'],
-                'tags' => !is_null($fileTags) ? json_decode($fileTags->getTags(), true) : [],
+                'dir'    => EnvReader::getUploadDir() . $dirPathHuman,
+                'name'   => $fileName,
+                'ext'    => $fileExt,
+                'size'   => $nodeData['size'],
+                'tags'   => !is_null($fileTags) ? json_decode($fileTags->getTags(), true) : [],
+                'module' => $storageModule->value,
             ];
         }
 
