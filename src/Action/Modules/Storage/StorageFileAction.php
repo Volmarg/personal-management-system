@@ -157,8 +157,13 @@ class StorageFileAction extends AbstractController
     {
         $pageNumber  = $request->get("pageNumber", 1);
         $perPage     = $request->get("perPage", 10);
+        $query       = $request->get("query");
 
         $filesData = $this->storageFileService->getFilteredFiles($request);
+        $filesData = array_filter($filesData, function (array $fileData) use($query) {
+            return str_contains($fileData['name'], $query) || in_array($query, $fileData['tags']);
+        });
+
         $filesForPage = array_slice($filesData, ($pageNumber - 1) * $perPage, $perPage);
 
         $response = PaginatedResponse::buildOkResponse();
@@ -166,6 +171,7 @@ class StorageFileAction extends AbstractController
         $response->setMaxPageNumber(ceil(count($filesData) / $perPage));
         $response->setTotalResults(count($filesData));
         $response->setCurrentPageNumber($pageNumber);
+        $response->setMessage("");
 
         return $response->toJsonResponse();
     }
