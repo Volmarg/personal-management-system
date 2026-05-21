@@ -2,10 +2,8 @@
 
 namespace App\Command\Module\Storage;
 
-use App\Entity\Modules\Storage\StorageFile;
 use App\Enum\StorageModuleEnum;
-use App\Repository\Modules\Storage\StorageFileRepository;
-use App\Services\Files\PathService;
+use App\Services\Module\Storage\StorageFileService;
 use App\Services\Module\Storage\StorageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -26,9 +24,9 @@ class UploadFilesIntoEntitiesCommand extends Command
 
     public function __construct(
         private readonly LoggerInterface        $logger,
-        private readonly StorageFileRepository  $storageFileRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly StorageService         $storageService
+        private readonly StorageService         $storageService,
+        private readonly StorageFileService  $storageFileService,
     ) {
         parent::__construct(self::$defaultName);
     }
@@ -61,16 +59,9 @@ class UploadFilesIntoEntitiesCommand extends Command
             foreach ($filesData as $fileData) {
                 $filePath = $fileData['dir'] . $fileData['name'] . "." . $fileData['ext'];
 
-                $publicPath = $filePath;
-                if (!str_starts_with($publicPath, 'public')) {
-                    $publicPath = "public/{$filePath}";
-                }
-
-                $storageModule = PathService::getStorageModuleByPath($publicPath);
-                if (!$this->storageFileRepository->exists($filePath)) {
-                    $storageFile = new StorageFile($filePath, $storageModule->value);
+                $filePath = $this->storageFileService->uploadedFileIntoEntity($filePath, false);
+                if (!is_null($filePath)) {
                     $addedFilesRows[] = [$filePath];
-                    $this->entityManager->persist($storageFile);
                 }
             }
 

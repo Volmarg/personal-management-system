@@ -5,6 +5,7 @@ namespace App\Services\Files\Upload;
 use App\Entity\FilesTags;
 use App\Exception\File\UploadValidationException;
 use App\Services\Files\PathService;
+use App\Services\Module\Storage\StorageFileService;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -29,12 +30,14 @@ readonly class FileUploadService
      * @param FileUploadValidator    $fileUploadValidator
      * @param FileUploadConfigurator $fileUploadConfigurator
      * @param EntityManagerInterface $entityManager
+     * @param StorageFileService     $storageFileService
      */
     public function __construct(
         private readonly LoggerInterface $logger,
         private FileUploadValidator             $fileUploadValidator,
         private FileUploadConfigurator          $fileUploadConfigurator,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StorageFileService $storageFileService
     ) {
     }
 
@@ -73,6 +76,7 @@ readonly class FileUploadService
             $this->moveFromTemp($tmpFile->getPathname(), $targetPath);
 
             $this->fileUploadValidator->postMoveValidation($targetPath);
+            $this->storageFileService->uploadedFileIntoEntity($targetPath);
         } catch (FileException | UploadValidationException $e) {
             if (file_exists($tmpFile->getPathname())) {
                 unlink($tmpFile->getPathname());

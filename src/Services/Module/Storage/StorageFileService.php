@@ -2,8 +2,12 @@
 
 namespace App\Services\Module\Storage;
 
+use App\Entity\Modules\Storage\StorageFile;
 use App\Enum\StorageModuleEnum;
+use App\Repository\Modules\Storage\StorageFileRepository;
 use App\Response\Base\BaseResponse;
+use App\Services\Files\PathService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,6 +19,8 @@ class StorageFileService
         private readonly StorageService      $storageService,
         private readonly TranslatorInterface $translator,
         private readonly LoggerInterface     $logger,
+        private readonly StorageFileRepository $storageFileRepository,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -135,6 +141,34 @@ class StorageFileService
         }
 
         return $filesData;
+    }
+
+    /**
+     * @param string $filePath
+     * @param bool   $flush
+     *
+     * @return string|null
+     */
+    public function uploadedFileIntoEntity(string $filePath, bool $flush = true): ?string
+    {
+        $publicPath = $filePath;
+        if (!str_starts_with($publicPath, 'public')) {
+            $publicPath = "public/{$filePath}";
+        }
+
+        $storageModule = PathService::getStorageModuleByPath($publicPath);
+        if ($this->storageFileRepository->exists($filePath)) {
+            return null;
+        }
+
+        $storageFile = new StorageFile($filePath, $storageModule->value);
+        $this->entityManager->persist($storageFile);
+
+        if ($flush) {
+            $this->entityManager->flush();
+        }
+
+        return $filePath;
     }
 
 }
