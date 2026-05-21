@@ -100,6 +100,12 @@ class StorageFileService
                     'possibleError' => error_get_last(),
                 ]);
             }
+
+            $storageFileEntity = $this->storageFileRepository->findOneBy(['filePath' => $filePath]);
+            if (!is_null($storageFileEntity)) {
+                $this->entityManager->remove($storageFileEntity);
+                $this->entityManager->flush();
+            }
         }
 
         return $notRemovedFiles;
