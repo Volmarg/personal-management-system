@@ -2,30 +2,33 @@
 
 namespace App\Repository\Modules\Storage;
 
-use App\Entity\Modules\Shopping\MyShoppingPlans;
+use App\Entity\Modules\Storage\StorageFile;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method MyShoppingPlans|null find($id, $lockMode = null, $lockVersion = null)
- * @method MyShoppingPlans|null findOneBy(array $criteria, array $orderBy = null)
- * @method MyShoppingPlans[]    findAll()
- * @method MyShoppingPlans[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method StorageFile|null find($id, $lockMode = null, $lockVersion = null)
+ * @method StorageFile|null findOneBy(array $criteria, array $orderBy = null)
+ * @method StorageFile[]    findAll()
+ * @method StorageFile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class StorageFileRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
-        parent::__construct($registry, MyShoppingPlans::class);
+        parent::__construct($registry, StorageFile::class);
     }
 
     /**
-     * Returns one entity for given id or null otherwise
+     * @param string $filePath
      *
-     * @param int $id
-     * @return MyShoppingPlans|null
+     * @return bool
      */
-    public function findOneById(int $id): ?MyShoppingPlans
+    public function exists(string $filePath): bool
     {
-        return $this->find($id);
+        $result = $this->findOneBy([
+            'filePath' => $filePath,
+        ]);
+
+        return !is_null($result);
     }
 
 }

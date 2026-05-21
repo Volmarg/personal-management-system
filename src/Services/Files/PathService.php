@@ -112,6 +112,28 @@ class PathService
     }
 
     /**
+     * @param string $filePath
+     *
+     * @return StorageModuleEnum
+     */
+    public static function getStorageModuleByPath(string $filePath): StorageModuleEnum
+    {
+        if (str_starts_with($filePath, self::getFileModuleUploadDir())) {
+            return StorageModuleEnum::FILES;
+        }
+
+        if (str_starts_with($filePath, self::getImageModuleUploadDir())) {
+            return StorageModuleEnum::IMAGES;
+        }
+
+        if (str_starts_with($filePath, self::getVideoModuleUploadDir())) {
+            return StorageModuleEnum::VIDEOS;
+        }
+
+        throw new LogicException("Could not find module for given path: {$filePath}");
+    }
+
+    /**
      * @return array
      */
     public static function getAllStorageBaseDirs(): array

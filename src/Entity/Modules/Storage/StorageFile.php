@@ -30,6 +30,12 @@ class StorageFile implements EntityInterface
      */
     private string $moduleName;
 
+    public function __construct(string $filePath, string $moduleName)
+    {
+        $this->filePath = $filePath;
+        $this->moduleName = $moduleName;
+    }
+
     public function getId(): int
     {
         return $this->id;
