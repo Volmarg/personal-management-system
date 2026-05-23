@@ -57,7 +57,7 @@ class UploadFilesIntoEntitiesCommand extends Command
 
             $addedFilesRows = [];
             foreach ($filesData as $fileData) {
-                $filePath = $fileData['dir'] . $fileData['name'] . "." . $fileData['ext'];
+                $filePath = $fileData['dir'] . DIRECTORY_SEPARATOR . $fileData['name'] . "." . $fileData['ext'];
 
                 $filePath = $this->storageFileService->uploadedFileIntoEntity($filePath, false);
                 if (!is_null($filePath)) {
