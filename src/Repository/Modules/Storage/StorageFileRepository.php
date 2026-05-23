@@ -3,6 +3,7 @@
 namespace App\Repository\Modules\Storage;
 
 use App\Entity\Modules\Storage\StorageFile;
+use App\Enum\StorageModuleEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -29,6 +30,25 @@ class StorageFileRepository extends ServiceEntityRepository {
         ]);
 
         return !is_null($result);
+    }
+
+    /**
+     * @param string            $oldPath
+     * @param string            $newPath
+     * @param StorageModuleEnum $storageModuleEnum
+     */
+    public function updatePath(string $oldPath, string $newPath, StorageModuleEnum $storageModuleEnum): void
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->update(StorageFile::class, 's')
+            ->where('s.filePath = :oldPath')
+            ->set('s.filePath', ':newPath')
+            ->set('s.moduleName', ':moduleName')
+            ->setParameter('oldPath', $oldPath)
+            ->setParameter('newPath', $newPath)
+            ->setParameter('moduleName', $storageModuleEnum->value);
+
+        $qb->getQuery()->execute();
     }
 
 }

@@ -6,6 +6,7 @@ use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
+use App\Repository\Modules\Storage\StorageFileRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
 use App\Services\Module\ModulesService;
@@ -30,7 +31,8 @@ class StorageService
         private readonly LoggerInterface        $logger,
         private readonly LockedResourceService  $lockedResourceService,
         private readonly TranslatorInterface    $translator,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StorageFileRepository  $storageFileRepository
     ) {
     }
 
@@ -117,6 +119,9 @@ class StorageService
                 $tags->setFullFilePath($newFilePath);
                 $this->entityManager->persist($tags);
             }
+
+            $storageModule = PathService::getStorageModuleByPath($newFilePath);
+            $this->storageFileRepository->updatePath($oldFilePath, $newFilePath, $storageModule);
         }
 
         $this->entityManager->flush();

@@ -118,15 +118,20 @@ class PathService
      */
     public static function getStorageModuleByPath(string $filePath): StorageModuleEnum
     {
-        if (str_starts_with($filePath, self::getFileModuleUploadDir())) {
+        $publicPath = $filePath;
+        if (!str_starts_with($publicPath, 'public')) {
+            $publicPath = "public/{$filePath}";
+        }
+
+        if (str_starts_with($publicPath, self::getFileModuleUploadDir())) {
             return StorageModuleEnum::FILES;
         }
 
-        if (str_starts_with($filePath, self::getImageModuleUploadDir())) {
+        if (str_starts_with($publicPath, self::getImageModuleUploadDir())) {
             return StorageModuleEnum::IMAGES;
         }
 
-        if (str_starts_with($filePath, self::getVideoModuleUploadDir())) {
+        if (str_starts_with($publicPath, self::getVideoModuleUploadDir())) {
             return StorageModuleEnum::VIDEOS;
         }
 
