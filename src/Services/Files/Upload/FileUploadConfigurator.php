@@ -144,9 +144,11 @@ class FileUploadConfigurator
             allowTagging: true,
             allowedExtensions: [
                 "xlsx",
+                "csv"
             ],
             allowedMimeTypes: [
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "text/csv",
             ]
         );
     }
