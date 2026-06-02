@@ -127,11 +127,11 @@ class StorageFileService
         $filesData = [];
         if (is_null($moduleName)) {
             foreach (StorageModuleEnum::cases() as $enum) {
-                [$storageEntries, $filesData] = $this->storageService->getTreeData($enum, $filesData);
+                $this->storageService->getTreeData($enum, $filesData);
             }
         } else {
             $moduleEnum  = StorageModuleEnum::tryFrom($moduleName);
-            [$entriesData, $filesData] = $this->storageService->getTreeData($moduleEnum, $filesData);
+            $this->storageService->getTreeData($moduleEnum, $filesData);
         }
 
         if (!is_null($queryString)) {

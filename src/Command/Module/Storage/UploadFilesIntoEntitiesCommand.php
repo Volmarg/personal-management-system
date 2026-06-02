@@ -52,7 +52,7 @@ class UploadFilesIntoEntitiesCommand extends Command
         try {
             $filesData = [];
             foreach (StorageModuleEnum::cases() as $enum) {
-                [$storageEntries, $filesData] = $this->storageService->getTreeData($enum, $filesData);
+                $this->storageService->getTreeData($enum, $filesData);
             }
 
             $addedFilesRows = [];
