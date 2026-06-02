@@ -5,6 +5,7 @@ namespace App\Services\Module\Storage;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
 use App\Entity\System\LockedResource;
+use App\Repository\Modules\Storage\StorageFileRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
 use App\Traits\ExceptionLoggerAwareTrait;
@@ -22,7 +23,10 @@ class StorageFolderService
     public function __construct(
         private readonly TranslatorInterface    $translator,
         private readonly LoggerInterface        $logger,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StorageService         $storageService,
+        private readonly StorageFileRepository  $storageFileRepository,
+        private readonly StorageFileService     $storageFileService,
     ) {
     }
 
@@ -106,6 +110,10 @@ class StorageFolderService
      */
     private function moveFolder(string $oldDirPath, string $newDirPath, string $targetModuleName): BaseResponse
     {
+        $filesData = [];
+        $module = PathService::getStorageModuleByPath($oldDirPath);
+        $this->storageService->getTreeData($module, $filesData, $oldDirPath);
+
         if (!rename($oldDirPath, $newDirPath)) {
             $msg = $this->translator->trans('module.storage.moveFileOrDir.unknownError');
             $this->logger->critical($msg, [
@@ -134,6 +142,12 @@ class StorageFolderService
                 $lock->setRecord($newDirPath);
                 $lock->setTarget($targetModuleName);
                 $this->entityManager->persist($lock);
+            }
+
+            foreach ($filesData as $fileData) {
+                $oldFilePath = $oldDirPath . DIRECTORY_SEPARATOR . $fileData['name'] . '.' . $fileData['ext'];
+                $newFilePath = $newDirPath . DIRECTORY_SEPARATOR . $fileData['name'] . '.' . $fileData['ext'];
+                $this->storageFileRepository->updatePath($oldFilePath, $newFilePath, $module);
             }
 
             $this->entityManager->flush();
@@ -187,6 +201,8 @@ class StorageFolderService
                 $clonedEntity->setFullFilePath($newFilePath);
                 $this->entityManager->persist($clonedEntity);
             }
+
+            $this->storageFileService->uploadedFileIntoEntity($newFilePath, false);
 
             $isCopied = copy($file->getPathname(), $newFilePath);
             if ($isCopied) {

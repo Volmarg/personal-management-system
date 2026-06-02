@@ -40,17 +40,20 @@ class StorageService
      * Recursively walks over the directory tree, building the frontend ready tree
      *
      * @param StorageModuleEnum $module
+     * @param array             $filesData
+     * @param string|null       $scannedPath
      *
      * @return array
      *
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws JWTDecodeFailureException
      * @throws \Doctrine\DBAL\Exception
-     * @throws Exception
      */
-    public function getTreeData(StorageModuleEnum $module, array &$filesData = []): array
+    public function getTreeData(StorageModuleEnum $module, array &$filesData = [], ?string $scannedPath = null): array
     {
-        $basePath    = PathService::getStorageModuleBaseDir($module);
-        $scannedPath = PathService::setTrailingDirSeparator($this->kernel->getProjectDir()) . $basePath;
+        if (is_null($scannedPath)) {
+            $basePath    = PathService::getStorageModuleBaseDir($module);
+            $scannedPath = PathService::setTrailingDirSeparator($this->kernel->getProjectDir()) . $basePath;
+        }
 
         $json    = $this->shellTreeService->getDirJsonTree($scannedPath);
         $mainArr = json_decode($json, true);
