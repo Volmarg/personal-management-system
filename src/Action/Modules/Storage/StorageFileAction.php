@@ -4,8 +4,10 @@ namespace App\Action\Modules\Storage;
 
 use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
+use App\Entity\Modules\Storage\StorageFile;
 use App\Response\Base\BaseResponse;
 use App\Response\PaginatedResponse;
+use App\Services\Files\PathService;
 use App\Services\Module\ModulesService;
 use App\Services\Module\Storage\StorageFileService;
 use App\Services\Module\Storage\StorageService;
@@ -71,6 +73,9 @@ class StorageFileAction extends AbstractController
         if (is_null($tagsEntity)) {
             $tagsEntity = new FilesTags();
         }
+
+        $module = PathService::getStorageModuleByPath($newPath);
+        $this->em->getRepository(StorageFile::class)->updatePath($oldPath, $newPath, $module);
 
         $tagsEntity->setTags(json_encode($tags));
         $tagsEntity->setFullFilePath($newPath);
