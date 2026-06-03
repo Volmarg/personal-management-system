@@ -311,6 +311,11 @@ class StorageFolderAction extends AbstractController
         PathService::validatePathSafety($dirNewName);
         PathService::validatePathSafety($currDirPath);
 
+        if (PathService::isStorageBaseUploadDir($currDirPath)) {
+            $msg = $this->translator->trans('module.storage.renameFolder.cannotRenameBaseDir');
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
         $newDirPath = dirname($currDirPath) . DIRECTORY_SEPARATOR . $dirNewName;
         $response = $this->storageFolderService->validateCreateAndRename($currDirPath, $dirNewName, $newDirPath);
         if (!is_null($response)) {

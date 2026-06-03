@@ -149,4 +149,14 @@ class PathService
             EnvReader::getImagesUploadDir(),
         ];
     }
+
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
+    public static function isStorageBaseUploadDir(string $path): bool
+    {
+        return in_array($path, self::getAllStorageBaseDirs(), true);
+    }
 }

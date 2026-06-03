@@ -36,6 +36,7 @@ module:
       success: "New folder has been created"
     renameFolder:
       success: "Folder has been renamed"
+      cannotRenameBaseDir: "Base directory cannot be renamed!"
     moveOrCopyFolder:
       cannotMoveBaseDir: "Moving storage base dir is not allowed!"
     rename:
