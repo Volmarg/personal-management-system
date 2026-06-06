@@ -147,7 +147,7 @@ class StorageFolderService
             foreach ($filesData as $fileData) {
                 $oldFilePath = $oldDirPath . DIRECTORY_SEPARATOR . $fileData['name'] . '.' . $fileData['ext'];
                 $newFilePath = $newDirPath . DIRECTORY_SEPARATOR . $fileData['name'] . '.' . $fileData['ext'];
-                $this->storageFileRepository->updatePath($oldFilePath, $newFilePath, $module);
+                $this->storageFileRepository->updateByFilePath($oldFilePath, $newFilePath, $module);
             }
 
             $this->entityManager->flush();

@@ -75,7 +75,7 @@ class StorageFileAction extends AbstractController
         }
 
         $module = PathService::getStorageModuleByPath($newPath);
-        $this->em->getRepository(StorageFile::class)->updatePath($oldPath, $newPath, $module);
+        $this->em->getRepository(StorageFile::class)->updateByFilePath($oldPath, $newPath, $module);
 
         $tagsEntity->setTags(json_encode($tags));
         $tagsEntity->setFullFilePath($newPath);

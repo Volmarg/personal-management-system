@@ -5,6 +5,7 @@ namespace App\Action\Modules\Storage;
 use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
+use App\Entity\Modules\Storage\StorageFile;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
@@ -345,6 +346,8 @@ class StorageFolderAction extends AbstractController
             $this->entityManager->persist($moduleData);
             $this->entityManager->flush();
         }
+
+        $this->entityManager->getRepository(StorageFile::class)->updateForDirRename($currDirPath, $newDirPath);
 
         $msg = $this->translator->trans('module.storage.renameFolder.success');
         $response = BaseResponse::buildOkResponse($msg);

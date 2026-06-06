@@ -4,6 +4,7 @@ namespace App\Services\Module\Storage;
 
 use App\Entity\FilesTags;
 use App\Entity\Modules\ModuleData;
+use App\Entity\Modules\Storage\StorageFile;
 use App\Entity\System\LockedResource;
 use App\Enum\StorageModuleEnum;
 use App\Repository\Modules\Storage\StorageFileRepository;
@@ -17,11 +18,16 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Extracting files data / dirs structure is based fully on dir scan.
+ * This logic existed prior to {@see StorageFile}.
+ */
 class StorageService
 {
     public function __construct(
@@ -124,7 +130,7 @@ class StorageService
             }
 
             $storageModule = PathService::getStorageModuleByPath($newFilePath);
-            $this->storageFileRepository->updatePath($oldFilePath, $newFilePath, $storageModule);
+            $this->storageFileRepository->updateByFilePath($oldFilePath, $newFilePath, $storageModule);
         }
 
         $this->entityManager->flush();
@@ -148,7 +154,7 @@ class StorageService
             StorageModuleEnum::VIDEOS->value => ModulesService::MODULE_NAME_VIDEO,
             StorageModuleEnum::IMAGES->value => ModulesService::MODULE_NAME_IMAGES,
             StorageModuleEnum::FILES->value => ModulesService::MODULE_NAME_FILES,
-            default => throw new \LogicException("Unsupported module {$enum->value}")
+            default => throw new LogicException("Unsupported module {$enum->value}")
         };
     }
 
