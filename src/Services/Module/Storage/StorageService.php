@@ -248,12 +248,9 @@ class StorageService
 
             /** @var null|StorageFile $file */
             $file = $this->entityManager->getRepository(StorageFile::class)->findOneBy(['filePath' => $filePath]);
-            if (is_null($file)) {
-                throw new LogicException("No storage file found for path: {$filePath}");
-            }
 
             $files[]  = [
-                'id'     => $file->getId(),
+                'id'     => $file?->getId(),
                 'path'   => $filePath,
                 'dir'    => EnvReader::getUploadDir() . $dirPathHuman,
                 'name'   => $fileName,
