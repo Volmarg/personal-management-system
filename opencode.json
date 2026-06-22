@@ -1,0 +1,28 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "instructions": [
+        ".opencode/rules/binaries/php.md",
+        ".opencode/rules/binaries/bin-console.md",
+        ".opencode/rules/framework/migration.md",
+        ".opencode/rules/project-map.md"
+    ],
+    "permission": {
+        "external_directory": {
+            "*": "deny"
+        },
+        "edit": "allow",
+        "bash": {
+            "find": "allow",
+            "grep": "allow",
+            "mkdir": "allow",
+            "docker": "allow",
+            "php": "deny",
+            "ls": "allow",
+            "rm -rf *": "deny",
+            "rm -r *": "deny",
+            "sudo": "deny",
+            "git *": "deny",
+            "*": "ask"
+        }
+    }
+}

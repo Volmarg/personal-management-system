@@ -1,0 +1,3 @@
+- whenever you want to call `php` you call it this way `docker exec pms-php-fpm php {{args}}`
+- example `docker exec pms-php-fpm php bin/console` see `{{args}}` became `bin/console
+- never call `php` locally

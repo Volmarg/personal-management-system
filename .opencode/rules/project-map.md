@@ -1,0 +1,14 @@
+- `assets` mostly some static files, like for example for demo,
+- `bin` executables to work with,
+- `config` project configuration, symfony and its bundles
+- `docker` - obvious
+- `github` some data for github only,
+- `private` contains dev / helpers scripts
+- `public` is pretty obvious, contains also:
+  - uploaded data
+- `translations` are symfony translation files for backend
+- `var` is a symfony runtime data such as cache,
+- `vendor` are third-party packages
+- `vendor_fixes` are some on-fly fixes for vendor packages,
+- `src` is the project main code, from that to be pointed out:
+  - `Migrations` db changesets 

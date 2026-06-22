@@ -1,0 +1,5 @@
+- if I ask you to generate migration/s for certain entities you do this:
+  - you check the table name in `entity` `@Table` for related entities,
+  - you generate migrations with `docker compose exec pms-php-fpm php bin/console doctrine:migrations:diff --filter-expression="/^(tableName1|tableName2|...)$/"`
+  - whenever you create new migration you **MUST** set `chmod 777` on it,
+    - you set it via `docker exec pms-php-fpm chmod {{args}}`

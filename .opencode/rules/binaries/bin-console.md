@@ -1,0 +1,2 @@
+- whenever you want to call `bin/console` you call it this way `docker exec pms-php-fpm php bin/console {{command}}`
+- never call `bin/console` locally
