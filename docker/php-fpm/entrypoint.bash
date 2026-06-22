@@ -141,3 +141,7 @@ generateJwtKeyPair
 
 chmod 644 /etc/cron.d -R;
 chown root:root /etc/cron.d -R;
+
+# One time tasks
+logDebug "Registering storage module files in DB"
+$BIN_CONSOLE_PATH storage:upload-files-into-entities --no-interaction;
