@@ -6,9 +6,11 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\FileStorageAssociationInterface;
 use App\Repository\Modules\Storage\StorageFileRepository;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
+use Doctrine\ORM\UnitOfWork;
 
 class EntityStorageFileHydrationSubscriber implements EventSubscriber
 {
@@ -22,6 +24,7 @@ class EntityStorageFileHydrationSubscriber implements EventSubscriber
         return [
             Events::postLoad => 'postLoad',
             Events::preFlush => 'preFlush',
+            Events::postFlush => 'postFlush',
         ];
     }
 
@@ -59,18 +62,42 @@ class EntityStorageFileHydrationSubscriber implements EventSubscriber
         $em  = $args->getObjectManager();
         $uow = $em->getUnitOfWork();
 
+        $this->handleRelations($uow);
+    }
+
+    /**
+     * Handles the new entities creation for storage file n:n relation
+     *
+     * @param PostFlushEventArgs $args
+     *
+     * @return void
+     * @throws \Throwable
+     */
+    public function postFlush(PostFlushEventArgs $args): void
+    {
+        $em  = $args->getObjectManager();
+        $uow = $em->getUnitOfWork();
+
+        $this->handleRelations($uow);
+    }
+
+    /**
+     * @param UnitOfWork $uow
+     *
+     * @return void
+     * @throws \Throwable
+     */
+    public function handleRelations(UnitOfWork $uow): void
+    {
         foreach ($uow->getIdentityMap() as $classEntities) {
             foreach ($classEntities as $entity) {
                 if (!($entity instanceof FileStorageAssociationInterface)) {
                     continue;
                 }
+
+                $this->repository->handleRelationWithStorageFile($entity->getStorageFiles(), $entity);
             }
         }
-
-        if (!isset($entity)) {
-            return;
-        }
-
-        $this->repository->handleRelationWithStorageFile($entity->getStorageFiles(), $entity);
     }
+
 }
