@@ -1,1 +1,4 @@
-- every newly created entity must implement `App\Entity\Interfaces\EntityInterface`
+- every newly created entity must 
+  - implement `App\Entity\Interfaces\EntityInterface`
+  - use trait `CreateModifyFieldAwareTrait` and call its method `setCreatedModified` in entity `constructor`
+- if you create repository you always include it in entity via `@ORM\Entity(repositoryClass="RepositoryClass FQN")`
