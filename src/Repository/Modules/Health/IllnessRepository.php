@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Repository\Modules\Health;
+
+use App\Entity\Modules\Health\Illness;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @method Illness|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Illness|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Illness[]    findAll()
+ * @method Illness[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class IllnessRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Illness::class);
+    }
+}
