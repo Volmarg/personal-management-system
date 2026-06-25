@@ -4,6 +4,7 @@
         ".opencode/rules/binaries/php.md",
         ".opencode/rules/binaries/bin-console.md",
         ".opencode/rules/framework/migration.md",
+        ".opencode/rules/framework/entity.md",
         ".opencode/rules/project-map.md"
     ],
     "permission": {

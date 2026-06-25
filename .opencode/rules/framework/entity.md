@@ -1,0 +1,1 @@
+- every newly created entity must implement `App\Entity\Interfaces\EntityInterface`
