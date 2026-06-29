@@ -3,3 +3,4 @@
   - you generate migrations with `docker compose exec pms-php-fpm php bin/console doctrine:migrations:diff --filter-expression="/^(tableName1|tableName2|...)$/"`
   - whenever you create new migration you **MUST** set `chmod 777` on it,
     - you set it via `docker exec pms-php-fpm chmod {{args}}`
+  - each new entity must implement `SoftDeletableEntityInterface` and use `SoftDeleteAwareTrait`
