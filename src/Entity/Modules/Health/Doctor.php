@@ -3,7 +3,9 @@
 namespace App\Entity\Modules\Health;
 
 use App\Entity\Interfaces\EntityInterface;
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Trait\CreateModifyFieldAwareTrait;
+use App\Entity\Trait\SoftDeleteAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,9 +19,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      )
  *    })
  */
-class Doctor implements EntityInterface
+class Doctor implements EntityInterface, SoftDeletableEntityInterface
 {
     use CreateModifyFieldAwareTrait;
+    use SoftDeleteAwareTrait;
 
     /**
      * @ORM\Id

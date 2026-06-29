@@ -4,8 +4,10 @@ namespace App\Entity\Modules\Health;
 
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\FileStorageAssociationInterface;
+use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Trait\CreateModifyFieldAwareTrait;
 use App\Entity\Trait\FileStorageAssociationTrait;
+use App\Entity\Trait\SoftDeleteAwareTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -14,10 +16,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\Modules\Health\DoctorAppointmentRepository")
  * @ORM\Table(name="doctor_appointment")
  */
-class DoctorAppointment implements FileStorageAssociationInterface, EntityInterface
+class DoctorAppointment implements FileStorageAssociationInterface, EntityInterface, SoftDeletableEntityInterface
 {
     use FileStorageAssociationTrait;
     use CreateModifyFieldAwareTrait;
+    use SoftDeleteAwareTrait;
 
     /**
      * @ORM\Id
