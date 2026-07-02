@@ -46,7 +46,7 @@ class Illness implements EntityInterface, SoftDeletableEntityInterface
     /**
      * @ORM\OneToMany(targetEntity="DoctorAppointment", mappedBy="illness")
      */
-    private Collection $appointments;
+    private Collection | array $appointments;
 
     public function __construct()
     {
@@ -83,12 +83,12 @@ class Illness implements EntityInterface, SoftDeletableEntityInterface
         $this->information = $information;
     }
 
-    public function getAppointments(): Collection
+    public function getAppointments(): Collection | array
     {
         return $this->appointments;
     }
 
-    public function setAppointments(Collection $appointments): void
+    public function setAppointments(Collection | array $appointments): void
     {
         $this->appointments = $appointments;
     }
