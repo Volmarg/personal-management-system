@@ -55,7 +55,7 @@ class IllnessAction extends AbstractController
             'name'         => $illness->getName(),
             'appointments' => array_map(fn(DoctorAppointment $doctorAppointment) => [
                 'id' => $doctorAppointment->getId(),
-            ], $illness->getAppointments()),
+            ], $illness->getAppointments()->toArray()),
         ], $illnesses);
 
         $response = BaseResponse::buildOkResponse();
