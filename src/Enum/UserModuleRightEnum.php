@@ -24,4 +24,5 @@ enum UserModuleRightEnum
     case CAN_ACCESS_IMAGES_MODULE;
     case CAN_ACCESS_VIDEOS_MODULE;
     case CAN_ACCESS_STORAGE_MODULE;
+    case CAN_ACCESS_HEALTH_MODULE;
 }

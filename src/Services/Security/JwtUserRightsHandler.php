@@ -36,6 +36,7 @@ class JwtUserRightsHandler
             ModulesService::MODULE_NAME_IMAGES       => UserModuleRightEnum::CAN_ACCESS_IMAGES_MODULE->name,
             ModulesService::MODULE_NAME_VIDEO        => UserModuleRightEnum::CAN_ACCESS_VIDEOS_MODULE->name,
             ModulesService::MODULE_NAME_STORAGE      => UserModuleRightEnum::CAN_ACCESS_STORAGE_MODULE->name,
+            ModulesService::MODULE_NAME_HEALTH       => UserModuleRightEnum::CAN_ACCESS_HEALTH_MODULE->name,
         ];
     }
 
