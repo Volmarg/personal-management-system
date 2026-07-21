@@ -3,14 +3,12 @@
 namespace App\Services\Module\Storage;
 
 use App\Entity\Modules\Storage\StorageFile;
-use App\Enum\StorageModuleEnum;
 use App\Repository\Modules\Storage\StorageFileRepository;
 use App\Response\Base\BaseResponse;
 use App\Services\Files\PathService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class StorageFileService
@@ -109,44 +107,6 @@ class StorageFileService
         }
 
         return $notRemovedFiles;
-    }
-
-    /**
-     * @param Request $request
-     *
-     * @return array
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws \Doctrine\DBAL\Exception
-     */
-    public function getFilteredFiles(Request $request): array
-    {
-        $moduleName  = $request->get("moduleName");
-        $queryString = $request->get("queryString");
-        $tags        = $request->get("tags");
-
-        $filesData = [];
-        if (is_null($moduleName)) {
-            foreach (StorageModuleEnum::cases() as $enum) {
-                $this->storageService->getTreeData($enum, $filesData);
-            }
-        } else {
-            $moduleEnum  = StorageModuleEnum::tryFrom($moduleName);
-            $this->storageService->getTreeData($moduleEnum, $filesData);
-        }
-
-        if (!is_null($queryString)) {
-            $filesData = array_filter($filesData, function (array $fileData) use ($queryString) {
-                return str_contains($fileData['name'], $queryString);
-            });
-        }
-
-        if (!empty($tags)) {
-            $filesData = array_filter($filesData, function (array $fileData) use ($tags) {
-                return !empty(array_intersect($fileData['tags'], $tags));
-            });
-        }
-
-        return $filesData;
     }
 
     /**

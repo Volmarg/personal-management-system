@@ -5,8 +5,8 @@ namespace App\Action\Modules\Storage;
 use App\Attribute\ModuleAttribute;
 use App\Entity\FilesTags;
 use App\Entity\Modules\Storage\StorageFile;
+use App\Enum\StorageModuleEnum;
 use App\Response\Base\BaseResponse;
-use App\Response\PaginatedResponse;
 use App\Services\Files\PathService;
 use App\Services\Module\ModulesService;
 use App\Services\Module\Storage\StorageFileService;
@@ -15,6 +15,7 @@ use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -151,32 +152,21 @@ class StorageFileAction extends AbstractController
     }
 
     /**
-     * @param Request $request
-     *
      * @return JsonResponse
-     * @throws \Doctrine\DBAL\Driver\Exception
+     *
      * @throws \Doctrine\DBAL\Exception
+     * @throws JWTDecodeFailureException
      */
-    #[Route("/filter", name: "filter", methods: [Request::METHOD_GET])]
-    public function filterFiles(Request $request): JsonResponse
+    #[Route("/all", name: "get_all", methods: [Request::METHOD_GET])]
+    public function getAll(): JsonResponse
     {
-        $pageNumber  = $request->get("pageNumber", 1);
-        $perPage     = $request->get("perPage", 10);
-        $query       = $request->get("query");
+        $filesData = [];
+        foreach (StorageModuleEnum::cases() as $enum) {
+            $this->storageService->getTreeData($enum, $filesData);
+        }
 
-        $filesData = $this->storageFileService->getFilteredFiles($request);
-        $filesData = array_filter($filesData, function (array $fileData) use($query) {
-            return str_contains($fileData['name'], $query) || in_array($query, $fileData['tags']);
-        });
-
-        $filesForPage = array_slice($filesData, ($pageNumber - 1) * $perPage, $perPage);
-
-        $response = PaginatedResponse::buildOkResponse();
-        $response->setAllRecordsData($filesForPage);
-        $response->setMaxPageNumber(ceil(count($filesData) / $perPage));
-        $response->setTotalResults(count($filesData));
-        $response->setCurrentPageNumber($pageNumber);
-        $response->setMessage("");
+        $response = BaseResponse::buildOkResponse();
+        $response->setAllRecordsData($filesData);
 
         return $response->toJsonResponse();
     }
