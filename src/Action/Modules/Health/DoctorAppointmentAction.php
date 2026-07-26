@@ -55,7 +55,7 @@ class DoctorAppointmentAction extends AbstractController
             'id'            => $appointment->getId(),
             'date'          => $appointment->getDate()->format('Y-m-d'),
             'information'   => $appointment->getId(),
-            'illness'       => $appointment->getIllness(),
+            'illness'       => $appointment->getIllness()->getId(),
             'storage_files' => array_map(fn(StorageFile $file) => $file->getId(), $appointment->getStorageFiles()),
             'doctor'        => $appointment->getDoctor()->getId(),
         ], $doctorAppointments);
@@ -113,7 +113,6 @@ class DoctorAppointmentAction extends AbstractController
         $storageFileRepo = $this->em->getRepository(StorageFile::class);
 
         $dataArray      = RequestService::tryFromJsonBody($request);
-        $name           = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $information    = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
         $doctorId       = ArrayHandler::get($dataArray, 'doctor', allowEmpty: false);
         $date           = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
