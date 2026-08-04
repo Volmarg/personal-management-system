@@ -1,0 +1,5 @@
+module:
+  health:
+    files:
+      message:
+        filesSaveSuccess: "Files have been saved"

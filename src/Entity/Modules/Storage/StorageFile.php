@@ -51,6 +51,11 @@ class StorageFile implements EntityInterface
         return $this->filePath;
     }
 
+    public function getFileNameWithExtension(): string
+    {
+        return pathinfo($this->filePath, PATHINFO_FILENAME) . "." . pathinfo($this->filePath, PATHINFO_EXTENSION);
+    }
+
     public function setFilePath(string $filePath): void
     {
         $this->filePath = $filePath;

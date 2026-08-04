@@ -5,6 +5,7 @@ namespace App\Action\Modules\Health;
 use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Health\DoctorAppointment;
 use App\Entity\Modules\Health\Illness;
+use App\Entity\Modules\Storage\StorageFile;
 use App\Exception\MissingDataException;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
@@ -54,7 +55,16 @@ class IllnessAction extends AbstractController
             'information'  => $illness->getInformation(),
             'name'         => $illness->getName(),
             'appointments' => array_map(fn(DoctorAppointment $doctorAppointment) => [
-                'id' => $doctorAppointment->getId(),
+                'id'     => $doctorAppointment->getId(),
+                'date'   => $doctorAppointment->getDate()->format("Y-m-d H:i:s"),
+                'doctor' => [
+                    'name' => $doctorAppointment->getDoctor()->getName(),
+                ],
+                'storageFiles' => array_map(fn(StorageFile $file) => [
+                    'id'                    => $file->getId(),
+                    'filePath'              => $file->getFilePath(),
+                    'fileNameWithExtension' => $file->getFileNameWithExtension(),
+                ], $doctorAppointment->getStorageFiles()),
             ], $illness->getAppointments()->toArray()),
         ], $illnesses);
 

@@ -9,23 +9,31 @@ use App\Entity\Modules\Health\Illness;
 use App\Entity\Modules\Storage\StorageFile;
 use App\Exception\MissingDataException;
 use App\Response\Base\BaseResponse;
+use App\Services\Module\Health\DoctorService;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
+use App\Traits\ExceptionLoggerAwareTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/health/doctor-appointment", name: "module.health.doctor_appointment.")]
 #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_HEALTH])]
 class DoctorAppointmentAction extends AbstractController
 {
+    use ExceptionLoggerAwareTrait;
 
     public function __construct(
         private readonly EntityManagerInterface $em,
+        private readonly LoggerInterface $logger,
+        private readonly TranslatorInterface $translator,
+        private readonly DoctorService $doctorService
     ) {
     }
 
@@ -57,7 +65,10 @@ class DoctorAppointmentAction extends AbstractController
             'information'   => $appointment->getId(),
             'illness'       => $appointment->getIllness()->getId(),
             'storage_files' => array_map(fn(StorageFile $file) => $file->getId(), $appointment->getStorageFiles()),
-            'doctor'        => $appointment->getDoctor()->getId(),
+            'doctor'        => [
+                'id'   => $appointment->getDoctor()->getId(),
+                'name' => $appointment->getDoctor()->getName(),
+            ]
         ], $doctorAppointments);
 
         $response = BaseResponse::buildOkResponse();
@@ -73,7 +84,7 @@ class DoctorAppointmentAction extends AbstractController
      * @return JsonResponse
      * @throws MissingDataException
      */
-    #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
+    #[Route("/{id<[0-9]+>}", name: "update", methods: [Request::METHOD_PATCH])]
     public function update(DoctorAppointment $doctorAppointment, Request $request): JsonResponse
     {
         $this->createOrUpdate($request, $doctorAppointment);
@@ -85,7 +96,7 @@ class DoctorAppointmentAction extends AbstractController
      *
      * @return JsonResponse
      */
-    #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
+    #[Route("/{id<[0-9]+>}", name: "remove", methods: [Request::METHOD_DELETE])]
     public function remove(DoctorAppointment $doctorAppointment): JsonResponse
     {
         $doctorAppointment->setDeleted(true);
@@ -93,6 +104,36 @@ class DoctorAppointmentAction extends AbstractController
         $this->em->flush();
 
         return BaseResponse::buildOkResponse()->toJsonResponse();
+    }
+
+    /**
+     * Special route for saving files for appointments
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     * @throws MissingDataException
+     */
+    #[Route("/save-files", name: "save_files", methods: [Request::METHOD_PATCH])]
+    public function saveFiles(Request $request): JsonResponse
+    {
+        $dataArray        = RequestService::tryFromJsonBody($request);
+        $appointmentsData = ArrayHandler::get($dataArray, 'appointmentsData');
+        $illnessId        = ArrayHandler::get($dataArray, 'illnessId', allowEmpty: false);
+
+        try {
+            $this->em->beginTransaction();
+            $this->doctorService->handleFiles($illnessId, $appointmentsData);
+            $this->em->flush();
+            $this->em->commit();
+        } catch (Exception $e) {
+            $this->em->rollback();
+            $this->logException($e);
+
+            return BaseResponse::buildInternalServerErrorResponse()->toJsonResponse();
+        }
+
+        return BaseResponse::buildOkResponse($this->translator->trans('module.health.files.message.filesSaveSuccess'))->toJsonResponse();
     }
 
     /**

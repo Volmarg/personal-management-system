@@ -17,9 +17,9 @@ interface FileStorageAssociationInterface
     public function setStorageFiles(array $storageFiles): void;
 
     /**
-     * @param StorageFile $storageFile
+     * @param StorageFile[] $storageFiles
      */
-    public function removeStorageFile(StorageFile $storageFile): void;
+    public function removeStorageFiles(array $storageFiles): void;
 
     /**
      * @param StorageFile $storageFile

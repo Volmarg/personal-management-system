@@ -42,15 +42,16 @@ trait FileStorageAssociationTrait
     }
 
     /**
-     * @param StorageFile $storageFile
+     * @param StorageFile[] $storageFiles
      */
-    public function removeStorageFile(StorageFile $storageFile): void
+    public function removeStorageFiles(array $storageFiles): void
     {
-        foreach ($this->storageFiles as $index => $file) {
-            if ($file->getId() === $storageFile->getId()) {
-                unset($this->storageFiles[$index]);
-
-                return;
+        foreach ($storageFiles as $storageFile) {
+            foreach ($this->storageFiles as $index => $file) {
+                if ($file->getId() === $storageFile->getId()) {
+                    unset($this->storageFiles[$index]);
+                    continue 2;
+                }
             }
         }
     }

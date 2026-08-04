@@ -83,11 +83,17 @@ class Illness implements EntityInterface, SoftDeletableEntityInterface
         $this->information = $information;
     }
 
+    /**
+     * @return Collection<DoctorAppointment>|array
+     */
     public function getAppointments(): Collection | array
     {
         return $this->appointments;
     }
 
+    /**
+     * @param Collection<DoctorAppointment> | array $appointments
+     */
     public function setAppointments(Collection | array $appointments): void
     {
         $this->appointments = $appointments;
