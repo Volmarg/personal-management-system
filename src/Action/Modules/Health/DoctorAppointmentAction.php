@@ -61,7 +61,7 @@ class DoctorAppointmentAction extends AbstractController
         $doctorAppointments = $repo->findBy(['deleted' => false]);
         $appointmentsData = array_map(fn(DoctorAppointment $appointment) => [
             'id'            => $appointment->getId(),
-            'date'          => $appointment->getDate()->format('Y-m-d'),
+            'date'          => $appointment->getDate()->format('Y-m-d H:i:s'),
             'information'   => $appointment->getId(),
             'illness'       => $appointment->getIllness()->getId(),
             'storage_files' => array_map(fn(StorageFile $file) => $file->getId(), $appointment->getStorageFiles()),
