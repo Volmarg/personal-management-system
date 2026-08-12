@@ -2,6 +2,7 @@
 
 namespace App\Entity\Modules\Health;
 
+use App\Doctrine\CollectionService;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Entity\Trait\CreateModifyFieldAwareTrait;
@@ -86,9 +87,15 @@ class Illness implements EntityInterface, SoftDeletableEntityInterface
     /**
      * @return Collection<DoctorAppointment>|array
      */
-    public function getAppointments(): Collection | array
+    public function getAppointments(bool $skipDeleted = true): Collection | array
     {
-        return $this->appointments;
+        return CollectionService::filterAndReindex($this->appointments, function (DoctorAppointment $appointment) use($skipDeleted) {
+            if ($skipDeleted && $appointment->isDeleted()) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
     /**
