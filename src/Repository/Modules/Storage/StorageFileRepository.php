@@ -108,12 +108,26 @@ class StorageFileRepository extends ServiceEntityRepository {
     }
 
     /**
+     * @param array $fileEntities
+     */
+    public function removeRelationWithStorageFiles(array $fileEntities): void
+    {
+        $ids = array_map(fn(StorageFile $file) => $file->getId(), $fileEntities);
+        $this->_em->createQueryBuilder()
+                  ->delete(StorageFile2Module::class, 'sf2m')
+                  ->where("sf2m.storageFile IN (:ids)")
+                  ->setParameter('ids', $ids)
+                  ->getQuery()
+                  ->execute();
+    }
+
+    /**
      * @param array                           $storageFiles
      * @param FileStorageAssociationInterface $entity
      *
      * @throws Throwable
      */
-    public function handleRelationWithStorageFile(array $storageFiles, FileStorageAssociationInterface $entity): void
+    public function setRelationWithStorageFile(array $storageFiles, FileStorageAssociationInterface $entity): void
     {
         if (!method_exists($entity, 'getId')) {
             throw new Exception("Entity does not have getId function");

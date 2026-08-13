@@ -100,6 +100,7 @@ class StorageFileService
             }
 
             $storageFileEntity = $this->storageFileRepository->findOneBy(['filePath' => $filePath]);
+            $this->storageFileRepository->removeRelationWithStorageFiles([$storageFileEntity]);
             if (!is_null($storageFileEntity)) {
                 $this->entityManager->remove($storageFileEntity);
                 $this->entityManager->flush();

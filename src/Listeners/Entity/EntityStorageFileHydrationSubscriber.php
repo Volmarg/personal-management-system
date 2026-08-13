@@ -95,7 +95,7 @@ class EntityStorageFileHydrationSubscriber implements EventSubscriber
                     continue;
                 }
 
-                $this->repository->handleRelationWithStorageFile($entity->getStorageFiles(), $entity);
+                $this->repository->setRelationWithStorageFile($entity->getStorageFiles(), $entity);
             }
         }
     }
