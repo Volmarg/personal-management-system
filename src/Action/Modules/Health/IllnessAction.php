@@ -55,9 +55,11 @@ class IllnessAction extends AbstractController
             'information'  => $illness->getInformation(),
             'name'         => $illness->getName(),
             'appointments' => array_map(fn(DoctorAppointment $doctorAppointment) => [
-                'id'     => $doctorAppointment->getId(),
-                'date'   => $doctorAppointment->getDate()->format("Y-m-d H:i:s"),
+                'id'          => $doctorAppointment->getId(),
+                'date'        => $doctorAppointment->getDate()->format("Y-m-d H:i:s"),
+                'information' => $doctorAppointment->getInformation(),
                 'doctor' => [
+                    'id'   => $doctorAppointment->getDoctor()->getId(),
                     'name' => $doctorAppointment->getDoctor()->getName(),
                 ],
                 'storageFiles' => array_map(fn(StorageFile $file) => [
