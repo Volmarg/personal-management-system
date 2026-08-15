@@ -14,6 +14,8 @@ use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Traits\ExceptionLoggerAwareTrait;
+use DateMalformedStringException;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -143,6 +145,7 @@ class DoctorAppointmentAction extends AbstractController
      * @param DoctorAppointment|null $doctorAppointment
      *
      * @throws MissingDataException
+     * @throws DateMalformedStringException
      */
     private function createOrUpdate(Request $request, ?DoctorAppointment $doctorAppointment = null): void
     {
@@ -151,31 +154,21 @@ class DoctorAppointmentAction extends AbstractController
         }
 
         $illnessRepo = $this->em->getRepository(Illness::class);
-        $storageFileRepo = $this->em->getRepository(StorageFile::class);
 
         $dataArray      = RequestService::tryFromJsonBody($request);
         $information    = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
         $doctorId       = ArrayHandler::get($dataArray, 'doctor', allowEmpty: false);
         $date           = ArrayHandler::get($dataArray, 'date', allowEmpty: false);
-        $storageFileIds = ArrayHandler::get($dataArray, 'storage_files', allowEmpty: false);
-        $illnessId       = ArrayHandler::get($dataArray, 'illnesses', allowEmpty: false);
+        $illnessId      = ArrayHandler::get($dataArray, 'illness', allowEmpty: false);
 
         $illness = $illnessRepo->find($illnessId);
-
-        $storageFiles = array_map(function ($id) use ($storageFileRepo) {
-            return $storageFileRepo->find($id);
-        }, $storageFileIds);
-
-        /** @var StorageFile[] $storageFiles */
-        $storageFiles = array_filter($storageFiles);
 
         $doctor = $this->em->getRepository(Doctor::class)->find($doctorId);
 
         $doctorAppointment->setInformation($information);
         $doctorAppointment->setDoctor($doctor);
-        $doctorAppointment->setDate($date);
+        $doctorAppointment->setDate(new DateTime($date));
         $doctorAppointment->setIllness($illness);
-        $doctorAppointment->setStorageFiles($storageFiles);
 
         $this->em->persist($doctorAppointment);
         $this->em->flush();
