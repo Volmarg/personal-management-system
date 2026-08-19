@@ -84,7 +84,7 @@ class PublicFolderAction extends AbstractController
         ];
 
         foreach ($checkedDirs as $dir) {
-            if (str_contains($filePath, $dir)) {
+            if (str_starts_with($filePath, $dir)) {
                 return true;
             }
         }
