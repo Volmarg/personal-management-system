@@ -43,7 +43,7 @@ class JwtCreatedListener implements EventSubscriberInterface
         $user = $event->getUser();
         $data = $event->getData();
 
-        $profilePicturePath = '/dummy-user.png';
+        $profilePicturePath = '/resource/image/dummy-user.png';
         $isUpload = false;
         foreach (Finder::create()->files()->in(PathService::getProfileImageUploadDir()) as $file) {
             $profilePicturePath = $file->getRealPath();

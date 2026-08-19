@@ -3,12 +3,14 @@
 namespace App\Action\System;
 
 use App\Services\Files\PathService;
+use App\Services\System\EnvReader;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Relies on the token added to the file that is getting to be downloaded because the standard jwt authentication has
@@ -18,6 +20,9 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class PublicFolderAction extends AbstractController
 {
+    private const array ALLOWED_PUBLIC_DIRS = [
+      "resource",
+    ];
 
     /**
      * Handles downloading file in the secure manners, meaning that downloaded data is controlled with who got actually
@@ -32,14 +37,11 @@ class PublicFolderAction extends AbstractController
             return $this->buildResponse($path);
         }
 
-        // todo: configure apache settings so that no file from /public can be called besides index.php / favicon etc. (protect files from download)
-        // todo: check if miniature exist then return it, else get full size
         return $this->buildResponse($path);
     }
 
     /**
-     * @param string $fileName
-     * @param string $fullFilePathWithName
+     * @param string $filePath
      *
      * @return Response
      * @throws Exception
@@ -47,6 +49,9 @@ class PublicFolderAction extends AbstractController
     private function buildResponse(string $filePath): Response
     {
         PathService::validatePathSafety($filePath);
+        if (!$this->isAllowedDir($filePath)) {
+            throw $this->createAccessDeniedException("Not allowed to access this file!");
+        }
 
         $fileContent = file_get_contents($filePath);
         if (is_bool($fileContent)) {
@@ -62,5 +67,28 @@ class PublicFolderAction extends AbstractController
         $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
+    }
+
+    /**
+     * Check if a file can be downloaded from a given dir
+     *
+     * @param string $filePath
+     *
+     * @return bool
+     */
+    private function isAllowedDir(string $filePath): bool
+    {
+        $checkedDirs = [
+            ...self::ALLOWED_PUBLIC_DIRS,
+            EnvReader::getUploadDir(),
+        ];
+
+        foreach ($checkedDirs as $dir) {
+            if (str_contains($filePath, $dir)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
