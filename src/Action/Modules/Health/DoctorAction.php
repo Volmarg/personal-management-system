@@ -115,7 +115,7 @@ class DoctorAction extends AbstractController
         $information    = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
         $address        = ArrayHandler::get($dataArray, 'address', allowEmpty: false);
         $specialisation = ArrayHandler::get($dataArray, 'specialisation', allowEmpty: false);
-        $contacts       = ArrayHandler::get($dataArray, 'contacts', allowEmpty: false);
+        $contacts       = ArrayHandler::get($dataArray, 'contacts', allowEmpty: true);
 
         foreach ($contacts as $contact) {
             /** @var DoctorContactDto $contactDto */
