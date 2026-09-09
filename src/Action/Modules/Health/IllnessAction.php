@@ -127,7 +127,7 @@ class IllnessAction extends AbstractController
         $dataArray      = RequestService::tryFromJsonBody($request);
         $name           = ArrayHandler::get($dataArray, 'name', allowEmpty: false);
         $information    = ArrayHandler::get($dataArray, 'information', allowEmpty: false);
-        $appointmentIds = ArrayHandler::get($dataArray, 'appointmentIds', allowEmpty: false);
+        $appointmentIds = ArrayHandler::get($dataArray, 'appointmentIds');
 
         $repo         = $this->em->getRepository(DoctorAppointment::class);
         $appointments = array_map(function ($id) use ($repo) {
