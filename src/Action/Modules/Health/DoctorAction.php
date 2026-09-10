@@ -141,7 +141,10 @@ class DoctorAction extends AbstractController
             return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         }
 
-        return BaseResponse::buildOkResponse()->toJsonResponse();
+        $response = BaseResponse::buildOkResponse();
+        $response->addData(BaseResponse::KEY_DATA_ID, $doctor->getId());
+
+        return $response->toJsonResponse();
     }
 
 }

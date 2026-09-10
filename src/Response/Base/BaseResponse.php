@@ -36,6 +36,7 @@ class BaseResponse
 
     const KEY_DATA_RELOAD_VIEW = "reloadView";
     const KEY_DATA_BASE64 = "base64";
+    const KEY_DATA_ID = "id";
     private const KEY_DATA_ALL_RECORDS = "allRecords";
     private const KEY_DATA_SINGLE_RECORD = 'singleRecord';
     private const KEY_DATA_IS_LOCKED = 'isLocked';

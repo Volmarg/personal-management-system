@@ -147,7 +147,10 @@ class IllnessAction extends AbstractController
             return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         }
 
-        return BaseResponse::buildOkResponse()->toJsonResponse();
+        $response = BaseResponse::buildOkResponse();
+        $response->addData(BaseResponse::KEY_DATA_ID, $illness->getId());
+
+        return $response->toJsonResponse();
     }
 
 }
