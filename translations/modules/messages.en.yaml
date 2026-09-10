@@ -1,0 +1,4 @@
+module:
+  generic:
+    message:
+      duplicate: "Each record must be unique. Try again with different values."

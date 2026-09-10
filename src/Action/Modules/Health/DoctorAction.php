@@ -11,6 +11,7 @@ use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
 use App\Traits\SerializerAwareTrait;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -132,8 +133,13 @@ class DoctorAction extends AbstractController
         $doctor->setSpecialisation($specialisation);
         $doctor->setContacts($contacts);
 
-        $this->em->persist($doctor);
-        $this->em->flush();
+        try {
+            $this->em->persist($doctor);
+            $this->em->flush();
+        } catch (UniqueConstraintViolationException) {
+            $msg = $this->translator->trans('module.generic.message.duplicate');
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
 
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }

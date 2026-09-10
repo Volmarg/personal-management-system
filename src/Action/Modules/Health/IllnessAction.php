@@ -11,12 +11,14 @@ use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route("/module/health/illness", name: "module.health.illness.")]
 #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_HEALTH])]
@@ -24,6 +26,7 @@ class IllnessAction extends AbstractController
 {
 
     public function __construct(
+        private readonly TranslatorInterface $translator,
         private readonly EntityManagerInterface $em,
     ) {
     }
@@ -37,8 +40,7 @@ class IllnessAction extends AbstractController
     #[Route("", name: "new", methods: [Request::METHOD_POST])]
     public function new(Request $request): JsonResponse
     {
-        $this->createOrUpdate($request);
-        return BaseResponse::buildOkResponse()->toJsonResponse();
+        return $this->createOrUpdate($request);
     }
 
     /**
@@ -86,8 +88,7 @@ class IllnessAction extends AbstractController
     #[Route("/{id}", name: "update", methods: [Request::METHOD_PATCH])]
     public function update(Illness $illness, Request $request): JsonResponse
     {
-        $this->createOrUpdate($request, $illness);
-        return BaseResponse::buildOkResponse()->toJsonResponse();
+        return $this->createOrUpdate($request, $illness);
     }
 
     /**
@@ -118,7 +119,7 @@ class IllnessAction extends AbstractController
      *
      * @throws MissingDataException
      */
-    private function createOrUpdate(Request $request, ?Illness $illness = null): void
+    private function createOrUpdate(Request $request, ?Illness $illness = null): JsonResponse
     {
         if (!$illness) {
             $illness = new Illness();
@@ -138,8 +139,15 @@ class IllnessAction extends AbstractController
         $illness->setInformation($information);
         $illness->setAppointments($appointments);
 
-        $this->em->persist($illness);
-        $this->em->flush();
+        try {
+            $this->em->persist($illness);
+            $this->em->flush();
+        } catch (UniqueConstraintViolationException) {
+            $msg = $this->translator->trans('module.generic.message.duplicate');
+            return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
+        }
+
+        return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
 }
