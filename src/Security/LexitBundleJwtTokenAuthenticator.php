@@ -29,7 +29,7 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
 {
     use ExceptionLoggerAwareTrait;
 
-    public static bool $isJwtAuthSkipped = true;
+    public static bool $isJwtAuthSkipped = false;
 
     public function __construct(
         JWTTokenManagerInterface                $jwtManager,
@@ -50,10 +50,16 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
     public function supports(Request $request): bool
     {
         if (UriAuthenticator::isUriExcludedFromAuth()) {
+            self::$isJwtAuthSkipped = true;
             return false;
         }
 
-        return parent::supports($request);
+        $parentSupports = parent::supports($request);
+        if (!$parentSupports) {
+            self::$isJwtAuthSkipped = true;
+        }
+
+        return $parentSupports;
     }
 
     /**
@@ -85,7 +91,6 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): void
     {
         parent::onAuthenticationSuccess($request, $token, $providerKey);
-        self::$isJwtAuthSkipped = true;
     }
 
     /**

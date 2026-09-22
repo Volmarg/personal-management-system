@@ -2,7 +2,6 @@
 
 namespace App\Listeners\Response;
 
-use App\Action\System\SecurityAction;
 use App\Response\Base\BaseResponse;
 use App\Security\LexitBundleJwtTokenAuthenticator;
 use App\Security\UriAuthenticator;
@@ -12,6 +11,7 @@ use App\Services\Routing\UrlMatcherService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -58,6 +58,15 @@ class JwtTokenResponseListener implements EventSubscriberInterface
         $request  = $event->getRequest();
         $response = $event->getResponse();
 
+        if ($response instanceof JWTAuthenticationSuccessResponse) {
+            $this->handleJwtAuthSuccess($response, $event);
+            return;
+        }
+
+        if (LexitBundleJwtTokenAuthenticator::$isJwtAuthSkipped) {
+            return;
+        }
+
         if (Request::METHOD_OPTIONS === $request->getMethod()) {
             return;
         }
@@ -70,13 +79,7 @@ class JwtTokenResponseListener implements EventSubscriberInterface
             return;
         }
 
-        if (
-                (
-                        UriAuthenticator::isUriExcludedFromAuth() // must be first due to profiler falling in this case yet crashes for other checks (Symfony issue)
-                    ||  LexitBundleJwtTokenAuthenticator::$isJwtAuthSkipped
-                )
-            &&  $request->getRequestUri() !== SecurityAction::REFRESH_URI
-        ) {
+        if (UriAuthenticator::isUriExcludedFromAuth()) {
             return;
         }
 
@@ -144,6 +147,27 @@ class JwtTokenResponseListener implements EventSubscriberInterface
                 -49,
             ],
         ];
+    }
+
+    /**
+     * @param JWTAuthenticationSuccessResponse $authResponse
+     * @param ResponseEvent                    $event
+     *
+     * @throws Exception
+     */
+    private function handleJwtAuthSuccess(JWTAuthenticationSuccessResponse $authResponse, ResponseEvent $event): void
+    {
+        $responseData = json_decode($authResponse->getContent(), true);
+        $token = $responseData['token'] ?? null;
+        if (empty($token)) {
+            throw new Exception("`token` key was not found in the content of response of class: " . $authResponse::class);
+        }
+
+        $frontResponse = new BaseResponse();
+        $frontResponse->setToken($token);
+        $frontResponse->setSuccess(true);
+
+        $event->setResponse($frontResponse->toJsonResponse());
     }
 
 }
