@@ -150,6 +150,8 @@ class JwtTokenResponseListener implements EventSubscriberInterface
     }
 
     /**
+     * This is needed only for initial auth
+     *
      * @param JWTAuthenticationSuccessResponse $authResponse
      * @param ResponseEvent                    $event
      *
