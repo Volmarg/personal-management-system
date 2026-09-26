@@ -8,13 +8,16 @@ class DoctorContactDto {
 
     use SerializerAwareTrait;
 
-    private string $name;
-    private string $value;
+    public function __construct(
+        private string $name = "",
+        private string $value = "",
+        /**
+         * This value is later used on front to identify which contact type in json we change as one contact may have few phone numbers etc
+         */
+        private string $uuid = "",
+    ) {
 
-    /**
-     * This value is later used on front to identify which contact type in json we change as one contact may have few phone numbers etc
-     */
-    private string $uuid;
+    }
 
     public function getName(): string
     {

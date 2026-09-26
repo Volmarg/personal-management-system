@@ -9,6 +9,9 @@ execInContainer() {
 echo "Current time : $NOW";
 echo 'Rebuilding demo database';
 
+echo "Registering storage module files in DB"
+execInContainer "php bin/console storage:upload-files-into-entities --no-interaction";
+
 # Create database and run migrations
 echo 'Dropping database';
 execInContainer "php bin/console doctrine:database:drop --force --env=dev";

@@ -12,6 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Throwable;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method StorageFile|null find($id, $lockMode = null, $lockVersion = null)
@@ -175,4 +176,25 @@ class StorageFileRepository extends ServiceEntityRepository {
         $this->_em->commit();
     }
 
+    /**
+     * @param int $count
+     *
+     * @return StorageFile[]
+     */
+    public function getCount(int $count): array
+    {
+        $qb = $this->_em->createQueryBuilder();
+
+        $files = $qb->select("s")
+            ->from(StorageFile::class, "s")
+            ->where($qb->expr()->in("s.moduleName", ":moduleName"))
+            ->setParameter('moduleName', [StorageModuleEnum::FILES->value, StorageModuleEnum::IMAGES->value])
+            ->setMaxResults($count)
+            ->getQuery()
+            ->execute();
+
+        shuffle($files);
+
+        return $files;
+    }
 }
