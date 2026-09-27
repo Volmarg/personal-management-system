@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Ramsey\Uuid\Uuid;
 
 #[Route("/module/health/doctor", name: "module.health.doctor.")]
 #[ModuleAttribute(values: ["name" => ModulesService::MODULE_NAME_HEALTH])]
@@ -89,7 +90,11 @@ class DoctorAction extends AbstractController
     #[Route("/{id}", name: "remove", methods: [Request::METHOD_DELETE])]
     public function remove(Doctor $doctor): JsonResponse
     {
+        $uuid = UUid::uuid4();
+
         $doctor->setDeleted(true);
+        $doctor->setName("{$doctor->getName()}-deleted-{$uuid}");
+
         $this->em->persist($doctor);
         $this->em->flush();
 
