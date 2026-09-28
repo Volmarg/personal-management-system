@@ -138,6 +138,10 @@ Don't know how much money You spend on food, travels, domestic shopping? Simply 
 
 Check the official documentation: [here](https://volmarg.github.io/docs/getting-started/installation.html)
 
+## ☁️ One-Click Deploy
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/Personal%20Management%20System/)
+
 <h2>Future development plans</h2>
 
 <h3>Improvements</h3>
