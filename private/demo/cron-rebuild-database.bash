@@ -9,9 +9,6 @@ execInContainer() {
 echo "Current time : $NOW";
 echo 'Rebuilding demo database';
 
-echo "Registering storage module files in DB"
-execInContainer "php bin/console storage:upload-files-into-entities --no-interaction";
-
 # Create database and run migrations
 echo 'Dropping database';
 execInContainer "php bin/console doctrine:database:drop --force --env=dev";
@@ -30,6 +27,9 @@ docker exec "$CONTAINER_NAME" php bin/console doctrine:query:sql 'DELETE FROM my
 docker exec "$CONTAINER_NAME" php bin/console doctrine:query:sql 'DELETE FROM my_contact' --env=dev;
 docker exec "$CONTAINER_NAME" php bin/console doctrine:query:sql 'DELETE FROM my_contact_group' --env=dev;
 docker exec "$CONTAINER_NAME" php bin/console doctrine:query:sql 'DELETE FROM my_schedule' --env=dev;
+
+echo "Registering storage module files in DB"
+execInContainer "php bin/console storage:upload-files-into-entities --no-interaction";
 
 echo 'Appending fixtures';
 execInContainer "php bin/console doctrine:fixtures:load --append --no-interaction --env=dev";
