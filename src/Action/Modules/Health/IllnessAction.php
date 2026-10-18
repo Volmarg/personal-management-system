@@ -5,8 +5,8 @@ namespace App\Action\Modules\Health;
 use App\Attribute\ModuleAttribute;
 use App\Entity\Modules\Health\DoctorAppointment;
 use App\Entity\Modules\Health\Illness;
-use App\Entity\Modules\Storage\StorageFile;
 use App\Exception\MissingDataException;
+use App\Resource\Module\Health\SingleIllnessResource;
 use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
@@ -53,25 +53,7 @@ class IllnessAction extends AbstractController
         $repo = $this->em->getRepository(Illness::class);
 
         $illnesses = $repo->findBy(['deleted' => false]);
-        $illnessesData = array_map(fn(Illness $illness) => [
-            'id'           => $illness->getId(),
-            'information'  => $illness->getInformation(),
-            'name'         => $illness->getName(),
-            'appointments' => array_map(fn(DoctorAppointment $doctorAppointment) => [
-                'id'          => $doctorAppointment->getId(),
-                'date'        => $doctorAppointment->getDate()->format("Y-m-d H:i:s"),
-                'information' => $doctorAppointment->getInformation(),
-                'doctor' => [
-                    'id'   => $doctorAppointment->getDoctor()->getId(),
-                    'name' => $doctorAppointment->getDoctor()->getName(),
-                ],
-                'storageFiles' => array_map(fn(StorageFile $file) => [
-                    'id'                    => $file->getId(),
-                    'filePath'              => $file->getFilePath(),
-                    'fileNameWithExtension' => $file->getFileNameWithExtension(),
-                ], $doctorAppointment->getStorageFiles()),
-            ], $illness->getAppointments()->toArray()),
-        ], $illnesses);
+        $illnessesData = array_map(fn(Illness $illness) => SingleIllnessResource::toArray($illness), $illnesses);
 
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($illnessesData);
@@ -152,7 +134,7 @@ class IllnessAction extends AbstractController
         }
 
         $response = BaseResponse::buildOkResponse();
-        $response->addData(BaseResponse::KEY_DATA_ID, $illness->getId());
+        $response->setSingleRecordData(SingleIllnessResource::toArray($illness));
 
         return $response->toJsonResponse();
     }
