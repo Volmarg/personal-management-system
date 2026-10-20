@@ -19,9 +19,9 @@ use Faker\Factory;
 class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterface
 {
 
-    const AMOUNT_OF_MONTH_TO_FILL       = 5;
-    const AMOUNT_OF_PRODUCTS            = 4;
-    const AMOUNT_OF_SHOPPING_PER_MONTH  = 8;
+    const AMOUNT_OF_MONTH_TO_FILL       = 48;
+    const AMOUNT_OF_PRODUCTS            = 12;
+    const AMOUNT_OF_SHOPPING_PER_MONTH  = 13;
 
     /**
      * Factory $faker

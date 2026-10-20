@@ -40,7 +40,7 @@ class MyPaymentsIncomeFixtures extends Fixture implements OrderedFixtureInterfac
         foreach( $uniqueDates as $date ){
 
             $dateTime = new DateTime($date);
-            $amount   = rand(1900, 3200);
+            $amount   = rand(1900, 9650);
 
             $income = new MyPaymentsIncome();
             $income->setCurrency(self::CURRENCY_EUR);
