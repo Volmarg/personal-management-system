@@ -56,8 +56,7 @@
         "symfony/yaml": "v5.4",
         "tinymce/tinymce": "^5.0",
         "twig/extensions": "^1.5",
-        "volmarg/notifier-proxy-logger-bridge": "v1.1.*",
-        "volmarg/personal-management-system-io-bridge": "v1.1.0"
+        "volmarg/notifier-proxy-logger-bridge": "v1.1.*"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.2",
@@ -117,9 +116,6 @@
   "repositories": [{
       "type": "vcs",
       "url": "https://github.com/volmarg/notifier-proxy-logger-bridge"
-    },{
-      "type": "vcs",
-      "url": "https://github.com/Volmarg/personal-management-system-io-bridge"
     }
   ]
 }
