@@ -206,8 +206,8 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
 
         if (EnvReader::isDev() && !in_array(self::ROLE_DEVELOPER, $this->roles)) {
             $this->roles[] = self::ROLE_DEVELOPER;
-        } else {
-            $this->roles = array_filter($this->roles, fn($role) => $role !== self::ROLE_DEVELOPER);
+        } elseif (!EnvReader::isDev()) {
+            $this->roles = array_filter($this->roles, fn($role): bool => $role !== self::ROLE_DEVELOPER);
         }
 
         return array_unique($this->roles);
