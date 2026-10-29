@@ -118,6 +118,10 @@ class StorageFileService
      */
     public function uploadedFileIntoEntity(string $filePath, bool $flush = true): ?string
     {
+        if (str_starts_with($filePath, PathService::getProfileImageUploadDir())) {
+            return $filePath;
+        }
+
         $storageModule = PathService::getStorageModuleByPath($filePath);
         if ($this->storageFileRepository->exists($filePath)) {
             return null;
