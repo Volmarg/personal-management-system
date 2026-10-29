@@ -15,10 +15,10 @@ class ResponseService
      *
      * @link https://stackoverflow.com/questions/50603715/axios-not-sending-custom-headers-in-request-possible-cors-issue
      */
-    private const ACCESS_CONTROL_ORIGIN_HEADER  = "Access-Control-Allow-Origin";
-    private const ACCESS_CONTROL_ALLOW_HEADERS  = "Access-Control-Allow-Headers";
-    private const ACCESS_CONTROL_ALLOW_METHODS  = "Access-Control-Allow-Methods";
-    private const HEADER_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+    private const string ACCESS_CONTROL_ORIGIN_HEADER  = "Access-Control-Allow-Origin";
+    private const string ACCESS_CONTROL_ALLOW_HEADERS  = "Access-Control-Allow-Headers";
+    private const string ACCESS_CONTROL_ALLOW_METHODS  = "Access-Control-Allow-Methods";
+    private const string HEADER_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
     /**
      * This header informs if system is currently disabled. The point is that the information
@@ -28,13 +28,13 @@ class ResponseService
      * will not know about that, this could lead to the case where system is disabled but someone still
      * managed to make risky calls (like begin job search while it should not happen on this point).
      */
-    private const HEADER_IS_SYSTEM_DISABLED = "is-system-disabled";
+    private const string HEADER_IS_SYSTEM_DISABLED = "is-system-disabled";
 
     /**
      * Originally it was planned that this project WILL ALWAYS return json response base on {@see BaseResponse}, but
      * there are some cases where the responses should not be based on it.
      */
-    private const ROUTES_EXCLUDED_FROM_HANDLING_AS_BASE_RESPONSE = [
+    private const array ROUTES_EXCLUDED_FROM_HANDLING_AS_BASE_RESPONSE = [
         /**
          * It was made this way to reduce necessity of having some code on front which will extract base64 from
          * response etc... this way the native browser logic will just handle the download.

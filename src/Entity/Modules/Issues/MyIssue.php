@@ -9,66 +9,58 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Issues\MyIssueRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Issues\MyIssueRepository::class)]
 class MyIssue implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**
      * @var int $id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id = 0;
 
     /**
      * @var bool $deleted
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = false;
 
     /**
      * @var bool $resolved
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $resolved = false;
 
     /**
      * @var string $name
-     * @ORM\Column(type="string")
      */
-    private $name;
+    #[ORM\Column(type: 'string')]
+    private ?string $name = null;
 
     /**
      * @var string $information
-     * @ORM\Column(type="text")
      */
-    private $information;
+    #[ORM\Column(type: 'text')]
+    private ?string $information = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueContact", mappedBy="myIssue")
-     * @ORM\OrderBy({"date" = "DESC"})
-     */
+    #[ORM\OneToMany(mappedBy: 'myIssue', targetEntity: \App\Entity\Modules\Issues\MyIssueContact::class)]
+    #[ORM\OrderBy(['date' => 'DESC'])]
     private $issueContact;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Issues\MyIssueProgress", mappedBy="myIssue")
-     * @ORM\OrderBy({"date" = "DESC"})
-     */
+    #[ORM\OneToMany(mappedBy: 'myIssue', targetEntity: \App\Entity\Modules\Issues\MyIssueProgress::class)]
+    #[ORM\OrderBy(['date' => 'DESC'])]
     private $issueProgress;
 
     /**
      * @var bool $showOnDashboard
-     * @ORM\Column(type="boolean", nullable=false)
      */
+    #[ORM\Column(type: 'boolean', nullable: false)]
     private $showOnDashboard = true;
 
-    /**
-     * @ORM\OneToOne(targetEntity=MyTodo::class, inversedBy="myIssue", cascade={"persist", "remove"})
-     */
-    private $todo;
+    #[ORM\OneToOne(inversedBy: 'myIssue', targetEntity: MyTodo::class, cascade: ['persist', 'remove'])]
+    private ?\App\Entity\Modules\Todo\MyTodo $todo = null;
 
     public function __construct()
     {

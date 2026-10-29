@@ -15,23 +15,23 @@ class ContactTypeDto extends AbstractDTO implements DtoInterface {
     /**
      * @var string $name
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string $iconPath
      */
-    private $iconPath;
+    private string $iconPath;
 
     /**
      * @var string $details
      */
-    private $details;
+    private string $details;
 
     /**
      * This value is later used on front to identify which contact type in json we change as one contact may have few discord type contacts
      * @var string $uuid
      */
-    private $uuid;
+    private string $uuid;
 
     /**
      * @return string

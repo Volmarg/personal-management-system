@@ -7,41 +7,37 @@ use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Issues\MyIssueProgressRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Issues\MyIssueProgressRepository::class)]
 class MyIssueProgress implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**
      * @var int $id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var string $information
-     * @ORM\Column(type="text", nullable=true)
      */
-    private $information;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $information = null;
 
     /**
      * @var DateTime $date
-     * @ORM\Column(type="datetime")
      */
-    private $date;
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $date = null;
 
     /**
      * @var bool $deleted
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Issues\MyIssue", inversedBy="issueProgress")
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Issues\MyIssue::class, inversedBy: 'issueProgress')]
     private $myIssue;
 
     /**

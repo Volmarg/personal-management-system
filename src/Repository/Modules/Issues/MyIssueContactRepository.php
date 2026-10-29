@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyIssueContact|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyIssueContact[]    findAll()
  * @method MyIssueContact[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Issues\MyIssueContact>
  */
 class MyIssueContactRepository extends ServiceEntityRepository
 {

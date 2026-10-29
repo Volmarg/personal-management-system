@@ -7,45 +7,30 @@ use App\Repository\Modules\Schedules\MyScheduleReminderRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 
-/**
- * @ORM\Table(uniqueConstraints={
- *     @UniqueConstraint(
- *       name="unique_record",
- *       columns={"schedule_id", "date"}
- *     )
- *   }
- * )
- * @ORM\Entity(repositoryClass=MyScheduleReminderRepository::class)
- */
+#[ORM\Entity(repositoryClass: MyScheduleReminderRepository::class)]
+#[ORM\Table]
+#[UniqueConstraint(name: 'unique_record', columns: ['schedule_id', 'date'])]
 class MyScheduleReminder implements SoftDeletableEntityInterface
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=MySchedule::class, inversedBy="myScheduleReminders")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: MySchedule::class, inversedBy: 'myScheduleReminders')]
+    #[ORM\JoinColumn(nullable: false)]
     private $schedule;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $date;
 
     /**
-     * @ORM\Column(type="boolean")
      * @var bool $processed
      */
+    #[ORM\Column(type: 'boolean')]
     private bool $processed = false;
 
     public function getId(): ?int

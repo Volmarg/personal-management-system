@@ -12,41 +12,27 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Health\IllnessRepository")
- * @ORM\Table(name="illness", uniqueConstraints={
- *       @UniqueConstraint(
- *         name="unique_record",
- *         columns={"name"}
- *       )
- *     })
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Health\IllnessRepository::class)]
+#[ORM\Table(name: 'illness')]
+#[UniqueConstraint(name: 'unique_record', columns: ['name'])]
 class Illness implements EntityInterface, SoftDeletableEntityInterface
 {
     use SoftDeleteAwareTrait;
     use CreateModifyFieldAwareTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank]
     private string $name;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $information = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="DoctorAppointment", mappedBy="illness")
-     */
+    #[ORM\OneToMany(mappedBy: 'illness', targetEntity: \DoctorAppointment::class)]
     private Collection | array $appointments;
 
     public function __construct()
@@ -89,7 +75,7 @@ class Illness implements EntityInterface, SoftDeletableEntityInterface
      */
     public function getAppointments(bool $skipDeleted = true): Collection | array
     {
-        return CollectionService::filterAndReindex($this->appointments, function (DoctorAppointment $appointment) use($skipDeleted) {
+        return CollectionService::filterAndReindex($this->appointments, function (DoctorAppointment $appointment) use($skipDeleted): bool {
             if ($skipDeleted && $appointment->isDeleted()) {
                 return false;
             }

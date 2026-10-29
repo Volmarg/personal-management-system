@@ -6,10 +6,8 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobAfterhoursRepository")
- * @ORM\Table(name="my_job_afterhour")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Job\MyJobAfterhoursRepository::class)]
+#[ORM\Table(name: 'my_job_afterhour')]
 class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
 {
 
@@ -17,50 +15,33 @@ class MyJobAfterhours implements SoftDeletableEntityInterface, EntityInterface
 
     public const TYPE_MADE  = 'made';
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="date", length=255)
-     */
+    #[ORM\Column(type: 'date', length: 255)]
     private $Date;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $Description;
 
-    /**
-     * @ORM\Column(type="integer", length=100)
-     */
+    #[ORM\Column(type: 'integer', length: 100)]
     private $Minutes;
 
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('spent', 'made')", nullable=false)
-     */
+    #[ORM\Column(type: 'string', nullable: false, columnDefinition: "ENUM('spent', 'made')")]
     private $Type;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $goal;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     public function getId(): ?int {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getDate(): \DateTime {
         return $this->Date;
     }

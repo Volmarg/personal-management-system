@@ -9,7 +9,7 @@ use Doctrine\Persistence\ObjectManager;
 class ModuleData extends Fixture
 {
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach(ModuleDataProvider::ALL_ENTRIES as $singleEntry){

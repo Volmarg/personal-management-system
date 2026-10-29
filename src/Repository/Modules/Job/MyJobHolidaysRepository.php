@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyJobHolidays|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyJobHolidays[]    findAll()
  * @method MyJobHolidays[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Job\MyJobHolidays>
  */
 class MyJobHolidaysRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {

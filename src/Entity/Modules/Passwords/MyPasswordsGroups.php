@@ -6,27 +6,19 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsGroupsRepository")
- * @ORM\Table(name="my_password_group")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Passwords\MyPasswordsGroupsRepository::class)]
+#[ORM\Table(name: 'my_password_group')]
 class MyPasswordsGroups implements SoftDeletableEntityInterface, EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     public function getId(): ?int

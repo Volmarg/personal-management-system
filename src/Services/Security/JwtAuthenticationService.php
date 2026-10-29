@@ -216,7 +216,7 @@ class JwtAuthenticationService
      * @param Exception $e
      * @return bool
      */
-    public static function isJwtTokenException(Throwable $e){
+    public static function isJwtTokenException(Throwable $e): bool{
         if(
                 $e instanceof ExpiredTokenException
             ||  $e instanceof InvalidPayloadException

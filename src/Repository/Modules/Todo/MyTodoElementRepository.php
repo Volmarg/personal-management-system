@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyTodoElement|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyTodoElement[]    findAll()
  * @method MyTodoElement[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Todo\MyTodoElement>
  */
 class MyTodoElementRepository extends ServiceEntityRepository
 {

@@ -6,74 +6,49 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use App\Repository\Modules\Schedules\MyScheduleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\PersistentCollection;
 use Exception;
 
-/**
- * @ORM\Entity(repositoryClass=MyScheduleRepository::class)
- */
+#[ORM\Entity(repositoryClass: MyScheduleRepository::class)]
 class MySchedule implements SoftDeletableEntityInterface, EntityInterface
 {
     const CATEGORY_TIME      = "time";
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
+    #[ORM\Column(type: 'string', length: 100)]
     private $title;
 
-    /**
-     * @ORM\Column(type="string", length=250)
-     */
+    #[ORM\Column(type: 'string', length: 250)]
     private $body;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $allDay;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $start;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $end;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
+    #[ORM\Column(type: 'string', length: 50)]
     private $category;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $location;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = false;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=MyScheduleCalendar::class, inversedBy="schedules")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: MyScheduleCalendar::class, inversedBy: 'schedules')]
+    #[ORM\JoinColumn(nullable: false)]
     private $calendar;
 
-    /**
-     * @ORM\OneToMany(targetEntity=MyScheduleReminder::class, mappedBy="schedule", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(mappedBy: 'schedule', targetEntity: MyScheduleReminder::class, orphanRemoval: true)]
     private $myScheduleReminders;
 
     public function __construct()
@@ -229,7 +204,7 @@ class MySchedule implements SoftDeletableEntityInterface, EntityInterface
      *
      * @param MyScheduleReminder[] $reminders
      */
-    public function setMyScheduleReminders(array $reminders)
+    public function setMyScheduleReminders(array $reminders): void
     {
         $this->myScheduleReminders = $reminders;
     }

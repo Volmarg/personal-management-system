@@ -4,7 +4,6 @@ namespace App\Repository\Modules\Job;
 
 use App\Entity\Modules\Job\MyJobHolidaysPool;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyJobHolidaysPool|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyJobHolidaysPool[]    findAll()
  * @method MyJobHolidaysPool[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Job\MyJobHolidaysPool>
  */
 class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
@@ -22,7 +22,7 @@ class MyJobHolidaysPoolRepository extends ServiceEntityRepository {
      * Returns the number of days left for given calendar year
      * @param string $year
      * @return int
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getDaysInPoolLeftForYear(string $year): int
     {

@@ -56,7 +56,7 @@ class BillsAction extends AbstractController {
             $elements = [];
 
             $items = $bill->getItem()->getValues();
-            usort($items, fn(BillItem $curr,BillItem $next) => $curr->getDate()->getTimestamp() < $next->getDate()->getTimestamp());
+            usort($items, fn(BillItem $curr,BillItem $next): bool => $curr->getDate()->getTimestamp() < $next->getDate()->getTimestamp());
             foreach ($items as $item) {
                 if ($item->isDeleted()) {
                     continue;

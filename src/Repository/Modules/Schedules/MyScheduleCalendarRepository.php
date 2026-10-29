@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyScheduleCalendar|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyScheduleCalendar[]    findAll()
  * @method MyScheduleCalendar[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Schedules\MyScheduleCalendar>
  */
 class MyScheduleCalendarRepository extends ServiceEntityRepository
 {

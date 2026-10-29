@@ -9,46 +9,32 @@ use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Payments\MyRecurringPaymentMonthlyRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class MyRecurringPaymentMonthly implements SoftDeletableEntityInterface, EntityInterface, ValidateEntityInterface, ValidateEntityForUpdateInterface, ValidateEntityForCreateInterface
 {
     const MIN_DAY_OF_MONTH    = 1;
     const MAX_DAY_OF_MONTH    = 31;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer", length=255, nullable=false)
-     */
+    #[ORM\Column(type: 'integer', length: 255, nullable: false)]
     private int $dayOfMonth;
 
-    /**
-     * @ORM\Column(type="float")
-     */
+    #[ORM\Column(type: 'float')]
     private $money;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $description;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\MyPaymentsSettings")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Payments\MyPaymentsSettings::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private $type;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     public function getId(): ?int {

@@ -8,7 +8,6 @@ use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Faker\Factory;
 
@@ -30,17 +29,17 @@ class MyPaymentsIncomeFixtures extends Fixture implements OrderedFixtureInterfac
 
     /**
      * @param ObjectManager $manager
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         $uniqueDates = $this->paymentsMonthlyRepository->getUniqueDatesFromPayments();
         foreach( $uniqueDates as $date ){
 
             $dateTime = new DateTime($date);
-            $amount   = rand(1900, 9650);
+            $amount   = random_int(1900, 9650);
 
             $income = new MyPaymentsIncome();
             $income->setCurrency(self::CURRENCY_EUR);

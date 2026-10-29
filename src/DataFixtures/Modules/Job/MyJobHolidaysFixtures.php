@@ -25,7 +25,7 @@ class MyJobHolidaysFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         // first add pools
@@ -44,7 +44,7 @@ class MyJobHolidaysFixtures extends Fixture implements OrderedFixtureInterface
 
         // now add spent days
         $index = 0;
-        foreach(JobHolidays::ALL_COMPANIES as $companyName => $holidayData){
+        foreach(JobHolidays::ALL_COMPANIES as $holidayData){
             $daysMin = 5;
             $daysMax = $holidayData[JobHolidays::KEY_HOLIDAYS_COUNT];
 

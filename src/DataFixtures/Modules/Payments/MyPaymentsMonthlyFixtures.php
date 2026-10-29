@@ -52,7 +52,7 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->paymentsSettingsRepository = $manager->getRepository(MyPaymentsSettings::class);
         $this->manager                      = $manager;
@@ -90,7 +90,7 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
      * @param int $currMonth
      * @throws \Exception
      */
-    private function addRecurringPayments(int $currYear, int $currMonth) {
+    private function addRecurringPayments(int $currYear, int $currMonth): void {
         foreach (PaymentsMonthly::ALL_MONTHLY as $name => $price) {
 
             $date = "{$currYear}-{$currMonth}-1";
@@ -124,10 +124,10 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
         string $categoryName,
         array  $shopsNames,
         array  $productsNames
-    ){
+    ): void{
         for($y = 0; $y <= static::AMOUNT_OF_SHOPPING_PER_MONTH; $y++) {
 
-            $day        = rand(1, 25);
+            $day        = random_int(1, 25);
             $date       = "{$currYear}-{$currMonth}-{$day}";
             $dateTime   = new \DateTime($date);
 
@@ -150,7 +150,7 @@ class MyPaymentsMonthlyFixtures extends Fixture implements OrderedFixtureInterfa
             }
 
             $description = "{$shopName}: $productsList";
-            $money       = rand(100, 1599) / 10;
+            $money       = random_int(100, 1599) / 10;
 
 
             $monthlyPayment = new MyPaymentsMonthly();

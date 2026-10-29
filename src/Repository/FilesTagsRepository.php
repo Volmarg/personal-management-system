@@ -4,8 +4,6 @@ namespace App\Repository;
 
 use App\Entity\FilesTags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Exception;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -13,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method FilesTags|null findOneBy(array $criteria, array $orderBy = null)
  * @method FilesTags[]    findAll()
  * @method FilesTags[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\FilesTags>
  */
 class FilesTagsRepository extends ServiceEntityRepository
 {
@@ -32,17 +31,16 @@ class FilesTagsRepository extends ServiceEntityRepository
 
         if( empty($filesTags) ){
             return null;
-        }else{
-            $fileTags = reset($filesTags);
-            return $fileTags;
         }
+        $fileTags = reset($filesTags);
+        return $fileTags;
 
     }
 
     /**
      * @param string $oldFolderPath
      * @param string $newFolderPath
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function updateFilePathByFolderPathChange(string $oldFolderPath, string $newFolderPath): void {
 

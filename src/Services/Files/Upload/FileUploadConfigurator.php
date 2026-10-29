@@ -17,11 +17,11 @@ class FileUploadConfigurator
      * These ids must be kept in sync with front, if any will ever get changed then it has to be updated on front too
      * Not using any human friendly names to prevent manipulating it on front
      */
-    private const PROFILE_PICTURE_UPLOAD  = "ef61b8bf828699f522861815c9ac8969";
-    private const IMAGE_STORAGE__ID = "12ds23hs8sh7s4645678f4sadg456789as1";
-    private const VIDEOS_STORAGE_ID = "312s456d7gewse123rg7gh456g1s";
-    private const FILES_STORAGE_ID  = "645dsf789shkdczs23431245jk687sd123";
-    private const MONTHLY_PAYMENTS_IMPORT_ID  = "b54c2e78d5dbcc4441f813da11783859e2588d8b";
+    private const string PROFILE_PICTURE_UPLOAD  = "ef61b8bf828699f522861815c9ac8969";
+    private const string IMAGE_STORAGE__ID = "12ds23hs8sh7s4645678f4sadg456789as1";
+    private const string VIDEOS_STORAGE_ID = "312s456d7gewse123rg7gh456g1s";
+    private const string FILES_STORAGE_ID  = "645dsf789shkdczs23431245jk687sd123";
+    private const string MONTHLY_PAYMENTS_IMPORT_ID  = "b54c2e78d5dbcc4441f813da11783859e2588d8b";
 
     private const array SUPPORTED_IMAGE_EXTENSIONS = [
         "bm",

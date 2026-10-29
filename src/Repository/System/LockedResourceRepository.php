@@ -15,6 +15,7 @@ use Doctrine\ORM\ORMException;
  * @method LockedResource|null findOneBy(array $criteria, array $orderBy = null)
  * @method LockedResource[]    findAll()
  * @method LockedResource[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\System\LockedResource>
  */
 class LockedResourceRepository extends ServiceEntityRepository
 {
@@ -128,8 +129,7 @@ class LockedResourceRepository extends ServiceEntityRepository
             $record,
         ];
 
-        $stmt->execute($params);
-        $result = $stmt->fetchFirstColumn();
+        $result = $stmt->executeQuery($params)->fetchFirstColumn();
 
         return !empty($result);
     }

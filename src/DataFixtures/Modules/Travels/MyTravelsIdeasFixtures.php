@@ -11,7 +11,7 @@ use Faker\Factory;
 
 class MyTravelsIdeasFixtures extends Fixture
 {
-    private const FAKE_IMAGE_PROVIDER = 'https://picsum.photos/700/300'; // the numbers are "width X height"
+    private const string FAKE_IMAGE_PROVIDER = 'https://picsum.photos/700/300'; // the numbers are "width X height"
 
     /**
      * Factory $faker
@@ -22,7 +22,7 @@ class MyTravelsIdeasFixtures extends Fixture
         $this->faker    = Factory::create('en');
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $categories = [];
 

@@ -19,9 +19,9 @@ class GenerateInternalJwtTokenCommand extends Command
 {
     const COMMAND_NAME = "pms:security:jwt:generate-internal-token";
 
-    private const OPTION_USER_EMAIL = "user-email";
+    private const string OPTION_USER_EMAIL = "user-email";
 
-    private const OPTION_NON_EXPIRING = "non-expiring";
+    private const string OPTION_NON_EXPIRING = "non-expiring";
 
     /**
      * Set configuration

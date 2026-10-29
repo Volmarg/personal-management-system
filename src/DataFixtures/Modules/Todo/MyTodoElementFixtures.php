@@ -25,7 +25,7 @@ class MyTodoElementFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoGoalElements(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO_GOALS as $index => $todoWithElements) {
+        foreach(Todo::ALL_TODO_GOALS as $todoWithElements) {
 
             foreach($todoWithElements as $name => $elements){
 
@@ -52,7 +52,7 @@ class MyTodoElementFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoElements(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO as $index => $todoWithElements) {
+        foreach(Todo::ALL_TODO as $todoWithElements) {
             foreach($todoWithElements as $name => $elements){
 
                 $todos = $manager->getRepository(MyTodo::class)->findBy(['name' => $name]);
@@ -78,7 +78,7 @@ class MyTodoElementFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodoIssueElements(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO_ISSUE as $index => $todoWithElements) {
+        foreach(Todo::ALL_TODO_ISSUE as $todoWithElements) {
 
             foreach($todoWithElements as $name => $elements){
 

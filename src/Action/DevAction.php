@@ -8,13 +8,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DevAction extends AbstractController
 {
-    public function __construct()
-    {
-    }
-
     public function debug(): JsonResponse
     {
-        return BaseResponse::buildOkResponse("See " . __CLASS__ . "::" . __FUNCTION__)->toJsonResponse();
+        return BaseResponse::buildOkResponse("See " . self::class . "::" . __FUNCTION__)->toJsonResponse();
     }
 
 }

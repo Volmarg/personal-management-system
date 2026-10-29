@@ -33,11 +33,11 @@ readonly class FileUploadService
      * @param StorageFileService     $storageFileService
      */
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private LoggerInterface $logger,
         private FileUploadValidator             $fileUploadValidator,
         private FileUploadConfigurator          $fileUploadConfigurator,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly StorageFileService $storageFileService
+        private EntityManagerInterface $entityManager,
+        private StorageFileService $storageFileService
     ) {
     }
 

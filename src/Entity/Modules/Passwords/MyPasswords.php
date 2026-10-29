@@ -7,49 +7,35 @@ use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use SpecShaper\EncryptBundle\Annotations\Encrypted;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Passwords\MyPasswordsRepository")
- * @ORM\Table(name="my_password")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Passwords\MyPasswordsRepository::class)]
+#[ORM\Table(name: 'my_password')]
 class MyPasswords implements SoftDeletableEntityInterface, EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $login;
 
     /**
      * @var string
      * @Encrypted
-     * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $password;
 
-    /**
-     * @ORM\Column(type="string", length=255,  nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $url;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Passwords\MyPasswordsGroups")
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Passwords\MyPasswordsGroups::class)]
     private $group;
 
     public function getId(): ?int {

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Achievement|null findOneBy(array $criteria, array $orderBy = null)
  * @method Achievement[]    findAll()
  * @method Achievement[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Achievements\Achievement>
  */
 class AchievementRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {

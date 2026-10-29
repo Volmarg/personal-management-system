@@ -52,9 +52,7 @@ class DoctorService
 
             $storageFileIds  = array_unique($storageFileIds);
             $storageFileRepo = $this->em->getRepository(StorageFile::class);
-            $storageFiles    = array_filter(array_map(function ($id) use ($storageFileRepo) {
-                return $storageFileRepo->find($id);
-            }, $storageFileIds));
+            $storageFiles    = array_filter(array_map(fn($id) => $storageFileRepo->find($id), $storageFileIds));
 
             if (count($storageFiles) !== count($storageFileIds)) {
                 throw new LogicException("Could not find files for all ids: " . json_encode($storageFileIds));

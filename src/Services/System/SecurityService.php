@@ -5,36 +5,36 @@ namespace App\Services\System;
 
 
 use App\Entity\User;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
+use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactoryInterface;
 
 class SecurityService {
 
     /**
-     * @var EncoderFactoryInterface $encoderFactory
+     * @var PasswordHasherFactoryInterface $encoderFactory
      */
     private $encoderFactory;
 
     /**
      * SecurityController constructor.
-     * @param EncoderFactoryInterface $encoderFactory
+     *
+     * @param PasswordHasherFactoryInterface $passwordHasherFactory
      */
-    public function __construct(EncoderFactoryInterface $encoderFactory)
+    public function __construct(PasswordHasherFactoryInterface $passwordHasherFactory)
     {
-        $this->encoderFactory  = $encoderFactory;
+        $this->encoderFactory = $passwordHasherFactory;
     }
 
     /**
      * @param User $user
      * @param string $userPassword
      * @param string $usedPassword
-     * @param string|null $saltForUsedPassword
      * @return bool
      */
-    public function isPasswordValid(User $user, string $userPassword, string $usedPassword, ?string $saltForUsedPassword = null): bool
+    public function isPasswordValid(User $user, string $userPassword, string $usedPassword): bool
     {
-        $encoder         = $this->encoderFactory->getEncoder($user);
-        $isPasswordValid = $encoder->isPasswordValid($userPassword, $usedPassword, $saltForUsedPassword);
-        return $isPasswordValid;
+        $hasher = $this->encoderFactory->getPasswordHasher($user);
+
+        return $hasher->verify($userPassword, $usedPassword);
     }
 
 }

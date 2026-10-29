@@ -24,11 +24,11 @@ class AbstractDTO{
         if( array_key_exists($key, $array) ){
             $value = $array[$key];
         }else{
-            throw new Exception("{$key} was not found in array made from json in class: " . __CLASS__);
+            throw new Exception("{$key} was not found in array made from json in class: " . self::class);
         }
 
         if( $asString && is_array($value)){
-            $value = \GuzzleHttp\json_encode($value);
+            return \GuzzleHttp\json_encode($value);
         }
 
         return $value;

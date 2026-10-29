@@ -35,14 +35,14 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->addGroups($manager);
         $this->addTypes($manager);
         $this->addContacts($manager);
     }
 
-    private function addGroups(ObjectManager $manager)
+    private function addGroups(ObjectManager $manager): void
     {
         foreach(ContactGroups::ALL_CONTACT_GROUPS as $contactGroupData){
 
@@ -60,7 +60,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
         $manager->flush();
     }
 
-    private function addTypes(ObjectManager $manager)
+    private function addTypes(ObjectManager $manager): void
     {
         foreach(ContactTypes::ALL_CONTACT_TYPES as $contactTypeData){
 
@@ -79,7 +79,7 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    private function addContacts(ObjectManager $manager) {
+    private function addContacts(ObjectManager $manager): void {
 
         for( $x = 0; $x <= 22 ; $x++) {
 
@@ -164,9 +164,9 @@ class MyContactsFixtures extends Fixture implements OrderedFixtureInterface
         $manager->flush();
     }
 
-    private function getUserPictureUrl()
+    private function getUserPictureUrl(): string
     {
-        $num = rand(1, 35);
+        $num = random_int(1, 35);
         $url = "https://randomuser.me/api/portraits/men/{$num}.jpg" ;
         return $url;
     }

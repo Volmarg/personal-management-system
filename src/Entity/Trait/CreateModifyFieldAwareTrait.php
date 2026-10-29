@@ -7,14 +7,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait CreateModifyFieldAwareTrait
 {
-    /**
-     * @ORM\Column(type="datetime", name="created", columnDefinition="DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL")
-     */
+    #[ORM\Column(name: 'created', type: 'datetime', columnDefinition: 'DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL')]
     private DateTime $created;
 
-    /**
-     * @ORM\Column(type="datetime", name="modified", columnDefinition="DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL")
-     */
+    #[ORM\Column(name: 'modified', type: 'datetime', columnDefinition: 'DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL')]
     private DateTime $modified;
 
     public function getCreated(): DateTime

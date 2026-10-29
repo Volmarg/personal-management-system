@@ -14,7 +14,7 @@ class UploadResponse extends BaseResponse
     private string $status;
     private string $publicPath;
     private string $localFileName;
-    private ?string $uploadId;
+    private ?string $uploadId = null;
 
     /**
      * @return string

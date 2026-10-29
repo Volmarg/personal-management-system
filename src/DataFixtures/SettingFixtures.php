@@ -10,7 +10,6 @@ use App\Services\Settings\SettingsLoader;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\DBAL\DBALException;
 
 class SettingFixtures extends Fixture
 {
@@ -35,7 +34,7 @@ class SettingFixtures extends Fixture
      * @throws ExceptionValueNotAllowed
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         $plnCurrencyDto  = $this->getPlnCurrency();
@@ -99,9 +98,9 @@ class SettingFixtures extends Fixture
      *
      * @param SettingsFinancesDto $financesSettingsDto
      *
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    private function insertCurrenciesIntoDb(SettingsFinancesDto $financesSettingsDto){
+    private function insertCurrenciesIntoDb(SettingsFinancesDto $financesSettingsDto): void{
 
         $settingType = SettingsLoader::SETTING_NAME_FINANCES;
         $json        = $financesSettingsDto->toJson();

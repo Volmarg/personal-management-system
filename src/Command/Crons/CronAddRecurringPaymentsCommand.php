@@ -67,29 +67,26 @@ class CronAddRecurringPaymentsCommand extends Command
      * @return int|void|null
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
         $io = new SymfonyStyle($input, $output);
         $io->success("Started setting recurring payments for month and year: " . $this->currYearMonth);
-        {
-            try{
-                $recurringPaymentsToSet = $this->getRecurringPaymentsAndFilterExistingRecords();
+        try{
+            $recurringPaymentsToSet = $this->getRecurringPaymentsAndFilterExistingRecords();
 
-                if( !$this->countOfFilteredPayments ){
-                    $io->note("No entries were found to process. Stopping here");
-                    return Command::SUCCESS;
-                }
-
-                $this->addRecurringPaymentsToDatabase($recurringPaymentsToSet);
-                $this->report($io);
-
-            }catch(Exception $e){
-                $this->logger->critical("There was an error while trying to add recurring payments.");
-                $this->logger->critical($e->getMessage());
-                return Command::FAILURE;
+            if( !$this->countOfFilteredPayments ){
+                $io->note("No entries were found to process. Stopping here");
+                return Command::SUCCESS;
             }
 
+            $this->addRecurringPaymentsToDatabase($recurringPaymentsToSet);
+            $this->report($io);
+
+        }catch(Exception $e){
+            $this->logger->critical("There was an error while trying to add recurring payments.");
+            $this->logger->critical($e->getMessage());
+            return Command::FAILURE;
         }
         $io->success("Finished setting recurring payments.");
 
@@ -151,7 +148,7 @@ class CronAddRecurringPaymentsCommand extends Command
      * This function will display information about adding the payments
      * @param SymfonyStyle $io
      */
-    private function report(SymfonyStyle $io){
+    private function report(SymfonyStyle $io): void{
         $io->note("Number of recurring payments found to add: "         . $this->countOfPaymentsToAdd);
         $io->note("Number of already existing recurring payments: "     . $this->countOfAlreadyExistingPayments);
         $io->note("Number of recurring payments that will be added: "   . $this->countOfFilteredPayments);
@@ -189,7 +186,7 @@ class CronAddRecurringPaymentsCommand extends Command
         $daysInCurrentMonth = (new DateTime())->format("t");
 
         if($daysInCurrentMonth <= $usedDayOfMonth){
-            $usedDayOfMonth = $daysInCurrentMonth;
+            return $daysInCurrentMonth;
         }
 
         return $usedDayOfMonth;

@@ -60,7 +60,7 @@ class Kernel extends BaseKernel
         $routes->import('../config/{routes}/'.$this->environment.'/*.yaml');
         $routes->import('../config/{routes}/*.yaml');
 
-        if (is_file(\dirname(__DIR__).'/config/routes.yaml')) {
+        if (is_file(__DIR__.'/../config/routes.yaml')) {
             $routes->import('../config/routes.yaml');
         } else {
             $routes->import('../config/{routes}.php');

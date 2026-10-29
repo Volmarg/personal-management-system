@@ -32,7 +32,7 @@ class CronMakeBackupCommand extends Command
     const ARGUMENT_BACKUP_DATABASE_FILENAME = "backup-database-name";
     const ARGUMENT_BACKUP_FILES_FILENAME    = "backup-files-name";
 
-    const PUBLIC_DIR_ROOT               = DOT . DIRECTORY_SEPARATOR . 'public';
+    const PUBLIC_DIR_ROOT               = "." . DIRECTORY_SEPARATOR . 'public';
 
     protected static $defaultName = 'cron:make-backup';
 
@@ -78,7 +78,7 @@ class CronMakeBackupCommand extends Command
      * @param OutputInterface $output
      * @throws Exception
      */
-    function initialize(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
         $argumentBackupDirectory = $input->getArgument(self::ARGUMENT_BACKUP_DIRECTORY_MODULE);
 
@@ -107,46 +107,40 @@ class CronMakeBackupCommand extends Command
      * @return int
      * @throws Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
         $io->warning("This command must be called from the root of the project. It won't work from other locations!");
         $io->note("Started backup process");
-        {
-            $argumentBackupDatabaseFilename  = $input->getArgument(self::ARGUMENT_BACKUP_DATABASE_FILENAME);
-            $argumentBackupFilesFilename     = $input->getArgument(self::ARGUMENT_BACKUP_FILES_FILENAME);
-            $optionSkipFiles                 = $input->getOption(self::OPTION_SKIP_FILES);
-            $optionSkipDatabase              = $input->getOption(self::OPTION_SKIP_DATABASE);
+        $argumentBackupDatabaseFilename  = $input->getArgument(self::ARGUMENT_BACKUP_DATABASE_FILENAME);
+        $argumentBackupFilesFilename     = $input->getArgument(self::ARGUMENT_BACKUP_FILES_FILENAME);
+        $optionSkipFiles                 = $input->getOption(self::OPTION_SKIP_FILES);
+        $optionSkipDatabase              = $input->getOption(self::OPTION_SKIP_DATABASE);
+        if ($optionSkipFiles) {
+            $io->note("Files backup will be skipped");
+        }
+        if ($optionSkipDatabase) {
+            $io->note("Database backup will be skipped");
+        }
+        if( !$optionSkipFiles ){
+            $io->note("Now making files backup");
+            $this->backupFiles($io, $argumentBackupFilesFilename);
 
-            if ($optionSkipFiles) {
-                $io->note(sprintf("Files backup will be skipped"));
+            if( !$this->archivizer->isArchivedSuccessfully() ){
+                $io->error("Finished creating files backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
             }
-            if ($optionSkipDatabase) {
-                $io->note(sprintf("Database backup will be skipped"));
+        }
+        if( !$optionSkipDatabase ){
+            $io->note("Now making database backup");
+            $this->backupDatabase($io, $argumentBackupDatabaseFilename);
+            if( !$this->archivizer->isArchivedSuccessfully() ){
+                $io->error("Finished creating sql backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
             }
-
-            if( !$optionSkipFiles ){
-                $io->note("Now making files backup");
-                $this->backupFiles($io, $argumentBackupFilesFilename);
-
-                if( !$this->archivizer->isArchivedSuccessfully() ){
-                    $io->error("Finished creating files backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
-                }
-            }
-
-            if( !$optionSkipDatabase ){
-                $io->note("Now making database backup");
-                $this->backupDatabase($io, $argumentBackupDatabaseFilename);
-                if( !$this->archivizer->isArchivedSuccessfully() ){
-                    $io->error("Finished creating sql backup but the archivizing process resulted in failure! Status: {$this->archivizer->getArchivingStatus()}");
-                }
-            }
-
         }
         $io->note("Backup process has been completed");
 
-        return 1;
+        return \Symfony\Component\Console\Command\Command::FAILURE;
     }
 
     /**
@@ -154,7 +148,7 @@ class CronMakeBackupCommand extends Command
      * @param SymfonyStyle $io
      * @param string $backupDatabaseFilename
      */
-    private function backupDatabase(SymfonyStyle $io, string $backupDatabaseFilename ){
+    private function backupDatabase(SymfonyStyle $io, string $backupDatabaseFilename ): void{
         $this->databaseExporter->setFileName($backupDatabaseFilename);
         $this->databaseExporter->runInternalDatabaseExport();
         $exportMessage = $this->databaseExporter->getExportMessage();
@@ -187,7 +181,7 @@ class CronMakeBackupCommand extends Command
      * @param SymfonyStyle $io
      * @param string $backupFilesFilename
      */
-    private function backupFiles(SymfonyStyle $io, string $backupFilesFilename){
+    private function backupFiles(SymfonyStyle $io, string $backupFilesFilename): void{
 
         $uploadDirsForModules = [
             ModulesService::MODULE_NAME_IMAGES => self::PUBLIC_DIR_ROOT . DIRECTORY_SEPARATOR . EnvReader::getImagesUploadDir(),

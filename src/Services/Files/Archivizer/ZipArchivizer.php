@@ -59,7 +59,7 @@ class ZipArchivizer extends Archivizer
 
         if( ZipArchive::ER_OK !== $this->zip->status ){
             $this->logger->critical("Zip archive has returned error status", [
-                $this->zip->status => self::getHumanReadableStatus($this->zip->status),
+                $this->zip->status => $this->getHumanReadableStatus($this->zip->status),
             ]);
         }
 
@@ -76,7 +76,7 @@ class ZipArchivizer extends Archivizer
      * @param $status
      * @return string
      */
-    private static function getHumanReadableStatus( $status )
+    private function getHumanReadableStatus( string $status ): string
     {
         switch( (int) $status )
         {
@@ -116,7 +116,7 @@ class ZipArchivizer extends Archivizer
      * @param $archivedDirectoryPath
      * @throws Exception
      */
-    private function addRecursively(string $archivedDirectoryPath){
+    private function addRecursively(string $archivedDirectoryPath): void{
 
         if ( is_dir($archivedDirectoryPath) ) {
 
@@ -137,7 +137,7 @@ class ZipArchivizer extends Archivizer
                 }
             }
 
-        } else if (is_file($archivedDirectoryPath) === true) {
+        } else if (is_file($archivedDirectoryPath)) {
             $this->zip->addFile($archivedDirectoryPath);
         }
 

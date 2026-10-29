@@ -26,7 +26,7 @@ class MyNotesSettingsFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach (NotesCategories::ALL_CATEGORIES as $category) {

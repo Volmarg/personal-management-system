@@ -1,3 +1,4 @@
 doctrine_migrations:
     migrations_paths:
         'DoctrineMigrations': 'src/Migrations'
+    enable_profiler: false

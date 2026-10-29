@@ -16,7 +16,7 @@ class LoginUserChecker implements UserCheckerInterface
     /**
      * {@inheritDoc}
      */
-    public function checkPreAuth(UserInterface $user)
+    public function checkPreAuth(UserInterface $user): void
     {
         // nothing here
     }
@@ -24,7 +24,7 @@ class LoginUserChecker implements UserCheckerInterface
     /**
      * {@inheritDoc}
      */
-    public function checkPostAuth(UserInterface $user)
+    public function checkPostAuth(UserInterface $user): void
     {
         // nothing here
     }

@@ -39,7 +39,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
     {
         $goalsModule = $manager->getRepository(Module::class)->findOneBy(["name" => ModulesService::MODULE_NAME_GOALS]);
 
-        foreach(Todo::ALL_TODO_GOALS as $index => $todoWithElements) {
+        foreach(Todo::ALL_TODO_GOALS as $todoWithElements) {
 
             foreach($todoWithElements as $todoName => $elements) {
 
@@ -62,7 +62,7 @@ class MyTodoFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function addTodo(ObjectManager $manager): void
     {
-        foreach(Todo::ALL_TODO as $index=> $todoWithElements) {
+        foreach(Todo::ALL_TODO as $todoWithElements) {
 
             foreach($todoWithElements as $todoName => $elements) {
 

@@ -4,7 +4,6 @@ namespace App\Repository\Modules\Payments;
 
 use App\Entity\Modules\Payments\MyPaymentsMonthly;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyPaymentsMonthly|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyPaymentsMonthly[]    findAll()
  * @method MyPaymentsMonthly[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Payments\MyPaymentsMonthly>
  */
 class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
 
@@ -45,7 +45,7 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
 
     /**
      * This function will return dates in format Y-m so that incomes will be added for each month
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function getUniqueDatesFromPayments(): array
     {
@@ -65,7 +65,7 @@ class MyPaymentsMonthlyRepository extends ServiceEntityRepository {
         ";
 
         $stmt    = $connection->executeQuery($sql);
-        $results = $stmt->fetchAll(0);
+        $results = $stmt->fetchAllAssociative(0);
         $dates   = array_column($results,self::KEY_COLUMN_NAME_DATE);
 
         return $dates;

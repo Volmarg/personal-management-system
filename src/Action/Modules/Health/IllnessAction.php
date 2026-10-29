@@ -53,7 +53,7 @@ class IllnessAction extends AbstractController
         $repo = $this->em->getRepository(Illness::class);
 
         $illnesses = $repo->findBy(['deleted' => false]);
-        $illnessesData = array_map(fn(Illness $illness) => SingleIllnessResource::toArray($illness), $illnesses);
+        $illnessesData = array_map(SingleIllnessResource::toArray(...), $illnesses);
 
         $response = BaseResponse::buildOkResponse();
         $response->setAllRecordsData($illnessesData);
@@ -117,9 +117,7 @@ class IllnessAction extends AbstractController
         $appointmentIds = ArrayHandler::get($dataArray, 'appointmentIds');
 
         $repo         = $this->em->getRepository(DoctorAppointment::class);
-        $appointments = array_map(function ($id) use ($repo) {
-            return $repo->find($id);
-        }, $appointmentIds);
+        $appointments = array_map(fn($id) => $repo->find($id), $appointmentIds);
 
         $illness->setName($name);
         $illness->setInformation($information);

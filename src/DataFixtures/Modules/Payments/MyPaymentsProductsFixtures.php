@@ -25,7 +25,7 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
         ProviderCollectionHelper::addAllProvidersTo($this->faker);
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         $allFoodProducts     = (new Food())->all;
@@ -40,7 +40,7 @@ class MyPaymentsProductsFixtures extends Fixture implements OrderedFixtureInterf
         $manager->flush();
     }
 
-    private function addProductsWithShops(array $allProducts, array $allShops, ObjectManager $manager){
+    private function addProductsWithShops(array $allProducts, array $allShops, ObjectManager $manager): void{
         foreach($allProducts as $productName){
 
             $shop     = Utils::arrayGetRandom($allShops);

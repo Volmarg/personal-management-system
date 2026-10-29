@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyGoalsPayments|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyGoalsPayments[]    findAll()
  * @method MyGoalsPayments[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Goals\MyGoalsPayments>
  */
 class MyGoalsPaymentsRepository extends ServiceEntityRepository
 {

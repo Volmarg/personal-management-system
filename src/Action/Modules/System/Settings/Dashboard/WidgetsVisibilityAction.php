@@ -104,7 +104,7 @@ class WidgetsVisibilityAction extends AbstractController {
     private function getAllDefaultStateResponse(): JsonResponse
     {
         $entriesData = array_map(
-            fn($widgetName) => ['name' => $widgetName, 'enabled' => true],
+            fn(string $widgetName): array => ['name' => $widgetName, 'enabled' => true],
             Setting::ALL_DASHBOARD_WIDGETS
         );
 

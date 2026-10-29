@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyNotes|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyNotes[]    findAll()
  * @method MyNotes[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Notes\MyNotes>
  */
 class MyNotesRepository extends ServiceEntityRepository {
 

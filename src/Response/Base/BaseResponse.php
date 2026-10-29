@@ -8,10 +8,6 @@ use App\Services\TypeProcessor\ArrayHandler;
 use App\Traits\SerializerAwareTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * BaseResponse used for each response in the calls which come from frontend
@@ -37,9 +33,9 @@ class BaseResponse
     const KEY_DATA_RELOAD_VIEW = "reloadView";
     const KEY_DATA_BASE64 = "base64";
     const KEY_DATA_ID = "id";
-    private const KEY_DATA_ALL_RECORDS = "allRecords";
-    private const KEY_DATA_SINGLE_RECORD = 'singleRecord';
-    private const KEY_DATA_IS_LOCKED = 'isLocked';
+    private const string KEY_DATA_ALL_RECORDS = "allRecords";
+    private const string KEY_DATA_SINGLE_RECORD = 'singleRecord';
+    private const string KEY_DATA_IS_LOCKED = 'isLocked';
 
     const DEFAULT_CODE         = Response::HTTP_BAD_REQUEST;
     const DEFAULT_MESSAGE      = "Bad request";
@@ -182,7 +178,6 @@ class BaseResponse
 
     /**
      * @param string $key
-     * @param mixed  $value
      */
     public function addData(string $key, mixed $value): void
     {

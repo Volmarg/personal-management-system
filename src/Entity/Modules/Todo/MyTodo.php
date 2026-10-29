@@ -10,59 +10,51 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Todo\MyTodoRepository")
- * @ORM\Table(name="my_todo")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Todo\MyTodoRepository::class)]
+#[ORM\Table(name: 'my_todo')]
 class MyTodo implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**
      * @var int $id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var string $name
-     * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
     /**
      * @var string $description
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $description;
 
     /**
      * @var boolean $deleted
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     /**
      * @var boolean $completed
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $completed = 0;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $displayOnDashboard = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\System\Module", inversedBy="myTodo")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\System\Module::class, inversedBy: 'myTodo')]
+    #[ORM\JoinColumn(nullable: true)]
     private $module;
 
-    /**
-     * @ORM\OneToMany(targetEntity=MyTodoElement::class, mappedBy="myTodo")
-     */
+    #[ORM\OneToMany(mappedBy: 'myTodo', targetEntity: MyTodoElement::class)]
     private $myTodoElement;
 
     /**
@@ -72,9 +64,7 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
      */
     private $relatedEntityId = 0;
 
-    /**
-     * @ORM\OneToOne(targetEntity=MyIssue::class, mappedBy="todo", cascade={"persist", "remove"})
-     */
+    #[ORM\OneToOne(mappedBy: 'todo', targetEntity: MyIssue::class, cascade: ['persist', 'remove'])]
     private $myIssue;
 
     public function __construct()
@@ -218,7 +208,7 @@ class MyTodo implements SoftDeletableEntityInterface, EntityInterface
         $this->myIssue = $myIssue;
 
         // set (or unset) the owning side of the relation if necessary
-        $newTodo = null === $myIssue ? null : $this;
+        $newTodo = $myIssue instanceof \App\Entity\Modules\Issues\MyIssue ? $this : null;
         if (
                 !is_null($myIssue)
             &&  $myIssue->getTodo() !== $newTodo

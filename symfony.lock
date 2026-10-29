@@ -32,9 +32,6 @@
     "doctrine/common": {
         "version": "v2.8.1"
     },
-    "doctrine/data-fixtures": {
-        "version": "v1.3.2"
-    },
     "doctrine/dbal": {
         "version": "v2.6.3"
     },
@@ -57,25 +54,29 @@
         }
     },
     "doctrine/doctrine-fixtures-bundle": {
-        "version": "3.0",
+        "version": "3.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
+            "branch": "main",
             "version": "3.0",
-            "ref": "fc52d86631a6dfd9fdf3381d0b7e3df2069e51b3"
+            "ref": "1f5514cfa15b947298df4d771e694e578d4c204d"
         },
         "files": [
             "src/DataFixtures/AppFixtures.php"
         ]
     },
     "doctrine/doctrine-migrations-bundle": {
-        "version": "1.2",
+        "version": "3.7",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.2",
-            "ref": "c1431086fec31f17fbcfe6d6d7e92059458facc1"
-        }
+            "branch": "main",
+            "version": "3.1",
+            "ref": "1d01ec03c6ecbd67c3375c5478c9a423ae5d6a33"
+        },
+        "files": [
+            "config/packages/doctrine_migrations.yaml",
+            "migrations/.gitignore"
+        ]
     },
     "doctrine/event-manager": {
         "version": "v1.0.0"
@@ -88,9 +89,6 @@
     },
     "doctrine/lexer": {
         "version": "v1.0.1"
-    },
-    "doctrine/migrations": {
-        "version": "v1.6.2"
     },
     "doctrine/orm": {
         "version": "v2.6.0"
@@ -113,9 +111,6 @@
             "ref": "bb31a3bbec00a8fc8aa1c9fbf9b0ef9fc492f93d"
         }
     },
-    "friendsofphp/proxy-manager-lts": {
-        "version": "v1.0.0"
-    },
     "fzaninotto/faker": {
         "version": "v1.8.0"
     },
@@ -130,9 +125,6 @@
     },
     "guzzlehttp/psr7": {
         "version": "1.5.2"
-    },
-    "laminas/laminas-code": {
-        "version": "3.4.1"
     },
     "laminas/laminas-eventmanager": {
         "version": "3.3.0"
@@ -467,9 +459,6 @@
     },
     "symfony/options-resolver": {
         "version": "v4.0.3"
-    },
-    "symfony/orm-pack": {
-        "version": "v1.0.5"
     },
     "symfony/phpunit-bridge": {
         "version": "3.3",

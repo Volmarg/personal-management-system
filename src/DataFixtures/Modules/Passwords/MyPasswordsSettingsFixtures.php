@@ -20,7 +20,7 @@ class MyPasswordsSettingsFixtures extends Fixture implements OrderedFixtureInter
         $this->faker = Factory::create('en');
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach(PasswordsGroups::ALL as $passwordGroupName) {

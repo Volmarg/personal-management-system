@@ -41,7 +41,7 @@ class SettingsFinancesService extends AbstractController {
      * @return SettingsFinancesDto
      * @throws Exception
      */
-    public static function buildFinancesSettingsDtoFromCurrenciesSettingsDtos(array $currenciesSettingDtos = null){
+    public static function buildFinancesSettingsDtoFromCurrenciesSettingsDtos(array $currenciesSettingDtos = null): \App\DTO\Settings\Finances\SettingsFinancesDto{
 
         if( empty($currenciesSettingDtos) ){
             $currenciesSettingDtos   = [];
@@ -63,7 +63,7 @@ class SettingsFinancesService extends AbstractController {
      *
      * @return SettingsCurrencyDto[]
      */
-    public function handleDefaultCurrencyChange(array $currenciesSettingsDtos, SettingsCurrencyDto $newDefaultSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
+    public function handleDefaultCurrencyChange(array $currenciesSettingsDtos, SettingsCurrencyDto $newDefaultSettingCurrencyDto, string $arrayIndexOfUpdatedSetting): array{
 
         foreach($currenciesSettingsDtos as &$currency_setting_dto ){
             $currency_setting_dto->setIsDefault(false);
@@ -83,7 +83,7 @@ class SettingsFinancesService extends AbstractController {
      *
      * @return SettingsCurrencyDto[]
      */
-    public function handleCurrencyUpdate(array $currenciesSettingsDtos, SettingsCurrencyDto $newSettingCurrencyDto, string $arrayIndexOfUpdatedSetting){
+    public function handleCurrencyUpdate(array $currenciesSettingsDtos, SettingsCurrencyDto $newSettingCurrencyDto, string $arrayIndexOfUpdatedSetting): array{
         $currenciesSettingsDtos[$arrayIndexOfUpdatedSetting] = $newSettingCurrencyDto;
         return $currenciesSettingsDtos;
     }

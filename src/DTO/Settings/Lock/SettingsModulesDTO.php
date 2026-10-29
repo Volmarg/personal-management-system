@@ -49,7 +49,7 @@ class SettingsModulesDTO extends AbstractDTO
      * @param array $dtos
      * @throws Exception
      */
-    public function setModuleLockDtos(array $dtos)
+    public function setModuleLockDtos(array $dtos): void
     {
         $hasDto = reset($dtos) instanceof SettingsModuleLockDTO;
 

@@ -44,7 +44,7 @@ class CronServerResourcesCheckCommand extends Command
      * @param OutputInterface $output
      * @throws Exception
      */
-    function initialize(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
     }
@@ -58,18 +58,16 @@ class CronServerResourcesCheckCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io->note("Started checking server resources");
-        {
-            try{
-                $dangerLowSpace = $input->getArgument(self::ARGUMENT_LOW_DISC_SPACE_DANGER_MBYTES);
-                $checkedPath    = $input->getArgument(self::ARGUMENT_CHECKED_PATH);
-                $this->checkServerDiscSpaceLeft($dangerLowSpace, $checkedPath);
-            }catch(Exception | TypeError $e){
-                $this->logger->emergency("Exception was thrown while trying to check the server resources.", [
-                    "exceptionMessage" => $e->getMessage(),
-                ]);
+        try{
+            $dangerLowSpace = $input->getArgument(self::ARGUMENT_LOW_DISC_SPACE_DANGER_MBYTES);
+            $checkedPath    = $input->getArgument(self::ARGUMENT_CHECKED_PATH);
+            $this->checkServerDiscSpaceLeft($dangerLowSpace, $checkedPath);
+        }catch(Exception | TypeError $e){
+            $this->logger->emergency("Exception was thrown while trying to check the server resources.", [
+                "exceptionMessage" => $e->getMessage(),
+            ]);
 
-                return self::FAILURE;
-            }
+            return self::FAILURE;
         }
         $this->io->note("Finished checking server resources");
 

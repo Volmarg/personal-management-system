@@ -84,7 +84,7 @@ class CronMakeConfigBackupCommand extends Command
      * @param OutputInterface $output
      * @throws Exception
      */
-    function initialize(InputInterface $input, OutputInterface $output)
+    public function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->io = new SymfonyStyle($input, $output);
         if( !is_string($input->getArgument(self::ARGUMENT_BACKUP_FILE_FILENAME)) ){
@@ -122,15 +122,13 @@ class CronMakeConfigBackupCommand extends Command
 
         $io->warning("This command must be called from the root of the project. It won't work from other locations!");
         $io->note("Started config backup process");
-        {
-            try{
-                $this->backupFiles();
-            }catch(Exception | TypeError $e){
-                $this->logException($e, [
-                    "info" => "Could not backup the config files",
-                ]);
-                return self::FAILURE;
-            }
+        try{
+            $this->backupFiles();
+        }catch(Exception | TypeError $e){
+            $this->logException($e, [
+                "info" => "Could not backup the config files",
+            ]);
+            return self::FAILURE;
         }
         $io->note("Config backup process has been completed");
 
@@ -140,10 +138,10 @@ class CronMakeConfigBackupCommand extends Command
     /**
      * This function creates zip archive for config files
      */
-    private function backupFiles(){
+    private function backupFiles(): void{
 
         $absolutePathsOfFilesToBackup = array_map(
-            fn(string $pathOfFile) => getcwd() . DIRECTORY_SEPARATOR . $pathOfFile,
+            fn(string $pathOfFile): string => getcwd() . DIRECTORY_SEPARATOR . $pathOfFile,
             self::ALL_FILES_TO_BACKUP
         );
 

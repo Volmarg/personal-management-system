@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Illness|null findOneBy(array $criteria, array $orderBy = null)
  * @method Illness[]    findAll()
  * @method Illness[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Health\Illness>
  */
 class IllnessRepository extends ServiceEntityRepository
 {

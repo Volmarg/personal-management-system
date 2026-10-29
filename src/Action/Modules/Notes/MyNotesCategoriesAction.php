@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class MyNotesCategoriesAction extends AbstractController {
 
     // added this just to make the left side menu look somewhat decent
-    private const MAX_NESTING_LEVEL = 4;
+    private const int MAX_NESTING_LEVEL = 4;
 
     public function __construct(
         private readonly MyNotesCategoriesService $notesCategoriesService,

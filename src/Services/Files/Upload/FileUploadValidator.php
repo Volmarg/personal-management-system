@@ -90,7 +90,7 @@ class FileUploadValidator
      *
      * @throws UploadValidationException
      */
-    public function postMoveValidation(string $targetFilePath)
+    public function postMoveValidation(string $targetFilePath): void
     {
         if (!file_exists($targetFilePath)) {
             throw new UploadValidationException("Uploaded file does not exist under path: {$targetFilePath}");

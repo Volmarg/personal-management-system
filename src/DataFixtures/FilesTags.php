@@ -10,7 +10,7 @@ use \App\Entity\FilesTags                 as FilesTagsEntity;
 class FilesTags extends Fixture
 {
 
-    public function load(ObjectManager $manager) {
+    public function load(ObjectManager $manager): void {
 
         foreach ( FilesTagsProvider::DATA_SETS as $dataSet ){
 

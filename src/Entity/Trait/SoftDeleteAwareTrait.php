@@ -6,9 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 trait SoftDeleteAwareTrait
 {
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private bool $deleted = false;
 
     public function isDeleted(): bool

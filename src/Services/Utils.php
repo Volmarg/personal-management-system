@@ -29,7 +29,7 @@ class Utils extends AbstractController {
      * @param int $count
      * @return array
      */
-    public static function arrayGetNotRepeatingValuesCount(array $data, int $count) {
+    public static function arrayGetNotRepeatingValuesCount(array $data, int $count): array {
 
         $randoms = [];
 
@@ -56,22 +56,19 @@ class Utils extends AbstractController {
      */
     public static function getBoolRepresentationOfBoolString($value): bool
     {
-        if( is_bool($value) ){
+        if (is_bool($value)) {
             return $value;
-        }elseif( is_string($value) ){
-
+        }
+        if (is_string($value)) {
             $allowedValues = [
                 self::TRUE_AS_STRING, self::FALSE_AS_STRING
             ];
-
             if( !in_array($value, $allowedValues) ){
                 throw new Exception("Not a bool string");
             }
-
             return self::TRUE_AS_STRING === $value;
-        }else{
-            throw new \TypeError("Not allowed type: " . gettype($value) );
         }
+        throw new \TypeError("Not allowed type: " . gettype($value) );
 
     }
 
@@ -91,7 +88,7 @@ class Utils extends AbstractController {
         }
 
         if(
-            JSON_ERROR_NONE != json_last_error()
+            JSON_ERROR_NONE !== json_last_error()
             ||  (
                     !empty($stringArray)
                 &&  "[]" !== $stringArray

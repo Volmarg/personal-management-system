@@ -3,7 +3,6 @@
 namespace App\Entity\Modules;
 
 use App\Entity\Interfaces\EntityInterface;
-use App\Entity\System\LockedResource;
 use App\Repository\Modules\ModuleDataRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
@@ -17,53 +16,31 @@ use Doctrine\ORM\Mapping\Index;
  *
  * No global mechanism logic should be implemented here.
  * Like for example the @see LockedResource is an separate being despite the fact that it could be implemented here
- *
- * @Table(name="module_data",
- *    uniqueConstraints={
- *        @UniqueConstraint(
- *            name="unique_record",
- *            columns={"record_type", "module", "record_identifier"}
- *        )
- *    },
- *    indexes={
- *       @Index(
- *          name="module_data_index",
- *          columns={"id", "record_type", "module", "record_identifier"}
- *        )
- *    }
- * )
- * @ORM\Entity(repositoryClass=ModuleDataRepository::class)
  */
+#[ORM\Entity(repositoryClass: ModuleDataRepository::class)]
+#[Table(name: 'module_data')]
+#[Index(columns: ['id', 'record_type', 'module', 'record_identifier'], name: 'module_data_index')]
+#[UniqueConstraint(name: 'unique_record', columns: ['record_type', 'module', 'record_identifier'])]
 class ModuleData implements EntityInterface
 {
 
     const RECORD_TYPE_DIRECTORY = "directory";
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=50, name="record_type")
-     */
+    #[ORM\Column(name: 'record_type', type: 'string', length: 50)]
     private $recordType;
 
-    /**
-     * @ORM\Column(type="string", length=75)
-     */
+    #[ORM\Column(type: 'string', length: 75)]
     private $module;
 
-    /**
-     * @ORM\Column(type="string", length=255, name="record_identifier")
-     */
+    #[ORM\Column(name: 'record_identifier', type: 'string', length: 255)]
     private $recordIdentifier;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private $description;
 
     public function getId(): ?int

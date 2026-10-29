@@ -15,6 +15,7 @@ use Exception;
  * @method MyContact|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyContact[]    findAll()
  * @method MyContact[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Contacts\MyContact>
  */
 class MyContactRepository extends ServiceEntityRepository
 {
@@ -38,7 +39,7 @@ class MyContactRepository extends ServiceEntityRepository
      * @throws OptimisticLockException
      * @throws Exception
      */
-    public function saveEntity(MyContact $myContact, bool $searchAndRebuildEntity = false){
+    public function saveEntity(MyContact $myContact, bool $searchAndRebuildEntity = false): void{
 
         if( $searchAndRebuildEntity ){
             $foundEntity = null;

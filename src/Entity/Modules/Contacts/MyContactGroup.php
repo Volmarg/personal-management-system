@@ -8,42 +8,28 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Contacts\MyContactGroupRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Contacts\MyContactGroupRepository::class)]
 class MyContactGroup implements SoftDeletableEntityInterface, EntityInterface
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $icon;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $color;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Contacts\MyContact", mappedBy="group")
-     */
+    #[ORM\OneToMany(mappedBy: 'group', targetEntity: \App\Entity\Modules\Contacts\MyContact::class)]
     private $myContacts;
 
     public function __construct()

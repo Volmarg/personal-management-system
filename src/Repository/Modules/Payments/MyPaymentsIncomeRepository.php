@@ -12,6 +12,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyPaymentsIncome|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyPaymentsIncome[]    findAll()
  * @method MyPaymentsIncome[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Payments\MyPaymentsIncome>
  */
 class MyPaymentsIncomeRepository extends ServiceEntityRepository {
 

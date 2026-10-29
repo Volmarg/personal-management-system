@@ -36,7 +36,7 @@ class SettingsValidationService extends AbstractController {
         $settingValidationDto->setMessage($message);
         $settingValidationDto->setIsValid(true);
 
-        $dtoClass = get_class($dto);
+        $dtoClass = $dto::class;
 
         switch( $dtoClass ){
             case SettingsCurrencyDto::class:

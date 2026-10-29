@@ -8,50 +8,28 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Index;
 
-/**
- * @Table(name="locked_resource",
- *    uniqueConstraints={
- *        @UniqueConstraint(
- *            name="unique_record",
- *            columns={"type", "target", "record"}
- *        )
- *    },
- *    indexes={
- *       @Index(
- *          name="locked_resource_index",
- *          columns={"type", "record", "target"}
- *        )
- *    }
- * )
- *
- * @ORM\Entity(repositoryClass="App\Repository\System\LockedResourceRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\System\LockedResourceRepository::class)]
+#[Table(name: 'locked_resource')]
+#[Index(columns: ['type', 'record', 'target'], name: 'locked_resource_index')]
+#[UniqueConstraint(name: 'unique_record', columns: ['type', 'target', 'record'])]
 class LockedResource implements EntityInterface
 {
     const TYPE_ENTITY    = "entity";
     const TYPE_DIRECTORY = "directory";
     const TYPE_MODULE    = "module";
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $type;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $target;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $record;
 
     public function getId(): ?int

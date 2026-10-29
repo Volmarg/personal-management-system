@@ -14,7 +14,7 @@ class SettingValidationDTO extends AbstractDTO{
     /**
      * @var string $message
      */
-    private $message = '';
+    private string $message = '';
 
     /**
      * @return bool

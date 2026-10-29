@@ -7,57 +7,37 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Contacts\MyContactRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Contacts\MyContactRepository::class)]
 class MyContact implements SoftDeletableEntityInterface, EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $description;
 
-    /**
-     * @ORM\Column(type="text", columnDefinition="LONGTEXT NOT NULL")
-     */
-    private $contacts;
+    #[ORM\Column(type: 'text', columnDefinition: 'LONGTEXT NOT NULL')]
+    private string $contacts;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $imagePath;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private $nameBackgroundColor;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $descriptionBackgroundColor;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Contacts\MyContactGroup", inversedBy="myContacts")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Contacts\MyContactGroup::class, inversedBy: 'myContacts')]
+    #[ORM\JoinColumn(nullable: true)]
     private $group;
 
     /**

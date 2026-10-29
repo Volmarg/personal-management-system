@@ -91,7 +91,7 @@ class BaseDataAction extends AbstractController
             return BaseResponse::buildBadRequestErrorResponse($msg)->toJsonResponse();
         }
 
-        $allFilesPath = array_filter($allFilesPath, fn(string $path) => $path != $latestFile->getRealPath());
+        $allFilesPath = array_filter($allFilesPath, fn(string $path): bool => $path != $latestFile->getRealPath());
         foreach ($allFilesPath as $filePath) {
             $isremoved = unlink($filePath);
             if (!$isremoved) {

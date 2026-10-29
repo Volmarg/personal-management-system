@@ -84,23 +84,19 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
     {
         try{
             $this->logger->info("Started transferring the schedules to npl");
-            {
-                $incomingSchedulesDTOS = $this->myScheduleRepository->getSchedulesWithRemindersInformation();
+            $incomingSchedulesDTOS = $this->myScheduleRepository->getSchedulesWithRemindersInformation();
+            if( empty($incomingSchedulesDTOS) ){
+                $this->logger->info("No schedules were found to transfer");
+                return Command::SUCCESS;
+            }
+            foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
+                $this->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}, with reminder of id {$incomingScheduleDTO->getReminderId()}");
+                $response = $this->handleTransferForChannel($incomingScheduleDTO);
 
-                if( empty($incomingSchedulesDTOS) ){
-                    $this->logger->info("No schedules were found to transfer");
-                    return Command::SUCCESS;
-                }
-
-                foreach($incomingSchedulesDTOS as $incomingScheduleDTO){
-                    $this->logger->info("Now handling schedule with id {$incomingScheduleDTO->getId()}, with reminder of id {$incomingScheduleDTO->getReminderId()}");
-                    $response = $this->handleTransferForChannel($incomingScheduleDTO);
-
-                    if($response->isSuccess()){
-                        $reminder = $this->scheduleReminderRepository->findOneById($incomingScheduleDTO->getReminderId());
-                        $reminder->setProcessed(true);
-                        $this->scheduleReminderRepository->saveReminder($reminder);
-                    }
+                if($response->isSuccess()){
+                    $reminder = $this->scheduleReminderRepository->findOneById($incomingScheduleDTO->getReminderId());
+                    $reminder->setProcessed(true);
+                    $this->scheduleReminderRepository->saveReminder($reminder);
                 }
             }
             $this->logger->info("Finished transferring the schedules to npl");
@@ -125,15 +121,11 @@ class CronTransferSchedulesToNotifierProxyLoggerCommand extends Command
         switch($this->channel)
         {
             case self::TRANSFER_CHANNEL_DISCORD:
-            {
-                $response = $this->notifierProxyLoggerService->insertDiscordMessageForIncomingScheduleDto($incomingScheduleDTO);
-            }
+            $response = $this->notifierProxyLoggerService->insertDiscordMessageForIncomingScheduleDto($incomingScheduleDTO);
             break;
 
             case self::TRANSFER_CHANNEL_MAIL:
-            {
-                $response = $this->notifierProxyLoggerService->insertEmailForIncomingScheduleDto($incomingScheduleDTO);
-            }
+            $response = $this->notifierProxyLoggerService->insertEmailForIncomingScheduleDto($incomingScheduleDTO);
             break;
 
             default:

@@ -6,44 +6,30 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository")
- * @ORM\Table(name="my_payment_bill_item")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Payments\MyPaymentsBillsItemsRepository::class)]
+#[ORM\Table(name: 'my_payment_bill_item')]
 class MyPaymentsBillsItems implements SoftDeletableEntityInterface, EntityInterface
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $amount;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\MyPaymentsBills", inversedBy="item")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Payments\MyPaymentsBills::class, inversedBy: 'item')]
+    #[ORM\JoinColumn(nullable: false)]
     private $bill;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $date;
 
     public function getId(): ?int

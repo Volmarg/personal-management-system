@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyJobAfterhours|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyJobAfterhours[]    findAll()
  * @method MyJobAfterhours[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Job\MyJobAfterhours>
  */
 class MyJobAfterhoursRepository extends ServiceEntityRepository {
 
@@ -30,8 +31,7 @@ class MyJobAfterhoursRepository extends ServiceEntityRepository {
         $connection = $this->getEntityManager()->getConnection();
         $statement  = $connection->prepare($sql);
 
-        $statement->execute();
-        $results = $statement->fetchAll();
+        $results = $statement->executeQuery()->fetchAllAssociative();
 
         return (!empty($results) ? array_column($results,'goal') : []);
     }

@@ -13,27 +13,27 @@ class DatabaseCredentialsDTO {
     /**
      * @var string
      */
-    private $databaseLogin = '';
+    private string $databaseLogin = '';
 
     /**
      * @var string
      */
-    private $databaseHost = '';
+    private string $databaseHost = '';
 
     /**
      * @var string
      */
-    private $databasePort = '';
+    private string $databasePort = '';
 
     /**
      * @var string
      */
-    private $databasePassword = '';
+    private string $databasePassword = '';
 
     /**
      * @var string
      */
-    private $databaseName = '';
+    private string $databaseName = '';
 
     /**
      * @return string

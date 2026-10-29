@@ -15,7 +15,7 @@ use Doctrine\Persistence\ObjectManager;
 class Module extends Fixture
 {
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach(ModuleProvider::ALL_SUPPORTED_MODULES_NAMES as $moduleName){

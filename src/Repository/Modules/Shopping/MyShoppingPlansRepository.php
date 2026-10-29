@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyShoppingPlans|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyShoppingPlans[]    findAll()
  * @method MyShoppingPlans[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Shopping\MyShoppingPlans>
  */
 class MyShoppingPlansRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {

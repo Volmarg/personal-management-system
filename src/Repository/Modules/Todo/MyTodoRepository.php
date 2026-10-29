@@ -5,7 +5,6 @@ namespace App\Repository\Modules\Todo;
 use App\Entity\Modules\Todo\MyTodo;
 use App\Entity\System\Module;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,6 +14,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyTodo|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyTodo[]    findAll()
  * @method MyTodo[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Todo\MyTodo>
  */
 class MyTodoRepository extends ServiceEntityRepository
 {
@@ -84,7 +84,7 @@ class MyTodoRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(MyTodo $myTodo)
+    public function save(MyTodo $myTodo): void
     {
         $this->_em->persist($myTodo);
         $this->_em->flush();
@@ -95,7 +95,7 @@ class MyTodoRepository extends ServiceEntityRepository
      *
      * @param int $todoId
      * @return bool
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function areAllElementsDone(int $todoId): bool
     {
@@ -118,8 +118,7 @@ class MyTodoRepository extends ServiceEntityRepository
         ];
 
         $statement = $connection->prepare($sql);
-        $statement->execute($bindedValues);
-        $result    = (int) $statement->fetchColumn();
+        $result    = (int) $statement->executeQuery($bindedValues)->fetchOne();
 
         return (0 === $result);
     }

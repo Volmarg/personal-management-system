@@ -10,52 +10,34 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Health\DoctorRepository")
- * @ORM\Table(name="doctor", uniqueConstraints={
- *      @UniqueConstraint(
- *        name="unique_record",
- *        columns={"specialisation", "name"}
- *      )
- *    })
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Health\DoctorRepository::class)]
+#[ORM\Table(name: 'doctor')]
+#[UniqueConstraint(name: 'unique_record', columns: ['specialisation', 'name'])]
 class Doctor implements EntityInterface, SoftDeletableEntityInterface
 {
     use CreateModifyFieldAwareTrait;
     use SoftDeleteAwareTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank]
     private string $specialisation;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank]
     private string $name;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $address;
 
-    /**
-     * @ORM\Column(type="json")
-     */
+    #[ORM\Column(type: 'json')]
     private array $contacts = [];
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $information = null;
 
     public function __construct()

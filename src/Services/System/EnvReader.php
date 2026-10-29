@@ -55,7 +55,7 @@ class EnvReader extends AbstractController {
      * @return DatabaseCredentialsDTO
      * @throws Exception
      */
-    public static function getDatabaseCredentials(){
+    public static function getDatabaseCredentials(): \App\DTO\DatabaseCredentialsDTO{
         $regex       = '#^mysql:\/\/(.*):(.*)@([^:]*)([:])?(.*)\/(.*)#';
         $databaseUrl = self::getDatabaseUrl();
 
@@ -70,7 +70,7 @@ class EnvReader extends AbstractController {
             $databaseName = $matches[6] ?? "";
 
         }catch(\Exception $e){
-            throw new Exception("There was ane error while parsing database connection from .env. {$e->getMessage()}");
+            throw new Exception("There was ane error while parsing database connection from .env. {$e->getMessage()}", $e->getCode(), $e);
         }
 
         $dto = new DatabaseCredentialsDTO();
@@ -89,7 +89,7 @@ class EnvReader extends AbstractController {
     public static function isDemo() {
         try {
             $isDemo = Utils::getBoolRepresentationOfBoolString($_ENV['APP_DEMO']);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $isDemo = false;
         }
         return $isDemo;
@@ -102,7 +102,7 @@ class EnvReader extends AbstractController {
      */
     public static function isDev(): bool
     {
-        return (strtolower(self::getEnvironment()) == "dev");
+        return (strtolower(self::getEnvironment()) === "dev");
     }
 
     /**

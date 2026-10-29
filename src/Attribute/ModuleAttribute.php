@@ -45,7 +45,7 @@ class ModuleAttribute
     /**
      * @return array
      */
-    public function getRelatedModules()
+    public function getRelatedModules(): array
     {
         return $this->relatedModules;
     }
@@ -53,7 +53,7 @@ class ModuleAttribute
     /**
      * @param array $relatedModules
      */
-    public function setRelatedModules($relatedModules): void
+    public function setRelatedModules(array $relatedModules): void
     {
         $this->relatedModules = $relatedModules;
     }

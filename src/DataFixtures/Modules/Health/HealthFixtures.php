@@ -37,7 +37,7 @@ class HealthFixtures extends Fixture implements OrderedFixtureInterface
      *
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $doctors      = $this->handleDoctors($manager);
         $illnesses    = $this->handleIllnesses($manager);

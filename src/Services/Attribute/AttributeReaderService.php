@@ -7,7 +7,6 @@ namespace App\Services\Attribute;
 use App\Services\Routing\UrlMatcherService;
 use Laminas\Code\Reflection\MethodReflection;
 use LogicException;
-use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
@@ -27,8 +26,7 @@ class AttributeReaderService
     private UrlMatcherService $urlMatcherService;
 
     public function __construct(
-        UrlMatcherService $urlMatcherService,
-        private readonly LoggerInterface $logger
+        UrlMatcherService $urlMatcherService
     )
     {
         $this->urlMatcherService = $urlMatcherService;

@@ -5,9 +5,7 @@ namespace App\Entity;
 use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SettingRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\SettingRepository::class)]
 class Setting implements EntityInterface
 {
     public const string DASHBOARD_WIDGET_GOAL_PROGRESS = "goalProgress";
@@ -27,21 +25,15 @@ class Setting implements EntityInterface
         'webhook',
     ];
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private $value;
 
     public function getId(): ?int

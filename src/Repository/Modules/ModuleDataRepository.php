@@ -13,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method ModuleData|null findOneBy(array $criteria, array $orderBy = null)
  * @method ModuleData[]    findAll()
  * @method ModuleData[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\ModuleData>
  */
 class ModuleDataRepository extends ServiceEntityRepository
 {

@@ -6,7 +6,6 @@ use App\Entity\System\LockedResource;
 use App\Repository\System\LockedResourceRepository;
 use App\Services\Security\JwtAuthenticationService;
 use App\Services\Settings\SettingsLockModuleService;
-use App\Services\Utils;
 use Doctrine\DBAL\Statement;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
@@ -14,7 +13,6 @@ use Doctrine\ORM\ORMException;
 use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class LockedResourceService extends AbstractController {
 
@@ -27,8 +25,7 @@ class LockedResourceService extends AbstractController {
         SettingsLockModuleService                 $settingsLockModuleController,
         private readonly JwtAuthenticationService $jwtAuthenticationService,
         private readonly LockedResourceRepository $lockedResourceRepository,
-        private readonly EntityManagerInterface   $em,
-        private readonly TranslatorInterface      $translator
+        private readonly EntityManagerInterface   $em
     ) {
         $this->settingsLockModuleController = $settingsLockModuleController;
     }
@@ -45,7 +42,7 @@ class LockedResourceService extends AbstractController {
     public function isResourceLocked(string $record, string $type, string $target, Statement $stmt = null): bool
     {
         if( is_null($stmt) ){
-            $stmt = $this->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement($type);
+            $stmt = $this->lockedResourceRepository->buildIsLockForRecordTypeAndTargetStatement();
         }
 
         switch($type){

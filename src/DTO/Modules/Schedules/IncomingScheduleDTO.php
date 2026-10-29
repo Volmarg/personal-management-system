@@ -2,7 +2,6 @@
 
 namespace App\DTO\Modules\Schedules;
 
-use DateTime;
 use Exception;
 
 /**

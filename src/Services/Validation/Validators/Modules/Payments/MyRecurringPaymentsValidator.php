@@ -54,7 +54,7 @@ class MyRecurringPaymentsValidator extends AbstractValidator {
     /**
      * @param ValidateEntityInterface|MyRecurringPaymentMonthly $entity
      */
-    private function validateDateOfMonth($entity): void
+    private function validateDateOfMonth(\App\Entity\Interfaces\ValidateEntityInterface $entity): void
     {
         $this->constraintViolationsLists["dayOfMonth"] = $this->validator->validate($entity->getDayOfMonth(), [
             new Assert\GreaterThanOrEqual([

@@ -6,28 +6,20 @@ use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Table;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Storage\StorageFileRepository")
- * @Table(name="storage_file")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Storage\StorageFileRepository::class)]
+#[Table(name: 'storage_file')]
 class StorageFile implements EntityInterface
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: 'text')]
     private string $filePath;
 
-    /**
-     * @ORM\Column(type="string", length=75)
-     */
+    #[ORM\Column(type: 'string', length: 75)]
     private string $moduleName;
 
     public function __construct(string $filePath, string $moduleName)

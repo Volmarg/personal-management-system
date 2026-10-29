@@ -5,42 +5,28 @@ namespace App\Entity\Modules\Job;
 use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysPoolRepository")
- * @ORM\Table(name="my_job_holiday_pool")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Job\MyJobHolidaysPoolRepository::class)]
+#[ORM\Table(name: 'my_job_holiday_pool')]
 class MyJobHolidaysPool implements EntityInterface{
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $year;
 
-    /**
-     * @ORM\Column(type="string", length=255, name="days_in_pool")
-     */
+    #[ORM\Column(name: 'days_in_pool', type: 'string', length: 255)]
     private $daysInPool;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $CompanyName;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $Frozen = 0;
 
     public function getId(): ?int {

@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyRecurringPaymentMonthly|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyRecurringPaymentMonthly[]    findAll()
  * @method MyRecurringPaymentMonthly[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Payments\MyRecurringPaymentMonthly>
  */
 class MyRecurringPaymentMonthlyRepository extends ServiceEntityRepository {
 

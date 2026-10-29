@@ -13,7 +13,7 @@ class SettingsWidgetVisibilityDto extends AbstractDTO implements DtoInterface{
     /**
      * @var string
      */
-    private $name = '';
+    private string $name = '';
 
     /**
      * @var bool

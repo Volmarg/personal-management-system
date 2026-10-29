@@ -11,11 +11,11 @@ use Doctrine\Persistence\ObjectManager;
 class MyAchievementsFixtures extends Fixture implements OrderedFixtureInterface
 {
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach (Achievements::ALL as $type => $achievements) {
-            foreach($achievements as $index => $name) {
+            foreach($achievements as $name) {
                 $achievement  = new Achievement();
                 $achievement->setName($name);
                 $achievement->setType($type);

@@ -45,6 +45,7 @@ class NotificationAction extends AbstractController {
         $entriesData  = [];
         $scheduleDtos = $this->entityManager->getRepository(MySchedule::class)->getIncomingSchedulesInformationInDays(60);
         foreach ($scheduleDtos as $dto) {
+
             // keep in mind that these days values are also used on front in schedule to determine the color, keep the values in sync
             $type = self::TYPE_INFO;
             if ($dto->getDaysDiff() > 14 && $dto->getDaysDiff() < 30) {

@@ -9,33 +9,24 @@ use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Index;
 use LogicException;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\FilesTagsRepository")
- * @Table(name="files_tags",indexes={@Index(name="file_path_index", columns={"full_file_path"})})
- */
+#[ORM\Entity(repositoryClass: \App\Repository\FilesTagsRepository::class)]
+#[Table(name: 'files_tags')]
+#[Index(columns: ['full_file_path'], name: 'file_path_index')]
 class FilesTags implements SoftDeletableEntityInterface, EntityInterface
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $fullFilePath;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $tags;
 
     public function getId(): ?int
@@ -100,7 +91,7 @@ class FilesTags implements SoftDeletableEntityInterface, EntityInterface
             return false;
         }
 
-        $tags = array_map(fn(string $tag) => strtolower($tag), $tags);
+        $tags = array_map(strtolower(...), $tags);
         foreach ($checkedValues as $value) {
             if (!is_string($value)) {
                 throw new LogicException("At least one of the array elements is not a string");

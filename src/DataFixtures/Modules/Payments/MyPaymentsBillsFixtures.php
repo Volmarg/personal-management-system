@@ -25,7 +25,7 @@ class MyPaymentsBillsFixtures extends Fixture
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->loadBills($manager);
         $this->loadBillsItems($manager);
@@ -36,7 +36,7 @@ class MyPaymentsBillsFixtures extends Fixture
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    private function loadBills(ObjectManager $manager){
+    private function loadBills(ObjectManager $manager): void{
 
         foreach ( PaymentsBills::ALL_BILLS as $data ) {
 
@@ -63,7 +63,7 @@ class MyPaymentsBillsFixtures extends Fixture
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    private function loadBillsItems(ObjectManager $manager){
+    private function loadBillsItems(ObjectManager $manager): void{
 
         foreach ( PaymentsBills::ALL_BILLS_ITEMS as $data ) {
 

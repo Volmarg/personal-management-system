@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyIssueProgress|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyIssueProgress[]    findAll()
  * @method MyIssueProgress[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Issues\MyIssueProgress>
  */
 class MyIssueProgressRepository extends ServiceEntityRepository
 {

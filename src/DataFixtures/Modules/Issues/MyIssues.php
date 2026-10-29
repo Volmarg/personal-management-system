@@ -12,7 +12,6 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
-use Doctrine\DBAL\DBALException;
 use Faker\Factory;
 
 class MyIssues extends Fixture implements OrderedFixtureInterface
@@ -33,7 +32,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $this->resetIssuesIndex();
         $this->addAllIssues($manager);
@@ -41,7 +40,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
         $this->addAllIssuesProgress($manager);
     }
 
-    private function addAllIssues(ObjectManager $manager){
+    private function addAllIssues(ObjectManager $manager): void{
         foreach(Issues::ALL_ISSUES as $issueData){
             $id          = $issueData[Issues::KEY_ID];
             $name        = $issueData[Issues::KEY_NAME];
@@ -61,7 +60,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    private function addAllIssuesContacts(ObjectManager $manager)
+    private function addAllIssuesContacts(ObjectManager $manager): void
     {
         foreach(Issues::ALL_ISSUES_CONTACTS as $issueContactData){
             $issueId     = $issueContactData[Issues::KEY_ISSUE_ID];
@@ -86,7 +85,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    private function addAllIssuesProgress(ObjectManager $manager)
+    private function addAllIssuesProgress(ObjectManager $manager): void
     {
         foreach(Issues::ALL_ISSUES_PROGRESS as $issueProgressData){
             $issueId     = $issueProgressData[Issues::KEY_ISSUE_ID];
@@ -106,9 +105,9 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
     }
 
     /**
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
-    private function resetIssuesIndex()
+    private function resetIssuesIndex(): void
     {
         $connection = $this->em->getConnection();
 
@@ -117,7 +116,7 @@ class MyIssues extends Fixture implements OrderedFixtureInterface
         ";
 
         $stmt = $connection->prepare($sql);
-        $stmt->execute();
+        $stmt->executeQuery();
     }
 
     /**

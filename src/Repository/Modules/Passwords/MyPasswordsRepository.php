@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyPasswords|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyPasswords[]    findAll()
  * @method MyPasswords[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Passwords\MyPasswords>
  */
 class MyPasswordsRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {

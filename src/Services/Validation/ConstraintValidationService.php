@@ -3,7 +3,6 @@
 namespace App\Services\Validation;
 
 use App\DTO\ValidationResultDto;
-use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**

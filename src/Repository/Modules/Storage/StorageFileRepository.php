@@ -12,13 +12,13 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Throwable;
-use function Doctrine\ORM\QueryBuilder;
 
 /**
  * @method StorageFile|null find($id, $lockMode = null, $lockVersion = null)
  * @method StorageFile|null findOneBy(array $criteria, array $orderBy = null)
  * @method StorageFile[]    findAll()
  * @method StorageFile[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Storage\StorageFile>
  */
 class StorageFileRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
@@ -113,7 +113,7 @@ class StorageFileRepository extends ServiceEntityRepository {
      */
     public function removeRelationWithStorageFiles(array $fileEntities): void
     {
-        $ids = array_map(fn(StorageFile $file) => $file->getId(), $fileEntities);
+        $ids = array_map(fn(StorageFile $file): int => $file->getId(), $fileEntities);
         $this->_em->createQueryBuilder()
                   ->delete(StorageFile2Module::class, 'sf2m')
                   ->where("sf2m.storageFile IN (:ids)")

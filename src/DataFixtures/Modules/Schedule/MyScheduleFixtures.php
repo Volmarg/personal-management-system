@@ -43,7 +43,7 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $calendars = $this->addCalendars($manager);
 
@@ -99,12 +99,12 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
 
             $firstDayInMonth = 1;
             $lastDayInMonth  = $startDateTime->format("t");
-            $dayInMonth      = rand($firstDayInMonth, $lastDayInMonth);
+            $dayInMonth      = random_int($firstDayInMonth, $lastDayInMonth);
 
             $startDateTimeString = $startDateTime->format("Y-m-") . $dayInMonth . " " . $this->faker->time();
             $startDateTime       = new DateTime($startDateTimeString);
 
-            $durationTime = rand(1,5);
+            $durationTime = random_int(1,5);
 
             $endDateTime = clone $startDateTime;
             $endDateTime->modify("+{$durationTime} HOUR");
@@ -121,7 +121,7 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
             $schedule->setCategory(MySchedule::CATEGORY_TIME);
             $schedule->setLocation($location);
 
-            $countOfReminders = rand(0, self::MAX_COUNT_OF_REMINDERS);
+            $countOfReminders = random_int(0, self::MAX_COUNT_OF_REMINDERS);
             $dateForReminder  = new DateTimeImmutable($startDateTime->format("Y-m-d H:i:s")); // required to prevent modifying already existing date times
             for($y = 0; $y < $countOfReminders; $y++){
 
@@ -185,7 +185,7 @@ class MyScheduleFixtures extends Fixture implements OrderedFixtureInterface
      */
     private function getUniqueDateForReminder(DateTimeImmutable $dateForReminder, int $iteration): DateTimeImmutable
     {
-        $randomHoursOffset = rand(self::MIN_REMINDER_HOURS_OFFSET, self::MAX_REMINDER_HOURS_OFFSET);
+        $randomHoursOffset = random_int(self::MIN_REMINDER_HOURS_OFFSET, self::MAX_REMINDER_HOURS_OFFSET);
         $dateForReminder->modify("-{$randomHoursOffset} HOURS");
 
         while(

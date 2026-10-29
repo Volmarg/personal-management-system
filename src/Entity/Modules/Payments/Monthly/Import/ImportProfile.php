@@ -6,47 +6,31 @@ use App\Entity\Interfaces\EntityInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="my_payment_monthly_import_profile")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'my_payment_monthly_import_profile')]
 class ImportProfile implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $dateField = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $moneyField = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $descriptionField = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $currencyField = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Payments\Monthly\Import\ImportFilterRule", mappedBy="importProfile")
-     */
+    #[ORM\OneToMany(mappedBy: 'importProfile', targetEntity: \App\Entity\Modules\Payments\Monthly\Import\ImportFilterRule::class)]
     private $filterRules;
 
     public function __construct()

@@ -29,7 +29,7 @@ class ContactsTypesDto extends AbstractDTO implements DtoInterface {
     /**
      * @param ContactTypeDto $contactTypeDto
      */
-    public function addContactType(ContactTypeDto $contactTypeDto){
+    public function addContactType(ContactTypeDto $contactTypeDto): void{
         $this->contactTypeDtos[] = $contactTypeDto;
     }
 

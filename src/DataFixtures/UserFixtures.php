@@ -21,7 +21,7 @@ class UserFixtures extends Fixture
     const EMAIL                 = 'admin@admin.admin';
 
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $appUser  = new User();
         $appUser->setUsername(static::USERNAME);

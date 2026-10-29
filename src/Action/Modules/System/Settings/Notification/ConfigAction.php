@@ -93,7 +93,7 @@ class ConfigAction extends AbstractController {
     private function getAllDefaultStateResponse(): JsonResponse
     {
         $entriesData = array_map(
-            fn($configName) => [
+            fn(string $configName): array => [
                 ConfigDto::KEY_NAME                => $configName,
                 ConfigDto::KEY_ACTIVE_FOR_REMINDER => false,
                 ConfigDto::KEY_VALUE               => '',

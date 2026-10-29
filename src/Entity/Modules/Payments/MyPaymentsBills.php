@@ -8,54 +8,36 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Payments\MyPaymentsBillsRepository")
- * @ORM\Table(name="my_payment_bill")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Payments\MyPaymentsBillsRepository::class)]
+#[ORM\Table(name: 'my_payment_bill')]
 class MyPaymentsBills implements SoftDeletableEntityInterface, EntityInterface
 {
     const FIELD_DELETED = "deleted";
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $startDate;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
+    #[ORM\Column(type: 'datetime')]
     private $endDate;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $information;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Payments\MyPaymentsBillsItems", mappedBy="bill")
-     */
+    #[ORM\OneToMany(mappedBy: 'bill', targetEntity: \App\Entity\Modules\Payments\MyPaymentsBillsItems::class)]
     private $item;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $plannedAmount;
 
     public function __construct()

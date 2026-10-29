@@ -10,7 +10,6 @@ use App\Response\Base\BaseResponse;
 use App\Services\Module\ModulesService;
 use App\Services\RequestService;
 use App\Services\TypeProcessor\ArrayHandler;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -80,7 +79,7 @@ class MyTodoElementAction extends AbstractController {
      * @param MyTodo             $todo
      * @param MyTodoElement|null $element
      *
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     private function createOrUpdate(Request $request, MyTodo $todo, ?MyTodoElement $element = null): void

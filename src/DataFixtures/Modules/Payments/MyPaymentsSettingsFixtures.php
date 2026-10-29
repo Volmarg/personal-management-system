@@ -26,7 +26,7 @@ class MyPaymentsSettingsFixtures extends Fixture implements OrderedFixtureInterf
 
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         $currencyMultiplier = new MyPaymentsSettings();

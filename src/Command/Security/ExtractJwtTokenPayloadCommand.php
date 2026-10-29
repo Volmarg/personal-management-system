@@ -17,8 +17,8 @@ use TypeError;
  */
 class ExtractJwtTokenPayloadCommand extends Command
 {
-    private const COMMAND_NAME = "pms:security:extract-jwt-token-payload";
-    private const MAX_PAYLOAD_CHUNK_SIZE = 7;
+    private const string COMMAND_NAME = "pms:security:extract-jwt-token-payload";
+    private const int MAX_PAYLOAD_CHUNK_SIZE = 7;
 
     /**
      * Set configuration
@@ -81,7 +81,7 @@ class ExtractJwtTokenPayloadCommand extends Command
     {
         $tableHeaders = array_keys($payloadChunk);
         $tableRows    = [];
-        foreach ($payloadChunk as $key => $value) {
+        foreach ($payloadChunk as $value) {
 
             if (is_scalar($value)) {
                 $tableRows[] = $value;

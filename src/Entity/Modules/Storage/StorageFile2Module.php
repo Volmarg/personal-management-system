@@ -11,43 +11,27 @@ use LogicException;
 /**
  * Pseudo polymorphic table (normally not supported by Doctrine).
  * - {@see EntityStorageFileHydrationSubscriber}
- *
- * @ORM\Entity()
- * @ORM\Table(
- *  name="storage_file_2_module",
- *  uniqueConstraints={
- *      @ORM\UniqueConstraint(
- *            name="unique_record",
- *            columns={"related_module_id", "related_module_class", "storage_file_id"}
- *        )
- *  }
- * )
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'storage_file_2_module')]
+#[ORM\UniqueConstraint(name: 'unique_record', columns: ['related_module_id', 'related_module_class', 'storage_file_id'])]
 class StorageFile2Module implements EntityInterface
 {
     use CreateModifyFieldAwareTrait;
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private int $id;
 
-    /**
-     * @ORM\Column(type="integer", name="related_module_id")
-     */
+    #[ORM\Column(name: 'related_module_id', type: 'integer')]
     private int $relatedModuleId;
 
-    /**
-     * @ORM\Column(type="string", name="related_module_class", length=255)
-     */
+    #[ORM\Column(name: 'related_module_class', type: 'string', length: 255)]
     private string $relatedModuleClass;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Storage\StorageFile")
-     * @ORM\JoinColumn(nullable=false, referencedColumnName="id", name="storage_file_id")
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Storage\StorageFile::class)]
+    #[ORM\JoinColumn(name: 'storage_file_id', referencedColumnName: 'id', nullable: false)]
     private StorageFile $storageFile;
 
     public function __construct(EntityInterface $moduleEntity, StorageFile $storageFile)

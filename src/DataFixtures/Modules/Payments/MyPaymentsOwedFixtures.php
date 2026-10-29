@@ -20,7 +20,7 @@ class MyPaymentsOwedFixtures extends Fixture
         $this->faker = Factory::create('en');
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach ( PaymentsOwed::ALL_OWED_MONEY as $data ) {

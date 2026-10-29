@@ -5,26 +5,18 @@ namespace App\Entity\Modules\Job;
 use App\Entity\Interfaces\EntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobSettingsRepository")
- * @ORM\Table(name="my_job_setting")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Job\MyJobSettingsRepository::class)]
+#[ORM\Table(name: 'my_job_setting')]
 class MyJobSettings implements EntityInterface{
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $type;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $value;
 
     public function getId(): ?int {

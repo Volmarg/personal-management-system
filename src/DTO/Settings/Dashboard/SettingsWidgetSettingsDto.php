@@ -26,14 +26,14 @@ class SettingsWidgetSettingsDto extends AbstractDTO implements DtoInterface{
      * @param SettingsWidgetVisibilityDto $widgetVisibility
      */
     public function addWidgetVisibility(SettingsWidgetVisibilityDto $widgetVisibility): void {
-        array_push($this->widgetsVisibility, $widgetVisibility);
+        $this->widgetsVisibility[] = $widgetVisibility;
     }
 
     /**
      * @param array $widgetsVisibilityDtos
      * @throws \Exception
      */
-    public function setWidgetVisibility(array $widgetsVisibilityDtos){
+    public function setWidgetVisibility(array $widgetsVisibilityDtos): void{
 
         $hasDto = reset($widgetsVisibilityDtos) instanceof SettingsWidgetVisibilityDto;
 

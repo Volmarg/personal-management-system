@@ -7,7 +7,6 @@ use App\DTO\ValidationResultDto;
 use App\Entity\Interfaces\ValidateEntityInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -82,7 +81,7 @@ abstract class AbstractValidator {
     {
         $this->init();
 
-        $entityClass = get_class($entity);
+        $entityClass = $entity::class;
 
         if( $entityClass !== $this->getSupportedClass() ){
             throw new Exception('This entity is not supported for in this validator');
@@ -110,9 +109,6 @@ abstract class AbstractValidator {
 
         foreach($this->constraintViolationsLists as $fieldName => $constraintViolationList ){
 
-            /**
-             * @var ConstraintViolation $violation
-             */
             foreach( $constraintViolationList as $constraintViolation ){
                 $violationMessage                       = $constraintViolation->getMessage();
                 $violatedFieldsWithMessages[$fieldName] = $violationMessage;

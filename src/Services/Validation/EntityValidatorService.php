@@ -83,18 +83,14 @@ class EntityValidatorService extends AbstractController {
         switch( $action ){
 
             case self::ACTION_UPDATE:
-                {
-                    if( $entity instanceof ValidateEntityForUpdateInterface ){
-                        $validationResult = $this->validate($entity);
-                    }
+                if( $entity instanceof ValidateEntityForUpdateInterface ){
+                    $validationResult = $this->validate($entity);
                 }
             break;
 
             case self::ACTION_CREATE:
-                {
-                    if( $entity instanceof ValidateEntityForCreateInterface ){
-                        $validationResult = $this->validate($entity);
-                    }
+                if( $entity instanceof ValidateEntityForCreateInterface ){
+                    $validationResult = $this->validate($entity);
                 }
             break;
 
@@ -126,7 +122,7 @@ class EntityValidatorService extends AbstractController {
             throw new Exception($message);
         }
 
-        $objectClass = get_class($object);
+        $objectClass = $object::class;
         if( !DoctrineService::isEntity($object) ){
             $message = "The Object of a given class is not an entity: ";
             $this->logger->critical($message . $objectClass);
@@ -148,7 +144,7 @@ class EntityValidatorService extends AbstractController {
      */
     private function loadValidator(ValidateEntityInterface $entity): AbstractValidator
     {
-        $entityClass       = get_class($entity);
+        $entityClass       = $entity::class;
         $validatorClass    = self::MAP_ENTITY_TO_VALIDATOR[$entityClass];
         $validatorInstance = new $validatorClass($this->em, $this->translator);
 

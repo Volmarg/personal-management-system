@@ -43,7 +43,7 @@ class LinearChartDataHandler
     ): array {
         $allDateVariants = [];
         $currIteratedDate = $lowestDate;
-        while ($lowestDate !== $highestDate && $lowestDate && $currIteratedDate <= $highestDate) {
+        while ($lowestDate !== $highestDate && $lowestDate instanceof \DateTimeInterface && $currIteratedDate <= $highestDate) {
             if (empty($allDateVariants)) {
                 $allDateVariants[] = $currIteratedDate->format("Y-m");
             }

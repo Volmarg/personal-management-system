@@ -20,7 +20,7 @@ class MyShoppingPlansFixtures extends Fixture implements OrderedFixtureInterface
         $this->faker = Factory::create('en');
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach(ExpensiveProducts::ALL as $productName => $productExample) {

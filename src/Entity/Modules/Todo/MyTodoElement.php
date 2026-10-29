@@ -6,42 +6,38 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Todo\MyTodoElementRepository")
- * @ORM\Table(name="my_todo_element")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Todo\MyTodoElementRepository::class)]
+#[ORM\Table(name: 'my_todo_element')]
 class MyTodoElement implements SoftDeletableEntityInterface, EntityInterface
 {
     /**
      * @var int $id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var string $name
-     * @ORM\Column(type="string", length=255)
      */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name = "";
 
     /**
      * @var bool $deleted
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     /**
      * @var boolean $completed
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $completed = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=MyTodo::class, inversedBy="myTodoElement")
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: MyTodo::class, inversedBy: 'myTodoElement')]
+    #[ORM\JoinColumn(nullable: false)]
     private $myTodo;
 
     public function getId(): ?int

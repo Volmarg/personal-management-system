@@ -55,7 +55,7 @@ class SettingNotificationDto extends AbstractDTO implements DtoInterface
      */
     public function toJson(): string
     {
-        $configsArray = array_map(fn(ConfigDto $config) => $config->toArray(), $this->getConfig());
+        $configsArray = array_map(fn(ConfigDto $config): array => $config->toArray(), $this->getConfig());
         return json_encode([
             self::KEY_CONFIG => $configsArray,
         ]);

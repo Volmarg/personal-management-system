@@ -20,7 +20,7 @@ class MyContactsSettingsService extends AbstractController {
      * @param MyContactType $entityAfterUpdate
      * @throws Exception
      */
-    public function updateContactsForUpdatedType(MyContactType $entityBeforeUpdate, MyContactType $entityAfterUpdate)
+    public function updateContactsForUpdatedType(MyContactType $entityBeforeUpdate, MyContactType $entityAfterUpdate): void
     {
         $previousContactTypeName = $entityBeforeUpdate->getName();
 

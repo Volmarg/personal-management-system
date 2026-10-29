@@ -17,7 +17,7 @@ class FilesHandler
      *
      * @return bool|string
      */
-    public static function trimFirstAndLastSlash(string $dirPath)
+    public static function trimFirstAndLastSlash(string $dirPath): string
     {
         $trimmedDirPath = $dirPath;
 
@@ -29,7 +29,7 @@ class FilesHandler
         }
 
         if ($isLastSlash) {
-            $trimmedDirPath = substr($trimmedDirPath, 0, -1);
+            return substr($trimmedDirPath, 0, -1);
         }
 
         return $trimmedDirPath;
@@ -46,7 +46,7 @@ class FilesHandler
     public static function addTrailingSlashIfMissing(string $filePath, $skipAddingForLinks = false): string
     {
 
-        $isFilePathWithoutTrailingSlash = (0 !== strpos($filePath, DIRECTORY_SEPARATOR));
+        $isFilePathWithoutTrailingSlash = (!str_starts_with($filePath, DIRECTORY_SEPARATOR));
 
         $isSkipped          = false;
         $matchesToSkipLinks = [

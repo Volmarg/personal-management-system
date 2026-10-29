@@ -4,8 +4,6 @@ namespace App\Repository\Modules\Travels;
 
 use App\Entity\Modules\Travels\MyTravelsIdeas;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,6 +13,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyTravelsIdeas|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyTravelsIdeas[]    findAll()
  * @method MyTravelsIdeas[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Travels\MyTravelsIdeas>
  */
 class MyTravelsIdeasRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {

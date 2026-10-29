@@ -72,7 +72,7 @@ class KernelRequestResourceLock
         $countOfRelatedModules       = count($relatedModules);
         $countOfLockedRelatedModules = $this->countRelatedLockedModules($relatedModules);
 
-        if (!empty($relatedModules) && $countOfLockedRelatedModules == $countOfRelatedModules) {
+        if (!empty($relatedModules) && $countOfLockedRelatedModules === $countOfRelatedModules) {
             $this->handleNotAllowedToSeeResource($ev);
         }
     }
@@ -146,16 +146,14 @@ class KernelRequestResourceLock
      */
     private function canAccessMethod(RequestEvent $ev): bool
     {
-        $canAccessMethod = false;
         if ($this->attributeReaderService->hasUriAttribute($ev->getRequest()->getRequestUri(), ModuleAttribute::class)) {
-            $canAccessMethod = !$this->isCalledMethodLocked($ev->getRequest()->getRequestUri());
+            return !$this->isCalledMethodLocked($ev->getRequest()->getRequestUri());
         }
 
-        return $canAccessMethod;
+        return false;
     }
 
     /**
-     * @param mixed $moduleName
      *
      * @return bool
      * @throws \Doctrine\DBAL\Driver\Exception
@@ -167,7 +165,6 @@ class KernelRequestResourceLock
     }
 
     /**
-     * @param mixed $relatedModules
      *
      * @return int
      * @throws \Doctrine\DBAL\Driver\Exception

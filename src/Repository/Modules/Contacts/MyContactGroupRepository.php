@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method MyContactGroup|null findOneBy(array $criteria, array $orderBy = null)
  * @method MyContactGroup[]    findAll()
  * @method MyContactGroup[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Contacts\MyContactGroup>
  */
 class MyContactGroupRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {

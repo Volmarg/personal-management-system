@@ -367,7 +367,7 @@ abstract class Archivizer {
     protected function rebuildSourceDirectoryForArchiveStructure(string $sourcePath): string {
 
         $targetDirectory = $sourcePath;
-        $dotPosition     = strpos($sourcePath, DOT);
+        $dotPosition     = strpos($sourcePath, (string) DOT);
         $slashPosition   = strpos($sourcePath, DIRECTORY_SEPARATOR);
 
         if( !is_bool($dotPosition) && 0 === $dotPosition ){

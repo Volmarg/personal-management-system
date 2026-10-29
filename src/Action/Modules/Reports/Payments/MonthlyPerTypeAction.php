@@ -64,7 +64,7 @@ class MonthlyPerTypeAction extends AbstractController {
 
         $entriesData = LinearChartDataHandler::fillMissingMonths($lowestDate, $highestDate, $entriesData, $existingTypeDates);
         foreach ($entriesData as &$dataChunks) {
-            usort($dataChunks, fn($a, $b) => strtotime($a['label']) -  strtotime($b['label']));
+            usort($dataChunks, fn(array $a, array $b): int => strtotime($a['label']) -  strtotime($b['label']));
         }
 
         $response = BaseResponse::buildOkResponse();

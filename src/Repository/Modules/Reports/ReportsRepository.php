@@ -3,7 +3,6 @@
 namespace App\Repository\Modules\Reports;
 
 use App\Entity\Modules\Payments\MyPaymentsOwed;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 
 class ReportsRepository{
@@ -22,7 +21,7 @@ class ReportsRepository{
      *  - monthly payments
      *  - bills
      * @return array
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function buildPaymentsSummariesForMonthsAndYears() {
         $connection = $this->em->getConnection();
@@ -135,14 +134,14 @@ class ReportsRepository{
         ";
 
         $stmt = $connection->executeQuery($sql);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAllAssociative();
 
         return $results;
     }
 
     /**
      * @return array
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      */
     public function fetchTotalPaymentsAmountForTypes(): array {
 
@@ -168,7 +167,7 @@ class ReportsRepository{
         ";
 
         $stmt    = $connection->executeQuery($sql);
-        $results = $stmt->fetchAll();
+        $results = $stmt->fetchAllAssociative();
 
         return $results;
     }

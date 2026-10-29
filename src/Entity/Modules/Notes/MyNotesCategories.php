@@ -9,57 +9,34 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index; 
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Notes\MyNotesCategoriesRepository")
- * @ORM\Table(name="my_note_category",
- *    indexes={
- *       @Index(
- *          name="my_note_category_index",
- *          columns={"id"}
- *        )
- *    }
- * )
- *
- */
-class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Notes\MyNotesCategoriesRepository::class)]
+#[ORM\Table(name: 'my_note_category')]
+#[Index(columns: ['id'], name: 'my_note_category_index')]
+class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface, \Stringable
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $icon;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Notes\MyNotes", mappedBy="category")
-     */
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: \App\Entity\Modules\Notes\MyNotes::class)]
     private $note;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $color;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $parentId = NULL;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $parentId;
 
     /**
      * @return mixed
@@ -85,7 +62,7 @@ class MyNotesCategories implements SoftDeletableEntityInterface, EntityInterface
     /**
      * Fix for usage in FormType as EntityType, without it Entity type crashes
      */
-    public function __toString() {
+    public function __toString(): string {
         return strval($this->id);
     }
 

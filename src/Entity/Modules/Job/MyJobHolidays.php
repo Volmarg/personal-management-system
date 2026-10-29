@@ -8,38 +8,26 @@ use App\Entity\Interfaces\ValidateEntityForCreateInterface;
 use App\Entity\Interfaces\ValidateEntityForUpdateInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Job\MyJobHolidaysRepository")
- * @ORM\Table(name="my_job_holiday")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Job\MyJobHolidaysRepository::class)]
+#[ORM\Table(name: 'my_job_holiday')]
 class MyJobHolidays implements SoftDeletableEntityInterface, ValidateEntityForUpdateInterface, ValidateEntityForCreateInterface, EntityInterface
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $daysSpent;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $information;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $year;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     public function getId(): ?int {

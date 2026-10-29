@@ -16,10 +16,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(name="app_user")
  * @UniqueEntity(fields={"username", "email"}, message="There is already an account with this username and email")
  */
+#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
+#[ORM\Table(name: 'app_user')]
 class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserInterface {
 
     const PASSWORD_FIELD   = 'password';
@@ -37,79 +37,69 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     private bool $getRoleGuaranteeRoleUser = true;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 
     /**
      * @var string The hashed password
-     * @ORM\Column(type="string")
      */
+    #[ORM\Column(type: 'string')]
     private string $password;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     protected ?string $avatar = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     protected ?string $nickname = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     protected $lockPassword;
 
-    /**
-     * @ORM\Column(type="serialized_json")
-     */
+    #[ORM\Column(type: 'serialized_json')]
     private array $roles = [self::ROLE_USER];
 
     /**
      * @var string $email
-     * @ORM\Column(type="string", length=100)
      */
+    #[ORM\Column(type: 'string', length: 100)]
     private string $email = "";
 
     /**
      * @var string $emailCanonical
-     * @ORM\Column(type="string", length=100, name="email_canonical")
      */
+    #[ORM\Column(name: 'email_canonical', type: 'string', length: 100)]
     private string $emailCanonical = "";
 
     /**
      * @var string $username
-     * @ORM\Column(type="string", length=100)
      */
+    #[ORM\Column(type: 'string', length: 100)]
     private string $username = "";
 
     /**
      * @var string $usernameCanonical
-     * @ORM\Column(type="string", length=100, name="username_canonical")
      */
+    #[ORM\Column(name: 'username_canonical', type: 'string', length: 100)]
     private string $usernameCanonical = "";
 
     /**
      * @var bool $enabled
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $enabled = true;
 
     /**
      * @var string|null $salt
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $salt = "";
 
     /**
      * @var ?DateTime $lastLogin
-     * @ORM\Column(type="datetime", nullable=true)
      */
+    #[ORM\Column(type: 'datetime', nullable: true)]
     private ?DateTime $lastLogin;
 
     // these fields are only used to transfer data - not being saved directly in DB
@@ -131,7 +121,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @return string | null
      */
-    public function getAvatar() {
+    public function getAvatar(): ?string {
         return $this->avatar;
     }
 
@@ -145,13 +135,10 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @return string | null
      */
-    public function getNickname() {
+    public function getNickname(): ?string {
         return $this->nickname;
     }
 
-    /**
-     * @param mixed $nickname
-     */
     public function setNickname(?string $nickname): void {
         $this->nickname = $nickname;
     }
@@ -170,7 +157,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->lockPassword = $lockPassword;
     }
 
-    public function hasLockPassword(){
+    public function hasLockPassword(): bool{
         if( empty($this->lockPassword) ){
             return false;
         }
@@ -184,7 +171,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     public function getUsername(): string
     {
-        return (string) $this->username;
+        return $this->username;
     }
 
     /**
@@ -225,7 +212,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return $this->password;
     }
 
     public function setPassword(string $password): self
@@ -238,7 +225,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): void
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
@@ -246,7 +233,7 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;

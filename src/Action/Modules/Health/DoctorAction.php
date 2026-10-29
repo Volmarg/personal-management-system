@@ -54,7 +54,7 @@ class DoctorAction extends AbstractController
         $repo = $this->em->getRepository(Doctor::class);
 
         $doctors = $repo->findBy(['deleted' => false]);
-        $doctorsData = array_map(fn(Doctor $doctor) => [
+        $doctorsData = array_map(fn(Doctor $doctor): array => [
             'id'             => $doctor->getId(),
             'address'        => $doctor->getAddress(),
             'information'    => $doctor->getInformation(),

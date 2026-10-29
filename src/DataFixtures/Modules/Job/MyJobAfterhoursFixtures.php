@@ -25,7 +25,7 @@ class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         for($x = 0; $x <= 25; $x++) {
@@ -39,7 +39,7 @@ class MyJobAfterhoursFixtures extends Fixture implements OrderedFixtureInterface
             $minutesLeftFromHours = $minutesMade % 60;
             $minutesLeftFromHours = ( $minutesLeftFromHours < 10 ? "0{$minutesLeftFromHours}" : $minutesLeftFromHours );
 
-            $startHour  = rand(5, 8);
+            $startHour  = random_int(5, 8);
             $finishHour = $startHour + 8 + $hoursFromMinutesMade;
 
             $description = str_replace(

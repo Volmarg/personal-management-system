@@ -19,7 +19,7 @@ class SingleIllnessResource
             'id'           => $illness->getId(),
             'information'  => $illness->getInformation(),
             'name'         => $illness->getName(),
-            'appointments' => array_map(fn(DoctorAppointment $doctorAppointment) => [
+            'appointments' => array_map(fn(DoctorAppointment $doctorAppointment): array => [
                 'id'           => $doctorAppointment->getId(),
                 'date'         => $doctorAppointment->getDate()->format("Y-m-d H:i:s"),
                 'information'  => $doctorAppointment->getInformation(),
@@ -27,7 +27,7 @@ class SingleIllnessResource
                     'id'   => $doctorAppointment->getDoctor()->getId(),
                     'name' => $doctorAppointment->getDoctor()->getName(),
                 ],
-                'storageFiles' => array_map(fn(StorageFile $file) => [
+                'storageFiles' => array_map(fn(StorageFile $file): array => [
                     'id'                    => $file->getId(),
                     'filePath'              => $file->getFilePath(),
                     'fileNameWithExtension' => $file->getFileNameWithExtension(),

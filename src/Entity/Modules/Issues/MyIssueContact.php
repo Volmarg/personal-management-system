@@ -7,47 +7,43 @@ use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Issues\MyIssueContactRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Issues\MyIssueContactRepository::class)]
 class MyIssueContact implements SoftDeletableEntityInterface, EntityInterface
 {
 
     /**
      * @var int $id
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
      */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
     /**
      * @var string $information
-     * @ORM\Column(type="text", nullable=true)
      */
-    private $information;
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $information = null;
 
     /**
      * @var null|string $icon
-     * @ORM\Column(type="text", length=255, nullable=true)
      */
-    private $icon;
+    #[ORM\Column(type: 'text', length: 255, nullable: true)]
+    private ?string $icon = null;
 
     /**
      * @var DateTime $date
-     * @ORM\Column(type="datetime")
      */
-    private $date;
+    #[ORM\Column(type: 'datetime')]
+    private ?\DateTime $date = null;
 
     /**
      * @var bool $deleted
-     * @ORM\Column(type="boolean")
      */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Issues\MyIssue", inversedBy="issueContact")
-     */
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Issues\MyIssue::class, inversedBy: 'issueContact')]
     private $myIssue;
 
     /**

@@ -29,10 +29,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ResponseValidityListener implements EventSubscriberInterface
 {
-    private const REQUEST_CALLER = "Caller";
+    private const string REQUEST_CALLER = "Caller";
 
     // indicates that request is coming from front
-    private const CALLER_FRONT = "Front";
+    private const string CALLER_FRONT = "Front";
 
 
     public function __construct(

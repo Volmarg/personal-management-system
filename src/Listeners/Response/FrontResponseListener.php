@@ -18,12 +18,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class FrontResponseListener implements EventSubscriberInterface
 {
 
-    public function __construct(
-        // private readonly SystemStateService $systemStateService
-    )
-    {
-    }
-
     /**
      * Handles the response, adds custom headers etc.
      *

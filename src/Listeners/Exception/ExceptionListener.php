@@ -25,7 +25,7 @@ class ExceptionListener implements EventSubscriberInterface
      * If an exception contains this string in the message then it won't be logged, will just be skipped,
      * some exceptions are just false positive, can be discarded, no need to get spammed by 404, etc.
      */
-    private const EXCLUDED_STRINGS = [
+    private const array EXCLUDED_STRINGS = [
         "Full authentication is required to access this resource.", // user tries to do something without being logged-in
     ];
 

@@ -6,9 +6,7 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Achievements\AchievementRepository")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Achievements\AchievementRepository::class)]
 class Achievement implements SoftDeletableEntityInterface, EntityInterface {
 
     public const ENUM_SIMPLE = 'simple';
@@ -16,31 +14,21 @@ class Achievement implements SoftDeletableEntityInterface, EntityInterface {
     public const ENUM_HARD = 'hard';
     public const ENUM_HARDCORE = 'hardcore';
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $Name;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $Description;
 
-    /**
-     * @ORM\Column(type="string", columnDefinition="ENUM('simple', 'medium', 'hard', 'hardcore')", nullable=false)
-     */
+    #[ORM\Column(type: 'string', nullable: false, columnDefinition: "ENUM('simple', 'medium', 'hard', 'hardcore')")]
     private $Type;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
     public function getId(): ?int {

@@ -7,44 +7,30 @@ use App\Enum\Modules\Payments\Monthly\ImportFieldEnum;
 use App\Enum\Modules\Payments\Monthly\ImportRuleTypeEnum;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="my_payment_monthly_import_filter_rule")
- */
+#[ORM\Entity]
+#[ORM\Table(name: 'my_payment_monthly_import_filter_rule')]
 class ImportFilterRule implements EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private ?int $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $fieldName;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $rule;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private string $type;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $description = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Modules\Payments\Monthly\Import\ImportProfile", inversedBy="filterRules")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private ?ImportProfile $importProfile;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Modules\Payments\Monthly\Import\ImportProfile::class, inversedBy: 'filterRules')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ImportProfile $importProfile = null;
 
     public function getId(): ?int
     {

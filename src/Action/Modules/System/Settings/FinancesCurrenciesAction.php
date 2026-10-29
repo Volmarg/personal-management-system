@@ -135,7 +135,7 @@ class FinancesCurrenciesAction extends AbstractController {
             return $this->updateExisting($dbDtos, $oldName, $requestDto);
         }
 
-        $matches = array_filter($dbDtos, fn(SettingsCurrencyDto $setting) => $setting->getName() == $requestDto->getName());
+        $matches = array_filter($dbDtos, fn(SettingsCurrencyDto $setting): bool => $setting->getName() === $requestDto->getName());
         if (!empty($matches)) {
             $msg = $this->trans->trans('module.system.settings.finances.currencies.msg.nameAlreadyInUse');
             return BaseResponse::buildBadRequestErrorResponse($msg);
@@ -173,8 +173,8 @@ class FinancesCurrenciesAction extends AbstractController {
         }
 
         $dbDtos   = $this->settingsFinancesService->handleCurrencyUpdate($dbDtos, $requestDto, $unsetIndex);
-        $defaults = array_filter($dbDtos, fn(SettingsCurrencyDto $setting) => $setting->isDefault());
-        if (!$defaults) {
+        $defaults = array_filter($dbDtos, fn(SettingsCurrencyDto $setting): bool => $setting->isDefault());
+        if ($defaults === []) {
             $msg = $this->trans->trans('module.system.settings.finances.currencies.msg.noDefaultCurrency');
             return BaseResponse::buildBadRequestErrorResponse($msg);
         }
@@ -185,7 +185,6 @@ class FinancesCurrenciesAction extends AbstractController {
     }
 
     /**
-     * @param mixed               $isDefault
      * @param array               $dbDtos
      * @param SettingsCurrencyDto $requestDto
      *

@@ -24,10 +24,10 @@ class MyGoalsPaymentsFixtures extends Fixture implements OrderedFixtureInterface
      * @param ObjectManager $manager
      * @throws \Exception
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
-        foreach (Goals::ALL_PAYMENT_GOALS as $index => $name){
+        foreach (Goals::ALL_PAYMENT_GOALS as $name){
 
             $randomDayOffset = $this->faker->numberBetween(3, 100);
 

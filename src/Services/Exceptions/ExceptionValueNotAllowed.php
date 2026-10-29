@@ -1,7 +1,5 @@
 <?php
 namespace App\Services\Exceptions;
-use Throwable;
-
 class ExceptionValueNotAllowed extends \Exception {
 
     const KEY_MODE_NUMERIC_NOT_HIGHER_THAN_0 = "KEY_MODE_NUMERIC_NOT_HIGHER_THAN_0";

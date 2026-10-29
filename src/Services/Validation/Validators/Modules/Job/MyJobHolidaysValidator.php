@@ -10,7 +10,6 @@ use App\Entity\Modules\Job\MyJobHolidaysPool;
 use App\Repository\Modules\Job\MyJobHolidaysPoolRepository;
 use App\Repository\Modules\Job\MyJobHolidaysRepository;
 use App\Services\Validation\Validators\AbstractValidator;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\ORMException;
 use Exception;
@@ -21,12 +20,12 @@ class MyJobHolidaysValidator extends AbstractValidator {
     /**
      * @var MyJobHolidaysPoolRepository $jobHolidaysPoolRepository
      */
-    private $jobHolidaysPoolRepository = null;
+    private $jobHolidaysPoolRepository;
 
     /**
      * @var MyJobHolidaysRepository $jobHolidaysRepository
      */
-    private $jobHolidaysRepository = null;
+    private $jobHolidaysRepository;
 
     /**
      * Initialize logic
@@ -66,11 +65,11 @@ class MyJobHolidaysValidator extends AbstractValidator {
 
     /**
      * @param ValidateEntityInterface|MyJobHolidays $entity
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws NonUniqueResultException
      * @throws ORMException
      */
-    private function validateDaysSpent($entity): void
+    private function validateDaysSpent(\App\Entity\Interfaces\ValidateEntityInterface $entity): void
     {
         $poolYear        = $entity->getYear();
         $daysLeftForYear = $this->jobHolidaysPoolRepository->getDaysInPoolLeftForYear($poolYear);

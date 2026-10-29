@@ -18,7 +18,6 @@ class ArrayHandler
      * @param array $array
      * @param string $key
      * @param mixed|null $defaultValue
-     * @return mixed
      */
     public static function checkAndGetKey(array $array, string $key, mixed $defaultValue = null): mixed
     {
@@ -92,7 +91,7 @@ class ArrayHandler
             $stringBetweenOriginal = $stringBetween;
         }
 
-        $excludeSelfDupes = function () use ($stringBetweenOriginal, $input, &$result) {
+        $excludeSelfDupes = function () use ($stringBetweenOriginal, $input, &$result): void {
             foreach ($input as $value) {
                 $dupe  = $value . $stringBetweenOriginal . $value;
                 $index = array_search($dupe, $result);

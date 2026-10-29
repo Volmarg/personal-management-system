@@ -7,32 +7,22 @@ use App\Repository\System\ModuleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ModuleRepository::class)
- */
+#[ORM\Entity(repositoryClass: ModuleRepository::class)]
 class Module implements EntityInterface
 {
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
+    #[ORM\Column(type: 'string', length: 50)]
     private $name;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $active;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Modules\Todo\MyTodo", mappedBy="module")
-     */
+    #[ORM\OneToMany(mappedBy: 'module', targetEntity: \App\Entity\Modules\Todo\MyTodo::class)]
     private $myTodo;
 
     public function __construct()

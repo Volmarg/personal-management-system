@@ -6,52 +6,34 @@ use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\SoftDeletableEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Goals\MyGoalsPaymentsRepository")
- * @ORM\Table(name="my_goal_payment")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Goals\MyGoalsPaymentsRepository::class)]
+#[ORM\Table(name: 'my_goal_payment')]
 class MyGoalsPayments implements SoftDeletableEntityInterface, EntityInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    /**
-     * @ORM\Column(type="date", length=255, nullable=true)
-     */
+    #[ORM\Column(type: 'date', length: 255, nullable: true)]
     private $deadline;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $moneyGoal;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Column(type: 'integer')]
     private $moneyCollected;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $deleted = 0;
 
-    /**
-     * @ORM\Column(type="date", length=255)
-     */
+    #[ORM\Column(type: 'date', length: 255)]
     private $collectionStartDate;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: 'boolean')]
     private $displayOnDashboard = 0;
 
     public function getId(): ?int
@@ -116,7 +98,7 @@ class MyGoalsPayments implements SoftDeletableEntityInterface, EntityInterface
      * @return $this
      * @throws \Exception
      */
-    public function setDeadline($deadline) {
+    public function setDeadline($deadline): static {
 
         if( is_string($deadline) ){
             $deadline = new \DateTime($deadline);
@@ -136,7 +118,7 @@ class MyGoalsPayments implements SoftDeletableEntityInterface, EntityInterface
      * @return $this
      * @throws \Exception
      */
-    public function setCollectionStartDate($collectionStartDate) {
+    public function setCollectionStartDate($collectionStartDate): static {
 
         if( is_string($collectionStartDate) ){
             $collectionStartDate = new \DateTime($collectionStartDate);

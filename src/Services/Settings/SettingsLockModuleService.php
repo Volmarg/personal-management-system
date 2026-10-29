@@ -39,9 +39,7 @@ class SettingsLockModuleService extends AbstractController {
     public function refreshSettingsModuleLockDtos(): void
     {
         $allModules = array_combine(ModulesService::ALL_MODULES, ModulesService::ALL_MODULES);
-        $allModulesMap = array_map(function(string $moduleName){
-            return new SettingsModuleLockDTO($moduleName, false);
-        }, $allModules);
+        $allModulesMap = array_map(fn(string $moduleName): \App\DTO\Settings\Lock\Subsettings\SettingsModuleLockDTO => new SettingsModuleLockDTO($moduleName, false), $allModules);
 
         $moduleSettings = $this->settingRepository->getSettingByName(SettingsLoader::SETTING_NAME_MODULES);
         if (empty($moduleSettings)) {
@@ -50,7 +48,7 @@ class SettingsLockModuleService extends AbstractController {
         }
         $settingsModuleLockDtosDataArray = json_decode($moduleSettings->getValue(), true);
         $dbSavedLocks = array_map(
-            fn(array $dtoDataArray) => SettingsModuleLockDTO::fromArray($dtoDataArray),
+            SettingsModuleLockDTO::fromArray(...),
             $settingsModuleLockDtosDataArray[SettingsModulesDTO::KEY_MODULE_LOCK_SETTINGS]
         );
 

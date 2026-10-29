@@ -4,6 +4,7 @@ namespace App\Repository\Modules\Schedules;
 
 use App\DTO\Modules\Schedules\IncomingScheduleDTO;
 use App\Entity\Modules\Schedules\MySchedule;
+use App\Traits\SerializerAwareTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Types\Types;
@@ -15,8 +16,11 @@ use PDO;
  * @method MySchedule|null findOneBy(array $criteria, array $orderBy = null)
  * @method MySchedule[]    findAll()
  * @method MySchedule[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Schedules\MySchedule>
  */
 class MyScheduleRepository extends ServiceEntityRepository {
+
+    use SerializerAwareTrait;
 
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, MySchedule::class);
@@ -65,9 +69,9 @@ class MyScheduleRepository extends ServiceEntityRepository {
         ];
 
         $statement = $connection->executeQuery($sql, $bindedValues, $parametersTypes);
-        $results   = $statement->fetchAll(PDO::FETCH_CLASS, IncomingScheduleDTO::class);
+        $results   = $statement->fetchAllAssociative();
 
-        return $results;
+        return $this->deserialize($results, IncomingScheduleDTO::class . '[]');
     }
 
     /**
@@ -107,9 +111,9 @@ class MyScheduleRepository extends ServiceEntityRepository {
         ";
 
         $statement = $connection->executeQuery($sql);
-        $results   = $statement->fetchAll(PDO::FETCH_CLASS, IncomingScheduleDTO::class);
+        $results   = $statement->fetchAllAssociative();
 
-        return $results;
+        return $this->deserialize($results, IncomingScheduleDTO::class . '[]');
     }
 
     /**

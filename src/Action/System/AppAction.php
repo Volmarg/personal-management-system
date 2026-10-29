@@ -37,13 +37,13 @@ class AppAction extends AbstractController
      * - set system in unlock state where locked resources are accessible,
      * - set system in lock state where locked resources are hidden,
      *
-     * @Route("/toggle-resources-lock", name="system-toggle-resources-lock", methods="POST")
      * @param Request         $request
      * @param SecurityService $securityService
      *
      * @return JsonResponse
      * @throws Exception
      */
+    #[Route(path: '/toggle-resources-lock', name: 'system-toggle-resources-lock', methods: 'POST')]
     public function toggleResourcesLock(Request $request, SecurityService $securityService): Response
     {
         RequestSessionStorage::$IS_TOGGLE_LOCK_CALL = true;
@@ -133,11 +133,11 @@ class AppAction extends AbstractController
     }
 
     /**
-     * @Route("/login", name="login")
      * This route is used by the {@see LexikJWTAuthenticationBundle}
      *
      * @return JsonResponse
      */
+    #[Route(path: '/login', name: 'login')]
     public function login(): JsonResponse
     {
         return BaseResponse::buildOkResponse()->toJsonResponse();
@@ -160,9 +160,7 @@ class AppAction extends AbstractController
         return BaseResponse::buildOkResponse()->toJsonResponse();
     }
 
-    /**
-     * @Route("/logout", name="logout")
-     */
+    #[Route(path: '/logout', name: 'logout')]
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');

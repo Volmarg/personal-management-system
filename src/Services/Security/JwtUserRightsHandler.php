@@ -5,7 +5,6 @@ namespace App\Services\Security;
 use App\Enum\UserModuleRightEnum;
 use App\Services\Module\ModulesService;
 use App\Services\Settings\SettingsLockModuleService;
-use App\Services\System\LockedResourceService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Psr\Log\LoggerInterface;
 
@@ -15,7 +14,6 @@ class JwtUserRightsHandler
 
     public function __construct(
         private readonly SettingsLockModuleService $settingsLockModuleService,
-        private readonly LockedResourceService     $lockedResourceService,
         private readonly LoggerInterface           $logger,
     ) {
         $this->moduleAccessRightMap = [

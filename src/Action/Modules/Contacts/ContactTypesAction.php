@@ -166,7 +166,6 @@ class ContactTypesAction extends AbstractController
     }
 
     /**
-     * @param mixed $typeId
      *
      * @return MyContactType
      * @throws Exception

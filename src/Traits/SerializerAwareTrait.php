@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
@@ -24,8 +25,6 @@ trait SerializerAwareTrait
     /**
      * @param string|array $data
      * @param string       $targetFqn
-     *
-     * @return mixed
      */
     private function deserialize(string|array $data, string $targetFqn): mixed
     {
@@ -39,6 +38,7 @@ trait SerializerAwareTrait
     private function getSerializer(): Serializer
     {
         return new Serializer([
+            new ArrayDenormalizer(), // <-- Add this first!
             new ObjectNormalizer(),
         ], [
             new JsonEncoder(),

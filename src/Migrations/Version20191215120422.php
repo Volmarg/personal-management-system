@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DoctrineMigrations;
 
-use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 use Exception;
@@ -21,7 +20,7 @@ final class Version20191215120422 extends AbstractMigration
 
     /**
      * @param Schema $schema
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public function up(Schema $schema) : void

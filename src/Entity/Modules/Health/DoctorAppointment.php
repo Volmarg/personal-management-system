@@ -12,44 +12,32 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\Modules\Health\DoctorAppointmentRepository")
- * @ORM\Table(name="doctor_appointment")
- */
+#[ORM\Entity(repositoryClass: \App\Repository\Modules\Health\DoctorAppointmentRepository::class)]
+#[ORM\Table(name: 'doctor_appointment')]
 class DoctorAppointment implements FileStorageAssociationInterface, EntityInterface, SoftDeletableEntityInterface
 {
     use FileStorageAssociationTrait;
     use CreateModifyFieldAwareTrait;
     use SoftDeleteAwareTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="datetime")
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(type: 'datetime')]
+    #[Assert\NotBlank]
     private DateTime $date;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Doctor", inversedBy="appointments")
-     * @ORM\JoinColumn(name="doctor_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: \Doctor::class, inversedBy: 'appointments')]
+    #[ORM\JoinColumn(name: 'doctor_id', referencedColumnName: 'id')]
     private Doctor $doctor;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Illness", inversedBy="appointments")
-     * @ORM\JoinColumn(name="illness_id", referencedColumnName="id")
-     */
+    #[ORM\ManyToOne(targetEntity: \Illness::class, inversedBy: 'appointments')]
+    #[ORM\JoinColumn(name: 'illness_id', referencedColumnName: 'id')]
     private Illness $illness;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     */
+    #[ORM\Column(type: 'text', nullable: true)]
     private ?string $information = null;
 
     public function __construct()

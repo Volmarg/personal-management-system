@@ -36,12 +36,12 @@ class DatabaseExporter {
     /**
      * @var string
      */
-    private $fileName;
+    private string $fileName;
 
     /**
      * @var string
      */
-    private $backupDirectory;
+    private string $backupDirectory;
 
     /**
      * @var bool
@@ -51,7 +51,7 @@ class DatabaseExporter {
     /**
      * @var string
      */
-    private $exportMessage;
+    private string $exportMessage;
 
     /**
      * @var string
@@ -61,7 +61,7 @@ class DatabaseExporter {
     /**
      * @var string
      */
-    private $dumpFullPath;
+    private string $dumpFullPath;
 
     /**
      * Safety postfix - should be unique so that existing db sql for today won't be overwritten
@@ -118,13 +118,6 @@ class DatabaseExporter {
      */
     public function getDumpExtension(): string {
         return $this->dumpExtension;
-    }
-
-    /**
-     * @return string
-     */
-    private function getDumpFullPath(): string {
-        return $this->dumpFullPath;
     }
 
     /**
@@ -214,7 +207,7 @@ class DatabaseExporter {
      * This function will create dump of database to which symfony is connected to
      *  Credentials are taken from '.env' file
      */
-    public function runInternalDatabaseExport(){
+    public function runInternalDatabaseExport(): void{
 
         $backupDirectoryExists = file_exists($this->getBackupDirectory());
 
@@ -325,7 +318,7 @@ class DatabaseExporter {
     /**
      * This function will check if the dump was created and it's size is withing range
      */
-    private function checkDump(){
+    private function checkDump(): void{
 
         $isDumpExisting = file_exists($this->getDumpedArchiveAbsolutePath());
 

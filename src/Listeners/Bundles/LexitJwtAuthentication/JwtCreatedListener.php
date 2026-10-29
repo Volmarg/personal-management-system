@@ -22,9 +22,9 @@ class JwtCreatedListener implements EventSubscriberInterface
 {
 
     public const JWT_KEY_USER_ID = "userId";
-    private const JWT_KEY_NICKNAME = "nickname";
-    private const JWT_KEY_PROFILE_PIC_PATH = "profilePicturePath";
-    private const JWT_KEY_USER_RIGHTS = "userRights";
+    private const string JWT_KEY_NICKNAME = "nickname";
+    private const string JWT_KEY_PROFILE_PIC_PATH = "profilePicturePath";
+    private const string JWT_KEY_USER_RIGHTS = "userRights";
 
     public function __construct(
         private readonly JwtAuthenticationService $jwtAuthenticationService,

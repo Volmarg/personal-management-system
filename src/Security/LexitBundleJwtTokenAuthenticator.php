@@ -126,7 +126,7 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
 
         try {
             $payload = $this->jwtAuthenticationService->getPayloadFromToken($jwtToken);
-            if (!$payload) {
+            if ($payload === []) {
                 throw new InvalidTokenException('Invalid JWT Token - could not extract payload');
             }
 
@@ -138,7 +138,7 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
                 throw $expiredTokenException;
             }
 
-            throw new InvalidTokenException('Invalid JWT Token', Response::HTTP_BAD_REQUEST);
+            throw new InvalidTokenException('Invalid JWT Token', Response::HTTP_BAD_REQUEST, $e);
         }
 
         return $preAuthToken;

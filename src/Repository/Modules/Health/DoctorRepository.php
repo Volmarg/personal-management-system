@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Doctor|null findOneBy(array $criteria, array $orderBy = null)
  * @method Doctor[]    findAll()
  * @method Doctor[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @extends \Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository<\App\Entity\Modules\Health\Doctor>
  */
 class DoctorRepository extends ServiceEntityRepository
 {

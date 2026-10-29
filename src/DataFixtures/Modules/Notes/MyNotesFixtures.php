@@ -22,7 +22,7 @@ class MyNotesFixtures extends Fixture implements OrderedFixtureInterface
         $this->faker = Factory::create('en');
     }
 
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
 
         foreach (Notes::ALL_CATEGORIES as $category) {

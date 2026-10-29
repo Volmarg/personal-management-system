@@ -28,7 +28,7 @@ class ValidationResultDto {
     /**
      * @var string $validatedClass
      */
-    private $validatedClass = "";
+    private string $validatedClass = "";
 
     /**
      * @return bool
