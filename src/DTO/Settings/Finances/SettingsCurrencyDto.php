@@ -115,7 +115,7 @@ class SettingsCurrencyDto extends AbstractDTO implements DtoInterface {
      * @throws Exception
      */
     public static function fromJson(string $json): self {
-        $array = \GuzzleHttp\json_decode($json, true);
+        $array = json_decode($json, true);
 
         $name       = self::checkAndGetKey($array, self::KEY_NAME);
         $symbol     = self::checkAndGetKey($array, self::KEY_SYMBOL);

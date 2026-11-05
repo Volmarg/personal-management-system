@@ -13,6 +13,7 @@ use App\Services\TypeProcessor\ArrayHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,8 +44,6 @@ class MyTodoElementAction extends AbstractController {
     }
 
     /**
-     * @ParamConverter("todo", options={"mapping": {"todoId": "id"}})
-     *
      * @param MyTodoElement $element
      * @param MyTodo        $todo
      * @param Request       $request
@@ -53,7 +52,11 @@ class MyTodoElementAction extends AbstractController {
      * @throws Exception
      */
     #[Route("/{id}/{todoId}", name: "update", methods: [Request::METHOD_PATCH])]
-    public function update(MyTodoElement $element, MyTodo $todo, Request $request): JsonResponse
+    public function update(
+        MyTodoElement                                    $element,
+        #[MapEntity(mapping: ['todoId' => 'id'])] MyTodo $todo,
+        Request                                          $request
+    ): JsonResponse
     {
         $this->createOrUpdate($request, $todo, $element);
         return BaseResponse::buildOkResponse()->toJsonResponse();

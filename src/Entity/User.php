@@ -225,14 +225,6 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
     /**
      * @see UserInterface
      */
-    public function getSalt(): void
-    {
-        // not needed when using the "bcrypt" algorithm in security.yaml
-    }
-
-    /**
-     * @see UserInterface
-     */
     public function eraseCredentials(): void
     {
         // If you store any temporary, sensitive data on the user, clear it here
@@ -385,4 +377,11 @@ class User implements UserInterface, EntityInterface, PasswordAuthenticatedUserI
         $this->getRoleGuaranteeRoleUser = $getRoleGuaranteeRoleUser;
     }
 
+    /**
+     * @return string
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->getUsername();
+    }
 }

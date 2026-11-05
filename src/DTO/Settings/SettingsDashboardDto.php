@@ -37,7 +37,7 @@ class SettingsDashboardDto extends AbstractDTO implements DtoInterface{
      * @throws \Exception
      */
     public static function fromJson(string $settingsDashboardJson): self{
-        $settingsDashboardArray = \GuzzleHttp\json_decode($settingsDashboardJson, true);
+        $settingsDashboardArray = json_decode($settingsDashboardJson, true);
         $widgetsSettingsJson    = self::checkAndGetKey($settingsDashboardArray, self::KEY_WIDGETS_SETTINGS);
 
         $settingsDashboardDto = new self();

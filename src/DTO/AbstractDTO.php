@@ -28,7 +28,7 @@ class AbstractDTO{
         }
 
         if( $asString && is_array($value)){
-            return \GuzzleHttp\json_encode($value);
+            return json_encode($value);
         }
 
         return $value;

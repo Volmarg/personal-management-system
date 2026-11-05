@@ -20,11 +20,6 @@ parameters:
     # based page which don't have any ajax calls etc.
     jwt_token_lifetime: 3600
 
-# Resolving deprecation for moving from 4.4x to 5.x
-sensio_framework_extra:
-    router:
-        annotations: false
-
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -52,20 +47,20 @@ services:
     App\Services\ConfigLoaders\ConfigLoaderSystem:
         calls:
             - setSystemFromEmail: ['%system.from_email%']
+#
+#    notifier_proxy_logger_bridge:
+#        alias: App\NotifierProxyLoggerBridge
 
-    notifier_proxy_logger_bridge:
-        alias: App\NotifierProxyLoggerBridge
+#    App\NotifierProxyLoggerBridge:
+#        public: true
+#        arguments:
+#            $logFilePath: '%kernel.logs_dir%/notifier-proxy-logger-bridge.log'
+#            $loggerName: 'NotifierProxyLogger'
+#            $baseUrl: 'http://127.0.0.1:8010/'
 
-    App\NotifierProxyLoggerBridge:
-        public: true
-        arguments:
-            $logFilePath: '%kernel.logs_dir%/notifier-proxy-logger-bridge.log'
-            $loggerName: 'NotifierProxyLogger'
-            $baseUrl: 'http://127.0.0.1:8010/'
-
-    App\Services\External\NotifierProxyLoggerService:
-        arguments:
-            $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'
+#    App\Services\External\NotifierProxyLoggerService:
+#        arguments:
+#            $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -11,6 +11,7 @@ use App\Services\Routing\UrlMatcherService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Traits\ExceptionLoggerAwareTrait;
 use Exception;
+use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationFailureResponse;
 use Lexik\Bundle\JWTAuthenticationBundle\Response\JWTAuthenticationSuccessResponse;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -60,6 +61,11 @@ class JwtTokenResponseListener implements EventSubscriberInterface
 
         if ($response instanceof JWTAuthenticationSuccessResponse) {
             $this->handleJwtAuthSuccess($response, $event);
+            return;
+        }
+
+        if ($response instanceof JWTAuthenticationFailureResponse) {
+            $this->handleJwtAuthFailure($response, $event);
             return;
         }
 
@@ -168,6 +174,34 @@ class JwtTokenResponseListener implements EventSubscriberInterface
         $frontResponse = new BaseResponse();
         $frontResponse->setToken($token);
         $frontResponse->setSuccess(true);
+
+        $event->setResponse($frontResponse->toJsonResponse());
+    }
+
+    /**
+     * This is needed only for initial auth
+     *
+     * @param JWTAuthenticationFailureResponse $authResponse
+     * @param ResponseEvent                    $event
+     *
+     * @throws Exception
+     */
+    private function handleJwtAuthFailure(JWTAuthenticationFailureResponse $authResponse, ResponseEvent $event): void
+    {
+        $responseData = json_decode($authResponse->getContent(), true);
+        $message = $responseData['message'] ?? null;
+        if (empty($message)) {
+            throw new Exception("`message` key was not found in the content of response of class: " . $authResponse::class);
+        }
+
+        $code = $responseData['code'] ?? null;
+        if (empty($code)) {
+            throw new Exception("`code` key was not found in the content of response of class: " . $authResponse::class);
+        }
+
+        $frontResponse = new BaseResponse();
+        $frontResponse->setMessage($message);
+        $frontResponse->setCode($code);
 
         $event->setResponse($frontResponse->toJsonResponse());
     }

@@ -51,15 +51,15 @@ class SettingsWidgetSettingsDto extends AbstractDTO implements DtoInterface{
      * @throws \Exception
      */
     public static function fromJson(string $widgetsSettingsJson): self{
-        $widgetsSettingsArray   = \GuzzleHttp\json_decode($widgetsSettingsJson, true);
+        $widgetsSettingsArray   = json_decode($widgetsSettingsJson, true);
         $widgetsVisibilityJson  = self::checkAndGetKey($widgetsSettingsArray, self::KEY_WIDGETS_VISIBILITY);
-        $widgetVisibilityArrays = \GuzzleHttp\json_decode($widgetsVisibilityJson, true);
+        $widgetVisibilityArrays = json_decode($widgetsVisibilityJson, true);
 
         $settingsWidgetsSettingsDto = new self();
 
         foreach($widgetVisibilityArrays as $widgetVisibilityArray){
 
-            $widgetVisibilityJson        = \GuzzleHttp\json_encode($widgetVisibilityArray);
+            $widgetVisibilityJson        = json_encode($widgetVisibilityArray);
             $settingsWidgetVisibilityDto = SettingsWidgetVisibilityDto::fromJson($widgetVisibilityJson);
             $settingsWidgetsSettingsDto->addWidgetVisibility($settingsWidgetVisibilityDto);
 

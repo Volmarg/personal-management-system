@@ -22,6 +22,8 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\User\InMemoryUser;
+use Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken;
 use Throwable;
 use TypeError;
 
@@ -241,10 +243,7 @@ class JwtAuthenticationService
      */
     public function getPayloadFromToken(string $rawToken): array
     {
-        $token = new JWTUserToken();
-        $token->setRawToken($rawToken);
-
-        $jwtPayload = $this->jwtManager->decode($token);
+        $jwtPayload = $this->jwtManager->parse($rawToken);
         return $jwtPayload;
     }
 

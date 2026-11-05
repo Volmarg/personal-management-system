@@ -13,18 +13,6 @@ framework:
             doctrine.system_cache_pool:
                 adapter: cache.adapter.apcu
 
-services:
-    doctrine.result_cache_provider:
-        class: Symfony\Component\Cache\DoctrineProvider
-        public: false
-        arguments:
-            - '@doctrine.result_cache_pool'
-    doctrine.system_cache_provider:
-        class: Symfony\Component\Cache\DoctrineProvider
-        public: false
-        arguments:
-            - '@doctrine.system_cache_pool'
-
 doctrine:
     dbal:
         # configure these for your database server
@@ -40,16 +28,15 @@ doctrine:
         types:
             serialized_json:  App\Entity\DoctrineTypes\SerializedJson
     orm:
-        #todo in documentation: https://stackoverflow.com/questions/49479886/symfony-4-getting-multiple-cache-warning-failed-to-save-key
         metadata_cache_driver:
-            type: service
-            id: doctrine.system_cache_provider
+            type: pool
+            pool: doctrine.system_cache_pool
         query_cache_driver:
-            type: service
-            id: doctrine.system_cache_provider
+            type: pool
+            pool: doctrine.system_cache_pool
         result_cache_driver:
-            type: service
-            id: doctrine.result_cache_provider
+            type: pool
+            pool: doctrine.result_cache_pool
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true

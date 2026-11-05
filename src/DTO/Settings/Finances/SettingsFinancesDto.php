@@ -51,15 +51,15 @@ class SettingsFinancesDto extends AbstractDTO implements DtoInterface {
      * @throws Exception
      */
     public static function fromJson(string $json): self{
-        $financesSettingsArray = \GuzzleHttp\json_decode($json, true);
+        $financesSettingsArray = json_decode($json, true);
         $currencySettingJsons  = self::checkAndGetKey($financesSettingsArray, self::KEY_SETTINGS_CURRENCIES);
-        $currencySettingArrays = \GuzzleHttp\json_decode($currencySettingJsons, true);
+        $currencySettingArrays = json_decode($currencySettingJsons, true);
 
         $settingsFinancesDto = new self();
 
         foreach($currencySettingArrays as $currencySettingArray) {
 
-            $currencySettingJson = \GuzzleHttp\json_encode($currencySettingArray);
+            $currencySettingJson = json_encode($currencySettingArray);
             $currencySettingDto  = SettingsCurrencyDto::fromJson($currencySettingJson);
             $settingsFinancesDto->addSettingsCurrencyDto($currencySettingDto);
 

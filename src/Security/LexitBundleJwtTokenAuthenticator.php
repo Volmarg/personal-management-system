@@ -6,26 +6,29 @@ use App\Response\Base\BaseResponse;
 use App\Services\Attribute\AttributeReaderService;
 use App\Services\Security\JwtAuthenticationService;
 use App\Traits\ExceptionLoggerAwareTrait;
-use Lexik\Bundle\JWTAuthenticationBundle\Exception\ExpiredTokenException;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\InvalidTokenException;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
-use Lexik\Bundle\JWTAuthenticationBundle\Security\Authentication\Token\PreAuthenticationJWTUserToken;
-use Lexik\Bundle\JWTAuthenticationBundle\Security\Guard\JWTTokenAuthenticator;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\Authenticator\JWTAuthenticator;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\TokenExtractorInterface;
+use Psr\Clock\ClockInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Extends the Lexit Bundle authentication logic
  */
-class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
+class LexitBundleJwtTokenAuthenticator extends JWTAuthenticator
 {
     use ExceptionLoggerAwareTrait;
 
@@ -35,12 +38,13 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
         JWTTokenManagerInterface                $jwtManager,
         EventDispatcherInterface                $dispatcher,
         TokenExtractorInterface                 $tokenExtractor,
-        TokenStorageInterface                   $preAuthenticationTokenStorage,
+        UserProviderInterface                   $userProvider,
         private readonly AttributeReaderService $attributeReaderService,
         private readonly LoggerInterface        $logger,
-        private readonly JwtAuthenticationService $jwtAuthenticationService
+        private readonly JwtAuthenticationService $jwtAuthenticationService,
+        private readonly TranslatorInterface $translator
     ) {
-        parent::__construct($jwtManager, $dispatcher, $tokenExtractor, $preAuthenticationTokenStorage);
+        parent::__construct($jwtManager, $dispatcher, $tokenExtractor, $userProvider, $translator);
     }
 
     /**
@@ -88,19 +92,19 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
      * @param TokenInterface $token
      * @param                $providerKey
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): void
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey):  ?Response
     {
-        parent::onAuthenticationSuccess($request, $token, $providerKey);
+        return parent::onAuthenticationSuccess($request, $token, $providerKey);
     }
 
     /**
      * @param Request $request
      *
-     * @return PreAuthenticationJWTUserToken
+     * @return Passport
      *
      * @throws JWTDecodeFailureException
      */
-    public function getCredentials(Request $request): PreAuthenticationJWTUserToken
+    public function authenticate(Request $request): Passport
     {
         $jwtToken = $this->jwtAuthenticationService->extractJwtFromRequest();
         if (empty($jwtToken)) {
@@ -122,25 +126,28 @@ class LexitBundleJwtTokenAuthenticator extends JWTTokenAuthenticator
             throw new InvalidTokenException('Invalid JWT Token - no user found for this token.', Response::HTTP_BAD_REQUEST);
         }
 
-        $preAuthToken = new PreAuthenticationJWTUserToken($jwtToken);
-
         try {
             $payload = $this->jwtAuthenticationService->getPayloadFromToken($jwtToken);
             if ($payload === []) {
                 throw new InvalidTokenException('Invalid JWT Token - could not extract payload');
             }
-
-            $preAuthToken->setPayload($payload);
         } catch (JWTDecodeFailureException $e) {
             if (JWTDecodeFailureException::EXPIRED_TOKEN === $e->getReason()) {
-                $expiredTokenException = new ExpiredTokenException();
-                $expiredTokenException->setToken($preAuthToken);
-                throw $expiredTokenException;
+                throw new InvalidTokenException('This jwt token is expired', Response::HTTP_BAD_REQUEST, $e);
             }
 
             throw new InvalidTokenException('Invalid JWT Token', Response::HTTP_BAD_REQUEST, $e);
         }
 
-        return $preAuthToken;
+        $passport = new SelfValidatingPassport(
+            new UserBadge($user->getUserIdentifier(), function () use ($user) {
+                return $user;
+            })
+        );
+
+        $passport->setAttribute('payload', $payload);
+        $passport->setAttribute('token', $jwtToken);
+
+        return $passport;
     }
 }

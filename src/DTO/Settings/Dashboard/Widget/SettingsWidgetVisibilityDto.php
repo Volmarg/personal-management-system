@@ -55,7 +55,7 @@ class SettingsWidgetVisibilityDto extends AbstractDTO implements DtoInterface{
      * @throws \Exception
      */
     public static function fromJson(string $widgetVisibilityJson): self{
-        $widgetVisibilityArray = \GuzzleHttp\json_decode($widgetVisibilityJson, true);
+        $widgetVisibilityArray = json_decode($widgetVisibilityJson, true);
 
         $name      = self::checkAndGetKey($widgetVisibilityArray, self::KEY_NAME);
         $IsVisible = self::checkAndGetKey($widgetVisibilityArray, self::KEY_IS_VISIBLE);
