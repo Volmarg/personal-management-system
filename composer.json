@@ -17,7 +17,7 @@
     ],
     "type": "project",
     "require": {
-        "php": "^8.3.0",
+        "php": "^8.4.0",
         "ext-gd": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -32,7 +32,7 @@
         "lexik/jwt-authentication-bundle": "v3.2.0",
         "ramsey/uuid": "^3.8",
         "slowprog/composer-copy-file": "^0.3.2",
-        "specshaper/encrypt-bundle": "v3.2.1",
+        "specshaper/encrypt-bundle": "v5.0.1",
         "symfony/asset": "v7.4.0",
         "symfony/config": "v7.4.0",
         "symfony/console": "v7.4.0",

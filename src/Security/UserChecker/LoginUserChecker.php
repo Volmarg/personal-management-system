@@ -2,6 +2,7 @@
 
 namespace App\Security\UserChecker;
 
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -24,7 +25,7 @@ class LoginUserChecker implements UserCheckerInterface
     /**
      * {@inheritDoc}
      */
-    public function checkPostAuth(UserInterface $user): void
+    public function checkPostAuth(UserInterface $user, ?TokenInterface $token = null): void
     {
         // nothing here
     }

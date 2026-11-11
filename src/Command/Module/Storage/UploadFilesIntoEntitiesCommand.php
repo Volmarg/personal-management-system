@@ -28,7 +28,7 @@ class UploadFilesIntoEntitiesCommand extends Command
         private readonly StorageService         $storageService,
         private readonly StorageFileService  $storageFileService,
     ) {
-        parent::__construct(self::$defaultName);
+        parent::__construct();
     }
 
     /**

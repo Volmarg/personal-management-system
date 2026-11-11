@@ -47,7 +47,7 @@ class CronMakeBackupCommand extends Command
     private ZipArchivizer $archivizer;
 
     public function __construct(DatabaseExporter $databaseExporter, ZipArchivizer $archivizer, string $name = null) {
-        parent::__construct($name);
+        parent::__construct(self::$defaultName);
         $this->databaseExporter = $databaseExporter;
         $this->archivizer       = $archivizer;
     }

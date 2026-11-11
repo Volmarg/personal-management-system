@@ -51,7 +51,7 @@ class CronAddRecurringPaymentsCommand extends Command
         private readonly MyRecurringPaymentMonthlyRepository $recurringPaymentMonthlyRepository,
         string $name = null
     ) {
-        parent::__construct($name);
+        parent::__construct(self::$defaultName);
         $this->currYearMonth = (new DateTime())->format('Y-m');
     }
 

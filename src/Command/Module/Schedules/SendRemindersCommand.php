@@ -49,7 +49,7 @@ class SendRemindersCommand extends Command
         private readonly DiscordService         $discordService,
         private readonly EntityManagerInterface $entityManager,
     ) {
-        parent::__construct(self::$defaultName);
+        parent::__construct();
         $this->reminderUserName = $parameterBag->get('project.name') . " Reminder";
 
     }
