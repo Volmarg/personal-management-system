@@ -42,20 +42,20 @@ services:
     App\Services\ConfigLoaders\ConfigLoaderSystem:
         calls:
             - setSystemFromEmail: ['%system.from_email%']
-#
-#    notifier_proxy_logger_bridge:
-#        alias: App\NotifierProxyLoggerBridge
 
-#    App\NotifierProxyLoggerBridge:
-#        public: true
-#        arguments:
-#            $logFilePath: '%kernel.logs_dir%/notifier-proxy-logger-bridge.log'
-#            $loggerName: 'NotifierProxyLogger'
-#            $baseUrl: 'http://127.0.0.1:8010/'
+    notifier_proxy_logger_bridge:
+        alias: App\NotifierProxyLoggerBridge
 
-#    App\Services\External\NotifierProxyLoggerService:
-#        arguments:
-#            $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'
+    App\NotifierProxyLoggerBridge:
+        public: true
+        arguments:
+            $logFilePath: '%kernel.logs_dir%/notifier-proxy-logger-bridge.log'
+            $loggerName: 'NotifierProxyLogger'
+            $baseUrl: 'http://127.0.0.1:8010/'
+
+    App\Services\External\NotifierProxyLoggerService:
+        arguments:
+            $notifierProxyLoggerBridge: '@notifier_proxy_logger_bridge'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
