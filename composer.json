@@ -38,6 +38,7 @@
         "symfony/console": "7.*.*",
         "symfony/debug-bundle": "7.*.*",
         "symfony/dotenv": "7.*.*",
+        "symfony/error-handler": "7.*.*",
         "symfony/flex": "2.*.*",
         "symfony/form": "7.*.*",
         "symfony/framework-bundle": "7.*.*",
