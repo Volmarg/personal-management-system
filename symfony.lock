@@ -207,9 +207,6 @@
     "phpunit/php-timer": {
         "version": "2.1.2"
     },
-    "phpunit/php-token-stream": {
-        "version": "3.1.1"
-    },
     "phpunit/phpunit": {
         "version": "4.7",
         "recipe": {
