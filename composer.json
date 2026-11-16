@@ -116,9 +116,6 @@
         "symfony": {
             "id": "01C3E63HMJ6KB4VE7A0XNTH8PS",
             "allow-contrib": false
-        },
-        "copy-file": {
-            "vendor_fixes/full_file_copy/specsharper/encrypt-bundle/" : "vendor/specsharper/encrypt-bundle/"
         }
     },
   "repositories": [{
