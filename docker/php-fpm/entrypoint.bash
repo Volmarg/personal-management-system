@@ -58,7 +58,7 @@ function createDirs() {
 
 # Generates new encryption key and returns it
 function generateEncryptionKey() {
-  RESULT=$($BIN_CONSOLE_PATH --env=dev encrypt:genkey 2>/dev/null | grep -i "Ok" | sed s/\\[OK]//);
+  RESULT=$($BIN_CONSOLE_PATH --env=dev encrypt:genkey 2>/dev/null | grep -i "Ok" | sed "s/\\[OK] Key is: //");
 
   echo $(trim "${RESULT}");
 }
