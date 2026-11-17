@@ -5,28 +5,22 @@ namespace App\Listeners\Entity;
 use App\Entity\Interfaces\EntityInterface;
 use App\Entity\Interfaces\FileStorageAssociationInterface;
 use App\Repository\Modules\Storage\StorageFileRepository;
-use Doctrine\Common\EventSubscriber;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\UnitOfWork;
 
-class EntityStorageFileHydrationSubscriber implements EventSubscriber
+#[AsDoctrineListener(event: Events::postLoad)]
+#[AsDoctrineListener(event: Events::preFlush)]
+#[AsDoctrineListener(event: Events::postFlush)]
+class EntityStorageFileHydrationSubscriber
 {
 
     public function __construct(
         private StorageFileRepository $repository
     ) {}
-
-    public  function getSubscribedEvents(): array
-    {
-        return [
-            Events::postLoad => 'postLoad',
-            Events::preFlush => 'preFlush',
-            Events::postFlush => 'postFlush',
-        ];
-    }
 
     /**
      * Loads the {@see StorageFiles} for the entity
