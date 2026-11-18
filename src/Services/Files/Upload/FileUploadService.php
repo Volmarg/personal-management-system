@@ -2,6 +2,7 @@
 
 namespace App\Services\Files\Upload;
 
+use App\DTO\Internal\Upload\UploadConfigurationDTO;
 use App\Entity\FilesTags;
 use App\Exception\File\UploadValidationException;
 use App\Services\Files\PathService;
@@ -12,6 +13,7 @@ use Exception;
 use LogicException;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use TypeError;
@@ -74,8 +76,8 @@ readonly class FileUploadService
 
             $targetPath = $this->decideTargetPath($uploadConfiguration->getUploadDir(), $fileName);
             $this->moveFromTemp($tmpFile->getPathname(), $targetPath);
-
             $this->fileUploadValidator->postMoveValidation($targetPath);
+            $this->handlePostUpload($uploadConfiguration, $targetPath);
             $this->storageFileService->uploadedFileIntoEntity($targetPath);
         } catch (FileException | UploadValidationException $e) {
             if (file_exists($tmpFile->getPathname())) {
@@ -206,6 +208,23 @@ readonly class FileUploadService
                         Got error {$lastError}
                     ";
             throw new Exception($message);
+        }
+    }
+
+    /**
+     * @param UploadConfigurationDTO $uploadConfiguration
+     * @param string                 $uploadedFilePath
+     */
+    private function handlePostUpload(UploadConfigurationDTO $uploadConfiguration, string $uploadedFilePath): void
+    {
+        // we only ever need latest profile image
+        if ($uploadConfiguration->getIdentifier() === FileUploadConfigurator::PROFILE_PICTURE_UPLOAD) {
+            $filesList = Finder::create()->files()->in(PathService::getProfileImageUploadDir());
+            foreach ($filesList as $file) {
+                if ($file->getFilename() !== basename($uploadedFilePath)) {
+                    unlink($file->getRealPath());
+                }
+            }
         }
     }
 
